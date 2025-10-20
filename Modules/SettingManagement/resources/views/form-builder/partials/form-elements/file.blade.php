@@ -27,7 +27,7 @@
             </div>
             <div class="card-body">
                 <div class="form-group w-100">
-                    {{-- Universal MediaManagement Component --}}
+                    {{-- Universal MediaManagement Component (label gösterme - card-header'da zaten var) --}}
                     @livewire('mediamanagement::universal-media', [
                         'modelId' => $setting->id,
                         'modelType' => 'setting',
@@ -35,7 +35,8 @@
                         'collections' => ['featured_image'],
                         'maxGalleryItems' => 1,
                         'sortable' => false,
-                        'setFeaturedFromGallery' => false
+                        'setFeaturedFromGallery' => false,
+                        'hideLabel' => true
                     ], key('setting-media-fb-file-' . $setting->id))
 
                     @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))

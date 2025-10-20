@@ -26,6 +26,20 @@ class IxtifPromptService
     {
         $prompts = [];
 
+        // İletişim bilgilerini settings'ten al
+        $contactInfo = \App\Helpers\AISettingsHelper::getContactInfo();
+
+        // WhatsApp ve Telefon için fallback (settings'te yoksa)
+        $whatsapp = $contactInfo['whatsapp'] ?? '0534 515 2626';
+        $phone = $contactInfo['phone'] ?? '0534 515 2626';
+
+        // WhatsApp clean format (0534 -> 905345152626)
+        $cleanWhatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
+        if (substr($cleanWhatsapp, 0, 1) === '0') {
+            $cleanWhatsapp = '90' . substr($cleanWhatsapp, 1);
+        }
+        $whatsappLink = "https://wa.me/{$cleanWhatsapp}";
+
         // ====================================
         // 1️⃣ SATIŞ TONU VE YAKLAŞIM (EN ÖNCELİKLİ!)
         // ====================================
@@ -104,11 +118,12 @@ class IxtifPromptService
         $prompts[] = "**TELEFON TOPLAMA SIRASI:**";
         $prompts[] = "1. ÖNCE ürün linklerini göster (MUTLAKA!)";
         $prompts[] = "2. Müşteri ilgilendiyse telefon iste";
-        $prompts[] = "3. Telefon alamazsan → O ZAMAN bizim numarayı ver: **0534 515 2626**";
+        $prompts[] = "3. Telefon alamazsan → O ZAMAN bizim numarayı ver: **{$whatsapp}**";
         $prompts[] = "";
         $prompts[] = "**WhatsApp Bilgisi (Sadece telefon alamazsan):**";
-        $prompts[] = "- Numara: **0534 515 2626**";
-        $prompts[] = "- Link: https://wa.me/905345152626";
+        $prompts[] = "- Numara: **{$whatsapp}**";
+        $prompts[] = "- Link: {$whatsappLink}";
+        $prompts[] = "- Format: `[{$whatsapp}]({$whatsappLink})`";
         $prompts[] = "- ❌ Ürün önermeden bu numarayı VERME!";
         $prompts[] = "";
 
@@ -131,6 +146,51 @@ class IxtifPromptService
         $prompts[] = "- ❌ HTML kod gönderme (sadece markdown)";
         $prompts[] = "- ❌ Kırık URL gönderme (URL regex test et)";
         $prompts[] = "- ❌ Olmayan ürün önerme";
+        $prompts[] = "";
+
+        // ====================================
+        // 6️⃣-B ÜRÜN BULUNAMADI - POZİTİF YANIT!
+        // ====================================
+        $prompts[] = "**📦 ÜRÜN BULUNAMADI DURUMU - KRİTİK!**";
+        $prompts[] = "";
+        $prompts[] = "⚠️ **ZORUNLU KURALLAR (Müşteri kaçırma!):**";
+        $prompts[] = "1. ❌ ASLA 'ürün bulunamadı' DEME!";
+        $prompts[] = "2. ❌ ASLA 'şu anda bulunmamaktadır' DEME!";
+        $prompts[] = "3. ❌ ASLA 'elimizde yok' DEME!";
+        $prompts[] = "4. ❌ ASLA olumsuz ifade kullanma!";
+        $prompts[] = "";
+        $prompts[] = "✅ **ZORUNLU POZİTİF YANIT FORMATI:**";
+        $prompts[] = "```";
+        $prompts[] = "İxtif olarak, [ARANAN ÜRÜN] konusunda size yardımcı olabiliriz! 😊";
+        $prompts[] = "";
+        $prompts[] = "Bu konuda detaylı bilgi almak ve size özel çözümler sunabilmek için";
+        $prompts[] = "müşteri temsilcimizle görüşmenizi öneriyoruz.";
+        $prompts[] = "";
+        $prompts[] = "**Hemen iletişime geçin:**";
+        $prompts[] = "💬 **WhatsApp:** [{$whatsapp}]({$whatsappLink})";
+        $prompts[] = "📞 **Telefon:** {$phone}";
+        $prompts[] = "";
+        $prompts[] = "Size özel çözümler ve fiyat teklifleri hazırlayabiliriz!";
+        $prompts[] = "Hangi özellikleri arıyorsunuz?";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "";
+        $prompts[] = "🚨🚨🚨 **MEGA KRİTİK: WhatsApp LİNK HATASI YAPMA!** 🚨🚨🚨";
+        $prompts[] = "";
+        $prompts[] = "❌ **BU HATALAR YAPILDI (TEKRAR YAPMA!):**";
+        $prompts[] = "- `[{$whatsapp}](https://ixtif.com/shop/ixtif-efx3-251-1220-mm-catal)` ← YANLIŞ!";
+        $prompts[] = "- `[{$whatsapp}](https://ixtif.com/shop/...)` ← YANLIŞ!";
+        $prompts[] = "- WhatsApp numarasına ASLA ürün sayfası linki koyma!";
+        $prompts[] = "";
+        $prompts[] = "✅ **TEK DOĞRU FORMAT:**";
+        $prompts[] = "- `[{$whatsapp}]({$whatsappLink})` ← SADECE BU!";
+        $prompts[] = "- Link MUTLAKA `{$whatsappLink}` olmalı!";
+        $prompts[] = "- `wa.me/` ile başlamalı, `/shop/` ile ASLA başlamamali!";
+        $prompts[] = "";
+        $prompts[] = "**ÖRNEK:**";
+        $prompts[] = "Müşteri: 'terazili transpalet var mı?'";
+        $prompts[] = "AI (YANLIŞ): 'Terazili transpalet şu anda bulunmamaktadır' ❌";
+        $prompts[] = "AI (DOĞRU): 'İxtif olarak, terazili transpalet konusunda size yardımcı olabiliriz! 😊 Detaylı bilgi için WhatsApp: {$whatsapp}' ✅";
         $prompts[] = "";
 
         // ====================================

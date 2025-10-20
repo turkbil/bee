@@ -121,6 +121,23 @@ module.exports = {
         'hover:text-pink-600', 'hover:text-pink-700',
         'dark:hover:text-pink-300', 'dark:hover:text-pink-400',
         'group-hover:text-pink-600', 'dark:group-hover:text-pink-400',
+
+        // Service Cards - Yellow/Orange
+        'from-yellow-50', 'to-yellow-50', 'from-yellow-500', 'to-yellow-600',
+        'from-yellow-500', 'to-orange-500', 'via-yellow-500', 'via-yellow-400',
+        'hover:from-yellow-50/50', 'hover:to-orange-50/50',
+        'dark:hover:from-yellow-900/20', 'dark:hover:to-orange-900/20',
+        'hover:text-yellow-600', 'dark:hover:text-yellow-400',
+
+        // Service Cards - Teal/Cyan
+        'from-teal-50', 'to-teal-50', 'from-teal-500', 'to-teal-600',
+        'from-teal-500', 'to-cyan-500', 'via-teal-500', 'via-cyan-500',
+        'from-cyan-50', 'to-cyan-50', 'from-cyan-500', 'to-cyan-600',
+        'hover:from-teal-50/50', 'hover:to-cyan-50/50',
+        'dark:hover:from-teal-900/20', 'dark:hover:to-cyan-900/20',
+
+        // Badge Gradient Animation
+        'bg-[length:200%_100%]', 'animate-gradient',
     ],
 
     theme: {

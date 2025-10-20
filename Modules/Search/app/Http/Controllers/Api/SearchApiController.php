@@ -33,8 +33,8 @@ class SearchApiController extends Controller
         try {
             $results = $this->searchService->searchAll(
                 query: $validated['q'],
-                perPage: $validated['per_page'] ?? 12,
-                page: $validated['page'] ?? 1,
+                perPage: (int) ($validated['per_page'] ?? 12),
+                page: (int) ($validated['page'] ?? 1),
                 filters: $validated['filters'] ?? [],
                 activeTab: $validated['type'] ?? 'all'
             );
@@ -97,32 +97,44 @@ class SearchApiController extends Controller
             $limit = $validated['limit'] ?? 5; // Keyword dropdown varsayılanı
             $productLimit = 6; // Grid için 2x3 ürün kartı
 
-            // Get keyword suggestions from popular searches ONLY
+            // Get keyword suggestions from popular searches
             $keywordSuggestions = $this->searchService->getSuggestions($query, $limit);
 
-            $keywords = $keywordSuggestions->map(function ($keyword) use ($query) {
-                // Get count for each keyword by doing a quick search
-                $count = 0;
-                try {
-                    $quickSearch = $this->searchService->searchAll(
-                        query: $keyword,
-                        perPage: 1,
-                        page: 1,
-                        filters: [],
-                        activeTab: 'all',
-                        logQuery: false
-                    );
-                    $count = $quickSearch['total_count'];
-                } catch (\Exception $e) {
-                    // Ignore count errors
-                }
+            if ($keywordSuggestions->isEmpty()) {
+                $keywordSuggestions = $this->searchService->getFallbackScoutSuggestions($query, $limit);
 
-                return [
-                    'type' => 'keyword',
-                    'text' => $keyword,
-                    'count' => $count,
-                ];
-            })->values()->all();
+                $keywords = $keywordSuggestions->map(function ($keyword) {
+                    return [
+                        'type' => 'keyword',
+                        'text' => $keyword,
+                        'count' => null,
+                    ];
+                })->values()->all();
+            } else {
+                $keywords = $keywordSuggestions->map(function ($keyword) use ($query) {
+                    // Get count for each keyword by doing a quick search
+                    $count = 0;
+                    try {
+                        $quickSearch = $this->searchService->searchAll(
+                            query: $keyword,
+                            perPage: 1,
+                            page: 1,
+                            filters: [],
+                            activeTab: 'all',
+                            logQuery: false
+                        );
+                        $count = $quickSearch['total_count'];
+                    } catch (\Exception $e) {
+                        // Ignore count errors
+                    }
+
+                    return [
+                        'type' => 'keyword',
+                        'text' => $keyword,
+                        'count' => $count,
+                    ];
+                })->values()->all();
+            }
 
             // Get product suggestions (top 5 from actual search)
             $results = $this->searchService->searchAll(

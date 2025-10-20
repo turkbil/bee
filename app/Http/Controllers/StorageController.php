@@ -39,21 +39,33 @@ class StorageController extends Controller
             $tenancy = app(\Stancl\Tenancy\Tenancy::class);
 
             if ($tenancy->initialized) {
-                // Tenant ID'yi al
                 $tenantId = tenant('id');
 
-                // TenantPathGenerator ile uyumlu path:
-                // storage/tenant2/app/public/tenant2/{media_id}/file.png
-                // URL'den gelen: 1/file.png
-                // Eklememiz gereken prefix: tenant{id}/
-                $fullPath = storage_path("app/public/tenant{$tenantId}/{$path}");
+                // Eğer path 'tenant{id}/' ile başlıyorsa onu kullan
+                if (preg_match('/^tenant(\d+)\/(.+)$/', $path, $matches)) {
+                    $targetTenantId = $matches[1];
+                    $relativePath = $matches[2];
+                } else {
+                    $targetTenantId = $tenantId;
+                    $relativePath = ltrim($path, '/');
+                }
+
+                // Clean path: storage/tenant{id}/app/public/{media_id}/{file}
+                $fullPath = storage_path("tenant{$targetTenantId}/app/public/{$relativePath}");
 
                 return $this->serveFile($fullPath);
             }
         }
 
         // Central context - normal storage path
-        $fullPath = storage_path("app/public/{$path}");
+        if (preg_match('/^tenant(\d+)\/(.+)$/', $path, $matches)) {
+            $targetTenantId = $matches[1];
+            $relativePath = $matches[2];
+            // Clean path: storage/tenant{id}/app/public/{media_id}/{file}
+            $fullPath = storage_path("tenant{$targetTenantId}/app/public/{$relativePath}");
+        } else {
+            $fullPath = storage_path("app/public/{$path}");
+        }
 
         return $this->serveFile($fullPath);
     }

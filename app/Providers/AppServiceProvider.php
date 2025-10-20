@@ -159,6 +159,12 @@ class AppServiceProvider extends ServiceProvider
             config([
                 'media-library.temporary_directory_path' => storage_path("tenant{$tenantId}/media-library/temp"),
             ]);
+
+            // Public disk URL için tenant-aware (Media Library URL generation için kritik!)
+            $currentDomain = request()->getHost();
+            config([
+                'filesystems.disks.public.url' => 'https://' . $currentDomain . '/storage/tenant' . $tenantId,
+            ]);
         }
         
         // Performance: View Composers for commonly used data

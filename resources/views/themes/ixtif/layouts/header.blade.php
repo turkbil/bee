@@ -19,22 +19,14 @@
 {{-- Global SEO Meta Tags - Tek Satır --}}
 <x-seo-meta />
 
-{{-- Favicon --}}
-    @php $favicon = setting('site_favicon'); @endphp
-    @if($favicon && $favicon !== 'Favicon yok')
-    <link rel="icon" type="image/x-icon" href="{{ cdn($favicon) }}">
-    @else
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    @endif
+{{-- Favicon - Tenant-aware dynamic route --}}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
     {{-- PWA Manifest (2025 Best Practice) --}}
     <link rel="manifest" href="{{ route('manifest') }}">
 
-    {{-- Apple Touch Icon (iOS/Safari) --}}
-    @php $appleTouchIcon = setting('site_logo') ?? $favicon; @endphp
-    @if($appleTouchIcon && $appleTouchIcon !== 'Favicon yok')
-    <link rel="apple-touch-icon" href="{{ cdn($appleTouchIcon) }}">
-    @endif
+    {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
+    <link rel="apple-touch-icon" href="/favicon.ico">
 
     {{-- Tailwind CSS - Compiled & Minified --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
@@ -86,16 +78,17 @@
             }
         }
 
-        /* Footer Logo - Adaptive (Dark mode'da beyaz filtre) */
-        .logo-footer-adaptive {
+        /* Logo Adaptive - Dark mode'da beyaz filtre (Header + Footer) */
+        .logo-adaptive {
             /* Light mode: normal göster */
+            transition: filter 0.3s ease, opacity 0.3s ease;
         }
-        .dark .logo-footer-adaptive {
+        .dark .logo-adaptive {
             /* Dark mode: beyaz filtre uygula */
             filter: brightness(0) invert(1);
             opacity: 0.9;
         }
-        .dark .logo-footer-adaptive:hover {
+        .dark .logo-adaptive:hover {
             opacity: 1;
         }
 
@@ -313,6 +306,21 @@
     {{-- Core System Styles - Mandatory for all themes --}}
     <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1">
 
+    {{-- Google Analytics --}}
+    @php
+        $googleAnalyticsCode = setting('site_google_analytics_code');
+    @endphp
+    @if($googleAnalyticsCode)
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsCode }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ $googleAnalyticsCode }}');
+    </script>
+    @endif
+
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')
@@ -331,7 +339,9 @@
         searchOpen: false,
         activeCategory: 'first'
     }"
-    class="sticky top-0 left-0 right-0 z-50">
+    class="sticky top-0 left-0 right-0 z-50"
+    @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
+    @keydown.escape.window="searchOpen = false; activeMegaMenu = null">
 
         {{-- Top Info Bar - Scroll'da kaybolacak --}}
         <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10">
@@ -450,7 +460,7 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
-                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-[200]">
+                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
 
                                 @if(count($languageSwitcherLinks) > 0)
                                     @php
@@ -501,36 +511,43 @@
 
                                 $logoUrl = $logos['light_logo_url'] ?? null;
                                 $logoDarkUrl = $logos['dark_logo_url'] ?? null;
-                                $fallbackMode = $logos['fallback_mode'] ?? 'none';
+                                $fallbackMode = $logos['fallback_mode'] ?? 'title_only';
+                                $siteTitle = $logos['site_title'] ?? setting('site_title');
+                                $siteSlogan = setting('site_slogan');
                             @endphp
                             @if($fallbackMode === 'both')
-                                {{-- Her iki logo da var - Direkt göster --}}
+                                {{-- Her iki logo da var - Dark mode'da otomatik değiş --}}
                                 <img src="{{ $logoUrl }}"
-                                     alt="{{ $logos['site_title'] }}"
-                                     class="dark:hidden object-contain h-10 w-auto">
+                                     alt="{{ $siteTitle }}"
+                                     class="dark:hidden object-contain h-10 w-auto"
+                                     title="{{ $siteTitle }}">
                                 <img src="{{ $logoDarkUrl }}"
-                                     alt="{{ $logos['site_title'] }}"
-                                     class="hidden dark:block object-contain h-10 w-auto">
+                                     alt="{{ $siteTitle }}"
+                                     class="hidden dark:block object-contain h-10 w-auto"
+                                     title="{{ $siteTitle }}">
                             @elseif($fallbackMode === 'light_only' || $logoUrl)
-                                {{-- Sadece light logo var - Her modda göster --}}
+                                {{-- Sadece light logo var - Dark mode'da CSS ile beyaz yap --}}
                                 <img src="{{ $logoUrl }}"
-                                     alt="{{ $logos['site_title'] ?? setting('site_name') }}"
-                                     class="block object-contain h-10 w-auto">
+                                     alt="{{ $siteTitle }}"
+                                     class="block object-contain h-10 w-auto logo-adaptive"
+                                     title="{{ $siteTitle }}">
                             @elseif($fallbackMode === 'dark_only' || $logoDarkUrl)
                                 {{-- Sadece dark logo var - Her modda göster --}}
                                 <img src="{{ $logoDarkUrl }}"
-                                     alt="{{ $logos['site_title'] ?? setting('site_name') }}"
-                                     class="block object-contain h-10 w-auto">
+                                     alt="{{ $siteTitle }}"
+                                     class="block object-contain h-10 w-auto"
+                                     title="{{ $siteTitle }}">
                             @else
-                                <div class="flex items-center gap-2" x-data="{ showX: true }" x-init="setInterval(() => { showX = !showX }, 3000)">
+                                {{-- Logo yok - Site title text göster --}}
+                                <div class="flex items-center gap-2">
                                     <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
                                         <i class="fa-solid fa-forklift text-white text-xl"></i>
                                     </div>
                                     <div>
-                                        <h1 class="text-xl font-black text-gray-900 dark:text-white relative inline-block">
-                                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">i</span><span x-show="showX" x-transition:enter="transition-all duration-300" x-transition:enter-start="opacity-0 scale-75" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition-all duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-75" class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 inline-block">X</span><span x-show="!showX" x-transition:enter="transition-all duration-300" x-transition:enter-start="opacity-0 scale-75" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition-all duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-75" class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 inline-block">S</span><span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">tif</span>
-                                        </h1>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">Türkiye'nin İstif Pazarı</p>
+                                        <span class="text-xl font-black text-gray-900 dark:text-white relative inline-block">
+                                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">{{ $siteTitle }}</span>
+                                        </span>
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">{{ $siteSlogan }}</p>
                                     </div>
                                 </div>
                             @endif
@@ -557,9 +574,9 @@
                                :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
                         </button>
 
-                        {{-- İstif Makinesi (Mega Menu) --}}
+                        {{-- İstif Makinesi (Mega Menu) - Hidden below 1024px --}}
                         <button @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
+                                class="hidden lg:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
                             <i class="fa-solid fa-box-open-full text-sm"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -679,63 +696,180 @@
                             total: 0,
                             isOpen: false,
                             loading: false,
+                            error: null,
+                            highlightIndex: -1,
+                            get hasResults() {
+                                return this.keywords.length > 0 || this.products.length > 0;
+                            },
+                            get resultCount() {
+                                return this.keywords.length + this.products.length;
+                            },
+                            resetSuggestions() {
+                                this.keywords = [];
+                                this.products = [];
+                                this.total = 0;
+                                this.highlightIndex = -1;
+                            },
+                            showEmptyState() {
+                                return this.query.trim().length >= 2 && !this.loading && !this.hasResults && !this.error;
+                            },
+                            openDropdown() {
+                                const hasContent = this.hasResults || this.showEmptyState() || !!this.error;
+                                this.isOpen = hasContent;
+                                if (!hasContent) {
+                                    this.highlightIndex = -1;
+                                }
+                            },
                             async search() {
-                                if (this.query.length < 2) {
-                                    this.keywords = [];
-                                    this.products = [];
+                                const trimmed = this.query.trim();
+                                if (trimmed.length < 2) {
+                                    this.resetSuggestions();
                                     this.isOpen = false;
+                                    this.error = null;
                                     return;
                                 }
                                 this.loading = true;
+                                this.error = null;
                                 try {
-                                    const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(this.query)}`);
+                                    const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(trimmed)}`, {
+                                        headers: {
+                                            'Accept': 'application/json'
+                                        }
+                                    });
+
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP ${response.status}`);
+                                    }
+
                                     const data = await response.json();
 
                                     if (data.success && data.data) {
                                         this.keywords = data.data.keywords || [];
                                         this.products = data.data.products || [];
                                         this.total = data.data.total || 0;
-                                        this.isOpen = (this.keywords.length > 0 || this.products.length > 0);
+                                        this.highlightIndex = -1;
                                     } else {
-                                        this.keywords = [];
-                                        this.products = [];
-                                        this.isOpen = false;
+                                        this.resetSuggestions();
                                     }
                                 } catch (e) {
                                     console.error('Suggestions error:', e);
-                                    this.keywords = [];
-                                    this.products = [];
-                                    this.isOpen = false;
+                                    this.resetSuggestions();
+                                    this.error = 'Öneriler getirilemedi.';
                                 }
                                 this.loading = false;
+                                this.openDropdown();
                             },
                             goToSearch() {
-                                if (this.query.length >= 1) {
-                                    window.location.href = `/search?q=${encodeURIComponent(this.query)}`;
+                                const trimmed = this.query.trim();
+                                if (trimmed.length >= 1) {
+                                    window.location.href = `/search?q=${encodeURIComponent(trimmed)}`;
                                 }
+                            },
+                            moveHighlight(step) {
+                                if (!this.isOpen || this.resultCount === 0) {
+                                    return;
+                                }
+
+                                let next = this.highlightIndex + step;
+
+                                if (next < 0) {
+                                    next = this.resultCount - 1;
+                                } else if (next >= this.resultCount) {
+                                    next = 0;
+                                }
+
+                                this.highlightIndex = next;
+                            },
+                            isHighlighted(index, type) {
+                                const offset = type === 'product' ? this.keywords.length : 0;
+                                return this.highlightIndex === index + offset;
+                            },
+                            setHighlight(index, type) {
+                                const offset = type === 'product' ? this.keywords.length : 0;
+                                this.highlightIndex = index + offset;
+                            },
+                            clearHighlight() {
+                                this.highlightIndex = -1;
+                            },
+                            selectHighlighted() {
+                                if (this.highlightIndex < 0) {
+                                    this.goToSearch();
+                                    return;
+                                }
+
+                                const combined = [
+                                    ...this.keywords.map(keyword => ({ ...keyword, __type: 'keyword' })),
+                                    ...this.products.map(product => ({ ...product, __type: 'product' })),
+                                ];
+
+                                const item = combined[this.highlightIndex];
+
+                                if (!item) {
+                                    return;
+                                }
+
+                                if (item.__type === 'keyword') {
+                                    this.selectKeyword(item);
+                                } else {
+                                    this.selectProduct(item);
+                                }
+                            },
+                            selectKeyword(keyword) {
+                                if (!keyword?.text) {
+                                    return;
+                                }
+                                this.query = keyword.text;
+                                this.goToSearch();
+                            },
+                            selectProduct(product) {
+                                if (product?.url) {
+                                    window.location.href = product.url;
+                                }
+                            },
+                            handleFocus() {
+                                this.$dispatch('search-toggle', true);
+                                if (this.query.trim().length >= 2) {
+                                    this.openDropdown();
+                                }
+                            },
+                            closeDropdown() {
+                                this.isOpen = false;
+                                this.clearHighlight();
                             }
-                        }" @click.away="isOpen = false">
+                        }" @click.away="closeDropdown()">
                             <div class="relative">
                                 <input type="search"
                                        x-model="query"
+                                       @focus="handleFocus()"
                                        @input.debounce.300ms="search()"
-                                       @keydown.enter="goToSearch()"
+                                       @keydown.enter.prevent="selectHighlighted()"
+                                       @keydown.arrow-down.prevent="moveHighlight(1)"
+                                       @keydown.arrow-up.prevent="moveHighlight(-1)"
+                                       @keydown.escape.prevent="$dispatch('search-toggle', false); closeDropdown()"
                                        placeholder="Ürün, kategori veya marka arayın..."
                                        class="w-full bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full px-6 py-3 pl-12 pr-24 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                        autocomplete="off">
                                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 dark:text-blue-400"></i>
                                 <button @click="goToSearch()"
                                         type="button"
-                                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transition">
+                                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transition disabled:opacity-70 disabled:cursor-not-allowed"
+                                        :disabled="loading">
                                     <i class="fa-solid fa-spinner fa-spin" x-show="loading" x-cloak></i>
-                                    <span x-show="!loading">Ara</span>
+                                    <span x-show="!loading" x-cloak>Ara</span>
                                 </button>
                             </div>
 
                             {{-- Hybrid Autocomplete Dropdown --}}
                             <div x-show="isOpen"
                                  x-transition
-                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-[100] border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-40 border border-gray-200 dark:border-gray-700 overflow-hidden" style="z-index:40;">
+
+                                <template x-if="error">
+                                    <div class="px-5 py-6 text-sm text-red-600 dark:text-red-400 flex items-center gap-3">
+                                        <i class="fa-solid fa-circle-exclamation text-base"></i>
+                                        <span x-text="error"></span>
+                                    </div>
+                                </template>
 
                                 <div class="max-h-[28rem] overflow-y-auto">
                                     <div class="grid gap-6 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -747,8 +881,16 @@
                                             </div>
                                             <div class="space-y-1">
                                                 <template x-for="(keyword, index) in keywords" :key="'k-'+index">
-                                                    <a :href="`/search?q=${encodeURIComponent(keyword.text)}`"
-                                                       class="flex items-center justify-between gap-3 px-3 py-2 rounded-md hover:bg-white dark:hover:bg-gray-800/70 transition group">
+                                                    <a href="#"
+                                                       @click.prevent="selectKeyword(keyword)"
+                                                       @mouseenter="setHighlight(index, 'keyword')"
+                                                       @mouseleave="clearHighlight()"
+                                                       :class="[
+                                                            'flex items-center justify-between gap-3 px-3 py-2 rounded-md transition group',
+                                                            isHighlighted(index, 'keyword')
+                                                                ? 'bg-blue-50 dark:bg-gray-800/70 text-blue-600 dark:text-blue-400'
+                                                                : 'hover:bg-white dark:hover:bg-gray-800/70'
+                                                        ]">
                                                         <div class="flex items-center gap-3">
                                                             <span class="w-7 h-7 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
                                                                 <i class="fa-solid fa-magnifying-glass text-sm"></i>
@@ -769,8 +911,16 @@
                                             </div>
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 <template x-for="(product, index) in products" :key="'p-'+index">
-                                                    <a :href="product.url"
-                                                       class="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition group">
+                                                    <a href="#"
+                                                       @click.prevent="selectProduct(product)"
+                                                       @mouseenter="setHighlight(index, 'product')"
+                                                       @mouseleave="clearHighlight()"
+                                                       :class="[
+                                                            'flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition group',
+                                                            isHighlighted(index, 'product')
+                                                                ? 'border-blue-400 dark:border-blue-500 shadow-md'
+                                                                : 'hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md'
+                                                        ]">
                                                         <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                                                             <template x-if="product.image">
                                                                 <img :src="product.image"
@@ -801,6 +951,11 @@
                                     </div>
                                 </div>
 
+                                <div x-show="showEmptyState()" class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400" x-cloak>
+                                    <i class="fa-regular fa-face-smile text-xl mb-2 block text-blue-500 dark:text-blue-400"></i>
+                                    <span>Daha fazla sonuç için farklı bir anahtar kelime deneyin.</span>
+                                </div>
+
                                 {{-- View All Results --}}
                                 <a :href="`/search?q=${encodeURIComponent(query)}`"
                                    x-show="total > 0"
@@ -812,7 +967,6 @@
                         </div>
                     </div>
                 </div>
-
                 {{-- Mega Menu Dropdown - Always below search if both open --}}
                 <div x-show="activeMegaMenu !== null"
                      @mouseleave="activeMegaMenu = null"
@@ -822,7 +976,7 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl"
+                     class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl" style="z-index:10;"
                      x-cloak>
                     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
@@ -1059,34 +1213,6 @@
             localStorage.removeItem('selectedFont');
             console.log('✅ Font ayarları temizlendi - Roboto sabit font olarak ayarlandı');
         }
-
-        // 🐛 DARK MODE + ANIMATION DEBUG
-        setTimeout(() => {
-            const isDark = document.documentElement.classList.contains('dark');
-            const bodyBg = window.getComputedStyle(document.body).backgroundColor;
-            const bodyClasses = document.body.className;
-            const bodyAnimation = window.getComputedStyle(document.body).animation;
-            const hasDarkModeActive = document.body.classList.contains('dark-mode-active');
-
-            console.log('🌓 DARK MODE + ANIMATION DEBUG:');
-            console.log('  ├─ localStorage.darkMode:', localStorage.getItem('darkMode'));
-            console.log('  ├─ HTML has .dark class:', isDark);
-            console.log('  ├─ Body has .dark-mode-active:', hasDarkModeActive);
-            console.log('  ├─ Body computed background:', bodyBg);
-            console.log('  ├─ Body animation:', bodyAnimation);
-            console.log('  ├─ Body classes:', bodyClasses);
-            console.log('  └─ Expected: slideBodyGradient 20s ease-in-out infinite');
-
-            if (isDark && !hasDarkModeActive) {
-                console.error('❌ SORUN: Dark mode aktif ama .dark-mode-active class yok!');
-                console.log('💡 Alpine.js :class binding çalışmıyor olabilir');
-            } else if (isDark && !bodyAnimation.includes('slideBodyGradient')) {
-                console.error('❌ SORUN: Class var ama animasyon çalışmıyor!');
-                console.log('💡 CSS animasyonu yüklenememiş olabilir - hard refresh dene');
-            } else if (isDark && hasDarkModeActive) {
-                console.log('✅ Dark mode + animasyon aktif!');
-            }
-        }, 1000);
     </script>
 
     {{-- Dynamic Content Areas --}}

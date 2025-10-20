@@ -6,14 +6,14 @@
     @include('admin.partials.error_message')
     <form wire:submit.prevent="save">
         <div class="card">
-            <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+            <div class="card-header d-flex align-items-center">
+                <ul class="nav nav-tabs card-header-tabs flex-fill mb-0" data-bs-toggle="tabs">
                     <li class="nav-item">
                         <a href="#tabs-1" class="nav-link active" data-bs-toggle="tab">{{ $group->name }} - {{ __('settingmanagement::admin.settings_tab_title') }}</a>
                     </li>
                 </ul>
-                
-                <div class="card-actions">
+
+                <div class="ms-auto">
                     <a href="{{ route('admin.settingmanagement.index') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i> {{ __('settingmanagement::admin.back_button') }}
                     </a>

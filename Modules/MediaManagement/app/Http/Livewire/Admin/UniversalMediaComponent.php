@@ -40,6 +40,7 @@ class UniversalMediaComponent extends Component
     public bool $sortable = true;
     public bool $setFeaturedFromGallery = true;
     public bool $hideLabel = false; // Label'ı gizle (form-builder için)
+    public ?string $acceptedFileTypes = null; // Özel dosya tipleri (örn: ".ico,.png" veya "image/png,image/x-icon")
 
     // ========================================
     // FILE UPLOAD PROPERTIES

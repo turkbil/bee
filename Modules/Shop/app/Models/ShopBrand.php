@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Spatie\MediaLibrary\HasMedia;
 
 class ShopBrand extends BaseModel implements TranslatableEntity, HasMedia
 {
     use Sluggable;
+    use Searchable;
     use HasTranslations;
     use HasSeo;
     use HasFactory;
@@ -68,6 +70,49 @@ class ShopBrand extends BaseModel implements TranslatableEntity, HasMedia
     public function sluggable(): array
     {
         return [];
+    }
+
+    /**
+     * Scout index name for multi-tenant setup
+     */
+    public function searchableAs(): string
+    {
+        return tenancy()->initialized
+            ? 'shop_brands_tenant_' . tenant('id')
+            : 'shop_brands';
+    }
+
+    /**
+     * Prepare brand payload for Meilisearch
+     */
+    public function toSearchableArray(): array
+    {
+        $locale = app()->getLocale();
+
+        $title = $this->getTranslated('title', $locale) ?? ($this->title[$locale] ?? '');
+        $slug = $this->getTranslated('slug', $locale) ?? ($this->slug[$locale] ?? '');
+        $description = $this->getTranslated('description', $locale) ?? ($this->description[$locale] ?? '');
+
+        return [
+            'brand_id' => $this->brand_id,
+            'title' => $title,
+            'slug' => $slug,
+            'description' => strip_tags($description ?? ''),
+            'country_code' => $this->country_code,
+            'is_active' => (bool) $this->is_active,
+            'is_featured' => (bool) $this->is_featured,
+            'certifications' => $this->certifications ?? [],
+        ];
+    }
+
+    public function getScoutKey(): mixed
+    {
+        return $this->brand_id;
+    }
+
+    public function getScoutKeyName(): string
+    {
+        return 'brand_id';
     }
 
     public function scopeActive(Builder $query): Builder

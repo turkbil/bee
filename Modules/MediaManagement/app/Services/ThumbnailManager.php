@@ -409,9 +409,14 @@ class ThumbnailManager
         // Tenant prefix'i ayıkla
         $relative = ltrim($relative, '/');
 
+        // Aktif tenant varsa ve path henüz tenant prefix'i içermiyorsa ekle
+        $activeTenantId = function_exists('tenant_id') ? tenant_id() : null;
+        if ($activeTenantId && !preg_match('/^tenant\d+\//', $relative)) {
+            $relative = 'tenant' . $activeTenantId . '/' . $relative;
+        }
+
         // Eğer tenant{id}/ formatındaysa, storage route'una uygun URL oluştur
         if (preg_match('/^tenant(\d+)\/(.+)$/', $relative, $matches)) {
-            $tenantId = $matches[1];
             $path = $matches[2];
 
             // StorageController'ın publicStorage route'u ile uyumlu format

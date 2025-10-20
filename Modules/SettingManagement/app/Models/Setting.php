@@ -78,6 +78,15 @@ class Setting extends Model implements HasMedia
 
     public function getValue()
     {
+        // Image/File/Favicon type'lar için önce media library'yi kontrol et
+        if (in_array($this->type, ['image', 'file', 'favicon'])) {
+            // Media URL'i varsa döndür (media tenant database'de)
+            $mediaUrl = $this->getMediaUrl();
+            if ($mediaUrl) {
+                return $mediaUrl;
+            }
+        }
+
         // SettingValue tenant database'de olduğu için
         // tenant connection'ı kullanarak sorgu yapmalıyız
 
@@ -103,37 +112,34 @@ class Setting extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         // Setting type'ına göre collection tanımla
-        if (!in_array($this->type, ['image', 'file'])) {
+        if (!in_array($this->type, ['image', 'file', 'favicon'])) {
             return;
         }
 
         $collection = $this->addMediaCollection('featured_image')
             ->singleFile();
 
-        // MIME types - Setting key'ine göre özel tanımlar
+        // MIME types - Setting type ve key'ine göre özel tanımlar
+        // Favicon için MIME type kontrolü yok (browser extension kontrolü yapıyor)
         $mimeTypes = $this->getMimeTypesForSetting();
         if (!empty($mimeTypes)) {
             $collection->acceptsMimeTypes($mimeTypes);
         }
+        // Boş array ise (favicon gibi), tüm dosya tipleri kabul edilir
     }
 
     /**
-     * Get allowed MIME types based on setting key
+     * Get allowed MIME types based on setting type and key
      */
     public function getMimeTypesForSetting(): array
     {
-        // Favicon için özel MIME types
-        if ($this->key === 'site_favicon') {
-            return [
-                'image/x-icon',
-                'image/vnd.microsoft.icon',
-                'image/png',
-                'image/jpeg',
-                'image/jpg',
-            ];
+        // Favicon type için MIME type kontrolü yok (Mac/Windows .ico farklılıkları için)
+        // Extension kontrolü browser'da yapılıyor: accept=".ico,.png"
+        if ($this->type === 'favicon' || $this->key === 'site_favicon') {
+            return []; // Tüm dosyaları kabul et, browser extension kontrolü yapacak
         }
 
-        // Diğer image ayarları için standart image MIME types
+        // Image type için standart image MIME types
         if ($this->type === 'image') {
             return [
                 'image/jpeg',
@@ -169,11 +175,12 @@ class Setting extends Model implements HasMedia
         switch ($this->type) {
             case 'image':
             case 'file':
+            case 'favicon':
                 $collections['featured_image'] = [
-                    'type' => $this->type === 'image' ? 'image' : 'document',
+                    'type' => $this->type === 'image' ? 'image' : ($this->type === 'favicon' ? 'image' : 'document'),
                     'single_file' => true,
                     'max_items' => 1,
-                    'conversions' => $this->type === 'image' ? ['thumb'] : [],
+                    'conversions' => ($this->type === 'image' || $this->type === 'favicon') ? ['thumb'] : [],
                     'sortable' => false,
                 ];
                 break;
@@ -197,7 +204,7 @@ class Setting extends Model implements HasMedia
      */
     public function getMediaUrl(): ?string
     {
-        if (!in_array($this->type, ['image', 'file'])) {
+        if (!in_array($this->type, ['image', 'file', 'favicon'])) {
             return null;
         }
 
@@ -210,7 +217,7 @@ class Setting extends Model implements HasMedia
      */
     public function attachSettingMedia($file): void
     {
-        if (!in_array($this->type, ['image', 'file'])) {
+        if (!in_array($this->type, ['image', 'file', 'favicon'])) {
             return;
         }
 

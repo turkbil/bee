@@ -151,6 +151,16 @@ document.addEventListener("DOMContentLoaded", function() {
       is_system: false,
       default_value: "",
     },
+    favicon: {
+      label: "Favicon",
+      name: "favicon_field",
+      help_text: "Sadece ICO ve PNG formatlarında 32x32 veya 16x16 piksel",
+      width: 12,
+      required: false,
+      is_active: true,
+      is_system: false,
+      default_value: "",
+    },
     image_multiple: {
       label: "Çoklu Resim",
       name: "image_multiple_field",

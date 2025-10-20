@@ -60,6 +60,7 @@
             lastPage: {{ $initialData['last_page'] ?? 1 }},
             activeTab: 'all',
             prefetched: {{ $prefetched ? 'true' : 'false' }},
+            debounceTimer: null,
             async fetchResults(reset = false) {
                 const trimmedQuery = this.query.trim();
 
@@ -121,6 +122,16 @@
             startSearch() {
                 this.prefetched = false;
                 this.fetchResults(true);
+            },
+            debouncedSearch() {
+                // Clear existing timer
+                if (this.debounceTimer) {
+                    clearTimeout(this.debounceTimer);
+                }
+                // Set new timer
+                this.debounceTimer = setTimeout(() => {
+                    this.startSearch();
+                }, 500);
             },
             goToPage(page) {
                 if (page &lt; 1 || page &gt; this.lastPage) {
@@ -201,6 +212,7 @@
                     <div class="flex flex-col sm:flex-row gap-3">
                         <input type="search"
                                x-model.trim="query"
+                               @input="debouncedSearch()"
                                @keydown.enter.prevent="startSearch()"
                                placeholder="Yeni bir arama yapın..."
                                class="flex-1 px-5 py-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 text-gray-800 dark:text-white transition" />

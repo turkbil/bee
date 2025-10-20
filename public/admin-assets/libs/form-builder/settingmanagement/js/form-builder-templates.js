@@ -158,6 +158,37 @@ document.addEventListener("DOMContentLoaded", function() {
                   <div class="form-text text-muted">{help_text}</div>
               </div>
           `,
+      favicon: `
+              <div class="mb-3 col-12 col-md-{width}">
+                  <label class="form-label">{label}</label>
+                  <div class="row align-items-center g-3">
+                      <div class="col-12 col-md-9">
+                          <div class="card">
+                              <div class="card-body">
+                                  <div class="dropzone">
+                                      <div class="d-flex flex-column align-items-center justify-content-center p-4">
+                                          <i class="fa-solid fa-star fa-2x mb-2 text-muted"></i>
+                                          <div class="text-muted">Favicon'i sürükleyip bırakın veya tıklayın</div>
+                                          <small class="text-muted">Sadece ICO ve PNG formatları</small>
+                                      </div>
+                                      <input type="file" class="d-none" accept=".ico,.png,image/x-icon,image/png" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-12 col-md-3">
+                          <div class="card">
+                              <div class="card-body p-3">
+                                  <div class="d-flex align-items-center justify-content-center text-muted" style="height: 156px;">
+                                      <i class="fa-solid fa-star-slash fa-2x"></i>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-text text-muted">{help_text}</div>
+              </div>
+          `,
       image_multiple: `
               <div class="mb-3 col-12 col-md-{width}">
                   <label class="form-label">{label}</label>

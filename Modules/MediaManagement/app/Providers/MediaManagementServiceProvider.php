@@ -40,6 +40,11 @@ class MediaManagementServiceProvider extends ServiceProvider
             'mediamanagement::universal-media',
             \Modules\MediaManagement\App\Http\Livewire\Admin\UniversalMediaComponent::class
         );
+
+        \Livewire\Livewire::component(
+            'mediamanagement::media-library-manager',
+            \Modules\MediaManagement\App\Http\Livewire\Admin\MediaLibraryManager::class
+        );
     }
 
     /**

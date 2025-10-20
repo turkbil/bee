@@ -76,12 +76,12 @@ return [
     /*
      * This is the class that is responsible for naming generated files.
      */
-    'file_namer' => App\Services\Media\SafeFileNamer::class,
+    'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => App\Services\Media\TenantPathGenerator::class,
+    'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
 
     /*
      * The class that contains the strategy for determining how to remove files.
@@ -101,7 +101,7 @@ return [
      * When urls to files get generated, this class will be called. Use the default
      * if your files are stored locally above the site root or on s3.
      */
-    'url_generator' => App\Services\TenantUrlGenerator::class,
+    'url_generator' => Spatie\MediaLibrary\Support\UrlGenerator\DefaultUrlGenerator::class,
 
     /*
      * Moves media on updating to keep path consistent. Enable it only with a custom
@@ -175,8 +175,6 @@ return [
     /*
      * The path where to store temporary files while performing image conversions.
      * If set to null, storage_path('media-library/temp') will be used.
-     * NOT: Bu değer AppServiceProvider'da runtime'da tenant-aware olarak set edilir:
-     * storage_path("tenant{$tenantId}/media-library/temp")
      */
     'temporary_directory_path' => null,
 
@@ -277,8 +275,7 @@ return [
      * You can specify a prefix for that is used for storing all media.
      * If you set this to `/my-subdir`, all your media will be stored in a `/my-subdir` directory.
      */
-    'prefix' => '', // Prefix'i boşaltıyoruz, çünkü StorageController dosya yollarını kendisi yönetecek
-
+    'prefix' => env('MEDIA_PREFIX', ''),
 
     /*
      * When forcing lazy loading, media will be loaded even if you don't eager load media and you have

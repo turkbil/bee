@@ -19,4 +19,8 @@ Route::middleware(['auth', 'tenant'])->prefix('admin')->name('admin.')->group(fu
         return view('mediamanagement::admin.index');
     })->name('mediamanagement.index');
 
+
+    Route::post('/mediamanagement/library/upload', \Modules\MediaManagement\App\Http\Controllers\Admin\MediaLibraryUploadController::class)
+        ->name('mediamanagement.library.upload');
+
 });

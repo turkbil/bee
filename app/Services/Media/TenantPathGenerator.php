@@ -9,23 +9,20 @@ class TenantPathGenerator implements PathGenerator
 {
     public function getPath(Media $media): string
     {
-        // Tenant ID'yi al
-        $tenantId = $this->getTenantId();
-
-        // Path: tenant{id}/{media_id}/
-        // Bu prefix tenant isolation için gerekli
-        return "tenant{$tenantId}/" . $media->id . '/';
+        // Path: {media_id}/
+        // Tenant isolation symlink seviyesinde yapılıyor (public/storage/tenant{id})
+        return $media->id . '/';
     }
 
     public function getPathForConversions(Media $media): string
     {
-        // Conversion path: tenant{id}/{media_id}/conversions/
+        // Conversion path: {media_id}/conversions/
         return $this->getPath($media) . 'conversions/';
     }
 
     public function getPathForResponsiveImages(Media $media): string
     {
-        // Responsive images path: tenant{id}/{media_id}/responsive-images/
+        // Responsive images path: {media_id}/responsive-images/
         return $this->getPath($media) . 'responsive-images/';
     }
 

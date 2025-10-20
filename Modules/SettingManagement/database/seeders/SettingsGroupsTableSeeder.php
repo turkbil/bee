@@ -64,10 +64,10 @@ class SettingsGroupsTableSeeder extends Seeder
                                 [
                                     'type' => 'text',
                                     'properties' => [
-                                        'label' => 'Site - Firma - Kurum Adı',
+                                        'label' => 'Site Adı',
                                         'name' => 'site_title',
-                                        'placeholder' => 'Site başlığını giriniz',
-                                        'help_text' => 'Sitenizin başlığı tüm sayfalarda görünecektir',
+                                        'placeholder' => 'Sitenizin adını giriniz',
+                                        'help_text' => 'Sitenizin adı (örn: iXtif, TechStore, vb.)',
                                         'width' => 12,
                                         'required' => true,
                                         'default_value' => '',
@@ -75,16 +75,29 @@ class SettingsGroupsTableSeeder extends Seeder
                                     ]
                                 ],
                                 [
-                                    'type' => 'email',
+                                    'type' => 'text',
                                     'properties' => [
-                                        'label' => 'Ana E-posta Adresi',
-                                        'name' => 'site_email',
-                                        'placeholder' => 'E-posta adresini giriniz',
-                                        'help_text' => 'Bu e-posta adresi iletişim formlarında kullanılacaktır',
+                                        'label' => 'Kurum Adı',
+                                        'name' => 'company_name',
+                                        'placeholder' => 'Firma veya kurum adınızı giriniz',
+                                        'help_text' => 'Firma veya kurum adınız (örn: ABC Ltd. Şti., XYZ A.Ş.)',
                                         'width' => 12,
-                                        'required' => true,
+                                        'required' => false,
                                         'default_value' => '',
-                                        'setting_id' => 4
+                                        'setting_id' => 90
+                                    ]
+                                ],
+                                [
+                                    'type' => 'text',
+                                    'properties' => [
+                                        'label' => 'Site Sloganı',
+                                        'name' => 'site_slogan',
+                                        'placeholder' => 'Sitenizin sloganını giriniz',
+                                        'help_text' => 'Sitenizin sloganı veya açıklaması (örn: Türkiye\'nin İstif Pazarı)',
+                                        'width' => 12,
+                                        'required' => false,
+                                        'default_value' => '',
+                                        'setting_id' => 91
                                     ]
                                 ]
                             ]
@@ -105,41 +118,31 @@ class SettingsGroupsTableSeeder extends Seeder
                                     ]
                                 ],
                                 [
-                                    'type' => 'file',
+                                    'type' => 'favicon',
                                     'properties' => [
                                         'label' => 'Favicon',
                                         'name' => 'site_favicon',
-                                        'help_text' => 'Önerilen boyut: 32x32 piksel',
+                                        'help_text' => 'Önerilen boyut: 32x32 piksel, Sadece ICO ve PNG formatları desteklenir',
                                         'width' => 12,
                                         'required' => false,
                                         'default_value' => '',
                                         'setting_id' => 3
                                     ]
+                                ],
+                                [
+                                    'type' => 'image',
+                                    'properties' => [
+                                        'label' => 'Site Logo Kontrast (Beyaz Tonlar)',
+                                        'name' => 'site_logo_2',
+                                        'help_text' => 'Koyu arka planlarda kullanılacak beyaz/açık tonlu logo',
+                                        'width' => 12,
+                                        'required' => false,
+                                        'default_value' => '',
+                                        'setting_id' => 55
+                                    ]
                                 ]
                             ]
                         ]
-                    ]
-                ],
-                [
-                    'type' => 'heading',
-                    'properties' => [
-                        'content' => 'Analitik Ayarları',
-                        'size' => 'h3',
-                        'width' => 12,
-                        'align' => 'left'
-                    ]
-                ],
-                [
-                    'type' => 'text',
-                    'properties' => [
-                        'label' => 'Google Analytics Kodu',
-                        'name' => 'site_google_analytics_code',
-                        'placeholder' => 'G-XXXXXXXXXX',
-                        'help_text' => 'Google Analytics izleme kodu (Örnek: G-XXXXXXXXXX)',
-                        'width' => 12,
-                        'required' => false,
-                        'default_value' => '',
-                        'setting_id' => 5
                     ]
                 ]
             ]
@@ -153,6 +156,15 @@ class SettingsGroupsTableSeeder extends Seeder
         $layout = [
             'title' => 'SEO Ayarları Formu',
             'elements' => [
+                [
+                    'type' => 'heading',
+                    'properties' => [
+                        'content' => 'Meta Tag Ayarları',
+                        'size' => 'h3',
+                        'width' => 12,
+                        'align' => 'left'
+                    ]
+                ],
                 [
                     'type' => 'row',
                     'properties' => [
@@ -212,10 +224,32 @@ class SettingsGroupsTableSeeder extends Seeder
                             ]
                         ]
                     ]
+                ],
+                [
+                    'type' => 'heading',
+                    'properties' => [
+                        'content' => 'Analitik Ayarları',
+                        'size' => 'h3',
+                        'width' => 12,
+                        'align' => 'left'
+                    ]
+                ],
+                [
+                    'type' => 'text',
+                    'properties' => [
+                        'label' => 'Google Analytics Kodu',
+                        'name' => 'site_google_analytics_code',
+                        'placeholder' => 'G-XXXXXXXXXX',
+                        'help_text' => 'Google Analytics izleme kodu (Örnek: G-XXXXXXXXXX)',
+                        'width' => 12,
+                        'required' => false,
+                        'default_value' => '',
+                        'setting_id' => 5
+                    ]
                 ]
             ]
         ];
-        
+
         return json_encode($layout);
     }
 }

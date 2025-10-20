@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\DebugController;
+use App\Http\Controllers\FaviconController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\InitializeTenancy;
 use Modules\Page\App\Http\Controllers\Front\PageController;
@@ -39,6 +40,11 @@ Route::get('/health/system', [App\Http\Controllers\HealthController::class, 'sys
 Route::get('/metrics', function () {
     return response('', 204);
 })->name('metrics');
+
+// FAVICON ROUTE - Dynamic tenant-aware favicon (high priority)
+Route::middleware([InitializeTenancy::class])
+    ->get('/favicon.ico', [FaviconController::class, 'show'])
+    ->name('favicon');
 
 // SEARCH ROUTES - Must be before catch-all routes
 Route::middleware(['tenant'])->group(function () {

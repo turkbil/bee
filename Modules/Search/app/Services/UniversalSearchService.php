@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Modules\Search\App\Models\SearchQuery;
+use LaravelScoutSearchable;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Models\ShopBrand;
@@ -23,6 +24,18 @@ class UniversalSearchService
         'categories' => ShopCategory::class,
         'brands' => ShopBrand::class,
         // 'pages' => \Modules\Page\App\Models\Page::class, // Eklenebilir
+    ];
+
+    /**
+     * Accent map for Turkish character normalization
+     */
+    protected array $accentMap = [
+        'Ç' => 'c', 'ç' => 'c',
+        'Ğ' => 'g', 'ğ' => 'g',
+        'İ' => 'i', 'ı' => 'i',
+        'Ö' => 'o', 'ö' => 'o',
+        'Ş' => 's', 'ş' => 's',
+        'Ü' => 'u', 'ü' => 'u',
     ];
 
     /**
@@ -186,6 +199,92 @@ class UniversalSearchService
                 ->pluck('query')
                 ->values();
         });
+    }
+
+    /**
+     * Fallback suggestions via Scout (Meilisearch) when no historical data exists
+     */
+    public function getFallbackScoutSuggestions(string $partial, int $limit = 10): Collection
+    {
+        if (strlen($partial) < 2) {
+            return collect([]);
+        }
+
+        $models = [
+            ShopProduct::class,
+            ShopCategory::class,
+            ShopBrand::class,
+        ];
+
+        $locale = app()->getLocale();
+        $normalizedQuery = Str::lower($partial);
+        $suggestions = collect();
+
+        foreach ($models as $modelClass) {
+            if (!class_exists($modelClass)) {
+                continue;
+            }
+
+            if (!in_array(Searchable::class, class_uses_recursive($modelClass))) {
+                continue;
+            }
+
+            try {
+                $raw = $modelClass::search($partial, function ($meilisearch, $query, $options) use ($limit) {
+                    $options['limit'] = $limit * 3;
+                    $options['attributesToRetrieve'] = ['title', 'slug'];
+                    $options['attributesToHighlight'] = [];
+                    $options['showMatchesPosition'] = true;
+
+                    return $meilisearch->search($query, $options);
+                })->raw();
+            } catch (\Throwable $e) {
+                \Log::warning('Scout fallback suggestion failed', [
+                    'model' => $modelClass,
+                    'error' => $e->getMessage(),
+                ]);
+                continue;
+            }
+
+            $hits = collect($raw['hits'] ?? [])->map(function ($hit) use ($locale) {
+                $title = $hit['title'] ?? '';
+                if (is_array($title)) {
+                    $title = $title[$locale] ?? reset($title) ?? '';
+                }
+
+                if (!empty($title)) {
+                    return trim($title);
+                }
+
+                $slug = $hit['slug'] ?? '';
+                if (is_array($slug)) {
+                    $slug = $slug[$locale] ?? reset($slug) ?? '';
+                }
+
+                return trim(str_replace('-', ' ', (string) $slug));
+            })->filter();
+
+            $suggestions = $suggestions->merge($hits);
+
+            if ($suggestions->count() >= $limit * 2) {
+                break;
+            }
+        }
+
+        return $suggestions
+            ->map(function ($text) {
+                return preg_replace('/\s+/', ' ', $text);
+            })
+            ->filter(function ($text) use ($normalizedQuery) {
+                if (empty($text)) {
+                    return false;
+                }
+
+                return Str::contains(Str::lower($text), $normalizedQuery);
+            })
+            ->unique()
+            ->take($limit)
+            ->values();
     }
 
 

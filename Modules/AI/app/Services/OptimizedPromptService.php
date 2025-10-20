@@ -152,20 +152,37 @@ class OptimizedPromptService
                 $prompts[] = "**GÖREVIN:** Kullanıcının isteğine EN UYGUN 3-5 ürünü SEÇ!";
                 $prompts[] = "";
                 $prompts[] = "**SEMANTIC MATCHING KURALLARI:**";
+                $prompts[] = "";
+                $prompts[] = "⚠️ **KRİTİK: YANLIŞ KELİME EŞLEŞTİRMELERİ YAPMA!**";
+                $prompts[] = "❌ 'terazili' (weighing scale) ≠ 'denge ağırlıklı' (counterbalanced)";
+                $prompts[] = "   - 'terazili' = tartı özelliği olan, ağırlık ölçen";
+                $prompts[] = "   - 'denge ağırlıklı' = forklift tipi, tartı özelliği YOK";
+                $prompts[] = "   - Bu iki terim TAMAMEN FARKLI! Karıştırma!";
+                $prompts[] = "";
+                $prompts[] = "❌ 'platform' ≠ 'palet'";
+                $prompts[] = "❌ 'elektrikli' ≠ 'akülü' (bunlar aynı, eş anlamlı)";
+                $prompts[] = "❌ 'manuel' ≠ 'yarı elektrikli'";
+                $prompts[] = "";
+                $prompts[] = "**Eğer kullanıcı 'terazili' dedi ve ürün listesinde 'terazi/tartı/weighing' kelimesi YOKSA:**";
+                $prompts[] = "→ ÜRÜN ÖNERME! 'Ürün bulunamadı' mantığına geç, iletişim bilgilerini ver!";
+                $prompts[] = "";
                 $prompts[] = "1. 🔍 **SLUG'lara DİKKAT ET!** (En önemli ipucu!)";
                 $prompts[] = "   - Kullanıcı 'soguk' dedi → 'soguk-depo' slug'u varsa onu seç!";
                 $prompts[] = "   - Kullanıcı 'gida' dedi → 'gida' slug'u varsa onu seç!";
+                $prompts[] = "   - Kullanıcı 'terazili' dedi → 'terazi/weighing/scale' slug'u varsa onu seç!";
                 $prompts[] = "   - **TYPO TOLERANCE:** 'soguk' = 'soğuk', 'gida' = 'gıda'";
                 $prompts[] = "";
                 $prompts[] = "2. 📝 **Title ve SKU'ya bak!** Özel kısaltmalar:";
                 $prompts[] = "   - 'ETC' = Extreme Temperature Conditions = Soğuk depo";
                 $prompts[] = "   - 'SS' = Stainless Steel = Paslanmaz çelik";
                 $prompts[] = "   - 'AGM', 'Li-Ion' = Batarya tipleri";
+                $prompts[] = "   - 'Scale/Weighing' = Terazili/Tartı özelliği";
                 $prompts[] = "";
                 $prompts[] = "3. 🎯 **ÖNCE SPESİFİK, SONRA GENEL!**";
                 $prompts[] = "   - Kullanıcı 'soğuk depo' dedi → Slug/title'da 'soguk' veya 'ETC' olan VAR MI?";
+                $prompts[] = "   - Kullanıcı 'terazili' dedi → Slug/title/body'de 'terazi/weighing/scale' VAR MI?";
                 $prompts[] = "   - **VARSA:** O ürünü göster! (Genel ürünler değil!)";
-                $prompts[] = "   - **YOKSA:** Genel kategori ürünlerini göster";
+                $prompts[] = "   - **YOKSA:** 'Ürün bulunamadı' yanıtı ver, iletişim bilgilerini göster";
                 $prompts[] = "";
                 $prompts[] = "**❌ YAPMA:**";
                 $prompts[] = "- İlk gördüğün genel ürünleri gösterip geç!";
@@ -193,6 +210,9 @@ class OptimizedPromptService
             $prompts[] = "";
         } else {
             // No products found - NEVER say "product not found"!
+            // Get dynamic contact info from settings (same as "ANLAMADIĞIM TERİM" section)
+            $contactInfo = \App\Helpers\AISettingsHelper::getContactInfo();
+
             $prompts[] = "## 📦 ÜRÜN BULUNAMADI - ÖZEL YANIT";
             $prompts[] = "";
 
@@ -202,28 +222,99 @@ class OptimizedPromptService
                 $prompts[] = "**ZORUNLU YANIT KURALLARI:**";
                 $prompts[] = "1. ❌ ASLA 'ürün bulunamadı' DEME!";
                 $prompts[] = "2. ❌ ASLA 'sistemde yok' DEME!";
-                $prompts[] = "3. ✅ MUTLAKA 'size özel ürün bulabiliriz' de";
-                $prompts[] = "4. ✅ MUTLAKA iletişim bilgilerini ver";
-                $prompts[] = "5. ✅ Pozitif ve yardımcı ol";
+                $prompts[] = "3. ❌ ASLA 'Ancak şu anda elimizde ... bulunduğuna dair bir bilgi yok' gibi olumsuz cümleler kullanma!";
+                $prompts[] = "4. ✅ MUTLAKA pozitif ve çözüm odaklı ol: 'Size özel bulabiliriz', 'Yardımcı olabiliriz'";
+                $prompts[] = "5. ✅ MUTLAKA iletişim bilgilerini ver (dinamik olarak eklendi)";
+                $prompts[] = "6. ✅ Pozitif ve yardımcı ol, müşteriyi kaçırma!";
                 $prompts[] = "";
-                $prompts[] = "**ÖRNEK YANIT:**";
+                $prompts[] = "**ZORUNLU YANIT FORMATI:**";
                 $prompts[] = "```";
-                $prompts[] = "'{$detectedCategory['category_name']}' kategorisinde size en uygun ürünü bulabilmemiz için";
-                $prompts[] = "müşteri temsilcimizle görüşmenizi öneririz! 😊";
+                $prompts[] = "İxtif olarak, '{$detectedCategory['category_name']}' konusunda size yardımcı olabiliriz! 😊";
+                $prompts[] = "";
+                $prompts[] = "Bu konuda detaylı bilgi almak ve size özel çözümler sunabilmek için";
+                $prompts[] = "müşteri temsilcimizle görüşmenizi öneriyoruz.";
                 $prompts[] = "";
                 $prompts[] = "**Hemen iletişime geçin:**";
-                $prompts[] = "📞 Telefon: +90 XXX XXX XX XX";
-                $prompts[] = "📧 Email: satis@firma.com";
-                $prompts[] = "💬 WhatsApp: +90 XXX XXX XX XX";
+                $prompts[] = "";
+
+                // Format contact information dynamically (same logic as "ANLAMADIĞIM TERİM")
+                if (!empty($contactInfo['whatsapp'])) {
+                    $cleanWhatsapp = preg_replace('/[^0-9]/', '', $contactInfo['whatsapp']);
+                    $prompts[] = "💬 **WhatsApp:** [" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
+                }
+                if (!empty($contactInfo['telegram'])) {
+                    $telegramLink = $contactInfo['telegram'];
+                    if (strpos($telegramLink, '@') === 0) {
+                        $username = ltrim($telegramLink, '@');
+                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](https://t.me/{$username})";
+                    } elseif (strpos($telegramLink, 'https://') === 0 || strpos($telegramLink, 'http://') === 0) {
+                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](" . $telegramLink . ")";
+                    } else {
+                        $prompts[] = "📱 **Telegram:** " . $telegramLink;
+                    }
+                }
+                if (!empty($contactInfo['email'])) {
+                    $prompts[] = "📧 **E-posta:** [{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+                }
+                if (!empty($contactInfo['phone'])) {
+                    $cleanPhone = preg_replace('/[^0-9+]/', '', $contactInfo['phone']);
+                    $prompts[] = "📞 **Telefon:** [" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+                }
+
+                // Fallback if no contact info available
+                if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email']) && empty($contactInfo['telegram'])) {
+                    $prompts[] = "📞 **İletişim:** Lütfen müşteri temsilcimizle görüşün";
+                }
+
                 $prompts[] = "";
                 $prompts[] = "Size özel fiyat teklifi ve ürün önerileri hazırlayabiliriz!";
+                $prompts[] = "Hangi özellikleri arıyorsunuz? Detaylı bilgi verirseniz daha iyi yardımcı olabiliriz.";
                 $prompts[] = "```";
                 $prompts[] = "";
             } else {
-                // General "no product" case
-                $prompts[] = "**ZORUNLU: Müşteri temsilcisine yönlendir**";
-                $prompts[] = "❌ 'Ürün bulunamadı' deme!";
-                $prompts[] = "✅ 'Size özel çözüm bulabiliriz, iletişime geçin' de";
+                // General "no product" case - also use dynamic contact info
+                $prompts[] = "**ZORUNLU YANIT KURALLARI:**";
+                $prompts[] = "1. ❌ ASLA 'ürün bulunamadı' DEME!";
+                $prompts[] = "2. ❌ ASLA 'sistemde yok' veya 'bilgi yok' DEME!";
+                $prompts[] = "3. ✅ MUTLAKA pozitif ve çözüm odaklı: 'Size yardımcı olabiliriz'";
+                $prompts[] = "4. ✅ MUTLAKA iletişim bilgilerini göster (aşağıda dinamik olarak eklendi)";
+                $prompts[] = "";
+                $prompts[] = "**ZORUNLU YANIT FORMATI:**";
+                $prompts[] = "```";
+                $prompts[] = "İxtif olarak size yardımcı olabiliriz! 😊";
+                $prompts[] = "";
+                $prompts[] = "Detaylı bilgi ve size özel çözümler için müşteri temsilcimizle görüşebilirsiniz:";
+                $prompts[] = "";
+
+                // Add dynamic contact info (same as category case)
+                if (!empty($contactInfo['whatsapp'])) {
+                    $cleanWhatsapp = preg_replace('/[^0-9]/', '', $contactInfo['whatsapp']);
+                    $prompts[] = "💬 **WhatsApp:** [" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
+                }
+                if (!empty($contactInfo['telegram'])) {
+                    $telegramLink = $contactInfo['telegram'];
+                    if (strpos($telegramLink, '@') === 0) {
+                        $username = ltrim($telegramLink, '@');
+                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](https://t.me/{$username})";
+                    } elseif (strpos($telegramLink, 'https://') === 0 || strpos($telegramLink, 'http://') === 0) {
+                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](" . $telegramLink . ")";
+                    } else {
+                        $prompts[] = "📱 **Telegram:** " . $telegramLink;
+                    }
+                }
+                if (!empty($contactInfo['email'])) {
+                    $prompts[] = "📧 **E-posta:** [{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+                }
+                if (!empty($contactInfo['phone'])) {
+                    $cleanPhone = preg_replace('/[^0-9+]/', '', $contactInfo['phone']);
+                    $prompts[] = "📞 **Telefon:** [" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+                }
+
+                if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email']) && empty($contactInfo['telegram'])) {
+                    $prompts[] = "📞 **İletişim:** Lütfen müşteri temsilcimizle görüşün";
+                }
+
+                $prompts[] = "```";
                 $prompts[] = "";
             }
 
@@ -342,20 +433,30 @@ class OptimizedPromptService
                 $desc = $desc['tr'] ?? $desc['en'] ?? reset($desc) ?? '';
             }
             if (!empty($desc)) {
-                $desc = mb_substr(strip_tags($desc), 0, 300);
+                // Sadece HTML temizle, kesme! Chatbot zaten token limiti kontrol eder
+                $desc = strip_tags($desc);
+                // Çok uzun metinler için makul bir üst limit (2000 karakter)
+                if (mb_strlen($desc) > 2000) {
+                    $desc = mb_substr($desc, 0, 2000) . '... (Devamı için ürün sayfasına bakın)';
+                }
                 $lines[] = "  - Kısa Açıklama: {$desc}";
             }
         }
 
-        // Full description da ekle (daha detaylı bilgiler için)
+        // Full description (body) - AKILLI PARSE!
+        // ⚠️ KRİTİK: Body alanı JSON + HTML + çok uzun (3000+ karakter)
+        // Strateji: Sadece ilk section'ı al (ana özet), teknik detayları ATLA!
         if (!empty($product['description'])) {
             $fullDesc = $product['description'];
             if (is_array($fullDesc)) {
                 $fullDesc = $fullDesc['tr'] ?? $fullDesc['en'] ?? reset($fullDesc) ?? '';
             }
             if (!empty($fullDesc)) {
-                $fullDesc = mb_substr(strip_tags($fullDesc), 0, 500);
-                $lines[] = "  - Detaylı Açıklama: {$fullDesc}";
+                // AKILLI BODY PARSE: Section bazlı
+                $parsedBody = self::parseBodySmart($fullDesc);
+                if (!empty($parsedBody)) {
+                    $lines[] = "  - Detaylı Açıklama: {$parsedBody}";
+                }
             }
         }
 
@@ -403,13 +504,190 @@ class OptimizedPromptService
 
         // Price info - ⚠️ KRİTİK: base_price > 0 kontrolü (0 veya null ise gösterme!)
         if (isset($product['base_price']) && $product['base_price'] > 0) {
-            $lines[] = "  - Fiyat: " . number_format($product['base_price'], 0, ',', '.') . " TL";
+            $priceText = number_format($product['base_price'], 0, ',', '.') . " TL";
+
+            // İndirim varsa göster
+            if (isset($product['compare_at_price']) && $product['compare_at_price'] > $product['base_price']) {
+                $discount = round((($product['compare_at_price'] - $product['base_price']) / $product['compare_at_price']) * 100);
+                $priceText .= " (İndirimli! Eski fiyat: " . number_format($product['compare_at_price'], 0, ',', '.') . " TL - %{$discount} indirim)";
+            }
+
+            $lines[] = "  - Fiyat: {$priceText}";
+
+            // Taksit bilgisi
+            if (!empty($product['installment_available']) && !empty($product['max_installments'])) {
+                $installmentAmount = $product['base_price'] / $product['max_installments'];
+                $lines[] = "  - Taksit: {$product['max_installments']}x " . number_format($installmentAmount, 0, ',', '.') . " TL";
+            }
+
+            // Depozito bilgisi
+            if (!empty($product['deposit_required'])) {
+                if (!empty($product['deposit_amount'])) {
+                    $lines[] = "  - Depozito: " . number_format($product['deposit_amount'], 0, ',', '.') . " TL gereklidir";
+                } elseif (!empty($product['deposit_percentage'])) {
+                    $lines[] = "  - Depozito: %{$product['deposit_percentage']} ön ödeme gereklidir";
+                }
+            }
         } elseif (!empty($product['price_on_request'])) {
             $lines[] = "  - Fiyat: Talep üzerine";
         }
 
+        // Stok durumu - ⚠️ ÖNEMLİ: Müşteri stok bilgisi görmek ister!
+        if (!empty($product['stock_tracking'])) {
+            $stockStatus = '';
+            $currentStock = $product['current_stock'] ?? 0;
+            $lowThreshold = $product['low_stock_threshold'] ?? 5;
+
+            if ($currentStock > $lowThreshold) {
+                $stockStatus = "✅ Stokta var ({$currentStock} adet)";
+            } elseif ($currentStock > 0) {
+                $stockStatus = "⚠️ Son {$currentStock} adet!";
+            } elseif (!empty($product['allow_backorder'])) {
+                $stockStatus = "📦 Ön siparişle temin edilebilir";
+                if (!empty($product['lead_time_days'])) {
+                    $stockStatus .= " ({$product['lead_time_days']} gün içinde)";
+                }
+            } else {
+                $stockStatus = "❌ Stokta yok";
+            }
+
+            $lines[] = "  - Stok: {$stockStatus}";
+        }
+
+        // Ürün durumu (Yeni/İkinci El/Yenilenmiş)
+        if (!empty($product['condition'])) {
+            $conditionLabel = match($product['condition']) {
+                'new' => '🆕 Sıfır/Yeni',
+                'used' => '♻️ İkinci El',
+                'refurbished' => '🔧 Yenilenmiş',
+                default => $product['condition']
+            };
+            $lines[] = "  - Durum: {$conditionLabel}";
+        }
+
+        // Özel badge'ler (Öne Çıkan / Çok Satan)
+        $badges = [];
+        if (!empty($product['is_featured'])) {
+            $badges[] = '⭐ Öne Çıkan';
+        }
+        if (!empty($product['is_bestseller'])) {
+            $badges[] = '🔥 Çok Satan';
+        }
+        if (!empty($badges)) {
+            $lines[] = "  - Özel: " . implode(', ', $badges);
+        }
+
+        // Garanti bilgisi - ⚠️ ÖNEMLİ: Müşteriler garanti sorar! KESME!
+        if (!empty($product['warranty_info'])) {
+            $warranty = $product['warranty_info'];
+            if (is_array($warranty)) {
+                $warranty = $warranty['tr'] ?? $warranty['en'] ?? reset($warranty) ?? '';
+            }
+            if (!empty($warranty)) {
+                // KRİTİK BİLGİ: Garanti bilgisi kesilmemeli! Tam metin göster
+                $warranty = strip_tags($warranty);
+                // Sadece çok aşırı uzun metinler için güvenlik limiti (1000 karakter)
+                if (mb_strlen($warranty) > 1000) {
+                    $warranty = mb_substr($warranty, 0, 1000) . '... (Tam garanti bilgisi için ürün sayfasına bakın)';
+                }
+                $lines[] = "  - Garanti: {$warranty}";
+            }
+        }
+
+        // Kargo bilgisi - ⚠️ ÖNEMLİ: Müşteriler kargo sorar! KESME!
+        if (!empty($product['shipping_info'])) {
+            $shipping = $product['shipping_info'];
+            if (is_array($shipping)) {
+                $shipping = $shipping['tr'] ?? $shipping['en'] ?? reset($shipping) ?? '';
+            }
+            if (!empty($shipping)) {
+                // KRİTİK BİLGİ: Kargo bilgisi kesilmemeli! Tam metin göster
+                $shipping = strip_tags($shipping);
+                // Sadece çok aşırı uzun metinler için güvenlik limiti (1000 karakter)
+                if (mb_strlen($shipping) > 1000) {
+                    $shipping = mb_substr($shipping, 0, 1000) . '... (Tam kargo bilgisi için ürün sayfasına bakın)';
+                }
+                $lines[] = "  - Kargo: {$shipping}";
+            }
+        }
+
+        // Tedarik süresi (backorder değilse ama lead time varsa)
+        if (empty($product['allow_backorder']) && !empty($product['lead_time_days']) && $product['lead_time_days'] > 0) {
+            $lines[] = "  - Teslimat: {$product['lead_time_days']} iş günü içinde";
+        }
+
         $lines[] = "";
         return implode("\n", $lines);
+    }
+
+    /**
+     * AKILLI BODY PARSE
+     *
+     * Body alanı JSON + HTML + section'lardan oluşuyor (3000+ karakter)
+     * Strateji:
+     * 1. İlk section'ı al (ana özet/tanıtım)
+     * 2. Teknik detayları ATLA (zaten technical_specs'te var)
+     * 3. İletişim bölümünü ATLA (gereksiz)
+     * 4. Max 800 karakter (token optimizasyonu)
+     * 5. Akıllı kesme (cümle sonunda)
+     */
+    protected static function parseBodySmart(string $htmlContent): string
+    {
+        // 1. HTML temizle
+        $htmlContent = strip_tags($htmlContent);
+
+        // 2. Boşlukları normalize et
+        $htmlContent = preg_replace('/\s+/', ' ', $htmlContent);
+        $htmlContent = trim($htmlContent);
+
+        // 3. Eğer kısa ise direkt döndür
+        if (mb_strlen($htmlContent) <= 800) {
+            return $htmlContent;
+        }
+
+        // 4. Metni paragraf veya section'lara böl
+        // "Teknik" veya "İletişim" başlıklı bölümleri tespit et
+        $sections = [];
+
+        // Başlıkları bul (örn: "Teknik Güç ve Mimari", "Sonuç ve İletişim")
+        if (preg_match('/^(.*?)(?:Teknik|İletişim|Sonuç|İrtibat|Detay)/iu', $htmlContent, $matches)) {
+            // İlk bölümü al (teknik detaylardan öncesi)
+            $firstSection = trim($matches[1]);
+        } else {
+            // Başlık bulunamadı, ilk 800 karakteri al
+            $firstSection = $htmlContent;
+        }
+
+        // 5. İlk section'ı max 800 karakterde akıllı kes
+        if (mb_strlen($firstSection) > 800) {
+            // Cümle sonunda kes (nokta, ünlem, soru işareti)
+            $shortened = mb_substr($firstSection, 0, 800);
+
+            // Son nokta, ünlem veya soru işaretini bul
+            $lastPeriod = max(
+                mb_strrpos($shortened, '.'),
+                mb_strrpos($shortened, '!'),
+                mb_strrpos($shortened, '?')
+            );
+
+            if ($lastPeriod !== false && $lastPeriod > 400) {
+                // Cümle sonunda kes (en az 400 karakter varsa)
+                $firstSection = mb_substr($shortened, 0, $lastPeriod + 1);
+            } else {
+                // Cümle sonu bulunamadı, kelime sonunda kes
+                $lastSpace = mb_strrpos($shortened, ' ');
+                if ($lastSpace !== false && $lastSpace > 400) {
+                    $firstSection = mb_substr($shortened, 0, $lastSpace);
+                } else {
+                    $firstSection = $shortened;
+                }
+            }
+
+            // Devamı olduğunu belirt
+            $firstSection .= '... (Detaylı teknik bilgi için ürün sayfasına bakın)';
+        }
+
+        return $firstSection;
     }
 
     /**
@@ -612,7 +890,14 @@ class OptimizedPromptService
         $prompts[] = self::buildSystemPrompt();
         $prompts[] = "";
 
-        // 2. Conversation history check (prevent greeting repetition)
+        // 2. Tenant-specific prompts (ixtif.com için özel kurallar)
+        if (function_exists('tenant') && in_array(tenant('id'), [2, 3])) {
+            $ixtifService = new \Modules\AI\App\Services\Tenant\IxtifPromptService();
+            $prompts[] = $ixtifService->getPromptAsString();
+            $prompts[] = "";
+        }
+
+        // 3. Conversation history check (prevent greeting repetition)
         if (!empty($conversationHistory)) {
             $hasGreeting = false;
             foreach ($conversationHistory as $msg) {

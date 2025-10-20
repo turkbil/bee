@@ -38,12 +38,12 @@ class SecurityHeaders
         // Content Security Policy - Strict but CDN-compatible
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://www.googletagmanager.com https://www.google-analytics.com",
             "worker-src 'self' blob:",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.me https://fonts.googleapis.com",
             "img-src 'self' data: https: blob:",
             "font-src 'self' data: https: https://fonts.gstatic.com",
-            "connect-src 'self' https://cdn.jsdelivr.net",
+            "connect-src 'self' https://cdn.jsdelivr.net https://www.google-analytics.com https://stats.g.doubleclick.net",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'"

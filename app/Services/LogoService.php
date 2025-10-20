@@ -36,23 +36,19 @@ class LogoService
         $cacheKey = $this->getCacheKey('logos');
 
         return Cache::remember($cacheKey, 3600, function () {
-            // Settings'ten logo bilgilerini al
+            // Settings'ten logo bilgilerini al (artık media library URL'leri)
             $siteLogo = setting('site_logo');
             $siteKontrastLogo = setting('site_logo_2'); // Kontrast logo (Dark mode için)
             $siteTitle = setting('site_title', config('app.name'));
-
-            // Tenant path normalization
-            $siteLogo = $this->normalizeTenantPath($siteLogo);
-            $siteKontrastLogo = $this->normalizeTenantPath($siteKontrastLogo);
 
             // Logo varlık kontrolleri
             $hasLight = $this->isValidLogo($siteLogo);
             $hasDark = $this->isValidLogo($siteKontrastLogo);
             $hasBoth = $hasLight && $hasDark;
 
-            // Optimize edilmiş URL'ler (thumbmaker ile)
-            $lightLogoUrl = $hasLight ? $this->getOptimizedLogoUrl($siteLogo) : null;
-            $darkLogoUrl = $hasDark ? $this->getOptimizedLogoUrl($siteKontrastLogo) : null;
+            // URL'ler (media library zaten optimize URL döndürüyor, direkt kullan)
+            $lightLogoUrl = $hasLight ? $siteLogo : null;
+            $darkLogoUrl = $hasDark ? $siteKontrastLogo : null;
 
             // Fallback mode belirleme
             $fallbackMode = $this->determineFallbackMode($hasLight, $hasDark);

@@ -4,6 +4,7 @@ namespace Modules\LanguageManagement\App\Http\Livewire;
 
 use Livewire\Component;
 use Modules\LanguageManagement\App\Models\AdminLanguage;
+use Modules\LanguageManagement\app\Models\TenantLanguage;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
@@ -119,12 +120,11 @@ class AdminLanguageSwitcher extends Component
         // Loading state için dil bilgisini ayarla
         $this->loadingLanguageCode = $languageCode;
         $siteLanguages = cache()->remember('tenant_languages_switcher', 600, function() {
-            return \DB::table('tenant_languages')
-                ->where('is_active', true)
+            return TenantLanguage::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get();
         });
-        $targetLanguage = collect($siteLanguages)->firstWhere('code', $languageCode);
+        $targetLanguage = $siteLanguages->firstWhere('code', $languageCode);
         $this->loadingLanguageFlag = $targetLanguage ? $targetLanguage->flag_icon : '🌐';
         
         \Log::info('🎯 AdminLanguageSwitcher - switchSiteLanguage çağrıldı', [
@@ -214,8 +214,7 @@ class AdminLanguageSwitcher extends Component
         });
         
         $siteLanguages = cache()->remember('tenant_languages_switcher', 600, function() {
-            return DB::table('tenant_languages')
-                ->where('is_active', true)
+            return TenantLanguage::where('is_active', true)
                 ->orderBy('sort_order')
                 ->get();
         });

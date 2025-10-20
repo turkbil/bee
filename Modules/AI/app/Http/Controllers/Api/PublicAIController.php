@@ -864,10 +864,15 @@ class PublicAIController extends Controller
             // 📞 PHONE NUMBER DETECTION & TELESCOPE LOGGING
             $this->detectPhoneNumberAndLogToTelescope($conversation);
 
+            // 🔧 WhatsApp Link Post-Processing Fix
+            // AI bazen WhatsApp linkini ürün linki ile karıştırıyor, düzeltelim
+            $finalMessage = $aiResponse['content'] ?? '';
+            $finalMessage = $this->fixWhatsAppLinks($finalMessage);
+
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'message' => $aiResponse['content'] ?? '',
+                    'message' => $finalMessage,
                     'session_id' => $sessionId,
                     'conversation_id' => $conversation->id,
                     'message_id' => $assistantMessage->id,
@@ -2136,5 +2141,43 @@ class PublicAIController extends Controller
                 'error' => 'Failed to delete conversation',
             ], 500);
         }
+    }
+
+    /**
+     * 🔧 Fix WhatsApp Links - AI bazen ürün linki koyuyor, düzeltelim
+     *
+     * AI yanıtında WhatsApp linkini ürün linki ile karıştırıyorsa, doğru wa.me linkini oluştur
+     *
+     * @param string $message AI yanıtı
+     * @return string Düzeltilmiş mesaj
+     */
+    private function fixWhatsAppLinks(string $message): string
+    {
+        // WhatsApp numarası settings'ten al
+        $contactInfo = \App\Helpers\AISettingsHelper::getContactInfo();
+        $whatsapp = $contactInfo['whatsapp'] ?? '0534 515 2626';
+
+        // Clean WhatsApp number (0534 -> 905345152626)
+        $cleanWhatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
+        if (substr($cleanWhatsapp, 0, 1) === '0') {
+            $cleanWhatsapp = '90' . substr($cleanWhatsapp, 1);
+        }
+        $correctWhatsAppLink = "https://wa.me/{$cleanWhatsapp}";
+
+        // Pattern: [WHATSAPP_NUMBER](WRONG_LINK)
+        // Örnek: [0501 005 67 58](https://ixtif.com/shop/...)
+        // Düzelt: [0501 005 67 58](https://wa.me/905010056758)
+        $pattern = '/\[([0-9\s]+)\]\(https?:\/\/[^\)]+\/shop\/[^\)]+\)/i';
+        $replacement = "[$1]({$correctWhatsAppLink})";
+
+        $fixed = preg_replace($pattern, $replacement, $message);
+
+        // Eğer WhatsApp: kelimesi varsa ve hala yanlış link varsa düzelt
+        $pattern2 = '/(WhatsApp:\s*)\[([0-9\s]+)\]\(https?:\/\/(?!wa\.me)[^\)]+\)/i';
+        $replacement2 = "$1[$2]({$correctWhatsAppLink})";
+
+        $fixed = preg_replace($pattern2, $replacement2, $fixed);
+
+        return $fixed;
     }
 }

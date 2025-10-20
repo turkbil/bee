@@ -18,46 +18,84 @@
 
                 $logoUrl = $logos['light_logo_url'] ?? null;
                 $logoDarkUrl = $logos['dark_logo_url'] ?? null;
-                $fallbackMode = $logos['fallback_mode'] ?? 'none';
-                $siteTitle = $logos['site_title'] ?? setting('site_title', config('app.name'));
-                $siteDescription = setting('site_description', 'Türkiye\'nin İstif Pazarı');
+                $fallbackMode = $logos['fallback_mode'] ?? 'title_only';
+                $siteTitle = $logos['site_title'] ?? setting('site_title');
+                $companyName = setting('company_name');
+                $siteSlogan = setting('site_slogan');
+
+                // Text uzunluklarına göre responsive boyutlandırma
+                $companyNameLength = mb_strlen($companyName ?? '');
+                $sloganLength = mb_strlen($siteSlogan ?? '');
+
+                // Kurumsal isim için boyut
+                if ($companyNameLength > 50) {
+                    $companyClass = 'text-sm sm:text-base md:text-lg';
+                } elseif ($companyNameLength > 30) {
+                    $companyClass = 'text-base sm:text-lg md:text-xl';
+                } else {
+                    $companyClass = 'text-lg sm:text-xl md:text-2xl';
+                }
+
+                // Slogan için boyut
+                if ($sloganLength > 40) {
+                    $sloganClass = 'text-xs sm:text-sm md:text-base';
+                } elseif ($sloganLength > 25) {
+                    $sloganClass = 'text-sm sm:text-base md:text-lg';
+                } else {
+                    $sloganClass = 'text-base sm:text-lg md:text-xl';
+                }
             @endphp
 
-            <a href="{{ url('/') }}" class="mb-4">
+            <a href="{{ url('/') }}" class="mb-6 block">
                 @if($fallbackMode === 'both')
-                    {{-- Her iki logo da var --}}
+                    {{-- Her iki logo da var - Dark mode'da otomatik değiş --}}
                     <img src="{{ $logoUrl }}"
                          alt="{{ $siteTitle }}"
-                         class="dark:hidden object-contain h-32 w-auto">
+                         class="dark:hidden object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
+                         title="{{ $siteTitle }}">
                     <img src="{{ $logoDarkUrl }}"
                          alt="{{ $siteTitle }}"
-                         class="hidden dark:block object-contain h-32 w-auto">
+                         class="hidden dark:block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
+                         title="{{ $siteTitle }}">
                 @elseif($fallbackMode === 'light_only' || $logoUrl)
-                    {{-- Sadece light logo var - Her modda göster --}}
+                    {{-- Sadece light logo var - Dark mode'da CSS ile beyaz yap --}}
                     <img src="{{ $logoUrl }}"
                          alt="{{ $siteTitle }}"
-                         class="block object-contain h-32 w-auto logo-footer-adaptive">
+                         class="block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto logo-adaptive"
+                         title="{{ $siteTitle }}">
                 @elseif($fallbackMode === 'dark_only' || $logoDarkUrl)
                     {{-- Sadece dark logo var - Her modda göster --}}
                     <img src="{{ $logoDarkUrl }}"
                          alt="{{ $siteTitle }}"
-                         class="block object-contain h-32 w-auto logo-footer-adaptive">
+                         class="block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
+                         title="{{ $siteTitle }}">
                 @else
-                    {{-- Logo yok - Gradient text --}}
+                    {{-- Logo yok - Site title text göster --}}
                     <div class="flex flex-col items-center gap-3">
                         <div class="w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-3xl flex items-center justify-center">
                             <i class="fa-solid fa-forklift text-white text-5xl"></i>
                         </div>
-                        <h2 class="text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+                        <h2 class="text-4xl sm:text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
                             {{ $siteTitle }}
                         </h2>
                     </div>
                 @endif
             </a>
 
-            <p class="text-2xl text-gray-600 dark:text-gray-400 font-semibold">
-                {{ $siteDescription }}
-            </p>
+            {{-- Kurumsal İsim + Slogan --}}
+            <div class="flex flex-col items-center gap-2 text-center max-w-2xl px-4">
+                @if($companyName)
+                    <h3 class="{{ $companyClass }} text-gray-800 dark:text-gray-200 font-bold leading-tight">
+                        {{ $companyName }}
+                    </h3>
+                @endif
+
+                @if($siteSlogan)
+                    <p class="{{ $sloganClass }} text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+                        {{ $siteSlogan }}
+                    </p>
+                @endif
+            </div>
         </div>
 
         {{-- İstatistikler --}}
@@ -182,16 +220,21 @@
         {{-- Copyright --}}
         <div class="text-center text-gray-500 dark:text-gray-500 text-sm
                     border-t border-gray-300 dark:border-white/10 pt-8">
-            {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($siteTitle, app()->getLocale()) }} |
-            <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Gizlilik Politikası</a> •
-            <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Kullanım Koşulları</a> •
-            <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">KVKK</a>
+            <div class="mb-3">
+                {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($companyName ?? $siteTitle, app()->getLocale()) }}
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
+                <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Gizlilik Politikası</a>
+                <span class="text-gray-400 dark:text-gray-600">|</span>
+                <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Kullanım Koşulları</a>
+                <span class="text-gray-400 dark:text-gray-600">|</span>
+                <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">KVKK</a>
+            </div>
         </div>
     </div>
 
-    {{-- SEO Tools & Debug (Desktop Only) --}}
-    <div class="hidden lg:block
-                bg-slate-50/80 dark:bg-slate-900/40
+    {{-- SEO Tools & Debug (Mobile & Desktop) --}}
+    <div class="bg-slate-50/80 dark:bg-slate-900/40
                 border-t border-gray-200 dark:border-white/5">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">

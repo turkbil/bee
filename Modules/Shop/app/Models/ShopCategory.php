@@ -14,12 +14,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Spatie\MediaLibrary\HasMedia;
 
 class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
 {
     use Sluggable;
+    use Searchable;
     use HasTranslations;
     use HasSeo;
     use HasFactory;
@@ -74,6 +76,50 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
     public function sluggable(): array
     {
         return [];
+    }
+
+    /**
+     * Scout index name for multi-tenant setup
+     */
+    public function searchableAs(): string
+    {
+        return tenancy()->initialized
+            ? 'shop_categories_tenant_' . tenant('id')
+            : 'shop_categories';
+    }
+
+    /**
+     * Prepare category payload for Meilisearch
+     */
+    public function toSearchableArray(): array
+    {
+        $locale = app()->getLocale();
+
+        $title = $this->getTranslated('title', $locale) ?? ($this->title[$locale] ?? '');
+        $slug = $this->getTranslated('slug', $locale) ?? ($this->slug[$locale] ?? '');
+        $description = $this->getTranslated('description', $locale) ?? ($this->description[$locale] ?? '');
+
+        return [
+            'category_id' => $this->category_id,
+            'title' => $title,
+            'slug' => $slug,
+            'description' => strip_tags($description ?? ''),
+            'parent_id' => $this->parent_id,
+            'is_active' => (bool) $this->is_active,
+            'level' => $this->level,
+            'show_in_menu' => (bool) $this->show_in_menu,
+            'show_in_homepage' => (bool) $this->show_in_homepage,
+        ];
+    }
+
+    public function getScoutKey(): mixed
+    {
+        return $this->category_id;
+    }
+
+    public function getScoutKeyName(): string
+    {
+        return 'category_id';
     }
 
     public function scopeActive(Builder $query): Builder

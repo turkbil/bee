@@ -194,6 +194,10 @@
                             <i class="fas fa-image"></i>
                             <span>Resim</span>
                         </div>
+                        <div class="element-palette-item" data-type="favicon">
+                            <i class="fas fa-star"></i>
+                            <span>Favicon</span>
+                        </div>
                         <div class="element-palette-item" data-type="image_multiple">
                             <i class="fas fa-images"></i>
                             <span>Çoklu Resim</span>

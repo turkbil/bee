@@ -110,7 +110,7 @@
                             <input type="file"
                                    x-ref="featuredInput"
                                    wire:model="featuredImageFile"
-                                   accept="image/jpeg,image/png,image/jpg,image/webp,image/gif"
+                                   accept="{{ $acceptedFileTypes ?? 'image/jpeg,image/png,image/jpg,image/webp,image/gif' }}"
                                    class="d-none">
                         </div>
 

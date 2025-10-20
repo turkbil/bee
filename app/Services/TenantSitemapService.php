@@ -120,7 +120,7 @@ class TenantSitemapService
                 foreach ($records as $record) {
                     // 🏠 HOMEPAGE FILTER: is_homepage olan sayfaları sitemap'e ekleme (duplicate content)
                     // Homepage zaten ana sayfa route'u ile (/) sitemap'e ekleniyor
-                    if ($moduleName === 'Page' && isset($record->is_homepage) && $record->is_homepage) {
+                    if (strtolower($moduleName) === 'page' && isset($record->is_homepage) && $record->is_homepage) {
                         \Log::info('🏠 Sitemap: Homepage page skipped', [
                             'module' => $moduleName,
                             'page_id' => $record->id ?? 'unknown',

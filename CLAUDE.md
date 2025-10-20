@@ -111,7 +111,23 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 - `a-console.txt` - Console/Debugbar çıktıları için (içini boşalt, dosyayı silme)
 - `a-html.txt` - HTML output için (içini boşalt, dosyayı silme)
 
-**Kullanım:** Bu dosyalar debug amaçlı buffer. İçeriği okuyup analiz ettikten sonra içini boşalt, ama dosyayı silme!
+**Kullanım Senaryosu:**
+1. Kullanıcı geliştirme yaparken bu dosyalara çıktı kopyalar
+2. Senden bu çıktıları okumanı ve analiz etmeni ister
+3. Sen okur, analiz eder, sorunları tespit edersin
+4. İşlem bittikten sonra içini boşalt (`echo "" > dosya.txt`)
+5. **DOSYAYI ASLA SİLME!** - Sadece içini temizle
+
+**Örnek Workflow:**
+```bash
+# 1. Oku
+cat a-console.txt
+
+# 2. Analiz et ve raporla
+
+# 3. İçini boşalt (dosyayı silme!)
+echo "" > a-console.txt
+```
 
 ---
 

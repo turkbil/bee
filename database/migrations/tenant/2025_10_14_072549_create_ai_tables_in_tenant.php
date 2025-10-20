@@ -62,7 +62,7 @@ return new class extends Migration
 
                 // Indexes
                 $table->index(['conversation_id', 'created_at'], 'ai_msg_conv_created_idx');
-                $table->index('role');
+                // role index already defined on line 50 with ->index()
             });
         }
 

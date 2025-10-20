@@ -118,9 +118,20 @@ class TenantSitemapService
                 $records = $model->where('is_active', true)->get();
                 
                 foreach ($records as $record) {
+                    // 🏠 HOMEPAGE FILTER: is_homepage olan sayfaları sitemap'e ekleme (duplicate content)
+                    // Homepage zaten ana sayfa route'u ile (/) sitemap'e ekleniyor
+                    if ($moduleName === 'Page' && isset($record->is_homepage) && $record->is_homepage) {
+                        \Log::info('🏠 Sitemap: Homepage page skipped', [
+                            'module' => $moduleName,
+                            'page_id' => $record->id ?? 'unknown',
+                            'is_homepage' => $record->is_homepage
+                        ]);
+                        continue; // Homepage sayfalarını atla
+                    }
+
                     // HasTranslations trait'i var mı kontrol et
                     $hasTranslations = method_exists($record, 'getTranslated');
-                    
+
                     foreach ($languages as $language) {
                         $languageCode = is_object($language) ? $language->code : $language['code'];
                         

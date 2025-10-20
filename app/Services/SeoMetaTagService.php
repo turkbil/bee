@@ -637,10 +637,15 @@ readonly class SeoMetaTagService
             $data['copyright'] = ($seoSetting && $seoSetting->copyright) ? $seoSetting->copyright : $copyright;
             
             // 3.5. CANONICAL URL
-            if ($seoSetting && isset($seoSetting->canonical_url) && !empty($seoSetting->canonical_url)) {
+            // Öncelik 1: Controller'dan share edilen customCanonicalUrl (homepage slug redirect problemi için)
+            $sharedData = view()->getShared();
+            if (isset($sharedData['customCanonicalUrl']) && !empty($sharedData['customCanonicalUrl'])) {
+                $data['canonical_url'] = $sharedData['customCanonicalUrl'];
+            } elseif ($seoSetting && isset($seoSetting->canonical_url) && !empty($seoSetting->canonical_url)) {
+                // Öncelik 2: SEO ayarlarındaki manuel canonical URL
                 $data['canonical_url'] = $seoSetting->canonical_url;
             } else {
-                // Varsayılan: mevcut URL
+                // Öncelik 3: Varsayılan - mevcut URL
                 $data['canonical_url'] = url()->current();
             }
             

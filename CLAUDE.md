@@ -61,10 +61,33 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 
 
 - Önce sorunları iyice düşünün
-- Planları claudeguncel-tarih-saat-id.md 'e yaz. id:rastgele benzersiz bir veri. baska dosyalarla karısmaması için.
+- Planları `readme/claude-docs/claudeguncel-YYYY-MM-DD-HH-MM-description.md` formatında yaz
 - Başlamadan önce giriş yapın
 - Yapılacaklar'ı tamamlanmış olarak işaretle
 - Değişiklikleri basit tutun
+
+### 📁 DOSYA OLUŞTURMA KURALLARI
+
+**⚠️ ANA DİZİN TEMİZ KALMALI!**
+
+#### ✅ DOĞRU KONUM:
+- **Plan/Güncelleme Dökümanları**: `readme/claude-docs/claudeguncel-YYYY-MM-DD-HH-MM-description.md`
+- **Teknik Dokümantasyon**: `readme/` klasörü altında
+- **Test Dosyaları**: İlgili modül/klasör içinde
+- **Log/Debug**: Geçici ise `/tmp/` altında
+
+#### ❌ ANA DİZİNE DOSYA OLUŞTURMA:
+- **claudeguncel-*.md** → readme/claude-docs/ içinde olmalı
+- **test-*.php** → tests/ veya ilgili modül içinde
+- **debug-*.txt** → /tmp/ veya geçici klasör
+- **random-*.log** → storage/logs/ içinde
+
+#### 🎯 İSTİSNALAR (Ana dizine eklenebilir):
+- Core config dosyaları (tailwind.config.js, webpack.mix.js vb.)
+- Deployment scriptleri (deploy.sh vb.) - ama önce sor!
+- Kritik dokümantasyon (README.md, SECURITY.md vb.)
+
+**KURAL:** Eğer dosya %100 gerekli değilse, ana dizine koyma!
 
 ## 📋 ÇALIŞMA YÖNTEMİ
 

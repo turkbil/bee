@@ -554,12 +554,8 @@
                 <div class="modal-body">
                     <!-- Yeni Domain Ekleme -->
                     <div class="input-group mb-4">
-                        <input type="text" class="form-control" placeholder="örnek: example.com (www otomatik çalışır, eklemeyin)" wire:model="newDomain">
+                        <input type="text" class="form-control" placeholder="örnek: example.com (www otomatik çalışır)" wire:model="newDomain">
                         <button class="btn btn-primary" wire:click="addDomain">{{ __('tenantmanagement::admin.add') }}</button>
-                    </div>
-                    <div class="alert alert-info p-2 mb-3" style="font-size: 0.85em;">
-                        <i class="fas fa-info-circle me-1"></i>
-                        <strong>Not:</strong> www prefix otomatik kaldırılır. Sadece <code>example.com</code> yazın, <code>www.example.com</code> yazmayın.
                     </div>
                     <!-- Ekli Domainler Tablosu -->
                     @if (count($domains) > 0)

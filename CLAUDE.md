@@ -141,47 +141,48 @@ echo "✅ Cache temizlendi, build tamamlandı!"
 
 ### 🔐 OTOMATİK GIT CHECKPOINT
 
-**⚡ KURAL:** Riskli işlemlerden ÖNCE otomatik checkpoint commit yap - **ONAY İSTEME!**
+**⚡ KURAL:** Kullanıcı Claude'u çağırıp ilk talep/brief verdiğinde BİR KEZ checkpoint commit yap - **ONAY İSTEME!**
 
-#### ✅ Otomatik Checkpoint Tetikleyicileri:
-- **3+ dosya** değişikliği yapılacaksa
-- **Migration** oluşturma/değiştirme
-- **Core/Config dosyaları** (app/config, bootstrap, routes vb.)
-- **Tenant işlemleri**
-- **Database schema değişiklikleri**
-- **Karmaşık refactoring** (class taşıma, namespace değişikliği vb.)
+#### ✅ Checkpoint Zamanlaması:
+- **İlk talep geldiğinde**: Kullanıcı "Claude" yazıp ilk brief/talep verdiğinde
+- **Sadece BİR KEZ**: O konuşma boyunca tek checkpoint (her mesajda değil!)
+- **Geri dönüş noktası**: Tüm değişiklikler bu noktaya göre
+- **Basit sorularda YAPMA**: Sadece kod değişikliği gerektiren taleplerde
 
 #### 📋 Otomatik Workflow:
-1. **Tespit et**: Yapılacak iş riskli mi? (yukarıdaki kriterlere uyuyor mu?)
-2. **Todo'ya ekle**: "🔐 Git checkpoint oluştur"
-3. **Direkt commit yap**: `git add . && git commit -m "🔧 CHECKPOINT: [yapılacak iş açıklaması]"`
-4. **Hash'i belirt**: Todo'da commit hash'ini yaz (ilk 8 karakter)
-5. **İşe başla**: Rahatça çalış, sorun olursa `git reset --hard [hash]`
+1. **Kullanıcı talep gelir**
+2. **İlk checkpoint**: `git add . && git commit -m "🔧 CHECKPOINT: Before [talep özeti]"`
+3. **Hash'i kaydet**: Todo'da commit hash'ini yaz
+4. **Tüm değişiklikleri yap**: Rahatça çalış
+5. **En sonda final commit**: Tüm değişiklikleri içeren asıl commit
 
 #### 🎯 Commit Formatı:
 ```bash
+# Konuşma başında (bir kez)
 git add .
-git commit -m "🔧 CHECKPOINT: [ne yapacaksan kısa açıkla]"
+git commit -m "🔧 CHECKPOINT: Before [kullanıcı talebinin özeti]"
 git log -1 --oneline  # Hash'i al, todo'ya yaz
 ```
 
 #### 📝 Todo Örneği:
 ```markdown
-- [x] 🔐 Git checkpoint oluştur (hash: bed66c0a)
-- [ ] Primary domain özelliğini ekle
+- [x] 🔐 Git checkpoint (hash: bed66c0a)
+- [ ] Portfolio modülünü refactor et
 - [ ] Migration oluştur
+- [ ] Cache+Build
 - [ ] Test et
+- [ ] Final commit yap
 ```
 
 #### ⚠️ KRİTİK:
-- **ONAY BEKLEME!** Direkt yap, kullanıcıya sorma
-- **Basit işler için gereksiz** (tek satır CSS, typo düzeltme vb.)
-- **Her zaman geri dönülebilir**: `git reflog` var
+- **SADECE BİR KEZ**: Konuşma başında, sonra bir daha yapma!
+- **Basit işler için gereksiz**: Tek dosya değişikliği, typo düzeltme
+- **Karışıklık yaratma**: Sürekli checkpoint = kötü git history
 
 #### 🔄 Geri Dönüş:
 ```bash
-# Sorun çıkarsa
-git reset --hard [hash]
+# Sorun çıkarsa tüm değişiklikleri geri al
+git reset --hard [checkpoint-hash]
 
 # Veya reflog kullan
 git reflog

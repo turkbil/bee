@@ -17,27 +17,23 @@ class Setting extends Model implements HasMedia
     protected $table = 'settings';
 
     /**
-     * Override Spatie Media Library relationship
+     * Override newRelatedInstance for Media Library
      * Media kayıtları tenant-aware olmalı (tenant DB'ye kaydetmeli)
      *
      * Setting model CentralConnection kullanır ama media kayıtları
      * her tenant'ın kendi DB'sinde olmalı
      */
-    public function media(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    protected function newRelatedInstance($class)
     {
-        // Tenant context varsa tenant connection kullan
-        if (function_exists('tenant') && tenant()) {
-            return $this->morphMany(
-                config('media-library.media_model'),
-                'model'
-            )->setConnection('tenant');
+        $instance = parent::newRelatedInstance($class);
+
+        // Eğer Media model instance'ı ise ve tenant context'teyiz
+        if ($instance instanceof \Spatie\MediaLibrary\MediaCollections\Models\Media &&
+            function_exists('tenant') && tenant()) {
+            $instance->setConnection('tenant');
         }
 
-        // Central context için default connection
-        return $this->morphMany(
-            config('media-library.media_model'),
-            'model'
-        );
+        return $instance;
     }
 
     protected $fillable = [

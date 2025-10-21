@@ -554,8 +554,12 @@
                 <div class="modal-body">
                     <!-- Yeni Domain Ekleme -->
                     <div class="input-group mb-4">
-                        <input type="text" class="form-control" placeholder="{{ __('tenantmanagement::admin.add_new_domain') }}" wire:model="newDomain">
+                        <input type="text" class="form-control" placeholder="örnek: example.com (www otomatik çalışır, eklemeyin)" wire:model="newDomain">
                         <button class="btn btn-primary" wire:click="addDomain">{{ __('tenantmanagement::admin.add') }}</button>
+                    </div>
+                    <div class="alert alert-info p-2 mb-3" style="font-size: 0.85em;">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <strong>Not:</strong> www prefix otomatik kaldırılır. Sadece <code>example.com</code> yazın, <code>www.example.com</code> yazmayın.
                     </div>
                     <!-- Ekli Domainler Tablosu -->
                     @if (count($domains) > 0)
@@ -567,6 +571,7 @@
                             <table class="table table-vcenter card-table">
                                 <thead>
                                     <tr>
+                                        <th style="width: 50px;">Ana</th>
                                         <th>{{ __('tenantmanagement::admin.domain') }}</th>
                                         <th class="w-1">{{ __('tenantmanagement::admin.action') }}</th>
                                     </tr>
@@ -574,6 +579,19 @@
                                 <tbody>
                                     @foreach ($domains as $domain)
                                     <tr>
+                                        <td class="text-center">
+                                            @if ($domain['is_primary'])
+                                            <button class="btn btn-sm btn-link text-warning p-0" title="Ana Domain" disabled>
+                                                <i class="fas fa-star" style="font-size: 1.2em;"></i>
+                                            </button>
+                                            @else
+                                            <button class="btn btn-sm btn-link text-muted p-0 hover-warning"
+                                                    title="Ana domain yap"
+                                                    wire:click="setPrimaryDomain({{ $domain['id'] }})">
+                                                <i class="far fa-star" style="font-size: 1.2em;"></i>
+                                            </button>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if ($editingDomainId === $domain['id'])
                                             <div class="input-group">
@@ -583,15 +601,30 @@
                                                     wire:click="updateDomain({{ $domain['id'] }})">{{ __('tenantmanagement::admin.save') }}</button>
                                             </div>
                                             @else
-                                            {{ $domain['domain'] }}
+                                            <div class="d-flex align-items-center gap-2">
+                                                {{ $domain['domain'] }}
+                                                @if ($domain['is_primary'])
+                                                <span class="badge bg-warning-lt">Ana Domain</span>
+                                                @endif
+                                            </div>
                                             @endif
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2 justify-content-end">
-                                                <button class="btn btn-outline-secondary"
-                                                    wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">{{ __('tenantmanagement::admin.edit') }}</button>
-                                                <button class="btn btn-outline-danger"
-                                                    wire:click="deleteDomain({{ $domain['id'] }})">{{ __('tenantmanagement::admin.delete') }}</button>
+                                                <button class="btn btn-outline-secondary btn-sm"
+                                                    wire:click="startEditingDomain({{ $domain['id'] }}, '{{ $domain['domain'] }}')">
+                                                    <i class="fas fa-edit"></i> {{ __('tenantmanagement::admin.edit') }}
+                                                </button>
+                                                @if (!$domain['is_primary'])
+                                                <button class="btn btn-outline-danger btn-sm"
+                                                    wire:click="deleteDomain({{ $domain['id'] }})">
+                                                    <i class="fas fa-trash"></i> {{ __('tenantmanagement::admin.delete') }}
+                                                </button>
+                                                @else
+                                                <button class="btn btn-outline-secondary btn-sm" disabled title="Ana domain silinemez">
+                                                    <i class="fas fa-lock"></i> Korunuyor
+                                                </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

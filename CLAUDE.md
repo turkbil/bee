@@ -97,6 +97,55 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 - **Otomatik Devam**: Sorma, direkt hareket et
 - **Veritabanı Koruma**: Üstteki kritik uyarılara mutlaka uy!
 
+### 🔐 OTOMATİK GIT CHECKPOINT
+
+**⚡ KURAL:** Riskli işlemlerden ÖNCE otomatik checkpoint commit yap - **ONAY İSTEME!**
+
+#### ✅ Otomatik Checkpoint Tetikleyicileri:
+- **3+ dosya** değişikliği yapılacaksa
+- **Migration** oluşturma/değiştirme
+- **Core/Config dosyaları** (app/config, bootstrap, routes vb.)
+- **Tenant işlemleri**
+- **Database schema değişiklikleri**
+- **Karmaşık refactoring** (class taşıma, namespace değişikliği vb.)
+
+#### 📋 Otomatik Workflow:
+1. **Tespit et**: Yapılacak iş riskli mi? (yukarıdaki kriterlere uyuyor mu?)
+2. **Todo'ya ekle**: "🔐 Git checkpoint oluştur"
+3. **Direkt commit yap**: `git add . && git commit -m "🔧 CHECKPOINT: [yapılacak iş açıklaması]"`
+4. **Hash'i belirt**: Todo'da commit hash'ini yaz (ilk 8 karakter)
+5. **İşe başla**: Rahatça çalış, sorun olursa `git reset --hard [hash]`
+
+#### 🎯 Commit Formatı:
+```bash
+git add .
+git commit -m "🔧 CHECKPOINT: [ne yapacaksan kısa açıkla]"
+git log -1 --oneline  # Hash'i al, todo'ya yaz
+```
+
+#### 📝 Todo Örneği:
+```markdown
+- [x] 🔐 Git checkpoint oluştur (hash: bed66c0a)
+- [ ] Primary domain özelliğini ekle
+- [ ] Migration oluştur
+- [ ] Test et
+```
+
+#### ⚠️ KRİTİK:
+- **ONAY BEKLEME!** Direkt yap, kullanıcıya sorma
+- **Basit işler için gereksiz** (tek satır CSS, typo düzeltme vb.)
+- **Her zaman geri dönülebilir**: `git reflog` var
+
+#### 🔄 Geri Dönüş:
+```bash
+# Sorun çıkarsa
+git reset --hard [hash]
+
+# Veya reflog kullan
+git reflog
+git reset --hard HEAD@{3}
+```
+
 ### 📝 ÖNEMLİ NOT
 Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 **Detaylı teknik dökümanlar**: `readme/claude-docs/` klasöründe

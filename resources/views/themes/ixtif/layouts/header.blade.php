@@ -645,22 +645,63 @@
 
                     {{-- Right Actions --}}
                     <div class="flex items-center gap-2">
-                        <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
-                                class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                            <i class="fa-solid text-lg transition-all duration-200"
-                               :class="searchOpen ? 'fa-search-minus' : 'fa-search-plus'"></i>
-                        </button>
+                        {{-- Search Button with Tooltip --}}
+                        <div x-data="{ showTooltip: false }" class="relative">
+                            <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
+                                    @mouseenter="showTooltip = true"
+                                    @mouseleave="showTooltip = false"
+                                    class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                <i class="fa-solid text-lg transition-all duration-200"
+                                   :class="searchOpen ? 'fa-minus' : 'fa-search'"></i>
+                            </button>
+                            {{-- Tooltip --}}
+                            <div x-show="showTooltip"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-90"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-100"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-90"
+                                 class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium rounded-lg whitespace-nowrap pointer-events-none z-50 shadow-lg"
+                                 x-cloak>
+                                <span x-text="searchOpen ? 'Aramayı Kapat' : 'Ara'"></span>
+                                {{-- Tooltip Arrow --}}
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                                    <div class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                                </div>
+                            </div>
+                        </div>
 
-                        {{-- Dark/Light Mode Toggle --}}
-                        <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
-                            class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
-                            <template x-if="darkMode === 'dark'">
-                                <i class="fa-solid fa-sun text-lg"></i>
-                            </template>
-                            <template x-if="darkMode === 'light'">
-                                <i class="fa-solid fa-moon text-lg"></i>
-                            </template>
-                        </button>
+                        {{-- Dark/Light Mode Toggle with Tooltip --}}
+                        <div x-data="{ showTooltip: false }" class="relative">
+                            <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
+                                    @mouseenter="showTooltip = true"
+                                    @mouseleave="showTooltip = false"
+                                    class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+                                <template x-if="darkMode === 'dark'">
+                                    <i class="fa-solid fa-sun text-lg"></i>
+                                </template>
+                                <template x-if="darkMode === 'light'">
+                                    <i class="fa-solid fa-moon text-lg"></i>
+                                </template>
+                            </button>
+                            {{-- Tooltip --}}
+                            <div x-show="showTooltip"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-90"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-100"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-90"
+                                 class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium rounded-lg whitespace-nowrap pointer-events-none z-50 shadow-lg"
+                                 x-cloak>
+                                <span x-text="darkMode === 'dark' ? 'Aydınlık Mod' : 'Karanlık Mod'"></span>
+                                {{-- Tooltip Arrow --}}
+                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                                    <div class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                                </div>
+                            </div>
+                        </div>
 
                         {{-- AUTH CONTROL VIA LIVEWIRE --}}
                         @livewire('auth.header-menu')

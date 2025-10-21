@@ -645,8 +645,26 @@ readonly class SeoMetaTagService
                 // Öncelik 2: SEO ayarlarındaki manuel canonical URL
                 $data['canonical_url'] = $seoSetting->canonical_url;
             } else {
-                // Öncelik 3: Varsayılan - mevcut URL
-                $data['canonical_url'] = url()->current();
+                // Öncelik 3: Primary Domain bazlı canonical URL (www karışıklığını önler)
+                try {
+                    // Tenant context'te isek ve primary domain varsa onu kullan
+                    if (function_exists('tenant') && tenant()) {
+                        $primaryDomain = \App\Models\Domain::getPrimaryDomain(tenant()->id);
+                        if ($primaryDomain) {
+                            // Primary domain üzerinden canonical URL oluştur
+                            $data['canonical_url'] = 'https://' . $primaryDomain->domain . request()->getRequestUri();
+                        } else {
+                            // Fallback: Mevcut URL
+                            $data['canonical_url'] = url()->current();
+                        }
+                    } else {
+                        // Central domain: Mevcut URL
+                        $data['canonical_url'] = url()->current();
+                    }
+                } catch (\Exception $e) {
+                    // Hata durumunda fallback
+                    $data['canonical_url'] = url()->current();
+                }
             }
             
             // 4. OPEN GRAPH - Geliştirilmiş Hiyerarşi

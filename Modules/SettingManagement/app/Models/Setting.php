@@ -17,23 +17,32 @@ class Setting extends Model implements HasMedia
     protected $table = 'settings';
 
     /**
-     * Override newRelatedInstance for Media Library
-     * Media kayıtları tenant-aware olmalı (tenant DB'ye kaydetmeli)
+     * Override getConnectionName for Media Library
      *
-     * Setting model CentralConnection kullanır ama media kayıtları
-     * her tenant'ın kendi DB'sinde olmalı
+     * Spatie Media Library uses $model->getConnectionName() to determine
+     * which connection to use for media records.
+     *
+     * Setting model uses CentralConnection but media should be tenant-aware.
      */
-    protected function newRelatedInstance($class)
+    public function getConnectionName()
     {
-        $instance = parent::newRelatedInstance($class);
+        // CRITICAL: Check if we're being called from Media Library context
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
 
-        // Eğer Media model instance'ı ise ve tenant context'teyiz
-        if ($instance instanceof \Spatie\MediaLibrary\MediaCollections\Models\Media &&
-            function_exists('tenant') && tenant()) {
-            $instance->setConnection('tenant');
+        foreach ($backtrace as $trace) {
+            $class = $trace['class'] ?? '';
+
+            // If called from Spatie Media Library
+            if (str_contains($class, 'Spatie\\MediaLibrary')) {
+                // Use tenant connection for media
+                if (function_exists('tenant') && tenant()) {
+                    return 'tenant';
+                }
+            }
         }
 
-        return $instance;
+        // For everything else, use Central connection
+        return parent::getConnectionName();
     }
 
     protected $fillable = [

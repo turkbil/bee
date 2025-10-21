@@ -1,124 +1,50 @@
-multi-modal-manager.js?v=1761050476:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1761050476:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1761050476:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1761050476:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1761050476:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1761050476:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1761050476:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1761050476:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1761050476:13 ⏰ Load Time: 2025-10-21T12:41:18.004Z
-ai-seo-integration.js?v=1761050476:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1761050476:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1761050476:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1761050476:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1761050476:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1761050476:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1761050476:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1761050476:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1761050476:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-streaming-translation.js:33 ✅ Streaming translation is supported
-streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
-streaming-translation.js:15 🚀 Streaming Translation System initializing...
-streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-6:2875 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1761050476:839 ⚡ Livewire initialized
-ai-content-system.js?v=1761050476:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1761050476:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1761050476:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1761050476:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1761050476:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1761050476:558 🔒 attachButtonListeners SKIP - already attached
-6:4354 🚀 Enterprise Streaming Translation System Ready!
-6:4367 📝 Streaming translation not available - Using standard translation mode
-ai-seo-integration.js?v=1761050476:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1761050476:558 🔒 attachButtonListeners SKIP - already attached
-6:2912 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
-6:40  POST https://tuufi.com/admin/mediamanagement/featured-upload net::ERR_SSL_BAD_RECORD_MAC_ALERT
-window.fetch @ 6:40
-fetch @ plugins.js?v=1761050476:8
-uploadFile @ 6:4304
-[Alpine] uploadFile($event.target.files[0]) @ VM1693:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-6:26 Upload error (attempt 1): TypeError: Failed to fetch
-    at window.fetch (6:40:38)
-    at fetch (plugins.js?v=1761050476:8:58607)
-    at Proxy.uploadFile (6:4304:25)
-    at [Alpine] uploadFile($event.target.files[0]) (eval at safeAsyncFunction (https://tuufi.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3881:7
-    at HTMLInputElement.handler4 (livewire.js?id=df3a17f2:3183:27)
-console.error @ 6:26
-(anonymous) @ 6:4327
-Promise.catch
-uploadFile @ 6:4326
-[Alpine] uploadFile($event.target.files[0]) @ VM1693:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-6:4331 🔄 SSL handshake error detected, retrying automatically...
-
-
-
-
-
-
-
-
-TENANT 2
-
-
-multi-modal-manager.js?v=1761050445:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1761050445:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1761050445:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1761050445:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1761050445:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1761050445:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1761050445:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1761050445:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1761050445:13 ⏰ Load Time: 2025-10-21T12:40:46.481Z
-ai-seo-integration.js?v=1761050445:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1761050445:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1761050445:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1761050445:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1761050445:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1761050445:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1761050445:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1761050445:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1761050445:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+multi-modal-manager.js?v=1761051504:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761051504:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761051504:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761051504:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761051504:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761051504:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761051504:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761051504:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761051504:13 ⏰ Load Time: 2025-10-21T12:58:26.271Z
+ai-seo-integration.js?v=1761051504:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761051504:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761051504:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761051504:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761051504:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1761051504:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761051504:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761051504:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761051504:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
 streaming-translation.js:33 ✅ Streaming translation is supported
 streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
 streaming-translation.js:15 🚀 Streaming Translation System initializing...
 streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
 6:2850 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1761050445:839 ⚡ Livewire initialized
-ai-content-system.js?v=1761050445:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1761050445:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1761050445:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1761050445:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1761050445:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1761050445:558 🔒 attachButtonListeners SKIP - already attached
+simple-translation-modal.js?v=1761051504:839 ⚡ Livewire initialized
+ai-content-system.js?v=1761051504:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761051504:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761051504:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761051504:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761051504:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761051504:558 🔒 attachButtonListeners SKIP - already attached
 6:4329 🚀 Enterprise Streaming Translation System Ready!
 6:4342 📝 Streaming translation not available - Using standard translation mode
-ai-seo-integration.js?v=1761050445:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1761050445:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761051504:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761051504:558 🔒 attachButtonListeners SKIP - already attached
 6:2887 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
 6:40  POST https://ixtif.com/admin/mediamanagement/featured-upload net::ERR_SSL_BAD_RECORD_MAC_ALERT
 window.fetch @ 6:40
-fetch @ plugins.js?v=1761050445:8
+fetch @ plugins.js?v=1761051504:8
 uploadFile @ 6:4279
-[Alpine] uploadFile($event.target.files[0]) @ VM1667:3
+[Alpine] uploadFile($event.target.files[0]) @ VM2113:3
 (anonymous) @ livewire.js?id=df3a17f2:1196
 tryCatch @ livewire.js?id=df3a17f2:1116
 (anonymous) @ livewire.js?id=df3a17f2:3881
 handler4 @ livewire.js?id=df3a17f2:3183
 6:26 Upload error (attempt 1): TypeError: Failed to fetch
     at window.fetch (6:40:38)
-    at fetch (plugins.js?v=1761050445:8:58607)
+    at fetch (plugins.js?v=1761051504:8:58607)
     at Proxy.uploadFile (6:4279:25)
     at [Alpine] uploadFile($event.target.files[0]) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
     at livewire.js?id=df3a17f2:1196:23
@@ -129,7 +55,70 @@ console.error @ 6:26
 (anonymous) @ 6:4302
 Promise.catch
 uploadFile @ 6:4301
-[Alpine] uploadFile($event.target.files[0]) @ VM1667:3
+[Alpine] uploadFile($event.target.files[0]) @ VM2113:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+6:4306 🔄 SSL handshake error detected, retrying automatically...
+multi-modal-manager.js?v=1761051520:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761051520:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761051520:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761051520:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761051520:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761051520:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761051520:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761051520:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761051520:13 ⏰ Load Time: 2025-10-21T12:58:41.051Z
+ai-seo-integration.js?v=1761051520:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761051520:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761051520:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761051520:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761051520:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1761051520:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761051520:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761051520:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761051520:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+6:2850 ✅ Alpine.js Global Store initialized (Livewire bundled)
+simple-translation-modal.js?v=1761051520:839 ⚡ Livewire initialized
+ai-content-system.js?v=1761051520:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761051520:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761051520:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761051520:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761051520:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761051520:558 🔒 attachButtonListeners SKIP - already attached
+6:4329 🚀 Enterprise Streaming Translation System Ready!
+6:4342 📝 Streaming translation not available - Using standard translation mode
+ai-seo-integration.js?v=1761051520:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761051520:558 🔒 attachButtonListeners SKIP - already attached
+6:2887 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+6:40  POST https://ixtif.com/admin/mediamanagement/featured-upload net::ERR_SSL_BAD_RECORD_MAC_ALERT
+window.fetch @ 6:40
+fetch @ plugins.js?v=1761051520:8
+uploadFile @ 6:4279
+[Alpine] uploadFile($event.target.files[0]) @ VM2251:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+6:26 Upload error (attempt 1): TypeError: Failed to fetch
+    at window.fetch (6:40:38)
+    at fetch (plugins.js?v=1761051520:8:58607)
+    at Proxy.uploadFile (6:4279:25)
+    at [Alpine] uploadFile($event.target.files[0]) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3881:7
+    at HTMLInputElement.handler4 (livewire.js?id=df3a17f2:3183:27)
+console.error @ 6:26
+(anonymous) @ 6:4302
+Promise.catch
+uploadFile @ 6:4301
+[Alpine] uploadFile($event.target.files[0]) @ VM2251:3
 (anonymous) @ livewire.js?id=df3a17f2:1196
 tryCatch @ livewire.js?id=df3a17f2:1116
 (anonymous) @ livewire.js?id=df3a17f2:3881

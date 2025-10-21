@@ -10,12 +10,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * AI Message Model
  *
- * TENANT DATABASE - Her tenant'ın mesajları kendi database'inde
- * tenant connection kullanır (multi-tenancy)
+ * CENTRAL DATABASE - Messages stored centrally with conversation tenant context
+ * Uses mysql connection (central) for cross-tenant AI management
  */
 class AIMessage extends Model
 {
-    protected $connection = 'tenant';
+    protected $connection = 'mysql'; // Changed from 'tenant' to 'mysql' (central DB)
     protected $table = 'ai_messages';
 
     protected $fillable = [

@@ -9,6 +9,7 @@ class Conversation extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_conversations';
     
     public function __construct(array $attributes = [])

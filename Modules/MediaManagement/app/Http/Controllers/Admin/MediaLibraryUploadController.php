@@ -39,7 +39,7 @@ class MediaLibraryUploadController extends Controller
                 }
 
                 $libraryItem = MediaLibraryItem::create([
-                    'name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                    'name' => \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)),
                     'type' => $type,
                     'created_by' => $request->user()?->id,
                     'meta' => [

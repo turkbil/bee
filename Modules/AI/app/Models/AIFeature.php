@@ -15,6 +15,7 @@ class AIFeature extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_features';
     
     public function __construct(array $attributes = [])

@@ -10,6 +10,7 @@ class AIProvider extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_providers';
 
     protected $fillable = [

@@ -62,96 +62,72 @@
 @section('module_content')
 @if(isset($is_homepage) && $is_homepage)
     <div x-data="homepage()" x-init="init()">
-        <section class="py-8 md:py-12 lg:py-20 flex items-center relative overflow-hidden mt-8">
-        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-            <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <section class="py-8 md:py-12 lg:py-16 flex items-center relative overflow-hidden">
+        <div class="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
                 <!-- Left Content -->
                 <div class="text-gray-900 dark:text-white">
-                    <!-- Badge -->
-                    <div class="inline-flex items-center gap-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-6 py-3 rounded-full text-sm font-bold mb-8 border border-gray-200 dark:border-gray-700">
-                        <i class="fa-solid fa-certificate text-blue-600 dark:text-blue-400"></i>
-                        <span class="text-gray-700 dark:text-gray-200">Profesyonel İstif Ekipmanları Tedarikçisi</span>
-                    </div>
-
                     <!-- Main Title with Animation -->
-                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.3] overflow-visible pb-4" style="font-weight: 900;">
-                        <span class="gradient-animate block py-1">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-12 leading-[1.2] overflow-visible" style="font-weight: 900;">
+                        <span class="gradient-animate block py-2">
                             TÜRKİYE'NİN
                         </span>
-                        <span class="gradient-animate block py-1">
+                        <span class="gradient-animate block py-2">
                             İSTİF PAZARI
                         </span>
                     </h1>
 
                     <!-- Description -->
-                    <p class="text-lg text-gray-700 dark:text-gray-200 mb-6 leading-relaxed">
+                    <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium">
                         Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
                     </p>
 
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-wrap gap-4 mb-8">
-                        <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-semibold text-base transition-all inline-block text-center">
+                    <!-- CTA Button -->
+                    <div class="mb-16">
+                        <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
                             <i class="fa-solid fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                             Ürünleri İncele
-                        </a>
-                        <a href="#nasil-calisir" class="group bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-8 py-3 rounded-full font-semibold text-base transition-all inline-block text-center border border-gray-200 dark:border-gray-700">
-                            <i class="fa-solid fa-headset mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
-                            Teklif Al
                         </a>
                     </div>
 
                     <!-- Features -->
-                    <div class="grid grid-cols-2 xl:grid-cols-3 gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-boxes-stacked text-blue-600 dark:text-blue-300 text-lg"></i>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
                             </div>
                             <div>
-                                <div class="font-semibold text-gray-900 dark:text-white">Güçlü Stok</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-300">Anında teslimat</div>
+                                <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Anında teslimat</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-certificate text-blue-600 dark:text-blue-300 text-lg"></i>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
                             </div>
                             <div>
-                                <div class="font-semibold text-gray-900 dark:text-white">Garantili Ürün</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-300">Teknik servis</div>
+                                <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-award text-blue-600 dark:text-blue-300 text-lg"></i>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
                             </div>
                             <div>
-                                <div class="font-semibold text-gray-900 dark:text-white">Profesyonel Ekip</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-300">Uzman danışmanlık</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 xl:hidden">
-                            <div class="w-10 h-10 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-truck-fast text-blue-600 dark:text-blue-300 text-lg"></i>
-                            </div>
-                            <div>
-                                <div class="font-semibold text-gray-900 dark:text-white">Hızlı Teslimat</div>
-                                <div class="text-sm text-gray-600 dark:text-gray-300">Aynı gün kargo</div>
+                                <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Uzman danışmanlık</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Right Content - Hero Image -->
-                <div class="relative">
-                    <div class="relative rounded-3xl overflow-hidden">
-                        <!-- Hero Image -->
-                        <div class="aspect-[4/3] flex items-center justify-center">
-                            <img src="https://ixtif.com/storage/tenant2/9/hero.png"
-                                 alt="iXtif İstif Makinesi - Forklift"
-                                 class="w-full h-full object-contain"
-                                 loading="lazy">
-                        </div>
-                    </div>
+                <div class="flex items-center justify-center">
+                    <img src="https://ixtif.com/storage/tenant2/13/hero.png"
+                         alt="iXtif İstif Makinesi - Forklift"
+                         class="w-full h-auto object-contain"
+                         loading="lazy">
                 </div>
             </div>
         </div>

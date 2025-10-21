@@ -13,12 +13,12 @@ use App\Models\Tenant;
 /**
  * AI Conversation Model
  *
- * TENANT DATABASE - Her tenant'ın konuşmaları kendi database'inde
- * tenant connection kullanır (multi-tenancy)
+ * CENTRAL DATABASE - AI conversations stored centrally with tenant_id filtering
+ * Uses mysql connection (central) for cross-tenant AI management
  */
 class AIConversation extends Model
 {
-    protected $connection = 'tenant';
+    protected $connection = 'mysql'; // Changed from 'tenant' to 'mysql' (central DB)
     protected $table = 'ai_conversations';
 
     protected $fillable = [

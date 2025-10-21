@@ -612,9 +612,9 @@
         </div>
     </section>
 
-    {{-- Floating CTA --}}
+    {{-- Floating CTA (Sol tarafta - AI bot çakışmasını önlemek için) --}}
     <div x-data="{ show: false }" @scroll.window="show = (window.pageYOffset > 800)" x-show="show" x-transition
-        class="fixed bottom-8 right-8 z-50 hidden md:block">
+        class="fixed bottom-8 left-8 z-50 hidden md:block">
         <a href="#contact"
             class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all">
             <i class="fa-solid fa-envelope"></i>

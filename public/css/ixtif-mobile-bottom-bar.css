@@ -3,7 +3,7 @@
 
 @media (max-width: 767px) {
     body {
-        padding-bottom: 80px; /* Bottom bar yüksekliği kadar boşluk */
+        padding-bottom: 60px; /* Bottom bar yüksekliği kadar boşluk (py-3 ~ 60px) */
     }
 
     .mobile-bottom-bar {
@@ -27,7 +27,7 @@
     /* AI Chat Widget - Mobilde bottom bar'ın üstünde durması için */
     /* AI widget z-50, bottom bar z-9999, ama AI'yı yukarı çıkararak çakışmayı önlüyoruz */
     [x-data*="aiChat"] {
-        bottom: 100px !important; /* Bottom bar (80px) + boşluk (20px) */
+        bottom: 80px !important; /* Bottom bar (60px) + boşluk (20px) */
     }
 }
 

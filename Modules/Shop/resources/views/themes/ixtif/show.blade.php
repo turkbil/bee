@@ -1259,41 +1259,7 @@
                         </div>
                     </div>
 
-                    <script>
-                    function handleAIChatClick() {
-                        // Hero section'daki AI chat widget'ını kontrol et
-                        const chatWidget = document.querySelector('.ai-inline-widget, [x-data*="aiInlineWidget"]');
-
-                        if (!chatWidget) {
-                            // Widget bulunamadıysa hero section'a scroll yap
-                            window.scrollTo({top: 0, behavior: 'smooth'});
-                            return;
-                        }
-
-                        // Chat açık mı kontrol et
-                        const isOpen = chatWidget.classList.contains('open') ||
-                                      chatWidget.querySelector('[x-show="isOpen"]')?.style.display !== 'none';
-
-                        // Chat input alanını bul
-                        const chatInput = chatWidget.querySelector('textarea, input[type="text"]');
-                        const hasMessages = chatWidget.querySelectorAll('.message, [class*="message"]').length > 1;
-
-                        if (isOpen && !hasMessages && chatInput) {
-                            // Chat açık, mesaj yok ve input küçükse -> inputa tıkla (büyüt)
-                            chatInput.focus();
-                            chatInput.click();
-                        } else if (!isOpen) {
-                            // Chat kapalıysa -> aç
-                            const openButton = chatWidget.querySelector('button[x-on\\:click*="isOpen"], button[onclick*="open"]');
-                            if (openButton) {
-                                openButton.click();
-                            }
-                        }
-
-                        // Her durumda chat widget'a scroll yap
-                        chatWidget.scrollIntoView({behavior: 'smooth', block: 'center'});
-                    }
-                    </script>
+                    {{-- AI Chat click handler moved to shop-product-show.js --}}
 
                     {{-- Info Box --}}
                     <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/30 dark:border-white/10">
@@ -1352,9 +1318,54 @@
         </div>
     </section>
 
-    {{-- Floating CTA (Sol tarafta - AI bot çakışmasını önlemek için) --}}
-    <div x-data="{ show: false }" @scroll.window="show = (window.pageYOffset > 800)" x-show="show" x-transition
-        class="fixed bottom-8 left-8 z-50 hidden md:block">
+    {{-- Floating CTA (Dinamik - AI bot'a göre yer açar, contact section'da gizlenir) --}}
+    <div x-data="{
+            show: false,
+            hideButton: false,
+            position: 'right-10',
+            updatePosition() {
+                // Mobile'da sabit kal
+                if (window.innerWidth < 1024) {
+                    this.position = 'right-10';
+                    return;
+                }
+
+                // Desktop'ta AI bot durumuna göre
+                const aiChat = window.Alpine?.store('aiChat');
+                if (aiChat?.floatingOpen) {
+                    this.position = 'right-[420px]'; // AI bot genişliği (384px) + 36px margin
+                } else {
+                    this.position = 'right-10';
+                }
+            },
+            init() {
+                this.updatePosition();
+                // AI bot durumunu izle
+                this.$watch('$store.aiChat.floatingOpen', () => {
+                    this.updatePosition();
+                });
+
+                // Contact section'ı izle - görününce butonu gizle
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            this.hideButton = entry.isIntersecting;
+                        });
+                    }, {
+                        threshold: 0.1,
+                        rootMargin: '0px 0px -100px 0px'
+                    });
+                    observer.observe(contactSection);
+                }
+            }
+        }"
+        @scroll.window="show = (window.pageYOffset > 800)"
+        @resize.window="updatePosition()"
+        x-show="show && !hideButton"
+        x-transition
+        :class="position"
+        class="fixed bottom-8 z-[60] hidden md:block transition-all duration-300">
         <a href="#contact"
             class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all">
             <i class="fa-solid fa-envelope"></i>
@@ -1364,128 +1375,3 @@
 
 @endsection
 
-@push('scripts')
-    <script src="{{ asset('assets/js/themes/ixtif/shop-product-show.js') }}"></script>
-    <script>
-        // TOC Bar Scroll Behavior: Initially relative, becomes fixed after hero section
-        document.addEventListener('DOMContentLoaded', function() {
-            const tocBar = document.getElementById('toc-bar');
-            const tocPlaceholder = document.getElementById('toc-placeholder');
-            const trustSignals = document.getElementById('trust-signals');
-            const heroSection = document.getElementById('hero-section');
-
-            if (!tocBar) return;
-
-            // 🚨 CRITICAL: İlk yüklemede TOC'yi temizle (cache sorunlarını önle)
-            tocBar.style.position = 'relative';
-            tocBar.style.top = '0';
-            tocBar.style.left = '';
-            tocBar.style.right = '';
-            tocBar.style.transform = '';
-            tocBar.style.opacity = '';
-
-            // Header yüksekliği - Responsive
-            const getHeaderHeight = () => {
-                return window.innerWidth >= 1024 ? 84 : 56; // Desktop: 84px, Mobile: 56px
-            };
-
-            let mainNavHeight = getHeaderHeight();
-
-            // Window resize'da header yüksekliğini güncelle
-            window.addEventListener('resize', () => {
-                mainNavHeight = getHeaderHeight();
-            });
-
-            // TOC'nin sayfa başından mesafesini al (ilk pozisyonu)
-            let tocOffsetTop = tocBar.offsetTop;
-            let tocHeight = tocBar.offsetHeight;
-
-            // Scroll kontrolü
-            let isTocFixed = false;
-            let isTocHidden = false;
-
-            function handleTocScroll() {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const tocContainer = document.getElementById('toc-container');
-
-                // TOC'nin pozisyonunu güncelle (eğer relative modda değişirse)
-                if (!isTocFixed) {
-                    tocOffsetTop = tocBar.offsetTop;
-                    tocHeight = tocBar.offsetHeight;
-                }
-
-                // Scroll TOC'ye ulaştığında (main nav altına) fixed yap - LAYOUT SHIFT ÖNLEME
-                const threshold = tocOffsetTop - mainNavHeight;
-
-                if (scrollTop >= threshold && !isTocFixed && !isTocHidden) {
-                    // LAYOUT SHIFT ÖNLEME: Placeholder göster (TOC'nin yerini tut)
-                    tocPlaceholder.style.display = 'block';
-                    tocPlaceholder.style.height = tocHeight + 'px';
-
-                    // TOC'yi fixed yap
-                    tocBar.style.position = 'fixed';
-                    tocBar.style.top = mainNavHeight + 'px';
-                    tocBar.style.left = '0';
-                    tocBar.style.right = '0';
-                    tocBar.style.zIndex = '40';
-
-                    // Padding küçült (compact mode)
-                    if (tocContainer) {
-                        tocContainer.style.paddingTop = '0.375rem'; // py-1.5
-                        tocContainer.style.paddingBottom = '0.375rem';
-                    }
-                    isTocFixed = true;
-                } else if (scrollTop < threshold && isTocFixed) {
-                    // Placeholder gizle
-                    tocPlaceholder.style.display = 'none';
-
-                    // TOC'yi relative yap
-                    tocBar.style.position = 'relative';
-                    tocBar.style.top = 'auto'; // EXPLICIT: auto yap (cache sorunlarını önler)
-                    tocBar.style.left = 'auto';
-                    tocBar.style.right = 'auto';
-
-                    // Padding normal
-                    if (tocContainer) {
-                        tocContainer.style.paddingTop = '0.5rem'; // py-2
-                        tocContainer.style.paddingBottom = '0.5rem';
-                    }
-                    isTocFixed = false;
-                }
-            }
-
-            // Scroll event
-            window.addEventListener('scroll', handleTocScroll);
-
-            // NOT: Initial check KALDIRILDI - Sayfa ilk yüklendiğinde TOC relative olmalı,
-            // scroll başladığında otomatik fixed olacak (layout shift önlenir)
-
-            // Trust signals gizleme - TOC kaybolsun
-            if (trustSignals) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            // Trust signals görünürde - TOC'yi gizle
-                            tocBar.style.transform = 'translateY(-100%)';
-                            tocBar.style.opacity = '0';
-                            isTocHidden = true;
-                        } else {
-                            // Trust signals görünmüyor - TOC'yi göster
-                            // SADECE fixed modda transform/opacity ekle (initial state'i korur)
-                            if (isTocFixed && isTocHidden) {
-                                tocBar.style.transform = 'translateY(0)';
-                                tocBar.style.opacity = '1';
-                            }
-                            isTocHidden = false;
-                        }
-                    });
-                }, {
-                    threshold: 0.1,
-                    rootMargin: '-80px 0px 0px 0px'
-                });
-
-                observer.observe(trustSignals);
-            }
-        });
-    </script>
-@endpush

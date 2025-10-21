@@ -144,10 +144,19 @@ class UniversalMediaComponent extends Component
         $media = $model->getMedia($collectionName)
             ->sortBy('order_column')
             ->map(function ($item) {
+                // ✅ Thumbmaker kullan - cache'li ve hızlı
+                $fullUrl = $item->getUrl();
+                $thumbUrl = thumb($item, 400, 400, [
+                    'quality' => 80,
+                    'scale' => 1,
+                    'alignment' => 'c',
+                    'format' => 'webp'
+                ]);
+
                 return [
                     'id' => $item->id,
-                    'url' => $item->getUrl(),
-                    'thumb' => $item->hasGeneratedConversion('thumb') ? $item->getUrl('thumb') : $item->getUrl(),
+                    'url' => $fullUrl,
+                    'thumb' => $thumbUrl,
                     'name' => $item->name,
                     'file_name' => $item->file_name,
                     'size' => $item->human_readable_size,

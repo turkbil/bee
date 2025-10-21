@@ -426,20 +426,20 @@ function clearAIConversation(button) {
 <div class="mobile-bottom-bar bg-gradient-to-r from-green-500 to-blue-500 md:hidden"
      style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important;">
     <div class="grid grid-cols-2 gap-0 max-w-md mx-auto">
-        {{-- WhatsApp Button --}}
-        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"
-           class="flex flex-col items-center justify-center py-4 text-white hover:bg-black/10 transition-all duration-300"
-           aria-label="WhatsApp İletişim">
-            <i class="fab fa-whatsapp text-2xl mb-1"></i>
-            <span class="text-xs font-medium">WhatsApp</span>
+        {{-- Phone Button (SOL) --}}
+        <a href="tel:{{ str_replace(' ', '', setting('contact_phone_1', '02167553555')) }}"
+           class="flex items-center justify-center gap-2 py-3 text-white hover:bg-black/10 transition-all duration-300"
+           aria-label="Telefon İletişim">
+            <i class="fas fa-phone text-xl"></i>
+            <span class="text-sm font-medium">Telefon</span>
         </a>
 
-        {{-- Phone Button --}}
-        <a href="tel:{{ str_replace(' ', '', setting('contact_phone_1', '02167553555')) }}"
-           class="flex flex-col items-center justify-center py-4 text-white hover:bg-black/10 transition-all duration-300 border-l border-white/20"
-           aria-label="Telefon İletişim">
-            <i class="fas fa-phone text-2xl mb-1"></i>
-            <span class="text-xs font-medium">Telefon</span>
+        {{-- WhatsApp Button (SAĞ) --}}
+        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"
+           class="flex items-center justify-center gap-2 py-3 text-white hover:bg-black/10 transition-all duration-300 border-l border-white/20"
+           aria-label="WhatsApp İletişim">
+            <i class="fab fa-whatsapp text-xl"></i>
+            <span class="text-sm font-medium">WhatsApp</span>
         </a>
     </div>
 </div>

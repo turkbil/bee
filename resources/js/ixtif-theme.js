@@ -107,6 +107,14 @@ if (localStorage.getItem('selectedFont')) {
 /**
  * GLightbox Initialization
  * Lightbox galerisi için init fonksiyonu
+ *
+ * Klavye kontrolleri:
+ * - Sol/Sağ ok tuşları: Önceki/Sonraki görsel
+ * - Escape: Lightbox'ı kapat
+ *
+ * Mouse kontrolleri:
+ * - Sağ/Sol butonlar: Önceki/Sonraki görsel (built-in)
+ * - Yakınlaştırma: Scroll ile zoom (zoomable: true)
  */
 function initGLightbox() {
     if (typeof GLightbox !== 'undefined') {
@@ -118,9 +126,17 @@ function initGLightbox() {
             zoomable: true,
             draggable: true,
             skin: 'clean',
-            closeButton: true
+            closeButton: true,
+            keyboardNavigation: true,  // Klavye kontrolü (ok tuşları + escape)
+            closeOnOutsideClick: true, // Dışarı tıklayınca kapat
+            svg: {
+                // İleri/geri ok iconları
+                next: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>',
+                prev: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>',
+                close: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
+            }
         });
-        console.log('✅ GLightbox initialized');
+        console.log('✅ GLightbox initialized with keyboard & mouse controls');
     } else {
         console.warn('⚠️ GLightbox library not loaded yet');
     }

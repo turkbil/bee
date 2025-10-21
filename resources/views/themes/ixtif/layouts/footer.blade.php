@@ -1,3 +1,6 @@
+{{-- Mobile Bottom Bar CSS --}}
+<link rel="stylesheet" href="{{ asset('css/ixtif-mobile-bottom-bar.css') }}?v={{ now()->timestamp }}">
+
 {{-- FOOTER-002 Design --}}
 <footer class="w-full relative
     bg-white dark:bg-transparent
@@ -342,6 +345,28 @@
             </div>
         </div>
     </div>
+
+    {{-- MOBILE BOTTOM BAR (Only visible on mobile < 768px) --}}
+    <div class="mobile-bottom-bar bg-gradient-to-r from-green-500 to-blue-500 md:hidden">
+        <div class="grid grid-cols-2 gap-0 max-w-md mx-auto">
+            {{-- WhatsApp Button --}}
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"
+               class="flex flex-col items-center justify-center py-4 text-white hover:bg-black/10 transition-all duration-300"
+               aria-label="WhatsApp İletişim">
+                <i class="fab fa-whatsapp text-2xl mb-1"></i>
+                <span class="text-xs font-medium">WhatsApp</span>
+            </a>
+
+            {{-- Phone Button --}}
+            <a href="tel:{{ str_replace(' ', '', setting('contact_phone_1', '02167553555')) }}"
+               class="flex flex-col items-center justify-center py-4 text-white hover:bg-black/10 transition-all duration-300 border-l border-white/20"
+               aria-label="Telefon İletişim">
+                <i class="fas fa-phone text-2xl mb-1"></i>
+                <span class="text-xs font-medium">Telefon</span>
+            </a>
+        </div>
+    </div>
+
 </footer>
 
 {{-- Widget Integration --}}

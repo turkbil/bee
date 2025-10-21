@@ -42,7 +42,9 @@ class InitializeTenancy extends BaseMiddleware
         }
         
         $host = $request->getHost();
-        
+        // www prefix'i kaldır (tenant domain matching için)
+        $host = preg_replace('/^www\./', '', $host);
+
         // Central domainleri config'den kontrol et
         $centralDomains = config('tenancy.central_domains', []);
         if (in_array($host, $centralDomains)) {
@@ -112,6 +114,8 @@ class InitializeTenancy extends BaseMiddleware
     {
         // API için domain-based tenant detection
         $host = $request->getHost();
+        // www prefix'i kaldır (tenant domain matching için)
+        $host = preg_replace('/^www\./', '', $host);
 
         // Central domainleri config'den kontrol et
         $centralDomains = config('tenancy.central_domains', []);

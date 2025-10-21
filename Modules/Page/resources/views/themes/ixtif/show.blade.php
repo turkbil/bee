@@ -5,60 +5,6 @@
 @endphp
 @extends('themes.' . $themeName . '.layouts.app')
 
-@push('styles')
-<style>
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-    }
-
-    .animate-float {
-        animation: float 3s ease-in-out infinite;
-    }
-
-    /* Animated Gradient - Light & Dark Mode (yakında sayfası ile aynı) */
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    .gradient-animate {
-        background: linear-gradient(-45deg, #1e40af, #2563eb, #ea580c, #15803d, #7c3aed, #dc2626, #2563eb, #1e40af);
-        background-size: 600% 600%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradientShift 10s ease-in-out infinite;
-    }
-
-    .dark .gradient-animate {
-        background: linear-gradient(-45deg, #3b82f6, #60a5fa, #fb923c, #22c55e, #a78bfa, #f87171, #60a5fa, #3b82f6);
-        background-size: 600% 600%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    /* Letter switch transition */
-    .letter-transition {
-        transition: opacity 0.3s ease-in-out;
-    }
-
-    /* Badge Gradient Animation */
-    @keyframes gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    .animate-gradient {
-        animation: gradient 3s ease infinite;
-    }
-
-</style>
-@endpush
-
 @section('module_content')
 @if(isset($is_homepage) && $is_homepage)
     <div x-data="homepage()" x-init="init()">

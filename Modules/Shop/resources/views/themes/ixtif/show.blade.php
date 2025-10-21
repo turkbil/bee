@@ -304,6 +304,12 @@
                     <div
                         class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
                         <div class="flex gap-2" id="toc-buttons">
+                            @if ($siblingVariants->count() > 0)
+                                <a href="#variants" data-target="variants"
+                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
+                                    <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
+                                </a>
+                            @endif
                             @if ($galleryImages->count() > 0)
                                 <a href="#gallery" data-target="gallery"
                                     class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
@@ -320,12 +326,6 @@
                                 <a href="#features" data-target="features"
                                     class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
                                     <i class="fa-solid fa-sparkles mr-1.5"></i>Özellikler
-                                </a>
-                            @endif
-                            @if ($siblingVariants->count() > 0)
-                                <a href="#variants" data-target="variants"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
                                 </a>
                             @endif
                             @if (!empty($competitiveAdvantages))

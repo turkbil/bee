@@ -351,36 +351,16 @@
 {{-- Livewire Scripts --}}
 @livewireScripts
 
-{{-- Alpine.js initialization --}}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Livewire and Alpine.js initialization
-    });
-</script>
-
 {{-- GLightbox --}}
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css"></noscript>
 <script defer src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js" onload="initGLightbox()"></script>
-<script>
-    function initGLightbox() {
-        if (typeof GLightbox !== 'undefined') {
-            const lightbox = GLightbox({
-                selector: '.glightbox',
-                touchNavigation: true,
-                loop: true,
-                autoplayVideos: false,
-                zoomable: true,
-                draggable: true,
-                skin: 'clean',
-                closeButton: true
-            });
-        }
-    }
-</script>
 
 {{-- Core System Scripts --}}
 <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
+
+{{-- iXtif Theme Scripts (moved from header for better performance) --}}
+<script src="{{ asset('js/ixtif-theme.js') }}?v={{ now()->timestamp }}" defer></script>
 
 {{-- AI Chat Admin Functions --}}
 <script>

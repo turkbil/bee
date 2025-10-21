@@ -56,7 +56,7 @@ class FaviconController extends Controller
             }
 
             // Spatie Media Library - Direkt path al (URL parse gereksiz)
-            $media = $setting->getFirstMedia('featured_image');
+            $media = $setting->getFirstMedia('site_favicon');
 
             if (!$media) {
                 return null;

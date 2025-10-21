@@ -87,11 +87,11 @@ return [
     // ========================================
     'conversions' => [
         'thumb' => [
-            'width' => 300,
-            'height' => 200,
+            'width' => 400,
+            'height' => 400,
             'format' => 'webp',
-            'quality' => 85,
-            'queued' => false, // Instant feedback
+            'quality' => 80,
+            'queued' => false, // Instant feedback - Intervention ile server-side thumbnail
         ],
 
         'medium' => [

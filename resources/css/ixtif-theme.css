@@ -1,0 +1,283 @@
+/**
+ * iXtif Theme Styles
+ *
+ * Bu dosya iXtif teması için özel CSS stillerini içerir.
+ * Header inline style'larından ayrıştırılmıştır.
+ *
+ * @version 1.0.0
+ * @package ixtif
+ */
+
+/* ========================================
+   RTL/LTR Direction Support
+   ======================================== */
+[dir="rtl"] {
+    direction: rtl;
+}
+
+[dir="rtl"] .rtl\:space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 1;
+}
+
+[dir="rtl"] .rtl\:ml-auto {
+    margin-left: auto;
+}
+
+[dir="rtl"] .rtl\:mr-auto {
+    margin-right: auto;
+}
+
+[dir="rtl"] .rtl\:text-right {
+    text-align: right;
+}
+
+[dir="rtl"] .rtl\:text-left {
+    text-align: left;
+}
+
+/* RTL Dropdown Fix */
+[dir="rtl"] .dropdown-menu .dropdown-content,
+[dir="rtl"] .language-switcher-header .dropdown-content {
+    left: 0 !important;
+    right: auto !important;
+}
+
+[dir="ltr"] .dropdown-menu .dropdown-content,
+[dir="ltr"] .language-switcher-header .dropdown-content {
+    right: 0 !important;
+    left: auto !important;
+}
+
+/* ========================================
+   Mobile Menu Responsive Fix
+   ======================================== */
+@media (max-width: 1023px) {
+    .mobile-nav-container {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+}
+
+/* ========================================
+   Logo Adaptive (Dark Mode)
+   ======================================== */
+.logo-adaptive {
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.dark .logo-adaptive {
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
+}
+
+.dark .logo-adaptive:hover {
+    opacity: 1;
+}
+
+/* ========================================
+   Mega Menu Animations
+   ======================================== */
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.animate-slide-down {
+    animation: slideDownFade 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+    animation: slideUpFade 0.3s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.mega-menu-content-fade-enter {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   Global Font Settings
+   ======================================== */
+:root {
+    --global-font: 'Roboto', sans-serif;
+}
+
+*:not([class*="fa-"]):not(i) {
+    font-family: var(--global-font) !important;
+}
+
+/* ========================================
+   Smooth Scroll
+   ======================================== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ========================================
+   Header Sticky Animation
+   ======================================== */
+header {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+#main-header {
+    transform: translateY(0);
+}
+
+#main-header.scrolled {
+    transform: translateY(calc(var(--top-bar-height, 52px) * -1));
+}
+
+#main-header.scrolled #main-nav {
+    /* Shadow kaldırıldı - temiz tasarım için */
+}
+
+/* ========================================
+   Top Bar Animated Gradient (Dark Mode)
+   ======================================== */
+@keyframes slideGradient {
+    0%, 100% {
+        background: linear-gradient(90deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 50%, rgba(30, 41, 59, 0.9) 100%);
+    }
+    50% {
+        background: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 50%, rgba(15, 23, 42, 0.9) 100%);
+    }
+}
+
+.dark #top-bar {
+    animation: slideGradient 20s ease-in-out infinite;
+    background: rgba(15, 23, 42, 0.9) !important;
+}
+
+/* ========================================
+   Multi-Layer Animated Background Gradients
+   ======================================== */
+@keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes gradient-y {
+    0%, 100% { background-position: 50% 0%; }
+    50% { background-position: 50% 100%; }
+}
+
+@keyframes gradient-xy {
+    0%, 100% { background-position: 0% 0%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+}
+
+/* Dark Mode Body - Base Background */
+body.dark-mode-active {
+    background: linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(2, 6, 23) 100%);
+    position: relative;
+}
+
+/* Layer 1 - Blue → Slate Gradient (Horizontal Movement) */
+body.dark-mode-active::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg,
+        rgba(37, 99, 235, 0.3) 0%,
+        rgba(30, 41, 59, 0.2) 30%,
+        transparent 70%,
+        transparent 100%);
+    background-size: 400% 400%;
+    animation: gradient-x 30s ease infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Layer 2 - Slate → Blue → Slate Gradient (Diagonal Movement) */
+body.dark-mode-active::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(225deg,
+        transparent 0%,
+        rgba(15, 23, 42, 0.3) 25%,
+        rgba(37, 99, 235, 0.2) 50%,
+        rgba(15, 23, 42, 0.25) 75%,
+        transparent 100%);
+    background-size: 400% 400%;
+    animation: gradient-xy 60s ease infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ========================================
+   Homepage Animations (Page Module)
+   ======================================== */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Animated Gradient Text */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.gradient-animate {
+    background: linear-gradient(-45deg, #1e40af, #2563eb, #ea580c, #15803d, #7c3aed, #dc2626, #2563eb, #1e40af);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 10s ease-in-out infinite;
+}
+
+.dark .gradient-animate {
+    background: linear-gradient(-45deg, #3b82f6, #60a5fa, #fb923c, #22c55e, #a78bfa, #f87171, #60a5fa, #3b82f6);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Letter switch transition */
+.letter-transition {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Badge Gradient Animation */
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+    animation: gradient 3s ease infinite;
+}

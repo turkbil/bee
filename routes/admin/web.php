@@ -625,4 +625,16 @@ Route::middleware(["admin", "tenant"])->prefix("admin/page")->name("admin.page."
     Route::get("/test", [App\Http\Controllers\Admin\AIModalTestController::class, "index"])->name("test");
 });
 
+// 🔬 UPLOAD DEBUG LABORATORY - Multi-method upload testing
+Route::middleware(['admin', 'tenant'])->prefix('admin/debug')->name('admin.debug.')->group(function () {
+    Route::get('/upload', [App\Http\Controllers\Admin\UploadDebugController::class, 'index'])->name('upload.index');
+    Route::post('/upload/formdata', [App\Http\Controllers\Admin\UploadDebugController::class, 'uploadFormData'])->name('upload.formdata');
+    Route::post('/upload/base64', [App\Http\Controllers\Admin\UploadDebugController::class, 'uploadBase64'])->name('upload.base64');
+    Route::post('/upload/chunked', [App\Http\Controllers\Admin\UploadDebugController::class, 'uploadChunked'])->name('upload.chunked');
+    Route::post('/upload/test-storage', [App\Http\Controllers\Admin\UploadDebugController::class, 'testStorage'])->name('upload.test-storage');
+    Route::get('/upload/logs', [App\Http\Controllers\Admin\UploadDebugController::class, 'getLogs'])->name('upload.logs');
+    Route::post('/upload/clear-logs', [App\Http\Controllers\Admin\UploadDebugController::class, 'clearLogs'])->name('upload.clear-logs');
+    Route::post('/upload/log-client', [App\Http\Controllers\Admin\UploadDebugController::class, 'logClientEvent'])->name('upload.log-client');
+});
+
 

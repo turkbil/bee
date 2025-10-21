@@ -157,7 +157,20 @@ class TenantStorageHelper
         }
 
         if ($absolutePath && file_exists($absolutePath)) {
+            // 🔒 KRİTİK: Permission ve owner ayarla (psacln sorununu önler)
             @chmod($absolutePath, $permission);
+
+            // 🔧 Owner'ı tuufi.com_:psaserv olarak ayarla (403 hatası önlenir)
+            // posix_getpwnam varsa (Linux) kullan
+            if (function_exists('posix_getpwnam') && function_exists('posix_getgrnam')) {
+                $userInfo = @posix_getpwnam('tuufi.com_');
+                $groupInfo = @posix_getgrnam('psaserv');
+
+                if ($userInfo !== false && $groupInfo !== false) {
+                    @chown($absolutePath, $userInfo['uid']);
+                    @chgrp($absolutePath, $groupInfo['gid']);
+                }
+            }
         }
     }
 

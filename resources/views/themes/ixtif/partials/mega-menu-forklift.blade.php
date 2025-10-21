@@ -30,7 +30,7 @@
     ];
 @endphp
 
-<div class="max-w-7xl">
+<div class="w-full">
     <div class="flex items-center justify-between mb-6">
         <div>
             <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-3">

@@ -1,4 +1,17 @@
-<div class="media-management-component">
+<div class="media-management-component" wire:loading.class="opacity-50">
+    {{-- Upload Progress Indicator --}}
+    <div wire:loading class="alert alert-info mb-3" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <div>
+                <strong>Dosyalar yükleniyor...</strong>
+                <small class="d-block text-muted">Lütfen bekleyin, sayfa yenilenmeyecek.</small>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         {{-- FEATURED IMAGE - Sol Taraf --}}
         @if($hasFeautredImage)
@@ -82,36 +95,35 @@
 
                     {{-- Upload Area - Sağ taraf, her zaman görünür --}}
                     <div class="{{ (!empty($existingFeaturedImage) || !empty($tempFeaturedImage)) ? 'col-lg-8' : 'col-12' }}">
-                        <div x-data="{
-                            isDragging: false,
-                            handleDrop(e) {
-                                this.isDragging = false;
-                                const files = e.dataTransfer.files;
-                                if (files.length > 0) {
-                                    @this.upload('featuredImageFile', files[0]);
-                                }
-                            }
-                        }"
+                        <div x-data="manualUploadComponent(@this)"
                              @dragover.prevent="isDragging = true"
                              @dragleave.prevent="isDragging = false"
                              @drop.prevent="handleDrop($event)"
                              class="border rounded p-3 text-center border-dashed"
-                             :class="{ 'border-primary bg-light': isDragging }"
+                             :class="{ 'border-primary bg-light': isDragging, 'opacity-50': uploading }"
                              style="cursor: pointer; display: flex; flex-direction: column; justify-content: center; height: 125px;"
-                             @click="$refs.featuredInput.click()">
+                             @click="!uploading && $refs.featuredInput.click()">
 
-                            <div class="mb-2">
+                            <div class="mb-2" x-show="!uploading">
                                 <i class="fas fa-image fa-2x text-muted"></i>
                             </div>
 
-                            <p class="mb-1">{{ __('mediamanagement::admin.drag_drop_file') }}</p>
-                            <p class="text-muted small mb-0">{{ __('mediamanagement::admin.max_file_size', ['size' => '10MB']) }}</p>
+                            <div class="mb-2" x-show="uploading" x-cloak>
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                            </div>
+
+                            <p class="mb-1" x-show="!uploading">{{ __('mediamanagement::admin.drag_drop_file') }}</p>
+                            <p class="mb-1" x-show="uploading" x-cloak>Yükleniyor...</p>
+                            <p class="text-muted small mb-0" x-show="!uploading">{{ __('mediamanagement::admin.max_file_size', ['size' => '10MB']) }}</p>
 
                             <input type="file"
                                    x-ref="featuredInput"
-                                   wire:model="featuredImageFile"
+                                   @change="uploadFile($event.target.files[0])"
                                    accept="{{ $acceptedFileTypes ?? 'image/jpeg,image/png,image/jpg,image/webp,image/gif' }}"
-                                   class="d-none">
+                                   class="d-none"
+                                   :disabled="uploading">
                         </div>
 
                         @error('featuredImageFile')
@@ -899,6 +911,70 @@
                     }
                 });
             }
+
+            // Manual upload component factory - Blade escape issues fix
+            window.manualUploadComponent = function(livewireComponent) {
+                return {
+                    isDragging: false,
+                    uploading: false,
+                    handleDrop(e) {
+                        this.isDragging = false;
+                        const files = e.dataTransfer.files;
+                        if (files.length > 0) {
+                            this.uploadFile(files[0]);
+                        }
+                    },
+                    uploadFile(file, retryCount = 0) {
+                        if (this.uploading && retryCount === 0) return;
+                        this.uploading = true;
+
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+                        fetch('/admin/mediamanagement/featured-upload', {
+                            method: 'POST',
+                            body: formData,
+                            credentials: 'same-origin',
+                            cache: 'no-store',
+                            keepalive: true,
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Connection': 'keep-alive',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                livewireComponent.call('handleManualUpload', data.tempPath);
+                            } else {
+                                alert(data.message || 'Upload failed');
+                            }
+                            this.uploading = false;
+                        })
+                        .catch(error => {
+                            console.error('Upload error (attempt ' + (retryCount + 1) + '):', error);
+
+                            // SSL error detected and first attempt - auto retry once
+                            if (retryCount === 0 && error.message && error.message.includes('Failed to fetch')) {
+                                console.log('🔄 SSL handshake error detected, retrying automatically...');
+                                setTimeout(() => {
+                                    this.uploadFile(file, 1);
+                                }, 200);
+                                return;
+                            }
+
+                            // Final failure
+                            this.uploading = false;
+                            alert('Upload failed: ' + error.message);
+                        });
+                    }
+                };
+            };
         </script>
     @endpush
 @endif

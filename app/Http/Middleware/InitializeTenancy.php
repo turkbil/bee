@@ -88,7 +88,10 @@ class InitializeTenancy extends BaseMiddleware
             
             // Normal tenant'ı başlat
             $this->tenancy->initialize($tenant);
-            
+
+            // 🔥 Dinamik tenant disk registration
+            $this->registerTenantDisk($tenant);
+
             return $next($request);
             
         } catch (\Exception $e) {
@@ -152,5 +155,42 @@ class InitializeTenancy extends BaseMiddleware
                 'message' => 'Error initializing tenant'
             ], 500);
         }
+    }
+
+    /**
+     * ⚠️ KRİTİK: Tenant disk konfigürasyonunu runtime'da oluşturur
+     *
+     * Bu method Spatie Media Library ve dosya yönetimi için ZORUNLUDUR!
+     * SİLME, DEĞİŞTİRME veya DEVRE DIŞI BIRAKMA!
+     *
+     * Neden gerekli:
+     * - Her tenant için ayrı disk (tenant1, tenant2, tenant3...)
+     * - Hardcode yerine dinamik registration (1000+ tenant için)
+     * - Media URL'lerin doğru oluşması için
+     * - 403 Forbidden hatalarını önlemek için
+     *
+     * @param \App\Models\Tenant $tenant
+     * @return void
+     */
+    protected function registerTenantDisk($tenant): void
+    {
+        $tenantKey = $tenant->id;
+        $tenantDiskName = "tenant{$tenantKey}";
+        $root = storage_path("tenant{$tenantKey}/app/public");
+
+        // 🔥 Request'ten gerçek URL al (config('app.url') yanlış domain döndürüyor!)
+        $appUrl = request() ? request()->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
+
+        // Disk konfigürasyonunu runtime'da ekle
+        Config::set("filesystems.disks.{$tenantDiskName}", [
+            'driver' => 'local',
+            'root' => $root,
+            'url' => $appUrl ? "{$appUrl}/storage/tenant{$tenantKey}" : null,
+            'visibility' => 'public',
+            'throw' => false,
+        ]);
+
+        // Storage facade'ı yeniden yükle (cache temizliği için)
+        app()->forgetInstance('filesystem');
     }
 }

@@ -197,37 +197,55 @@ class UniversalMediaComponent extends Component
             'featuredImageFile' => 'file|max:20480', // 20MB - MIME validation Spatie'de yapılıyor
         ]);
 
-        // Model ID yoksa, session-based temp storage'a kaydet
-        if (!$this->modelId) {
-            $this->saveFeaturedToTempStorage();
-            $this->featuredImageFile = null;
-            return;
-        }
+        // HER ZAMAN temp storage kullan (SSL handshake sorununu bypass et)
+        $this->saveFeaturedToTempStorage();
+        $this->featuredImageFile = null;
 
-        // Model varsa direkt upload
-        $model = $this->getModel();
-        if (!$model) {
-            return;
-        }
+        // Model varsa direkt media library'ye de ekle
+        if ($this->modelId) {
+            $model = $this->getModel();
+            if ($model && $this->tempFeaturedImage) {
+                try {
+                    $filePath = public_path($this->tempFeaturedImage['path']);
+                    if (file_exists($filePath)) {
+                        $uploadedFile = new \Illuminate\Http\UploadedFile(
+                            $filePath,
+                            $this->tempFeaturedImage['original_name'],
+                            mime_content_type($filePath),
+                            null,
+                            true
+                        );
 
-        try {
-            $this->mediaService->uploadMedia($model, $this->featuredImageFile, 'featured_image');
+                        $this->mediaService->uploadMedia($model, $uploadedFile, 'featured_image');
+                        $this->loadCollection($model, 'featured_image');
 
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('mediamanagement::admin.upload_success'),
-                'type' => 'success'
-            ]);
+                        // Temp'i temizle
+                        if (file_exists($filePath)) {
+                            unlink($filePath);
+                        }
+                        if (isset($this->tempFeaturedImage['thumb'])) {
+                            $thumbPath = str_replace(asset(''), public_path(), $this->tempFeaturedImage['thumb']);
+                            if (file_exists($thumbPath)) {
+                                unlink($thumbPath);
+                            }
+                        }
+                        $this->tempFeaturedImage = null;
+                        $this->saveTempFilesToSession();
 
-            $this->featuredImageFile = null;
-            $this->loadCollection($model, 'featured_image');
-
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
-                'type' => 'error'
-            ]);
+                        $this->dispatch('toast', [
+                            'title' => __('admin.success'),
+                            'message' => __('mediamanagement::admin.upload_success'),
+                            'type' => 'success'
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    $this->dispatch('toast', [
+                        'title' => __('admin.error'),
+                        'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
+                        'type' => 'error'
+                    ]);
+                }
+            }
         }
     }
 
@@ -286,37 +304,68 @@ class UniversalMediaComponent extends Component
             'galleryFiles.*' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB per file, max 4000x4000px
         ]);
 
-        // Model ID yoksa, session-based temp storage'a kaydet
-        if (!$this->modelId) {
-            $this->saveGalleryToTempStorage();
-            $this->galleryFiles = [];
-            return;
-        }
+        // HER ZAMAN temp storage kullan (SSL handshake sorununu bypass et)
+        $previousTempCount = count($this->tempGallery);
+        $this->saveGalleryToTempStorage();
+        $this->galleryFiles = [];
 
-        // Model varsa direkt upload
-        $model = $this->getModel();
-        if (!$model) {
-            return;
-        }
+        // Model varsa direkt media library'ye de ekle
+        if ($this->modelId) {
+            $model = $this->getModel();
+            if ($model && !empty($this->tempGallery)) {
+                try {
+                    $uploadedFiles = [];
+                    $newTempItems = array_slice($this->tempGallery, $previousTempCount);
 
-        try {
-            $this->mediaService->uploadMultipleMedia($model, $this->galleryFiles, 'gallery');
+                    foreach ($newTempItems as $item) {
+                        $filePath = public_path($item['path']);
+                        if (file_exists($filePath)) {
+                            $uploadedFiles[] = new \Illuminate\Http\UploadedFile(
+                                $filePath,
+                                $item['original_name'],
+                                mime_content_type($filePath),
+                                null,
+                                true
+                            );
+                        }
+                    }
 
-            $this->dispatch('toast', [
-                'title' => __('admin.success'),
-                'message' => __('mediamanagement::admin.upload_success'),
-                'type' => 'success'
-            ]);
+                    if (!empty($uploadedFiles)) {
+                        $this->mediaService->uploadMultipleMedia($model, $uploadedFiles, 'gallery');
+                        $this->loadCollection($model, 'gallery');
 
-            $this->galleryFiles = [];
-            $this->loadCollection($model, 'gallery');
+                        // Yüklenen temp dosyaları temizle
+                        foreach ($newTempItems as $item) {
+                            $filePath = public_path($item['path']);
+                            if (file_exists($filePath)) {
+                                unlink($filePath);
+                            }
+                            if (isset($item['thumb'])) {
+                                $thumbPath = str_replace(asset(''), public_path(), $item['thumb']);
+                                if (file_exists($thumbPath)) {
+                                    unlink($thumbPath);
+                                }
+                            }
+                        }
 
-        } catch (\Exception $e) {
-            $this->dispatch('toast', [
-                'title' => __('admin.error'),
-                'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
-                'type' => 'error'
-            ]);
+                        // Temp gallery'den yeni eklenenileri kaldır
+                        $this->tempGallery = array_slice($this->tempGallery, 0, $previousTempCount);
+                        $this->saveTempFilesToSession();
+
+                        $this->dispatch('toast', [
+                            'title' => __('admin.success'),
+                            'message' => __('mediamanagement::admin.upload_success'),
+                            'type' => 'success'
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    $this->dispatch('toast', [
+                        'title' => __('admin.error'),
+                        'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
+                        'type' => 'error'
+                    ]);
+                }
+            }
         }
     }
 
@@ -1178,6 +1227,84 @@ class UniversalMediaComponent extends Component
     // ========================================
     // RENDER
     // ========================================
+
+    /**
+     * Manual upload handler - Livewire bypass for SSL issues
+     */
+    public static function manualFeaturedUpload(\Illuminate\Http\Request $request)
+    {
+        try {
+            $file = $request->file('file');
+
+            if (!$file) {
+                return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
+            }
+
+            // Validate
+            $request->validate([
+                'file' => 'required|file|max:20480', // 20MB
+            ]);
+
+            // Save to temp storage
+            $tempPath = $file->store('livewire-tmp', 'public');
+
+            return response()->json([
+                'success' => true,
+                'tempPath' => $tempPath,
+                'message' => 'File uploaded successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('[MANUAL_UPLOAD_ERROR]', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Handle manual upload from Alpine.js
+     */
+    public function handleManualUpload($tempPath)
+    {
+        try {
+            // Temp dosyayı oku
+            $fullPath = storage_path('app/public/' . $tempPath);
+
+            if (!file_exists($fullPath)) {
+                throw new \Exception('Temporary file not found');
+            }
+
+            // UploadedFile oluştur
+            $uploadedFile = new \Illuminate\Http\UploadedFile(
+                $fullPath,
+                basename($tempPath),
+                mime_content_type($fullPath),
+                null,
+                true
+            );
+
+            // Mevcut updatedFeaturedImageFile logic'ini kullan
+            $this->featuredImageFile = $uploadedFile;
+            $this->updatedFeaturedImageFile();
+
+            // Temp dosyayı sil
+            @unlink($fullPath);
+
+        } catch (\Exception $e) {
+            \Log::error('[HANDLE_MANUAL_UPLOAD_ERROR]', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            $this->addError('featuredImageFile', $e->getMessage());
+        }
+    }
 
     public function render()
     {

@@ -140,25 +140,30 @@ class Setting extends Model implements HasMedia
 
         // Tenant context varsa tenant disk kullan
         if ($tenantId) {
-            $diskName = "tenant{$tenantId}";
+            // ✅ FIX: Her tenant için ayrı disk yerine tek 'tenant' disk kullan
+            // Runtime'da doğru tenant için yapılandırılacak (TenantStorageHelper pattern)
+            $diskName = 'tenant';
 
-            // Eğer disk zaten konfig edilmemişse, runtime'da ekle
-            if (!config("filesystems.disks.{$diskName}")) {
-                $root = storage_path("tenant{$tenantId}/app/public");
+            // Disk yapılandırmasını tenant-specific olarak ayarla
+            $root = storage_path("tenant{$tenantId}/app/public");
 
-                // 🔥 Request'ten gerçek URL al (config('app.url') yanlış domain döndürüyor!)
-                $appUrl = request() ? request()->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
-
-                config([
-                    "filesystems.disks.{$diskName}" => [
-                        'driver' => 'local',
-                        'root' => $root,
-                        'url' => $appUrl ? "{$appUrl}/storage/tenant{$tenantId}" : null,
-                        'visibility' => 'public',
-                        'throw' => false,
-                    ],
-                ]);
+            // Directory yoksa oluştur
+            if (!is_dir($root)) {
+                @mkdir($root, 0775, true);
             }
+
+            // 🔥 Request'ten gerçek URL al (config('app.url') yanlış domain döndürüyor!)
+            $appUrl = request() ? request()->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
+
+            config([
+                'filesystems.disks.tenant' => [
+                    'driver' => 'local',
+                    'root' => $root,
+                    'url' => $appUrl ? "{$appUrl}/storage/tenant{$tenantId}" : null,
+                    'visibility' => 'public',
+                    'throw' => false,
+                ],
+            ]);
 
             return $diskName;
         }

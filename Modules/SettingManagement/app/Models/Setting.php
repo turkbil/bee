@@ -26,13 +26,19 @@ class Setting extends Model implements HasMedia
      */
     public function getConnectionName()
     {
-        // CRITICAL: Check if we're being called from Media Library context
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10);
+        // CRITICAL: Only check IMMEDIATE caller (frame 1-2)
+        // Don't look deep in backtrace to avoid false positives
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 
-        foreach ($backtrace as $trace) {
-            $class = $trace['class'] ?? '';
+        // Check only the DIRECT caller
+        for ($i = 1; $i <= 2; $i++) {
+            if (!isset($backtrace[$i]['class'])) {
+                continue;
+            }
 
-            // If called from Spatie Media Library
+            $class = $backtrace[$i]['class'];
+
+            // If DIRECTLY called from Spatie Media Library
             if (str_contains($class, 'Spatie\\MediaLibrary')) {
                 // Use tenant connection for media
                 if (function_exists('tenant') && tenant()) {

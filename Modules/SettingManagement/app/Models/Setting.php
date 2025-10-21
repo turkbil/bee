@@ -183,7 +183,10 @@ class Setting extends Model implements HasMedia
             return;
         }
 
-        $collection = $this->addMediaCollection('featured_image')
+        // Dynamic collection name (Setting key'ini kullan)
+        $collectionName = $this->getMediaCollectionName();
+
+        $collection = $this->addMediaCollection($collectionName)
             ->singleFile()
             ->useDisk($this->getMediaDisk()); // 🔥 Tenant disk kullan
 
@@ -235,12 +238,15 @@ class Setting extends Model implements HasMedia
         // Setting type'ına göre collection belirle
         $collections = [];
 
+        // Dynamic collection name
+        $collectionName = $this->getMediaCollectionName();
+
         // Type'a göre uygun collection ekle
         switch ($this->type) {
             case 'image':
             case 'file':
             case 'favicon':
-                $collections['featured_image'] = [
+                $collections[$collectionName] = [
                     'type' => $this->type === 'image' ? 'image' : ($this->type === 'favicon' ? 'image' : 'document'),
                     'single_file' => true,
                     'max_items' => 1,

@@ -204,30 +204,49 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 - `a-console.txt` - Console/Debugbar çıktıları için buffer
 - `a-html.txt` - HTML output için buffer
 
-**🚨 KRİTİK KURAL: Konuşma BAŞINDA "oku" derse o konuşmada aktif ol!**
+**🚨 KRİTİK KURAL: Konuşma BAŞINDA dosya path/anahtar kelime görürsen aktif ol!**
 
 #### 📋 İKİ MOD SİSTEMİ:
 
 **1️⃣ PASİF MOD (Default):**
-- Kullanıcı başta "oku" DEMEDİYSE → Hiç dokunma
+- Konuşma başında tetikleyici YOK → Hiç dokunma
 - Görmezden gel, varsayım yapma
 - Sadece kullanıcı açıkça isterse oku
 
-**2️⃣ AKTİF MOD (Konuşma başında aktifleştirilirse):**
-- Kullanıcı konuşma başında "a-console.txt'yi oku" DEDİYSE:
-  - ✅ O konuşma boyunca otomatik takip et
-  - ✅ Kullanıcı yeni mesaj gönderdiğinde tekrar oku
-  - ✅ Değişiklikleri analiz et
-  - ✅ Sorunları tespit et
-- **Her yeni konuşmada sıfırlanır** - Yeniden "oku" demeli
+**2️⃣ AKTİF MOD Tetikleyicileri (Konuşma başında):**
+Kullanıcı şunları kullanırsa otomatik aktif ol:
+
+**Dosya Path:**
+- `a-console.txt` → Console buffer takip et
+- `a-html.txt` → HTML buffer takip et
+
+**Anahtar Kelimeler:**
+- `console` → a-console.txt takip et
+- `debug` → a-console.txt takip et
+- `debugbar` → a-console.txt takip et
+- `html çıktı` → a-html.txt takip et
+- `html output` → a-html.txt takip et
+
+**Aktif Mod Açıldığında:**
+- ✅ O konuşma boyunca otomatik takip et
+- ✅ Her mesajda ilgili dosyayı oku
+- ✅ Değişiklikleri analiz et
+- ✅ Sorunları tespit et
+- ✅ Todo'da işaretle: "📄 a-console.txt aktif mod ON"
+
+**Her yeni konuşmada sıfırlanır** - Yeniden tetikleyici gerekli
 
 #### ✅ AKTİF MOD Workflow:
 ```bash
-Kullanıcı (Konuşma başında): "a-console.txt'yi takip et"
+Kullanıcı (Konuşma başında): "Claude, a-console.txt navbar hatası var"
+# veya: "Claude, console'da hata görüyorum"
+# veya: "Claude, debug çıktısına bak"
+
 Sen:
-  1. cat a-console.txt  # İlk okuma
-  2. Analiz et ve raporla
-  3. ✅ Aktif mod ON - Todo'ya ekle
+  1. ✅ Tetikleyici tespit edildi: "a-console.txt" / "console" / "debug"
+  2. cat a-console.txt  # İlk okuma
+  3. Analiz et ve raporla
+  4. ✅ Aktif mod ON - Todo'ya ekle: "📄 a-console.txt aktif mod ON"
 
 Kullanıcı (Sonraki mesajlarda): "Navbar'ı düzelt"
 Sen:
@@ -238,9 +257,11 @@ Sen:
   5. Sorun varsa raporla
 ```
 
-#### ❌ PASİF MOD (Başta söylemezse):
+#### ❌ PASİF MOD (Tetikleyici yok):
 ```bash
-Kullanıcı: "Navbar'ı düzelt"
+Kullanıcı: "Claude, navbar'ı düzelt"
+# Tetikleyici yok: path yok, anahtar kelime yok
+
 Sen:
   - a-console.txt'ye DOKUNMA (aktif mod OFF)
   - Sadece navbar'ı düzelt

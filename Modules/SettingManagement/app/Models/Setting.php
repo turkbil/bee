@@ -13,8 +13,32 @@ use Modules\MediaManagement\App\Traits\HasMediaManagement;
 class Setting extends Model implements HasMedia
 {
     use CentralConnection, Sluggable, HasMediaManagement;
-    
+
     protected $table = 'settings';
+
+    /**
+     * Override Spatie Media Library relationship
+     * Media kayıtları tenant-aware olmalı (tenant DB'ye kaydetmeli)
+     *
+     * Setting model CentralConnection kullanır ama media kayıtları
+     * her tenant'ın kendi DB'sinde olmalı
+     */
+    public function media(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        // Tenant context varsa tenant connection kullan
+        if (function_exists('tenant') && tenant()) {
+            return $this->morphMany(
+                config('media-library.media_model'),
+                'model'
+            )->setConnection('tenant');
+        }
+
+        // Central context için default connection
+        return $this->morphMany(
+            config('media-library.media_model'),
+            'model'
+        );
+    }
 
     protected $fillable = [
         'group_id',

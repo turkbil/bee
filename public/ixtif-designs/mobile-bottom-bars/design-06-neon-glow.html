@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 06 - Neon Glow Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 85px;
+            background: #0f172a;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .neon-btn {
+            transition: all 0.3s ease;
+        }
+        .neon-whatsapp {
+            color: #25D366;
+            text-shadow: 0 0 10px #25D366, 0 0 20px #25D366, 0 0 30px #25D366;
+        }
+        .neon-phone {
+            color: #3b82f6;
+            text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6, 0 0 30px #3b82f6;
+        }
+        .neon-btn:hover {
+            transform: scale(1.1);
+            filter: brightness(1.3);
+        }
+        @keyframes neon-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .pulse-neon {
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 06 - Neon Glow Bottom Bar</h1>
+        <p class="text-gray-400 mb-4">Karanlık tema ile neon ışıltılı butonlar</p>
+
+        <div class="bg-slate-800 rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-300">
+                <li>Koyu arka plan üzerinde neon efektleri</li>
+                <li>Işıltılı metin ve ikon gölgeleri</li>
+                <li>Hover'da büyüme ve parlaklık artışı</li>
+                <li>Pulse animasyonlu ikonlar</li>
+                <li>Cyberpunk/futuristik görünüm</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-slate-800 rounded-lg p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">Dark Mode İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+        <div class="grid grid-cols-2 max-w-md mx-auto">
+            <!-- WhatsApp Neon -->
+            <a href="https://wa.me/905551234567"
+               class="neon-btn flex flex-col items-center justify-center py-5 gap-2 hover:bg-white/5">
+                <i class="fab fa-whatsapp text-4xl neon-whatsapp pulse-neon"></i>
+                <span class="text-sm font-bold neon-whatsapp">WhatsApp</span>
+            </a>
+
+            <!-- Phone Neon -->
+            <a href="tel:+905551234567"
+               class="neon-btn flex flex-col items-center justify-center py-5 gap-2 hover:bg-white/5 border-l border-white/10">
+                <i class="fas fa-phone text-3xl neon-phone pulse-neon"></i>
+                <span class="text-sm font-bold neon-phone">Telefon</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

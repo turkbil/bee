@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 20 - Video Call Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .call-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .call-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .call-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        .pulse-ring {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: pulse-ring-anim 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring-anim {
+            0% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 20 - Video Call Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Video görüşme odaklı, 3 iletişim kanalı</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>3 iletişim kanalı (WhatsApp, Phone, Video Call)</li>
+                <li>Video call butonu vurgulu ve pulse efektli</li>
+                <li>Ripple hover animasyonu</li>
+                <li>Modern gradient arka plan</li>
+                <li>Online danışmanlık ve telemedicine için ideal</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar text-white shadow-2xl">
+        <div class="max-w-md mx-auto px-4 py-4">
+            <!-- Header -->
+            <div class="text-center mb-3">
+                <div class="text-sm font-semibold mb-1">Bize Ulaşın</div>
+                <div class="text-xs opacity-90">Hemen destek alın • 7/24 Online</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="grid grid-cols-3 gap-3">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/905551234567"
+                   class="call-btn flex flex-col items-center justify-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-xl">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                    <span class="text-xs font-semibold">WhatsApp</span>
+                </a>
+
+                <!-- Video Call (Featured) -->
+                <a href="#video-call"
+                   class="call-btn relative flex flex-col items-center justify-center gap-2 bg-white text-purple-600 py-4 rounded-xl shadow-lg">
+                    <div class="pulse-ring"></div>
+                    <i class="fas fa-video text-2xl relative z-10"></i>
+                    <span class="text-xs font-bold relative z-10">Video Ara</span>
+                </a>
+
+                <!-- Phone -->
+                <a href="tel:+905551234567"
+                   class="call-btn flex flex-col items-center justify-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-xl">
+                    <i class="fas fa-phone text-xl"></i>
+                    <span class="text-xs font-semibold">Telefon</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

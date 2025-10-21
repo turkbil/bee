@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 16 - Minimal Sidebar Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 0;
+            padding-right: 60px;
+        }
+        .side-bar {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9999;
+        }
+        .side-btn {
+            transition: all 0.3s ease;
+        }
+        .side-btn:hover {
+            padding-right: 15px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 16 - Minimal Sidebar Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Alt yerine yan tarafta sabit sidebar yerleşimi (alternatif)</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Sağ kenarda vertical sidebar</li>
+                <li>Ekran ortasına hizalanmış</li>
+                <li>Hover'da sağa genişleme</li>
+                <li>Desktop ve tablet için de uygun</li>
+                <li>Space-saving alternatif yaklaşım</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 600px;">
+                <h3 class="text-lg font-semibold">Sağ taraftaki sidebar'a bakın!</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDE BAR -->
+    <div class="side-bar">
+        <div class="flex flex-col shadow-2xl rounded-l-xl overflow-hidden">
+            <!-- WhatsApp -->
+            <a href="https://wa.me/905551234567"
+               class="side-btn flex items-center justify-center w-14 h-14 bg-green-500 text-white hover:bg-green-600 transition-all">
+                <i class="fab fa-whatsapp text-2xl"></i>
+            </a>
+
+            <!-- Phone -->
+            <a href="tel:+905551234567"
+               class="side-btn flex items-center justify-center w-14 h-14 bg-blue-600 text-white hover:bg-blue-700 border-t border-white/20 transition-all">
+                <i class="fas fa-phone text-xl"></i>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

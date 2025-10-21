@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 15 - Social Grid Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        .social-btn {
+            transition: all 0.3s ease;
+        }
+        .social-btn:hover {
+            transform: translateY(-8px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 15 - Social Grid Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">4'lü sosyal medya grid düzeni</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>4 sosyal medya/iletişim kanalı (WhatsApp, Phone, Email, Instagram)</li>
+                <li>2x2 grid yerleşimi</li>
+                <li>Her platform kendi brand renginde</li>
+                <li>Hover'da yukarı kalkma efekti</li>
+                <li>Çok kanallı iletişim için ideal</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar bg-white shadow-2xl border-t border-gray-200">
+        <div class="grid grid-cols-2 grid-rows-2 max-w-md mx-auto">
+            <!-- WhatsApp -->
+            <a href="https://wa.me/905551234567"
+               class="social-btn flex flex-col items-center justify-center gap-2 py-5 bg-green-500 text-white border-r border-b border-white">
+                <i class="fab fa-whatsapp text-3xl"></i>
+                <span class="text-xs font-semibold">WhatsApp</span>
+            </a>
+
+            <!-- Phone -->
+            <a href="tel:+905551234567"
+               class="social-btn flex flex-col items-center justify-center gap-2 py-5 bg-blue-600 text-white border-b border-white">
+                <i class="fas fa-phone text-2xl"></i>
+                <span class="text-xs font-semibold">Telefon</span>
+            </a>
+
+            <!-- Email -->
+            <a href="mailto:info@example.com"
+               class="social-btn flex flex-col items-center justify-center gap-2 py-5 bg-red-500 text-white border-r border-white">
+                <i class="fas fa-envelope text-2xl"></i>
+                <span class="text-xs font-semibold">E-posta</span>
+            </a>
+
+            <!-- Instagram -->
+            <a href="https://instagram.com/yourcompany"
+               class="social-btn flex flex-col items-center justify-center gap-2 py-5 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white">
+                <i class="fab fa-instagram text-2xl"></i>
+                <span class="text-xs font-semibold">Instagram</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

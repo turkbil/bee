@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 08 - Split Circle Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        .circle-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            top: -20px;
+        }
+        .circle-btn:hover {
+            transform: scale(1.15) rotate(10deg);
+        }
+        .circle-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 08 - Split Circle Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Dairesel butonlar ile bölünmüş tasarım</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Büyük dairesel floating butonlar</li>
+                <li>Bar'ın üstüne taşan tasarım</li>
+                <li>Hover'da dönerek büyüme</li>
+                <li>Her buton kendi renginde</li>
+                <li>Playful ve eğlenceli görünüm</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">Test</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar bg-gradient-to-r from-gray-800 to-gray-900 py-3">
+        <div class="flex justify-center items-start gap-8 max-w-md mx-auto">
+            <!-- WhatsApp Circle -->
+            <div class="flex flex-col items-center">
+                <a href="https://wa.me/905551234567"
+                   class="circle-btn bg-green-500 text-white">
+                    <i class="fab fa-whatsapp text-3xl"></i>
+                </a>
+                <span class="text-white text-xs mt-2 font-medium">WhatsApp</span>
+            </div>
+
+            <!-- Phone Circle -->
+            <div class="flex flex-col items-center">
+                <a href="tel:+905551234567"
+                   class="circle-btn bg-blue-500 text-white">
+                    <i class="fas fa-phone text-2xl"></i>
+                </a>
+                <span class="text-white text-xs mt-2 font-medium">Telefon</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

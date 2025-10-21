@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 11 - Expand Drawer Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            padding-bottom: 70px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 11 - Expand Drawer Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Tıklandığında genişleyen çekmece tasarımı</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Collapse/Expand toggle özelliği</li>
+                <li>İlk başta minimize, tıklayınca genişler</li>
+                <li>Detaylı bilgi ve birden fazla iletişim seçeneği</li>
+                <li>Alpine.js ile smooth geçişler</li>
+                <li>Space-saving tasarım</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 600px;">
+                <h3 class="text-lg font-semibold">Aşağıdaki bar'a tıklayın!</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar bg-gradient-to-r from-indigo-600 to-purple-600 shadow-2xl" x-data="{ expanded: false }">
+        <div class="max-w-md mx-auto">
+            <!-- Toggle Button -->
+            <button @click="expanded = !expanded"
+                    class="w-full py-4 text-white flex items-center justify-center gap-3 hover:bg-black/10 transition-colors">
+                <i class="fas fa-phone-volume text-xl"></i>
+                <span class="font-bold">Bize Ulaşın</span>
+                <i :class="expanded ? 'fa-chevron-down' : 'fa-chevron-up'" class="fas transition-transform"></i>
+            </button>
+
+            <!-- Expanded Content -->
+            <div x-show="expanded"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform translate-y-4"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="border-t border-white/20 bg-black/10">
+                <div class="grid grid-cols-2 gap-3 p-4">
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/905551234567"
+                       class="flex flex-col items-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-lg transition-colors">
+                        <i class="fab fa-whatsapp text-3xl text-white"></i>
+                        <span class="text-xs text-white font-medium">WhatsApp</span>
+                    </a>
+
+                    <!-- Phone -->
+                    <a href="tel:+905551234567"
+                       class="flex flex-col items-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-lg transition-colors">
+                        <i class="fas fa-phone text-2xl text-white"></i>
+                        <span class="text-xs text-white font-medium">Telefon</span>
+                    </a>
+
+                    <!-- Email -->
+                    <a href="mailto:info@example.com"
+                       class="flex flex-col items-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-lg transition-colors">
+                        <i class="fas fa-envelope text-2xl text-white"></i>
+                        <span class="text-xs text-white font-medium">E-posta</span>
+                    </a>
+
+                    <!-- Location -->
+                    <a href="#map"
+                       class="flex flex-col items-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-lg transition-colors">
+                        <i class="fas fa-map-marker-alt text-2xl text-white"></i>
+                        <span class="text-xs text-white font-medium">Konum</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

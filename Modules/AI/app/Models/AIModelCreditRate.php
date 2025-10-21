@@ -18,6 +18,7 @@ class AIModelCreditRate extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_model_credit_rates';
 
     protected $fillable = [

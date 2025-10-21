@@ -12,6 +12,7 @@ class AIFeatureCategory extends Model
 {
     use Sluggable, CentralConnection;
 
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_feature_categories';
     protected $primaryKey = 'ai_feature_category_id';
     public $incrementing = true;

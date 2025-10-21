@@ -15,6 +15,59 @@
     Changelog v2.0.1: Fixed $nextTick to setTimeout for Alpine store compatibility
 --}}
 
+{{-- ✨ AI CHAT LINK STYLES: Simple & Clean (No Boxes!) --}}
+<style>
+/* Product Links - Blue */
+.ai-product-link {
+    color: #2563eb !important;
+    text-decoration: none !important;
+    display: block;
+    margin: 6px 0;
+    transition: all 0.2s ease;
+    line-height: 1.6;
+}
+.ai-product-link:hover {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+}
+
+/* Category Links - Green */
+.ai-category-link {
+    color: #059669 !important;
+    text-decoration: none !important;
+    display: block;
+    margin: 6px 0;
+    transition: all 0.2s ease;
+    line-height: 1.6;
+}
+.ai-category-link:hover {
+    color: #047857 !important;
+    text-decoration: underline !important;
+}
+
+/* Bold text inside links */
+.ai-product-link strong,
+.ai-category-link strong {
+    font-weight: 700;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .ai-product-link {
+        color: #60a5fa !important;
+    }
+    .ai-product-link:hover {
+        color: #93c5fd !important;
+    }
+    .ai-category-link {
+        color: #34d399 !important;
+    }
+    .ai-category-link:hover {
+        color: #6ee7b7 !important;
+    }
+}
+</style>
+
 <script>
 // AI Chat Store v2.0.1 - Alpine.js Global State
 document.addEventListener('alpine:init', () => {
@@ -590,35 +643,19 @@ window.aiChatRenderMarkdown = function(content) {
     // Process links BEFORE list parsing to prevent "2. **Text** [LINK]" from creating malformed HTML
     // This ensures links are standalone elements, not wrapped inside list items
 
-    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug
+    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug (SIMPLE & CLEAN)
     // Format: **Ürün Adı** [LINK:shop:litef-ept15] → /shop/litef-ept15
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
-
-        // Minimal shopping icon (single line, no newlines)
-        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>`;
-
-        // Minimal arrow icon (single line, no newlines)
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
-
-        // CRITICAL FIX: Single-line template to prevent <br> injection
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${shopIcon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
+        // Simple link: blue color, bold text, hover underline
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong>${linkText.trim()}</strong></a>`;
     });
 
-    // 0B. Category SLUG format: [LINK:shop:category:SLUG]
-    // IMPORTANT: ONLY processes **bold** text before [LINK:...] to prevent entire sentence being linked
-    // Supports uppercase, Turkish chars
+    // 0B. Category SLUG format: [LINK:shop:category:SLUG] (SIMPLE & CLEAN)
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
-
-        // Minimal category icon (single line, no newlines)
-        const icon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
-
-        // Minimal arrow icon (single line, no newlines)
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
-
-        // CRITICAL FIX: Single-line template to prevent <br> injection
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${icon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
+        // Simple category link: green color
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-category-link"><strong>${linkText.trim()}</strong></a>`;
     });
 
     // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
@@ -685,22 +722,15 @@ window.aiChatRenderMarkdown = function(content) {
             borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
         }
 
-        // CRITICAL FIX: Single-line template to prevent <br> injection
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ${borderColor} rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${icon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
+        // SIMPLE & CLEAN: Just link with appropriate color
+        const linkClass = module === 'shop' && type === 'category' ? 'ai-category-link' : 'ai-product-link';
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="${linkClass}"><strong>${linkText.trim()}</strong></a>`;
     });
 
-    // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
+    // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı (SIMPLE & CLEAN)
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)(?::([a-z0-9-]+))?\]/gi, function(match, productName, productId, productSlug) {
         const productUrl = `/shop/product/${productId}`;
-
-        // Minimal shopping icon (single line, no newlines)
-        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>`;
-
-        // Minimal arrow icon (single line, no newlines)
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
-
-        // CRITICAL FIX: Single-line template to prevent <br> injection
-        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${shopIcon}<span class="no-underline">${productName.trim()}</span>${arrowIcon}</a>`;
+        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong>${productName.trim()}</strong></a>`;
     });
 
     // ═══════════════════════════════════════════════════════════════════
@@ -730,28 +760,30 @@ window.aiChatRenderMarkdown = function(content) {
     // ═══════════════════════════════════════════════════════════════════
 
     // 🔢 NUMBERED LIST: "1. item", "2. item", "3. item" → <ol><li>item</li></ol>
-    // CRITICAL FIX: This was missing, causing numbers to show as raw text like "2."
+    // CRITICAL FIX v2: Added negative lookahead (?!\d) to prevent "2.0 Ton" from being parsed as list
     //
     // Pattern matches:
     // - "1. Item text" or "1) Item text"
     // - Consecutive numbered items (multi-line)
     // - Numbers can be 1-999
+    // - (?!\d) prevents "2.0", "1.5" from matching (decimal numbers)
     //
     // Example input:
     //   1. İXTİF EPT15-15ES ___LINK_PRESERVED_0___
     //   2. İXTİF EPT20-20ETC ___LINK_PRESERVED_1___
+    //   (but NOT "2.0 Ton" or "1.5 kg")
     //
     // Example output:
     //   <ol>
     //   <li>İXTİF EPT15-15ES ___LINK_PRESERVED_0___</li>
     //   <li>İXTİF EPT20-20ETC ___LINK_PRESERVED_1___</li>
     //   </ol>
-    html = html.replace(/((?:^|\n)\d+[.)]\s+.+(?:\n\d+[.)]\s+.+)*)/gm, function(match) {
-        // Split by newlines and filter lines that start with number + period/paren
-        let items = match.split('\n').filter(line => /^\d+[.)]\s+/.test(line.trim()));
+    html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
+        // Split by newlines and filter lines that start with number + period/paren (not decimal)
+        let items = match.split('\n').filter(line => /^\d+[.)](?!\d)\s+/.test(line.trim()));
         let listItems = items.map(line => {
             // Remove "1. " or "1) " prefix
-            let text = line.replace(/^\d+[.)]\s*/, '').trim();
+            let text = line.replace(/^\d+[.)](?!\d)\s*/, '').trim();
             return `<li>${text}</li>`;
         }).join('\n');
         return `<ol>\n${listItems}\n</ol>`;

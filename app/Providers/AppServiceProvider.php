@@ -91,7 +91,13 @@ class AppServiceProvider extends ServiceProvider
         
         // Enterprise Queue Health Service
         $this->app->singleton(\App\Services\EnterpriseQueueHealthService::class);
-        
+
+        // 🤖 AI Services - Shop Assistant Dependencies (Dependency chain order matters!)
+        $this->app->singleton(\App\Services\AI\EmbeddingService::class);
+        $this->app->singleton(\App\Services\AI\VectorSearchService::class);
+        $this->app->singleton(\App\Services\AI\HybridSearchService::class);
+        $this->app->singleton(\App\Services\AI\ProductSearchService::class);
+
         $this->loadHelperFiles();
     }
 

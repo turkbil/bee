@@ -17,6 +17,7 @@ use App\Models\Tenant;
  */
 class AIContentJob extends Model
 {
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_content_jobs';
 
     protected $fillable = [

@@ -8,6 +8,7 @@ use App\Models\Tenant;
 
 class AITenantProfile extends Model
 {
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_tenant_profiles';
     
     public function __construct(array $attributes = [])

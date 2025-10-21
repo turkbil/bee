@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AIFeaturePrompt extends Model
 {
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_feature_prompts';
     
     public function __construct(array $attributes = [])

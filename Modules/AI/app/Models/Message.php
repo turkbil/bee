@@ -9,6 +9,7 @@ class Message extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_messages';
     
     public function __construct(array $attributes = [])

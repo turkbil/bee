@@ -13,6 +13,7 @@ use Modules\AI\App\Services\AICreditService;
 
 class AICreditUsage extends Model
 {
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_credit_usage';
     
     public function __construct(array $attributes = [])

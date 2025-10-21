@@ -68,17 +68,24 @@ class MediaService
     public function uploadMedia(HasMedia $model, $file, string $collectionName): ?Media
     {
         try {
+            // Slug-friendly dosya adı oluştur (Türkçe karakter desteği)
+            $originalName = $file->getClientOriginalName();
+            $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+            $baseName = pathinfo($originalName, PATHINFO_FILENAME);
+            $sluggedBaseName = \Illuminate\Support\Str::slug($baseName);
+            $sluggedFileName = $sluggedBaseName . '.' . $extension;
+
             // Livewire TemporaryUploadedFile için özel işlem
             if (class_exists('Livewire\Features\SupportFileUploads\TemporaryUploadedFile')
                 && $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
 
                 // Livewire temp dosyasını geçici bir yere kopyala
-                $tempPath = sys_get_temp_dir() . '/' . uniqid('media_') . '_' . $file->getClientOriginalName();
+                $tempPath = sys_get_temp_dir() . '/' . uniqid('media_') . '_' . $sluggedFileName;
                 copy($file->getRealPath(), $tempPath);
 
                 $media = $model->addMedia($tempPath)
-                    ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($file->getClientOriginalName())
+                    ->usingName($sluggedBaseName)
+                    ->usingFileName($sluggedFileName)
                     ->toMediaCollection($collectionName);
 
                 // Geçici dosyayı temizle
@@ -89,8 +96,8 @@ class MediaService
                 $filePath = method_exists($file, 'getRealPath') ? $file->getRealPath() : $file->path();
 
                 $media = $model->addMedia($filePath)
-                    ->usingName(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                    ->usingFileName($file->getClientOriginalName())
+                    ->usingName($sluggedBaseName)
+                    ->usingFileName($sluggedFileName)
                     ->toMediaCollection($collectionName);
             }
 

@@ -21,7 +21,7 @@ use App\Http\Middleware\InitializeTenancy;
 
 Route::prefix('ai/v1')
     ->name('ai.api.v1.')
-    ->middleware([InitializeTenancy::class]) // ✅ FIX: Tenant context için middleware eklendi
+    ->middleware([InitializeTenancy::class]) // ✅ Tenant context for tenant('id') - Models use central DB explicitly
     ->group(function () {
     
     // 📋 Public Information Endpoints (No authentication required)

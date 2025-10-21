@@ -9,6 +9,7 @@ class Prompt extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Explicitly use central DB (not tenant)
     protected $table = 'ai_prompts';
 
     protected $fillable = [

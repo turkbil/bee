@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 
 class AIDynamicDataSource extends Model
 {
+    protected $connection = 'mysql'; // Central DB for all tenants
     protected $table = 'ai_dynamic_data_sources';
     
     protected $fillable = [

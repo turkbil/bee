@@ -71,51 +71,33 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-body">
-            <div class="row g-3 align-items-end">
-                <div class="col-lg-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.search_label') }}</label>
-                    <input type="text" class="form-control" wire:model.debounce.500ms="search" placeholder="{{ __('mediamanagement::admin.search_placeholder') }}">
+        <div class="card-body p-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label small mb-1">{{ __('mediamanagement::admin.search_label') }}</label>
+                    <input type="text" class="form-control form-control-sm" wire:model.debounce.500ms="search" placeholder="{{ __('mediamanagement::admin.search_placeholder') }}">
                 </div>
-                <div class="col-lg-2 col-md-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.collection') }}</label>
-                    <select class="form-select" wire:model="collectionFilter">
-                        <option value="">{{ __('mediamanagement::admin.all_collections') }}</option>
-                        @foreach($availableCollections as $collection)
-                            <option value="{{ $collection }}">{{ \Illuminate\Support\Str::headline(str_replace('_', ' ', $collection)) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.model') }}</label>
-                    <select class="form-select" wire:model="moduleFilter">
-                        <option value="">{{ __('mediamanagement::admin.all_models') }}</option>
-                        @foreach($availableModules as $module)
-                            <option value="{{ $module }}">{{ $this->moduleLabel($module) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.media_type') }}</label>
-                    <select class="form-select" wire:model="typeFilter">
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <label class="form-label small mb-1">{{ __('mediamanagement::admin.media_type') }}</label>
+                    <select class="form-select form-select-sm" wire:model="typeFilter">
                         <option value="">{{ __('mediamanagement::admin.all_types') }}</option>
                         @foreach($mediaTypes as $typeKey => $typeConfig)
                             <option value="{{ $typeKey }}">{{ $typeConfig['label'] ?? \Illuminate\Support\Str::headline($typeKey) }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.disk') }}</label>
-                    <select class="form-select" wire:model="diskFilter">
-                        <option value="">{{ __('mediamanagement::admin.all_disks') }}</option>
-                        @foreach($availableDisks as $disk)
-                            <option value="{{ $disk }}">{{ \Illuminate\Support\Str::upper($disk) }}</option>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <label class="form-label small mb-1">{{ __('mediamanagement::admin.collection') }}</label>
+                    <select class="form-select form-select-sm" wire:model="collectionFilter">
+                        <option value="">{{ __('mediamanagement::admin.all_collections') }}</option>
+                        @foreach($availableCollections as $collection)
+                            <option value="{{ $collection }}">{{ \Illuminate\Support\Str::headline(str_replace('_', ' ', $collection)) }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.date_range') }}</label>
-                    <select class="form-select" wire:model="dateFilter">
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <label class="form-label small mb-1">{{ __('mediamanagement::admin.date_range') }}</label>
+                    <select class="form-select form-select-sm" wire:model="dateFilter">
                         <option value="all">{{ __('mediamanagement::admin.date_all') }}</option>
                         <option value="24h">{{ __('mediamanagement::admin.date_24h') }}</option>
                         <option value="7d">{{ __('mediamanagement::admin.date_7d') }}</option>
@@ -124,106 +106,160 @@
                         <option value="year">{{ __('mediamanagement::admin.date_year') }}</option>
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-4">
-                    <label class="form-label">{{ __('mediamanagement::admin.per_page') }}</label>
-                    <select class="form-select" wire:model="perPage">
+                <div class="col-lg-1 col-md-2 col-sm-3">
+                    <label class="form-label small mb-1">{{ __('mediamanagement::admin.per_page') }}</label>
+                    <select class="form-select form-select-sm" wire:model="perPage">
                         @foreach([12, 24, 48, 96] as $size)
                             <option value="{{ $size }}">{{ $size }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-4">
-                    <button class="btn btn-link mt-4" type="button" wire:click="resetFilters">
+                    <button class="btn btn-sm btn-link" type="button" wire:click="resetFilters">
                         <i class="fas fa-rotate-left me-1"></i>{{ __('mediamanagement::admin.reset_filters') }}
                     </button>
                 </div>
+            </div>
+            <!-- Advanced Filters Toggle -->
+            <div class="collapse mt-2" id="advancedFilters" x-data="{ open: false }">
+                <div class="border-top pt-2">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small mb-1">{{ __('mediamanagement::admin.model') }}</label>
+                            <select class="form-select form-select-sm" wire:model="moduleFilter">
+                                <option value="">{{ __('mediamanagement::admin.all_models') }}</option>
+                                @foreach($availableModules as $module)
+                                    <option value="{{ $module }}">{{ $this->moduleLabel($module) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small mb-1">{{ __('mediamanagement::admin.disk') }}</label>
+                            <select class="form-select form-select-sm" wire:model="diskFilter">
+                                <option value="">{{ __('mediamanagement::admin.all_disks') }}</option>
+                                @foreach($availableDisks as $disk)
+                                    <option value="{{ $disk }}">{{ \Illuminate\Support\Str::upper($disk) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2">
+                <button class="btn btn-sm btn-ghost-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
+                    <i class="fas fa-filter me-1"></i>{{ __('admin.advanced_filters') ?? 'Gelişmiş Filtreler' }}
+                </button>
             </div>
         </div>
     </div>
 
     @if($mediaItems->count())
-        <div class="row row-cards">
+        <div class="row row-cards g-3">
             @foreach($mediaItems as $media)
-                <div class="col-xl-4 col-lg-6">
+                <div class="col-xl-3 col-lg-4 col-md-6" x-data="{ showLightbox: false, copied: false }">
                     <div class="card h-100" wire:key="media-card-{{ $media->id }}">
-                        <div class="ratio ratio-4x3 bg-light border-bottom position-relative">
+                        <!-- Thumbnail Preview -->
+                        <div class="ratio ratio-1x1 bg-light border-bottom position-relative" style="cursor: pointer;"
+                             @click="showLightbox = true">
                             @if($this->isPreviewable($media))
-                                <img src="{{ $media->computed_thumb_url ?? $media->computed_url ?? $this->previewUrl($media) }}" alt="{{ $media->name }}" class="object-fit-contain p-3 w-100 h-100">
+                                <img src="{{ $media->computed_thumb_url ?? $media->computed_url ?? $this->previewUrl($media) }}"
+                                     alt="{{ $media->name }}"
+                                     class="object-fit-cover w-100 h-100">
+                                <div class="position-absolute top-0 end-0 m-2">
+                                    <span class="badge bg-dark bg-opacity-75">
+                                        <i class="fas fa-search-plus me-1"></i>
+                                        {{ $this->formatBytes($media->size) }}
+                                    </span>
+                                </div>
                             @else
                                 <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary">
                                     <i class="fas fa-file fa-3x mb-2"></i>
                                     <div class="fw-bold text-uppercase small">{{ strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION)) }}</div>
+                                    <div class="badge bg-azure-lt text-dark mt-2">{{ $this->formatBytes($media->size) }}</div>
                                 </div>
                             @endif
                         </div>
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex align-items-start justify-content-between gap-2">
-                                <div>
-                                    <div class="fw-semibold">{{ \Illuminate\Support\Str::limit($media->name ?? $media->file_name, 60) }}</div>
-                                    <div class="text-secondary small">{{ $media->file_name }}</div>
+
+                        <!-- Compact Card Body -->
+                        <div class="card-body p-3">
+                            <div class="mb-2">
+                                <div class="fw-semibold small text-truncate" title="{{ $media->name ?? $media->file_name }}">
+                                    {{ \Illuminate\Support\Str::limit($media->name ?? $media->file_name, 30) }}
                                 </div>
-                                <div class="text-end">
-                                    <div class="badge bg-azure-lt text-dark">{{ $this->formatBytes($media->size) }}</div>
-                                    <div class="text-secondary small">{{ optional($media->created_at)->format('d.m.Y H:i') }}</div>
-                                </div>
+                                <div class="text-secondary" style="font-size: 0.7rem;">{{ optional($media->created_at)->format('d.m.Y H:i') }}</div>
                             </div>
 
-                            <div class="mt-3 small text-secondary">
-                                <div class="mb-1">
-                                    <span class="fw-semibold text-dark">{{ __('mediamanagement::admin.model') }}:</span>
-                                    {{ $this->moduleLabel($media->model_type) }}
-                                </div>
-                                <div class="mb-1">
-                                    <span class="fw-semibold text-dark">{{ __('mediamanagement::admin.linked_record') }}:</span>
-                                    {{ $this->modelDisplayName($media) ?? __('mediamanagement::admin.unlinked') }}
-                                </div>
-                                <div class="mb-1">
-                                    <span class="fw-semibold text-dark">URL:</span>
-                                    <div class="input-group input-group-sm copy-url-group">
-                                        <input type="text" class="form-control" value="{{ $media->computed_url ?? $media->getUrl() }}" readonly>
-                                        <button type="button" class="btn btn-outline-secondary" x-on:click="navigator.clipboard.writeText('{{ $media->computed_url ?? $media->getUrl() }}'); copied = true; setTimeout(() => copied = false, 2000);">
-                                            <i class="fas fa-copy"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                @if(isset($libraryItems[$media->id]))
-                                    <div class="mb-1">
-                                        <span class="fw-semibold text-dark">{{ __('mediamanagement::admin.library_item') }}:</span>
-                                        {{ $libraryItems[$media->id]->name }}
-                                    </div>
-                                @endif
-                            </div>
-
+                            <!-- Expandable Details -->
                             @if($detailMediaId === $media->id)
-                                <div class="border-top pt-3 mt-3 small">
-                                    <div class="fw-semibold mb-2">{{ __('mediamanagement::admin.metadata') }}</div>
-                                    <div class="row g-2">
-                                        <div class="col-12">
-                                            <div class="text-secondary">{{ __('mediamanagement::admin.mime_type') }}: {{ $media->mime_type ?? '-' }}</div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="text-secondary">{{ __('mediamanagement::admin.disk') }}: {{ $media->disk }}</div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="text-secondary">ID: {{ $media->id }} / UUID: {{ $media->uuid ?? '-' }}</div>
+                                <div class="border-top pt-2 mt-2" style="font-size: 0.8rem;">
+                                    <div class="mb-1">
+                                        <span class="fw-semibold">{{ __('mediamanagement::admin.model') }}:</span>
+                                        <span class="text-secondary">{{ $this->moduleLabel($media->model_type) }}</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span class="fw-semibold">{{ __('mediamanagement::admin.linked_record') }}:</span>
+                                        <span class="text-secondary">{{ $this->modelDisplayName($media) ?? __('mediamanagement::admin.unlinked') }}</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <span class="fw-semibold">{{ __('mediamanagement::admin.mime_type') }}:</span>
+                                        <span class="text-secondary">{{ $media->mime_type ?? '-' }}</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span class="fw-semibold">URL:</span>
+                                        <div class="input-group input-group-sm mt-1">
+                                            <input type="text" class="form-control" value="{{ $media->computed_url ?? $media->getUrl() }}" readonly>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    x-on:click.stop="navigator.clipboard.writeText('{{ $media->computed_url ?? $media->getUrl() }}'); copied = true; setTimeout(() => copied = false, 2000);">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             @endif
                         </div>
-                        <div class="card-footer d-flex justify-content-between align-items-center gap-2">
-                            <div class="btn-group">
-                                <button class="btn btn-outline-secondary btn-sm" wire:click="openDetails({{ $media->id }})">
+
+                        <!-- Compact Footer -->
+                        <div class="card-footer p-2 d-flex justify-content-between align-items-center">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-ghost-secondary"
+                                        wire:click="openDetails({{ $media->id }})"
+                                        title="{{ __('mediamanagement::admin.metadata') }}">
                                     <i class="fas fa-info-circle"></i>
                                 </button>
-                                <button class="btn btn-outline-primary btn-sm" wire:click="openEditModal({{ $media->id }})">
+                                <button class="btn btn-ghost-primary"
+                                        wire:click="openEditModal({{ $media->id }})"
+                                        title="{{ __('admin.edit') }}">
                                     <i class="fas fa-pen"></i>
                                 </button>
-                                <button class="btn btn-outline-danger btn-sm" x-on:click.prevent="if(confirm('{{ __('mediamanagement::admin.confirm_delete') }}')) { $wire.deleteMedia({{ $media->id }}) }">
+                                <button class="btn btn-ghost-danger"
+                                        x-on:click.prevent="if(confirm('{{ __('mediamanagement::admin.confirm_delete') }}')) { $wire.deleteMedia({{ $media->id }}) }"
+                                        title="{{ __('admin.delete') }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
-                            <div class="text-success small" x-cloak x-show="copied">{{ __('mediamanagement::admin.url_copied') }}</div>
+                            <div class="text-success small" x-cloak x-show="copied" style="font-size: 0.7rem;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+
+                        <!-- Lightbox Modal -->
+                        <div x-show="showLightbox"
+                             x-cloak
+                             @click.self="showLightbox = false"
+                             @keydown.escape.window="showLightbox = false"
+                             class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                             style="z-index: 9999; background: rgba(0,0,0,0.9);">
+                            <button @click="showLightbox = false"
+                                    class="btn btn-ghost-light position-absolute top-0 end-0 m-3"
+                                    style="z-index: 10000;">
+                                <i class="fas fa-times fa-2x"></i>
+                            </button>
+                            @if($this->isPreviewable($media))
+                                <img src="{{ $media->computed_url ?? $media->getUrl() }}"
+                                     alt="{{ $media->name }}"
+                                     class="img-fluid"
+                                     style="max-width: 90%; max-height: 90vh; object-fit: contain;">
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -347,7 +347,8 @@
     </div>
 
     {{-- MOBILE BOTTOM BAR (Only visible on mobile < 768px) --}}
-    <div class="mobile-bottom-bar bg-gradient-to-r from-green-500 to-blue-500 md:hidden">
+    <div class="mobile-bottom-bar bg-gradient-to-r from-green-500 to-blue-500 md:hidden"
+         style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important;">
         <div class="grid grid-cols-2 gap-0 max-w-md mx-auto">
             {{-- WhatsApp Button --}}
             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"

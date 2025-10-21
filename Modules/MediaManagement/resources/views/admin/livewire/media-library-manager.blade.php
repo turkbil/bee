@@ -154,13 +154,14 @@
     </div>
 
     @if($mediaItems->count())
-        <div class="row row-cards g-3">
+        <div class="row row-cards g-3" x-data="{ openLightbox: null, copied: false }">
             @foreach($mediaItems as $media)
-                <div class="col-xl-3 col-lg-4 col-md-6" x-data="{ showLightbox: false, copied: false }">
+                <div class="col-xl-3 col-lg-4 col-md-6">
                     <div class="card h-100" wire:key="media-card-{{ $media->id }}">
                         <!-- Thumbnail Preview -->
-                        <div class="ratio ratio-1x1 bg-light border-bottom position-relative" style="cursor: pointer;"
-                             @click="showLightbox = true">
+                        <div class="ratio ratio-1x1 bg-light border-bottom position-relative"
+                             style="cursor: pointer;"
+                             @click="openLightbox = {{ $media->id }}">
                             @if($this->isPreviewable($media))
                                 <img src="{{ $media->computed_thumb_url ?? $media->computed_url ?? $this->previewUrl($media) }}"
                                      alt="{{ $media->name }}"
@@ -182,49 +183,21 @@
 
                         <!-- Compact Card Body -->
                         <div class="card-body p-3">
-                            <div class="mb-2">
-                                <div class="fw-semibold small text-truncate" title="{{ $media->name ?? $media->file_name }}">
-                                    {{ \Illuminate\Support\Str::limit($media->name ?? $media->file_name, 30) }}
-                                </div>
-                                <div class="text-secondary" style="font-size: 0.7rem;">{{ optional($media->created_at)->format('d.m.Y H:i') }}</div>
+                            <div class="fw-semibold small text-truncate" title="{{ $media->name ?? $media->file_name }}">
+                                {{ \Illuminate\Support\Str::limit($media->name ?? $media->file_name, 30) }}
                             </div>
-
-                            <!-- Expandable Details -->
-                            @if($detailMediaId === $media->id)
-                                <div class="border-top pt-2 mt-2" style="font-size: 0.8rem;">
-                                    <div class="mb-1">
-                                        <span class="fw-semibold">{{ __('mediamanagement::admin.model') }}:</span>
-                                        <span class="text-secondary">{{ $this->moduleLabel($media->model_type) }}</span>
-                                    </div>
-                                    <div class="mb-1">
-                                        <span class="fw-semibold">{{ __('mediamanagement::admin.linked_record') }}:</span>
-                                        <span class="text-secondary">{{ $this->modelDisplayName($media) ?? __('mediamanagement::admin.unlinked') }}</span>
-                                    </div>
-                                    <div class="mb-1">
-                                        <span class="fw-semibold">{{ __('mediamanagement::admin.mime_type') }}:</span>
-                                        <span class="text-secondary">{{ $media->mime_type ?? '-' }}</span>
-                                    </div>
-                                    <div class="mb-2">
-                                        <span class="fw-semibold">URL:</span>
-                                        <div class="input-group input-group-sm mt-1">
-                                            <input type="text" class="form-control" value="{{ $media->computed_url ?? $media->getUrl() }}" readonly>
-                                            <button type="button" class="btn btn-outline-secondary"
-                                                    x-on:click.stop="navigator.clipboard.writeText('{{ $media->computed_url ?? $media->getUrl() }}'); copied = true; setTimeout(() => copied = false, 2000);">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
+                            <div class="text-secondary" style="font-size: 0.7rem;">
+                                {{ optional($media->created_at)->format('d.m.Y H:i') }}
+                            </div>
                         </div>
 
                         <!-- Compact Footer -->
                         <div class="card-footer p-2 d-flex justify-content-between align-items-center">
                             <div class="btn-group btn-group-sm">
                                 <button class="btn btn-ghost-secondary"
-                                        wire:click="openDetails({{ $media->id }})"
-                                        title="{{ __('mediamanagement::admin.metadata') }}">
-                                    <i class="fas fa-info-circle"></i>
+                                        @click.stop="navigator.clipboard.writeText('{{ $media->computed_url ?? $media->getUrl() }}'); copied = true; setTimeout(() => copied = false, 2000);"
+                                        title="URL Kopyala">
+                                    <i class="fas fa-copy"></i>
                                 </button>
                                 <button class="btn btn-ghost-primary"
                                         wire:click="openEditModal({{ $media->id }})"
@@ -232,35 +205,36 @@
                                     <i class="fas fa-pen"></i>
                                 </button>
                                 <button class="btn btn-ghost-danger"
-                                        x-on:click.prevent="if(confirm('{{ __('mediamanagement::admin.confirm_delete') }}')) { $wire.deleteMedia({{ $media->id }}) }"
+                                        @click.prevent="if(confirm('{{ __('mediamanagement::admin.confirm_delete') }}')) { $wire.deleteMedia({{ $media->id }}) }"
                                         title="{{ __('admin.delete') }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
-                            <div class="text-success small" x-cloak x-show="copied" style="font-size: 0.7rem;">
-                                <i class="fas fa-check"></i>
+                            <div class="text-success small" x-show="copied" x-cloak style="font-size: 0.7rem;">
+                                <i class="fas fa-check"></i> Kopyalandı
                             </div>
                         </div>
 
                         <!-- Lightbox Modal -->
-                        <div x-show="showLightbox"
-                             x-cloak
-                             @click.self="showLightbox = false"
-                             @keydown.escape.window="showLightbox = false"
-                             class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                             style="z-index: 9999; background: rgba(0,0,0,0.9);">
-                            <button @click="showLightbox = false"
-                                    class="btn btn-ghost-light position-absolute top-0 end-0 m-3"
-                                    style="z-index: 10000;">
-                                <i class="fas fa-times fa-2x"></i>
-                            </button>
-                            @if($this->isPreviewable($media))
+                        @if($this->isPreviewable($media))
+                            <div x-show="openLightbox === {{ $media->id }}"
+                                 x-cloak
+                                 @click="openLightbox = null"
+                                 @keydown.escape.window="openLightbox = null"
+                                 class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                 style="z-index: 9999; background: rgba(0,0,0,0.9); cursor: pointer;">
+                                <button @click.stop="openLightbox = null"
+                                        class="btn btn-ghost-light position-absolute top-0 end-0 m-3"
+                                        style="z-index: 10000;">
+                                    <i class="fas fa-times fa-2x"></i>
+                                </button>
                                 <img src="{{ $media->computed_url ?? $media->getUrl() }}"
                                      alt="{{ $media->name }}"
                                      class="img-fluid"
-                                     style="max-width: 90%; max-height: 90vh; object-fit: contain;">
-                            @endif
-                        </div>
+                                     @click.stop
+                                     style="max-width: 90%; max-height: 90vh; object-fit: contain; cursor: default;">
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endforeach

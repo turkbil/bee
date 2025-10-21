@@ -422,9 +422,9 @@ function clearAIConversation(button) {
 {{-- Dynamic Script Stack --}}
 @stack('scripts')
 
-{{-- MOBILE BOTTOM BAR - Footer dışında, body içinde (position: fixed, bottom: 0) --}}
-<div class="mobile-bottom-bar bg-gradient-to-r from-green-500 to-blue-500 md:hidden"
-     style="position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important;">
+{{-- MOBILE BOTTOM BAR - Footer dışında, body içinde --}}
+{{-- Styles: public/css/ixtif-mobile-bottom-bar.css --}}
+<div class="mobile-bottom-bar bg-gradient-to-r from-green-500 to-blue-500">
     <div class="grid grid-cols-2 gap-0 max-w-md mx-auto">
         {{-- Phone Button (SOL) --}}
         <a href="tel:{{ str_replace(' ', '', setting('contact_phone_1', '02167553555')) }}"

@@ -155,21 +155,23 @@
 
     @if($mediaItems->count())
         <div x-data="{
-            openLightbox: null,
+            showLightbox: false,
             lightboxUrl: '',
             lightboxAlt: '',
             copied: false,
-            showLightbox(url, alt) {
+            openImage(url, alt) {
                 this.lightboxUrl = url;
                 this.lightboxAlt = alt;
-                this.openLightbox = true;
+                this.showLightbox = true;
+                document.body.style.overflow = 'hidden';
             },
-            closeLightbox() {
-                this.openLightbox = null;
+            closeImage() {
+                this.showLightbox = false;
                 this.lightboxUrl = '';
                 this.lightboxAlt = '';
+                document.body.style.overflow = '';
             }
-        }" @keydown.escape.window="closeLightbox()">
+        }" @keydown.escape.window="if(showLightbox) closeImage()">
             <div class="row row-cards g-3">
                 @foreach($mediaItems as $media)
                     <div class="col-xl-3 col-lg-4 col-md-6">
@@ -178,7 +180,7 @@
                             <div class="ratio ratio-1x1 bg-light border-bottom position-relative"
                                  @if($this->isPreviewable($media))
                                  style="cursor: pointer;"
-                                 @click="showLightbox('{{ $media->computed_url ?? $media->getUrl() }}', '{{ $media->name }}')"
+                                 @click="openImage('{{ addslashes($media->computed_url ?? $media->getUrl()) }}', '{{ addslashes($media->name) }}')"
                                  @endif>
                                 @if($this->isPreviewable($media))
                                     <img src="{{ $media->computed_thumb_url ?? $media->computed_url ?? $this->previewUrl($media) }}"
@@ -213,7 +215,7 @@
                             <div class="card-footer p-2 d-flex justify-content-between align-items-center">
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-ghost-secondary"
-                                            @click.stop="navigator.clipboard.writeText('{{ $media->computed_url ?? $media->getUrl() }}'); copied = true; setTimeout(() => copied = false, 2000);"
+                                            @click.stop="navigator.clipboard.writeText('{{ addslashes($media->computed_url ?? $media->getUrl()) }}'); copied = true; setTimeout(() => copied = false, 2000);"
                                             title="URL Kopyala">
                                         <i class="fas fa-copy"></i>
                                     </button>
@@ -237,23 +239,23 @@
                 @endforeach
             </div>
 
-            <!-- Global Lightbox Modal (tek bir modal, tüm görseller için) -->
-            <div x-show="openLightbox"
-                 x-cloak
-                 @click="closeLightbox()"
-                 class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                 style="z-index: 9999; background: rgba(0,0,0,0.9); cursor: pointer;">
-                <button @click.stop="closeLightbox()"
-                        class="btn btn-ghost-light position-absolute top-0 end-0 m-3"
-                        style="z-index: 10000;">
-                    <i class="fas fa-times fa-2x"></i>
-                </button>
-                <img :src="lightboxUrl"
-                     :alt="lightboxAlt"
-                     class="img-fluid"
-                     @click.stop
-                     style="max-width: 90%; max-height: 90vh; object-fit: contain; cursor: default;">
-            </div>
+            <!-- Global Lightbox Modal -->
+            <template x-if="showLightbox">
+                <div @click="closeImage()"
+                     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                     style="z-index: 9999; background: rgba(0,0,0,0.9); cursor: pointer;">
+                    <button @click.stop="closeImage()"
+                            class="btn btn-ghost-light position-absolute top-0 end-0 m-3"
+                            style="z-index: 10000;">
+                        <i class="fas fa-times fa-2x"></i>
+                    </button>
+                    <img :src="lightboxUrl"
+                         :alt="lightboxAlt"
+                         class="img-fluid"
+                         @click.stop
+                         style="max-width: 90%; max-height: 90vh; object-fit: contain; cursor: default;">
+                </div>
+            </template>
         </div>
 
         <div class="mt-4">

@@ -266,12 +266,15 @@ class Setting extends Model implements HasMedia
 
     /**
      * Setting için media collection adını belirle
-     * UniversalMediaComponent sadece featured_image destekliyor, o yüzden hep onu kullan
+     * Setting key'ini kullan (örn: site_logo → collection: site_logo)
+     *
+     * Bu sayede media library'de her Setting'in görseli
+     * kendi adıyla saklanır ve kolayca ayırt edilebilir.
      */
     public function getMediaCollectionName(): string
     {
-        // UniversalMediaComponent için featured_image kullan
-        return 'featured_image';
+        // Setting key'ini collection name olarak kullan
+        return $this->key ?: 'media';
     }
 
     /**

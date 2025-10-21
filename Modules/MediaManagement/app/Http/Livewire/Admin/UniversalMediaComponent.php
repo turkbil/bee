@@ -179,6 +179,11 @@ class UniversalMediaComponent extends Component
             case 'documents':
                 $this->existingDocuments = $media;
                 break;
+            default:
+                // Dynamic collection (örn: Setting için site_logo, site_favicon vs.)
+                // Tek görsel olan tüm collection'ları featured_image olarak göster
+                $this->existingFeaturedImage = !empty($media) ? $media[0] : [];
+                break;
         }
     }
 
@@ -216,8 +221,10 @@ class UniversalMediaComponent extends Component
                             true
                         );
 
-                        $this->mediaService->uploadMedia($model, $uploadedFile, 'featured_image');
-                        $this->loadCollection($model, 'featured_image');
+                        // Dynamic collection name (ilk collection'ı kullan)
+                        $collectionName = $this->collections[0] ?? 'featured_image';
+                        $this->mediaService->uploadMedia($model, $uploadedFile, $collectionName);
+                        $this->loadCollection($model, $collectionName);
 
                         // Temp'i temizle
                         if (file_exists($filePath)) {
@@ -727,7 +734,9 @@ class UniversalMediaComponent extends Component
         }
 
         try {
-            $model->clearMediaCollection('featured_image');
+            // Dynamic collection name (ilk collection'ı kullan)
+            $collectionName = $this->collections[0] ?? 'featured_image';
+            $model->clearMediaCollection($collectionName);
 
             $this->dispatch('toast', [
                 'title' => __('admin.success'),
@@ -792,7 +801,9 @@ class UniversalMediaComponent extends Component
                 'type' => 'success'
             ]);
 
-            $this->loadCollection($model, 'featured_image');
+            // Dynamic collection name (ilk collection'ı kullan)
+            $collectionName = $this->collections[0] ?? 'featured_image';
+            $this->loadCollection($model, $collectionName);
         } else {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
@@ -872,11 +883,14 @@ class UniversalMediaComponent extends Component
                         true
                     );
 
-                    $this->mediaService->uploadMedia($model, $uploadedFile, 'featured_image');
+                    // Dynamic collection name (ilk collection'ı kullan)
+                    $collectionName = $this->collections[0] ?? 'featured_image';
+                    $this->mediaService->uploadMedia($model, $uploadedFile, $collectionName);
 
                     Log::info('📸 Featured image attached from temp storage', [
                         'model_id' => $modelId,
-                        'filename' => $this->tempFeaturedImage['original_name']
+                        'filename' => $this->tempFeaturedImage['original_name'],
+                        'collection' => $collectionName
                     ]);
                 }
             } catch (\Exception $e) {
@@ -944,9 +958,11 @@ class UniversalMediaComponent extends Component
 
         // Cleanup temp files
         $this->clearTempFilesFromSession();
-        $this->loadCollection($model, 'featured_image');
-        $this->loadCollection($model, 'seo_og_image');
-        $this->loadCollection($model, 'gallery');
+
+        // Reload all collections
+        foreach ($this->collections as $collectionName) {
+            $this->loadCollection($model, $collectionName);
+        }
 
         $this->dispatch('seo-og-image-updated', [
             'url' => $model->getFirstMediaUrl('seo_og_image') ?: '',
@@ -1167,7 +1183,8 @@ class UniversalMediaComponent extends Component
 
             // Sadece ilgili media item'ın custom_properties'ini güncelle
             // loadCollection çağırmıyoruz çünkü tüm component'i render ediyor ve tab durumlarını bozuyor
-            if ($media->collection_name === 'featured_image') {
+            $featuredCollectionName = $this->collections[0] ?? 'featured_image';
+            if ($media->collection_name === $featuredCollectionName || $media->collection_name === 'featured_image') {
                 if (!empty($this->existingFeaturedImage)) {
                     $this->existingFeaturedImage['custom_properties'] = $media->custom_properties;
                 }

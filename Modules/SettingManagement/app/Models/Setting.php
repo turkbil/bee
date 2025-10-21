@@ -16,41 +16,6 @@ class Setting extends Model implements HasMedia
 
     protected $table = 'settings';
 
-    /**
-     * Override getConnectionName for Media Library
-     *
-     * Spatie Media Library uses $model->getConnectionName() to determine
-     * which connection to use for media records.
-     *
-     * Setting model uses CentralConnection but media should be tenant-aware.
-     */
-    public function getConnectionName()
-    {
-        // CRITICAL: Only check IMMEDIATE caller (frame 1-2)
-        // Don't look deep in backtrace to avoid false positives
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
-
-        // Check only the DIRECT caller
-        for ($i = 1; $i <= 2; $i++) {
-            if (!isset($backtrace[$i]['class'])) {
-                continue;
-            }
-
-            $class = $backtrace[$i]['class'];
-
-            // If DIRECTLY called from Spatie Media Library
-            if (str_contains($class, 'Spatie\\MediaLibrary')) {
-                // Use tenant connection for media
-                if (function_exists('tenant') && tenant()) {
-                    return 'tenant';
-                }
-            }
-        }
-
-        // For everything else, use Central connection
-        return parent::getConnectionName();
-    }
-
     protected $fillable = [
         'group_id',
         'label',

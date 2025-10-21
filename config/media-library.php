@@ -38,8 +38,11 @@ return [
 
     /*
      * The fully qualified class name of the media model.
+     *
+     * ✅ CUSTOM: Tenant-aware connection için CustomMedia kullan
+     * Setting model CentralConnection kullanır ama media tenant DB'ye gitmeli
      */
-    'media_model' => Spatie\MediaLibrary\MediaCollections\Models\Media::class,
+    'media_model' => App\Models\CustomMedia::class,
 
     /*
      * The fully qualified class name of the media observer.

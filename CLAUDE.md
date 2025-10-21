@@ -340,6 +340,42 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 - **Page Pattern = Master**: Yeni modüller Page pattern'i alır
 - **JSON çoklu dil + SEO + Modern PHP**
 
+### THUMBMAKER SİSTEMİ
+**⚡ Kod yazarken görsel oluştururken MUTLAKA Thumbmaker kullan!**
+
+**Detaylı kılavuz:** `readme/thumbmaker/README.md`
+
+#### Hızlı Kullanım:
+```blade
+{{-- Basit kullanım: 400x300 WebP --}}
+<img src="{{ thumb($media, 400, 300) }}" alt="Thumbnail" loading="lazy">
+
+{{-- Detaylı kullanım --}}
+<img src="{{ thumb($media, 800, 600, [
+    'quality' => 90,
+    'scale' => 1,
+    'alignment' => 'c',
+    'format' => 'webp'
+]) }}" alt="Optimized" loading="lazy">
+```
+
+#### Parametreler:
+- `w/h` - Genişlik/Yükseklik (px)
+- `q` - Kalite (85 varsayılan)
+- `s` - Scale: 0=fit, 1=fill, 2=stretch
+- `a` - Alignment: c, t, b, l, r, tl, tr, bl, br
+- `f` - Format: webp, jpg, png, gif
+
+#### ✅ Best Practices:
+- **WebP kullan** (daha küçük dosya)
+- **loading="lazy" ekle** (sayfa hızı)
+- **Kalite 80-90** aralığında
+- **Scale=1** kare thumbnail'ler için
+- **Orijinal boyuttan büyütme!**
+
+#### Admin Guide:
+`/admin/mediamanagement/thumbmaker-guide` - Detaylı dokümantasyon
+
 ---
 
 ## 🏢 TENANT YÖNETİMİ

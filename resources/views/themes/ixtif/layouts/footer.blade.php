@@ -236,7 +236,7 @@
     {{-- SEO Tools & Debug (Mobile & Desktop) --}}
     <div class="bg-slate-50/80 dark:bg-slate-900/40
                 border-t border-gray-200 dark:border-white/5">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 pb-24 md:pb-4">
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
 
                 {{-- Sitemap --}}

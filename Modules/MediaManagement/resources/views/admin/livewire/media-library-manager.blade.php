@@ -204,7 +204,7 @@
                                         <div class="fw-bold text-uppercase small mt-1">{{ strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION)) }}</div>
                                         <div class="badge badge-sm bg-azure-lt text-dark mt-1">{{ $this->formatBytes($media->size) }}</div>
                                     </div>
-                                @endif>
+                                @endif
                             </div>
 
                             <!-- Compact Card Body -->

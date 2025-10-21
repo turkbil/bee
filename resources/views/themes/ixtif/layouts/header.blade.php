@@ -345,7 +345,7 @@
 
         {{-- Top Info Bar - Scroll'da kaybolacak --}}
         <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
                         @php
@@ -499,7 +499,7 @@
 
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div id="nav-container" class="flex items-center justify-between py-4">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3" style="width: 200px;">
@@ -574,9 +574,9 @@
                                :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
                         </button>
 
-                        {{-- İstif Makinesi (Mega Menu) - Hidden below 1024px --}}
+                        {{-- İstif Makinesi (Mega Menu) - Sadece XL ve üstünde göster --}}
                         <button @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                                class="hidden lg:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
+                                class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
                             <i class="fa-solid fa-box-open-full text-sm"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -687,7 +687,7 @@
                      x-transition:leave-end="opacity-0 -translate-y-2"
                      class="relative z-30 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
                      x-cloak>
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 py-4">
                         {{-- Alpine.js + API Search (No Livewire overhead) --}}
                         <div class="relative" x-data="{
                             query: '',
@@ -978,7 +978,7 @@
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl" style="z-index:10;"
                      x-cloak>
-                    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 py-6 md:py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                         <div style="display: grid;">
                             {{-- Forklift Mega Menu --}}
@@ -1217,3 +1217,6 @@
 
     {{-- Dynamic Content Areas --}}
     @stack('header-content')
+
+    {{-- Ekran Boyutu Göstergesi (Development için) --}}
+    <x-screen-size-indicator />

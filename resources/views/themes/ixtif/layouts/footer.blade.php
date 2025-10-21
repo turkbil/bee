@@ -8,7 +8,7 @@
     border border-gray-200 dark:border-white/10
     overflow-hidden">
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0 py-12 md:py-16">
 
         {{-- Logo Ortada Büyük --}}
         <div class="flex flex-col items-center justify-center mb-12">

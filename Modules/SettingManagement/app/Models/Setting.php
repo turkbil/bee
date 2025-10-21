@@ -106,6 +106,68 @@ class Setting extends Model implements HasMedia
     }
 
     /**
+     * Spatie Media Library için disk belirleme (tenant-aware)
+     * Bu method media kaydolmadan önce çağrılır
+     *
+     * ⚠️ NOT: Setting model CentralConnection kullanır ama disk tenant-aware olmalı
+     * Bu yüzden tenant context'i request'ten belirliyoruz
+     */
+    public function getMediaDisk(?string $collectionName = null): string
+    {
+        // 1. Yöntem: tenant() helper (eğer tenancy initialized ise)
+        $tenantId = null;
+        if (function_exists('tenant') && tenant()) {
+            $tenantId = tenant('id');
+        }
+
+        // 2. Yöntem: Request'ten domain çöz (fallback)
+        if (!$tenantId && request()) {
+            $host = request()->getHost();
+            $centralDomains = config('tenancy.central_domains', []);
+
+            // Central domain değilse tenant'ı bul
+            if (!in_array($host, $centralDomains)) {
+                try {
+                    $domainModel = \Stancl\Tenancy\Database\Models\Domain::where('domain', $host)->first();
+                    if ($domainModel && $domainModel->tenant_id) {
+                        $tenantId = $domainModel->tenant_id;
+                    }
+                } catch (\Exception $e) {
+                    // Fallback to public disk
+                }
+            }
+        }
+
+        // Tenant context varsa tenant disk kullan
+        if ($tenantId) {
+            $diskName = "tenant{$tenantId}";
+
+            // Eğer disk zaten konfig edilmemişse, runtime'da ekle
+            if (!config("filesystems.disks.{$diskName}")) {
+                $root = storage_path("tenant{$tenantId}/app/public");
+
+                // 🔥 Request'ten gerçek URL al (config('app.url') yanlış domain döndürüyor!)
+                $appUrl = request() ? request()->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
+
+                config([
+                    "filesystems.disks.{$diskName}" => [
+                        'driver' => 'local',
+                        'root' => $root,
+                        'url' => $appUrl ? "{$appUrl}/storage/tenant{$tenantId}" : null,
+                        'visibility' => 'public',
+                        'throw' => false,
+                    ],
+                ]);
+            }
+
+            return $diskName;
+        }
+
+        // Central context için public disk
+        return 'public';
+    }
+
+    /**
      * Register media collections for this setting
      * Override HasMediaManagement trait method
      */
@@ -117,7 +179,8 @@ class Setting extends Model implements HasMedia
         }
 
         $collection = $this->addMediaCollection('featured_image')
-            ->singleFile();
+            ->singleFile()
+            ->useDisk($this->getMediaDisk()); // 🔥 Tenant disk kullan
 
         // MIME types - Setting type ve key'ine göre özel tanımlar
         // Favicon için MIME type kontrolü yok (browser extension kontrolü yapıyor)
@@ -134,12 +197,11 @@ class Setting extends Model implements HasMedia
     public function getMimeTypesForSetting(): array
     {
         // Favicon type için MIME type kontrolü yok (Mac/Windows .ico farklılıkları için)
-        // Extension kontrolü browser'da yapılıyor: accept=".ico,.png"
         if ($this->type === 'favicon' || $this->key === 'site_favicon') {
-            return []; // Tüm dosyaları kabul et, browser extension kontrolü yapacak
+            return []; // Tüm dosyaları kabul et
         }
 
-        // Image type için standart image MIME types
+        // Image type için image MIME types
         if ($this->type === 'image') {
             return [
                 'image/jpeg',
@@ -151,13 +213,10 @@ class Setting extends Model implements HasMedia
             ];
         }
 
-        // File type için document MIME types
+        // File type için TÜM dosyaları kabul et (kullanıcı ne isterse yükleyebilmeli)
+        // Image da yükleyebilir, PDF de, DOCX da - settings'te tanımlı type'a göre değil!
         if ($this->type === 'file') {
-            return [
-                'application/pdf',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            ];
+            return []; // Boş array = tüm MIME types kabul edilir
         }
 
         return [];
@@ -171,7 +230,7 @@ class Setting extends Model implements HasMedia
         // Setting type'ına göre collection belirle
         $collections = [];
 
-        // Type'a göre uygun collection ekle (hep featured_image kullan)
+        // Type'a göre uygun collection ekle
         switch ($this->type) {
             case 'image':
             case 'file':
@@ -182,6 +241,17 @@ class Setting extends Model implements HasMedia
                     'max_items' => 1,
                     'conversions' => ($this->type === 'image' || $this->type === 'favicon') ? ['thumb'] : [],
                     'sortable' => false,
+                ];
+                break;
+
+            case 'image_multiple':
+                // Gallery collection (multiple images)
+                $collections['gallery'] = [
+                    'type' => 'image',
+                    'single_file' => false,
+                    'max_items' => 20,
+                    'conversions' => ['thumb'],
+                    'sortable' => true,
                 ];
                 break;
         }

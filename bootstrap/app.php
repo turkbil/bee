@@ -40,6 +40,15 @@ return Application::configure(basePath: dirname(__DIR__))
         // Legacy module route loading removed - now event-driven via ModuleEnabled events
     })
     ->withMiddleware(function (Middleware $middleware) {
+        // 0. TRUST PROXIES - Nginx proxy için (EN ÖNCE!)
+        $middleware->trustProxies(
+            at: '*',
+            headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
+                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
+        );
+
         // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         

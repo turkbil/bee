@@ -314,13 +314,15 @@
                     this.upload(files);
                 }
             },
-            upload(files) {
+            upload(files, retryCount = 0) {
                 const formData = new FormData();
                 files.forEach(file => formData.append('files[]', file));
                 formData.append('_token', csrfToken);
 
-                this.isUploading = true;
-                this.uploadErrors = [];
+                if (retryCount === 0) {
+                    this.isUploading = true;
+                    this.uploadErrors = [];
+                }
 
                 const url = uploadUrl.startsWith('http') ? uploadUrl : `${window.location.origin}${uploadUrl}`;
 
@@ -348,8 +350,21 @@
                         const uploadedCount = data?.uploaded_count ?? 0;
                         const errors = data?.errors ?? [];
                         window.Livewire?.find(componentId)?.call('handleUploadCompleted', uploadedCount, errors);
+                        this.isUploading = false;
                     })
                     .catch(error => {
+                        console.error('Media library upload error (attempt ' + (retryCount + 1) + '):', error);
+
+                        // SSL error detected and first attempt - auto retry once
+                        if (retryCount === 0 && error?.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
+                            console.log('🔄 SSL handshake error detected, retrying media library upload automatically...');
+                            setTimeout(() => {
+                                this.upload(files, 1);
+                            }, 200);
+                            return;
+                        }
+
+                        // Final failure
                         const errors = [];
                         if (error?.errors) {
                             Object.values(error.errors).forEach(val => {
@@ -367,8 +382,6 @@
 
                         this.uploadErrors = errors;
                         window.Livewire?.find(componentId)?.call('handleUploadCompleted', 0, [{ errors }]);
-                    })
-                    .finally(() => {
                         this.isUploading = false;
                     });
             },

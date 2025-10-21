@@ -215,6 +215,13 @@ plesk db "UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = 'domain.c
 - **ixtif.com**: Tenant ID: 2
 - **ixtif.com.tr**: Tenant ID: 3
 
+#### ⚠️ KRİTİK: NGINX CUSTOM CONFIG YASAK!
+**ASLA custom nginx config oluşturma!** (`/etc/nginx/plesk.conf.d/vhosts/00-*.conf`)
+
+**Sebep:** Custom SSL proxy config Livewire upload'ı bozuyor (ERR_SSL_BAD_RECORD_MAC_ALERT)
+
+**Çözüm:** Default Plesk config kullan, vhost_nginx.conf'da ortak ayarlar yap
+
 **NOT:** Yeni tenant eklerken mutlaka dökümanı takip et!
 
 ---

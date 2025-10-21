@@ -23,4 +23,8 @@ Route::middleware(['auth', 'tenant'])->prefix('admin')->name('admin.')->group(fu
     Route::post('/mediamanagement/library/upload', \Modules\MediaManagement\App\Http\Controllers\Admin\MediaLibraryUploadController::class)
         ->name('mediamanagement.library.upload');
 
+    // Manual featured image upload - Livewire bypass for SSL issues
+    Route::post('/mediamanagement/featured-upload', [\Modules\MediaManagement\App\Http\Livewire\Admin\UniversalMediaComponent::class, 'manualFeaturedUpload'])
+        ->name('mediamanagement.featured.upload');
+
 });

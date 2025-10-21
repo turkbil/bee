@@ -67,23 +67,7 @@ return new class extends Migration
         }
 
         // 3. Product Chat Placeholders table
-        if (!Schema::hasTable('product_chat_placeholders')) {
-            Schema::create('product_chat_placeholders', function (Blueprint $table) {
-                $table->id();
-                $table->unsignedBigInteger('product_id')->index();
-                $table->unsignedBigInteger('tenant_id')->nullable()->index();
-
-                $table->json('conversation'); // [{role: user, content: ...}, {role: assistant, content: ...}]
-                $table->string('language', 5)->default('tr');
-                $table->boolean('is_active')->default(true);
-
-                $table->timestamp('generated_at')->nullable();
-                $table->timestamps();
-
-                // Unique constraint - one placeholder per product per language
-                $table->unique(['product_id', 'language'], 'product_chat_placeholder_unique');
-            });
-        }
+        // REMOVED: Use shop_product_chat_placeholders table instead (separate migration)
     }
 
     /**
@@ -93,6 +77,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('ai_messages');
         Schema::dropIfExists('ai_conversations');
-        Schema::dropIfExists('product_chat_placeholders');
+        // product_chat_placeholders removed - use shop_product_chat_placeholders instead
     }
 };

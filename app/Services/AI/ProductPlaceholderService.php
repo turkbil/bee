@@ -52,7 +52,7 @@ class ProductPlaceholderService
 
             return [
                 'success' => true,
-                'conversation' => $cached->conversation,
+                'conversation' => $cached->conversation_json,
                 'from_cache' => true,
                 'generated_at' => $cached->generated_at,
             ];

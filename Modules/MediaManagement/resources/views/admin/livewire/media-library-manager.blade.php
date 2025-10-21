@@ -173,10 +173,47 @@
     @if($mediaItems->count())
         <div x-data="{
             showLightbox: false,
-            lightboxUrl: '',
-            lightboxAlt: ''
-        }" @keydown.escape.window="if(showLightbox) { showLightbox = false; document.body.style.overflow = ''; }">
+            currentIndex: 0,
+            mediaList: [
+                @foreach($mediaItems as $index => $media)
+                    @if($this->isPreviewable($media))
+                    {
+                        url: '{{ addslashes(thumb($media, 1920, 1920, ['quality' => 90])) }}',
+                        thumb: '{{ addslashes(thumb($media, 400, 400, ['quality' => 80, 'scale' => 1])) }}',
+                        name: '{{ addslashes($media->name) }}',
+                        id: {{ $media->id }}
+                    },
+                    @endif
+                @endforeach
+            ],
+            get currentMedia() {
+                return this.mediaList[this.currentIndex] || {};
+            },
+            openLightbox(index) {
+                this.currentIndex = index;
+                this.showLightbox = true;
+                document.body.style.overflow = 'hidden';
+            },
+            closeLightbox() {
+                this.showLightbox = false;
+                document.body.style.overflow = '';
+            },
+            nextMedia() {
+                if (this.currentIndex < this.mediaList.length - 1) {
+                    this.currentIndex++;
+                }
+            },
+            prevMedia() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                }
+            }
+        }"
+        @keydown.escape.window="if(showLightbox) { closeLightbox(); }"
+        @keydown.arrow-right.window="if(showLightbox) { nextMedia(); }"
+        @keydown.arrow-left.window="if(showLightbox) { prevMedia(); }">
             <div class="row row-cards g-2">
+                @php $previewableIndex = 0; @endphp
                 @foreach($mediaItems as $media)
                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" x-data="{ copied: false }">
                         <div class="card card-sm h-100" wire:key="media-card-{{ $media->id }}">
@@ -184,7 +221,8 @@
                             <div class="ratio ratio-1x1 card-img-top position-relative"
                                  @if($this->isPreviewable($media))
                                  style="cursor: zoom-in;"
-                                 @click="showLightbox = true; lightboxUrl = '{{ addslashes(thumb($media, 1920, 1920, ['quality' => 90])) }}'; lightboxAlt = '{{ addslashes($media->name) }}'; document.body.style.overflow = 'hidden';"
+                                 @click="openLightbox({{ $previewableIndex }})"
+                                 @php $previewableIndex++; @endphp
                                  @endif>
                                 @if($this->isPreviewable($media))
                                     <img src="{{ thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]) }}"
@@ -251,21 +289,52 @@
 
             <!-- Global Lightbox Modal -->
             <template x-if="showLightbox">
-                <div @click="showLightbox = false; document.body.style.overflow = '';"
+                <div @click="closeLightbox()"
                      class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                     style="z-index: 9999; background: rgba(0,0,0,0.9); cursor: pointer;">
-                    <button @click.stop="showLightbox = false; document.body.style.overflow = '';"
+                     style="z-index: 9999; background: rgba(0,0,0,0.95); cursor: pointer;">
+
+                    <!-- Close Button -->
+                    <button @click.stop="closeLightbox()"
                             class="btn btn-icon btn-light position-absolute top-0 end-0 m-3"
-                            style="z-index: 10000;">
+                            style="z-index: 10001;">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                         </svg>
                     </button>
-                    <img :src="lightboxUrl"
-                         :alt="lightboxAlt"
-                         class="img-fluid"
-                         @click.stop
-                         style="max-width: 90%; max-height: 90vh; object-fit: contain; cursor: default;">
+
+                    <!-- Previous Button -->
+                    <button @click.stop="prevMedia()"
+                            x-show="currentIndex > 0"
+                            class="btn btn-icon btn-light position-absolute start-0 top-50 translate-middle-y ms-3"
+                            style="z-index: 10001;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="15 6 9 12 15 18"/>
+                        </svg>
+                    </button>
+
+                    <!-- Next Button -->
+                    <button @click.stop="nextMedia()"
+                            x-show="currentIndex < mediaList.length - 1"
+                            class="btn btn-icon btn-light position-absolute end-0 top-50 translate-middle-y me-3"
+                            style="z-index: 10001;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 6 15 12 9 18"/>
+                        </svg>
+                    </button>
+
+                    <!-- Image Container -->
+                    <div class="d-flex flex-column align-items-center justify-content-center" style="max-width: 90%; max-height: 90vh;" @click.stop>
+                        <img :src="currentMedia.url"
+                             :alt="currentMedia.name"
+                             class="img-fluid"
+                             style="max-width: 100%; max-height: 85vh; object-fit: contain; cursor: default;">
+
+                        <!-- Image Info -->
+                        <div class="text-white mt-3 text-center">
+                            <div class="fw-bold" x-text="currentMedia.name"></div>
+                            <div class="text-muted small" x-text="`${currentIndex + 1} / ${mediaList.length}`"></div>
+                        </div>
+                    </div>
                 </div>
             </template>
         </div>

@@ -543,7 +543,13 @@ class MediaLibraryManager extends Component
         $total = Media::count();
         $totalSize = Media::sum('size');
         $last30Days = Media::where('created_at', '>=', Carbon::now()->subDays(30))->count();
-        $unlinked = Media::whereDoesntHave('model')->count();
+
+        // Orphan media check
+        // Setting modeli central DB'de olduğu için whereDoesntHave cross-database hatası verir
+        // Sadece model_type null olanları orphan say
+        $unlinked = Media::whereNull('model_type')
+            ->orWhereNull('model_id')
+            ->count();
 
         $mimeCounts = Media::select('mime_type', DB::raw('count(*) as aggregate'))
             ->groupBy('mime_type')

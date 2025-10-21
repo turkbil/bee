@@ -66,8 +66,22 @@
             </div>
 
             <div class="col-lg-5">
+                {{-- Brand Logo Media Upload --}}
                 <div class="mb-3">
-                    <label class="form-label">{{ __('shop::admin.logo_url') }}</label>
+                    <label class="form-label">{{ __('shop::admin.brand_logo') }}</label>
+                    <livewire:mediamanagement::universal-media
+                        wire:id="brand-media-component"
+                        :model-id="$brandId"
+                        model-type="shop_brand"
+                        model-class="Modules\Shop\App\Models\ShopBrand"
+                        :collections="['brand_logo']"
+                        :sortable="false"
+                        :key="'universal-media-' . ($brandId ?? 'new')"
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ __('shop::admin.logo_url') }} <small class="text-muted">({{ __('shop::admin.optional_fallback') }})</small></label>
                     <input type="url" class="form-control" wire:model.lazy="inputs.logo_url">
                 </div>
 

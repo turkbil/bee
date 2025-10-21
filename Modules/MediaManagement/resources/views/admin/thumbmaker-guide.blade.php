@@ -123,7 +123,7 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-6">
-                            <div class="border rounded p-3" style="background: #f8f9fa;">
+                            <div class="border rounded p-3 bg-light">
                                 <div class="row g-2 mb-2">
                                     <div class="col-4"><span class="badge bg-primary">tl</span> Top Left</div>
                                     <div class="col-4"><span class="badge bg-primary">t</span> Top</div>
@@ -255,7 +255,7 @@
                         <div class="col-md-6">
                             <div class="card bg-success-lt">
                                 <div class="card-body">
-                                    <h4 class="card-title text-success">✅ Yapılması Gerekenler</h4>
+                                    <h4 class="card-title">✅ Yapılması Gerekenler</h4>
                                     <ul class="mb-0">
                                         <li>WebP formatı kullanın (daha küçük dosya)</li>
                                         <li>loading="lazy" ekleyin (sayfa hızı)</li>
@@ -269,7 +269,7 @@
                         <div class="col-md-6">
                             <div class="card bg-danger-lt">
                                 <div class="card-body">
-                                    <h4 class="card-title text-danger">❌ Yapılmaması Gerekenler</h4>
+                                    <h4 class="card-title">❌ Yapılmaması Gerekenler</h4>
                                     <ul class="mb-0">
                                         <li>Gereksiz yüksek kalite kullanmayın</li>
                                         <li>Orijinal boyuttan büyütmeyin</li>

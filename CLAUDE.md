@@ -97,6 +97,48 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 - **Otomatik Devam**: Sorma, direkt hareket et
 - **Veritabanı Koruma**: Üstteki kritik uyarılara mutlaka uy!
 
+### 🎨 OTOMATİK CACHE & BUILD (TAİLWİND/FRONTEND)
+
+**⚡ KURAL:** Tailwind/View değişikliğinden SONRA otomatik cache temizle + build compile - **ONAY İSTEME!**
+
+#### ✅ Otomatik Cache+Build Tetikleyicileri:
+- **Tailwind class** değişiklikleri (view/blade dosyalarında)
+- **CSS/SCSS** dosyası değişiklikleri
+- **Frontend asset** değişiklikleri (JS, Alpine.js)
+- **Blade/View** dosyası değişiklikleri
+- **Layout/Component** değişiklikleri
+
+#### 📋 Otomatik Komutlar (Sırayla):
+```bash
+# 1. Cache temizliği
+php artisan view:clear
+php artisan cache:clear
+php artisan responsecache:clear
+
+# 2. Build compile
+npm run prod
+
+# 3. Doğrulama
+echo "✅ Cache temizlendi, build tamamlandı!"
+```
+
+#### ⚠️ KRİTİK:
+- **ONAY BEKLEME!** Her view/tailwind değişikliğinde direkt yap
+- **Todo'ya ekle**: "🎨 Cache+Build" (kullanıcı takip etsin)
+- **Hata varsa bildir**: Build hatası varsa kullanıcıya göster
+
+#### 📝 Todo Örneği:
+```markdown
+- [x] Navbar responsive düzelt
+- [ ] 🎨 Cache temizle + Build compile
+- [ ] Test et
+```
+
+#### 🚫 İstisna:
+- **Sadece PHP logic** değişirse gerekli değil
+- **Backend/Controller** değişikliklerinde gerekli değil
+- **Sadece txt/md** dosyası değişirse gerekli değil
+
 ### 🔐 OTOMATİK GIT CHECKPOINT
 
 **⚡ KURAL:** Riskli işlemlerden ÖNCE otomatik checkpoint commit yap - **ONAY İSTEME!**

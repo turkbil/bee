@@ -494,11 +494,20 @@
                             </header>
                             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 @foreach ($galleryImages as $image)
-                                    <a href="{{ $image->getUrl() }}"
+                                    @php
+                                        $altText = $image->getCustomProperty('alt_text')[$currentLocale] ?? $image->name ?? 'Ürün görseli';
+                                        $title = $image->getCustomProperty('title')[$currentLocale] ?? $image->name ?? '';
+                                        $description = $image->getCustomProperty('description')[$currentLocale] ?? '';
+                                    @endphp
+                                    <a href="{{ thumb($image, 1920, 1920, ['quality' => 90, 'scale' => 0]) }}"
                                         class="glightbox block rounded-xl overflow-hidden hover:ring-2 ring-blue-500 dark:ring-blue-400 transition-all hover:scale-105"
-                                        data-gallery="prod">
-                                        <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
-                                            alt="" class="w-full h-48 object-cover">
+                                        data-gallery="prod"
+                                        @if($title) data-title="{{ $title }}" @endif
+                                        @if($description) data-description="{{ $description }}" @endif>
+                                        <img src="{{ thumb($image, 400, 400, ['quality' => 85, 'scale' => 1, 'alignment' => 'c']) }}"
+                                            alt="{{ $altText }}"
+                                            class="w-full h-48 object-cover"
+                                            loading="lazy">
                                     </a>
                                 @endforeach
                             </div>

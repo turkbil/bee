@@ -81,6 +81,7 @@ class UniversalMediaComponent extends Component
         'announcement-saved' => 'handleModelSaved',
         'page-saved' => 'handleModelSaved',
         'portfolio-saved' => 'handleModelSaved',
+        'product-saved' => 'handleModelSaved',
         'update-gallery-order' => 'updateGalleryOrderFromEvent',
         'update-temp-gallery-order' => 'updateTempGalleryOrderFromEvent',
         'save-media-caption' => 'saveMediaCaption',

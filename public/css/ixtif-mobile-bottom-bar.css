@@ -1,38 +1,69 @@
-/* Mobile Bottom Bar - Classic Duo Design */
-/* Only visible on mobile devices (< 768px) */
+/**
+ * Mobile Bottom Bar Styles
+ * iXtif Theme - Mobile Communication Bar (WhatsApp & Phone)
+ *
+ * Features:
+ * - Only visible on mobile devices (<768px)
+ * - Fixed position at bottom: 0
+ * - Horizontal layout (Phone left, WhatsApp right)
+ * - Gradient background
+ */
 
+/* Mobile Only (<768px) */
 @media (max-width: 767px) {
+    /* Body padding for bottom bar space */
     body {
-        padding-bottom: 60px; /* Bottom bar yüksekliği kadar boşluk (py-3 ~ 60px) */
+        padding-bottom: 60px !important; /* Bottom bar height */
     }
 
+    /* Bottom Bar Container */
     .mobile-bottom-bar {
+        /* Position */
         position: fixed !important;
-        bottom: 0 !important; /* Her zaman en altta sabit kal */
+        bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
+
+        /* Z-index */
         z-index: 9999 !important;
+
+        /* Visual */
         box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+
+        /* Ensure full width */
+        width: 100% !important;
     }
 
-    .mobile-bottom-bar .pulse-ring {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    /* AI Chat Widget - Position above bottom bar */
+    [x-data*="aiChat"] {
+        bottom: 80px !important; /* Bottom bar (60px) + spacing (20px) */
     }
 
+    /* Button hover animations */
+    .mobile-bottom-bar a {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Pulse animation for icons (optional) */
     @keyframes pulse {
         0%, 100% { opacity: 1; }
         50% { opacity: 0.5; }
     }
 
-    /* AI Chat Widget - Mobilde bottom bar'ın üstünde durması için */
-    /* AI widget z-50, bottom bar z-9999, ama AI'yı yukarı çıkararak çakışmayı önlüyoruz */
-    [x-data*="aiChat"] {
-        bottom: 80px !important; /* Bottom bar (60px) + boşluk (20px) */
+    .mobile-bottom-bar .pulse-ring {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 }
 
-/* Desktop'ta gizle */
+/* Desktop (≥768px) - Hide completely */
 @media (min-width: 768px) {
+    .mobile-bottom-bar {
+        display: none !important;
+    }
+}
+
+/* Print - Hide */
+@media print {
     .mobile-bottom-bar {
         display: none !important;
     }

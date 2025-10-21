@@ -184,7 +184,16 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
         $searchTerm = '%' . $term . '%';
 
         return $this->baseQuery()
-            ->where(function (Builder $query) use ($searchTerm, $locales): void {
+            ->where(function (Builder $query) use ($searchTerm, $locales, $term): void {
+                // ✅ SKU, Model Number, Barcode araması (exact ve partial)
+                $query->where('sku', 'LIKE', $searchTerm)
+                    ->orWhere('model_number', 'LIKE', $searchTerm)
+                    ->orWhere('barcode', 'LIKE', $searchTerm)
+                    ->orWhere('sku', '=', $term)
+                    ->orWhere('model_number', '=', $term)
+                    ->orWhere('barcode', '=', $term);
+
+                // ✅ JSON field aramaları
                 foreach ($locales as $locale) {
                     $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
                         ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
@@ -324,7 +333,17 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
         $locales = $locales ?: TenantLanguageProvider::getActiveLanguageCodes();
         $searchTerm = '%' . $term . '%';
 
-        return $query->where(function (Builder $searchQuery) use ($locales, $searchTerm): void {
+        return $query->where(function (Builder $searchQuery) use ($locales, $searchTerm, $term): void {
+            // ✅ SKU, Model Number, Barcode araması (case-insensitive, exact ve partial match)
+            $searchQuery
+                ->where('sku', 'LIKE', $searchTerm)
+                ->orWhere('model_number', 'LIKE', $searchTerm)
+                ->orWhere('barcode', 'LIKE', $searchTerm)
+                ->orWhere('sku', '=', $term) // Exact match
+                ->orWhere('model_number', '=', $term) // Exact match
+                ->orWhere('barcode', '=', $term); // Exact match
+
+            // ✅ JSON field aramaları (title, short_description)
             foreach ($locales as $locale) {
                 $searchQuery
                     ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])

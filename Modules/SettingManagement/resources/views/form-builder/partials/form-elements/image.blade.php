@@ -32,7 +32,7 @@
                         'modelId' => $setting->id,
                         'modelType' => 'setting',
                         'modelClass' => 'Modules\SettingManagement\App\Models\Setting',
-                        'collections' => ['featured_image'],
+                        'collections' => [$setting->getMediaCollectionName()],
                         'maxGalleryItems' => 1,
                         'sortable' => false,
                         'setFeaturedFromGallery' => false,

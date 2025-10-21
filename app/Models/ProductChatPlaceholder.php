@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductChatPlaceholder extends Model
 {
-    protected $table = 'product_chat_placeholders';
+    protected $table = 'shop_product_chat_placeholders';
 
     // Tenant-aware: Hangi tenant context'teyse o connection'ı kullan
     public function getConnectionName()
@@ -23,12 +23,12 @@ class ProductChatPlaceholder extends Model
 
     protected $fillable = [
         'product_id',
-        'conversation',
+        'conversation_json',
         'generated_at',
     ];
 
     protected $casts = [
-        'conversation' => 'array',
+        'conversation_json' => 'array',
         'generated_at' => 'datetime',
     ];
 
@@ -48,7 +48,7 @@ class ProductChatPlaceholder extends Model
         return self::updateOrCreate(
             ['product_id' => $productId],
             [
-                'conversation' => $conversation,
+                'conversation_json' => $conversation,
                 'generated_at' => now(),
             ]
         );

@@ -204,35 +204,61 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 - `a-console.txt` - Console/Debugbar çıktıları için buffer
 - `a-html.txt` - HTML output için buffer
 
-**🚨 KRİTİK KURAL: Kullanıcı AÇIKÇA söylemedikçe DOKUNMA!**
+**🚨 KRİTİK KURAL: Konuşma BAŞINDA "oku" derse o konuşmada aktif ol!**
 
-#### ❌ YAPMA:
-- **Otomatik okuma**: Kullanıcı "oku" demeden varsayım yapma
-- **Otomatik temizleme**: Kullanıcı istemeden içini boşaltma
-- **Varsayım**: "Eski olabilir, temizleyeyim" DEME
-- **Proaktif hareket**: Bu dosyalar için inisiyatif alma
+#### 📋 İKİ MOD SİSTEMİ:
 
-#### ✅ YAP:
-- **Sadece talimat varsa**: Kullanıcı "a-console.txt'yi oku" derse oku
-- **Açık onay**: "Temizleyeyim mi?" diye sor, direkt yapma
-- **Pasif kal**: Bu dosyalar için reaktif ol, proaktif değil
+**1️⃣ PASİF MOD (Default):**
+- Kullanıcı başta "oku" DEMEDİYSE → Hiç dokunma
+- Görmezden gel, varsayım yapma
+- Sadece kullanıcı açıkça isterse oku
 
-#### 📝 Kullanım Senaryosu (Kullanıcı talep ederse):
+**2️⃣ AKTİF MOD (Konuşma başında aktifleştirilirse):**
+- Kullanıcı konuşma başında "a-console.txt'yi oku" DEDİYSE:
+  - ✅ O konuşma boyunca otomatik takip et
+  - ✅ Kullanıcı yeni mesaj gönderdiğinde tekrar oku
+  - ✅ Değişiklikleri analiz et
+  - ✅ Sorunları tespit et
+- **Her yeni konuşmada sıfırlanır** - Yeniden "oku" demeli
+
+#### ✅ AKTİF MOD Workflow:
 ```bash
-Kullanıcı: "a-console.txt'yi oku ve analiz et"
+Kullanıcı (Konuşma başında): "a-console.txt'yi takip et"
 Sen:
-  1. cat a-console.txt  # Oku
+  1. cat a-console.txt  # İlk okuma
   2. Analiz et ve raporla
-  3. "İçini temizleyeyim mi?" # SOR, direkt yapma
+  3. ✅ Aktif mod ON - Todo'ya ekle
 
-Kullanıcı onaylarsa:
-  echo "" > a-console.txt  # Temizle (dosyayı silme!)
+Kullanıcı (Sonraki mesajlarda): "Navbar'ı düzelt"
+Sen:
+  1. cat a-console.txt  # Otomatik oku (aktif mod ON)
+  2. Değişiklikleri kontrol et
+  3. Navbar düzelt
+  4. cat a-console.txt  # Tekrar oku
+  5. Sorun varsa raporla
 ```
 
-#### ⚠️ UYARI:
-- **Eski içerik olabilir**: Başka işlem için bekliyor olabilir
-- **Manuel kullanım**: Kullanıcı manuel ekliyor olabilir
-- **Üzerine alma**: Görmezden gel, kullanıcı isterse söyler
+#### ❌ PASİF MOD (Başta söylemezse):
+```bash
+Kullanıcı: "Navbar'ı düzelt"
+Sen:
+  - a-console.txt'ye DOKUNMA (aktif mod OFF)
+  - Sadece navbar'ı düzelt
+  - Buffer dosyalarını görmezden gel
+```
+
+#### 📝 Aktif Mod Todo Örneği:
+```markdown
+- [x] 📄 a-console.txt aktif mod ON
+- [ ] Navbar düzelt
+- [ ] a-console.txt kontrol et
+- [ ] Sorunları tespit et
+```
+
+#### ⚠️ KRİTİK:
+- **Her konuşma yeni başlangıç**: Aktif mod her konuşmada manuel aktifleştirilmeli
+- **Başta söyle**: "Oku" denmezse → Pasif mod, hiç dokunma
+- **Silme, temizleme**: Bunlar için hala onay gerekli
 
 ### 🌐 WEB İÇERİK OKUMA
 

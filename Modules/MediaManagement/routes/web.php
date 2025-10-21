@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\MediaManagement\App\Http\Controllers\ThumbmakerController;
+use App\Http\Middleware\InitializeTenancy;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +14,9 @@ use Modules\MediaManagement\App\Http\Controllers\ThumbmakerController;
 |
 */
 
-// Universal Thumbmaker - Public route (cache friendly)
-Route::get('/thumbmaker', [ThumbmakerController::class, 'generate'])
-    ->name('thumbmaker')
-    ->middleware('throttle:600,1'); // 600 istek/dakika limit
+// Universal Thumbmaker - Public route (cache friendly, tenant-aware)
+Route::middleware([InitializeTenancy::class, 'throttle:600,1'])
+    ->get('/thumbmaker', [ThumbmakerController::class, 'generate'])
+    ->name('thumbmaker');
 
 // Frontend route'ları gerekirse buraya eklenebilir

@@ -391,6 +391,94 @@
                 {{-- LEFT: Main Content (2/3) --}}
                 <div class="lg:col-span-2 min-h-screen">
 
+                    {{-- Variants --}}
+                    @if ($siblingVariants->count() > 0)
+                        <section id="variants" class="scroll-mt-24 mb-20 lg:mb-24">
+                            <header class="text-center mb-12">
+                                <div
+                                    class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-4">
+                                    <i class="fa-solid fa-layer-group text-3xl text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Ürün Varyantları
+                                </h2>
+                                <p class="text-gray-600 dark:text-gray-400 text-lg">İhtiyacınıza en uygun modeli keşfedin
+                                </p>
+                            </header>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                @foreach ($siblingVariants as $variant)
+                                    @php
+                                        $variantTitle =
+                                            $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
+                                        $variantDescription = $variant->getTranslated(
+                                            'short_description',
+                                            $currentLocale,
+                                        );
+                                        $variantUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl(
+                                            $variant,
+                                            $currentLocale,
+                                        );
+                                        $variantImage = $variant->getFirstMedia('featured_image');
+                                        $variantImageUrl = $variantImage
+                                            ? ($variantImage->hasGeneratedConversion('thumb')
+                                                ? $variantImage->getUrl('thumb')
+                                                : $variantImage->getUrl())
+                                            : null;
+                                    @endphp
+                                    <a href="{{ $variantUrl }}"
+                                        class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl overflow-hidden hover:bg-white/80 dark:hover:bg-white/10 hover:-translate-y-1 transition-all duration-300">
+
+                                        @if ($variantImageUrl)
+                                            <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                                <img src="{{ $variantImageUrl }}" alt="{{ $variantTitle }}"
+                                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                            </div>
+                                        @endif
+
+                                        <div class="p-6">
+                                            <div class="flex items-start justify-between mb-3">
+                                                <h3
+                                                    class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                    {{ $variantTitle }}
+                                                </h3>
+                                                <i
+                                                    class="fa-solid fa-arrow-right text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                            </div>
+
+                                            @if ($variantDescription)
+                                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                                                    {{ $variantDescription }}
+                                                </p>
+                                            @endif
+
+                                            @if ($variant->variant_type)
+                                                <div
+                                                    class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full mb-3">
+                                                    <i class="fa-solid fa-tag"></i>
+                                                    <span>{{ ucfirst(str_replace('-', ' ', $variant->variant_type)) }}</span>
+                                                </div>
+                                            @endif
+
+                                            <div
+                                                class="flex items-center gap-2 text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded border border-gray-200 dark:border-gray-700">
+                                                <i class="fa-solid fa-barcode"></i>
+                                                <span>{{ $variant->sku }}</span>
+                                            </div>
+
+                                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                <span
+                                                    class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
+                                                    Detayları Görüntüle <i class="fa-solid fa-chevron-right ml-1"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+
                     {{-- Gallery --}}
                     @if ($galleryImages->count() > 0)
                         <section id="gallery" class="scroll-mt-24 mb-20 lg:mb-24">
@@ -512,94 +600,6 @@
                                     @endforeach
                                 </div>
                             @endif
-                        </section>
-                    @endif
-
-                    {{-- Variants --}}
-                    @if ($siblingVariants->count() > 0)
-                        <section id="variants" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <header class="text-center mb-12">
-                                <div
-                                    class="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-2xl mb-4">
-                                    <i class="fa-solid fa-layer-group text-3xl text-purple-600 dark:text-purple-400"></i>
-                                </div>
-                                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
-                                    Ürün Varyantları
-                                </h2>
-                                <p class="text-gray-600 dark:text-gray-400 text-lg">İhtiyacınıza en uygun modeli keşfedin
-                                </p>
-                            </header>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                @foreach ($siblingVariants as $variant)
-                                    @php
-                                        $variantTitle =
-                                            $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
-                                        $variantDescription = $variant->getTranslated(
-                                            'short_description',
-                                            $currentLocale,
-                                        );
-                                        $variantUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl(
-                                            $variant,
-                                            $currentLocale,
-                                        );
-                                        $variantImage = $variant->getFirstMedia('featured_image');
-                                        $variantImageUrl = $variantImage
-                                            ? ($variantImage->hasGeneratedConversion('thumb')
-                                                ? $variantImage->getUrl('thumb')
-                                                : $variantImage->getUrl())
-                                            : null;
-                                    @endphp
-                                    <a href="{{ $variantUrl }}"
-                                        class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl overflow-hidden hover:bg-white/80 dark:hover:bg-white/10 hover:-translate-y-1 transition-all duration-300">
-
-                                        @if ($variantImageUrl)
-                                            <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
-                                                <img src="{{ $variantImageUrl }}" alt="{{ $variantTitle }}"
-                                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                            </div>
-                                        @endif
-
-                                        <div class="p-6">
-                                            <div class="flex items-start justify-between mb-3">
-                                                <h3
-                                                    class="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                                    {{ $variantTitle }}
-                                                </h3>
-                                                <i
-                                                    class="fa-solid fa-arrow-right text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                                            </div>
-
-                                            @if ($variantDescription)
-                                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                                                    {{ $variantDescription }}
-                                                </p>
-                                            @endif
-
-                                            @if ($variant->variant_type)
-                                                <div
-                                                    class="inline-flex items-center gap-2 text-xs font-semibold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full mb-3">
-                                                    <i class="fa-solid fa-tag"></i>
-                                                    <span>{{ ucfirst(str_replace('-', ' ', $variant->variant_type)) }}</span>
-                                                </div>
-                                            @endif
-
-                                            <div
-                                                class="flex items-center gap-2 text-xs font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded border border-gray-200 dark:border-gray-700">
-                                                <i class="fa-solid fa-barcode"></i>
-                                                <span>{{ $variant->sku }}</span>
-                                            </div>
-
-                                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                                <span
-                                                    class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:underline">
-                                                    Detayları Görüntüle <i class="fa-solid fa-chevron-right ml-1"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                @endforeach
-                            </div>
                         </section>
                     @endif
 

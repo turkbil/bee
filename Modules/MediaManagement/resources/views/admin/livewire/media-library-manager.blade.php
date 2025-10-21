@@ -293,12 +293,31 @@
                             <button type="button" class="btn-close" wire:click="closeEditModal"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">{{ __('mediamanagement::admin.title_single') }}</label>
-                                <input type="text" class="form-control" wire:model.defer="editForm.name">
-                                @error('editForm.name')
-                                    <div class="text-danger small">{{ $message }}</div>
-                                @enderror
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        {{ __('mediamanagement::admin.title_single') }}
+                                        <span class="text-muted small">(Görünen Ad)</span>
+                                    </label>
+                                    <input type="text" class="form-control" wire:model.defer="editForm.name">
+                                    @error('editForm.name')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        Dosya Adı
+                                        <span class="text-muted small">(Slug-friendly)</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" wire:model.defer="editForm.file_name" placeholder="ornek-dosya">
+                                        <span class="input-group-text">.{{ $editForm['extension'] ?? '' }}</span>
+                                    </div>
+                                    @error('editForm.file_name')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">Türkçe karakterler otomatik temizlenecek</div>
+                                </div>
                             </div>
                             <div class="row g-3">
                                 @foreach($locales as $locale)

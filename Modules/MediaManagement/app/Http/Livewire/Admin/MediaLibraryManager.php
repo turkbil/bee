@@ -42,6 +42,8 @@ class MediaLibraryManager extends Component
     public ?int $editingMediaId = null;
     public array $editForm = [
         'name' => '',
+        'file_name' => '',
+        'extension' => '',
         'title' => [],
         'description' => [],
         'alt_text' => [],
@@ -202,6 +204,8 @@ class MediaLibraryManager extends Component
         $this->editingMediaId = $mediaId;
         $this->editForm = [
             'name' => $media->name,
+            'file_name' => pathinfo($media->file_name, PATHINFO_FILENAME), // Extension olmadan
+            'extension' => pathinfo($media->file_name, PATHINFO_EXTENSION),
             'title' => $media->getCustomProperty('title', []),
             'description' => $media->getCustomProperty('description', []),
             'alt_text' => $media->getCustomProperty('alt_text', []),
@@ -215,6 +219,8 @@ class MediaLibraryManager extends Component
         $this->editingMediaId = null;
         $this->editForm = [
             'name' => '',
+            'file_name' => '',
+            'extension' => '',
             'title' => [],
             'description' => [],
             'alt_text' => [],
@@ -230,6 +236,7 @@ class MediaLibraryManager extends Component
 
         $this->validate([
             'editForm.name' => 'required|string|max:255',
+            'editForm.file_name' => 'required|string|max:255',
             'editForm.title' => 'array',
             'editForm.title.*' => 'nullable|string|max:255',
             'editForm.description' => 'array',
@@ -249,7 +256,43 @@ class MediaLibraryManager extends Component
         }
 
         try {
-            $media->name = trim($this->editForm['name']);
+            // Slug-friendly file name oluştur
+            $newBaseName = Str::slug(trim($this->editForm['file_name']));
+            $extension = $this->editForm['extension'];
+            $newFileName = $newBaseName . '.' . $extension;
+
+            // Eğer dosya adı değiştiyse, fiziksel dosyayı rename et
+            if ($media->file_name !== $newFileName) {
+                $oldPath = $media->getPath();
+                $newPath = dirname($oldPath) . '/' . $newFileName;
+
+                if (file_exists($oldPath)) {
+                    // Aynı isimde dosya varsa hata ver
+                    if (file_exists($newPath) && $oldPath !== $newPath) {
+                        $this->dispatch('toast', [
+                            'title' => __('admin.error'),
+                            'message' => 'Bu isimde bir dosya zaten mevcut!',
+                            'type' => 'error',
+                        ]);
+                        return;
+                    }
+
+                    // Dosyayı rename et
+                    if (rename($oldPath, $newPath)) {
+                        $media->file_name = $newFileName;
+                        Log::info('Media file renamed', [
+                            'media_id' => $media->id,
+                            'old' => $media->file_name,
+                            'new' => $newFileName,
+                        ]);
+                    } else {
+                        throw new \Exception('Dosya yeniden adlandırılamadı');
+                    }
+                }
+            }
+
+            // Name ve custom properties güncelle
+            $media->name = Str::slug(trim($this->editForm['name']));
             $media->setCustomProperty('title', $this->cleanTranslations($this->editForm['title'] ?? []));
             $media->setCustomProperty('description', $this->cleanTranslations($this->editForm['description'] ?? []));
             $media->setCustomProperty('alt_text', $this->cleanTranslations($this->editForm['alt_text'] ?? []));

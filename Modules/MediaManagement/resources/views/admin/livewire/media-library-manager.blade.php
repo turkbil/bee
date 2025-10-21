@@ -1,4 +1,14 @@
 <div class="media-library-manager" x-data="mediaLibraryUploader('{{ route('admin.mediamanagement.library.upload', [], false) }}', '{{ csrf_token() }}', '{{ $this->getId() }}')">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div></div>
+        <a href="{{ route('admin.mediamanagement.thumbmaker-guide') }}" class="btn btn-ghost-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/><line x1="9" y1="9" x2="10" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
+            </svg>
+            Thumbmaker Kılavuzu
+        </a>
+    </div>
+
     <div class="row row-cards mb-4 g-3">
         <div class="col-sm-6 col-xl-3">
             <div class="card card-sm">
@@ -174,12 +184,13 @@
                             <div class="ratio ratio-1x1 card-img-top position-relative"
                                  @if($this->isPreviewable($media))
                                  style="cursor: zoom-in;"
-                                 @click="showLightbox = true; lightboxUrl = '{{ addslashes($media->computed_url ?? $media->getUrl()) }}'; lightboxAlt = '{{ addslashes($media->name) }}'; document.body.style.overflow = 'hidden';"
+                                 @click="showLightbox = true; lightboxUrl = '{{ addslashes(thumb($media, 1920, 1920, ['quality' => 90])) }}'; lightboxAlt = '{{ addslashes($media->name) }}'; document.body.style.overflow = 'hidden';"
                                  @endif>
                                 @if($this->isPreviewable($media))
-                                    <img src="{{ $media->computed_thumb_url ?? $media->computed_url ?? $this->previewUrl($media) }}"
+                                    <img src="{{ thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]) }}"
                                          alt="{{ $media->name }}"
-                                         class="object-fit-cover w-100 h-100">
+                                         class="object-fit-cover w-100 h-100"
+                                         loading="lazy">
                                     <div class="position-absolute top-0 end-0 m-1">
                                         <span class="badge badge-sm bg-dark bg-opacity-75">
                                             {{ $this->formatBytes($media->size) }}

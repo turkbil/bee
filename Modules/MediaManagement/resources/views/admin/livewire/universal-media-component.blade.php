@@ -459,8 +459,11 @@
                         visible: visibleItems.length
                     });
 
+                    // Başlangıç sıralamasını sakla
+                    let originalOrder = null;
+
                     window.gallerySortable = new Sortable(container, {
-                        animation: 200,
+                        animation: 0, // ❌ Animasyon KAPALI - zıplama yok
                         ghostClass: 'sortable-ghost',
                         dragClass: 'sortable-drag',
                         handle: '.gallery-drag-handle',
@@ -468,10 +471,24 @@
 
                         onStart: function(evt) {
                             evt.item.style.opacity = '0.5';
+
+                            // Başlangıç sıralamasını kaydet
+                            originalOrder = Array.from(container.querySelectorAll('.gallery-item')).map(item => item.getAttribute('data-id'));
                         },
 
                         onEnd: function(evt) {
                             evt.item.style.opacity = '1';
+
+                            // YENİ sıralamayı al
+                            const newOrder = Array.from(container.querySelectorAll('.gallery-item')).map(item => item.getAttribute('data-id'));
+
+                            // Sıralama değişti mi kontrol et
+                            const orderChanged = JSON.stringify(originalOrder) !== JSON.stringify(newOrder);
+
+                            if (!orderChanged) {
+                                console.log('⏭️ Sıralama değişmedi, işlem yapılmıyor');
+                                return; // ❌ Sıralama değişmediyse hiçbir şey yapma
+                            }
 
                             // TÜM öğeleri al (gizli olanlar dahil) - DOM sırasına göre
                             const existingItems = [];

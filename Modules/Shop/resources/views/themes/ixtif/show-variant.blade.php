@@ -612,9 +612,54 @@
         </div>
     </section>
 
-    {{-- Floating CTA (Sol tarafta - AI bot çakışmasını önlemek için) --}}
-    <div x-data="{ show: false }" @scroll.window="show = (window.pageYOffset > 800)" x-show="show" x-transition
-        class="fixed bottom-8 left-8 z-50 hidden md:block">
+    {{-- Floating CTA (Dinamik - AI bot'a göre yer açar, contact section'da gizlenir) --}}
+    <div x-data="{
+            show: false,
+            hideButton: false,
+            position: 'right-10',
+            updatePosition() {
+                // Mobile'da sabit kal
+                if (window.innerWidth < 1024) {
+                    this.position = 'right-10';
+                    return;
+                }
+
+                // Desktop'ta AI bot durumuna göre
+                const aiChat = window.Alpine?.store('aiChat');
+                if (aiChat?.floatingOpen) {
+                    this.position = 'right-[420px]'; // AI bot genişliği (384px) + 36px margin
+                } else {
+                    this.position = 'right-10';
+                }
+            },
+            init() {
+                this.updatePosition();
+                // AI bot durumunu izle
+                this.$watch('$store.aiChat.floatingOpen', () => {
+                    this.updatePosition();
+                });
+
+                // Contact section'ı izle - görününce butonu gizle
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            this.hideButton = entry.isIntersecting;
+                        });
+                    }, {
+                        threshold: 0.1,
+                        rootMargin: '0px 0px -100px 0px'
+                    });
+                    observer.observe(contactSection);
+                }
+            }
+        }"
+        @scroll.window="show = (window.pageYOffset > 800)"
+        @resize.window="updatePosition()"
+        x-show="show && !hideButton"
+        x-transition
+        :class="position"
+        class="fixed bottom-8 z-[60] hidden md:block transition-all duration-300">
         <a href="#contact"
             class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all">
             <i class="fa-solid fa-envelope"></i>

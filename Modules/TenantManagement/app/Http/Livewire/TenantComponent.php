@@ -5,7 +5,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Tenant;
-use Stancl\Tenancy\Database\Models\Domain;
+use App\Models\Domain; // Custom Domain model (extends vendor)
 use Illuminate\Support\Facades\DB;
 use Modules\ThemeManagement\App\Models\Theme;
 
@@ -418,22 +418,43 @@ class TenantComponent extends Component
 
     public function addDomain()
     {
+        // www prefix'ini otomatik temizle
+        $this->newDomain = $this->normalizeDomain($this->newDomain);
+
         $this->validateOnly('newDomain');
 
         try {
             $tenant = Tenant::find($this->tenantId);
             if ($tenant) {
+                // Unique kontrol (www'suz halde)
+                $exists = Domain::where('domain', $this->newDomain)->exists();
+                if ($exists) {
+                    $this->dispatch('toast', [
+                        'title' => 'Hata!',
+                        'message' => 'Bu domain zaten kayıtlı!',
+                        'type' => 'error'
+                    ]);
+                    return;
+                }
+
+                // Domain oluştur
                 $domain = $tenant->domains()->create([
                     'domain' => $this->newDomain,
                 ]);
 
+                // İlk domain ise otomatik primary yap
+                $domainCount = Domain::where('tenant_id', $this->tenantId)->count();
+                if ($domainCount === 1) {
+                    $domain->setAsPrimary();
+                }
+
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'oluşturuldu');
                 }
-                
+
                 $this->loadDomains($this->tenantId);
                 $this->newDomain = '';
-                
+
                 $this->dispatch('toast', [
                     'title' => 'Başarılı!',
                     'message' => 'Domain başarıyla eklendi.',
@@ -458,9 +479,26 @@ class TenantComponent extends Component
     public function updateDomain($domainId)
     {
         try {
+            // www prefix'ini otomatik temizle
+            $this->editingDomainValue = $this->normalizeDomain($this->editingDomainValue);
+
             $domain = Domain::find($domainId);
 
             if ($domain) {
+                // Unique kontrol (kendi dışında)
+                $exists = Domain::where('domain', $this->editingDomainValue)
+                    ->where('id', '!=', $domainId)
+                    ->exists();
+
+                if ($exists) {
+                    $this->dispatch('toast', [
+                        'title' => 'Hata!',
+                        'message' => 'Bu domain zaten kayıtlı!',
+                        'type' => 'error'
+                    ]);
+                    return;
+                }
+
                 $oldDomain = $domain->domain;
                 $domain->update(['domain' => $this->editingDomainValue]);
 
@@ -471,7 +509,7 @@ class TenantComponent extends Component
                 $this->loadDomains($this->tenantId);
                 $this->editingDomainId    = null;
                 $this->editingDomainValue = '';
-                
+
                 $this->dispatch('toast', [
                     'title' => 'Başarılı!',
                     'message' => 'Domain başarıyla güncellendi.',
@@ -582,7 +620,7 @@ class TenantComponent extends Component
     
     /**
      * Tenant dizinlerini temizle
-     * 
+     *
      * @param int $tenantId
      */
     protected function cleanTenantDirectories($tenantId)
@@ -592,11 +630,71 @@ class TenantComponent extends Component
         if (\Illuminate\Support\Facades\File::isDirectory($tenantPath)) {
             \Illuminate\Support\Facades\File::deleteDirectory($tenantPath);
         }
-        
+
         // Public storage dizini varsa temizle
         $publicStoragePath = public_path("storage/tenant{$tenantId}");
         if (\Illuminate\Support\Facades\File::isDirectory($publicStoragePath)) {
             \Illuminate\Support\Facades\File::deleteDirectory($publicStoragePath);
+        }
+    }
+
+    /**
+     * Domain'i normalize et (www prefix'ini temizle)
+     *
+     * @param string $domain
+     * @return string
+     */
+    protected function normalizeDomain(string $domain): string
+    {
+        // Trim ve lowercase
+        $domain = strtolower(trim($domain));
+
+        // www. prefix'ini kaldır
+        if (str_starts_with($domain, 'www.')) {
+            $domain = substr($domain, 4);
+        }
+
+        // Protocol prefix'lerini kaldır (http://, https://)
+        $domain = preg_replace('#^https?://#', '', $domain);
+
+        // Son slash'i kaldır
+        $domain = rtrim($domain, '/');
+
+        return $domain;
+    }
+
+    /**
+     * Domain'i primary olarak işaretle
+     *
+     * @param int $domainId
+     * @return void
+     */
+    public function setPrimaryDomain(int $domainId): void
+    {
+        try {
+            $domain = Domain::find($domainId);
+
+            if ($domain && $domain->tenant_id == $this->tenantId) {
+                $domain->setAsPrimary();
+
+                if (function_exists('log_activity')) {
+                    log_activity($domain, 'primary domain olarak işaretlendi');
+                }
+
+                $this->loadDomains($this->tenantId);
+
+                $this->dispatch('toast', [
+                    'title' => 'Başarılı!',
+                    'message' => 'Ana domain başarıyla değiştirildi.',
+                    'type' => 'success'
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Primary domain ayarlanırken bir hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
     }
 

@@ -1,6 +1,7 @@
 @php
     $setting = null;
     $settingId = null;
+    $collectionName = 'featured_image'; // Default
 
     if(isset($element['properties']['setting_id'])) {
         $settingId = $element['properties']['setting_id'];
@@ -11,6 +12,11 @@
         if($setting) {
             $settingId = $setting->id;
         }
+    }
+
+    // Collection name belirle
+    if($setting) {
+        $collectionName = $setting->getMediaCollectionName();
     }
 @endphp
 
@@ -32,13 +38,13 @@
                         'modelId' => $setting->id,
                         'modelType' => 'setting',
                         'modelClass' => 'Modules\SettingManagement\App\Models\Setting',
-                        'collections' => ['featured_image'],
+                        'collections' => [$collectionName],
                         'maxGalleryItems' => 1,
                         'sortable' => false,
                         'setFeaturedFromGallery' => false,
                         'hideLabel' => true,
                         'acceptedFileTypes' => '.ico,.png,image/x-icon,image/vnd.microsoft.icon,image/png'
-                    ], key('setting-media-fb-favicon-' . $setting->id))
+                    ], key('setting-media-fb-' . $collectionName . '-' . $setting->id))
 
                     @if(isset($element['properties']['help_text']) && !empty($element['properties']['help_text']))
                         <div class="form-text text-muted mt-2">

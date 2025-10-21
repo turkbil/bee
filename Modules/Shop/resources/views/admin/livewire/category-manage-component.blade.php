@@ -103,7 +103,7 @@
                                     :model-id="$categoryId"
                                     model-type="shop_category"
                                     model-class="Modules\Shop\App\Models\ShopCategory"
-                                    :collections="['featured_image']"
+                                    :collections="['category_image']"
                                     :sortable="false"
                                     :key="'universal-media-' . ($categoryId ?? 'new')"
                                 />

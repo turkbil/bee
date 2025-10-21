@@ -12,7 +12,10 @@ use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
 class Setting extends Model implements HasMedia
 {
-    use CentralConnection, Sluggable, HasMediaManagement;
+    use CentralConnection, Sluggable;
+    use HasMediaManagement {
+        registerMediaCollections as traitRegisterMediaCollections;
+    }
 
     protected $table = 'settings';
 

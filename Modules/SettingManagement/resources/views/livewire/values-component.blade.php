@@ -103,6 +103,7 @@
                                             
                                             @case('file')
                                             @case('image')
+                                            @case('favicon')
                                                 <div class="mb-3">
                                                     <label class="form-label">{{ $setting->label }}</label>
 
@@ -111,11 +112,11 @@
                                                         'modelId' => $setting->id,
                                                         'modelType' => 'setting',
                                                         'modelClass' => 'Modules\SettingManagement\App\Models\Setting',
-                                                        'collections' => ['featured_image'],
+                                                        'collections' => [$setting->getMediaCollectionName()],
                                                         'maxGalleryItems' => 1,
                                                         'sortable' => false,
                                                         'setFeaturedFromGallery' => false
-                                                    ], key('setting-media-' . $setting->id))
+                                                    ], key('setting-media-' . $setting->key . '-' . $setting->id))
 
                                                     @if(isset($setting->help_text) && !empty($setting->help_text))
                                                         <div class="form-text text-muted mt-2">

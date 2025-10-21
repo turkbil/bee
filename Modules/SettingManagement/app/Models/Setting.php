@@ -285,9 +285,6 @@ class Setting extends Model implements HasMedia
 
     /**
      * Setting'in media URL'sini al
-     *
-     * Setting model CENTRAL DB kullanır ama media TENANT DB'de
-     * Bu yüzden direkt tenant DB'den media çekmeliyiz
      */
     public function getMediaUrl(): ?string
     {
@@ -295,34 +292,8 @@ class Setting extends Model implements HasMedia
             return null;
         }
 
-        // Tenant context yoksa boş döndür
-        if (!tenant()) {
-            return null;
-        }
-
         $collection = $this->getMediaCollectionName();
-
-        // Manuel olarak tenant DB'den media çek
-        try {
-            $media = \App\Models\CustomMedia::on('tenant')
-                ->where('model_type', self::class)
-                ->where('model_id', $this->id)
-                ->where('collection_name', $collection)
-                ->orderBy('order_column')
-                ->first();
-
-            if ($media) {
-                return $media->getUrl();
-            }
-        } catch (\Exception $e) {
-            \Log::warning('Setting getMediaUrl failed', [
-                'setting_id' => $this->id,
-                'collection' => $collection,
-                'error' => $e->getMessage()
-            ]);
-        }
-
-        return null;
+        return $this->getFirstMediaUrl($collection);
     }
 
     /**

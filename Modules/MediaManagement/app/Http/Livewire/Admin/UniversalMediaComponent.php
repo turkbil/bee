@@ -1325,8 +1325,13 @@ class UniversalMediaComponent extends Component
 
     public function render()
     {
+        // Dynamic collection check (Setting için site_logo, site_favicon vs.)
+        $firstCollection = $this->collections[0] ?? null;
+        $knownCollections = ['featured_image', 'seo_og_image', 'gallery', 'videos', 'audio', 'documents'];
+        $isDynamicSingleFile = $firstCollection && !in_array($firstCollection, $knownCollections);
+
         return view('mediamanagement::admin.livewire.universal-media-component', [
-            'hasFeautredImage' => $this->hasCollection('featured_image'),
+            'hasFeautredImage' => $this->hasCollection('featured_image') || $isDynamicSingleFile,
             'hasSeoOgImage' => $this->hasCollection('seo_og_image'),
             'hasGallery' => $this->hasCollection('gallery'),
             'hasVideos' => $this->hasCollection('videos'),

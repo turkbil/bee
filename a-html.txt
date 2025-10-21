@@ -1,12 +1,362 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0;url='https://ixtif.com/login'" />
+<div class="card-body" style="border-radius: 0px !important;">
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="tabs-1" style="border-radius: 0px !important; overflow: hidden !important;" role="tabpanel">
+                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                                <div class="row g-3">
+                                    <!--[if BLOCK]><![endif]-->                                        <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="site_title" wire:model.defer="values.site_title" class="form-control " placeholder="Sitenizin adını giriniz" required="" style="border-radius: 0.25rem !important;">
+            <label for="site_title">
+                Site Adı
+                <!--[if BLOCK]><![endif]--> 
+                    <span class="text-danger">*</span> 
+                <!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Sitenizin adı (örn: iXtif, TechStore, vb.)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="company_name" wire:model.defer="values.company_name" class="form-control " placeholder="Firma veya kurum adınızı giriniz" style="border-radius: 0.25rem !important;">
+            <label for="company_name">
+                Kurum Adı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Firma veya kurum adınız (örn: ABC Ltd. Şti., XYZ A.Ş.)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="site_slogan" wire:model.defer="values.site_slogan" class="form-control " placeholder="Sitenizin sloganını giriniz" style="border-radius: 0.25rem !important;">
+            <label for="site_slogan">
+                Site Sloganı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Sitenizin sloganı veya açıklaması (örn: Türkiye'nin İstif Pazarı)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->    <div class="col-12" wire:key="setting-2">
+        <div class="card mb-3 w-100" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="card-title d-flex align-items-center">
+                        <i class="fas fa-file me-2"></i>
+                        Site Logo
+                    </h3>
+                </div>
+            </div>
+            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                <div class="form-group w-100">
+                    
+                    <div wire:snapshot="{&quot;data&quot;:{&quot;modelId&quot;:2,&quot;modelType&quot;:&quot;setting&quot;,&quot;modelClass&quot;:&quot;Modules\\SettingManagement\\App\\Models\\Setting&quot;,&quot;collections&quot;:[[&quot;featured_image&quot;],{&quot;s&quot;:&quot;arr&quot;}],&quot;maxGalleryItems&quot;:1,&quot;sortable&quot;:false,&quot;setFeaturedFromGallery&quot;:false,&quot;hideLabel&quot;:true,&quot;acceptedFileTypes&quot;:null,&quot;featuredImageFile&quot;:null,&quot;seoOgImageFile&quot;:null,&quot;galleryFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;videoFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;audioFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;documentFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingFeaturedImage&quot;:[{&quot;id&quot;:29,&quot;url&quot;:&quot;https:\/\/ixtif.com\/storage\/tenant2\/29\/yc0S79rIHhYXvTYAYWzQU8Durkldk8K2ti1EKjht.png&quot;,&quot;thumb&quot;:&quot;https:\/\/ixtif.com\/storage\/tenant2\/29\/yc0S79rIHhYXvTYAYWzQU8Durkldk8K2ti1EKjht.png&quot;,&quot;name&quot;:&quot;yc0S79rIHhYXvTYAYWzQU8Durkldk8K2ti1EKjht&quot;,&quot;file_name&quot;:&quot;yc0S79rIHhYXvTYAYWzQU8Durkldk8K2ti1EKjht.png&quot;,&quot;size&quot;:&quot;52.44 KB&quot;,&quot;mime_type&quot;:&quot;image\/png&quot;,&quot;type&quot;:&quot;image&quot;,&quot;order&quot;:1,&quot;custom_properties&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}]},{&quot;s&quot;:&quot;arr&quot;}],&quot;existingSeoOgImage&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingGallery&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingVideos&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingAudio&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingDocuments&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;tempFeaturedImage&quot;:null,&quot;tempSeoOgImage&quot;:null,&quot;tempGallery&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;VfWBdy8NBDXd8Fvph14e&quot;,&quot;name&quot;:&quot;mediamanagement::universal-media&quot;,&quot;path&quot;:&quot;admin\/settingmanagement\/values\/6&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;a4d97c378610e10ea40f3a845db9558da68a338bed0a47cfc8bdbde9c2289b70&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;announcement-saved&quot;,&quot;page-saved&quot;,&quot;portfolio-saved&quot;,&quot;update-gallery-order&quot;,&quot;update-temp-gallery-order&quot;,&quot;save-media-caption&quot;]}" wire:id="VfWBdy8NBDXd8Fvph14e" class="media-management-component" wire:loading.class="opacity-50">
+    
+    <div wire:loading="" class="alert alert-info mb-3" role="alert" style="border-radius: 0.25rem !important;">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <div>
+                <strong>Dosyalar yükleniyor...</strong>
+                <small class="d-block text-muted">Lütfen bekleyin, sayfa yenilenmeyecek.</small>
+            </div>
+        </div>
+    </div>
 
-        <title>Redirecting to https://ixtif.com/login</title>
-    </head>
-    <body>
-        Redirecting to <a href="https://ixtif.com/login">https://ixtif.com/login</a>.
-    </body>
-</html>
+    <div class="row">
+        
+        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-4 order-md-1">
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                <div class="row g-2 align-items-stretch" style="max-height: 125px;">
+                    
+                                            <div class="col-lg-4">
+                            <div class="position-relative">
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <div class="media-hover-container">
+                                        <img src="https://ixtif.com/storage/29/yc0S79rIHhYXvTYAYWzQU8Durkldk8K2ti1EKjht.png" alt="Preview" class="img-thumbnail w-100" style="max-height: 125px; height: 125px; object-fit: contain;" data-fslightbox="featured-image" data-src="https://ixtif.com/storage/29/yc0S79rIHhYXvTYAYWzQU8Durkldk8K2ti1EKjht.png">
+
+                                        
+                                        <button type="button" x-on:click.stop="$dispatch('open-caption-modal', {
+                                                    mediaId: '29',
+                                                    type: 'featured',
+                                                    currentTitle: [],
+                                                    currentDescription: [],
+                                                    currentAltText: []
+                                                })" class="btn btn-primary position-absolute media-action-btn media-hover-btn" style="top: 8px; left: 8px; padding: 0.4rem 0.65rem; z-index: 10; font-size: 0.9rem; --tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Yazıları Düzenle" data-bs-original-title="Yazıları Düzenle">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+
+                                        
+                                        <button type="button" x-on:click.stop="window.Livewire.find('VfWBdy8NBDXd8Fvph14e').deleteFeaturedImage()" class="btn btn-danger position-absolute media-action-btn media-hover-btn" style="top: 8px; right: 8px; padding: 0.4rem 0.65rem; z-index: 10; font-size: 0.9rem; border-radius: 0.25rem !important; transition: border-radius 0.15s;" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Görseli Sil" data-bs-original-title="Görseli Sil">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                <!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+
+                    
+                    <div class="col-lg-8">
+                        <div x-data="manualUploadComponent(window.Livewire.find('VfWBdy8NBDXd8Fvph14e'))" @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @drop.prevent="handleDrop($event)" class="border rounded p-3 text-center border-dashed" :class="{ 'border-primary bg-light': isDragging, 'opacity-50': uploading }" style="cursor: pointer; display: flex; flex-direction: column; justify-content: center; height: 125px; border-radius: 0.25rem !important;" @click="!uploading &amp;&amp; $refs.featuredInput.click()">
+
+                            <div class="mb-2" x-show="!uploading">
+                                <i class="fas fa-image fa-2x text-muted"></i>
+                            </div>
+
+                            <div class="mb-2" x-show="uploading" style="display: none;">
+                                <div class="spinner-border text-primary" role="status" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                            </div>
+
+                            <p class="mb-1" x-show="!uploading">Dosyayı sürükle bırak veya tıklayarak seç</p>
+                            <p class="mb-1" x-show="uploading" style="display: none;">Yükleniyor...</p>
+                            <p class="text-muted small mb-0" x-show="!uploading">Maksimum dosya boyutu: 10MB</p>
+
+                            <input type="file" x-ref="featuredInput" @change="uploadFile($event.target.files[0])" accept="image/jpeg,image/png,image/jpg,image/webp,image/gif" class="d-none" :disabled="uploading">
+                        </div>
+
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+                </div>
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>
+
+
+<!--[if BLOCK]><![endif]-->    <!--[if ENDBLOCK]><![endif]-->
+
+                    <!--[if BLOCK]><![endif]-->                        <div class="form-text mt-2 ms-2">
+                            <i class="fas fa-info-circle me-1"></i>Önerilen boyut: 200x60 piksel
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            </div>
+        </div>
+    </div>
+<!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->    <div class="col-12" wire:key="setting-3">
+        <div class="card mb-3 w-100" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="card-title d-flex align-items-center">
+                        <i class="fas fa-star me-2"></i>
+                        Favicon
+                    </h3>
+                </div>
+            </div>
+            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                <div class="form-group w-100">
+                    
+                    <div wire:snapshot="{&quot;data&quot;:{&quot;modelId&quot;:3,&quot;modelType&quot;:&quot;setting&quot;,&quot;modelClass&quot;:&quot;Modules\\SettingManagement\\App\\Models\\Setting&quot;,&quot;collections&quot;:[[&quot;featured_image&quot;],{&quot;s&quot;:&quot;arr&quot;}],&quot;maxGalleryItems&quot;:1,&quot;sortable&quot;:false,&quot;setFeaturedFromGallery&quot;:false,&quot;hideLabel&quot;:true,&quot;acceptedFileTypes&quot;:&quot;.ico,.png,image\/x-icon,image\/vnd.microsoft.icon,image\/png&quot;,&quot;featuredImageFile&quot;:null,&quot;seoOgImageFile&quot;:null,&quot;galleryFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;videoFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;audioFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;documentFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingFeaturedImage&quot;:[{&quot;id&quot;:31,&quot;url&quot;:&quot;https:\/\/ixtif.com\/storage\/tenant2\/31\/R7l3WPBuYIqaUil0Sk7Ybgu9QhD9UTXrgVFtuCN0.png&quot;,&quot;thumb&quot;:&quot;https:\/\/ixtif.com\/storage\/tenant2\/31\/R7l3WPBuYIqaUil0Sk7Ybgu9QhD9UTXrgVFtuCN0.png&quot;,&quot;name&quot;:&quot;R7l3WPBuYIqaUil0Sk7Ybgu9QhD9UTXrgVFtuCN0&quot;,&quot;file_name&quot;:&quot;R7l3WPBuYIqaUil0Sk7Ybgu9QhD9UTXrgVFtuCN0.png&quot;,&quot;size&quot;:&quot;4.38 KB&quot;,&quot;mime_type&quot;:&quot;image\/png&quot;,&quot;type&quot;:&quot;image&quot;,&quot;order&quot;:1,&quot;custom_properties&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}]},{&quot;s&quot;:&quot;arr&quot;}],&quot;existingSeoOgImage&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingGallery&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingVideos&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingAudio&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingDocuments&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;tempFeaturedImage&quot;:null,&quot;tempSeoOgImage&quot;:null,&quot;tempGallery&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;aFxajZoocqF5K5tr52Ug&quot;,&quot;name&quot;:&quot;mediamanagement::universal-media&quot;,&quot;path&quot;:&quot;admin\/settingmanagement\/values\/6&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;900a4918e11380b4e339db0ca0b73800cdc86dfde35f0b61a99e0eb8407eb083&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;announcement-saved&quot;,&quot;page-saved&quot;,&quot;portfolio-saved&quot;,&quot;update-gallery-order&quot;,&quot;update-temp-gallery-order&quot;,&quot;save-media-caption&quot;]}" wire:id="aFxajZoocqF5K5tr52Ug" class="media-management-component" wire:loading.class="opacity-50">
+    
+    <div wire:loading="" class="alert alert-info mb-3" role="alert" style="border-radius: 0.25rem !important;">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <div>
+                <strong>Dosyalar yükleniyor...</strong>
+                <small class="d-block text-muted">Lütfen bekleyin, sayfa yenilenmeyecek.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-4 order-md-1">
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                <div class="row g-2 align-items-stretch" style="max-height: 125px;">
+                    
+                                            <div class="col-lg-4">
+                            <div class="position-relative">
+                                
+                                <!--[if BLOCK]><![endif]-->                                    <div class="media-hover-container">
+                                        <img src="https://ixtif.com/storage/31/R7l3WPBuYIqaUil0Sk7Ybgu9QhD9UTXrgVFtuCN0.png" alt="Preview" class="img-thumbnail w-100" style="max-height: 125px; height: 125px; object-fit: contain;" data-fslightbox="featured-image" data-src="https://ixtif.com/storage/31/R7l3WPBuYIqaUil0Sk7Ybgu9QhD9UTXrgVFtuCN0.png">
+
+                                        
+                                        <button type="button" x-on:click.stop="$dispatch('open-caption-modal', {
+                                                    mediaId: '31',
+                                                    type: 'featured',
+                                                    currentTitle: [],
+                                                    currentDescription: [],
+                                                    currentAltText: []
+                                                })" class="btn btn-primary position-absolute media-action-btn media-hover-btn" style="top: 8px; left: 8px; padding: 0.4rem 0.65rem; z-index: 10; font-size: 0.9rem; --tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Yazıları Düzenle" data-bs-original-title="Yazıları Düzenle">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </button>
+
+                                        
+                                        <button type="button" x-on:click.stop="window.Livewire.find('aFxajZoocqF5K5tr52Ug').deleteFeaturedImage()" class="btn btn-danger position-absolute media-action-btn media-hover-btn" style="top: 8px; right: 8px; padding: 0.4rem 0.65rem; z-index: 10; font-size: 0.9rem; border-radius: 0.25rem !important; transition: border-radius 0.15s;" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Görseli Sil" data-bs-original-title="Görseli Sil">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                <!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+
+                    
+                    <div class="col-lg-8">
+                        <div x-data="manualUploadComponent(window.Livewire.find('aFxajZoocqF5K5tr52Ug'))" @dragover.prevent="isDragging = true" @dragleave.prevent="isDragging = false" @drop.prevent="handleDrop($event)" class="border rounded p-3 text-center border-dashed" :class="{ 'border-primary bg-light': isDragging, 'opacity-50': uploading }" style="cursor: pointer; display: flex; flex-direction: column; justify-content: center; height: 125px; border-radius: 0.25rem !important;" @click="!uploading &amp;&amp; $refs.featuredInput.click()">
+
+                            <div class="mb-2" x-show="!uploading">
+                                <i class="fas fa-image fa-2x text-muted"></i>
+                            </div>
+
+                            <div class="mb-2" x-show="uploading" style="display: none;">
+                                <div class="spinner-border text-primary" role="status" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                            </div>
+
+                            <p class="mb-1" x-show="!uploading">Dosyayı sürükle bırak veya tıklayarak seç</p>
+                            <p class="mb-1" x-show="uploading" style="display: none;">Yükleniyor...</p>
+                            <p class="text-muted small mb-0" x-show="!uploading">Maksimum dosya boyutu: 10MB</p>
+
+                            <input type="file" x-ref="featuredInput" @change="uploadFile($event.target.files[0])" accept=".ico,.png,image/x-icon,image/vnd.microsoft.icon,image/png" class="d-none" :disabled="uploading">
+                        </div>
+
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+                </div>
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>
+
+
+<!--[if BLOCK]><![endif]-->    <!--[if ENDBLOCK]><![endif]-->
+
+                    <!--[if BLOCK]><![endif]-->                        <div class="form-text text-muted mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Önerilen boyut: 32x32 piksel, Sadece ICO ve PNG formatları desteklenir
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            </div>
+        </div>
+    </div>
+<!--[if ENDBLOCK]><![endif]-->
+                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->    <div class="col-12" wire:key="setting-55">
+        <div class="card mb-3 w-100" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="card-title d-flex align-items-center">
+                        <i class="fas fa-image me-2"></i>
+                        Site Logo Kontrast (Beyaz Tonlar)
+                    </h3>
+                </div>
+            </div>
+            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                <div class="form-group w-100">
+                    
+                    <div wire:snapshot="{&quot;data&quot;:{&quot;modelId&quot;:55,&quot;modelType&quot;:&quot;setting&quot;,&quot;modelClass&quot;:&quot;Modules\\SettingManagement\\App\\Models\\Setting&quot;,&quot;collections&quot;:[[&quot;site_logo_2&quot;],{&quot;s&quot;:&quot;arr&quot;}],&quot;maxGalleryItems&quot;:1,&quot;sortable&quot;:false,&quot;setFeaturedFromGallery&quot;:false,&quot;hideLabel&quot;:true,&quot;acceptedFileTypes&quot;:null,&quot;featuredImageFile&quot;:null,&quot;seoOgImageFile&quot;:null,&quot;galleryFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;videoFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;audioFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;documentFiles&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingFeaturedImage&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingSeoOgImage&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingGallery&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingVideos&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingAudio&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;existingDocuments&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}],&quot;tempFeaturedImage&quot;:null,&quot;tempSeoOgImage&quot;:null,&quot;tempGallery&quot;:[[],{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;BFZiP5UYpniyPauR1YWj&quot;,&quot;name&quot;:&quot;mediamanagement::universal-media&quot;,&quot;path&quot;:&quot;admin\/settingmanagement\/values\/6&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;23d88fc51651ed3bd1106a33d89a716ccead8d4da6704d736f8e39be8d6917e0&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;announcement-saved&quot;,&quot;page-saved&quot;,&quot;portfolio-saved&quot;,&quot;update-gallery-order&quot;,&quot;update-temp-gallery-order&quot;,&quot;save-media-caption&quot;]}" wire:id="BFZiP5UYpniyPauR1YWj" class="media-management-component" wire:loading.class="opacity-50">
+    
+    <div wire:loading="" class="alert alert-info mb-3" role="alert" style="border-radius: 0.25rem !important;">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <div>
+                <strong>Dosyalar yükleniyor...</strong>
+                <small class="d-block text-muted">Lütfen bekleyin, sayfa yenilenmeyecek.</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>
+
+
+<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!--[if BLOCK]><![endif]-->                        <div class="form-text text-muted mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Koyu arka planlarda kullanılacak beyaz/açık tonlu logo
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            </div>
+        </div>
+    </div>
+<!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                    <!--[if ENDBLOCK]><![endif]-->
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if ENDBLOCK]><![endif]-->
+                        
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+                </div>
+            </div>

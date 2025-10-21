@@ -168,13 +168,13 @@
                             <div id="example1" class="accordion-collapse collapse show" data-bs-parent="#examples">
                                 <div class="accordion-body">
                                     <pre class="bg-dark text-light p-3 rounded"><code>{{-- Basit kullanım --}}
-&lt;img src="{{ '{{ thumb($media, 400, 300) }}' }}" alt="Thumbnail"&gt;
+&lt;img src="@{{ thumb($media, 400, 300) }}" alt="Thumbnail"&gt;
 
 {{-- Detaylı kullanım --}}
-&lt;img src="{{ '{{ thumb($media, 800, 600, [' }}'quality' => 90, 'alignment' => 'c']) }}" alt="Optimized"&gt;
+&lt;img src="@{{ thumb($media, 800, 600, ['quality' => 90, 'alignment' => 'c']) }}" alt="Optimized"&gt;
 
 {{-- URL ile kullanım --}}
-&lt;img src="{{ '{{ thumb(' }}'https://example.com/image.jpg', 1200, null, ['format' => 'webp']) }}" alt="WebP"&gt;</code></pre>
+&lt;img src="@{{ thumb('https://example.com/image.jpg', 1200, null, ['format' => 'webp']) }}" alt="WebP"&gt;</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -210,13 +210,13 @@
                             <div id="example3" class="accordion-collapse collapse" data-bs-parent="#examples">
                                 <div class="accordion-body">
                                     <pre class="bg-dark text-light p-3 rounded"><code>// Fit (s=0): Orantılı sığdır - en yaygın
-{{ '{{ thumb($media, 400, 300, [' }}'scale' => 0]) }}
+@{{ thumb($media, 400, 300, ['scale' => 0]) }}
 
 // Fill (s=1): Kes ve doldur - kare thumbnail'ler için
-{{ '{{ thumb($media, 400, 400, [' }}'scale' => 1, 'alignment' => 'c']) }}
+@{{ thumb($media, 400, 400, ['scale' => 1, 'alignment' => 'c']) }}
 
 // Stretch (s=2): Esnet (orantı bozulur)
-{{ '{{ thumb($media, 800, 200, [' }}'scale' => 2]) }}</code></pre>
+@{{ thumb($media, 800, 200, ['scale' => 2]) }}</code></pre>
                                 </div>
                             </div>
                         </div>
@@ -231,13 +231,13 @@
                             <div id="example4" class="accordion-collapse collapse" data-bs-parent="#examples">
                                 <div class="accordion-body">
                                     <pre class="bg-dark text-light p-3 rounded"><code>// PNG'yi WebP'ye çevir (daha küçük dosya)
-{{ '{{ thumb($media, 1200, null, [' }}'format' => 'webp', 'quality' => 85]) }}
+@{{ thumb($media, 1200, null, ['format' => 'webp', 'quality' => 85]) }}
 
 // JPG'yi yüksek kalite PNG yap
-{{ '{{ thumb($media, 800, 600, [' }}'format' => 'png']) }}
+@{{ thumb($media, 800, 600, ['format' => 'png']) }}
 
 // WebP'yi JPG'ye çevir (eski tarayıcı desteği)
-{{ '{{ thumb($media, 1024, 768, [' }}'format' => 'jpg', 'quality' => 90]) }}</code></pre>
+@{{ thumb($media, 1024, 768, ['format' => 'jpg', 'quality' => 90]) }}</code></pre>
                                 </div>
                             </div>
                         </div>

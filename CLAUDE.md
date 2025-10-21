@@ -198,28 +198,41 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 - **Log/Fotoğraf** gönderirsen: Oku → Analiz et → Boşalt → Sil
 - **Otomatik temizlik** her işlem sonrası
 
-### 🛡️ KORUNAN DOSYALAR
+### 🛡️ BUFFER DOSYALARI (a-console.txt, a-html.txt)
+
 **⚠️ Bu dosyaları ASLA silme!**
-- `a-console.txt` - Console/Debugbar çıktıları için (içini boşalt, dosyayı silme)
-- `a-html.txt` - HTML output için (içini boşalt, dosyayı silme)
+- `a-console.txt` - Console/Debugbar çıktıları için buffer
+- `a-html.txt` - HTML output için buffer
 
-**Kullanım Senaryosu:**
-1. Kullanıcı geliştirme yaparken bu dosyalara çıktı kopyalar
-2. Senden bu çıktıları okumanı ve analiz etmeni ister
-3. Sen okur, analiz eder, sorunları tespit edersin
-4. İşlem bittikten sonra içini boşalt (`echo "" > dosya.txt`)
-5. **DOSYAYI ASLA SİLME!** - Sadece içini temizle
+**🚨 KRİTİK KURAL: Kullanıcı AÇIKÇA söylemedikçe DOKUNMA!**
 
-**Örnek Workflow:**
+#### ❌ YAPMA:
+- **Otomatik okuma**: Kullanıcı "oku" demeden varsayım yapma
+- **Otomatik temizleme**: Kullanıcı istemeden içini boşaltma
+- **Varsayım**: "Eski olabilir, temizleyeyim" DEME
+- **Proaktif hareket**: Bu dosyalar için inisiyatif alma
+
+#### ✅ YAP:
+- **Sadece talimat varsa**: Kullanıcı "a-console.txt'yi oku" derse oku
+- **Açık onay**: "Temizleyeyim mi?" diye sor, direkt yapma
+- **Pasif kal**: Bu dosyalar için reaktif ol, proaktif değil
+
+#### 📝 Kullanım Senaryosu (Kullanıcı talep ederse):
 ```bash
-# 1. Oku
-cat a-console.txt
+Kullanıcı: "a-console.txt'yi oku ve analiz et"
+Sen:
+  1. cat a-console.txt  # Oku
+  2. Analiz et ve raporla
+  3. "İçini temizleyeyim mi?" # SOR, direkt yapma
 
-# 2. Analiz et ve raporla
-
-# 3. İçini boşalt (dosyayı silme!)
-echo "" > a-console.txt
+Kullanıcı onaylarsa:
+  echo "" > a-console.txt  # Temizle (dosyayı silme!)
 ```
+
+#### ⚠️ UYARI:
+- **Eski içerik olabilir**: Başka işlem için bekliyor olabilir
+- **Manuel kullanım**: Kullanıcı manuel ekliyor olabilir
+- **Üzerine alma**: Görmezden gel, kullanıcı isterse söyler
 
 ### 🌐 WEB İÇERİK OKUMA
 

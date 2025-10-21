@@ -1,126 +1,176 @@
-multi-modal-manager.js?v=1761051504:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1761051504:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1761051504:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1761051504:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1761051504:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1761051504:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1761051504:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1761051504:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1761051504:13 ⏰ Load Time: 2025-10-21T12:58:26.271Z
-ai-seo-integration.js?v=1761051504:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1761051504:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1761051504:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1761051504:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1761051504:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1761051504:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1761051504:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1761051504:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1761051504:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-streaming-translation.js:33 ✅ Streaming translation is supported
-streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
-streaming-translation.js:15 🚀 Streaming Translation System initializing...
-streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-6:2850 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1761051504:839 ⚡ Livewire initialized
-ai-content-system.js?v=1761051504:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1761051504:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1761051504:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1761051504:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1761051504:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1761051504:558 🔒 attachButtonListeners SKIP - already attached
-6:4329 🚀 Enterprise Streaming Translation System Ready!
-6:4342 📝 Streaming translation not available - Using standard translation mode
-ai-seo-integration.js?v=1761051504:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1761051504:558 🔒 attachButtonListeners SKIP - already attached
-6:2887 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
-6:40  POST https://ixtif.com/admin/mediamanagement/featured-upload net::ERR_SSL_BAD_RECORD_MAC_ALERT
-window.fetch @ 6:40
-fetch @ plugins.js?v=1761051504:8
-uploadFile @ 6:4279
-[Alpine] uploadFile($event.target.files[0]) @ VM2113:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-6:26 Upload error (attempt 1): TypeError: Failed to fetch
-    at window.fetch (6:40:38)
-    at fetch (plugins.js?v=1761051504:8:58607)
-    at Proxy.uploadFile (6:4279:25)
-    at [Alpine] uploadFile($event.target.files[0]) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3881:7
-    at HTMLInputElement.handler4 (livewire.js?id=df3a17f2:3183:27)
-console.error @ 6:26
-(anonymous) @ 6:4302
-Promise.catch
-uploadFile @ 6:4301
-[Alpine] uploadFile($event.target.files[0]) @ VM2113:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-6:4306 🔄 SSL handshake error detected, retrying automatically...
-multi-modal-manager.js?v=1761051520:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1761051520:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1761051520:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1761051520:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1761051520:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1761051520:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1761051520:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1761051520:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1761051520:13 ⏰ Load Time: 2025-10-21T12:58:41.051Z
-ai-seo-integration.js?v=1761051520:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1761051520:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1761051520:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1761051520:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1761051520:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1761051520:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1761051520:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1761051520:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1761051520:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-streaming-translation.js:33 ✅ Streaming translation is supported
-streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
-streaming-translation.js:15 🚀 Streaming Translation System initializing...
-streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-6:2850 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1761051520:839 ⚡ Livewire initialized
-ai-content-system.js?v=1761051520:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1761051520:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1761051520:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1761051520:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1761051520:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1761051520:558 🔒 attachButtonListeners SKIP - already attached
-6:4329 🚀 Enterprise Streaming Translation System Ready!
-6:4342 📝 Streaming translation not available - Using standard translation mode
-ai-seo-integration.js?v=1761051520:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1761051520:558 🔒 attachButtonListeners SKIP - already attached
-6:2887 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
-6:40  POST https://ixtif.com/admin/mediamanagement/featured-upload net::ERR_SSL_BAD_RECORD_MAC_ALERT
-window.fetch @ 6:40
-fetch @ plugins.js?v=1761051520:8
-uploadFile @ 6:4279
-[Alpine] uploadFile($event.target.files[0]) @ VM2251:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-6:26 Upload error (attempt 1): TypeError: Failed to fetch
-    at window.fetch (6:40:38)
-    at fetch (plugins.js?v=1761051520:8:58607)
-    at Proxy.uploadFile (6:4279:25)
-    at [Alpine] uploadFile($event.target.files[0]) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3881:7
-    at HTMLInputElement.handler4 (livewire.js?id=df3a17f2:3183:27)
-console.error @ 6:26
-(anonymous) @ 6:4302
-Promise.catch
-uploadFile @ 6:4301
-[Alpine] uploadFile($event.target.files[0]) @ VM2251:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-6:4306 🔄 SSL handshake error detected, retrying automatically...
+# Illuminate\Database\QueryException - Internal Server Error
+SQLSTATE[42S02]: Base table or view not found: 1146 Table 'tenant_ixtif.settings' doesn't exist (Connection: tenant, SQL: select * from `settings` where `group_id` = 6)
+
+PHP 8.3.26
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - vendor/laravel/framework/src/Illuminate/Database/Connection.php:824
+1 - vendor/laravel/framework/src/Illuminate/Database/Connection.php:778
+2 - vendor/laravel/framework/src/Illuminate/Database/Connection.php:397
+3 - vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3188
+4 - vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3173
+5 - vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3763
+6 - vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php:3172
+7 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:902
+8 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:884
+9 - Modules/SettingManagement/app/Http/Livewire/ValuesComponent.php:76
+10 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+11 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+12 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
+13 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+14 - vendor/livewire/livewire/src/Wrapped.php:23
+15 - vendor/livewire/livewire/src/Features/SupportLifecycleHooks/SupportLifecycleHooks.php:134
+16 - vendor/livewire/livewire/src/Features/SupportLifecycleHooks/SupportLifecycleHooks.php:20
+17 - vendor/livewire/livewire/src/ComponentHook.php:19
+18 - vendor/livewire/livewire/src/ComponentHookRegistry.php:45
+19 - vendor/livewire/livewire/src/EventBus.php:60
+20 - vendor/livewire/livewire/src/helpers.php:98
+21 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:50
+22 - vendor/livewire/livewire/src/LivewireManager.php:73
+23 - vendor/livewire/volt/src/LivewireManager.php:23
+24 - vendor/livewire/livewire/src/Features/SupportPageComponents/HandlesPageComponents.php:17
+25 - vendor/livewire/livewire/src/Features/SupportPageComponents/SupportPageComponents.php:117
+26 - vendor/livewire/livewire/src/Features/SupportPageComponents/HandlesPageComponents.php:14
+27 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
+28 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
+29 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
+30 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
+31 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+32 - Modules/UserManagement/app/Http/Middleware/ModulePermissionMiddleware.php:91
+33 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+34 - app/Http/Middleware/FixLegacyTenantUrls.php:16
+35 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+36 - Modules/LanguageManagement/app/Http/Middleware/AdminSetLocaleMiddleware.php:30
+37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+38 - app/Http/Middleware/AdminNoCacheMiddleware.php:27
+39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+40 - app/Http/Middleware/AdminAccessMiddleware.php:40
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+44 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+45 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+46 - app/Http/Middleware/RootOnlyDebugbar.php:35
+47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+48 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+50 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+52 - app/Http/Middleware/SecurityHeaders.php:18
+53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+54 - vendor/spatie/laravel-missing-page-redirector/src/RedirectsMissingPages.php:12
+55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+56 - app/Http/Middleware/CheckThemeStatus.php:40
+57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+58 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+60 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+62 - vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:63
+63 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+64 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+65 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+66 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+67 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+68 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+69 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+71 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+73 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+75 - app/Http/Middleware/InitializeTenancy.php:95
+76 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+77 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+78 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+79 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+80 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+81 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+82 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+83 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+84 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+85 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+86 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+87 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+88 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+89 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+90 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+91 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+92 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+93 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+94 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+95 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+96 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+97 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+98 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+99 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+100 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+101 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+102 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+103 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+104 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+105 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+106 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+107 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+108 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+109 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+110 - public/index.php:17
+
+## Request
+
+GET /admin/settingmanagement/values/6
+
+## Headers
+
+* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; last_activity_read=1761000604; _ga_5DDRPR03QM=GS2.1.s1761046307$o16$g1$t1761049180$j58$l0$h0; XSRF-TOKEN=eyJpdiI6IndTYnlydXdOSmJTalFNSGhLY3o4M1E9PSIsInZhbHVlIjoiSGtUK2Y4blhlRmxKRloyeTI4cU9XR1o2ZXdISmFORnpLWjd4SXNyUHpzS1lGUldPeS91bkRxaEw5ZGxTc1RoLzJDTnh4aXpVR2N0UHRFVWN3ejExZ3g3NjFOOHRla05RMnBac0tpdjVETi8zak9JN3RnK1B5T1Vta1lpbmNWeEsiLCJtYWMiOiJhOGE3NjQwMWQ5YmFlYzYwNWZkYThjMDU4ZjliODJlOGFiNzNiNGU3ZjQzODViYzUxZGVhMTAwNzAxY2RhZGZhIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6InI1Z09LSmJvOVo0akdvTHhrbWpRNlE9PSIsInZhbHVlIjoibkljcFlmQVE3ZU1nR21ncStIU2xqK2lhdVNTWGs2Vy9EVDlhZ1RrMXhZNDQ2KzNEZi9abmtCRjNPNGY2V0lodmhHL2FlZW1CT2J0VjJzaG16WDJHaDcvbXkxRjB5QkNWZnZEMmZZclIrSjI1WHpzYTFoOHBoUFBlcCtYTnFqaGMiLCJtYWMiOiI3YmEwYjE3OTExOWY4Y2JjZmIzMjQwMDU5M2VmMWYzMGY0MTA2YjBjN2MxZTUwNzg3NzQ5Y2ZmZjMzNjhiNWVlIiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://ixtif.com/admin/settingmanagement
+* **sec-fetch-dest**: document
+* **sec-fetch-user**: ?1
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **sec-ch-ua-platform**: "macOS"
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+* **cache-control**: no-cache
+* **pragma**: no-cache
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 176.41.130.102
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Modules\SettingManagement\App\Http\Livewire\ValuesComponent
+route name: admin.settingmanagement.values
+middleware: admin, tenant, module.permission:settingmanagement,view
+
+## Route Parameters
+
+{
+    "group": "6"
+}
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (1.86 ms)
+* mysql - select * from `sessions` where `id` = '2yIw9FBWe0Dri3GAz1SD9D6ig3udXpUGU0a3BI3W' limit 1 (0.55 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.05 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.45 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.64 ms)
+* tenant - select `code` from `admin_languages` where `is_active` = 1 (0.41 ms)
+* mysql - select * from `modules` where `name` = 'settingmanagement' limit 1 (1.19 ms)
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (0.45 ms)
+* mysql - select exists(select * from `module_tenants` where `module_id` = '7' and `tenant_id` = '2' and `is_active` = 1) as `exists` (1.06 ms)
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (0.45 ms)
+* tenant - select exists(select * from `permissions` where `name` = 'settingmanagement.view' and `guard_name` = 'web') as `exists` (1.14 ms)
+* mysql - select * from `settings_groups` where `settings_groups`.`id` = '6' and `settings_groups`.`deleted_at` is null limit 1 (0.56 ms)

@@ -293,7 +293,42 @@ class Setting extends Model implements HasMedia
         }
 
         $collection = $this->getMediaCollectionName();
-        return $this->getFirstMediaUrl($collection);
+
+        // Try standard Spatie method first
+        try {
+            $url = $this->getFirstMediaUrl($collection);
+            if ($url) {
+                return $url;
+            }
+        } catch (\Exception $e) {
+            // Ignore and try manual query
+        }
+
+        // Fallback: Manuel tenant DB query (web request context)
+        try {
+            $tenantConnection = config('database.connections.tenant.database');
+            if ($tenantConnection) {
+                $media = \DB::connection('tenant')
+                    ->table('media')
+                    ->where('model_type', self::class)
+                    ->where('model_id', $this->id)
+                    ->where('collection_name', $collection)
+                    ->orderBy('order_column')
+                    ->first();
+
+                if ($media && isset($media->id)) {
+                    // Recreate URL from media record
+                    $mediaModel = \App\Models\CustomMedia::on('tenant')->find($media->id);
+                    if ($mediaModel) {
+                        return $mediaModel->getUrl();
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::debug('getMediaUrl fallback failed', ['error' => $e->getMessage()]);
+        }
+
+        return null;
     }
 
     /**

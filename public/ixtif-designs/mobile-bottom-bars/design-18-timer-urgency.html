@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 18 - Timer Urgency Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            padding-bottom: 130px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        .timer {
+            animation: pulse-timer 1s ease-in-out infinite;
+        }
+        @keyframes pulse-timer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .progress-bar {
+            animation: progress 60s linear infinite;
+        }
+        @keyframes progress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 18 - Timer Urgency Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Aciliyet hissi yaratan zamanlayıcılı tasarım</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Geri sayım zamanlayıcısı</li>
+                <li>İlerleyen progress bar</li>
+                <li>Urgency (aciliyet) yaratma psikolojisi</li>
+                <li>Limited time offer vurgusu</li>
+                <li>E-ticaret ve promosyon kampanyaları için ideal</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-2xl"
+         x-data="{
+             minutes: 14,
+             seconds: 59,
+             init() {
+                 setInterval(() => {
+                     if (this.seconds === 0) {
+                         if (this.minutes === 0) {
+                             this.minutes = 14;
+                             this.seconds = 59;
+                         } else {
+                             this.minutes--;
+                             this.seconds = 59;
+                         }
+                     } else {
+                         this.seconds--;
+                     }
+                 }, 1000);
+             }
+         }">
+
+        <!-- Progress Bar -->
+        <div class="h-1 bg-white/30">
+            <div class="progress-bar h-full bg-white"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="px-4 py-4">
+            <!-- Timer -->
+            <div class="text-center mb-3">
+                <div class="text-xs font-semibold mb-1 flex items-center justify-center gap-2">
+                    <i class="fas fa-fire animate-pulse"></i>
+                    ÖZEL FİYAT BİTİYOR!
+                </div>
+                <div class="timer text-2xl font-bold" x-text="`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`"></div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="grid grid-cols-2 gap-3">
+                <a href="https://wa.me/905551234567"
+                   class="flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 py-3 rounded-lg transition-colors">
+                    <i class="fab fa-whatsapp text-xl"></i>
+                    <span class="text-sm font-bold">WhatsApp</span>
+                </a>
+
+                <a href="tel:+905551234567"
+                   class="flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 py-3 rounded-lg transition-colors">
+                    <i class="fas fa-phone"></i>
+                    <span class="text-sm font-bold">Hemen Ara</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

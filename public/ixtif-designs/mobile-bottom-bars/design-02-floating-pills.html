@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 02 - Floating Pills Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+        .pill-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .pill-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+        }
+        .pill-btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Demo Content -->
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 02 - Floating Pills Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Havada asılı duran pill şeklinde butonlar</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Yuvarlak pill şeklinde butonlar</li>
+                <li>Sayfa altından 20px yukarıda floating</li>
+                <li>Hover'da yukarı kalkma + büyüme animasyonu</li>
+                <li>Güçlü gölge efektleri</li>
+                <li>Modern ve şık görünüm</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">Scroll Test İçeriği</h3>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">Daha Fazla İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+        <div class="flex gap-4 px-6">
+            <!-- WhatsApp Pill -->
+            <a href="https://wa.me/905551234567"
+               class="pill-btn flex items-center gap-3 bg-green-500 text-white px-6 py-4 rounded-full shadow-2xl hover:shadow-green-500/50">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                <span class="font-semibold">WhatsApp</span>
+            </a>
+
+            <!-- Phone Pill -->
+            <a href="tel:+905551234567"
+               class="pill-btn flex items-center gap-3 bg-blue-600 text-white px-6 py-4 rounded-full shadow-2xl hover:shadow-blue-600/50">
+                <i class="fas fa-phone text-xl"></i>
+                <span class="font-semibold">Ara</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

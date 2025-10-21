@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 14 - Sticky Banner Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 120px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .promo-text {
+            animation: slide-text 15s linear infinite;
+        }
+        @keyframes slide-text {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .cta-btn {
+            animation: pulse-cta 2s ease-in-out infinite;
+        }
+        @keyframes pulse-cta {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 14 - Sticky Banner Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Promosyon banner'ı ile birleştirilmiş iletişim butonları</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Kayan promosyon metni (marquee efekti)</li>
+                <li>Banner + CTA butonları kombinasyonu</li>
+                <li>Pulse efektli call-to-action</li>
+                <li>Dikkat çekici gradient arka plan</li>
+                <li>E-ticaret için ideal promosyon alanı</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 500px;">
+                <h3 class="text-lg font-semibold">İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar text-white shadow-2xl">
+        <!-- Promo Banner -->
+        <div class="overflow-hidden py-2 bg-black/20">
+            <div class="promo-text whitespace-nowrap text-sm font-semibold">
+                🎉 %50 İNDİRİM! Hemen Arayın ve Fırsatı Kaçırmayın! • ÜCRETSİZ KARGO • 7/24 DESTEK • 🎉
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-4 px-4 py-4">
+            <!-- WhatsApp -->
+            <a href="https://wa.me/905551234567"
+               class="cta-btn flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-lg transition-colors">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                <div class="text-left">
+                    <div class="text-xs font-semibold">Hemen Sor</div>
+                    <div class="text-xs opacity-90">WhatsApp</div>
+                </div>
+            </a>
+
+            <!-- Phone -->
+            <a href="tel:+905551234567"
+               class="cta-btn flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 py-4 rounded-lg transition-colors">
+                <i class="fas fa-phone text-xl"></i>
+                <div class="text-left">
+                    <div class="text-xs font-semibold">Hemen Ara</div>
+                    <div class="text-xs opacity-90">7/24 Destek</div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

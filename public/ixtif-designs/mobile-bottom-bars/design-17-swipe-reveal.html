@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 17 - Swipe Reveal Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            padding-bottom: 90px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        .swipe-handle {
+            cursor: grab;
+        }
+        .swipe-handle:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 17 - Swipe Reveal Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Yukarı kaydırarak açılan interaktif bottom sheet</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Swipe handle (çekme tutacağı)</li>
+                <li>Yukarı kaydırınca butonlar görünür</li>
+                <li>Modern bottom sheet pattern</li>
+                <li>Kullanıcı etkileşimi gerektiren tasarım</li>
+                <li>Mobile-first UX yaklaşımı</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 600px;">
+                <h3 class="text-lg font-semibold">Aşağıdaki handle'a tıklayın!</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar bg-white shadow-2xl rounded-t-3xl" x-data="{ revealed: false }">
+        <!-- Swipe Handle -->
+        <div class="swipe-handle flex justify-center pt-3 pb-2" @click="revealed = !revealed">
+            <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
+        </div>
+
+        <!-- Collapsed State -->
+        <div x-show="!revealed" class="py-3 px-6 text-center">
+            <p class="text-sm text-gray-600 font-medium">
+                <i class="fas fa-chevron-up text-gray-400 mr-2"></i>
+                Bize ulaşmak için yukarı kaydırın
+            </p>
+        </div>
+
+        <!-- Revealed Content -->
+        <div x-show="revealed"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform translate-y-4"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             class="px-6 pb-6">
+            <div class="grid grid-cols-2 gap-4">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/905551234567"
+                   class="flex flex-col items-center gap-3 bg-green-50 hover:bg-green-100 py-6 rounded-xl transition-colors">
+                    <i class="fab fa-whatsapp text-4xl text-green-600"></i>
+                    <span class="text-sm font-bold text-green-700">WhatsApp</span>
+                </a>
+
+                <!-- Phone -->
+                <a href="tel:+905551234567"
+                   class="flex flex-col items-center gap-3 bg-blue-50 hover:bg-blue-100 py-6 rounded-xl transition-colors">
+                    <i class="fas fa-phone text-3xl text-blue-600"></i>
+                    <span class="text-sm font-bold text-blue-700">Telefon</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

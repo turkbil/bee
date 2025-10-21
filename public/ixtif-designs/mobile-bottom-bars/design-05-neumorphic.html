@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 05 - Neumorphic Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 100px;
+            background: #e0e5ec;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: #e0e5ec;
+        }
+        .neu-btn {
+            background: #e0e5ec;
+            box-shadow:
+                8px 8px 16px #a3b1c6,
+                -8px -8px 16px #ffffff;
+            transition: all 0.3s ease;
+        }
+        .neu-btn:active {
+            box-shadow:
+                inset 4px 4px 8px #a3b1c6,
+                inset -4px -4px 8px #ffffff;
+        }
+        .neu-icon {
+            filter: drop-shadow(2px 2px 4px rgba(163, 177, 198, 0.5));
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 05 - Neumorphic Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Soft UI / Neumorphism tasarım trendi</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Neumorphic (soft UI) gölge efektleri</li>
+                <li>Basıldığında içe çöken (inset) animasyon</li>
+                <li>Minimalist ve zarif görünüm</li>
+                <li>Açık gri renk paleti</li>
+                <li>3D hissi veren tasarım</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 600px;">
+                <h3 class="text-lg font-semibold">İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar py-4">
+        <div class="grid grid-cols-2 gap-6 px-6 max-w-md mx-auto">
+            <!-- WhatsApp Button -->
+            <a href="https://wa.me/905551234567"
+               class="neu-btn flex flex-col items-center justify-center gap-2 py-5 rounded-2xl">
+                <i class="fab fa-whatsapp text-4xl text-green-600 neu-icon"></i>
+                <span class="text-xs font-semibold text-gray-700">WhatsApp</span>
+            </a>
+
+            <!-- Phone Button -->
+            <a href="tel:+905551234567"
+               class="neu-btn flex flex-col items-center justify-center gap-2 py-5 rounded-2xl">
+                <i class="fas fa-phone text-3xl text-blue-600 neu-icon"></i>
+                <span class="text-xs font-semibold text-gray-700">Telefon</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

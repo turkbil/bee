@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 07 - Card Stack Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding-bottom: 110px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+        .card-btn {
+            background: white;
+            border-radius: 16px;
+            box-shadow:
+                0 10px 25px rgba(0,0,0,0.1),
+                0 6px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-btn:hover {
+            transform: translateY(-8px);
+            box-shadow:
+                0 20px 40px rgba(0,0,0,0.15),
+                0 10px 20px rgba(0,0,0,0.1);
+        }
+        .card-btn:active {
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 07 - Card Stack Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Kart görünümlü, üst üste binmiş butonlar</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Her buton ayrı kart şeklinde</li>
+                <li>Yüksek gölge efektleri (kartların havada durma hissi)</li>
+                <li>Hover'da daha yukarı kalkma</li>
+                <li>Dikey stack yerleşim</li>
+                <li>Modern card design prensibi</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 600px;">
+                <h3 class="text-lg font-semibold">İçerik</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar px-6">
+        <div class="flex flex-col gap-3 w-80 mx-auto">
+            <!-- WhatsApp Card -->
+            <a href="https://wa.me/905551234567"
+               class="card-btn flex items-center gap-4 px-6 py-4">
+                <div class="bg-green-100 text-green-600 rounded-full p-3">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="font-bold text-gray-900">WhatsApp</div>
+                    <div class="text-xs text-gray-500">Hemen mesaj gönderin</div>
+                </div>
+                <i class="fas fa-arrow-right text-gray-400"></i>
+            </a>
+
+            <!-- Phone Card -->
+            <a href="tel:+905551234567"
+               class="card-btn flex items-center gap-4 px-6 py-4">
+                <div class="bg-blue-100 text-blue-600 rounded-full p-3">
+                    <i class="fas fa-phone text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="font-bold text-gray-900">Telefon</div>
+                    <div class="text-xs text-gray-500">Hemen arayın</div>
+                </div>
+                <i class="fas fa-arrow-right text-gray-400"></i>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

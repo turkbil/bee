@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 09 - Slide Up Bottom Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            padding-bottom: 80px;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            transition: transform 0.3s ease;
+        }
+        .slide-enter {
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">Design 09 - Slide Up Bottom Bar</h1>
+        <p class="text-gray-600 mb-4">Sayfa yüklendiğinde aşağıdan yukarı kayan animasyon</p>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+            <h2 class="text-xl font-semibold mb-2">Özellikler:</h2>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li>Sayfa açılışında slide-up animasyonu</li>
+                <li>Alpine.js ile interaktif</li>
+                <li>Tıklandığında genişleyen detay alanı</li>
+                <li>Smooth geçişler</li>
+                <li>Dikkat çekici giriş animasyonu</li>
+            </ul>
+        </div>
+
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm p-6" style="height: 600px;">
+                <h3 class="text-lg font-semibold">İçerik - Sayfayı yenileyin animasyonu görmek için</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar slide-enter bg-white shadow-2xl" x-data="{ expanded: false }">
+        <div class="max-w-md mx-auto">
+            <!-- Compact View -->
+            <div class="grid grid-cols-2 border-t-2 border-gray-200">
+                <a href="https://wa.me/905551234567"
+                   class="flex items-center justify-center gap-3 py-5 bg-green-500 text-white hover:bg-green-600 transition-colors">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                    <span class="font-semibold">WhatsApp</span>
+                </a>
+
+                <a href="tel:+905551234567"
+                   class="flex items-center justify-center gap-3 py-5 bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-phone text-xl"></i>
+                    <span class="font-semibold">Telefon</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

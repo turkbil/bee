@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Database\Concerns\CentralConnection;
+use Spatie\MediaLibrary\HasMedia;
+use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
-class Widget extends Model
+class Widget extends Model implements HasMedia
 {
-    use CentralConnection;
+    use CentralConnection, HasMediaManagement;
     
     protected $fillable = [
         'widget_category_id',
@@ -192,7 +194,83 @@ class Widget extends Model
         if (empty($this->thumbnail)) {
             return null;
         }
-        
+
         return $this->thumbnail;
+    }
+
+    /**
+     * Register media collections for Widget
+     * Widget form builder'da dinamik field name'ler collection olarak kullanılır
+     */
+    public function registerMediaCollections(): void
+    {
+        // Widget için collection'lar dinamik (field name bazında)
+        // registerMediaCollections boş bırakılabilir, runtime'da belirlenir
+    }
+
+    /**
+     * Media collections config (HasMediaManagement trait için)
+     */
+    protected function getMediaCollectionsConfig(): array
+    {
+        // Widget için dynamic collections - field name bazında
+        return [];
+    }
+
+    /**
+     * Spatie Media Library için disk belirleme (tenant-aware)
+     * Setting model'indeki gibi tenant context'e göre disk belirle
+     */
+    public function getMediaDisk(?string $collectionName = null): string
+    {
+        // Tenant context varsa tenant disk kullan
+        $tenantId = null;
+        if (function_exists('tenant') && tenant()) {
+            $tenantId = tenant('id');
+        }
+
+        // Request'ten domain çöz (fallback)
+        if (!$tenantId && request()) {
+            $host = request()->getHost();
+            $centralDomains = config('tenancy.central_domains', []);
+
+            if (!in_array($host, $centralDomains)) {
+                try {
+                    $domainModel = \Stancl\Tenancy\Database\Models\Domain::where('domain', $host)->first();
+                    if ($domainModel && $domainModel->tenant_id) {
+                        $tenantId = $domainModel->tenant_id;
+                    }
+                } catch (\Exception $e) {
+                    // Fallback to public disk
+                }
+            }
+        }
+
+        // Tenant context varsa tenant disk kullan
+        if ($tenantId) {
+            $diskName = 'tenant';
+            $root = storage_path("tenant{$tenantId}/app/public");
+
+            if (!is_dir($root)) {
+                @mkdir($root, 0775, true);
+            }
+
+            $appUrl = request() ? request()->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');
+
+            config([
+                'filesystems.disks.tenant' => [
+                    'driver' => 'local',
+                    'root' => $root,
+                    'url' => $appUrl ? "{$appUrl}/storage/tenant{$tenantId}" : null,
+                    'visibility' => 'public',
+                    'throw' => false,
+                ],
+            ]);
+
+            return $diskName;
+        }
+
+        // Central context için public disk
+        return 'public';
     }
 }

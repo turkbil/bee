@@ -30,8 +30,8 @@
                 <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-12 border border-gray-200 dark:border-gray-700">
                     <div class="flex flex-wrap justify-center gap-4 items-center" style="line-height: 3;">
                         @forelse($searchTags ?? [] as $tag)
-                            @if(!empty($tag->query))
-                            <a href="{{ route('search.show', ['query' => $tag->query]) }}"
+                            @if(!empty($tag->query) && trim($tag->query) !== '' && !str_contains($tag->query, '{'))
+                            <a href="{{ route('search.show', ['query' => trim($tag->query)]) }}"
                                class="inline-block px-4 md:px-6 py-2 md:py-3
                                       bg-gradient-to-r {{ $tag->color }}
                                       text-white font-bold rounded-full
@@ -114,8 +114,8 @@
                         </h3>
                         <div class="space-y-2">
                             @foreach($popularSearches as $search)
-                                @if(!empty($search->query))
-                                <a href="{{ route('search.show', ['query' => $search->query]) }}"
+                                @if(!empty($search->query) && trim($search->query) !== '' && !str_contains($search->query, '{'))
+                                <a href="{{ route('search.show', ['query' => trim($search->query)]) }}"
                                    class="block px-4 py-3 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30
                                           hover:from-yellow-200 hover:to-orange-200 dark:hover:from-yellow-800/40 dark:hover:to-orange-800/40
                                           rounded-xl transition-all font-semibold text-gray-800 dark:text-gray-200
@@ -138,8 +138,8 @@
                         </h3>
                         <div class="space-y-2">
                             @foreach($recentSearches->take(10) as $search)
-                                @if(!empty($search->query))
-                                <a href="{{ route('search.show', ['query' => $search->query]) }}"
+                                @if(!empty($search->query) && trim($search->query) !== '' && !str_contains($search->query, '{'))
+                                <a href="{{ route('search.show', ['query' => trim($search->query)]) }}"
                                    class="block px-4 py-2 bg-gray-100 dark:bg-slate-700/50
                                           hover:bg-gray-200 dark:hover:bg-slate-600
                                           rounded-lg transition-all text-sm text-gray-700 dark:text-gray-300

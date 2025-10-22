@@ -62,8 +62,15 @@
             activeTab: 'all',
             prefetched: {{ $prefetched ? 'true' : 'false' }},
             debounceTimer: null,
-            maxAutoLoadPages: 5,
+            maxAutoLoadPages: 50,
             autoLoadedPages: 1,
+            scrollToResults() {
+                // Smooth scroll to results section when new search is performed
+                const resultsSection = document.querySelector('.search-results-container');
+                if (resultsSection) {
+                    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            },
             async fetchResults(reset = false) {
                 const trimmedQuery = this.query.trim();
 
@@ -121,6 +128,13 @@
                 } finally {
                     this.loading = false;
                     this.prefetched = false;
+
+                    // Scroll to results on new search
+                    if (reset) {
+                        this.$nextTick(() => {
+                            this.scrollToResults();
+                        });
+                    }
                 }
             },
             startSearch() {
@@ -136,23 +150,6 @@
                 this.debounceTimer = setTimeout(() => {
                     this.startSearch();
                 }, 500);
-            },
-            goToPage(page) {
-                if (page &lt; 1 || page &gt; this.lastPage) {
-                    return;
-                }
-                this.page = page;
-                this.fetchResults();
-            },
-            goToPreviousPage() {
-                if (this.page &gt; 1) {
-                    this.goToPage(this.page - 1);
-                }
-            },
-            goToNextPage() {
-                if (this.page &lt; this.lastPage) {
-                    this.goToPage(this.page + 1);
-                }
             },
             async loadMore() {
                 if (!this.canLoadMore || this.loadingMore) {
@@ -197,22 +194,8 @@
                        !this.loading &&
                        !this.loadingMore;
             },
-            get showManualPagination() {
-                return this.autoLoadedPages &gt;= this.maxAutoLoadPages &&
-                       this.page &lt; this.lastPage;
-            },
             get totalPages() {
                 return Math.max(1, Math.ceil(this.total / this.perPage));
-            },
-            get pageWindow() {
-                const window = 3;
-                const start = Math.max(1, this.page - window);
-                const end = Math.min(this.lastPage, this.page + window);
-                const pages = [];
-                for (let i = start; i <= end; i++) {
-                    pages.push(i);
-                }
-                return pages;
             },
             removeFallback() {
                 const fallback = document.querySelector('.js-search-fallback');
@@ -288,7 +271,7 @@
             </div>
 
             {{-- Results --}}
-            <div x-show="!loading && results.length &gt; 0" x-cloak>
+            <div x-show="!loading && results.length &gt; 0" class="search-results-container" x-cloak>
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     <template x-for="(item, index) in results" :key="`${item.id}-${index}`">
                         <a :href="item.url"
@@ -334,36 +317,18 @@
                      class="h-20"
                      x-cloak></div>
 
-                {{-- Manual Pagination (After 100 results) --}}
-                <nav x-show="showManualPagination" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4" x-cloak aria-label="Arama sayfalama">
-                    <div class="flex items-center gap-2">
-                        <button type="button"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                @click="goToPreviousPage()"
-                                :disabled="page &lt;= 1">
-                            <i class="fa-solid fa-arrow-left"></i> Önceki
-                        </button>
-                        <button type="button"
-                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                @click="goToNextPage()"
-                                :disabled="page &gt;= lastPage">
-                            Sonraki <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <span>Sayfa <span x-text="page"></span> / <span x-text="lastPage"></span></span>
-                        <div class="hidden sm:flex items-center gap-1">
-                            <template x-for="pageNumber in pageWindow" :key="`page-${pageNumber}`">
-                                <button type="button"
-                                        class="min-w-[2.5rem] h-10 rounded-lg border text-sm font-semibold transition"
-                                        :class="pageNumber === page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'"
-                                        @click="goToPage(pageNumber)">
-                                    <span x-text="pageNumber"></span>
-                                </button>
-                            </template>
+                {{-- End of Results Message --}}
+                <div x-show="!canLoadMore && page >= lastPage && !loadingMore" class="mt-12 text-center" x-cloak>
+                    <div class="inline-flex items-center gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl">
+                        <i class="fa-solid fa-check-circle text-2xl text-green-600 dark:text-green-400"></i>
+                        <div class="text-left">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">Tüm sonuçlar gösterildi</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">
+                                <span x-text="total"></span> sonuçtan <span x-text="results.length"></span> tanesi listelendi
+                            </p>
                         </div>
                     </div>
-                </nav>
+                </div>
 
             </div>
 

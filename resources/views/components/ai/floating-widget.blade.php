@@ -90,7 +90,8 @@ class="fixed {{ $selectedPosition }} z-50">
     <button
         @click="chat.toggleFloating(); clearTimeout(autoOpenTimer);"
         x-data="{
-            messages: [
+            // Desktop messages (longer)
+            desktopMessages: [
                 'Merhaba! Nasıl yardımcı olabilirim? 👋',
                 'Ürünler hakkında her şeyi sorabilirsiniz',
                 'Size en uygun modeli bulabilirim',
@@ -112,73 +113,93 @@ class="fixed {{ $selectedPosition }} z-50">
                 'İhtiyacınızı anlıyor ve yönlendiriyorum',
                 'Hadi konuşalım! 💬'
             ],
+            // Mobile messages (shorter, concise)
+            mobileMessages: [
+                'Merhaba! 👋',
+                'Sorularınızı cevaplayalım',
+                'Ürün bilgisi',
+                'Hızlı destek ⚡',
+                'Karşılaştırma',
+                '7/24 buradayım 🤖',
+                'Size yardımcı olayım',
+                'Bilgi almak çok kolay',
+                'Soru sorun',
+                'Hadi konuşalım! 💬'
+            ],
             currentIndex: 0,
-            currentMessage: 'Merhaba! Nasıl yardımcı olabilirim? 👋',
+            currentMessage: 'Merhaba! 👋',
             bubbleVisible: true,
 
             init() {
-                // Animation cycle: 3s total
-                // 0-0.6s (20%): fade in
-                // 0.6-2.4s (20-80%): visible
-                // 2.4-3s (80-100%): fade out
-                // Change message during fade out (at 2.4s = 80%)
+                // Set initial message based on screen size
+                this.updateMessage();
 
+                // Animation cycle: 3s total
                 setInterval(() => {
                     // Hide bubble (opacity will fade via animation)
                     this.bubbleVisible = false;
 
                     // Change message after 300ms (during fade-out)
                     setTimeout(() => {
-                        this.currentIndex = (this.currentIndex + 1) % this.messages.length;
-                        this.currentMessage = this.messages[this.currentIndex];
+                        this.currentIndex = (this.currentIndex + 1) % this.getMessages().length;
+                        this.updateMessage();
                         this.bubbleVisible = true;
                     }, 300);
                 }, 3000);
+            },
+
+            getMessages() {
+                return window.innerWidth < 1024 ? this.mobileMessages : this.desktopMessages;
+            },
+
+            updateMessage() {
+                this.currentMessage = this.getMessages()[this.currentIndex];
             }
         }"
         class="relative group"
         aria-label="Sohbeti Aç"
     >
-        {{-- Bubble Container (Message + Arrow as one unit) --}}
-        {{-- Desktop: Top position | Mobile: Left position --}}
+        {{-- DESKTOP BUBBLE: Classic top bubble with arrow --}}
         <div
             :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
-            class="absolute z-[101] transition-opacity duration-300
-                   max-lg:left-[-10px] max-lg:top-1/2 max-lg:-translate-y-1/2
-                   lg:top-[-70px] lg:right-[-10px]"
+            class="absolute z-[101] transition-opacity duration-300 max-lg:hidden
+                   top-[-70px] right-[-10px]"
             style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
         >
             {{-- Bubble Message --}}
             <div
                 x-text="currentMessage"
-                class="bg-white px-5 py-3 rounded-full text-sm font-bold
-                       max-lg:whitespace-normal max-lg:max-w-[200px] max-lg:text-xs
-                       lg:whitespace-nowrap"
+                class="bg-white px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap"
                 style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
             >
             </div>
 
-            {{-- Bubble Arrow - Desktop: points down | Mobile: points right --}}
+            {{-- Bubble Arrow (points down) --}}
             <div
-                class="absolute w-0 h-0
-                       max-lg:hidden
-                       lg:bottom-[-10px] lg:right-[39px]"
+                class="absolute w-0 h-0 bottom-[-10px] right-[39px]"
                 style="
                     border-left: 11px solid transparent;
                     border-right: 11px solid transparent;
                     border-top: 11px solid white;
                 "
             ></div>
-            {{-- Mobile arrow (points right) --}}
-            <div
-                class="absolute w-0 h-0 lg:hidden
-                       top-1/2 -translate-y-1/2 right-[-10px]"
-                style="
-                    border-top: 11px solid transparent;
-                    border-bottom: 11px solid transparent;
-                    border-left: 11px solid white;
-                "
-            ></div>
+        </div>
+
+        {{-- MOBILE CIRCLE: Same size as robot button (80x80), left side, no arrow --}}
+        <div
+            :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+            class="lg:hidden absolute z-[101] transition-opacity duration-300
+                   w-20 h-20 rounded-full
+                   left-[-90px] top-0
+                   flex items-center justify-center text-center
+                   bg-white shadow-2xl"
+            style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
+        >
+            <p
+                x-text="currentMessage"
+                class="text-[10px] font-bold leading-tight px-2"
+                style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
+            ></p>
         </div>
 
         {{-- Main Button with V1 Classic Pulse --}}

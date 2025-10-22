@@ -14,7 +14,7 @@
                 <!-- Left Content -->
                 <div class="text-gray-900 dark:text-white">
                     <!-- Main Title with Animation -->
-                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-12 leading-[1.2] overflow-visible" style="font-weight: 950;">
+                    <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-12 leading-[1.2] overflow-visible" style="font-weight: 900;">
                         <span class="gradient-animate block py-2">
                             TÜRKİYE'NİN
                         </span>

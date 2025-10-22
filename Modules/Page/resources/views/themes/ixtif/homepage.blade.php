@@ -158,13 +158,13 @@
                 ->whereNull('parent_product_id')
                 ->orderBy('sort_order', 'asc')
                 ->orderByDesc('published_at')
-                ->take(8)
+                ->take(9)
                 ->get();
         @endphp
 
         <!-- Product Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($featuredProducts as $product)
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach($featuredProducts as $index => $product)
             @php
                 $productTitle = $product->getTranslated('title', app()->getLocale());
                 $productImage = $product->getFirstMediaUrl('featured_image');
@@ -177,7 +177,7 @@
                     $productUrl = route('shop.show.by-id', $product->id);
                 }
             @endphp
-            <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
+            <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $index === 8 ? 'hidden lg:block xl:hidden' : '' }}">
                 <!-- Product Image -->
                 <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
                     @if($productImage)

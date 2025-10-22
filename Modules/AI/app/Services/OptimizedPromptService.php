@@ -17,6 +17,35 @@ class OptimizedPromptService
     {
         $prompts = [];
 
+        $prompts[] = "# 🚨 ZORUNLU GÜVENLİK KURALLARI (EN ÖNEMLİ!)";
+        $prompts[] = "";
+        $prompts[] = "## ❌ 1. ÜRÜN UYDURMA YASAĞI";
+        $prompts[] = "1. ASLA ürün/bilgi uydurma yasak!";
+        $prompts[] = "2. SADECE Meilisearch'ten gelen ürünleri göster!";
+        $prompts[] = "3. ASLA internetten bilgi alma!";
+        $prompts[] = "4. Link formatı: SADECE [LINK:shop:{{slug}}] (Slug Meilisearch'ten gelecek!)";
+        $prompts[] = "5. Meilisearch sonucu BOŞ ise: 'Müşteri temsilcilerimiz size özel araştırma yapabilir' de!";
+        $prompts[] = "";
+        $prompts[] = "## ❌ 2. İLETİŞİM BİLGİSİ UYDURMA YASAĞI";
+        $prompts[] = "1. ASLA kendi iletişim formatı yazamazsın!";
+        $prompts[] = "2. Sana verilen iletişim bilgilerini AYNEN KOPYALA!";
+        $prompts[] = "3. Tek kelime, tek karakter bile değiştirme!";
+        $prompts[] = "4. Format: MUTLAKA markdown link kullan!";
+        $prompts[] = "";
+        $prompts[] = "**DOĞRU ÖRNEK:**";
+        $prompts[] = "```";
+        $prompts[] = "💬 **WhatsApp:** [+90 532 123 4567](https://wa.me/905321234567)";
+        $prompts[] = "📞 **Telefon:** [+90 212 123 4567](tel:902121234567)";
+        $prompts[] = "📧 **E-posta:** [info@ixtif.com](mailto:info@ixtif.com)";
+        $prompts[] = "📱 **Telegram:** [@ixtif](https://t.me/ixtif)";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**YANLIŞ ÖRNEK (YAPMA!):**";
+        $prompts[] = "```";
+        $prompts[] = "WhatsApp: +90 532 123 4567  ❌ (Link yok!)";
+        $prompts[] = "Telefon numarası: 0212 123 45 67  ❌ (Format yanlış!)";
+        $prompts[] = "```";
+        $prompts[] = "";
         $prompts[] = "# AI ASISTAN KURALLARI";
         $prompts[] = "";
         $prompts[] = "## 🎯 EN ÖNEMLİ KURAL: ÜRÜN GÖSTER!";
@@ -229,10 +258,11 @@ class OptimizedPromptService
                 $prompts[] = "";
                 $prompts[] = "**ZORUNLU YANIT FORMATI:**";
                 $prompts[] = "```";
-                $prompts[] = "İxtif olarak, '{$detectedCategory['category_name']}' konusunda size yardımcı olabiliriz! 😊";
+                $prompts[] = "İxtif olarak, '{$detectedCategory['category_name']}' konusunda";
+                $prompts[] = "müşteri temsilcilerimiz size özel araştırma yapabilir! 😊";
                 $prompts[] = "";
-                $prompts[] = "Bu konuda detaylı bilgi almak ve size özel çözümler sunabilmek için";
-                $prompts[] = "müşteri temsilcimizle görüşmenizi öneriyoruz.";
+                $prompts[] = "Detaylı bilgi almak ve size en uygun çözümleri sunabilmek için";
+                $prompts[] = "ekibimizle iletişime geçmenizi öneriyoruz.";
                 $prompts[] = "";
                 $prompts[] = "**Hemen iletişime geçin:**";
                 $prompts[] = "";
@@ -281,9 +311,9 @@ class OptimizedPromptService
                 $prompts[] = "";
                 $prompts[] = "**ZORUNLU YANIT FORMATI:**";
                 $prompts[] = "```";
-                $prompts[] = "İxtif olarak size yardımcı olabiliriz! 😊";
+                $prompts[] = "İxtif olarak, müşteri temsilcilerimiz size özel araştırma yapabilir! 😊";
                 $prompts[] = "";
-                $prompts[] = "Detaylı bilgi ve size özel çözümler için müşteri temsilcimizle görüşebilirsiniz:";
+                $prompts[] = "Detaylı bilgi ve size en uygun çözümleri sunabilmek için ekibimizle görüşebilirsiniz:";
                 $prompts[] = "";
 
                 // Add dynamic contact info (same as category case)

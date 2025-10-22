@@ -42,6 +42,11 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         // Tenant database events - TenancyServiceProvider'da tanımlı, buradan kaldırıldı
+
+        // 🔧 Media Library - Otomatik ownership fix (psacln → psaserv)
+        \Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAdded::class => [
+            \App\Listeners\MediaUploadedListener::class,
+        ],
     ];
 
     /**

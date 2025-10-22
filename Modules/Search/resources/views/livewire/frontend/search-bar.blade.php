@@ -12,20 +12,54 @@
     </div>
 
     @if($isOpen && count($this->results) > 0)
-        <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-50 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+        <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-xl z-50 max-h-[32rem] overflow-y-auto border border-gray-200 dark:border-gray-700">
             @foreach($this->results as $index => $item)
                 <a href="{{ $item['url'] }}"
                    @click="$wire.trackClick({{ $item['id'] }}, '{{ $item['type'] }}', {{ $index }})"
-                   class="block p-3 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
-                    <div class="font-medium text-gray-900 dark:text-white">{!! $item['highlighted_title'] !!}</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $item['type_label'] }}</div>
+                   class="flex items-start gap-3 md:gap-4 p-3 md:p-4 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition group">
+
+                    {{-- Image --}}
+                    @if(!empty($item['image']))
+                        <div class="w-12 h-12 md:w-16 md:h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700">
+                            <img src="{{ $item['image'] }}"
+                                 alt="{{ $item['title'] }}"
+                                 class="w-full h-full object-cover"
+                                 loading="lazy">
+                        </div>
+                    @else
+                        <div class="w-12 h-12 md:w-16 md:h-16 flex-shrink-0 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 dark:text-gray-500 text-lg md:text-2xl"></i>
+                        </div>
+                    @endif
+
+                    {{-- Content --}}
+                    <div class="flex-1 min-w-0">
+                        <div class="font-semibold text-sm md:text-base text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition mb-1 line-clamp-1">
+                            {!! $item['highlighted_title'] !!}
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                                {{ $item['type_label'] }}
+                            </span>
+                            @if(!empty($item['price']))
+                                <span class="text-xs md:text-sm font-bold text-blue-600 dark:text-blue-400">{{ $item['price'] }}</span>
+                            @endif
+                        </div>
+
+                        @if(!empty($item['highlighted_description']))
+                            <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                                {!! $item['highlighted_description'] !!}
+                            </p>
+                        @endif
+                    </div>
                 </a>
             @endforeach
 
             @if(strlen($query) >= 2)
                 <a href="{{ route('search.show', ['query' => $query]) }}"
-                   class="block p-3 text-center text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 font-medium transition">
-                    Tüm sonuçları gör →
+                   class="block p-3 md:p-4 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold transition text-sm md:text-base">
+                    Tüm sonuçları gör ({{ count($this->results) }}+) →
                 </a>
             @endif
         </div>

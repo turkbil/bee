@@ -156,6 +156,7 @@ class SearchQueriesManagementComponent extends Component
             'results_count' => 0,
             'is_popular' => false,
             'is_hidden' => false,
+            'session_id' => session()->getId(),
         ]);
 
         $this->dispatch('toast', [

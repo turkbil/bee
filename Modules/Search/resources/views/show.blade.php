@@ -241,33 +241,29 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     <template x-for="(item, index) in results" :key="`${item.id}-${index}`">
                         <a :href="item.url"
-                           class="block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition p-6 border border-gray-200 dark:border-gray-700 group">
-                            <div class="flex flex-row gap-5">
+                           class="block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition p-4 md:p-6 border border-gray-200 dark:border-gray-700 group">
+                            <div class="flex flex-row gap-3 md:gap-5">
                                 <template x-if="item.image">
-                                    <div class="w-24 sm:w-32 md:w-36 flex-shrink-0">
+                                    <div class="w-16 sm:w-20 md:w-28 flex-shrink-0">
                                         <img :src="item.image"
                                              :alt="item.title"
-                                             class="w-full aspect-square object-cover rounded-xl bg-gray-100 dark:bg-gray-800">
+                                             class="w-full aspect-square object-cover rounded-lg md:rounded-xl bg-gray-100 dark:bg-gray-800">
                                     </div>
                                 </template>
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"
+                                    <h3 class="text-sm md:text-lg font-semibold text-gray-900 dark:text-white mb-1 md:mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition line-clamp-2"
                                         x-html="item.highlighted_title"></h3>
 
-                                    <div class="flex flex-wrap items-center gap-2 mb-2">
-                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                    <div class="flex flex-wrap items-center gap-1 md:gap-2 mb-1 md:mb-2">
+                                        <span class="inline-flex items-center gap-1 px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
                                               x-text="item.type_label"></span>
-                                        <template x-if="item.product_badge">
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200"
-                                                  x-text="item.product_badge"></span>
-                                        </template>
                                     </div>
 
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
+                                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 hidden sm:block"
                                        x-html="item.highlighted_description"></p>
 
-                                    <div x-show="item.price" class="mt-3">
-                                        <span class="text-lg font-bold text-green-600 dark:text-green-400" x-text="item.price"></span>
+                                    <div x-show="item.price" class="mt-2 md:mt-3">
+                                        <span class="text-sm md:text-lg font-bold text-green-600 dark:text-green-400" x-text="item.price"></span>
                                     </div>
                                 </div>
                             </div>
@@ -321,32 +317,29 @@
     </div>
 
     @if($prefetched)
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 js-search-fallback">
+        <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8 md:py-12 js-search-fallback">
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 @foreach($initialItems as $item)
                     <a href="{{ $item['url'] }}"
-                       class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                        <div class="flex flex-row gap-5">
+                       class="block bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+                        <div class="flex flex-row gap-3 md:gap-5">
                             @if(!empty($item['image']))
-                                <div class="w-24 sm:w-32 md:w-36 flex-shrink-0">
-                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full aspect-square object-cover rounded-xl bg-gray-100 dark:bg-gray-800">
+                                <div class="w-16 sm:w-20 md:w-28 flex-shrink-0">
+                                    <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full aspect-square object-cover rounded-lg md:rounded-xl bg-gray-100 dark:bg-gray-800">
                                 </div>
                             @endif
 
                             <div class="flex-1 min-w-0">
-                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{!! $item['highlighted_title'] !!}</h3>
-                                <div class="flex flex-wrap items-center gap-2 mb-2">
-                                    <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $item['type_label'] }}</span>
-                                    @if(!empty($item['product_badge']))
-                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">{{ $item['product_badge'] }}</span>
-                                    @endif
+                                <h3 class="text-sm md:text-lg font-semibold text-gray-900 dark:text-white mb-1 md:mb-2 line-clamp-2">{!! $item['highlighted_title'] !!}</h3>
+                                <div class="flex flex-wrap items-center gap-1 md:gap-2 mb-1 md:mb-2">
+                                    <span class="inline-flex items-center gap-1 px-2 md:px-3 py-0.5 md:py-1 text-xs font-medium rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">{{ $item['type_label'] }}</span>
                                 </div>
                                 @if(!empty($item['highlighted_description']))
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{!! $item['highlighted_description'] !!}</p>
+                                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 hidden sm:block">{!! $item['highlighted_description'] !!}</p>
                                 @endif
                                 @if(!empty($item['price']))
-                                    <div class="mt-3">
-                                        <span class="text-lg font-bold text-green-600 dark:text-green-400">{{ $item['price'] }}</span>
+                                    <div class="mt-2 md:mt-3">
+                                        <span class="text-sm md:text-lg font-bold text-green-600 dark:text-green-400">{{ $item['price'] }}</span>
                                     </div>
                                 @endif
                             </div>

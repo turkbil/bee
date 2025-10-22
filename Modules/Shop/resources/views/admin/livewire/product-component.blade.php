@@ -10,7 +10,7 @@
             <!-- Header Bölümü -->
             <div class="row mx-2 my-3">
                 <!-- Arama Kutusu -->
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="input-icon">
                         <span class="input-icon-addon">
                             <i class="fas fa-search"></i>
@@ -21,7 +21,7 @@
                 </div>
 
                 <!-- Kategori Dropdown -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="input-group">
                         <select wire:model.live="selectedCategory" class="form-select">
                             <option value="">{{ __('shop::admin.all_categories') }}</option>
@@ -40,7 +40,7 @@
                 </div>
 
                 <!-- Ürün Sayısı Gösterimi -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="d-flex align-items-center h-100">
                         <span class="text-muted">
                             <i class="fas fa-box me-2"></i>
@@ -49,6 +49,19 @@
                                 <span class="badge bg-primary ms-2">{{ __('shop::admin.filtered') }}</span>
                             @endif
                         </span>
+                    </div>
+                </div>
+
+                <!-- Ortadaki Loading Indicator -->
+                <div class="col-md-3 position-relative">
+                    <div wire:loading
+                        wire:target="render, search, perPage, sortBy, selectedCategory, gotoPage, previousPage, nextPage, toggleActive, selectedItems, selectAll, bulkDelete, bulkToggleSelected"
+                        class="position-absolute top-50 start-50 translate-middle text-center"
+                        style="width: 100%; max-width: 250px;">
+                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                        <div class="progress mb-1">
+                            <div class="progress-bar progress-bar-indeterminate"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -63,20 +76,6 @@
                                 <option value="50">50</option>
                                 <option value="100">100</option>
                             </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Loading Indicator -->
-            <div class="row mx-2">
-                <div class="col-12">
-                    <div wire:loading
-                        wire:target="render, search, perPage, sortBy, selectedCategory, gotoPage, previousPage, nextPage, toggleActive, selectedItems, selectAll, bulkDelete, bulkToggleSelected"
-                        class="text-center py-2">
-                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
-                        <div class="progress mb-1" style="height: 3px;">
-                            <div class="progress-bar progress-bar-indeterminate"></div>
                         </div>
                     </div>
                 </div>

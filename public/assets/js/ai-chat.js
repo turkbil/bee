@@ -679,21 +679,21 @@ window.aiChatRenderMarkdown = function(content) {
  */
 window.clearAIConversation = function(button) {
     if (!window.Alpine || !window.Alpine.store('aiChat')) {
-        alert('❌ AI Chat sistemi yüklü değil!');
+        console.error('❌ AI Chat sistemi yüklü değil!');
         return;
     }
 
     const chat = window.Alpine.store('aiChat');
 
     if (!chat.conversationId) {
-        alert('ℹ️ Aktif bir konuşma bulunamadı.');
+        console.log('ℹ️ Aktif bir konuşma bulunamadı.');
         return;
     }
 
     // Show loading
     const originalText = button.querySelector('.button-text').textContent;
     const spinner = button.querySelector('.loading-spinner');
-    button.querySelector('.button-text').textContent = 'Siliniyor...';
+    button.querySelector('.button-text').textContent = '✓';
     spinner.classList.remove('hidden');
     button.disabled = true;
 
@@ -705,11 +705,21 @@ window.clearAIConversation = function(button) {
             // Clear from Alpine store
             chat.clearConversation();
 
-            alert('✅ AI konuşma geçmişi silindi!');
+            // Success feedback (no alert!)
+            console.log('✅ AI konuşma geçmişi silindi!');
+
+            // Visual feedback
+            button.querySelector('.button-text').textContent = '✓ Temizlendi';
+            setTimeout(() => {
+                button.querySelector('.button-text').textContent = originalText;
+            }, 2000);
         })
         .catch(err => {
             console.error('AI conversation clear error:', err);
-            alert('❌ Hata: ' + err.message);
+            button.querySelector('.button-text').textContent = '✗ Hata';
+            setTimeout(() => {
+                button.querySelector('.button-text').textContent = originalText;
+            }, 2000);
         })
         .finally(() => {
             // Reset button

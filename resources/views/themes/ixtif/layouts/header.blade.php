@@ -453,7 +453,7 @@
                                     :aria-label="darkMode === 'dark' ? 'Aydınlık moda geç' : 'Karanlık moda geç'"
                                     class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
                                 <template x-if="darkMode === 'dark'">
-                                    <i class="fa-light fa-sun text-lg"></i>
+                                    <i class="fa-regular fa-sun-bright text-lg"></i>
                                 </template>
                                 <template x-if="darkMode === 'light'">
                                     <i class="fa-light fa-moon text-lg"></i>

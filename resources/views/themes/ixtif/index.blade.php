@@ -14,14 +14,17 @@
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
 
-    {{-- Google Fonts --}}
+    {{-- Google Fonts - Roboto --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Roboto', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Roboto', sans-serif;
         }
 
         @keyframes float {
@@ -42,7 +45,27 @@
             justify-content: center;
             vertical-align: baseline;
         }
+
+        /* Blob Animation for Product Cards */
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -20px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 20px) scale(1.05); }
+        }
+
+        .animate-blob {
+            animation: blob 20s ease-in-out infinite;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
     </style>
+
+    {{-- GLightbox CSS --}}
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css"></noscript>
 </head>
 
 <body class="antialiased overflow-x-hidden"
@@ -161,26 +184,267 @@
         </div>
     </section>
 
+    <!-- Featured Products Section -->
+    <section id="shop" class="py-20 bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+        <!-- Background Blobs -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-blue-300 dark:bg-blue-500 rounded-full blur-3xl animate-blob"></div>
+            <div class="absolute bottom-20 right-10 w-72 h-72 bg-purple-300 dark:bg-purple-500 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-4">
+                    Öne Çıkan <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Ürünler</span>
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300">En çok tercih edilen istif ekipmanları</p>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product Card Template - Bu örnekleri dinamik yapacağız -->
+                <template x-for="product in products" :key="product.id">
+                    <article class="group relative bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
+                        <!-- Image Section -->
+                        <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
+                            <!-- Lightbox Trigger -->
+                            <a :href="product.image"
+                               class="glightbox block w-full h-full"
+                               :data-gallery="'product-' + product.id"
+                               :data-title="product.title"
+                               :data-description="product.description">
+                                <template x-if="product.image">
+                                    <img :src="product.image"
+                                         :alt="product.title"
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                         loading="lazy">
+                                </template>
+                                <template x-if="!product.image">
+                                    <!-- Category Icon Fallback -->
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <i :class="product.category_icon || 'fa-solid fa-box'"
+                                           class="text-8xl text-gray-300 dark:text-gray-600"></i>
+                                    </div>
+                                </template>
+                            </a>
+
+                            <!-- Hover Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                            <!-- Badges -->
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <template x-if="product.featured">
+                                    <span class="px-3 py-1.5 bg-yellow-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                        <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                    </span>
+                                </template>
+                                <template x-if="product.bestseller">
+                                    <span class="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                        <i class="fa-solid fa-fire mr-1"></i>Çok Satan
+                                    </span>
+                                </template>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                <button @click.prevent="toggleFavorite(product.id)"
+                                        class="w-10 h-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-heart" :class="{'text-red-500': product.is_favorite}"></i>
+                                </button>
+                                <a :href="product.image"
+                                   class="glightbox w-10 h-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
+                                   :data-gallery="'product-' + product.id">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Content Section -->
+                        <div class="p-6 space-y-4">
+                            <!-- Category -->
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-blue-600 dark:text-blue-400 font-medium uppercase tracking-wider" x-text="product.category"></span>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                                x-text="product.title"></h3>
+
+                            <!-- Description -->
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed" x-text="product.description"></p>
+
+                            <!-- Meta Info -->
+                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-solid fa-barcode"></i>
+                                    <span x-text="product.sku"></span>
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span x-text="product.views"></span>
+                                </span>
+                            </div>
+
+                            <!-- Price + CTA -->
+                            <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
+                                     x-text="product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'"></div>
+                                <a :href="product.url"
+                                   class="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:gap-3 transition-all">
+                                    <span>Detay</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </template>
+            </div>
+
+            <!-- View All Button -->
+            <div class="text-center mt-12">
+                <a href="/shop"
+                   class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl">
+                    <span>Tüm Ürünleri Gör</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
     {{-- Alpine.js Component --}}
     <script>
         function homepage() {
             return {
                 loaded: false,
                 showX: false,
+                products: [
+                    {
+                        id: 1,
+                        title: 'Elektrikli Forklift 2.5 Ton',
+                        description: 'Kapalı alanlarda yüksek performans. Sessiz çalışma, düşük bakım maliyeti.',
+                        category: 'Forklift',
+                        category_icon: 'fa-solid fa-forklift',
+                        sku: 'EFK-2500',
+                        price: '245.000',
+                        views: '1.245',
+                        image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=600&fit=crop',
+                        url: '/shop/product/elektrikli-forklift-2-5-ton',
+                        featured: true,
+                        bestseller: false,
+                        is_favorite: false
+                    },
+                    {
+                        id: 2,
+                        title: 'Akülü Transpalet 2 Ton',
+                        description: 'Ergonomik tasarım, uzun pil ömrü. Dar koridorlar için ideal.',
+                        category: 'Transpalet',
+                        category_icon: 'fa-solid fa-dolly',
+                        sku: 'ATP-2000',
+                        price: '85.000',
+                        views: '892',
+                        image: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=600&fit=crop',
+                        url: '/shop/product/akulu-transpalet-2-ton',
+                        featured: false,
+                        bestseller: true,
+                        is_favorite: false
+                    },
+                    {
+                        id: 3,
+                        title: 'Reach Truck 1.6 Ton',
+                        description: 'Yüksek raf erişimi, kompakt tasarım. Depo içi kullanım için optimize edilmiş.',
+                        category: 'İstif Makinesi',
+                        category_icon: 'fa-solid fa-boxes-stacked',
+                        sku: 'RT-1600',
+                        price: '325.000',
+                        views: '678',
+                        image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=600&h=600&fit=crop',
+                        url: '/shop/product/reach-truck-1-6-ton',
+                        featured: true,
+                        bestseller: true,
+                        is_favorite: false
+                    },
+                    {
+                        id: 4,
+                        title: 'Dizel Forklift 3 Ton',
+                        description: 'Açık alan kullanımı için güçlü motor. Yüksek kaldırma kapasitesi.',
+                        category: 'Forklift',
+                        category_icon: 'fa-solid fa-forklift',
+                        sku: 'DFK-3000',
+                        price: null,
+                        views: '543',
+                        image: null,
+                        url: '/shop/product/dizel-forklift-3-ton',
+                        featured: false,
+                        bestseller: false,
+                        is_favorite: false
+                    },
+                    {
+                        id: 5,
+                        title: 'Manuel Transpalet 2.5 Ton',
+                        description: 'Ekonomik çözüm, dayanıklı yapı. Basit bakım, uzun ömür.',
+                        category: 'Transpalet',
+                        category_icon: 'fa-solid fa-dolly',
+                        sku: 'MTP-2500',
+                        price: '12.500',
+                        views: '1.834',
+                        image: 'https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=600&h=600&fit=crop',
+                        url: '/shop/product/manuel-transpalet-2-5-ton',
+                        featured: false,
+                        bestseller: true,
+                        is_favorite: false
+                    },
+                    {
+                        id: 6,
+                        title: 'Sipariş Toplama Makinesi',
+                        description: 'E-ticaret depoları için ideal. Operatör platformu, yüksek erişim.',
+                        category: 'İstif Makinesi',
+                        category_icon: 'fa-solid fa-boxes-stacked',
+                        sku: 'STM-2000',
+                        price: '185.000',
+                        views: '412',
+                        image: 'https://images.unsplash.com/photo-1581092160607-ee67d16e1e08?w=600&h=600&fit=crop',
+                        url: '/shop/product/siparis-toplama-makinesi',
+                        featured: false,
+                        bestseller: false,
+                        is_favorite: false
+                    }
+                ],
 
                 init() {
                     this.$nextTick(() => {
                         this.loaded = true;
+
+                        // GLightbox Initialize
+                        if (typeof GLightbox !== 'undefined') {
+                            const lightbox = GLightbox({
+                                touchNavigation: true,
+                                loop: true,
+                                autoplayVideos: true
+                            });
+                        }
                     });
 
                     // İXTİF - İSTİF animasyonu (S ↔ X değişimi)
                     setInterval(() => {
                         this.showX = !this.showX;
                     }, 2000);
+                },
+
+                toggleFavorite(productId) {
+                    const product = this.products.find(p => p.id === productId);
+                    if (product) {
+                        product.is_favorite = !product.is_favorite;
+                        // TODO: API call to save favorite status
+                        console.log(`Product ${productId} favorite: ${product.is_favorite}`);
+                    }
                 }
             }
         }
     </script>
+
+    {{-- GLightbox JS --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
 
 </body>
 </html>

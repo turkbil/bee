@@ -281,3 +281,20 @@ body.dark-mode-active::after {
 .animate-gradient {
     animation: gradient 3s ease infinite;
 }
+
+/* ========================================
+   Product Image Drop Shadows
+   ======================================== */
+
+/* Light Mode: Koyu gölge (siyah) */
+.drop-shadow-product-light {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15)) 
+            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* Dark Mode: Açık gölge + hafif ışıltı (beyaz/mavi) */
+.dark .drop-shadow-product-dark {
+    filter: drop-shadow(0 4px 16px rgba(255, 255, 255, 0.12)) 
+            drop-shadow(0 2px 8px rgba(147, 197, 253, 0.15))
+            drop-shadow(0 1px 4px rgba(255, 255, 255, 0.08));
+}

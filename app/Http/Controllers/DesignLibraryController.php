@@ -9,7 +9,7 @@ class DesignLibraryController extends Controller
 {
     public function index()
     {
-        $path = public_path('ixtif-designs/index.html');
+        $path = public_path('design/index.html');
 
         if (!file_exists($path)) {
             abort(404, 'Design library index not found');
@@ -20,7 +20,7 @@ class DesignLibraryController extends Controller
 
     public function show($file)
     {
-        $path = public_path('ixtif-designs/' . $file);
+        $path = public_path('design/' . $file);
 
         if (!file_exists($path) || !is_file($path)) {
             abort(404, 'Design file not found: ' . $file);

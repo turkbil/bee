@@ -424,7 +424,7 @@
                                     aria-label="Arama menüsünü aç/kapat"
                                     :aria-expanded="searchOpen"
                                     class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                <i class="fa-solid text-lg transition-all duration-200"
+                                <i class="fa-light text-lg transition-all duration-200"
                                    :class="searchOpen ? 'fa-times' : 'fa-magnifying-glass-minus'"></i>
                             </button>
                             {{-- Tooltip --}}

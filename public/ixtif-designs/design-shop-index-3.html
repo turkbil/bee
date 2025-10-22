@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V3: Dark Glassmorphism - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-slate-900 to-black text-white">
+    <!-- Nav -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-xl border-b border-cyan-500/20 shadow-2xl shadow-cyan-500/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-lg backdrop-blur-lg transition-all">
+                    <i class="fa-solid fa-home text-cyan-400"></i>
+                    <span class="hidden sm:inline text-cyan-400 font-medium">Ana Sayfa</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">Shop V3 / 10</div>
+                    <div class="text-xs text-cyan-400/70 mt-1">Dark Glassmorphism</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="design-shop-index-2.html" class="px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 rounded-lg backdrop-blur-lg transition-all">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <a href="design-shop-index-4.html" class="px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 rounded-lg backdrop-blur-lg transition-all">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <div class="pt-24 pb-12" x-data="{
+        products: [
+            {id: 1, title: 'İXTİF CPD15FVL - 1.5 Ton Elektrikli Forklift', category: 'Forklift', price: '185.000 ₺', image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=800&fit=crop', featured: true, bestseller: false},
+            {id: 2, title: 'İXTİF CPD18FVL - 1.8 Ton Li-Ion Forklift', category: 'Forklift', price: '245.000 ₺', image: 'https://images.unsplash.com/photo-1596651976841-74e1fe59e4cf?w=800&h=800&fit=crop', featured: false, bestseller: true},
+            {id: 3, title: 'İXTİF CPDS18 - 1.8 Ton Çift Direksiz Forklift', category: 'Forklift', price: '265.000 ₺', image: 'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&h=800&fit=crop', featured: true, bestseller: true},
+            {id: 4, title: 'İXTİF CDD12 - 1.2 Ton Dizel Forklift', category: 'Forklift', price: '325.000 ₺', image: 'https://images.unsplash.com/photo-1594737513044-c4bb5ecfd6cb?w=800&h=800&fit=crop', featured: false, bestseller: false},
+            {id: 5, title: 'İXTİF EPT20 - 2.0 Ton Elektrikli Transpalet', category: 'Transpalet', price: '45.000 ₺', image: 'https://images.unsplash.com/photo-1565264138074-e242e0b1c5e2?w=800&h=800&fit=crop', featured: true, bestseller: false},
+            {id: 6, title: 'İXTİF CPT15 - 1.5 Ton Manuel Transpalet', category: 'Transpalet', price: '12.500 ₺', image: 'https://images.unsplash.com/photo-1611078387897-999c19ee0ab0?w=800&h=800&fit=crop', featured: false, bestseller: true}
+        ]
+    }">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]">
+                    Dark Glassmorphism
+                </h1>
+                <p class="text-lg text-cyan-400/70">Neon Glow + Backdrop Blur + Futuristic Design</p>
+            </div>
+
+            <!-- 3-Column Dark Glass Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <template x-for="product in products" :key="product.id">
+                    <article class="group relative bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden border border-cyan-500/20 hover:border-cyan-400/60 transition-all duration-500 hover:shadow-2xl hover:shadow-cyan-500/30">
+                        <a href="#" class="block">
+                            <!-- Image -->
+                            <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-800 to-slate-900">
+                                <img
+                                    :src="product.image"
+                                    :alt="product.title"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90"
+                                >
+
+                                <!-- Neon Overlay -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-cyan-500/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                                <!-- Badges -->
+                                <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                    <template x-if="product.featured">
+                                        <span class="px-3 py-1.5 bg-cyan-500/20 backdrop-blur-md border border-cyan-400/40 text-cyan-300 text-xs font-semibold rounded-lg shadow-lg shadow-cyan-500/20">
+                                            <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                        </span>
+                                    </template>
+                                    <template x-if="product.bestseller">
+                                        <span class="px-3 py-1.5 bg-purple-500/20 backdrop-blur-md border border-purple-400/40 text-purple-300 text-xs font-semibold rounded-lg shadow-lg shadow-purple-500/20">
+                                            <i class="fa-solid fa-fire mr-1"></i>Çok Satan
+                                        </span>
+                                    </template>
+                                </div>
+
+                                <!-- Quick Actions -->
+                                <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                    <button class="w-10 h-10 bg-cyan-500/20 backdrop-blur-md border border-cyan-400/40 text-cyan-300 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="w-10 h-10 bg-cyan-500/20 backdrop-blur-md border border-cyan-400/40 text-cyan-300 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Content -->
+                            <div class="p-6 space-y-4">
+                                <!-- Category -->
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-cyan-400 font-medium uppercase tracking-wider border border-cyan-500/30 px-3 py-1 rounded-lg backdrop-blur-sm" x-text="product.category"></span>
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-2" x-text="product.title"></h3>
+
+                                <!-- Price -->
+                                <div class="flex items-center justify-between pt-4 border-t border-cyan-500/20">
+                                    <div>
+                                        <div class="text-xs text-cyan-400/70 mb-1">Fiyat</div>
+                                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]" x-text="product.price"></div>
+                                    </div>
+                                    <button class="px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 rounded-lg backdrop-blur-sm transition-all">
+                                        <i class="fa-solid fa-shopping-cart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                </template>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

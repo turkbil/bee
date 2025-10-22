@@ -1,87 +1,70 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
+<html lang="tr" x-data="{ activeTab: 'all' }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category V1: Forklift Grid - ixtif.com</title>
+    <title>Cat 3: Tabs - ixtif.com</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-    </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Nav -->
-    <div class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
-                    <i class="fa-solid fa-home text-gray-700"></i>
-                    <span class="hidden sm:inline text-gray-700 font-medium">Ana Sayfa</span>
-                </a>
-                <div class="text-center">
-                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-red-600">Category 3 / 10</div>
-                    <div class="text-xs text-gray-500 mt-1">Reach Truck</div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button href="design-category-2.html" class="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg cursor-not-allowed flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span class="hidden sm:inline">Önceki</span>
-                    </button>
-                    <a href="design-category-4.html" class="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
-                        <span class="hidden sm:inline">Sonraki</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <h1 class="text-5xl font-black mb-2 text-center">Reach Truck</h1>
+        <p class="text-center text-gray-400 mb-8">Cat 3/10 - Tab Navigation</p>
+
+        <!-- Tabs -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button @click="activeTab = 'all'" class="px-6 py-3 rounded-lg transition-all" :class="activeTab === 'all' ? 'bg-cyan-500 text-white' : 'bg-gray-800 text-gray-400'">
+                <i class="fa-solid fa-grid mr-2"></i>All
+            </button>
+            <button @click="activeTab = 'electric'" class="px-6 py-3 rounded-lg transition-all" :class="activeTab === 'electric' ? 'bg-green-500 text-white' : 'bg-gray-800 text-gray-400'">
+                <i class="fa-solid fa-bolt mr-2"></i>Electric
+            </button>
+            <button @click="activeTab = 'diesel'" class="px-6 py-3 rounded-lg transition-all" :class="activeTab === 'diesel' ? 'bg-orange-500 text-white' : 'bg-gray-800 text-gray-400'">
+                <i class="fa-solid fa-fire mr-2"></i>Diesel
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div x-show="activeTab === 'all'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-2">RT-14 Electric</h3>
+                <p class="text-cyan-400 text-2xl font-bold">285.000 ₺</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-2">RT-16 Diesel</h3>
+                <p class="text-orange-400 text-2xl font-bold">315.000 ₺</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-2">RT-20 Electric</h3>
+                <p class="text-green-400 text-2xl font-bold">365.000 ₺</p>
             </div>
         </div>
-    </div>
 
-    <!-- Main -->
-    <div class="pt-24 pb-12 min-h-screen">
-        <!-- Hero -->
-        <section class="bg-gradient-to-r from-orange-600 to-red-600 text-white py-16">
-            <div class="container mx-auto px-4">
-                <div class="max-w-4xl">
-                    <div class="text-sm mb-4">Kategori</div>
-                    <h1 class="text-5xl font-bold mb-4">Reach Truck Ürünleri</h1>
-                    <p class="text-xl opacity-90">89 adet profesyonel forklift çözümü</p>
-                </div>
+        <div x-show="activeTab === 'electric'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-900/30 border border-green-500 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-2">RT-14 Electric</h3>
+                <p class="text-green-400 text-2xl font-bold">285.000 ₺</p>
             </div>
-        </section>
+            <div class="bg-green-900/30 border border-green-500 p-6 rounded-xl">
+                <h3 class="text-xl font-bold mb-2">RT-20 Electric</h3>
+                <p class="text-green-400 text-2xl font-bold">365.000 ₺</p>
+            </div>
+        </div>
 
-        <!-- Products Grid -->
-        <section class="container mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Product Card -->
-                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop" alt="Forklift" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">İXTİF CPD18FVL Li-Ion Forklift</h3>
-                        <p class="text-gray-600 text-sm mb-4">1.8 Ton kapasiteli elektrikli forklift</p>
-                        <div class="flex items-center justify-between">
-                            <div class="text-2xl font-bold text-blue-600">245.000 ₺</div>
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Detay</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Repeat products... -->
-                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <img src="https://images.unsplash.com/photo-1596651976841-74e1fe59e4cf?w=600&h=400&fit=crop" alt="Forklift" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">İXTİF DF-3500 Dizel Forklift</h3>
-                        <p class="text-gray-600 text-sm mb-4">3.5 Ton dış mekan forklift</p>
-                        <div class="flex items-center justify-between">
-                            <div class="text-2xl font-bold text-blue-600">295.000 ₺</div>
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Detay</button>
-                        </div>
-                    </div>
-                </div>
+        <div x-show="activeTab === 'diesel'" class="grid grid-cols-1 gap-6">
+            <div class="bg-orange-900/30 border border-orange-500 p-8 rounded-xl">
+                <h3 class="text-2xl font-bold mb-2">RT-16 Diesel</h3>
+                <p class="text-orange-400 text-3xl font-bold">315.000 ₺</p>
+                <p class="text-gray-400 mt-2">Outdoor usage, powerful engine</p>
             </div>
-        </section>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="design-category-2.html" class="px-4 py-2 bg-gray-800 rounded-lg mr-2">← C2</a>
+            <a href="design-category-4.html" class="px-4 py-2 bg-cyan-500 text-white rounded-lg">C4 →</a>
+        </div>
     </div>
 </body>
 </html>

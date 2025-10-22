@@ -1,17 +1,21 @@
-<div class="relative mb-6" x-data="{ open: @entangle('isOpen') }" @click.away="$wire.closeDropdown()">
+<div class="relative mb-6" x-data="{ open: @entangle('isOpen'), query: @entangle('query') }" @click.away="$wire.closeDropdown()">
     <div class="flex gap-3">
         <div class="flex-1 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
             <input type="search"
                    wire:model.live.debounce.300ms="query"
+                   x-model="query"
                    placeholder="Ürün, kategori veya marka arayın..."
                    class="w-full bg-white border-0 rounded-2xl pl-16 pr-6 py-5 text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 transition-shadow">
         </div>
-        <a href="{{ route('search.show', ['query' => $query]) }}"
-           class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
+        <button
+            @click="if(query.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+            :disabled="!query.trim()"
+            :class="{'opacity-50 cursor-not-allowed': !query.trim()}"
+            class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
             <i class="fa-solid fa-search"></i>
             <span class="hidden md:inline">Ara</span>
-        </a>
+        </button>
     </div>
 
     @if($isOpen && count($this->results) > 0)
@@ -25,7 +29,7 @@
                 </a>
             @endforeach
 
-            @if(strlen($query) >= 2)
+            @if($query && strlen($query) >= 2)
                 <a href="{{ route('search.show', ['query' => $query]) }}"
                    class="block p-3 text-center text-indigo-600 hover:bg-gray-100 font-medium transition">
                     Tüm sonuçları gör →

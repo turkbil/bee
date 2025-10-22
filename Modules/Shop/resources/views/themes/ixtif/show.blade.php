@@ -1394,14 +1394,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 2. STICKY SIDEBAR
+    // 2. STICKY SIDEBAR - BASİT VERSİYON
     // ==========================================
     const sidebar = document.getElementById('sticky-sidebar');
 
     if (sidebar) {
-        // Sidebar zaten CSS ile lg:sticky lg:top-24 şeklinde tanımlı
-        // JavaScript ile ek bir işlem gerekmiyor, CSS yeterli
-        console.log('✅ Sticky sidebar (CSS-based)');
+        // Parent overflow kontrolü (sticky çalışması için gerekli)
+        const gridContainer = sidebar.closest('.grid');
+        if (gridContainer) {
+            gridContainer.style.overflow = 'visible';
+        }
+
+        // Dinamik top pozisyonu (header + tocBar yüksekliği)
+        function updateSidebarTop() {
+            if (window.innerWidth < 1024) return;
+
+            const headerHeight = header ? header.offsetHeight : 0;
+            const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
+            sidebar.style.top = (headerHeight + tocBarHeight + 24) + 'px';
+        }
+
+        updateSidebarTop();
+        window.addEventListener('resize', updateSidebarTop);
+
+        console.log('✅ Sticky sidebar enabled');
     }
 
     // ==========================================

@@ -111,19 +111,26 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
             if (is_dir($targetPath)) {
                 symlink($targetPath, $linkPath);
 
-                $stat = @lstat(public_path('storage'));
-                $owner = $stat ? posix_getpwuid($stat['uid'])['name'] : null;
-                $group = $stat ? posix_getgrgid($stat['gid'])['name'] : null;
+                // ⚠️ CRITICAL FIX: Hardcoded web server owner kullan
+                // public_path('storage') ownership'i değişken olabilir (root, plesk vb.)
+                // Doğrudan web server owner'ı kullan: tuufi.com_:psaserv
+                $owner = 'tuufi.com_';
+                $group = 'psaserv';
 
-                if ($owner) {
-                    @lchown($linkPath, $owner);
+                if (function_exists('posix_getpwnam') && function_exists('posix_getgrnam')) {
+                    $userInfo = @posix_getpwnam($owner);
+                    $groupInfo = @posix_getgrnam($group);
+
+                    if ($userInfo !== false) {
+                        @lchown($linkPath, $userInfo['uid']);
+                    }
+
+                    if ($groupInfo !== false) {
+                        @lchgrp($linkPath, $groupInfo['gid']);
+                    }
                 }
 
-                if ($group) {
-                    @lchgrp($linkPath, $group);
-                }
-
-                Log::debug("✅ Created symlink for tenant{$tenantId}");
+                Log::debug("✅ Created symlink for tenant{$tenantId} (owner: {$owner}:{$group})");
             }
         }
     }

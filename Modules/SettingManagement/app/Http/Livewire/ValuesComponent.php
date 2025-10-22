@@ -216,15 +216,27 @@ class ValuesComponent extends Component
     public function removeMultipleImage($settingId, $index)
     {
         if (isset($this->multipleImagesArrays[$settingId][$index])) {
-            // Dosyayı sil
+            $setting = Setting::find($settingId);
             $imagePath = $this->multipleImagesArrays[$settingId][$index];
-            \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($imagePath);
-            
+
+            // ✅ SPATIE: Path'den media bul ve sil
+            try {
+                $media = $setting->getMedia('gallery')->first(function($m) use ($imagePath) {
+                    return str_contains($imagePath, $m->file_name);
+                });
+
+                if ($media) {
+                    $media->delete();
+                }
+            } catch (\Exception $e) {
+                \Log::warning("Multiple image silme hatası", ['error' => $e->getMessage()]);
+            }
+
             // Diziden çıkar
             unset($this->multipleImagesArrays[$settingId][$index]);
             // Diziye yeniden sırala
             $this->multipleImagesArrays[$settingId] = array_values($this->multipleImagesArrays[$settingId]);
-            
+
             // Eğer dizide hiç eleman kalmazsa varsayılan değer kullan
             if (empty($this->multipleImagesArrays[$settingId])) {
                 $this->values[$settingId] = null;
@@ -232,7 +244,7 @@ class ValuesComponent extends Component
                 // JSON'a çevir
                 $this->values[$settingId] = json_encode($this->multipleImagesArrays[$settingId]);
             }
-            
+
             // Değişikliği kaydet
             $this->checkChanges();
         }
@@ -283,36 +295,12 @@ class ValuesComponent extends Component
                 $this->normalizeSettingImageIfNeeded($setting, $file);
 
                 try {
-                    // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
-                    $tenantId = is_tenant() ? tenant_id() : 1;
+                    // ✅ SPATIE: Setting model'in attachSettingMedia() metodu kullan
+                    // Eski medyayı otomatik temizler, yeni medyayı ekler
+                    $setting->attachSettingMedia($file);
 
-                    // 🎯 SPATİE PATTERN: Her setting için unique klasör (settings/{setting_id}/)
-                    // ✅ FIX: Dosya adına timestamp ekle (browser cache + unique filename için)
-                    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                    $extension = $file->getClientOriginalExtension();
-                    $fileName = $originalName . '_' . time() . '.' . $extension;
-
-                    // Eski dosyayı sil (eğer varsa)
-                    if ($oldValue) {
-                        $deleted = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
-                        if (!$deleted) {
-                            // Log dosya silinemezse (debug için)
-                            \Log::warning("Setting dosyası silinemedi: {$oldValue}", [
-                                'setting_id' => $settingId,
-                                'tenant_id' => $tenantId
-                            ]);
-                        }
-                    }
-
-                    // TenantStorageHelper ile doğru şekilde dosyayı yükle
-                    // Path: settings/{setting_id}/filename_timestamp.ext (Spatie pattern + unique)
-                    $value = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
-                        $file,
-                        "settings/{$settingId}",  // ✅ Setting ID bazlı unique klasör
-                        $fileName,
-                        $tenantId
-                    );
-
+                    // Medya URL'sini al ve value olarak kaydet
+                    $value = $setting->getMediaUrl();
                     $this->values[$settingId] = $value;
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
@@ -334,25 +322,14 @@ class ValuesComponent extends Component
                         $newImages = $this->multipleImagesArrays[$settingId];
                     }
                     
-                    // Yeni resimleri ekle
+                    // ✅ SPATIE: Yeni resimleri gallery collection'a ekle
                     foreach ($this->temporaryMultipleImages[$settingId] as $index => $photo) {
                         if ($photo) {
-                            // Tenant id belirleme - Central ise tenant1, değilse gerçek tenant ID
-                            $tenantId = is_tenant() ? tenant_id() : 1;
+                            $media = $setting->addMedia($photo)
+                                ->toMediaCollection('gallery');
 
-                            // 🎯 SPATİE PATTERN: Her resim için unique dosya adı
-                            $fileName = time() . '_' . $index . '.' . $photo->getClientOriginalExtension();
-
-                            // TenantStorageHelper ile doğru şekilde dosyayı yükle
-                            // Path: settings/{setting_id}/timestamp_index.ext (Spatie pattern)
-                            $imagePath = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
-                                $photo,
-                                "settings/{$settingId}",  // ✅ Setting ID bazlı unique klasör
-                                $fileName,
-                                $tenantId
-                            );
-
-                            $newImages[] = $imagePath;
+                            // Media URL'sini diziye ekle
+                            $newImages[] = $media->getUrl();
                         }
                     }
                     
@@ -381,9 +358,9 @@ class ValuesComponent extends Component
             if ($oldValue !== $value) {
                 // Eğer yeni değer default değere eşitse, setting value'yu sil
                 if ($value === $setting->default_value) {
-                    // Eğer dosya varsa sil
+                    // ✅ SPATIE: Medya varsa temizle
                     if ($oldValue && ($setting->type === 'file' || $setting->type === 'image')) {
-                        \Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($oldValue);
+                        $setting->clearMediaCollection($setting->getMediaCollectionName());
                     }
                     
                     $this->settingValueQuery()
@@ -445,18 +422,19 @@ class ValuesComponent extends Component
     {
         $setting = Setting::find($settingId);
         $value = $this->values[$settingId] ?? null;
-        
+
         if ($setting && $value) {
-            if (\Modules\SettingManagement\App\Helpers\TenantStorageHelper::deleteFile($value)) {
-                $this->values[$settingId] = null;
-                $this->checkChanges();
-                
-                $this->dispatch('toast', [
-                    'title' => __('settingmanagement.messages.success'),
-                    'message' => __('settingmanagement.messages.file_deleted'),
-                    'type' => 'success'
-                ]);
-            }
+            // ✅ SPATIE: Media collection'ı temizle
+            $setting->clearMediaCollection($setting->getMediaCollectionName());
+
+            $this->values[$settingId] = null;
+            $this->checkChanges();
+
+            $this->dispatch('toast', [
+                'title' => __('settingmanagement.messages.success'),
+                'message' => __('settingmanagement.messages.file_deleted'),
+                'type' => 'success'
+            ]);
         }
     }
     

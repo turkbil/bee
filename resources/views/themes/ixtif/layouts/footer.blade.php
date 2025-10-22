@@ -7,7 +7,7 @@
     $popularSearches = SearchQuery::getMarkedPopular(10);
 @endphp
 
-<section class="w-full py-12 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900">
+<section class="w-full py-12">
     <div class="container mx-auto px-4">
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12 px-6 rounded-3xl shadow-2xl">
             <div class="max-w-4xl mx-auto text-center">

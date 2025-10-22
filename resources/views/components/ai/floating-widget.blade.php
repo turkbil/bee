@@ -134,18 +134,27 @@ class="fixed {{ $selectedPosition }} z-50">
                 // Set initial message based on screen size
                 this.updateMessage();
 
-                // Animation cycle: 3s total
+                // Animation cycle optimized for mobile:
+                // - Bubble shows: 1.5s
+                // - Fade out: 300ms
+                // - Robot shows: 1.5s (no bubble)
+                // - Fade in next bubble: 300ms
+                // Total: 3.6s per cycle
                 setInterval(() => {
-                    // Hide bubble (opacity will fade via animation)
-                    this.bubbleVisible = false;
+                    // Show bubble for 1.5s
+                    this.bubbleVisible = true;
 
-                    // Change message after 300ms (during fade-out)
+                    // Hide bubble after 1.5s
                     setTimeout(() => {
-                        this.currentIndex = (this.currentIndex + 1) % this.getMessages().length;
-                        this.updateMessage();
-                        this.bubbleVisible = true;
-                    }, 300);
-                }, 3000);
+                        this.bubbleVisible = false;
+
+                        // Change message while hidden (after fade-out)
+                        setTimeout(() => {
+                            this.currentIndex = (this.currentIndex + 1) % this.getMessages().length;
+                            this.updateMessage();
+                        }, 300);
+                    }, 1500);
+                }, 3300); // 1.5s visible + 300ms fade + 1.5s robot visible
             },
 
             getMessages() {

@@ -33,7 +33,7 @@ class ThumbmakerController extends Controller
     protected array $allowedAlignments = ['c', 't', 'b', 'l', 'r', 'tl', 'tr', 'bl', 'br'];
     protected int $cacheDuration = 2592000; // 30 gün
 
-    public function generate(Request $request): Response
+    public function generate(Request $request)
     {
         // Parametreleri al ve validate et
         $src = $request->input('src');
@@ -311,7 +311,7 @@ class ThumbmakerController extends Controller
     /**
      * Hata response'u
      */
-    protected function errorResponse(string $message, int $code = 400): Response
+    protected function errorResponse(string $message, int $code = 400)
     {
         $errorImage = Image::create(400, 300)
             ->fill('f8f9fa');

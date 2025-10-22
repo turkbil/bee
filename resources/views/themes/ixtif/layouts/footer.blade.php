@@ -21,14 +21,24 @@
 
                 {{-- Popüler Aramalar --}}
                 @if($popularSearches->count() > 0)
-                    <div class="flex flex-wrap justify-center gap-3 items-center">
-                        <div class="text-sm text-indigo-200 font-semibold">Popüler:</div>
-                        @foreach($popularSearches as $search)
-                            <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
-                               class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
-                                {{ $search->query }}
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap justify-center gap-3 items-center">
+                            <div class="text-sm text-indigo-200 font-semibold">Popüler:</div>
+                            @foreach($popularSearches as $search)
+                                <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
+                                   class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
+                                    {{ $search->query }}
+                                </a>
+                            @endforeach
+                        </div>
+                        <div class="text-center">
+                            <a href="{{ route('search.tags') }}"
+                               class="inline-flex items-center gap-2 text-sm text-indigo-100 hover:text-white font-medium transition-colors underline decoration-dotted underline-offset-4">
+                                <i class="fa-solid fa-tags"></i>
+                                Tüm Popüler Aramaları Gör
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
                             </a>
-                        @endforeach
+                        </div>
                     </div>
                 @endif
             </div>

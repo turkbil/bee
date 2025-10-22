@@ -1,6 +1,54 @@
 {{-- Mobile Bottom Bar CSS --}}
 <link rel="stylesheet" href="{{ asset('css/ixtif-mobile-bottom-bar.css') }}?v={{ now()->timestamp }}">
 
+{{-- SEARCH SECTION (Before Footer) --}}
+@php
+    use Modules\Search\App\Models\SearchQuery;
+    $popularSearches = SearchQuery::getMarkedPopular(10);
+@endphp
+
+<section class="w-full py-12 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-purple-900 dark:to-slate-900">
+    <div class="container mx-auto px-4">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12 px-6 rounded-3xl shadow-2xl">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-black mb-3">Aradığınızı Bulamadınız Mı?</h2>
+                <p class="text-lg md:text-xl text-indigo-100 mb-8">Binlerce ürün için hemen arayın!</p>
+
+                <div class="flex gap-3 mb-6" x-data="{ searchQuery: '' }">
+                    <div class="flex-1 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
+                        <input
+                            type="text"
+                            x-model="searchQuery"
+                            @keydown.enter="if(searchQuery.trim()) window.location.href='{{ href('Search', 'search') }}?q=' + encodeURIComponent(searchQuery)"
+                            placeholder="Ürün, kategori veya marka ara..."
+                            class="w-full bg-white border-0 rounded-2xl pl-16 pr-6 py-5 text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 transition-shadow">
+                    </div>
+                    <button
+                        @click="if(searchQuery.trim()) window.location.href='{{ href('Search', 'search') }}?q=' + encodeURIComponent(searchQuery)"
+                        class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-search"></i>
+                        <span class="hidden md:inline">Ara</span>
+                    </button>
+                </div>
+
+                {{-- Popüler Aramalar --}}
+                @if($popularSearches->count() > 0)
+                    <div class="flex flex-wrap justify-center gap-3 items-center">
+                        <div class="text-sm text-indigo-200 font-semibold">Popüler:</div>
+                        @foreach($popularSearches as $search)
+                            <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
+                               class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
+                                {{ $search->query }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</section>
+
 {{-- FOOTER-002 Design --}}
 <footer class="w-full relative
     bg-white dark:bg-transparent
@@ -97,50 +145,6 @@
                     <p class="{{ $sloganClass }} text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
                         {{ $siteSlogan }}
                     </p>
-                @endif
-            </div>
-        </div>
-
-        {{-- Arama Bölümü --}}
-        @php
-            use Modules\Search\App\Models\SearchQuery;
-            $popularSearches = SearchQuery::getMarkedPopular(10);
-        @endphp
-
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12 px-6 rounded-3xl mb-12 shadow-2xl">
-            <div class="max-w-4xl mx-auto text-center">
-                <h3 class="text-3xl md:text-4xl font-black mb-3">Aradığınızı Bulamadınız Mı?</h3>
-                <p class="text-lg md:text-xl text-indigo-100 mb-8">Binlerce ürün için hemen arayın!</p>
-
-                <div class="flex gap-3 mb-6" x-data="{ searchQuery: '' }">
-                    <div class="flex-1 relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
-                        <input
-                            type="text"
-                            x-model="searchQuery"
-                            @keydown.enter="if(searchQuery.trim()) window.location.href='{{ href('Search', 'search') }}?q=' + encodeURIComponent(searchQuery)"
-                            placeholder="Ürün, kategori veya marka ara..."
-                            class="w-full bg-white border-0 rounded-2xl pl-16 pr-6 py-5 text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 transition-shadow">
-                    </div>
-                    <button
-                        @click="if(searchQuery.trim()) window.location.href='{{ href('Search', 'search') }}?q=' + encodeURIComponent(searchQuery)"
-                        class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-search"></i>
-                        <span class="hidden md:inline">Ara</span>
-                    </button>
-                </div>
-
-                {{-- Popüler Aramalar --}}
-                @if($popularSearches->count() > 0)
-                    <div class="flex flex-wrap justify-center gap-3 items-center">
-                        <div class="text-sm text-indigo-200 font-semibold">Popüler:</div>
-                        @foreach($popularSearches as $search)
-                            <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
-                               class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
-                                {{ $search->query }}
-                            </a>
-                        @endforeach
-                    </div>
                 @endif
             </div>
         </div>

@@ -171,21 +171,22 @@
     </div>
 
     @if($mediaItems->count())
+        @php
+        $previewableMedia = $mediaItems->filter(function($media) {
+            return $this->isPreviewable($media);
+        })->map(function($media) {
+            return [
+                'url' => thumb($media, 1920, 1920, ['quality' => 90]),
+                'thumb' => thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]),
+                'name' => $media->name,
+                'id' => $media->id
+            ];
+        })->values()->toArray();
+        @endphp
         <div x-data="{
             showLightbox: false,
             currentIndex: 0,
-            mediaList: [
-                @foreach($mediaItems as $index => $media)
-                    @if($this->isPreviewable($media))
-                    {
-                        url: '{{ addslashes(thumb($media, 1920, 1920, ['quality' => 90])) }}',
-                        thumb: '{{ addslashes(thumb($media, 400, 400, ['quality' => 80, 'scale' => 1])) }}',
-                        name: '{{ addslashes($media->name) }}',
-                        id: {{ $media->id }}
-                    },
-                    @endif
-                @endforeach
-            ],
+            mediaList: @js($previewableMedia),
             get currentMedia() {
                 return this.mediaList[this.currentIndex] || {};
             },

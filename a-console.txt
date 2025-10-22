@@ -1,1 +1,262 @@
 
+multi-modal-manager.js?v=1761103238:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761103238:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761103238:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761103238:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761103238:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761103238:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761103238:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761103238:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761103238:13 ⏰ Load Time: 2025-10-22T03:20:39.502Z
+ai-seo-integration.js?v=1761103238:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761103238:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761103238:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761103238:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761103238:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1761103238:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761103238:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761103238:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761103238:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+mediamanagement:4274 ✅ Alpine.js Global Store initialized (Livewire bundled)
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Unexpected token ':'
+
+Expression: "{
+            showLightbox: false,
+            currentIndex: 0,
+            mediaList: [
+                <!--[if BLOCK]><![endif]-->                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F55%2Fpost-1080.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F55%2Fpost-1080.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'post-1080',
+                        id: 55
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F54%2Finsta-logo.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F54%2Finsta-logo.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'insta-logo',
+                        id: 54
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F53%2Fixtif-bina.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F53%2Fixtif-bina.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'ixtif-bina',
+                        id: 53
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F51%2Fbasliksiz-122.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F51%2Fbasliksiz-122.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'basliksiz-122',
+                        id: 51
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F50%2Fbasliksiz-1.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F50%2Fbasliksiz-1.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'basliksiz-1',
+                        id: 50
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F49%2Fbasliksiz-1.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F49%2Fbasliksiz-1.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'basliksiz-1',
+                        id: 49
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F48%2Fc03biyb3suczvih8kkpcfhqm9e6y0jc0muebrjx6.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F48%2Fc03biyb3suczvih8kkpcfhqm9e6y0jc0muebrjx6.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'c03biyb3suczvih8kkpcfhqm9e6y0jc0muebrjx6',
+                        id: 48
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F47%2Fdsc04217-scaled.webp&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F47%2Fdsc04217-scaled.webp&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name: 'dsc04217-scaled',
+                        id: 47
+                    },
+                    <!--[if ENDBLOCK]><![endif]-->
+                                    <!--[if BLOCK]><![endif]-->                    {
+                        url: 'https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F46%2Fbasliksiz-122.jpg&w=1920&h <div x-data=​"{
+            showLightbox:​ false,
+            currentIndex:​ 0,
+            mediaList:​ [
+                <!--[if BLOCK]​><![endif]​-->                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F55%2Fpost-1080.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F55%2Fpost-1080.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'post-1080',
+                        id:​ 55
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F54%2Finsta-logo.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F54%2Finsta-logo.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'insta-logo',
+                        id:​ 54
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F53%2Fixtif-bina.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F53%2Fixtif-bina.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'ixtif-bina',
+                        id:​ 53
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F51%2Fbasliksiz-122.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F51%2Fbasliksiz-122.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-122',
+                        id:​ 51
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F50%2Fbasliksiz-1.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F50%2Fbasliksiz-1.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-1',
+                        id:​ 50
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F49%2Fbasliksiz-1.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F49%2Fbasliksiz-1.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-1',
+                        id:​ 49
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F48%2Fc03biyb3suczvih8kkpcfhqm9e6y0jc0muebrjx6.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F48%2Fc03biyb3suczvih8kkpcfhqm9e6y0jc0muebrjx6.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'c03biyb3suczvih8kkpcfhqm9e6y0jc0muebrjx6',
+                        id:​ 48
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F47%2Fdsc04217-scaled.webp&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F47%2Fdsc04217-scaled.webp&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'dsc04217-scaled',
+                        id:​ 47
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thum…             url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F37%2Fdldbvigu2l3dzwnt4wh7ud2nqnk3qlo2grp2looh.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F37%2Fdldbvigu2l3dzwnt4wh7ud2nqnk3qlo2grp2looh.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'dldbvigu2l3dzwnt4wh7ud2nqnk3qlo2grp2looh',
+                        id:​ 37
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F36%2Fbasliksiz-3.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F36%2Fbasliksiz-3.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-3',
+                        id:​ 36
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F35%2Fbasliksiz-2.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F35%2Fbasliksiz-2.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-2',
+                        id:​ 35
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F34%2Fbasliksiz-1.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F34%2Fbasliksiz-1.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-1',
+                        id:​ 34
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F33%2Fd99rmyr8ivkbe7ytw5z9z0emsyudtiguqtweotyo.png&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F33%2Fd99rmyr8ivkbe7ytw5z9z0emsyudtiguqtweotyo.png&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'd99rmyr8ivkbe7ytw5z9z0emsyudtiguqtweotyo',
+                        id:​ 33
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F31%2Fbasliksiz-16.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F31%2Fbasliksiz-16.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-16',
+                        id:​ 31
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                                    <!--[if BLOCK]​><![endif]​-->                    {
+                        url:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F30%2Fbasliksiz-163.jpg&w=1920&h=1920&q=90&f=webp&c=1',
+                        thumb:​ 'https:​/​/​ixtif.com/​thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F30%2Fbasliksiz-163.jpg&w=400&h=400&q=80&s=1&f=webp&c=1',
+                        name:​ 'basliksiz-163',
+                        id:​ 30
+                    }​,
+                    <!--[if ENDBLOCK]​><![endif]​-->
+                <!--[if ENDBLOCK]​><![endif]​-->
+            ]​,
+            get currentMedia()​ {
+                return this.mediaList[this.currentIndex]​ || {}​;​
+            }​,
+            openLightbox(index)​ {
+                this.currentIndex = index;​
+                this.showLightbox = true;​
+                document.body.style.overflow = 'hidden';​
+            }​,
+            closeLightbox()​ {
+                this.showLightbox = false;​
+                document.body.style.overflow = '';​
+            }​,
+            nextMedia()​ {
+                if (this.currentIndex < this.mediaList.length - 1)​ {
+                    this.currentIndex++;​
+                }​
+            }​,
+            prevMedia()​ {
+                if (this.currentIndex > 0)​ {
+                    this.currentIndex--;​
+                }​
+            }​
+        }​" @keydown.escape.window=​"if(showLightbox)​ { closeLightbox()​;​ }​" @keydown.arrow-right.window=​"if(showLightbox)​ { nextMedia()​;​ }​" @keydown.arrow-left.window=​"if(showLightbox)​ { prevMedia()​;​ }​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+simple-translation-modal.js?v=1761103238:839 ⚡ Livewire initialized
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: showLightbox is not defined
+
+Expression: "showLightbox"
+
+ <template x-if=​"showLightbox">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+ai-content-system.js?v=1761103238:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761103238:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761103238:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761103238:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761103238:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761103238:558 🔒 attachButtonListeners SKIP - already attached
+mediamanagement:4433 🚀 Enterprise Streaming Translation System Ready!
+mediamanagement:4446 📝 Streaming translation not available - Using standard translation mode
+livewire.js?id=df3a17f2:1127 Uncaught SyntaxError: Unexpected token ':'
+    at new AsyncFunction (<anonymous>)
+    at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21)
+    at generateFunctionFromString (livewire.js?id=df3a17f2:1184:16)
+    at generateEvaluatorFromString (livewire.js?id=df3a17f2:1189:16)
+    at normalEvaluator (livewire.js?id=df3a17f2:1154:111)
+    at evaluateLater (livewire.js?id=df3a17f2:1144:12)
+    at evaluate (livewire.js?id=df3a17f2:1140:5)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showLightbox is not defined
+    at [Alpine] showLightbox (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3856:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3856:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+ai-seo-integration.js?v=1761103238:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761103238:558 🔒 attachButtonListeners SKIP - already attached
+mediamanagement:4311 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal

@@ -51,7 +51,7 @@
 
                 <!-- Sayfa Bilgisi -->
                 <div class="text-center">
-                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-lime-600 to-green-600">
                         Shop Index 8 / 10
                     </div>
                     <div class="text-xs text-gray-500 mt-1">Dense 5-Column Grid</div>
@@ -63,7 +63,7 @@
                         <i class="fa-solid fa-arrow-left"></i>
                         <span class="hidden sm:inline">Önceki</span>
                     </button>
-                    <a href="design-shop-index-9.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+                    <a href="design-shop-index-9.html" class="px-4 py-2 bg-gradient-to-r from-lime-600 to-green-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
                         <span class="hidden sm:inline">Sonraki</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -94,7 +94,7 @@
 
                     <!-- Title -->
                     <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
-                        Ürün <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Kataloğu</span>
+                        Ürün <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-green-600">Kataloğu</span>
                     </h1>
 
                     <!-- Subtitle -->
@@ -105,14 +105,14 @@
                     <!-- Search Bar -->
                     <div class="max-w-2xl mx-auto">
                         <div class="relative group">
-                            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                            <div class="absolute inset-0 bg-gradient-to-r from-lime-600 to-green-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
                             <div class="relative flex items-center bg-white rounded-2xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-200">
                                 <input
                                     type="text"
                                     placeholder="Ürün ara... (ör: Forklift, Transpalet)"
                                     class="flex-1 px-6 py-5 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none"
                                 >
-                                <button class="px-8 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold transition-all flex items-center gap-2">
+                                <button class="px-8 py-5 bg-gradient-to-r from-lime-600 to-green-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold transition-all flex items-center gap-2">
                                     <i class="fa-solid fa-search"></i>
                                     <span class="hidden sm:inline">Ara</span>
                                 </button>
@@ -128,7 +128,7 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
                     <div class="text-center">
-                        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2" x-text="products.length"></div>
+                        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-green-600 mb-2" x-text="products.length"></div>
                         <div class="text-sm text-gray-600">Toplam Ürün</div>
                     </div>
                     <div class="text-center">
@@ -295,13 +295,13 @@
                             <div class="space-y-3">
                                 <label class="flex items-center gap-3 cursor-pointer group">
                                     <input type="checkbox" x-model="filters.inStock" @change="filterProducts()"
-                                           class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">Stokta Mevcut</span>
+                                           class="w-5 h-5 rounded border-gray-300 text-lime-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-lime-600 transition-colors">Stokta Mevcut</span>
                                 </label>
                                 <label class="flex items-center gap-3 cursor-pointer group">
                                     <input type="checkbox" x-model="filters.onBackorder" @change="filterProducts()"
-                                           class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">Sipariş Üzerine</span>
+                                           class="w-5 h-5 rounded border-gray-300 text-lime-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-lime-600 transition-colors">Sipariş Üzerine</span>
                                 </label>
                             </div>
                         </div>
@@ -400,11 +400,11 @@
                                 <div class="p-6 space-y-4">
                                     <!-- Category -->
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs text-blue-600 font-medium uppercase tracking-wider" x-text="product.category"></span>
+                                        <span class="text-xs text-lime-600 font-medium uppercase tracking-wider" x-text="product.category"></span>
                                     </div>
 
                                     <!-- Title -->
-                                    <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors" x-text="product.title"></h3>
+                                    <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-lime-600 transition-colors" x-text="product.title"></h3>
 
                                     <!-- Description -->
                                     <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed" x-text="product.description"></p>
@@ -423,8 +423,8 @@
 
                                     <!-- Price & CTA -->
                                     <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
-                                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600" x-text="product.price + ' ₺'"></div>
-                                        <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-lime-600 to-green-600" x-text="product.price + ' ₺'"></div>
+                                        <div class="flex items-center gap-2 text-sm font-semibold text-lime-600 group-hover:gap-3 transition-all">
                                             <span>Detay</span>
                                             <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                         </div>
@@ -449,7 +449,7 @@
                         Uzman ekibimiz size özel çözümler üretmek için hazır. Hemen iletişime geçin.
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a href="#" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all flex items-center gap-2">
+                        <a href="#" class="px-8 py-4 bg-gradient-to-r from-lime-600 to-green-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all flex items-center gap-2">
                             <i class="fa-solid fa-envelope"></i>
                             <span>İletişime Geç</span>
                         </a>

@@ -28,36 +28,52 @@
     {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
     <link rel="apple-touch-icon" href="/favicon.ico">
 
+    {{-- Performance: DNS Prefetch & Preconnect --}}
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+    {{-- Performance: Preload Critical CSS --}}
+    <link rel="preload" href="{{ asset('css/app.css') }}" as="style">
+    @if(file_exists(public_path('css/ixtif-bundle.min.css')))
+    <link rel="preload" href="{{ asset('css/ixtif-bundle.min.css') }}" as="style">
+    @else
+    <link rel="preload" href="{{ asset('css/ixtif-theme.css') }}" as="style">
+    @endif
+
     {{-- Tailwind CSS - Compiled & Minified --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
 
-    {{-- TEMPORARY: Google Fonts for Testing (Will be removed later) - EXPANDED LIST --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;600;700;800&family=Lato:wght@300;400;700;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;600;700;800;900&family=Raleway:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&family=Josefin+Sans:wght@300;400;600;700&family=Work+Sans:wght@300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;600;700;800;900&family=Karla:wght@300;400;500;600;700;800&family=Ubuntu:wght@300;400;500;700&family=Mukta:wght@300;400;500;600;700;800&family=Lexend:wght@300;400;500;600;700;800;900&family=Red+Hat+Display:wght@300;400;500;600;700;800;900&family=Sora:wght@300;400;500;600;700;800&family=Epilogue:wght@300;400;500;600;700;800;900&family=Archivo:wght@300;400;500;600;700;800;900&family=Figtree:wght@300;400;500;600;700;800;900&family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Urbanist:wght@300;400;500;600;700;800;900&family=Albert+Sans:wght@300;400;500;600;700;800;900&family=Geist:wght@300;400;500;600;700;800;900&family=Onest:wght@300;400;500;600;700;800;900&family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;600;700;900&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Cabinet+Grotesk:wght@400;500;700;900&family=General+Sans:wght@400;500;600;700&family=Satoshi:wght@300;400;500;700;900&family=Clash+Display:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=Shantell+Sans:wght@300;400;500;600;700;800&family=Anybody:wght@300;400;500;600;700;800;900&family=Kumbh+Sans:wght@300;400;500;600;700;800;900&family=Commissioner:wght@300;400;500;600;700;800;900&family=Golos+Text:wght@400;500;600;700;800;900&family=Spline+Sans:wght@300;400;500;600;700&family=Familjen+Grotesk:wght@400;500;600;700&family=Darker+Grotesque:wght@300;400;500;600;700;800;900&family=Jost:wght@300;400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700;800;900&family=Hind:wght@300;400;500;600;700&family=Oxygen:wght@300;400;700&family=Heebo:wght@300;400;500;600;700;800;900&family=Yantramanav:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;600;700;800;900&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+    {{-- Google Fonts - Roboto Only (Performance Optimized) --}}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-    {{-- iXtif Theme Styles --}}
-    <link rel="stylesheet" href="{{ asset('css/ixtif-theme.css') }}?v={{ now()->timestamp }}" media="all">
+    {{-- iXtif Theme Styles - Bundle if available, fallback to individual files --}}
+    @if(file_exists(public_path('css/ixtif-bundle.min.css')))
+        {{-- Performance Optimized: 4 CSS files bundled --}}
+        <link rel="stylesheet" href="{{ asset('css/ixtif-bundle.min.css') }}" media="all">
+    @else
+        {{-- Fallback: Individual CSS files --}}
+        <link rel="stylesheet" href="{{ asset('css/ixtif-theme.css') }}?v={{ now()->timestamp }}" media="all">
+        <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=8.0.1">
+        <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1">
+    @endif
 
     {{-- Livewire Styles --}}
     @livewireStyles
-
-    {{-- Custom Gradient Utilities - Tailwind JIT Dark Mode Fix --}}
-    <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=8.0.1">
-
-    {{-- Core System Styles - Mandatory for all themes --}}
-    <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1">
 
     {{-- Google Analytics --}}
     @php
         $googleAnalyticsCode = setting('seo_site_google_analytics_code');
     @endphp
     @if($googleAnalyticsCode)
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsCode }}"></script>
+    <!-- Google tag (gtag.js) - Performance Optimized -->
+    <script defer src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsCode }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -741,6 +757,9 @@
                                                             <template x-if="product.image">
                                                                 <img :src="product.image"
                                                                      :alt="product.title"
+                                                                     width="64"
+                                                                     height="64"
+                                                                     loading="lazy"
                                                                      class="w-full h-full object-cover">
                                                             </template>
                                                             <template x-if="!product.image">

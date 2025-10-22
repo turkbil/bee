@@ -48,6 +48,28 @@ mix.js('resources/js/frontend.js', 'public/assets/js')
 // AI Content System - global asset
 mix.js('public/assets/js/ai-content-system.js', 'public/assets/js/ai-content-system.min.js');
 
+// Theme-Based CSS Bundle System - Performance Optimization
+// Her tema kendi bundle'ını oluşturabilir, tenant'lar birbirini etkilemez
+
+// İXTİF Theme Bundle (tenant: ixtif.com)
+if (require('fs').existsSync('public/css/ixtif-theme.css')) {
+    mix.styles([
+        'public/css/ixtif-theme.css',
+        'public/css/custom-gradients.css',
+        'public/css/core-system.css',
+        'public/css/ixtif-mobile-bottom-bar.css'
+    ], 'public/css/ixtif-bundle.min.css');
+}
+
+// SIMPLE Theme Bundle (gelecek için hazır)
+// if (require('fs').existsSync('public/css/simple-theme.css')) {
+//     mix.styles([
+//         'public/css/simple-theme.css',
+//         'public/css/custom-gradients.css',
+//         'public/css/core-system.css'
+//     ], 'public/css/simple-bundle.min.css');
+// }
+
 // Production optimizations
 if (mix.inProduction()) {
     mix.version(); // Asset versioning for cache busting

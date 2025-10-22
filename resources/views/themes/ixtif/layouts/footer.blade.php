@@ -1,6 +1,3 @@
-{{-- Mobile Bottom Bar CSS --}}
-<link rel="stylesheet" href="{{ asset('css/ixtif-mobile-bottom-bar.css') }}?v={{ now()->timestamp }}">
-
 {{-- SEARCH SECTION (Before Footer) --}}
 @php
     use Modules\Search\App\Models\SearchQuery;

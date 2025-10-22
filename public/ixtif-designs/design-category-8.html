@@ -1,87 +1,61 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category V1: Forklift Grid - ixtif.com</title>
+    <title>Cat 8: Bento Grid - ixtif.com</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
-    </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Nav -->
-    <div class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
-                    <i class="fa-solid fa-home text-gray-700"></i>
-                    <span class="hidden sm:inline text-gray-700 font-medium">Ana Sayfa</span>
-                </a>
-                <div class="text-center">
-                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-lime-600 to-green-600">Category 8 / 10</div>
-                    <div class="text-xs text-gray-500 mt-1">Aksesuarlar</div>
+<body class="bg-black text-white p-8">
+    <div class="container mx-auto">
+        <h1 class="text-6xl font-black mb-2">Yedek Parça</h1>
+        <p class="text-gray-400 mb-12">Cat 8/10 - Bento Grid Layout</p>
+
+        <!-- Bento Grid: Asymmetric boxes -->
+        <div class="grid grid-cols-4 gap-4 auto-rows-[200px]">
+            <!-- Large box -->
+            <div class="col-span-2 row-span-2 bg-gradient-to-br from-green-600 to-emerald-600 rounded-3xl p-8 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-3xl font-black mb-4">Hidrolik Sistemler</h2>
+                    <p class="text-white/80">Pompalar, silindirler, hortumlar</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <button href="design-category-7.html" class="px-4 py-2 bg-gradient-to-r from-lime-600 to-green-600 text-white rounded-lg cursor-not-allowed flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span class="hidden sm:inline">Önceki</span>
-                    </button>
-                    <a href="design-category-9.html" class="px-4 py-2 bg-gradient-to-r from-lime-600 to-green-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
-                        <span class="hidden sm:inline">Sonraki</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
+                <div class="text-4xl font-black">45.000 ₺</div>
+            </div>
+
+            <!-- Tall box -->
+            <div class="col-span-1 row-span-2 bg-gradient-to-b from-blue-600 to-cyan-600 rounded-3xl p-6">
+                <h3 class="text-xl font-bold mb-4">Elektrik Parçaları</h3>
+                <div class="text-2xl font-bold">8.500 ₺</div>
+            </div>
+
+            <!-- Square boxes -->
+            <div class="col-span-1 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-6">
+                <h3 class="font-bold mb-2">Fren Sistemleri</h3>
+                <div class="text-xl font-bold">12K</div>
+            </div>
+            <div class="col-span-1 bg-gradient-to-br from-orange-600 to-red-600 rounded-3xl p-6">
+                <h3 class="font-bold mb-2">Tekerler</h3>
+                <div class="text-xl font-bold">6K</div>
+            </div>
+
+            <!-- Wide box -->
+            <div class="col-span-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-8">
+                <h2 class="text-2xl font-black mb-2">Orijinal Yedek Parça Garantisi</h2>
+                <p class="text-white/80">Tüm parçalar 2 yıl garantili, hızlı kargo</p>
+            </div>
+
+            <!-- Small box -->
+            <div class="col-span-1 bg-gradient-to-br from-yellow-600 to-amber-600 rounded-3xl p-6">
+                <h3 class="font-bold mb-2">Filtreler</h3>
+                <div class="text-xl font-bold">850 ₺</div>
             </div>
         </div>
-    </div>
 
-    <!-- Main -->
-    <div class="pt-24 pb-12 min-h-screen">
-        <!-- Hero -->
-        <section class="bg-gradient-to-r from-lime-600 to-green-600 text-white py-16">
-            <div class="container mx-auto px-4">
-                <div class="max-w-4xl">
-                    <div class="text-sm mb-4">Kategori</div>
-                    <h1 class="text-5xl font-bold mb-4">Aksesuar Ürünleri</h1>
-                    <p class="text-xl opacity-90">178 adet profesyonel forklift çözümü</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Products Grid -->
-        <section class="container mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Product Card -->
-                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=400&fit=crop" alt="Forklift" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">İXTİF CPD18FVL Li-Ion Forklift</h3>
-                        <p class="text-gray-600 text-sm mb-4">1.8 Ton kapasiteli elektrikli forklift</p>
-                        <div class="flex items-center justify-between">
-                            <div class="text-2xl font-bold text-blue-600">245.000 ₺</div>
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Detay</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Repeat products... -->
-                <div class="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
-                    <img src="https://images.unsplash.com/photo-1596651976841-74e1fe59e4cf?w=600&h=400&fit=crop" alt="Forklift" class="w-full h-64 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">İXTİF DF-3500 Dizel Forklift</h3>
-                        <p class="text-gray-600 text-sm mb-4">3.5 Ton dış mekan forklift</p>
-                        <div class="flex items-center justify-between">
-                            <div class="text-2xl font-bold text-blue-600">295.000 ₺</div>
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Detay</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div class="mt-12 text-center">
+            <a href="design-category-7.html" class="px-4 py-2 bg-gray-800 rounded-lg mr-2">← C7</a>
+            <a href="design-category-9.html" class="px-4 py-2 bg-green-600 text-white rounded-lg">C9 →</a>
+        </div>
     </div>
 </body>
 </html>

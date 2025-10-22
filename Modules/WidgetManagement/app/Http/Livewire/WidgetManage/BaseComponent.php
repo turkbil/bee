@@ -392,21 +392,20 @@ class BaseComponent extends Component
             }
             
             if ($this->thumbnail) {
-                $tenantId = is_tenant() ? tenant_id() : 1;
-                $filename = 'image-' . $widget->slug . '-' . Str::random(6) . '.' . $this->thumbnail->extension();
-                
                 try {
-                    $path = \Modules\SettingManagement\App\Helpers\TenantStorageHelper::storeTenantFile(
-                        $this->thumbnail,
-                        "widgets/images",
-                        $filename,
-                        $tenantId
-                    );
-                    
+                    // ✅ SPATIE: Widget model HasMedia trait kullanıyor
+                    // Eski thumbnail'i temizle
+                    $widget->clearMediaCollection('thumbnail');
+
+                    // Yeni thumbnail ekle
+                    $media = $widget->addMedia($this->thumbnail)
+                        ->toMediaCollection('thumbnail');
+
+                    // Thumbnail URL'sini al ve widget'a kaydet
                     $widget->update([
-                        'thumbnail' => $path
+                        'thumbnail' => $media->getUrl()
                     ]);
-                    
+
                     $this->thumbnail = null;
                 } catch (\Exception $e) {
                     Log::error('Thumbnail yükleme hatası: ' . $e->getMessage());

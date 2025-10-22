@@ -193,9 +193,9 @@
                 </a>
 
                 <!-- Content Section -->
-                <div class="p-6 space-y-4">
+                <div class="p-6 space-y-5">
                     <!-- Category -->
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 mb-2">
                         <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">
                             {{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}
                         </span>
@@ -203,20 +203,13 @@
 
                     <!-- Title -->
                     <a href="{{ $productUrl }}">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-relaxed line-clamp-2 min-h-[3.5rem] group-hover:text-blue-600 transition-colors">
                             {{ $productTitle }}
                         </h3>
                     </a>
 
-                    <!-- Description -->
-                    @if($product->getTranslated('short_description', app()->getLocale()))
-                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
-                        {{ $product->getTranslated('short_description', app()->getLocale()) }}
-                    </p>
-                    @endif
-
                     <!-- Price & CTA -->
-                    <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                    <div class="pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
                         <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                             Fiyat Sorunuz
                         </div>
@@ -254,22 +247,22 @@
      x-transition:leave="transition ease-in duration-200"
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
-     class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 lg:p-8"
+     class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
      @click="closeModal()"
      style="display: none;">
 
-    <div @click.stop class="bg-white dark:bg-slate-800 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto relative"
+    <div @click.stop class="bg-white dark:bg-slate-800 rounded-2xl md:rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform scale-90"
          x-transition:enter-end="opacity-100 transform scale-100">
 
         <!-- Close Button -->
-        <button @click="closeModal()" class="absolute top-4 right-4 w-12 h-12 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 rounded-full flex items-center justify-center z-10 transition-colors">
-            <i class="fa-light fa-xmark text-2xl text-gray-900 dark:text-white"></i>
+        <button @click="closeModal()" class="sticky top-4 right-4 float-right w-10 h-10 md:w-12 md:h-12 bg-gray-900/80 dark:bg-white/20 hover:bg-gray-900 dark:hover:bg-white/30 rounded-full flex items-center justify-center z-10 transition-colors backdrop-blur-sm">
+            <i class="fa-solid fa-xmark text-xl md:text-2xl text-white"></i>
         </button>
 
-        <div class="p-6 lg:p-12">
-            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12" x-show="selectedProduct">
+        <div class="p-4 md:p-6 lg:p-12">
+            <div class="grid lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12" x-show="selectedProduct">
                 <!-- Left: Product Images -->
                 <div>
                     <!-- Main Image -->

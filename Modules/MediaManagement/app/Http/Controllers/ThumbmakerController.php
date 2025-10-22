@@ -57,8 +57,30 @@ class ThumbmakerController extends Controller
 
         // Cache key oluştur
         $cacheKey = 'thumbmaker.' . md5($src . $width . $height . $quality . $alignment . $scale . $format);
+        $cacheHash = md5($src . $width . $height . $quality . $alignment . $scale . $format);
 
-        // Cache'den kontrol et
+        // Tenant ID belirle
+        $tenantId = $this->resolveTenantId();
+
+        // Static file path (Nginx direkt serve edebilsin)
+        // ⚠️ storage_path() zaten tenant prefix ekliyor (suffix_storage_path=true)
+        $staticFileName = "{$cacheHash}.{$format}";
+        $staticRelativePath = "thumbmaker-cache/{$staticFileName}";
+        $staticAbsolutePath = storage_path("app/public/{$staticRelativePath}");
+        $staticUrl = "/storage/tenant{$tenantId}/{$staticRelativePath}";
+
+        // 1. Fiziksel dosya var mı kontrol et (en hızlı)
+        if ($useCache && file_exists($staticAbsolutePath)) {
+            // ⚡ Static file direkt serve et
+            $mimeType = 'image/' . ($format === 'jpg' ? 'jpeg' : $format);
+            return response()->file($staticAbsolutePath, [
+                'Content-Type' => $mimeType,
+                'Cache-Control' => 'public, max-age=' . $this->cacheDuration,
+                'X-Thumbmaker-Cache' => 'STATIC',
+            ]);
+        }
+
+        // 2. Laravel Cache'den kontrol et
         if ($useCache && Cache::has($cacheKey)) {
             $cachedData = Cache::get($cacheKey);
             return response($cachedData['content'])
@@ -124,10 +146,14 @@ class ThumbmakerController extends Controller
 
             // Cache'e kaydet
             if ($useCache) {
+                // Laravel Cache
                 Cache::put($cacheKey, [
                     'content' => $content,
                     'mime' => $mimeType,
                 ], $this->cacheDuration);
+
+                // Static file kaydet (Nginx direkt serve edebilsin)
+                $this->saveStaticFile($staticAbsolutePath, $content);
             }
 
             return response($content)
@@ -210,6 +236,76 @@ class ThumbmakerController extends Controller
             'br' => 'bottom-right',
             default => 'center',
         };
+    }
+
+    /**
+     * Tenant ID'yi belirle
+     */
+    protected function resolveTenantId(): int
+    {
+        if (function_exists('tenant_id') && tenant_id()) {
+            return (int) tenant_id();
+        }
+
+        if (function_exists('resolve_tenant_id')) {
+            $resolved = resolve_tenant_id(false);
+            if ($resolved) {
+                return (int) $resolved;
+            }
+        }
+
+        return 1;
+    }
+
+    /**
+     * Static file kaydet (ownership fix ile)
+     */
+    protected function saveStaticFile(string $path, string $content): bool
+    {
+        try {
+            // Klasör oluştur
+            $directory = dirname($path);
+            if (!is_dir($directory)) {
+                @mkdir($directory, 0775, true);
+            }
+
+            // Dosya kaydet
+            if (file_put_contents($path, $content) === false) {
+                return false;
+            }
+
+            // Ownership fix (psaserv group)
+            $this->fixFileOwnership($path);
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::warning('Thumbmaker static file kaydetme hatası', [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Dosya ownership fix (psaserv group + 664 permissions)
+     */
+    protected function fixFileOwnership(string $path): void
+    {
+        if (!file_exists($path)) {
+            return;
+        }
+
+        // psaserv group set et
+        if (function_exists('posix_getgrnam')) {
+            $groupInfo = @posix_getgrnam('psaserv');
+            if ($groupInfo !== false) {
+                @chgrp($path, $groupInfo['gid']);
+            }
+        }
+
+        // 664 permissions (rw-rw-r--)
+        @chmod($path, 0664);
     }
 
     /**

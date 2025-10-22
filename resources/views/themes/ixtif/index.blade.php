@@ -266,24 +266,12 @@
                                 <!-- Description -->
                                 <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed" x-text="product.description"></p>
 
-                                <!-- Meta Info -->
-                                <div class="flex items-center gap-4 text-xs text-gray-500">
-                                    <span class="flex items-center gap-1">
-                                        <i class="fa-solid fa-barcode"></i>
-                                        <span x-text="product.sku"></span>
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <i class="fa-solid fa-eye"></i>
-                                        <span x-text="product.views"></span>
-                                    </span>
-                                </div>
-
-                                <!-- Price + CTA -->
+                                <!-- Price & CTA -->
                                 <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
                                     <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
                                          x-text="product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'"></div>
                                     <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
-                                        <span>Detay</span>
+                                        <span>Özet</span>
                                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                     </div>
                                 </div>

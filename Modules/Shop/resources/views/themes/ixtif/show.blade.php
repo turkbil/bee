@@ -389,7 +389,7 @@
         <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8">
             <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start">
                 {{-- LEFT: Main Content (2/3) --}}
-                <div class="lg:col-span-2 min-h-screen">
+                <div id="main-content-column" class="lg:col-span-2 min-h-screen">
 
                     {{-- 1. Long Description --}}
                     @if ($longDescription)
@@ -1378,23 +1378,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 tocBar.style.left = '0';
                 tocBar.style.right = '0';
                 tocBar.style.zIndex = '40';
-                tocBar.style.transition = 'top 0.2s ease';
 
-                // Trust Signals kontrolü - BASIT
+                // Trust Signals kontrolü - SOFT SLIDE ANIMATION
                 if (trustSignals) {
                     const trustTop = trustSignals.getBoundingClientRect().top;
                     const tocHeight = tocBar.offsetHeight;
 
-                    // Trust signals header+toc altına geldiğinde gizle
-                    if (trustTop <= (currentHeaderHeight + tocHeight)) {
-                        tocBar.style.opacity = '0';
+                    // Trust signals header+toc altına geldiğinde yumuşak slide up
+                    if (trustTop <= (currentHeaderHeight + tocHeight + 50)) {
+                        tocBar.style.transform = 'translateY(-100%)';
+                        tocBar.style.transition = 'transform 0.3s ease-out';
                         tocBar.style.pointerEvents = 'none';
                     } else {
-                        tocBar.style.opacity = '1';
+                        tocBar.style.transform = 'translateY(0)';
+                        tocBar.style.transition = 'transform 0.3s ease-in';
                         tocBar.style.pointerEvents = 'auto';
                     }
                 } else {
-                    tocBar.style.opacity = '1';
+                    tocBar.style.transform = 'translateY(0)';
                     tocBar.style.pointerEvents = 'auto';
                 }
 
@@ -1411,7 +1412,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Normal pozisyona dön
                 tocBar.style.position = 'relative';
                 tocBar.style.top = 'auto';
-                tocBar.style.opacity = '1';
+                tocBar.style.transform = 'translateY(0)';
                 tocBar.style.pointerEvents = 'auto';
 
                 // Placeholder'ı gizle
@@ -1445,15 +1446,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
 
             new StickySidebar('#sticky-sidebar', {
-                containerSelector: '#product-content-grid',
+                containerSelector: '#main-content-column',
                 innerWrapperSelector: '.sticky-sidebar__inner',
                 topSpacing: headerHeight + tocBarHeight + 24,
-                bottomSpacing: 40,
+                bottomSpacing: 20,
                 minWidth: 1024,
                 resizeSensor: true
             });
 
-            console.log('✅ StickySidebar: container=#product-content-grid (ends at FAQ)');
+            console.log('✅ StickySidebar: container=#main-content-column (stops at FAQ end)');
         };
         document.head.appendChild(script);
     }

@@ -55,17 +55,21 @@
             total: {{ $initialTotal }},
             responseTime: {{ $initialResponse }},
             loading: {{ $prefetched ? 'false' : 'true' }},
+            loadingMore: false,
             page: {{ $initialPage }},
             perPage: {{ $initialPerPage }},
             lastPage: {{ $initialData['last_page'] ?? 1 }},
             activeTab: 'all',
             prefetched: {{ $prefetched ? 'true' : 'false' }},
             debounceTimer: null,
+            maxAutoLoadPages: 5,
+            autoLoadedPages: 1,
             async fetchResults(reset = false) {
                 const trimmedQuery = this.query.trim();
 
                 if (reset) {
                     this.page = 1;
+                    this.autoLoadedPages = 1;
                 }
 
                 if (trimmedQuery.length &lt; 2) {
@@ -149,6 +153,53 @@
                 if (this.page &lt; this.lastPage) {
                     this.goToPage(this.page + 1);
                 }
+            },
+            async loadMore() {
+                if (!this.canLoadMore || this.loadingMore) {
+                    return;
+                }
+
+                this.loadingMore = true;
+                const nextPage = this.page + 1;
+
+                try {
+                    const params = new URLSearchParams({
+                        q: this.query.trim(),
+                        type: this.activeTab,
+                        per_page: this.perPage,
+                        page: nextPage
+                    });
+
+                    const response = await fetch(`/api/search?${params.toString()}`);
+                    const data = await response.json();
+
+                    if (data.success && data.data) {
+                        const items = data.data.items || [];
+
+                        // Append new results (don't replace)
+                        this.results = [...this.results, ...items];
+                        this.page = nextPage;
+                        this.autoLoadedPages++;
+
+                        if (data.data.pagination) {
+                            this.lastPage = data.data.pagination.last_page || this.totalPages;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Load more error:', error);
+                } finally {
+                    this.loadingMore = false;
+                }
+            },
+            get canLoadMore() {
+                return this.page &lt; this.lastPage &&
+                       this.autoLoadedPages &lt; this.maxAutoLoadPages &&
+                       !this.loading &&
+                       !this.loadingMore;
+            },
+            get showManualPagination() {
+                return this.autoLoadedPages &gt;= this.maxAutoLoadPages &&
+                       this.page &lt; this.lastPage;
             },
             get totalPages() {
                 return Math.max(1, Math.ceil(this.total / this.perPage));
@@ -270,7 +321,21 @@
                         </a>
                     </template>
                 </div>
-                <nav x-show="totalPages &gt; 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4" x-cloak aria-label="Arama sayfalama">
+
+                {{-- Loading More Indicator --}}
+                <div x-show="loadingMore" class="text-center py-8" x-cloak>
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-blue-600 dark:text-blue-400"></i>
+                    <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">Daha fazla sonuç yükleniyor...</p>
+                </div>
+
+                {{-- Infinite Scroll Sentinel (Invisible trigger for loading more) --}}
+                <div x-show="canLoadMore && !loadingMore"
+                     x-intersect.threshold.20="loadMore()"
+                     class="h-20"
+                     x-cloak></div>
+
+                {{-- Manual Pagination (After 100 results) --}}
+                <nav x-show="showManualPagination" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4" x-cloak aria-label="Arama sayfalama">
                     <div class="flex items-center gap-2">
                         <button type="button"
                                 class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"

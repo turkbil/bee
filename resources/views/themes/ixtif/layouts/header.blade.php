@@ -452,11 +452,31 @@
                         @livewire('auth.header-menu')
 
                         {{-- Mobile Menu Button --}}
-                        <button @click="mobileMenuOpen = !mobileMenuOpen"
-                                class="lg:hidden w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 flex items-center justify-center text-white transition-all duration-300">
-                            <i class="fa-solid text-lg transition-all duration-300"
-                               :class="mobileMenuOpen ? 'fa-times rotate-90' : 'fa-bars'"></i>
-                        </button>
+                        <div x-data="{ showTooltip: false }" class="relative lg:hidden">
+                            <button @click="mobileMenuOpen = !mobileMenuOpen"
+                                    @mouseenter="showTooltip = true"
+                                    @mouseleave="showTooltip = false"
+                                    class="w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 flex items-center justify-center text-white transition-all duration-300">
+                                <i class="fa-solid text-lg transition-all duration-300"
+                                   :class="mobileMenuOpen ? 'fa-times rotate-90' : 'fa-bars'"></i>
+                            </button>
+                            {{-- Tooltip --}}
+                            <div x-show="showTooltip && !mobileMenuOpen"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-orange-600/95 to-orange-700/95 dark:from-orange-500/95 dark:to-orange-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
+                                 x-cloak>
+                                <span>Menü</span>
+                                {{-- Tooltip Arrow --}}
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+                                    <div class="border-[5px] border-transparent border-b-orange-600/95 dark:border-b-orange-500/95"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

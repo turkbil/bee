@@ -55,7 +55,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Arama Sorguları Yönetimi</h3>
                     <div class="ms-auto">
-                        <a href="{{ route('admin.search') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route('admin.search.analytics') }}" class="btn btn-sm btn-outline-primary">
                             <i class="ti ti-chart-bar me-1"></i>
                             Analytics
                         </a>

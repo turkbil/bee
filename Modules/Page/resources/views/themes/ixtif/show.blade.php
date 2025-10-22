@@ -329,7 +329,7 @@
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
                                 <i class="fa-solid fa-shopping-cart text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
                             </div>
-                            <h3 class="text-base md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Satın Alma</h3>
+                            <h3 class="text-sm md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Satın Alma</h3>
                         </div>
                     </a>
                 </div>
@@ -342,20 +342,20 @@
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
                                 <i class="fa-solid fa-calendar-days text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
                             </div>
-                            <h3 class="text-base md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Kiralama</h3>
+                            <h3 class="text-sm md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Kiralama</h3>
                         </div>
                     </a>
                 </div>
 
                 <!-- 3. İkinci El -->
                 <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
-                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent"></div>
+                    <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent"></div>
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
                                 <i class="fa-solid fa-recycle text-2xl md:text-4xl text-white group-hover:rotate-180 transition-all duration-500"></i>
                             </div>
-                            <h3 class="text-base md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">İkinci El</h3>
+                            <h3 class="text-sm md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">İkinci El</h3>
                         </div>
                     </a>
                 </div>
@@ -368,7 +368,7 @@
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
                                 <i class="fa-solid fa-gears text-2xl md:text-4xl text-white group-hover:rotate-90 transition-all duration-500"></i>
                             </div>
-                            <h3 class="text-base md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Yedek Parça</h3>
+                            <h3 class="text-sm md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Yedek Parça</h3>
                         </div>
                     </a>
                 </div>
@@ -381,7 +381,7 @@
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
                                 <i class="fa-solid fa-wrench text-2xl md:text-4xl text-white group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"></i>
                             </div>
-                            <h3 class="text-base md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Teknik Servis</h3>
+                            <h3 class="text-sm md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Teknik Servis</h3>
                         </div>
                     </a>
                 </div>
@@ -393,7 +393,7 @@
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
                                 <i class="fa-solid fa-file-contract text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
                             </div>
-                            <h3 class="text-base md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Bakım Anlaşması</h3>
+                            <h3 class="text-sm md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Bakım Anlaşması</h3>
                         </div>
                     </a>
                 </div>

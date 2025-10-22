@@ -51,7 +51,25 @@ return [
     'subgroup_count' => 'Alt Grup Sayısı',
     'tenant_settings' => 'Kiracı Ayarları',
     'title' => 'Başlık',
-    
+
     // Helper.blade.php'den eksik anahtar
     'menu' => 'Menü',
+
+    // Messages - Toast bildirimleri
+    'messages' => [
+        'success' => 'Başarılı',
+        'error' => 'Hata',
+        'values_saved' => 'Ayarlar başarıyla kaydedildi',
+        'file_upload_error' => 'Dosya yüklenirken hata oluştu: ',
+        'multi_image_upload_error' => 'Çoklu resim yüklenirken hata oluştu: ',
+        'file_removed' => 'Dosya kaldırıldı',
+        'file_deleted' => 'Dosya silindi',
+        'form_layout_saved' => 'Form yapısı başarıyla kaydedildi',
+        'group_created' => 'Grup başarıyla oluşturuldu',
+        'group_updated' => 'Grup başarıyla güncellendi',
+        'group_deleted' => 'Grup başarıyla silindi',
+        'group_status_updated' => 'Grup durumu güncellendi',
+        'group_create_error' => 'Grup oluşturulurken hata oluştu',
+        'group_delete_error' => 'Grup silinirken hata oluştu',
+    ],
 ];

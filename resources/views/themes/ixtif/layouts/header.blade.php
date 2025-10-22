@@ -53,7 +53,7 @@
 
     {{-- Google Analytics --}}
     @php
-        $googleAnalyticsCode = setting('site_google_analytics_code');
+        $googleAnalyticsCode = setting('seo_site_google_analytics_code');
     @endphp
     @if($googleAnalyticsCode)
     <!-- Google tag (gtag.js) -->
@@ -64,6 +64,16 @@
       gtag('js', new Date());
       gtag('config', '{{ $googleAnalyticsCode }}');
     </script>
+    @endif
+
+    {{-- Yandex Metrica --}}
+    @php
+        $yandexMetricaCode = setting('seo_site_yandex_metrica');
+    @endphp
+    @if($yandexMetricaCode)
+    <!-- Yandex.Metrica counter -->
+    {!! $yandexMetricaCode !!}
+    <!-- /Yandex.Metrica counter -->
     @endif
 
     {{-- Dynamic Content Areas --}}

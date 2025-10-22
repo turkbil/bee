@@ -51,7 +51,25 @@ return [
     'subgroup_count' => 'Subgroup Count',
     'tenant_settings' => 'Tenant Settings',
     'title' => 'Title',
-    
+
     // Helper.blade.php'den eksik anahtar
     'menu' => 'Menu',
+
+    // Messages - Toast notifications
+    'messages' => [
+        'success' => 'Success',
+        'error' => 'Error',
+        'values_saved' => 'Settings saved successfully',
+        'file_upload_error' => 'Error uploading file: ',
+        'multi_image_upload_error' => 'Error uploading multiple images: ',
+        'file_removed' => 'File removed',
+        'file_deleted' => 'File deleted',
+        'form_layout_saved' => 'Form layout saved successfully',
+        'group_created' => 'Group created successfully',
+        'group_updated' => 'Group updated successfully',
+        'group_deleted' => 'Group deleted successfully',
+        'group_status_updated' => 'Group status updated',
+        'group_create_error' => 'Error creating group',
+        'group_delete_error' => 'Error deleting group',
+    ],
 ];

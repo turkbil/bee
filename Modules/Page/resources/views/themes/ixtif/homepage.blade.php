@@ -210,7 +210,7 @@
 
                     <!-- Price & CTA -->
                     <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-300 dark:border-gray-500 flex items-center justify-between">
-                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-purple-800 dark:from-blue-300 dark:to-purple-300">
+                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
                             Fiyat Sorunuz
                         </div>
                         <button
@@ -317,11 +317,11 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" x-show="selectedProduct?.primarySpecs && selectedProduct.primarySpecs.length > 0">
                         <template x-for="(spec, index) in selectedProduct?.primarySpecs?.slice(0, 4)" :key="index">
                             <div class="group relative overflow-hidden">
-                                <div class="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 dark:from-blue-300/25 dark:to-purple-300/25 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-purple-500/15 to-pink-500/15 dark:from-blue-300/25 dark:via-purple-300/25 dark:to-pink-300/25 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
                                 <div class="relative bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-300/50 dark:border-gray-500/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-white/15 transition-all">
                                     <!-- Icon + Label -->
                                     <div class="flex items-center gap-2 mb-3">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-800 to-purple-800 dark:from-blue-300 dark:to-purple-300 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 rounded-lg flex items-center justify-center flex-shrink-0">
                                             <i class="fa-light fa-bolt text-white dark:text-gray-950 text-sm"></i>
                                         </div>
                                         <h4 class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="spec.label"></h4>
@@ -336,7 +336,7 @@
                     <!-- Actions -->
                     <div class="flex gap-4">
                         <a :href="selectedProduct?.url || '#'"
-                           class="flex-grow bg-gradient-to-r from-blue-800 to-purple-800 hover:from-blue-900 hover:to-purple-900 dark:from-blue-400 dark:to-purple-400 dark:hover:from-blue-300 dark:hover:to-purple-300 text-white dark:text-gray-950 py-4 rounded-xl font-bold text-base lg:text-lg transition-all text-center">
+                           class="flex-grow bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 dark:hover:from-blue-300 dark:hover:via-purple-300 dark:hover:to-pink-300 text-white dark:text-gray-950 py-4 rounded-xl font-bold text-base lg:text-lg transition-all text-center">
                             <i class="fa-light fa-arrow-right mr-2"></i>
                             Ürün Sayfasına Git
                         </a>

@@ -621,5 +621,59 @@ window.aiChatRenderMarkdown = function(content) {
     return html;
 };
 
+/**
+ * =============================================================================
+ * 4. AI CHAT ADMIN FUNCTIONS
+ * =============================================================================
+ */
+
+/**
+ * Clear AI Conversation
+ * Admin fonksiyonu - Aktif konuşma geçmişini siler (DB + Alpine Store)
+ *
+ * @param {HTMLElement} button - Tıklanan buton elementi
+ */
+window.clearAIConversation = function(button) {
+    if (!window.Alpine || !window.Alpine.store('aiChat')) {
+        alert('❌ AI Chat sistemi yüklü değil!');
+        return;
+    }
+
+    const chat = window.Alpine.store('aiChat');
+
+    if (!chat.conversationId) {
+        alert('ℹ️ Aktif bir konuşma bulunamadı.');
+        return;
+    }
+
+    // Show loading
+    const originalText = button.querySelector('.button-text').textContent;
+    const spinner = button.querySelector('.loading-spinner');
+    button.querySelector('.button-text').textContent = 'Siliniyor...';
+    spinner.classList.remove('hidden');
+    button.disabled = true;
+
+    // Delete from database
+    fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
+        .then(response => {
+            if (!response.ok) throw new Error('API hatası');
+
+            // Clear from Alpine store
+            chat.clearConversation();
+
+            alert('✅ AI konuşma geçmişi silindi!');
+        })
+        .catch(err => {
+            console.error('AI conversation clear error:', err);
+            alert('❌ Hata: ' + err.message);
+        })
+        .finally(() => {
+            // Reset button
+            button.querySelector('.button-text').textContent = originalText;
+            spinner.classList.add('hidden');
+            button.disabled = false;
+        });
+};
+
 console.log('✅ AI Chat System JavaScript loaded');
-console.log('📦 Includes: Chat Store, Placeholder System, Markdown Converter');
+console.log('📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions');

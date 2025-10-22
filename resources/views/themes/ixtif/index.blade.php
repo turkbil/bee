@@ -201,19 +201,13 @@
                 <p class="text-xl text-gray-600 dark:text-gray-300">En çok tercih edilen istif ekipmanları</p>
             </div>
 
-            <!-- Product Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Product Card Template - Bu örnekleri dinamik yapacağız -->
+            <!-- Product Grid: 4 Kolonlu Modern Tasarım -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
                 <template x-for="product in products" :key="product.id">
-                    <article class="group relative bg-white dark:bg-gray-800 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
-                        <!-- Image Section -->
-                        <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800">
-                            <!-- Lightbox Trigger -->
-                            <a :href="product.image"
-                               class="glightbox block w-full h-full"
-                               :data-gallery="'product-' + product.id"
-                               :data-title="product.title"
-                               :data-description="product.description">
+                    <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
+                        <a :href="product.url" class="block">
+                            <!-- Image Section -->
+                            <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                                 <template x-if="product.image">
                                     <img :src="product.image"
                                          :alt="product.title"
@@ -223,80 +217,78 @@
                                 <template x-if="!product.image">
                                     <!-- Category Icon Fallback -->
                                     <div class="w-full h-full flex items-center justify-center">
-                                        <i :class="product.category_icon || 'fa-solid fa-box'"
-                                           class="text-8xl text-gray-300 dark:text-gray-600"></i>
+                                        <i :class="product.category_icon || 'fa-light fa-box'"
+                                           class="text-8xl text-blue-400 group-hover:scale-110 transition-transform"></i>
                                     </div>
                                 </template>
-                            </a>
 
-                            <!-- Hover Overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                <!-- Hover Overlay -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                            <!-- Badges -->
-                            <div class="absolute top-4 left-4 flex flex-col gap-2">
-                                <template x-if="product.featured">
-                                    <span class="px-3 py-1.5 bg-yellow-500 text-white text-xs font-semibold rounded-lg shadow-lg">
-                                        <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                <!-- Badges -->
+                                <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                    <template x-if="product.featured">
+                                        <span class="px-3 py-1.5 bg-yellow-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                            <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                        </span>
+                                    </template>
+                                    <template x-if="product.bestseller">
+                                        <span class="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                            <i class="fa-solid fa-fire mr-1"></i>Çok Satan
+                                        </span>
+                                    </template>
+                                </div>
+
+                                <!-- Quick Actions -->
+                                <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                    <button @click.prevent="toggleFavorite(product.id)"
+                                            class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-heart" :class="{'text-red-500': product.is_favorite}"></i>
+                                    </button>
+                                    <button @click.prevent="openProductModal(product)"
+                                            class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Content Section -->
+                            <div class="p-6 space-y-4">
+                                <!-- Category -->
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-blue-600 font-medium uppercase tracking-wider" x-text="product.category"></span>
+                                </div>
+
+                                <!-- Title -->
+                                <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors"
+                                    x-text="product.title"></h3>
+
+                                <!-- Description -->
+                                <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed" x-text="product.description"></p>
+
+                                <!-- Meta Info -->
+                                <div class="flex items-center gap-4 text-xs text-gray-500">
+                                    <span class="flex items-center gap-1">
+                                        <i class="fa-solid fa-barcode"></i>
+                                        <span x-text="product.sku"></span>
                                     </span>
-                                </template>
-                                <template x-if="product.bestseller">
-                                    <span class="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg shadow-lg">
-                                        <i class="fa-solid fa-fire mr-1"></i>Çok Satan
+                                    <span class="flex items-center gap-1">
+                                        <i class="fa-solid fa-eye"></i>
+                                        <span x-text="product.views"></span>
                                     </span>
-                                </template>
+                                </div>
+
+                                <!-- Price + CTA -->
+                                <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
+                                         x-text="product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'"></div>
+                                    <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                        <span>Detay</span>
+                                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                    </div>
+                                </div>
                             </div>
-
-                            <!-- Quick Actions -->
-                            <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
-                                <button @click.prevent="toggleFavorite(product.id)"
-                                        class="w-10 h-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-heart" :class="{'text-red-500': product.is_favorite}"></i>
-                                </button>
-                                <a :href="product.image"
-                                   class="glightbox w-10 h-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg shadow-lg hover:scale-110 transition-transform flex items-center justify-center"
-                                   :data-gallery="'product-' + product.id">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Content Section -->
-                        <div class="p-6 space-y-4">
-                            <!-- Category -->
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-blue-600 dark:text-blue-400 font-medium uppercase tracking-wider" x-text="product.category"></span>
-                            </div>
-
-                            <!-- Title -->
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
-                                x-text="product.title"></h3>
-
-                            <!-- Description -->
-                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed" x-text="product.description"></p>
-
-                            <!-- Meta Info -->
-                            <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
-                                <span class="flex items-center gap-1">
-                                    <i class="fa-solid fa-barcode"></i>
-                                    <span x-text="product.sku"></span>
-                                </span>
-                                <span class="flex items-center gap-1">
-                                    <i class="fa-solid fa-eye"></i>
-                                    <span x-text="product.views"></span>
-                                </span>
-                            </div>
-
-                            <!-- Price + CTA -->
-                            <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
-                                     x-text="product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'"></div>
-                                <a :href="product.url"
-                                   class="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:gap-3 transition-all">
-                                    <span>Detay</span>
-                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                                </a>
-                            </div>
-                        </div>
+                        </a>
                     </article>
                 </template>
             </div>
@@ -437,6 +429,62 @@
                         product.is_favorite = !product.is_favorite;
                         // TODO: API call to save favorite status
                         console.log(`Product ${productId} favorite: ${product.is_favorite}`);
+                    }
+                },
+
+                openProductModal(product) {
+                    // Modal için GLightbox kullan
+                    if (typeof GLightbox !== 'undefined') {
+                        const modalContent = `
+                            <div class="p-8 bg-white rounded-2xl max-w-4xl">
+                                <div class="grid md:grid-cols-2 gap-8">
+                                    <!-- Left: Image -->
+                                    <div class="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl overflow-hidden">
+                                        ${product.image
+                                            ? `<img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover">`
+                                            : `<div class="w-full h-full flex items-center justify-center">
+                                                <i class="${product.category_icon || 'fa-light fa-box'} text-9xl text-blue-400"></i>
+                                               </div>`
+                                        }
+                                    </div>
+
+                                    <!-- Right: Info -->
+                                    <div class="space-y-4">
+                                        <div class="text-xs text-blue-600 font-medium uppercase tracking-wider">${product.category}</div>
+                                        <h2 class="text-3xl font-bold text-gray-900">${product.title}</h2>
+                                        <p class="text-gray-600">${product.description}</p>
+
+                                        <div class="flex items-center gap-4 text-sm text-gray-500 pt-4 border-t border-gray-100">
+                                            <span><i class="fa-solid fa-barcode mr-1"></i> ${product.sku}</span>
+                                            <span><i class="fa-solid fa-eye mr-1"></i> ${product.views}</span>
+                                        </div>
+
+                                        <div class="pt-6">
+                                            <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-6">
+                                                ${product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'}
+                                            </div>
+                                            <a href="${product.url}"
+                                               class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-xl transition-all">
+                                                <span>Detaylı İncele</span>
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        GLightbox({
+                            elements: [{
+                                content: modalContent
+                            }],
+                            touchNavigation: true,
+                            closeButton: true,
+                            closeOnOutsideClick: true
+                        }).open();
+                    } else {
+                        // Fallback: Direct link
+                        window.location.href = product.url;
                     }
                 }
             }

@@ -387,7 +387,7 @@
         </div>
 
         <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8">
-            <div class="grid lg:grid-cols-3 gap-8 items-start">
+            <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div class="lg:col-span-2 min-h-screen">
 
@@ -1361,19 +1361,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (tocBar && tocPlaceholder && header) {
         let lastScrollTop = 0;
-        const headerHeight = header.offsetHeight;
         const tocBarOffsetTop = tocBar.offsetTop;
+        const trustSignals = document.getElementById('trust-signals');
 
         window.addEventListener('scroll', function() {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // DİNAMİK header height (scroll'da değişebilir)
+            const currentHeaderHeight = header.offsetHeight;
 
             // TOC bar scroll pozisyonunu geçtiyse
             if (scrollTop >= tocBarOffsetTop) {
                 // Fixed yap
                 tocBar.style.position = 'fixed';
-                tocBar.style.top = headerHeight + 'px';
+                tocBar.style.top = currentHeaderHeight + 'px';
                 tocBar.style.left = '0';
                 tocBar.style.right = '0';
+                tocBar.style.zIndex = '40';
+                tocBar.style.transition = 'top 0.2s ease';
+
+                // Trust Signals kontrolü - BASIT
+                if (trustSignals) {
+                    const trustTop = trustSignals.getBoundingClientRect().top;
+                    const tocHeight = tocBar.offsetHeight;
+
+                    // Trust signals header+toc altına geldiğinde gizle
+                    if (trustTop <= (currentHeaderHeight + tocHeight)) {
+                        tocBar.style.opacity = '0';
+                        tocBar.style.pointerEvents = 'none';
+                    } else {
+                        tocBar.style.opacity = '1';
+                        tocBar.style.pointerEvents = 'auto';
+                    }
+                } else {
+                    tocBar.style.opacity = '1';
+                    tocBar.style.pointerEvents = 'auto';
+                }
 
                 // Placeholder'ı göster (layout shift önlemek için)
                 tocPlaceholder.style.display = 'block';
@@ -1388,6 +1411,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Normal pozisyona dön
                 tocBar.style.position = 'relative';
                 tocBar.style.top = 'auto';
+                tocBar.style.opacity = '1';
+                tocBar.style.pointerEvents = 'auto';
 
                 // Placeholder'ı gizle
                 tocPlaceholder.style.display = 'none';
@@ -1420,15 +1445,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
 
             new StickySidebar('#sticky-sidebar', {
-                containerSelector: '.grid',
+                containerSelector: '#product-content-grid',
                 innerWrapperSelector: '.sticky-sidebar__inner',
                 topSpacing: headerHeight + tocBarHeight + 24,
-                bottomSpacing: 20,
+                bottomSpacing: 40,
                 minWidth: 1024,
                 resizeSensor: true
             });
 
-            console.log('✅ StickySidebar library loaded and initialized');
+            console.log('✅ StickySidebar: container=#product-content-grid (ends at FAQ)');
         };
         document.head.appendChild(script);
     }

@@ -178,45 +178,55 @@
                         $productUrl = route('shop.show.by-id', $product->id);
                     }
                 @endphp
-                <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all cursor-pointer">
-                    <!-- Product Image -->
-                    <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center mb-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-                        @if($productImage)
-                            <img src="{{ $productImage }}"
-                                 alt="{{ $productTitle }}"
-                                 class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark">
-                        @else
-                            @php
-                                $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
-                            @endphp
-                            <i class="{{ $categoryIcon }} text-6xl text-blue-400 dark:text-blue-400"></i>
-                        @endif
-                    </a>
-
-                    <!-- Product Info -->
+                <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
                     <a href="{{ $productUrl }}" class="block">
-                        <h3 class="font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">{{ $productTitle }}</h3>
-                    </a>
+                        <!-- Product Image -->
+                        <div class="aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+                            @if($productImage)
+                                <img src="{{ $productImage }}"
+                                     alt="{{ $productTitle }}"
+                                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark group-hover:scale-110 transition-transform duration-700">
+                            @else
+                                @php
+                                    $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
+                                @endphp
+                                <i class="{{ $categoryIcon }} text-6xl text-blue-400 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
+                            @endif
+                        </div>
 
-                    <!-- Quick View Button -->
-                    <button
-                        @click="openProductModal({
-                            id: {{ $product->id }},
-                            title: '{{ addslashes($productTitle) }}',
-                            slug: '{{ $productSlug }}',
-                            url: '{{ $productUrl }}',
-                            image: '{{ $productImage }}',
-                            category: '{{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}',
-                            brand: '{{ $product->brand?->getTranslated('title', app()->getLocale()) ?? '' }}',
-                            shortDescription: '{{ addslashes($product->getTranslated('short_description', app()->getLocale()) ?? '') }}',
-                            sku: '{{ $product->sku ?? '' }}',
-                            primarySpecs: {{ json_encode(array_values(array_filter($product->primary_specs ?? [], fn($spec) => is_array($spec) && ($spec['label'] ?? false) && ($spec['value'] ?? false)))) }},
-                            images: {{ json_encode(array_merge($product->getMedia('featured_image')->map(fn($media) => $media->getUrl())->toArray(), $product->getMedia('gallery')->map(fn($media) => $media->getUrl())->toArray())) }}
-                        })"
-                        class="mt-4 w-full bg-white/10 dark:bg-white/10 hover:bg-white/20 dark:hover:bg-white/20 text-gray-900 dark:text-white py-2 rounded-lg text-sm font-semibold transition-colors">
-                        <i class="fa-light fa-eye mr-2"></i>
-                        Hızlı Bak
-                    </button>
+                        <!-- Content Section -->
+                        <div class="p-6 space-y-4">
+                            <!-- Category -->
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">
+                                    {{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}
+                                </span>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                {{ $productTitle }}
+                            </h3>
+
+                            <!-- Description -->
+                            @if($product->getTranslated('short_description', app()->getLocale()))
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                                {{ $product->getTranslated('short_description', app()->getLocale()) }}
+                            </p>
+                            @endif
+
+                            <!-- Price & CTA -->
+                            <div class="pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                                    Fiyat Sorunuz
+                                </div>
+                                <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                    <span>Özet</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 </div>
                 @endforeach
             </div>

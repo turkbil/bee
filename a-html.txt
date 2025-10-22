@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="nhESlX7I1Nz2lgjYM8McRHLghXvfD6XiMOrfiAW0">
+    <meta name="csrf-token" content="6KD5Eiepjv4nRQ5L2af4yPXuJcuFI9NEDCaeDTkA">
 
     
 
@@ -147,7 +147,7 @@
         <link rel="preload" href="https://ixtif.com/css/ixtif-bundle.min.css" as="style">
     
     
-    <link rel="stylesheet" href="https://ixtif.com/css/app.css?v=1761173610" media="all">
+    <link rel="stylesheet" href="https://ixtif.com/css/app.css?v=1761173906" media="all">
 
     
     <link rel="stylesheet" href="https://ixtif.com/assets/libs/fontawesome-pro@7.1.0/css/all.css" media="all">
@@ -367,7 +367,7 @@
                         </div>
 
                         
-                        <div wire:snapshot="{&quot;data&quot;:[],&quot;memo&quot;:{&quot;id&quot;:&quot;zM08rNJs4JTZZSwLnPkw&quot;,&quot;name&quot;:&quot;auth.header-menu&quot;,&quot;path&quot;:&quot;\/&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;e2dfcf9e4eac589061813a0caf9d0f24a02fa80afd90ed53bb53e982b7968249&quot;}" wire:effects="[]" wire:id="zM08rNJs4JTZZSwLnPkw">
+                        <div wire:snapshot="{&quot;data&quot;:[],&quot;memo&quot;:{&quot;id&quot;:&quot;YXhIOIUlvD8nanpN107V&quot;,&quot;name&quot;:&quot;auth.header-menu&quot;,&quot;path&quot;:&quot;\/&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;e90f5d5acfcbad66f0a78b0a896037d0e8a1c876071d4560993b24ded456326a&quot;}" wire:effects="[]" wire:id="YXhIOIUlvD8nanpN107V">
     <!--[if BLOCK]><![endif]-->        
         <div class="relative z-50" x-data="{ open: false, showTooltip: false }">
             <button @click="open = !open"
@@ -1838,10 +1838,10 @@
 
                 
                 <div class="mb-6">
-                    <div wire:snapshot="{&quot;data&quot;:{&quot;query&quot;:&quot;&quot;,&quot;isOpen&quot;:false,&quot;viewMode&quot;:&quot;footer&quot;},&quot;memo&quot;:{&quot;id&quot;:&quot;fUbDGy6dubSWkzOY7AAn&quot;,&quot;name&quot;:&quot;search::search-bar&quot;,&quot;path&quot;:&quot;\/&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;81fcdc01bfe6b3d7e947222642242f133242822802f8b94ce3e2881f04009868&quot;}" wire:effects="[]" wire:id="fUbDGy6dubSWkzOY7AAn" class="relative mb-6"
+                    <div wire:snapshot="{&quot;data&quot;:{&quot;query&quot;:&quot;&quot;,&quot;isOpen&quot;:false,&quot;viewMode&quot;:&quot;footer&quot;},&quot;memo&quot;:{&quot;id&quot;:&quot;8XAxs88tRoq4wgimjJqH&quot;,&quot;name&quot;:&quot;search::search-bar&quot;,&quot;path&quot;:&quot;\/&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;41fb56224a67a37c9b206af8912b26fc60d4ea295bb0e4a3ef9df17d46561edd&quot;}" wire:effects="[]" wire:id="8XAxs88tRoq4wgimjJqH" class="relative mb-6"
      x-data="{
-         query: window.Livewire.find('fUbDGy6dubSWkzOY7AAn').entangle('query'),
-         open: window.Livewire.find('fUbDGy6dubSWkzOY7AAn').entangle('isOpen'),
+         query: window.Livewire.find('8XAxs88tRoq4wgimjJqH').entangle('query'),
+         open: window.Livewire.find('8XAxs88tRoq4wgimjJqH').entangle('isOpen'),
          keywords: [],
          products: [],
          total: 0,
@@ -2028,13 +2028,13 @@
                                    class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
                                     Forklift
                                 </a>
-                                                            <a href="/search?q=DS3"
-                                   class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
-                                    DS3
-                                </a>
                                                             <a href="/search?q=ESL122"
                                    class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
                                     ESL122
+                                </a>
+                                                            <a href="/search?q=DS3"
+                                   class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
+                                    DS3
                                 </a>
                                                             <a href="/search?q=Denge+Tekeri"
                                    class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
@@ -2342,13 +2342,13 @@
 
 
 <!-- Livewire Scripts -->
-<script src="/livewire/livewire.js?id=df3a17f2"   data-csrf="nhESlX7I1Nz2lgjYM8McRHLghXvfD6XiMOrfiAW0" data-update-uri="/livewire/update" data-navigate-once="true"></script>
+<script src="/livewire/livewire.js?id=df3a17f2"   data-csrf="6KD5Eiepjv4nRQ5L2af4yPXuJcuFI9NEDCaeDTkA" data-update-uri="/livewire/update" data-navigate-once="true"></script>
 
 
 <script defer src="https://ixtif.com/js/core-system.js?v=1.0.0"></script>
 
 
-<script src="https://ixtif.com/js/ixtif-theme.js?v=1761173610"></script>
+<script src="https://ixtif.com/js/ixtif-theme.js?v=1761173906"></script>
 
 
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -2385,8 +2385,8 @@
 </div>
 
 
-<link rel="stylesheet" href="https://ixtif.com/assets/css/ai-chat.css?v=1761173610" media="all">
-<script src="https://ixtif.com/assets/js/ai-chat.js?v=1761173610" defer></script>
+<link rel="stylesheet" href="https://ixtif.com/assets/css/ai-chat.css?v=1761173906" media="all">
+<script src="https://ixtif.com/assets/js/ai-chat.js?v=1761173906" defer></script>
 <div x-data="{
     chat: $store.aiChat,
     message: '',

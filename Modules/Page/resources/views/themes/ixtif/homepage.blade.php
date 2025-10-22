@@ -193,7 +193,7 @@
                 </a>
 
                 <!-- Content Section -->
-                <div class="p-6 space-y-5">
+                <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
                     <!-- Category -->
                     <div class="flex items-center gap-2 mb-2">
                         <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">
@@ -203,14 +203,14 @@
 
                     <!-- Title -->
                     <a href="{{ $productUrl }}">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white leading-relaxed line-clamp-2 min-h-[3.5rem] group-hover:text-blue-600 transition-colors">
+                        <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-white leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-600 transition-colors">
                             {{ $productTitle }}
                         </h3>
                     </a>
 
                     <!-- Price & CTA -->
-                    <div class="pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                    <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                             Fiyat Sorunuz
                         </div>
                         <button
@@ -227,9 +227,9 @@
                                 primarySpecs: {{ json_encode(array_values(array_filter($product->primary_specs ?? [], fn($spec) => is_array($spec) && ($spec['label'] ?? false) && ($spec['value'] ?? false)))) }},
                                 images: {{ json_encode(array_merge($product->getMedia('featured_image')->map(fn($media) => $media->getUrl())->toArray(), $product->getMedia('gallery')->map(fn($media) => $media->getUrl())->toArray())) }}
                             })"
-                            class="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:gap-3 transition-all">
+                            class="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold text-blue-600 hover:gap-2 md:hover:gap-3 transition-all">
                             <span>Özet</span>
-                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                            <i class="fa-solid fa-arrow-right text-xs md:text-sm group-hover:translate-x-1 transition-transform"></i>
                         </button>
                     </div>
                 </div>

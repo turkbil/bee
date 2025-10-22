@@ -37,9 +37,8 @@ class OptimizedPromptService
         $prompts[] = "**DOĞRU ÖRNEK:**";
         $prompts[] = "```";
         $prompts[] = "💬 **WhatsApp:** [+90 532 123 4567](https://wa.me/905321234567)";
-        $prompts[] = "📞 **Telefon:** [+90 212 123 4567](tel:902121234567)";
         $prompts[] = "📧 **E-posta:** [info@ixtif.com](mailto:info@ixtif.com)";
-        $prompts[] = "📱 **Telegram:** [@ixtif](https://t.me/ixtif)";
+        $prompts[] = "📞 **Telefon:** [+90 212 123 4567](tel:902121234567)";
         $prompts[] = "```";
         $prompts[] = "";
         $prompts[] = "**YANLIŞ ÖRNEK (YAPMA!):**";
@@ -281,43 +280,38 @@ class OptimizedPromptService
                 $prompts[] = "5. ✅ MUTLAKA iletişim bilgilerini ver (dinamik olarak eklendi)";
                 $prompts[] = "6. ✅ Pozitif ve yardımcı ol, müşteriyi kaçırma!";
                 $prompts[] = "";
-                $prompts[] = "**ZORUNLU YANIT FORMATI:**";
+                $prompts[] = "**ZORUNLU YANIT FORMATI (OKUNAKLI!):**";
                 $prompts[] = "```";
-                $prompts[] = "İxtif olarak, '{$detectedCategory['category_name']}' konusunda";
-                $prompts[] = "müşteri temsilcilerimiz size özel araştırma yapabilir! 😊";
+                $prompts[] = "İxtif olarak, '{$detectedCategory['category_name']}' konusunda müşteri temsilcilerimiz size özel araştırma yapabilir! 😊";
                 $prompts[] = "";
-                $prompts[] = "Detaylı bilgi almak ve size en uygun çözümleri sunabilmek için";
-                $prompts[] = "ekibimizle iletişime geçmenizi öneriyoruz.";
+                $prompts[] = "Detaylı bilgi almak ve size en uygun çözümleri sunabilmek için ekibimizle iletişime geçmenizi öneriyoruz.";
+                $prompts[] = "";
+                $prompts[] = "---";
                 $prompts[] = "";
                 $prompts[] = "**Hemen iletişime geçin:**";
                 $prompts[] = "";
 
-                // Format contact information dynamically (same logic as "ANLAMADIĞIM TERİM")
+                // Format contact information dynamically - HER BİRİ AYRI SATIR!
                 if (!empty($contactInfo['whatsapp'])) {
                     $cleanWhatsapp = preg_replace('/[^0-9]/', '', $contactInfo['whatsapp']);
-                    $prompts[] = "💬 **WhatsApp:** [" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
-                }
-                if (!empty($contactInfo['telegram'])) {
-                    $telegramLink = $contactInfo['telegram'];
-                    if (strpos($telegramLink, '@') === 0) {
-                        $username = ltrim($telegramLink, '@');
-                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](https://t.me/{$username})";
-                    } elseif (strpos($telegramLink, 'https://') === 0 || strpos($telegramLink, 'http://') === 0) {
-                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](" . $telegramLink . ")";
-                    } else {
-                        $prompts[] = "📱 **Telegram:** " . $telegramLink;
-                    }
+                    $prompts[] = "💬 **WhatsApp:**";
+                    $prompts[] = "[" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
+                    $prompts[] = "";
                 }
                 if (!empty($contactInfo['email'])) {
-                    $prompts[] = "📧 **E-posta:** [{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+                    $prompts[] = "📧 **E-posta:**";
+                    $prompts[] = "[{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+                    $prompts[] = "";
                 }
                 if (!empty($contactInfo['phone'])) {
                     $cleanPhone = preg_replace('/[^0-9+]/', '', $contactInfo['phone']);
-                    $prompts[] = "📞 **Telefon:** [" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+                    $prompts[] = "📞 **Telefon:**";
+                    $prompts[] = "[" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+                    $prompts[] = "";
                 }
 
                 // Fallback if no contact info available
-                if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email']) && empty($contactInfo['telegram'])) {
+                if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email'])) {
                     $prompts[] = "📞 **İletişim:** Lütfen müşteri temsilcimizle görüşün";
                 }
 
@@ -341,31 +335,26 @@ class OptimizedPromptService
                 $prompts[] = "Detaylı bilgi ve size en uygun çözümleri sunabilmek için ekibimizle görüşebilirsiniz:";
                 $prompts[] = "";
 
-                // Add dynamic contact info (same as category case)
+                // Add dynamic contact info - each on separate line for readability
                 if (!empty($contactInfo['whatsapp'])) {
                     $cleanWhatsapp = preg_replace('/[^0-9]/', '', $contactInfo['whatsapp']);
-                    $prompts[] = "💬 **WhatsApp:** [" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
-                }
-                if (!empty($contactInfo['telegram'])) {
-                    $telegramLink = $contactInfo['telegram'];
-                    if (strpos($telegramLink, '@') === 0) {
-                        $username = ltrim($telegramLink, '@');
-                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](https://t.me/{$username})";
-                    } elseif (strpos($telegramLink, 'https://') === 0 || strpos($telegramLink, 'http://') === 0) {
-                        $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](" . $telegramLink . ")";
-                    } else {
-                        $prompts[] = "📱 **Telegram:** " . $telegramLink;
-                    }
+                    $prompts[] = "💬 **WhatsApp:**";
+                    $prompts[] = "[" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
+                    $prompts[] = "";
                 }
                 if (!empty($contactInfo['email'])) {
-                    $prompts[] = "📧 **E-posta:** [{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+                    $prompts[] = "📧 **E-posta:**";
+                    $prompts[] = "[{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+                    $prompts[] = "";
                 }
                 if (!empty($contactInfo['phone'])) {
                     $cleanPhone = preg_replace('/[^0-9+]/', '', $contactInfo['phone']);
-                    $prompts[] = "📞 **Telefon:** [" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+                    $prompts[] = "📞 **Telefon:**";
+                    $prompts[] = "[" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+                    $prompts[] = "";
                 }
 
-                if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email']) && empty($contactInfo['telegram'])) {
+                if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email'])) {
                     $prompts[] = "📞 **İletişim:** Lütfen müşteri temsilcimizle görüşün";
                 }
 
@@ -870,45 +859,41 @@ class OptimizedPromptService
         $prompts[] = "❌ ASLA 'Ben sadece şirket ürünleri hakkında...' DEME!";
         $prompts[] = "❌ ASLA 'Anlamadım' DEME!";
         $prompts[] = "✅ MUTLAKA ÖNCE KULLANICININ NUMARASINI İSTE!";
-        $prompts[] = "✅ Alamazsan İLETİŞİM BİLGİSİ VER (WhatsApp, Telegram, E-posta)!";
+        $prompts[] = "✅ Alamazsan İLETİŞİM BİLGİSİ VER (WhatsApp, E-posta, Telefon)!";
         $prompts[] = "";
-        $prompts[] = "**ZORUNLU YANIT AKIŞI:**";
+        $prompts[] = "**ZORUNLU YANIT AKIŞI (OKUNAKLI FORMAT!):**";
         $prompts[] = "```";
         $prompts[] = "Bu konuda size yardımcı olmak isterim! 😊";
         $prompts[] = "";
-        $prompts[] = "Telefon numaranızı paylaşabilir misiniz?";
+        $prompts[] = "**Telefon numaranızı paylaşabilir misiniz?**";
         $prompts[] = "Size geri dönüş yapalım ve detaylı bilgi verelim.";
         $prompts[] = "";
-        $prompts[] = "Eğer telefon paylaşmak istemezseniz, bize şu kanallardan ulaşabilirsiniz:";
+        $prompts[] = "---";
+        $prompts[] = "";
+        $prompts[] = "**Eğer telefon paylaşmak istemezseniz, bize şu kanallardan ulaşabilirsiniz:**";
         $prompts[] = "";
 
-        // Format contact information dynamically
+        // Format contact information dynamically - HER BİRİ AYRI SATIR!
         if (!empty($contactInfo['whatsapp'])) {
             $cleanWhatsapp = preg_replace('/[^0-9]/', '', $contactInfo['whatsapp']);
-            $prompts[] = "💬 **WhatsApp:** [" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
-        }
-        if (!empty($contactInfo['telegram'])) {
-            // Handle telegram format (@username or https://t.me/username)
-            $telegramLink = $contactInfo['telegram'];
-            if (strpos($telegramLink, '@') === 0) {
-                $username = ltrim($telegramLink, '@');
-                $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](https://t.me/{$username})";
-            } elseif (strpos($telegramLink, 'https://') === 0 || strpos($telegramLink, 'http://') === 0) {
-                $prompts[] = "📱 **Telegram:** [" . $telegramLink . "](" . $telegramLink . ")";
-            } else {
-                $prompts[] = "📱 **Telegram:** " . $telegramLink;
-            }
+            $prompts[] = "💬 **WhatsApp:**";
+            $prompts[] = "[" . $contactInfo['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
+            $prompts[] = "";
         }
         if (!empty($contactInfo['email'])) {
-            $prompts[] = "📧 **E-posta:** [{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+            $prompts[] = "📧 **E-posta:**";
+            $prompts[] = "[{$contactInfo['email']}](mailto:{$contactInfo['email']})";
+            $prompts[] = "";
         }
         if (!empty($contactInfo['phone'])) {
             $cleanPhone = preg_replace('/[^0-9+]/', '', $contactInfo['phone']);
-            $prompts[] = "📞 **Telefon:** [" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+            $prompts[] = "📞 **Telefon:**";
+            $prompts[] = "[" . $contactInfo['phone'] . "](tel:{$cleanPhone})";
+            $prompts[] = "";
         }
 
         // Fallback if no contact info available
-        if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email']) && empty($contactInfo['telegram'])) {
+        if (empty($contactInfo['phone']) && empty($contactInfo['whatsapp']) && empty($contactInfo['email'])) {
             $prompts[] = "📞 **İletişim:** Lütfen müşteri temsilcimizle görüşün";
         }
 
@@ -918,7 +903,7 @@ class OptimizedPromptService
         $prompts[] = "```";
         $prompts[] = "";
         $prompts[] = "**ÖRNEKLER:**";
-        $prompts[] = "- 'Blue spot' → ÖNCE numara iste + Alamazsan iletişim bilgisi ver (WhatsApp, Telegram, E-posta)";
+        $prompts[] = "- 'Blue spot' → ÖNCE numara iste + Alamazsan iletişim bilgisi ver (WhatsApp, E-posta, Telefon)";
         $prompts[] = "- 'Blue spot 1000' → ÖNCE numara iste + 'Hangi model için bu parça?' sor";
         $prompts[] = "- 'XYZ marka parça' → ÖNCE numara iste + Alamazsan iletişim kanallarını göster";
         $prompts[] = "- Bilmediğin marka/model → ÖNCE numara iste + Detay iste";

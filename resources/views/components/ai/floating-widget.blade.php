@@ -113,7 +113,7 @@ class="fixed {{ $selectedPosition }} z-50">
                 'İhtiyacınızı anlıyor ve yönlendiriyorum',
                 'Hadi konuşalım! 💬'
             ],
-            // Mobile messages (shorter, concise, formal "siz")
+            // Mobile messages (shorter, concise)
             mobileMessages: [
                 'Merhaba! 👋',
                 'Yardımcı olalım',

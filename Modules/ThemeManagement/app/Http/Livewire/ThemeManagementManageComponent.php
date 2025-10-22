@@ -5,7 +5,6 @@ namespace Modules\ThemeManagement\App\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Modules\ThemeManagement\App\Models\Theme;
-use Modules\ThemeManagement\App\Http\Livewire\Traits\WithImageUpload;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -13,7 +12,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 #[Layout('admin.layout')]
 class ThemeManagementManageComponent extends Component
 {
-   use WithFileUploads, WithImageUpload;
+   use WithFileUploads;
+
+   public $temporaryImages = [];
 
    public $themeId;
    public $inputs = [
@@ -123,6 +124,46 @@ class ThemeManagementManageComponent extends Component
       if ($resetForm && !$this->themeId) {
           $this->reset();
       }
+   }
+
+   protected function handleImageUpload($theme)
+   {
+       if (!empty($this->temporaryImages)) {
+           foreach ($this->temporaryImages as $imageKey => $image) {
+               if ($image) {
+                   // ✅ SPATIE: Theme model HasMedia trait kullanıyor
+                   $collectionName = $this->getCollectionName($imageKey);
+
+                   // Eski medyayı temizle
+                   $theme->clearMediaCollection($collectionName);
+
+                   // Yeni medyayı ekle
+                   $theme->addMedia($image->getRealPath())
+                       ->preservingOriginal()
+                       ->withCustomProperties([
+                           'image_type' => $imageKey,
+                       ])
+                       ->toMediaCollection($collectionName, 'public');
+
+                   log_activity(
+                       $theme,
+                       'resim yüklendi',
+                       ['collection' => $collectionName]
+                   );
+               }
+           }
+
+           // Geçici resimleri temizle
+           $this->temporaryImages = [];
+       }
+   }
+
+   protected function getCollectionName($imageKey)
+   {
+       if (empty($imageKey) || $imageKey === 'thumbnail') {
+           return 'images';
+       }
+       return 'image_' . $imageKey;
    }
 
    public function render()

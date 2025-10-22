@@ -1010,7 +1010,8 @@
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Clean Version --}}
             <div class="lg:col-span-1 order-first lg:order-last relative">
-                <div class="space-y-8" id="sticky-sidebar">
+                <div id="sticky-sidebar">
+                    <div class="sticky-sidebar__inner space-y-8">
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
@@ -1067,8 +1068,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    </div> {{-- Close sticky-sidebar__inner --}}
+                </div> {{-- Close sticky-sidebar --}}
+            </div> {{-- Close lg:col-span-1 --}}
         </div>
     </div>
 
@@ -1407,54 +1409,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 2. SIDEBAR STICKY - BASİT FIXED YAKLAŞIMI
+    // 2. SIDEBAR STICKY - KÜTÜPHANE İLE (StickySidebar)
     // ==========================================
-    if (sidebar) {
-        const sidebarParent = sidebar.parentElement;
-
-        function handleSidebarSticky() {
-            if (window.innerWidth < 1024) {
-                sidebar.style.position = '';
-                sidebar.style.top = '';
-                sidebar.style.width = '';
-                return;
-            }
-
-            const scrollTop = window.pageYOffset;
+    if (sidebar && window.innerWidth >= 1024) {
+        // StickySidebar kütüphanesini yükle ve init et
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/sticky-sidebar@3.3.1/dist/sticky-sidebar.min.js';
+        script.onload = function() {
             const headerHeight = header ? header.offsetHeight : 0;
             const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
-            const stickyOffset = headerHeight + tocBarHeight + 24;
 
-            const sidebarParentRect = sidebarParent.getBoundingClientRect();
-            const sidebarParentTop = sidebarParent.offsetTop;
-            const sidebarParentBottom = sidebarParentTop + sidebarParent.offsetHeight;
+            new StickySidebar('#sticky-sidebar', {
+                containerSelector: '.grid',
+                innerWrapperSelector: '.sticky-sidebar__inner',
+                topSpacing: headerHeight + tocBarHeight + 24,
+                bottomSpacing: 20,
+                minWidth: 1024,
+                resizeSensor: true
+            });
 
-            const sidebarHeight = sidebar.offsetHeight;
-            const maxScrollPosition = sidebarParentBottom - sidebarHeight - stickyOffset;
-
-            if (scrollTop >= sidebarParentTop - stickyOffset && scrollTop <= maxScrollPosition) {
-                // Sticky mode
-                sidebar.style.position = 'fixed';
-                sidebar.style.top = stickyOffset + 'px';
-                sidebar.style.width = sidebarParentRect.width + 'px';
-            } else if (scrollTop > maxScrollPosition) {
-                // Bottom limit
-                sidebar.style.position = 'absolute';
-                sidebar.style.top = (sidebarParent.offsetHeight - sidebarHeight) + 'px';
-                sidebar.style.width = '100%';
-            } else {
-                // Normal position
-                sidebar.style.position = '';
-                sidebar.style.top = '';
-                sidebar.style.width = '';
-            }
-        }
-
-        window.addEventListener('scroll', handleSidebarSticky);
-        window.addEventListener('resize', handleSidebarSticky);
-        handleSidebarSticky(); // İlk çalıştır
-
-        console.log('✅ Sidebar sticky initialized (fixed approach)');
+            console.log('✅ StickySidebar library loaded and initialized');
+        };
+        document.head.appendChild(script);
     }
 
     // ==========================================

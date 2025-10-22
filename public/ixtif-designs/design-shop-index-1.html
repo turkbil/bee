@@ -154,22 +154,199 @@
                 <!-- Filter Bar -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                     <div class="flex flex-wrap items-center gap-3">
-                        <button class="px-6 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all flex items-center gap-2">
+                        <button @click="showFilters = !showFilters"
+                                class="px-6 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all flex items-center gap-2"
+                                :class="{ 'border-blue-500 shadow-lg': showFilters }">
                             <i class="fa-solid fa-filter"></i>
                             <span>Filtrele</span>
+                            <span x-show="activeFilters.length > 0" class="ml-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full" x-text="activeFilters.length"></span>
                         </button>
-                        <button class="px-6 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all flex items-center gap-2">
+                        <button @click="showCategories = !showCategories"
+                                class="px-6 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all flex items-center gap-2"
+                                :class="{ 'border-purple-500 shadow-lg': showCategories }">
                             <i class="fa-solid fa-layer-group"></i>
                             <span>Kategoriler</span>
                         </button>
                     </div>
 
-                    <select class="px-4 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all">
-                        <option>En Yeni</option>
-                        <option>En Popüler</option>
-                        <option>Fiyat (Düşük-Yüksek)</option>
-                        <option>Fiyat (Yüksek-Düşük)</option>
+                    <select x-model="sortBy" @change="sortProducts()" class="px-4 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all">
+                        <option value="newest">En Yeni</option>
+                        <option value="popular">En Popüler</option>
+                        <option value="price_asc">Fiyat (Düşük-Yüksek)</option>
+                        <option value="price_desc">Fiyat (Yüksek-Düşük)</option>
+                        <option value="name">İsim (A-Z)</option>
                     </select>
+                </div>
+
+                <!-- Categories Dropdown Panel -->
+                <div x-show="showCategories"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 -translate-y-4"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-4"
+                     class="mb-12 bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl border border-purple-100 p-8 shadow-xl">
+
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900">Kategoriler</h3>
+                        <button @click="showCategories = false" class="w-10 h-10 bg-white rounded-xl hover:bg-gray-100 transition-colors">
+                            <i class="fa-solid fa-times text-gray-600"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <template x-for="category in categories" :key="category.id">
+                            <button @click="selectedCategory = category.id; showCategories = false; filterProducts()"
+                                    class="group relative bg-white rounded-2xl p-6 border-2 transition-all hover:shadow-lg hover:-translate-y-1"
+                                    :class="selectedCategory === category.id ? 'border-purple-500 shadow-lg' : 'border-gray-200 hover:border-purple-300'">
+
+                                <!-- Icon -->
+                                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-all"
+                                     :class="selectedCategory === category.id ? 'bg-gradient-to-br from-purple-500 to-blue-500' : 'bg-gradient-to-br from-gray-100 to-gray-200'">
+                                    <i :class="category.icon + ' text-2xl'"
+                                       :class="selectedCategory === category.id ? 'text-white' : 'text-gray-600'"></i>
+                                </div>
+
+                                <!-- Title -->
+                                <h4 class="text-sm font-semibold text-center mb-2 line-clamp-2"
+                                    :class="selectedCategory === category.id ? 'text-purple-600' : 'text-gray-900'"
+                                    x-text="category.name"></h4>
+
+                                <!-- Count -->
+                                <div class="text-xs text-center text-gray-500">
+                                    <span x-text="category.count"></span> ürün
+                                </div>
+
+                                <!-- Selected Badge -->
+                                <div x-show="selectedCategory === category.id" class="absolute -top-2 -right-2">
+                                    <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center shadow-lg">
+                                        <i class="fa-solid fa-check text-white text-sm"></i>
+                                    </div>
+                                </div>
+                            </button>
+                        </template>
+
+                        <!-- All Categories (Reset) -->
+                        <button @click="selectedCategory = null; showCategories = false; filterProducts()"
+                                class="group relative bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl p-6 border-2 border-gray-900 transition-all hover:shadow-lg hover:-translate-y-1">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-2xl flex items-center justify-center">
+                                <i class="fa-solid fa-grid-2 text-2xl text-white"></i>
+                            </div>
+                            <h4 class="text-sm font-semibold text-center mb-2 text-white">Tüm Kategoriler</h4>
+                            <div class="text-xs text-center text-gray-300">
+                                <span x-text="products.length"></span> ürün
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters Dropdown Panel -->
+                <div x-show="showFilters"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 -translate-y-4"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-4"
+                     class="mb-12 bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl border border-blue-100 p-8 shadow-xl">
+
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900">Filtreler</h3>
+                        <div class="flex items-center gap-2">
+                            <button @click="resetFilters()" class="px-4 py-2 bg-white text-gray-700 rounded-xl hover:bg-gray-100 transition-colors text-sm">
+                                <i class="fa-solid fa-rotate-right mr-2"></i>Sıfırla
+                            </button>
+                            <button @click="showFilters = false" class="w-10 h-10 bg-white rounded-xl hover:bg-gray-100 transition-colors">
+                                <i class="fa-solid fa-times text-gray-600"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                        <!-- Price Range Filter -->
+                        <div class="bg-white rounded-2xl p-6 shadow-md">
+                            <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-tag text-blue-500"></i>
+                                Fiyat Aralığı
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between text-sm text-gray-600">
+                                    <span x-text="'₺' + priceRange.min.toLocaleString()"></span>
+                                    <span>-</span>
+                                    <span x-text="'₺' + priceRange.max.toLocaleString()"></span>
+                                </div>
+                                <input type="range" x-model="priceRange.min" min="0" max="500000" step="10000"
+                                       @input="filterProducts()"
+                                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                <input type="range" x-model="priceRange.max" min="0" max="500000" step="10000"
+                                       @input="filterProducts()"
+                                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- Stock Status Filter -->
+                        <div class="bg-white rounded-2xl p-6 shadow-md">
+                            <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-box text-green-500"></i>
+                                Stok Durumu
+                            </h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" x-model="filters.inStock" @change="filterProducts()"
+                                           class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">Stokta Mevcut</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" x-model="filters.onBackorder" @change="filterProducts()"
+                                           class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-blue-600 transition-colors">Sipariş Üzerine</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Special Features Filter -->
+                        <div class="bg-white rounded-2xl p-6 shadow-md">
+                            <h4 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                Özel Ürünler
+                            </h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" x-model="filters.featured" @change="filterProducts()"
+                                           class="w-5 h-5 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-yellow-600 transition-colors">Öne Çıkanlar</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" x-model="filters.bestseller" @change="filterProducts()"
+                                           class="w-5 h-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-red-600 transition-colors">Çok Satanlar</span>
+                                </label>
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" x-model="filters.newArrivals" @change="filterProducts()"
+                                           class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                                    <span class="text-sm text-gray-700 group-hover:text-green-600 transition-colors">Yeni Gelenler</span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Active Filters Summary -->
+                    <div x-show="activeFilters.length > 0" class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-sm font-medium text-gray-600">Aktif Filtreler:</span>
+                            <template x-for="filter in activeFilters" :key="filter">
+                                <span class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium flex items-center gap-2">
+                                    <span x-text="filter"></span>
+                                    <button @click="removeFilter(filter)" class="hover:text-blue-900">
+                                        <i class="fa-solid fa-times text-xs"></i>
+                                    </button>
+                                </span>
+                            </template>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Products Grid: 3 Columns -->

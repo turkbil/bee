@@ -513,7 +513,7 @@
             </div>
 
             {{-- Dropdown Wrapper - Contains both search and mega menu stacked --}}
-            <div class="absolute left-0 right-0 top-full z-20">
+            <div class="absolute left-0 right-0 top-full z-20" x-cloak>
                 {{-- Search Bar --}}
                 <div x-show="searchOpen"
                      x-transition:enter="transition ease-out duration-200"
@@ -522,8 +522,7 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="relative z-30 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg"
-                     x-cloak>
+                     class="relative z-30 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg">
                     <div class="container mx-auto px-4 sm:px-4 md:px-0 py-4">
                         {{-- Alpine.js + API Search (No Livewire overhead) --}}
                         <div class="relative" x-data="{
@@ -816,8 +815,7 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl" style="z-index:10;"
-                     x-cloak>
+                     class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl" style="z-index:10;">
                     <div class="container mx-auto px-4 sm:px-4 md:px-0 py-6 md:py-8">
                         {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                         <div style="display: grid;">
@@ -881,7 +879,8 @@
         {{-- Mobile Navigation Menu --}}
         <div x-show="mobileMenuOpen"
              x-transition
-             class="lg:hidden bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20 mobile-nav-container">
+             class="lg:hidden bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20 mobile-nav-container"
+             x-cloak>
             <div class="px-4 py-3 space-y-1 max-w-full overflow-x-hidden">
                 @php
                     // Mobile için ana kategoriler ve alt kategoriler

@@ -330,7 +330,7 @@
                         {{-- Forklift (Mega Menu) --}}
                         <button @mouseenter="activeMegaMenu = 'forklift'"
                                 class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-solid fa-forklift text-sm"></i>
+                            <i class="fa-light fa-forklift group-hover:fa-solid text-sm transition-all"></i>
                             <span>Forklift</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'forklift' }"></i>
@@ -339,7 +339,7 @@
                         {{-- Transpalet (Mega Menu) --}}
                         <button @mouseenter="activeMegaMenu = 'transpalet'"
                                 class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-solid fa-dolly text-sm"></i>
+                            <i class="fa-light fa-dolly group-hover:fa-solid text-sm transition-all"></i>
                             <span>Transpalet</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
@@ -348,7 +348,7 @@
                         {{-- İstif Makinesi (Mega Menu) - Sadece XL ve üstünde göster --}}
                         <button @mouseenter="activeMegaMenu = 'istif-makinesi'"
                                 class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-solid fa-box-open-full text-sm"></i>
+                            <i class="fa-light fa-box-open-full group-hover:fa-solid text-sm transition-all"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'istif-makinesi' }"></i>
@@ -357,7 +357,7 @@
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <button @mouseenter="activeMegaMenu = 'all-categories'"
                                 class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-solid fa-grid-2 transition-transform duration-300"
+                            <i class="fa-light fa-grid-2 group-hover:fa-solid transition-all duration-300"
                                :class="{ 'rotate-180': activeMegaMenu === 'all-categories' }"></i>
                             <span>Tüm Kategoriler</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"

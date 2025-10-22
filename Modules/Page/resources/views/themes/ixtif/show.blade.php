@@ -38,36 +38,36 @@
 
                     <!-- Features -->
                     <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
+                                <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
                             </div>
                             <div>
                                 <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
+                                <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
                             </div>
                             <div>
                                 <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="flex items-center gap-4 group cursor-pointer">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
+                                <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
                             </div>
                             <div>
                                 <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">Uzman danışmanlık</div>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4 xl:hidden">
-                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="flex items-center gap-4 xl:hidden group cursor-pointer">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
+                                <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
                             </div>
                             <div>
                                 <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
@@ -97,7 +97,7 @@
                 <!-- Forklift -->
                 <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                     <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                        <i class="fa-solid fa-warehouse text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
+                        <i class="fa-light fa-warehouse text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Forklift</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
@@ -109,7 +109,7 @@
                 <!-- Transpalet -->
                 <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                     <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                        <i class="fa-solid fa-dolly text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
+                        <i class="fa-light fa-dolly text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Transpalet</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
@@ -121,7 +121,7 @@
                 <!-- İstif Makinesi -->
                 <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                     <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                        <i class="fa-solid fa-boxes-stacked text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
+                        <i class="fa-light fa-boxes-stacked text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">İstif Makinesi</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
@@ -133,7 +133,7 @@
                 <!-- Reach Truck -->
                 <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                     <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                        <i class="fa-solid fa-truck-ramp-box text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-transform"></i>
+                        <i class="fa-light fa-truck-ramp-box text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Reach Truck</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>

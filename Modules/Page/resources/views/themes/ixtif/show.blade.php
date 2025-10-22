@@ -322,7 +322,7 @@
         <div class="container mx-auto px-4 sm:px-4 md:px-0">
             <div class="flex flex-wrap lg:flex-nowrap">
                 <!-- 1. Satın Alma -->
-                <div class="w-1/3 lg:w-1/6 relative">
+                <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
                     <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
                     <a href="{{ route('shop.index') }}" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
@@ -335,8 +335,8 @@
                 </div>
 
                 <!-- 2. Kiralama -->
-                <div class="w-1/3 lg:w-1/6 relative">
-                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-yellow-500 dark:via-yellow-400 to-transparent"></div>
+                <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
+                    <div class="hidden md:block absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-yellow-500 dark:via-yellow-400 to-transparent"></div>
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
@@ -348,8 +348,8 @@
                 </div>
 
                 <!-- 3. İkinci El -->
-                <div class="w-1/3 lg:w-1/6 relative">
-                    <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent"></div>
+                <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
+                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent"></div>
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
@@ -361,8 +361,8 @@
                 </div>
 
                 <!-- 4. Yedek Parça -->
-                <div class="w-1/3 lg:w-1/6 relative">
-                    <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-orange-500 dark:via-orange-400 to-transparent"></div>
+                <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
+                    <div class="hidden md:block absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-orange-500 dark:via-orange-400 to-transparent"></div>
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
@@ -374,7 +374,7 @@
                 </div>
 
                 <!-- 5. Teknik Servis -->
-                <div class="w-1/3 lg:w-1/6 relative">
+                <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
                     <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-purple-500 dark:via-purple-400 to-transparent"></div>
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
@@ -387,7 +387,7 @@
                 </div>
 
                 <!-- 6. Bakım Anlaşması -->
-                <div class="w-1/3 lg:w-1/6 relative">
+                <div class="w-1/2 md:w-1/3 lg:w-1/6 relative">
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg relative">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">

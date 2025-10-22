@@ -23,12 +23,18 @@ class SearchQuery extends Model
         'user_agent',
         'locale',
         'referrer_url',
+        'is_visible_in_tags',
+        'is_popular',
+        'is_hidden',
     ];
 
     protected $casts = [
         'filters_applied' => 'array',
         'results_count' => 'integer',
         'response_time_ms' => 'integer',
+        'is_visible_in_tags' => 'boolean',
+        'is_popular' => 'boolean',
+        'is_hidden' => 'boolean',
     ];
 
     /**
@@ -80,6 +86,22 @@ class SearchQuery extends Model
     }
 
     /**
+     * Scope: Get only popular (starred) searches
+     */
+    public function scopePopular($query)
+    {
+        return $query->where('is_popular', true);
+    }
+
+    /**
+     * Scope: Get visible searches (not hidden)
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('is_hidden', false);
+    }
+
+    /**
      * Get popular searches
      */
     public static function getPopularSearches(int $limit = 10, int $days = 30)
@@ -88,6 +110,21 @@ class SearchQuery extends Model
             ->where('created_at', '>=', now()->subDays($days))
             ->where('results_count', '>', 0)
             ->selectRaw('query, COUNT(*) as search_count, SUM(results_count) as total_results')
+            ->groupBy('query')
+            ->orderByDesc('search_count')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get manually marked popular searches (for footer display)
+     */
+    public static function getMarkedPopular(int $limit = 10)
+    {
+        return static::query()
+            ->where('is_popular', true)
+            ->where('is_hidden', false)
+            ->selectRaw('query, COUNT(*) as search_count')
             ->groupBy('query')
             ->orderByDesc('search_count')
             ->limit($limit)

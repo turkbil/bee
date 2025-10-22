@@ -1106,12 +1106,12 @@
                         </div>
                     </div>
 
-                    {{-- SERTİFİKALI --}}
+                    {{-- TEKNİK SERVİS --}}
                     <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-award text-4xl md:text-5xl text-yellow-400"></i>
+                        <i class="fa-solid fa-wrench text-4xl md:text-5xl text-yellow-400"></i>
                         <div>
-                            <div class="font-bold text-base md:text-lg text-white">SERTİFİKALI</div>
-                            <div class="text-xs md:text-sm text-blue-100">Uluslararası</div>
+                            <div class="font-bold text-base md:text-lg text-white">TEKNİK SERVİS</div>
+                            <div class="text-xs md:text-sm text-blue-100">Profesyonel</div>
                         </div>
                     </div>
                 </div>
@@ -1265,42 +1265,6 @@
 
                     {{-- AI Chat click handler moved to shop-product-show.js --}}
 
-                    {{-- Info Box --}}
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/30 dark:border-white/10">
-                        <div class="text-center mb-5">
-                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Türkiye'nin İstif Pazarı
-                            </h3>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">Forklift ve İstif Makineleri Merkezi
-                            </p>
-                        </div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
-                                <i class="fa-solid fa-box text-blue-600 dark:text-blue-400 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Satın Alma</div>
-                            </div>
-                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
-                                <i class="fa-solid fa-key text-yellow-600 dark:text-yellow-400 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Kiralama</div>
-                            </div>
-                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
-                                <i class="fa-solid fa-recycle text-green-600 dark:text-green-400 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-gray-900 dark:text-white">İkinci El</div>
-                            </div>
-                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
-                                <i class="fa-solid fa-gears text-orange-600 dark:text-orange-400 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Yedek Parça</div>
-                            </div>
-                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
-                                <i class="fa-solid fa-wrench text-purple-600 dark:text-purple-400 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-gray-900 dark:text-white">Teknik Servis</div>
-                            </div>
-                            <div class="text-center p-3 bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
-                                <i class="fa-solid fa-robot text-cyan-600 dark:text-cyan-400 text-xl mb-2"></i>
-                                <div class="text-xs font-semibold text-gray-900 dark:text-white">AI Canlı Destek</div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -1367,11 +1331,16 @@
         @scroll.window="show = (window.pageYOffset > 800)"
         @resize.window="updatePosition()"
         x-show="show && !hideButton"
-        x-transition
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-4"
         :style="`right: ${rightPosition}`"
-        class="fixed bottom-8 z-[60] hidden lg:block transition-all duration-300">
+        class="fixed bottom-8 z-[60] hidden lg:block">
         <a href="#contact"
-            class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all">
+            class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-lg hover:shadow-xl transition-all">
             <i class="fa-solid fa-envelope"></i>
             <span>Teklif Al</span>
         </a>

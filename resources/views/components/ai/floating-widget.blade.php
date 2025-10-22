@@ -185,12 +185,12 @@ class="fixed {{ $selectedPosition }} z-50">
             ></div>
         </div>
 
-        {{-- MOBILE CIRCLE: Same size as robot button (80x80), left side, no arrow --}}
+        {{-- MOBILE CIRCLE: Same size as robot button (80x80), directly on top of robot --}}
         <div
             :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
             class="lg:hidden absolute z-[101] transition-opacity duration-300
                    w-20 h-20 rounded-full
-                   left-[-90px] top-0
+                   top-[-90px] left-0
                    flex items-center justify-center text-center
                    bg-white shadow-2xl"
             style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"

@@ -97,6 +97,11 @@ document.addEventListener('alpine:init', () => {
             // Save state to localStorage
             localStorage.setItem('ai_chat_floating_open', this.floatingOpen.toString());
 
+            // Mark all messages as read when opening
+            if (this.floatingOpen && this.messages.length > 0) {
+                localStorage.setItem('ai_chat_last_read_index', (this.messages.length - 1).toString());
+            }
+
             // Scroll to bottom when opening
             if (this.floatingOpen) {
                 setTimeout(() => {
@@ -111,6 +116,11 @@ document.addEventListener('alpine:init', () => {
 
             // Save state to localStorage
             localStorage.setItem('ai_chat_floating_open', 'true');
+
+            // Mark all messages as read
+            if (this.messages.length > 0) {
+                localStorage.setItem('ai_chat_last_read_index', (this.messages.length - 1).toString());
+            }
 
             // Scroll to bottom when opening
             setTimeout(() => {
@@ -312,6 +322,22 @@ document.addEventListener('alpine:init', () => {
         // Get messages count
         get messageCount() {
             return this.messages.length;
+        },
+
+        // Get unread AI messages count (only assistant messages when chat is closed)
+        get unreadCount() {
+            // If chat is open, user has read everything
+            if (this.floatingOpen) {
+                return 0;
+            }
+
+            // Count assistant messages received while chat was closed
+            const lastReadIndex = parseInt(localStorage.getItem('ai_chat_last_read_index') || '-1');
+            const unreadMessages = this.messages.filter((msg, index) => {
+                return msg.role === 'assistant' && index > lastReadIndex;
+            });
+
+            return unreadMessages.length;
         },
 
         // Get last message

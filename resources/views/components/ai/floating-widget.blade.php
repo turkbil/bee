@@ -140,23 +140,44 @@ class="fixed {{ $selectedPosition }} z-50">
         aria-label="Sohbeti Aç"
     >
         {{-- Bubble Container (Message + Arrow as one unit) --}}
+        {{-- Desktop: Top position | Mobile: Left position --}}
         <div
             :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
-            class="absolute z-[101] transition-opacity duration-300"
-            style="top: -70px; right: -10px; filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
+            class="absolute z-[101] transition-opacity duration-300
+                   max-lg:left-[-10px] max-lg:top-1/2 max-lg:-translate-y-1/2
+                   lg:top-[-70px] lg:right-[-10px]"
+            style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
         >
             {{-- Bubble Message --}}
             <div
                 x-text="currentMessage"
-                class="bg-white px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap"
+                class="bg-white px-5 py-3 rounded-full text-sm font-bold
+                       max-lg:whitespace-normal max-lg:max-w-[200px] max-lg:text-xs
+                       lg:whitespace-nowrap"
                 style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
             >
             </div>
 
-            {{-- Bubble Arrow --}}
+            {{-- Bubble Arrow - Desktop: points down | Mobile: points right --}}
             <div
-                class="absolute w-0 h-0"
-                style="bottom: -10px; right: 39px; border-left: 11px solid transparent; border-right: 11px solid transparent; border-top: 11px solid white;"
+                class="absolute w-0 h-0
+                       max-lg:hidden
+                       lg:bottom-[-10px] lg:right-[39px]"
+                style="
+                    border-left: 11px solid transparent;
+                    border-right: 11px solid transparent;
+                    border-top: 11px solid white;
+                "
+            ></div>
+            {{-- Mobile arrow (points right) --}}
+            <div
+                class="absolute w-0 h-0 lg:hidden
+                       top-1/2 -translate-y-1/2 right-[-10px]"
+                style="
+                    border-top: 11px solid transparent;
+                    border-bottom: 11px solid transparent;
+                    border-left: 11px solid white;
+                "
             ></div>
         </div>
 
@@ -178,9 +199,9 @@ class="fixed {{ $selectedPosition }} z-50">
             <span class="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full"></span>
         </div>
 
-        {{-- Unread badge --}}
-        <span x-show="chat.messageCount > 0 && !chat.floatingOpen"
-              x-text="chat.messageCount"
+        {{-- Unread badge - Only show unread AI messages --}}
+        <span x-show="chat.unreadCount > 0 && !chat.floatingOpen"
+              x-text="chat.unreadCount"
               class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg"
               x-cloak></span>
     </button>

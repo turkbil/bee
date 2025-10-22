@@ -70,7 +70,7 @@
                             <article class="group relative bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-gray-100 dark:border-slate-700 hover:border-gray-200 dark:hover:border-slate-600 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
                                 <a href="{{ $dynamicUrl }}" class="block">
                                     <!-- Image Section -->
-                                    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700">
+                                    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
                                         @if ($featuredImage)
                                             <img src="{{ $imageUrl }}"
                                                  alt="{{ $title }}"

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Index V1: Minimal Grid - ixtif.com</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+
+        @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -20px) scale(1.1); }
+            50% { transform: translate(-20px, 20px) scale(0.9); }
+            75% { transform: translate(20px, 20px) scale(1.05); }
+        }
+
+        .animate-blob {
+            animation: blob 20s ease-in-out infinite;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-white to-blue-50">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Ana Sayfa -->
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                    <i class="fa-solid fa-home text-gray-700"></i>
+                    <span class="hidden sm:inline text-gray-700 font-medium">Ana Sayfa</span>
+                </a>
+
+                <!-- Sayfa Bilgisi -->
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+                        Shop Index 1 / 10
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">Minimal Grid Design</div>
+                </div>
+
+                <!-- Prev/Next Butonları -->
+                <div class="flex items-center gap-2">
+                    <button disabled class="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </button>
+                    <a href="design-shop-index-2.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-24 min-h-screen" x-data="shopData()">
+
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden border-b border-gray-100">
+            <!-- Animated Background -->
+            <div class="absolute inset-0 opacity-30">
+                <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+                <div class="absolute top-0 right-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+            </div>
+
+            <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+                <div class="max-w-4xl mx-auto text-center">
+                    <!-- Breadcrumb -->
+                    <div class="flex items-center justify-center gap-2 text-sm text-gray-500 mb-6">
+                        <span>Ana Sayfa</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                        <span class="text-gray-900 font-medium">Ürünler</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
+                        Ürün <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Kataloğu</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mb-10">
+                        1000+ profesyonel forklift ve istif makinesi. Depo ve lojistik çözümleriniz için en iyi ekipmanlar.
+                    </p>
+
+                    <!-- Search Bar -->
+                    <div class="max-w-2xl mx-auto">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                            <div class="relative flex items-center bg-white rounded-2xl shadow-xl shadow-gray-200/50 overflow-hidden border border-gray-200">
+                                <input
+                                    type="text"
+                                    placeholder="Ürün ara... (ör: Forklift, Transpalet)"
+                                    class="flex-1 px-6 py-5 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none"
+                                >
+                                <button class="px-8 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold transition-all flex items-center gap-2">
+                                    <i class="fa-solid fa-search"></i>
+                                    <span class="hidden sm:inline">Ara</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="border-b border-gray-100 bg-white/50 backdrop-blur-sm">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2" x-text="products.length"></div>
+                        <div class="text-sm text-gray-600">Toplam Ürün</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 mb-2">10</div>
+                        <div class="text-sm text-gray-600">Kategori</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 mb-2">100%</div>
+                        <div class="text-sm text-gray-600">Stokta</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-purple-600 mb-2">24/7</div>
+                        <div class="text-sm text-gray-600">Destek</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section class="py-16 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Filter Bar -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button class="px-6 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-filter"></i>
+                            <span>Filtrele</span>
+                        </button>
+                        <button class="px-6 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>Kategoriler</span>
+                        </button>
+                    </div>
+
+                    <select class="px-4 py-3 bg-white text-gray-900 rounded-xl border border-gray-200 hover:border-blue-500 focus:outline-none focus:border-blue-500 transition-all">
+                        <option>En Yeni</option>
+                        <option>En Popüler</option>
+                        <option>Fiyat (Düşük-Yüksek)</option>
+                        <option>Fiyat (Yüksek-Düşük)</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid: 3 Columns -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                    <template x-for="product in products" :key="product.id">
+                        <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
+                            <a href="#" class="block">
+                                <!-- Image -->
+                                <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                                    <img
+                                        :src="product.image"
+                                        :alt="product.title"
+                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    >
+
+                                    <!-- Hover Overlay -->
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                                    <!-- Badges -->
+                                    <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                        <template x-if="product.featured">
+                                            <span class="px-3 py-1.5 bg-yellow-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                                <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                            </span>
+                                        </template>
+                                        <template x-if="product.bestseller">
+                                            <span class="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                                <i class="fa-solid fa-fire mr-1"></i>Çok Satan
+                                            </span>
+                                        </template>
+                                    </div>
+
+                                    <!-- Quick Actions -->
+                                    <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                        <button class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </button>
+                                        <button class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="p-6 space-y-4">
+                                    <!-- Category -->
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-blue-600 font-medium uppercase tracking-wider" x-text="product.category"></span>
+                                    </div>
+
+                                    <!-- Title -->
+                                    <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors" x-text="product.title"></h3>
+
+                                    <!-- Description -->
+                                    <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed" x-text="product.description"></p>
+
+                                    <!-- Meta -->
+                                    <div class="flex items-center gap-4 text-xs text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <i class="fa-solid fa-barcode"></i>
+                                            <span x-text="product.sku"></span>
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <i class="fa-solid fa-eye"></i>
+                                            <span x-text="product.views"></span>
+                                        </span>
+                                    </div>
+
+                                    <!-- Price & CTA -->
+                                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600" x-text="product.price + ' ₺'"></div>
+                                        <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                            <span>Detay</span>
+                                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    </template>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="border-t border-gray-100 bg-gradient-to-br from-blue-50 to-purple-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                        Aradığınız Ürünü Bulamadınız mı?
+                    </h2>
+                    <p class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                        Uzman ekibimiz size özel çözümler üretmek için hazır. Hemen iletişime geçin.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="#" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-xl hover:shadow-2xl transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>İletişime Geç</span>
+                        </a>
+                        <a href="tel:+908503333333" class="px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all border border-gray-200 flex items-center gap-2">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>0850 333 33 33</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Alpine.js Data -->
+    <script>
+        function shopData() {
+            return {
+                products: [
+                    {
+                        id: 1,
+                        title: 'İXTİF CPD18FVL - 1.8 Ton Li-Ion Forklift',
+                        description: 'Güçlü Li-Ion bataryalı, sessiz çalışan, verimli forklift. Depo ve lojistik operasyonları için ideal.',
+                        category: 'Forklift',
+                        sku: 'CPD18FVL',
+                        price: '245.000',
+                        views: '1,234',
+                        image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=600&fit=crop',
+                        featured: true,
+                        bestseller: false
+                    },
+                    {
+                        id: 2,
+                        title: 'İXTİF Akülü Transpalet 2.0 Ton',
+                        description: 'Ergonomik tasarım, uzun batarya ömrü, kolay kullanım. Dar alanlarda maksimum performans.',
+                        category: 'Transpalet',
+                        sku: 'ATP-2000',
+                        price: '89.500',
+                        views: '892',
+                        image: 'https://images.unsplash.com/photo-1619468129361-605ebea04b44?w=600&h=600&fit=crop',
+                        featured: false,
+                        bestseller: true
+                    },
+                    {
+                        id: 3,
+                        title: 'İXTİF Reach Truck 2.5 Ton',
+                        description: 'Yüksek kaldırma kapasitesi, dar koridor çalışması, güvenli operasyon. Yüksek raflı depolara özel.',
+                        category: 'Reach Truck',
+                        sku: 'RT-2500',
+                        price: '325.000',
+                        views: '756',
+                        image: 'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=600&h=600&fit=crop',
+                        featured: false,
+                        bestseller: false
+                    },
+                    {
+                        id: 4,
+                        title: 'İXTİF Elektrikli İstif Makinesi',
+                        description: 'Kompakt boyut, yüksek stabilite, sessiz çalışma. Küçük depolar için perfect çözüm.',
+                        category: 'İstif Makinesi',
+                        sku: 'EIM-1500',
+                        price: '125.000',
+                        views: '1,012',
+                        image: 'https://images.unsplash.com/photo-1594737513044-c4bb5ecfd6cb?w=600&h=600&fit=crop',
+                        featured: true,
+                        bestseller: false
+                    },
+                    {
+                        id: 5,
+                        title: 'İXTİF Sipariş Toplama Makinesi',
+                        description: 'Operatör platformu, yüksek erişim, güvenlik özelliği. E-commerce depoları için ideal.',
+                        category: 'Sipariş Toplama',
+                        sku: 'STM-2000',
+                        price: '185.000',
+                        views: '643',
+                        image: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=600&h=600&fit=crop',
+                        featured: false,
+                        bestseller: true
+                    },
+                    {
+                        id: 6,
+                        title: 'İXTİF Otonom Forklift AGV',
+                        description: 'Tam otonom sistem, AI destekli navigasyon, 7/24 çalışma kapasitesi. Geleceğin deposu.',
+                        category: 'Otonom Sistemler',
+                        sku: 'AGV-AUTO',
+                        price: '450.000',
+                        views: '2,145',
+                        image: 'https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=600&h=600&fit=crop',
+                        featured: true,
+                        bestseller: true
+                    },
+                    {
+                        id: 7,
+                        title: 'İXTİF Dizel Forklift 3.5 Ton',
+                        description: 'Güçlü motor, dış mekan kullanımı, zorlu arazi performansı. İnşaat ve açık alan operasyonları.',
+                        category: 'Forklift',
+                        sku: 'DF-3500',
+                        price: '295.000',
+                        views: '534',
+                        image: 'https://images.unsplash.com/photo-1596651976841-74e1fe59e4cf?w=600&h=600&fit=crop',
+                        featured: false,
+                        bestseller: false
+                    },
+                    {
+                        id: 8,
+                        title: 'İXTİF Palet Jack Manuel',
+                        description: 'Dayanıklı çelik konstrüksiyon, ergonomik tutamak, kolay manevra. Her işletme için temel ekipman.',
+                        category: 'Transpalet',
+                        sku: 'PJ-MANUAL',
+                        price: '12.500',
+                        views: '1,876',
+                        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=600&fit=crop',
+                        featured: false,
+                        bestseller: true
+                    },
+                    {
+                        id: 9,
+                        title: 'İXTİF Lastik Takımı (4 Adet)',
+                        description: 'Premium kalite dolgu lastik, uzun ömürlü, tüm zemin tiplerinde kullanım. Siyah dolgu tip.',
+                        category: 'Yedek Parça',
+                        sku: 'TIRE-SET-4',
+                        price: '8.500',
+                        views: '412',
+                        image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=600&h=600&fit=crop',
+                        featured: false,
+                        bestseller: false
+                    }
+                ]
+            }
+        }
+    </script>
+
+</body>
+</html>

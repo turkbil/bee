@@ -1009,7 +1009,7 @@
             </div>
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Clean Version --}}
-            <div class="lg:col-span-1 order-first lg:order-last">
+            <div class="lg:col-span-1 order-first lg:order-last relative">
                 <div class="space-y-8" id="sticky-sidebar">
                     {{-- Product Info Card --}}
                     <div
@@ -1407,51 +1407,54 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 2. STICKY SIDEBAR - SCROLL KONTROLÜ İLE
+    // 2. SIDEBAR STICKY - BASİT FIXED YAKLAŞIMI
     // ==========================================
     if (sidebar) {
-        // Parent overflow kontrolü (sticky çalışması için gerekli)
-        const gridContainer = sidebar.closest('.grid');
-        if (gridContainer) {
-            gridContainer.style.overflow = 'visible';
-        }
+        const sidebarParent = sidebar.parentElement;
 
-        // Sidebar'ın başlangıç pozisyonunu kaydet
-        const sidebarInitialTop = sidebar.getBoundingClientRect().top + window.pageYOffset;
-
-        // Scroll event'inde sidebar'ı kontrol et
-        window.addEventListener('scroll', function() {
+        function handleSidebarSticky() {
             if (window.innerWidth < 1024) {
-                // Mobile'da sticky kaldır
-                sidebar.classList.remove('lg:sticky');
                 sidebar.style.position = '';
                 sidebar.style.top = '';
+                sidebar.style.width = '';
                 return;
             }
 
             const scrollTop = window.pageYOffset;
             const headerHeight = header ? header.offsetHeight : 0;
             const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
-            const stickyTop = headerHeight + tocBarHeight + 24;
+            const stickyOffset = headerHeight + tocBarHeight + 24;
 
-            // Sidebar scroll pozisyonuna ulaştıysa sticky yap
-            if (scrollTop >= (sidebarInitialTop - stickyTop)) {
-                sidebar.style.position = 'sticky';
-                sidebar.style.top = stickyTop + 'px';
+            const sidebarParentRect = sidebarParent.getBoundingClientRect();
+            const sidebarParentTop = sidebarParent.offsetTop;
+            const sidebarParentBottom = sidebarParentTop + sidebarParent.offsetHeight;
+
+            const sidebarHeight = sidebar.offsetHeight;
+            const maxScrollPosition = sidebarParentBottom - sidebarHeight - stickyOffset;
+
+            if (scrollTop >= sidebarParentTop - stickyOffset && scrollTop <= maxScrollPosition) {
+                // Sticky mode
+                sidebar.style.position = 'fixed';
+                sidebar.style.top = stickyOffset + 'px';
+                sidebar.style.width = sidebarParentRect.width + 'px';
+            } else if (scrollTop > maxScrollPosition) {
+                // Bottom limit
+                sidebar.style.position = 'absolute';
+                sidebar.style.top = (sidebarParent.offsetHeight - sidebarHeight) + 'px';
+                sidebar.style.width = '100%';
             } else {
-                // Henüz ulaşmadıysa normal pozisyon
-                sidebar.style.position = 'relative';
-                sidebar.style.top = 'auto';
+                // Normal position
+                sidebar.style.position = '';
+                sidebar.style.top = '';
+                sidebar.style.width = '';
             }
-        });
+        }
 
-        // İlk yükleme - pozisyonu ayarla
-        updateSidebarTop();
+        window.addEventListener('scroll', handleSidebarSticky);
+        window.addEventListener('resize', handleSidebarSticky);
+        handleSidebarSticky(); // İlk çalıştır
 
-        // Resize'da güncelle
-        window.addEventListener('resize', updateSidebarTop);
-
-        console.log('✅ Sticky sidebar enabled with scroll control');
+        console.log('✅ Sidebar sticky initialized (fixed approach)');
     }
 
     // ==========================================

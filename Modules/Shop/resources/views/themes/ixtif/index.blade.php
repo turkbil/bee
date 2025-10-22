@@ -67,37 +67,63 @@
                             @endphp
 
                             <!-- Modern Ürün Kartı -->
-                            <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
+                            <article class="group relative bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-gray-100 dark:border-slate-700 hover:border-gray-200 dark:hover:border-slate-600 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
                                 <a href="{{ $dynamicUrl }}" class="block">
                                     <!-- Image Section -->
-                                    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                                    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800">
                                         @if ($featuredImage)
                                             <img src="{{ $imageUrl }}"
                                                  alt="{{ $title }}"
-                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                 class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700"
                                                  loading="lazy">
                                         @else
                                             <!-- Category Icon Fallback -->
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <i class="fa-light fa-box text-8xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                                                <i class="fa-light fa-box text-8xl text-blue-400 dark:text-blue-300 group-hover:scale-110 transition-transform"></i>
                                             </div>
                                         @endif
 
                                         <!-- Hover Overlay -->
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                                        <!-- Badges -->
+                                        <!-- Badges - Dinamik Badge Sistemi -->
                                         <div class="absolute top-4 left-4 flex flex-col gap-2">
-                                            @if ($item->featured ?? false)
-                                                <span class="px-3 py-1.5 bg-yellow-500 text-white text-xs font-semibold rounded-lg shadow-lg">
-                                                    <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                            @php
+                                                $productBadges = collect($item->badges ?? [])
+                                                    ->where('is_active', true)
+                                                    ->sortBy('priority')
+                                                    ->take(3); // Max 3 badge göster
+                                            @endphp
+
+                                            @foreach ($productBadges as $badge)
+                                                @php
+                                                    $badgeColor = $badge['color'] ?? 'gray';
+                                                    $badgeIcon = $badge['icon'] ?? 'tag';
+                                                    $badgeType = $badge['type'] ?? 'custom';
+                                                    $badgeValue = $badge['value'] ?? null;
+
+                                                    // Badge label'ı belirle
+                                                    $badgeLabels = [
+                                                        'new_arrival' => 'Yeni',
+                                                        'discount' => '%' . $badgeValue . ' İndirim',
+                                                        'limited_stock' => 'Son ' . $badgeValue . ' Adet',
+                                                        'free_shipping' => 'Ücretsiz Kargo',
+                                                        'bestseller' => 'Çok Satan',
+                                                        'featured' => 'Öne Çıkan',
+                                                        'eco_friendly' => 'Çevre Dostu',
+                                                        'warranty' => $badgeValue . ' Ay Garanti',
+                                                        'pre_order' => 'Ön Sipariş',
+                                                        'imported' => 'İthal',
+                                                        'custom' => $badge['label']['tr'] ?? 'Özel'
+                                                    ];
+
+                                                    $badgeLabel = $badgeLabels[$badgeType] ?? ($badge['label']['tr'] ?? 'Badge');
+                                                @endphp
+
+                                                <span class="px-3 py-1.5 bg-{{ $badgeColor }}-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                                    <i class="fa-solid fa-{{ $badgeIcon }} mr-1"></i>{{ $badgeLabel }}
                                                 </span>
-                                            @endif
-                                            @if ($item->bestseller ?? false)
-                                                <span class="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg shadow-lg">
-                                                    <i class="fa-solid fa-fire mr-1"></i>Çok Satan
-                                                </span>
-                                            @endif
+                                            @endforeach
                                         </div>
 
                                         <!-- Quick Actions -->

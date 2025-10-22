@@ -24,12 +24,14 @@ class ShopController extends Controller
     public function index()
     {
         $products = ShopProduct::query()
-            ->with(['category', 'brand', 'childProducts' => function ($q) {
+            ->with(['category', 'brand', 'media', 'childProducts' => function ($q) {
                 $q->active()->published()->orderBy('variant_type')->orderBy('product_id');
             }])
             ->whereNull('parent_product_id') // Sadece ana ürünler (varyant olmayanlar)
+            ->where('show_on_homepage', 1) // Ana sayfada göster = 1 olanlar
             ->published()
             ->active()
+            ->orderBy('sort_order', 'asc')
             ->orderByDesc('published_at')
             ->simplePaginate(config('shop.pagination.front_per_shop', 12));
 

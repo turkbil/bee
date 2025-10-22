@@ -152,8 +152,13 @@
             </div>
 
             @php
-                $featuredProducts = \Modules\Shop\app\Models\ShopProduct::where('is_active', true)
-                    ->inRandomOrder()
+                $featuredProducts = \Modules\Shop\app\Models\ShopProduct::with(['category', 'brand', 'media'])
+                    ->where('is_active', true)
+                    ->where('show_on_homepage', true)
+                    ->whereNotNull('published_at')
+                    ->whereNull('parent_product_id')
+                    ->orderBy('sort_order', 'asc')
+                    ->orderByDesc('published_at')
                     ->take(8)
                     ->get();
             @endphp
@@ -163,7 +168,7 @@
                 @foreach($featuredProducts as $product)
                 @php
                     $productTitle = $product->getTranslated('title', app()->getLocale());
-                    $productImage = $product->getFirstMediaUrl('product_images');
+                    $productImage = $product->getFirstMediaUrl('featured_image');
                     $productSlug = $product->getTranslated('slug', app()->getLocale());
 
                     // Slug varsa slug ile, yoksa ID ile route oluştur
@@ -175,11 +180,11 @@
                 @endphp
                 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all cursor-pointer">
                     <!-- Product Image -->
-                    <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center mb-4 overflow-hidden bg-white/5 dark:bg-white/5">
+                    <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center mb-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800">
                         @if($productImage)
                             <img src="{{ $productImage }}"
                                  alt="{{ $productTitle }}"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                                 class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300">
                         @else
                             <i class="fa-light fa-box text-6xl text-blue-400 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
                         @endif
@@ -203,7 +208,7 @@
                             shortDescription: '{{ addslashes($product->getTranslated('short_description', app()->getLocale()) ?? '') }}',
                             sku: '{{ $product->sku ?? '' }}',
                             primarySpecs: {{ json_encode(array_values(array_filter($product->primary_specs ?? [], fn($spec) => is_array($spec) && ($spec['label'] ?? false) && ($spec['value'] ?? false)))) }},
-                            images: {{ json_encode($product->getMedia('product_images')->map(fn($media) => $media->getUrl())->toArray()) }}
+                            images: {{ json_encode(array_merge($product->getMedia('featured_image')->map(fn($media) => $media->getUrl())->toArray(), $product->getMedia('gallery')->map(fn($media) => $media->getUrl())->toArray())) }}
                         })"
                         class="mt-4 w-full bg-white/10 dark:bg-white/10 hover:bg-white/20 dark:hover:bg-white/20 text-gray-900 dark:text-white py-2 rounded-lg text-sm font-semibold transition-colors">
                         <i class="fa-light fa-eye mr-2"></i>

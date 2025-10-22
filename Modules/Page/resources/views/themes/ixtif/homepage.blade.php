@@ -196,21 +196,21 @@
                 <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
                     <!-- Category -->
                     <div class="flex items-center gap-2 mb-2">
-                        <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">
+                        <span class="text-xs text-blue-700 dark:text-blue-400 font-medium uppercase tracking-wider">
                             {{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}
                         </span>
                     </div>
 
                     <!-- Title -->
                     <a href="{{ $productUrl }}">
-                        <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-white leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-600 transition-colors">
+                        <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                             {{ $productTitle }}
                         </h3>
                     </a>
 
                     <!-- Price & CTA -->
-                    <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                    <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-200 dark:border-gray-600 flex items-center justify-between">
+                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-purple-700 dark:from-blue-400 dark:to-purple-400">
                             Fiyat Sorunuz
                         </div>
                         <button
@@ -227,7 +227,7 @@
                                 primarySpecs: {{ json_encode(array_values(array_filter($product->primary_specs ?? [], fn($spec) => is_array($spec) && ($spec['label'] ?? false) && ($spec['value'] ?? false)))) }},
                                 images: {{ json_encode(array_merge($product->getMedia('featured_image')->map(fn($media) => $media->getUrl())->toArray(), $product->getMedia('gallery')->map(fn($media) => $media->getUrl())->toArray())) }}
                             })"
-                            class="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold text-blue-600 hover:gap-2 md:hover:gap-3 transition-all">
+                            class="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:gap-2 md:hover:gap-3 transition-all">
                             <span>Özet</span>
                             <i class="fa-solid fa-arrow-right text-xs md:text-sm group-hover:translate-x-1 transition-transform"></i>
                         </button>
@@ -294,7 +294,7 @@
                 <!-- Right: Product Details -->
                 <div>
                     <!-- Category & Brand -->
-                    <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <div class="text-sm text-gray-700 dark:text-gray-300 mb-2">
                         <span x-text="selectedProduct?.category || 'Kategori'"></span>
                         <template x-if="selectedProduct?.brand">
                             <span> / <span x-text="selectedProduct.brand"></span></span>
@@ -302,32 +302,32 @@
                     </div>
 
                     <!-- Title -->
-                    <h2 class="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-4" x-text="selectedProduct?.title || 'Ürün Adı'"></h2>
+                    <h2 class="text-3xl lg:text-4xl font-black text-gray-900 dark:text-gray-100 mb-4" x-text="selectedProduct?.title || 'Ürün Adı'"></h2>
 
                     <!-- SKU -->
                     <div class="mb-6" x-show="selectedProduct?.sku">
-                        <span class="text-sm text-gray-600 dark:text-gray-400">Ürün Kodu: </span>
-                        <span class="text-sm font-semibold text-gray-900 dark:text-white" x-text="selectedProduct?.sku"></span>
+                        <span class="text-sm text-gray-700 dark:text-gray-300">Ürün Kodu: </span>
+                        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100" x-text="selectedProduct?.sku"></span>
                     </div>
 
                     <!-- Short Description (Hero Text) -->
-                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed" x-show="selectedProduct?.shortDescription" x-text="selectedProduct?.shortDescription"></p>
+                    <p class="text-lg text-gray-800 dark:text-gray-200 mb-6 leading-relaxed" x-show="selectedProduct?.shortDescription" x-text="selectedProduct?.shortDescription"></p>
 
                     <!-- Primary Specs (4 Main Features) -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" x-show="selectedProduct?.primarySpecs && selectedProduct.primarySpecs.length > 0">
                         <template x-for="(spec, index) in selectedProduct?.primarySpecs?.slice(0, 4)" :key="index">
                             <div class="group relative overflow-hidden">
-                                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
-                                <div class="relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
+                                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-400/20 dark:to-purple-400/20 rounded-xl blur-lg group-hover:blur-xl transition-all"></div>
+                                <div class="relative bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200/50 dark:border-gray-600/50 rounded-xl p-4 hover:bg-white/80 dark:hover:bg-white/15 transition-all">
                                     <!-- Icon + Label -->
                                     <div class="flex items-center gap-2 mb-3">
-                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <i class="fa-light fa-bolt text-white text-sm"></i>
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-700 to-purple-700 dark:from-blue-400 dark:to-purple-400 rounded-lg flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-bolt text-white dark:text-gray-900 text-sm"></i>
                                         </div>
-                                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300" x-text="spec.label"></h4>
+                                        <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200" x-text="spec.label"></h4>
                                     </div>
                                     <!-- Value -->
-                                    <div class="text-xl font-bold text-gray-900 dark:text-white" x-text="spec.value"></div>
+                                    <div class="text-xl font-bold text-gray-900 dark:text-gray-100" x-text="spec.value"></div>
                                 </div>
                             </div>
                         </template>
@@ -336,11 +336,11 @@
                     <!-- Actions -->
                     <div class="flex gap-4">
                         <a :href="selectedProduct?.url || '#'"
-                           class="flex-grow bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-base lg:text-lg transition-all text-center">
+                           class="flex-grow bg-gradient-to-r from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-400 dark:hover:to-purple-400 text-white dark:text-gray-900 py-4 rounded-xl font-bold text-base lg:text-lg transition-all text-center">
                             <i class="fa-light fa-arrow-right mr-2"></i>
                             Ürün Sayfasına Git
                         </a>
-                        <button class="w-14 h-14 lg:w-16 lg:h-16 border-2 border-gray-300 dark:border-gray-600 rounded-xl flex items-center justify-center hover:border-red-500 hover:text-red-500 transition-colors">
+                        <button class="w-14 h-14 lg:w-16 lg:h-16 border-2 border-gray-300 dark:border-gray-500 text-gray-600 dark:text-gray-300 rounded-xl flex items-center justify-center hover:border-red-600 hover:text-red-600 dark:hover:border-red-400 dark:hover:text-red-400 transition-colors">
                             <i class="fa-light fa-heart text-xl lg:text-2xl"></i>
                         </button>
                     </div>

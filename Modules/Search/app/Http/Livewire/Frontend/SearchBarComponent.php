@@ -6,6 +6,7 @@ namespace Modules\Search\App\Http\Livewire\Frontend;
 
 use Livewire\Component;
 use Modules\Search\App\Services\UniversalSearchService;
+use Modules\Search\App\Services\SearchClickTracker;
 
 class SearchBarComponent extends Component
 {
@@ -50,6 +51,21 @@ class SearchBarComponent extends Component
     public function closeDropdown()
     {
         $this->isOpen = false;
+    }
+
+    /**
+     * Track click on search result
+     */
+    public function trackClick(int $resultId, string $resultType, int $position)
+    {
+        $tracker = app(SearchClickTracker::class);
+        $tracker->trackClick(
+            query: $this->query,
+            resultId: $resultId,
+            resultType: $resultType,
+            position: $position,
+            openedInNewTab: false
+        );
     }
 
     public function render()

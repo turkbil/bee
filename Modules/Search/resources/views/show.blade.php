@@ -171,7 +171,7 @@
             }
         }"
         x-init="removeFallback(); if (!prefetched) { fetchResults(true); }">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8 md:py-12">
             {{-- Header --}}
             <div class="mb-6 space-y-4">
                 <div>
@@ -208,7 +208,7 @@
                     </p>
                 </div>
 
-                <div class="w-full max-w-3xl">
+                <div class="w-full">
                     <div class="flex flex-col sm:flex-row gap-3">
                         <input type="search"
                                x-model.trim="query"

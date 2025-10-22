@@ -490,10 +490,13 @@ class UniversalSearchService
 
         foreach ($results['results'] as $type => $data) {
             foreach ($data['items'] as $item) {
+                $productBadge = $this->resolveProductBadge($item);
+                $typeLabel = $productBadge ?: $this->getTypeLabel($type);
+
                 $formatted->push([
                     'id' => $item->getKey(),
                     'type' => $type,
-                    'type_label' => $this->getTypeLabel($type),
+                    'type_label' => $typeLabel,
                     'title' => $this->getItemTitle($item),
                     'description' => $this->getItemDescription($item),
                     'url' => $this->getItemUrl($item, $type),
@@ -502,12 +505,16 @@ class UniversalSearchService
                     'highlighted_title' => $this->highlightQuery($this->getItemTitle($item), $query),
                     'highlighted_description' => $this->highlightQuery($this->getItemDescription($item), $query),
                     'is_master_product' => $item->is_master_product ?? null,
-                    'product_badge' => $this->resolveProductBadge($item),
+                    'product_badge' => $productBadge,
+                    'is_variant' => $item instanceof ShopProduct && $item->isVariant(),
                 ]);
             }
         }
 
-        return $formatted;
+        // Sort: Parent products first, then variants
+        return $formatted->sortBy(function ($item) {
+            return $item['is_variant'] ? 1 : 0;
+        })->values();
     }
 
     /**

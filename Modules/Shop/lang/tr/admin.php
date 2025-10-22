@@ -281,4 +281,8 @@ return [
     'edit' => 'Düzenle',
     'delete' => 'Sil',
     'actions' => 'İşlemler',
+
+    // Anasayfa gösterim
+    'product_added_to_homepage' => 'Ürün anasayfaya eklendi',
+    'product_removed_from_homepage' => 'Ürün anasayfadan kaldırıldı',
 ];

@@ -181,6 +181,29 @@ class ShopProductComponent extends Component
         $this->emitResultToast($result);
     }
 
+    public function toggleHomepage(int $productId): void
+    {
+        try {
+            $product = ShopProduct::findOrFail($productId);
+            $product->show_on_homepage = !$product->show_on_homepage;
+            $product->save();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => $product->show_on_homepage
+                    ? __('shop::admin.product_added_to_homepage')
+                    : __('shop::admin.product_removed_from_homepage'),
+                'type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
     public function bulkDeleteSelected(): void
     {
         if (empty($this->selectedItems)) {

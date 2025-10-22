@@ -304,6 +304,9 @@
 
         </div>
 
+        {{-- BADGE YÖNETİMİ --}}
+        @include('shop::admin.partials.badge-manager')
+
         {{-- JSON İÇERİK YÖNETİMİ --}}
         @if ($productId)
             @include('shop::admin.partials.json-manager')

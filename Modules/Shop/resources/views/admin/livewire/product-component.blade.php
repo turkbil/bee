@@ -242,18 +242,57 @@
                                     @endif
                                 </td>
                                 <td class="text-center align-middle">
-                                    <button wire:click="toggleActive({{ $product->product_id }})"
-                                        class="btn btn-icon btn-sm {{ $product->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
-                                        <div wire:loading wire:target="toggleActive({{ $product->product_id }})"
-                                            class="spinner-border spinner-border-sm"></div>
-                                        <div wire:loading.remove wire:target="toggleActive({{ $product->product_id }})">
-                                            @if ($product->is_active)
-                                                <i class="fas fa-check"></i>
-                                            @else
-                                                <i class="fas fa-times"></i>
+                                    <div class="d-flex align-items-center gap-2 justify-content-center">
+                                        <!-- Aktif/Pasif -->
+                                        <button wire:click="toggleActive({{ $product->product_id }})"
+                                            class="btn btn-icon btn-sm {{ $product->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
+                                            data-bs-toggle="tooltip"
+                                            title="{{ $product->is_active ? __('admin.active') : __('admin.inactive') }}">
+                                            <div wire:loading wire:target="toggleActive({{ $product->product_id }})"
+                                                class="spinner-border spinner-border-sm"></div>
+                                            <div wire:loading.remove wire:target="toggleActive({{ $product->product_id }})">
+                                                @if ($product->is_active)
+                                                    <i class="fas fa-check"></i>
+                                                @else
+                                                    <i class="fas fa-times"></i>
+                                                @endif
+                                            </div>
+                                        </button>
+
+                                        <!-- Anasayfa Göster -->
+                                        <button wire:click="toggleHomepage({{ $product->product_id }})"
+                                            class="btn btn-icon btn-sm {{ $product->show_on_homepage ? 'text-success bg-transparent' : 'text-muted bg-transparent' }}"
+                                            data-bs-toggle="tooltip"
+                                            title="{{ $product->show_on_homepage ? 'Anasayfada gösteriliyor' : 'Anasayfada gösterilmiyor' }}">
+                                            <div wire:loading wire:target="toggleHomepage({{ $product->product_id }})"
+                                                class="spinner-border spinner-border-sm"></div>
+                                            <div wire:loading.remove wire:target="toggleHomepage({{ $product->product_id }})">
+                                                <i class="fas fa-home"></i>
+                                            </div>
+                                        </button>
+
+                                        @php
+                                            $hasFeaturedImage = $product->hasMedia('featured_image');
+                                            $galleryCount = $product->getMedia('gallery')->count();
+                                        @endphp
+
+                                        <!-- Ana Foto -->
+                                        <div class="btn btn-icon btn-sm {{ $hasFeaturedImage ? 'text-primary' : 'text-muted' }} bg-transparent"
+                                            data-bs-toggle="tooltip"
+                                            title="{{ $hasFeaturedImage ? 'Ana foto var' : 'Ana foto yok' }}">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+
+                                        <!-- Galeri -->
+                                        <div class="btn btn-icon btn-sm {{ $galleryCount > 0 ? 'text-info' : 'text-muted' }} bg-transparent d-flex align-items-center gap-1"
+                                            data-bs-toggle="tooltip"
+                                            title="{{ $galleryCount > 0 ? $galleryCount . ' galeri fotoğrafı' : 'Galeri yok' }}">
+                                            <i class="fas fa-images"></i>
+                                            @if($galleryCount > 0)
+                                                <small class="fw-bold">{{ $galleryCount }}</small>
                                             @endif
                                         </div>
-                                    </button>
+                                    </div>
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">

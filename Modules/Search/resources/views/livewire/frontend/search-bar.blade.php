@@ -15,6 +15,7 @@
         <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-50 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
             @foreach($this->results as $index => $item)
                 <a href="{{ $item['url'] }}"
+                   @click="$wire.trackClick({{ $item['id'] }}, '{{ $item['type'] }}', {{ $index }})"
                    class="block p-3 hover:bg-gray-100 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
                     <div class="font-medium text-gray-900 dark:text-white">{!! $item['highlighted_title'] !!}</div>
                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ $item['type_label'] }}</div>

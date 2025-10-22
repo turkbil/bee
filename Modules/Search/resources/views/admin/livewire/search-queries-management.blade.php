@@ -53,10 +53,10 @@
                 @include('search::admin.helper')
 
                 <div class="card-header">
-                    <h3 class="card-title">Arama Sorguları Yönetimi</h3>
+                    <h3 class="card-title"><i class="fa-solid fa-list me-2"></i>Arama Sorguları Yönetimi</h3>
                     <div class="ms-auto">
                         <a href="{{ route('admin.search.analytics') }}" class="btn btn-sm btn-outline-primary">
-                            <i class="ti ti-chart-bar me-1"></i>
+                            <i class="fa-solid fa-chart-bar me-1"></i>
                             Analytics
                         </a>
                     </div>
@@ -111,10 +111,10 @@
                                                        class="form-control"
                                                        wire:keydown.enter="saveEdit">
                                                 <button wire:click="saveEdit" class="btn btn-success">
-                                                    <i class="ti ti-check"></i>
+                                                    <i class="fa-solid fa-check"></i>
                                                 </button>
                                                 <button wire:click="cancelEdit" class="btn btn-secondary">
-                                                    <i class="ti ti-x"></i>
+                                                    <i class="fa-solid fa-xmark"></i>
                                                 </button>
                                             </div>
                                         @else
@@ -144,21 +144,21 @@
                                                 wire:click="togglePopular('{{ $query->query }}')"
                                                 class="btn {{ $query->is_popular ? 'btn-warning' : 'btn-outline-warning' }}"
                                                 title="{{ $query->is_popular ? 'Popülerlikten çıkar' : 'Popüler yap' }}">
-                                                <i class="ti ti-star"></i>
+                                                <i class="fa-solid fa-star"></i>
                                             </button>
 
                                             <button
                                                 wire:click="toggleHidden('{{ $query->query }}')"
                                                 class="btn {{ $query->is_hidden ? 'btn-secondary' : 'btn-outline-secondary' }}"
                                                 title="{{ $query->is_hidden ? 'Göster' : 'Gizle' }}">
-                                                <i class="ti ti-eye-{{ $query->is_hidden ? 'off' : 'check' }}"></i>
+                                                <i class="fa-solid fa-eye{{ $query->is_hidden ? '-slash' : '' }}"></i>
                                             </button>
 
                                             <button
                                                 wire:click="startEdit('{{ $query->query }}')"
                                                 class="btn btn-outline-primary"
                                                 title="Düzenle">
-                                                <i class="ti ti-edit"></i>
+                                                <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
 
                                             <button
@@ -166,7 +166,7 @@
                                                 wire:confirm="Bu arama sorgusunu silmek istediğinize emin misiniz?"
                                                 class="btn btn-outline-danger"
                                                 title="Sil">
-                                                <i class="ti ti-trash"></i>
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>

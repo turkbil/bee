@@ -421,6 +421,8 @@
                             <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
+                                    aria-label="Arama menüsünü aç/kapat"
+                                    :aria-expanded="searchOpen"
                                     class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
                                 <i class="fa-solid text-lg transition-all duration-200"
                                    :class="searchOpen ? 'fa-minus' : 'fa-search'"></i>
@@ -448,6 +450,7 @@
                             <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
+                                    :aria-label="darkMode === 'dark' ? 'Aydınlık moda geç' : 'Karanlık moda geç'"
                                     class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
                                 <template x-if="darkMode === 'dark'">
                                     <i class="fa-solid fa-sun text-lg"></i>
@@ -482,6 +485,8 @@
                             <button @click="mobileMenuOpen = !mobileMenuOpen"
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
+                                    aria-label="Mobil menüyü aç/kapat"
+                                    :aria-expanded="mobileMenuOpen"
                                     class="w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 flex items-center justify-center text-white transition-all duration-300">
                                 <i class="fa-solid text-lg transition-all duration-300"
                                    :class="mobileMenuOpen ? 'fa-times rotate-90' : 'fa-bars'"></i>

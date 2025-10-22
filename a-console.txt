@@ -209,7 +209,10 @@ initTree @ livewire.js?id=df3a17f2:1479
 start @ livewire.js?id=df3a17f2:1427
 start2 @ livewire.js?id=df3a17f2:8851
 (anonymous) @ livewire.js?id=df3a17f2:10215
-(index):1 The resource https://ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-(index):1 The resource https://ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-(index):1 The resource https://ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+ai-chat.js?v=1761168563:224 ✅ Message sent successfully {tokens: 0, modules: Array(2)}
 ai-chat.js?v=1761168563:224 ✅ Message sent successfully {tokens: 0, modules: Array(2)}

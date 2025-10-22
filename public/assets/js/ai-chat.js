@@ -569,16 +569,34 @@ window.aiChatRenderMarkdown = function(content) {
     let html = content;
 
     // STEP 1: Link Processing (process FIRST)
-    // Format: **Ürün Adı** [LINK:shop:litef-ept15]
+
+    // 1A: Product links - **Ürün Adı** [LINK:shop:litef-ept15]
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong>${linkText.trim()}</strong></a>`;
     });
 
-    // Category links
+    // 1B: Category links - **Kategori** [LINK:shop:category:slug]
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-category-link"><strong>${linkText.trim()}</strong></a>`;
+    });
+
+    // 1C: Standard Markdown links - [text](url) - WhatsApp, email, tel links
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+|mailto:[^\)]+|tel:[^\)]+)\)/gi, function(match, linkText, url) {
+        // Determine link type for styling
+        let linkClass = 'ai-standard-link';
+        if (url.includes('wa.me') || url.includes('whatsapp')) {
+            linkClass = 'ai-whatsapp-link';
+        } else if (url.startsWith('mailto:')) {
+            linkClass = 'ai-email-link';
+        } else if (url.startsWith('tel:')) {
+            linkClass = 'ai-phone-link';
+        } else if (url.includes('t.me') || url.includes('telegram')) {
+            linkClass = 'ai-telegram-link';
+        }
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${linkText.trim()}</a>`;
     });
 
     // STEP 2: Bold Processing

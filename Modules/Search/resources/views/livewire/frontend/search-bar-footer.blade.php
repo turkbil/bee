@@ -86,29 +86,29 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-1"
-         class="absolute top-full left-0 right-0 mt-2 bg-white shadow-2xl rounded-xl z-50 border border-gray-200 overflow-hidden">
+         class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden">
 
         <div class="max-h-[28rem] overflow-y-auto">
             <div class="grid gap-4 md:gap-6 px-4 py-4 grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
 
                 {{-- Keywords Section --}}
-                <div x-show="keywords.length > 0" class="space-y-2 border border-gray-200 rounded-lg p-4 lg:p-5 bg-gray-50">
-                    <div class="flex items-center justify-between text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <div x-show="keywords.length > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
+                    <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                         <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar</span>
-                        <span class="text-[10px] text-gray-400" x-text="`${keywords.length}`"></span>
+                        <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
                     </div>
                     <div class="space-y-1">
                         <template x-for="(keyword, index) in keywords" :key="'k-'+index">
                             <a href="#"
                                @click.prevent="selectKeyword(keyword)"
-                               class="flex items-center justify-between gap-3 px-3 py-2 rounded-md transition group hover:bg-white">
+                               class="flex items-center justify-between gap-3 px-3 py-2 rounded-md transition group hover:bg-white dark:hover:bg-gray-800">
                                 <div class="flex items-center gap-3">
-                                    <span class="w-7 h-7 rounded-full bg-white flex items-center justify-center text-gray-400 group-hover:text-indigo-600 transition">
+                                    <span class="w-7 h-7 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
                                         <i class="fa-solid fa-magnifying-glass text-sm"></i>
                                     </span>
-                                    <span class="font-medium text-sm text-gray-900" x-text="keyword.text"></span>
+                                    <span class="font-medium text-sm text-gray-900 dark:text-white" x-text="keyword.text"></span>
                                 </div>
-                                <span x-show="keyword.count" class="text-xs text-gray-400" x-text="`${keyword.count} sonuç`"></span>
+                                <span x-show="keyword.count" class="text-xs text-gray-400 dark:text-gray-500" x-text="`${keyword.count} sonuç`"></span>
                             </a>
                         </template>
                     </div>
@@ -116,35 +116,35 @@
 
                 {{-- Products Section --}}
                 <div x-show="products.length > 0" class="space-y-3">
-                    <div class="flex items-center justify-between text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                         <span><i class="fa-solid fa-box text-indigo-500 mr-1"></i> Ürünler</span>
-                        <span x-show="total > 0" class="text-[11px] font-medium text-gray-400" x-text="`${products.length} / ${total}`"></span>
+                        <span x-show="total > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products.length} / ${total}`"></span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <template x-for="(product, index) in products" :key="'p-'+index">
                             <a href="#"
                                @click.prevent="selectProduct(product)"
-                               class="flex gap-3 p-3 rounded-lg border border-gray-200 bg-white transition group hover:border-indigo-400 hover:shadow-md">
-                                <div class="w-16 h-16 rounded-md bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                               class="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition group hover:border-indigo-400 dark:hover:border-indigo-400 hover:shadow-md">
+                                <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                                     <template x-if="product.image">
                                         <img :src="product.image"
                                              :alt="product.title"
                                              class="w-full h-full object-cover">
                                     </template>
                                     <template x-if="!product.image">
-                                        <i class="fa-solid fa-cube text-gray-400 text-xl"></i>
+                                        <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 text-xl"></i>
                                     </template>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="font-medium text-sm text-gray-900 leading-snug line-clamp-2"
+                                    <div class="font-medium text-sm text-gray-900 dark:text-white leading-snug line-clamp-2"
                                          x-html="product.highlighted_title || product.title"></div>
                                     <p x-show="product.highlighted_description"
-                                       class="text-xs text-gray-500 mt-1 line-clamp-2"
+                                       class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2"
                                        x-html="product.highlighted_description"></p>
-                                    <div class="text-xs text-gray-500 mt-2 flex items-center justify-between">
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center justify-between">
                                         <span x-text="product.type_label"></span>
                                         <span x-show="product.price"
-                                              class="ml-2 font-semibold text-green-600"
+                                              class="ml-2 font-semibold text-green-600 dark:text-green-400"
                                               x-text="product.price"></span>
                                     </div>
                                 </div>
@@ -158,7 +158,7 @@
         {{-- View All Results --}}
         <a :href="`{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}`.replace('_PLACEHOLDER_', encodeURIComponent(query))"
            x-show="total > 0"
-           class="block p-4 text-center text-indigo-600 hover:bg-indigo-50 font-semibold transition border-t border-gray-200">
+           class="block p-4 text-center text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold transition border-t border-gray-200 dark:border-gray-700">
             <i class="fa-solid fa-arrow-right mr-2"></i>
             <span x-text="`Tüm ${total} sonucu gör`"></span>
         </a>

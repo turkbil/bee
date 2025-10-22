@@ -113,17 +113,17 @@ class="fixed {{ $selectedPosition }} z-50">
                 'İhtiyacınızı anlıyor ve yönlendiriyorum',
                 'Hadi konuşalım! 💬'
             ],
-            // Mobile messages (shorter, concise)
+            // Mobile messages (shorter, concise, natural Turkish)
             mobileMessages: [
                 'Merhaba! 👋',
-                'Yardımcı olalım',
-                'Sorularınızı bekliyoruz',
-                'Ürünler hakkında',
-                'Hızlı yanıt ⚡',
-                '7/24 hizmetinizde 🤖',
-                'Sorun bize',
-                'Bilgi için yazın',
-                'Hemen başlayalım! 💬'
+                'Size yardımcı olabilirim',
+                'Sorularınızı bekliyorum',
+                'Ürünler hakkında bilgi verebilirim',
+                'Hızlı yanıt alabilirsiniz ⚡',
+                '7/24 bilgi alabilirsiniz 🤖',
+                'Merak ettiklerinizi sorun',
+                'Hemen yazabilirsiniz',
+                'Konuşmaya başlayalım! 💬'
             ],
             currentIndex: 0,
             currentMessage: 'Merhaba! 👋',

@@ -30,6 +30,7 @@
                 <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-12 border border-gray-200 dark:border-gray-700">
                     <div class="flex flex-wrap justify-center gap-4 items-center" style="line-height: 3;">
                         @forelse($searchTags ?? [] as $tag)
+                            @if(!empty($tag->query))
                             <a href="{{ route('search.show', ['query' => $tag->query]) }}"
                                class="inline-block px-4 md:px-6 py-2 md:py-3
                                       bg-gradient-to-r {{ $tag->color }}
@@ -55,6 +56,7 @@
                                 {{-- Sparkle Animation --}}
                                 <span class="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping"></span>
                             </a>
+                            @endif
                         @empty
                             <div class="text-center py-12 w-full">
                                 <div class="text-6xl mb-4">🔍</div>
@@ -112,6 +114,7 @@
                         </h3>
                         <div class="space-y-2">
                             @foreach($popularSearches as $search)
+                                @if(!empty($search->query))
                                 <a href="{{ route('search.show', ['query' => $search->query]) }}"
                                    class="block px-4 py-3 bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30
                                           hover:from-yellow-200 hover:to-orange-200 dark:hover:from-yellow-800/40 dark:hover:to-orange-800/40
@@ -120,6 +123,7 @@
                                     <i class="fa-solid fa-fire text-orange-500 mr-2"></i>
                                     {{ $search->query }}
                                 </a>
+                                @endif
                             @endforeach
                         </div>
                     </div>
@@ -134,6 +138,7 @@
                         </h3>
                         <div class="space-y-2">
                             @foreach($recentSearches->take(10) as $search)
+                                @if(!empty($search->query))
                                 <a href="{{ route('search.show', ['query' => $search->query]) }}"
                                    class="block px-4 py-2 bg-gray-100 dark:bg-slate-700/50
                                           hover:bg-gray-200 dark:hover:bg-slate-600
@@ -144,6 +149,7 @@
                                         {{ \Carbon\Carbon::parse($search->last_searched)->diffForHumans() }}
                                     </span>
                                 </a>
+                                @endif
                             @endforeach
                         </div>
                     </div>

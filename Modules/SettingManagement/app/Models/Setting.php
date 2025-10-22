@@ -144,7 +144,7 @@ class Setting extends Model implements HasMedia
         // Tenant context varsa tenant disk kullan
         if ($tenantId) {
             // ✅ FIX: Her tenant için ayrı disk yerine tek 'tenant' disk kullan
-            // Runtime'da doğru tenant için yapılandırılacak (TenantStorageHelper pattern)
+            // Runtime'da doğru tenant için yapılandırılacak (Spatie Media Library)
             $diskName = 'tenant';
 
             // ⚠️ CRITICAL FIX: Tenancy package zaten suffix_storage_path=true ile

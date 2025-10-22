@@ -4,15 +4,34 @@
         @livewire('header-user-dropdown')
     @else
         {{-- GUEST MENU - MODERN DROPDOWN --}}
-        <div class="relative z-50" x-data="{ open: false }">
+        <div class="relative z-50" x-data="{ open: false, showTooltip: false }">
             <button @click="open = !open"
+                    @mouseenter="showTooltip = true"
+                    @mouseleave="showTooltip = false"
                     aria-label="Kullanıcı menüsünü aç"
                     class="flex items-center justify-center w-10 h-10 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors duration-300 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
             </button>
-            
+
+            {{-- Tooltip --}}
+            <div x-show="showTooltip && !open"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-green-600/95 to-emerald-600/95 dark:from-green-500/95 dark:to-emerald-500/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
+                 x-cloak>
+                <span>Giriş Yap / Kayıt Ol</span>
+                {{-- Tooltip Arrow --}}
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+                    <div class="border-[5px] border-transparent border-b-green-600/95 dark:border-b-green-500/95"></div>
+                </div>
+            </div>
+
             <div x-show="open"
                  @click.away="open = false"
                  x-transition:enter="transition ease-out duration-200"

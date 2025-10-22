@@ -1,12 +1,14 @@
-<div class="relative z-50" x-data="{ open: false }">
+<div class="relative z-50" x-data="{ open: false, showTooltip: false }">
     <button type="button"
-            class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200" 
+            class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
             @click="open = !open"
             @click.away="open = false"
+            @mouseenter="showTooltip = true"
+            @mouseleave="showTooltip = false"
             aria-label="Open user menu">
         @if($user && $user->getFirstMedia('avatar'))
-            <img src="{{ $user->getFirstMedia('avatar')->getUrl() }}?v={{ time() }}" 
-                 alt="Avatar" 
+            <img src="{{ $user->getFirstMedia('avatar')->getUrl() }}?v={{ time() }}"
+                 alt="Avatar"
                  class="w-8 h-8 rounded-full object-cover">
         @else
             <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
@@ -14,12 +16,29 @@
             </div>
         @endif
         {{-- Sadece ikon badge göster, isim/email yok --}}
-        <svg class="w-4 h-4 text-gray-400 dark:text-gray-300 transition-transform duration-200" 
+        <svg class="w-4 h-4 text-gray-400 dark:text-gray-300 transition-transform duration-200"
              :class="{ 'rotate-180': open }"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
     </button>
+
+    {{-- Tooltip --}}
+    <div x-show="showTooltip && !open"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-indigo-600/95 to-indigo-700/95 dark:from-indigo-500/95 dark:to-indigo-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
+         x-cloak>
+        <span>{{ $user ? $user->name : 'Hesabım' }}</span>
+        {{-- Tooltip Arrow --}}
+        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+            <div class="border-[5px] border-transparent border-b-indigo-600/95 dark:border-b-indigo-500/95"></div>
+        </div>
+    </div>
 
     <div x-show="open" 
          x-transition:enter="transition ease-out duration-200"

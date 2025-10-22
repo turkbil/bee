@@ -29,8 +29,8 @@
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if ($products->count() > 0)
 
-                    <!-- Grid: 2 kolon (her satırda 2 ürün) -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Grid: 3 kolonlu modern tasarım -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
                         @foreach ($products as $item)
                             @php
                                 $currentLocale = app()->getLocale();
@@ -61,70 +61,119 @@
                                 $body = $item->getTranslated('body') ?? ($item->getRawOriginal('body') ?? ($item->body ?? null));
                                 $description = $metadesc ?? (strip_tags($body) ?? null);
 
-                                $variants = $item->childProducts ?? collect();
+                                $category = $item->category->getTranslated('title') ?? 'Ürün';
                                 $featuredImage = $item->getFirstMedia('featured_image');
+                                $imageUrl = $featuredImage ? ($featuredImage->hasGeneratedConversion('thumb') ? $featuredImage->getUrl('thumb') : $featuredImage->getUrl()) : '';
                             @endphp
 
-                            <!-- Ürün Kartı - Glassmorphism -->
-                            <article class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 transition-all overflow-hidden">
-
-                                <!-- İçerik: 2 kolon (Sol: Ana Ürün, Sağ: Varyantlar) -->
-                                <div class="grid grid-cols-1 md:grid-cols-2">
-
-                                    <!-- SOL: ANA ÜRÜN -->
-                                    <a href="{{ $dynamicUrl }}" class="block bg-white/20 dark:bg-white/5 p-6 hover:bg-white/30 dark:hover:bg-white/10 transition-colors">
-
+                            <!-- Modern Ürün Kartı -->
+                            <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
+                                <a href="{{ $dynamicUrl }}" class="block">
+                                    <!-- Image Section -->
+                                    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                                         @if ($featuredImage)
-                                            <div class="aspect-square mb-4 rounded-xl overflow-hidden bg-white/50 dark:bg-white/10 shadow-md backdrop-blur-sm">
-                                                <img src="{{ $featuredImage->hasGeneratedConversion('thumb') ? $featuredImage->getUrl('thumb') : $featuredImage->getUrl() }}"
-                                                    alt="{{ $title }}"
-                                                    class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-                                            </div>
-                                        @endif
-
-                                        <h2 class="text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-                                            {{ $title }}
-                                        </h2>
-
-                                        @if ($description)
-                                            <p class="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
-                                                {{ Str::limit($description, 120) }}
-                                            </p>
-                                        @endif
-                                    </a>
-
-                                    <!-- SAĞ: VARYANTLAR -->
-                                    <div class="bg-white/20 dark:bg-white/5 p-6">
-                                        @if ($variants->count() > 0)
-                                            <div class="text-sm font-semibold text-gray-900 dark:text-white mb-4 pb-3 border-b border-white/20 dark:border-white/10">
-                                                <i class="fa-solid fa-layer-group text-blue-600 dark:text-blue-400 mr-2"></i>
-                                                Varyantlar <span class="text-gray-600 dark:text-gray-400 font-normal">({{ $variants->count() }})</span>
-                                            </div>
-                                            <ul class="space-y-2 max-h-[280px] overflow-y-auto">
-                                                @foreach ($variants as $variant)
-                                                    @php
-                                                        $variantTitle = $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
-                                                        $variantUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($variant, $currentLocale);
-                                                    @endphp
-                                                    <li>
-                                                        <a href="{{ $variantUrl }}"
-                                                            class="group flex items-start gap-2 text-sm text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/30 dark:hover:bg-white/10 p-2 rounded-lg transition-all">
-                                                            <i class="fa-solid fa-angle-right text-xs mt-1 group-hover:translate-x-1 transition-transform"></i>
-                                                            <span class="flex-1">{{ $variantTitle }}</span>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
+                                            <img src="{{ $imageUrl }}"
+                                                 alt="{{ $title }}"
+                                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                 loading="lazy">
                                         @else
-                                            <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 py-12">
-                                                <i class="fa-solid fa-inbox text-3xl mb-2 opacity-50"></i>
-                                                <p class="text-sm">Varyant bulunmuyor</p>
+                                            <!-- Category Icon Fallback -->
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fa-light fa-box text-8xl text-blue-400 group-hover:scale-110 transition-transform"></i>
                                             </div>
                                         @endif
+
+                                        <!-- Hover Overlay -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                                        <!-- Badges -->
+                                        <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                            @if ($item->featured ?? false)
+                                                <span class="px-3 py-1.5 bg-yellow-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                                    <i class="fa-solid fa-star mr-1"></i>Öne Çıkan
+                                                </span>
+                                            @endif
+                                            @if ($item->bestseller ?? false)
+                                                <span class="px-3 py-1.5 bg-red-500 text-white text-xs font-semibold rounded-lg shadow-lg">
+                                                    <i class="fa-solid fa-fire mr-1"></i>Çok Satan
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                        <!-- Quick Actions -->
+                                        <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                            <button class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                                <i class="fa-solid fa-heart"></i>
+                                            </button>
+                                            <button @click.prevent="openProductModal({
+                                                id: {{ $item->shop_id }},
+                                                title: '{{ addslashes($title) }}',
+                                                slug: '{{ $slug }}',
+                                                url: '{{ $dynamicUrl }}',
+                                                image: '{{ $imageUrl }}',
+                                                category: '{{ $category }}',
+                                                brand: 'iXtif',
+                                                shortDescription: '{{ addslashes(Str::limit($description ?? '', 150)) }}',
+                                                sku: '{{ $item->sku ?? '' }}',
+                                                primarySpecs: [],
+                                                images: ['{{ $imageUrl }}']
+                                            })" class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                        </div>
                                     </div>
 
-                                </div>
+                                    <!-- Content Section -->
+                                    <div class="p-6 space-y-4">
+                                        <!-- Category -->
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">{{ $category }}</span>
+                                        </div>
 
+                                        <!-- Title -->
+                                        <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                            {{ $title }}
+                                        </h3>
+
+                                        <!-- Description -->
+                                        @if ($description)
+                                            <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                                                {{ Str::limit($description, 100) }}
+                                            </p>
+                                        @endif
+
+                                        <!-- Meta Info -->
+                                        <div class="flex items-center gap-4 text-xs text-gray-500">
+                                            @if ($item->sku)
+                                                <span class="flex items-center gap-1">
+                                                    <i class="fa-solid fa-barcode"></i>
+                                                    <span>{{ $item->sku }}</span>
+                                                </span>
+                                            @endif
+                                            <span class="flex items-center gap-1">
+                                                <i class="fa-solid fa-eye"></i>
+                                                <span>{{ $item->view_count ?? 0 }}</span>
+                                            </span>
+                                        </div>
+
+                                        <!-- Price + CTA -->
+                                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                                            @if ($item->price ?? false)
+                                                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                                                    {{ number_format($item->price, 0, ',', '.') }} ₺
+                                                </div>
+                                            @else
+                                                <div class="text-lg font-semibold text-gray-600">
+                                                    Fiyat Sorunuz
+                                                </div>
+                                            @endif
+                                            <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                                <span>Detay</span>
+                                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
                             </article>
                         @endforeach
                         @php

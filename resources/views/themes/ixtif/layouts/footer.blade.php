@@ -22,22 +22,24 @@
                 {{-- Popüler Aramalar --}}
                 @if($popularSearches->count() > 0)
                     <div class="space-y-4">
-                        <div class="flex flex-wrap justify-center gap-3 items-center">
-                            <div class="text-sm text-indigo-200 font-semibold">Popüler:</div>
+                        {{-- Header: Title + Link (before tags) --}}
+                        <div class="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
+                            <div class="text-sm text-indigo-200 font-semibold">Popüler Aramalar</div>
+                            <a href="{{ route('search.tags') }}"
+                               class="inline-flex items-center gap-1.5 text-xs text-indigo-100 hover:text-white font-medium transition-all border border-indigo-300/30 hover:border-indigo-200 px-3 py-1.5 rounded-full hover:bg-white/10">
+                                <i class="fa-solid fa-tags text-xs"></i>
+                                Tümünü Gör
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                        {{-- Tags --}}
+                        <div class="flex flex-wrap justify-center gap-3">
                             @foreach($popularSearches as $search)
                                 <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
                                    class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
                                     {{ $search->query }}
                                 </a>
                             @endforeach
-                        </div>
-                        <div class="text-center">
-                            <a href="{{ route('search.tags') }}"
-                               class="inline-flex items-center gap-2 text-sm text-indigo-100 hover:text-white font-medium transition-colors underline decoration-dotted underline-offset-4">
-                                <i class="fa-solid fa-tags"></i>
-                                Tüm Popüler Aramaları Gör
-                                <i class="fa-solid fa-arrow-right text-xs"></i>
-                            </a>
                         </div>
                     </div>
                 @endif

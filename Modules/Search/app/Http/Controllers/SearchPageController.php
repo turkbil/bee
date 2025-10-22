@@ -91,6 +91,9 @@ class SearchPageController extends Controller
         $searchTags = \Modules\Search\App\Models\SearchQuery::query()
             ->where('is_hidden', false)
             ->where('is_visible_in_tags', true)
+            ->whereNotNull('query')
+            ->where('query', '!=', '')
+            ->where('query', 'NOT LIKE', '%{%}%')
             ->selectRaw('
                 query,
                 COUNT(*) as search_count,
@@ -100,6 +103,10 @@ class SearchPageController extends Controller
             ->groupBy('query')
             ->having('search_count', '>', 0)
             ->get()
+            ->filter(function($tag) {
+                return !empty(trim($tag->query)) && !str_contains($tag->query, '{');
+            })
+            ->values()
             ->shuffle(); // Random order
 
         // Calculate font sizes based on search count
@@ -139,11 +146,18 @@ class SearchPageController extends Controller
         // Recent searches (last 20)
         $recentSearches = \Modules\Search\App\Models\SearchQuery::query()
             ->where('is_hidden', false)
+            ->whereNotNull('query')
+            ->where('query', '!=', '')
+            ->where('query', 'NOT LIKE', '%{%}%')
             ->selectRaw('query, MAX(created_at) as last_searched')
             ->groupBy('query')
             ->orderByDesc('last_searched')
             ->limit(20)
-            ->get();
+            ->get()
+            ->filter(function($search) {
+                return !empty(trim($search->query)) && !str_contains($search->query, '{');
+            })
+            ->values();
 
         return view('search::tags', [
             'pageTitle' => 'Tüm Aramalar - Popüler Arama Kelimeleri',

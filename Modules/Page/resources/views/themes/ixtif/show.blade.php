@@ -37,7 +37,7 @@
                     </div>
 
                     <!-- Features -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-6">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
@@ -63,6 +63,15 @@
                             <div>
                                 <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
                                 <div class="text-sm text-gray-600 dark:text-gray-400">Uzman danışmanlık</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 lg:hidden 2xl:hidden">
+                            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">Aynı gün kargo</div>
                             </div>
                         </div>
                     </div>

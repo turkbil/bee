@@ -239,10 +239,17 @@ class TenantStorageHelper
 
     /**
      * Tenant disk yapılandırmasını hazırlar.
+     *
+     * ⚠️ CRITICAL: Bu metod resolveTenantFilesystem() içinden çağrılıyor
+     * resolveTenantFilesystem() tenant_id() helper kullanıyor
+     * Yani tenant context ZATEN initialized!
      */
     protected static function configureTenantDisk(int $tenantId): void
     {
-        $root = storage_path("tenant{$tenantId}/app/public");
+        // ⚠️ CRITICAL FIX: tenant_id() helper çalışıyorsa tenant initialized!
+        // storage_path() otomatik tenant prefix ekliyor (suffix_storage_path=true)
+        // Manuel "tenant{$tenantId}/" EKLEMEMELIYIZ!
+        $root = storage_path("app/public");
 
         if (! is_dir($root)) {
             @mkdir($root, 0775, true);

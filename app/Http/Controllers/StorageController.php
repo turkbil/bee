@@ -11,14 +11,17 @@ class StorageController extends Controller
     /**
      * Serve tenant media files through Laravel (bypass Nginx restrictions)
      * Route: /storage/tenant{id}/{path}
+     *
+     * ⚠️ CRITICAL: Bu metod route'dan ID alıyor, ama tenant context'i set edilmeden önce çağrılabilir
+     * Bu yüzden manuel path kullanıyoruz (tenancy suffix eklemeden)
      */
     public function tenantMedia(Request $request, $id, $path)
     {
         // Decode URL encoding
         $path = urldecode($path);
 
-        // Construct tenant storage path
-        $fullPath = storage_path("tenant{$id}/app/public/{$path}");
+        // Construct tenant storage path - Direct path (tenancy middleware henüz çalışmamış olabilir)
+        $fullPath = base_path("storage/tenant{$id}/app/public/{$path}");
 
         return $this->serveFile($fullPath);
     }
@@ -50,8 +53,9 @@ class StorageController extends Controller
                     $relativePath = ltrim($path, '/');
                 }
 
-                // Clean path: storage/tenant{id}/app/public/{media_id}/{file}
-                $fullPath = storage_path("tenant{$targetTenantId}/app/public/{$relativePath}");
+                // ⚠️ CRITICAL FIX: Tenant context ZATEN initialize edilmiş (middleware'den geçti)
+                // storage_path() otomatik tenant prefix ekliyor, manuel eklememeliyiz!
+                $fullPath = storage_path("app/public/{$relativePath}");
 
                 return $this->serveFile($fullPath);
             }
@@ -61,8 +65,8 @@ class StorageController extends Controller
         if (preg_match('/^tenant(\d+)\/(.+)$/', $path, $matches)) {
             $targetTenantId = $matches[1];
             $relativePath = $matches[2];
-            // Clean path: storage/tenant{id}/app/public/{media_id}/{file}
-            $fullPath = storage_path("tenant{$targetTenantId}/app/public/{$relativePath}");
+            // Direct path (central context, tenancy initialize edilmemiş)
+            $fullPath = base_path("storage/tenant{$targetTenantId}/app/public/{$relativePath}");
         } else {
             $fullPath = storage_path("app/public/{$path}");
         }

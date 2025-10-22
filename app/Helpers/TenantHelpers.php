@@ -145,7 +145,9 @@ class TenantHelpers
     
     /**
      * Tenant ID'ye göre dosya depolama diskin ayarlar
-     * 
+     *
+     * ⚠️ CRITICAL FIX: Cache kaldırıldı çünkü storage_path() tenant context'ine bağlı
+     *
      * @param int|null $tenantId
      * @return string
      */
@@ -154,31 +156,31 @@ class TenantHelpers
         if ($tenantId === null) {
             $tenantId = self::getCurrentTenantId();
         }
-        
+
         // Eğer tenant ID yoksa veya 1 ise (central) normal public disk kullan
         if (!$tenantId || $tenantId == 1) {
             return 'public';
         }
-        
-        // Disk yapılandırmasını önbellekte kontrol et
-        $diskCacheKey = 'tenant_disk_' . $tenantId;
-        $diskConfig = Cache::remember($diskCacheKey, now()->addDays(7), function () use ($tenantId) {
-            // Özel tenant disk yapılandırması
-            $tenantDisk = 'tenant';
-            
-            // Disk yapılandırmasını ayarla
-            Config::set('filesystems.disks.tenant', [
-                'driver' => 'local',
-                'root' => storage_path("tenant{$tenantId}/app/public"),
-                'url' => env('APP_URL').'/storage/tenant'.$tenantId,
-                'visibility' => 'public',
-                'throw' => false,
-            ]);
-            
-            return $tenantDisk;
-        });
-        
-        return $diskConfig;
+
+        // Özel tenant disk yapılandırması
+        $tenantDisk = 'tenant';
+
+        // ⚠️ CRITICAL FIX: Tenant context var mı kontrol et
+        // Eğer tenant() helper çalışıyorsa, storage_path() otomatik prefix ekler
+        // Manuel eklememeliyiz!
+        $isInitialized = function_exists('tenant') && tenant();
+        $root = $isInitialized ? storage_path("app/public") : base_path("storage/tenant{$tenantId}/app/public");
+
+        // Disk yapılandırmasını ayarla
+        Config::set('filesystems.disks.tenant', [
+            'driver' => 'local',
+            'root' => $root,
+            'url' => env('APP_URL').'/storage/tenant'.$tenantId,
+            'visibility' => 'public',
+            'throw' => false,
+        ]);
+
+        return $tenantDisk;
     }
 
     /**

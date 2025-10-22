@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Log;
 /**
  * Storage Tenancy Bootstrapper
  * Tenant başlatıldığında storage klasörleri ve symlink'leri otomatik oluşturur
+ *
+ * ⚠️ NOT: Bu class bootstrap() metodunda TENANT INITIALIZE OLMADAN çalışır
+ * storage_path("tenant{$id}") kullanımı DOĞRUDUR çünkü suffix henüz eklenmemiş
  */
 class StorageTenancyBootstrapper implements TenancyBootstrapper
 {

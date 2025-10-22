@@ -14,22 +14,9 @@
                 <h2 class="text-3xl md:text-4xl font-black mb-3">Aradığınızı Bulamadınız Mı?</h2>
                 <p class="text-lg md:text-xl text-indigo-100 mb-8">Binlerce ürün için hemen arayın!</p>
 
-                <div class="flex gap-3 mb-6" x-data="{ searchQuery: '' }">
-                    <div class="flex-1 relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
-                        <input
-                            type="text"
-                            x-model="searchQuery"
-                            @keydown.enter="if(searchQuery.trim()) window.location.href='{{ href('Search', 'search') }}?q=' + encodeURIComponent(searchQuery)"
-                            placeholder="Ürün, kategori veya marka ara..."
-                            class="w-full bg-white border-0 rounded-2xl pl-16 pr-6 py-5 text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 transition-shadow">
-                    </div>
-                    <button
-                        @click="if(searchQuery.trim()) window.location.href='{{ href('Search', 'search') }}?q=' + encodeURIComponent(searchQuery)"
-                        class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-search"></i>
-                        <span class="hidden md:inline">Ara</span>
-                    </button>
+                {{-- Livewire Search Bar with Custom Footer Styling --}}
+                <div class="mb-6">
+                    @livewire('search::search-bar', ['viewMode' => 'footer'])
                 </div>
 
                 {{-- Popüler Aramalar --}}

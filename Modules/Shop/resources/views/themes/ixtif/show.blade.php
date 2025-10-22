@@ -240,7 +240,7 @@
                 <div class="absolute bottom-20 -right-20 w-96 h-96 bg-blue-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
             </div>
 
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 relative z-10">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0 py-16 md:py-20 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full mb-6">
@@ -298,7 +298,7 @@
         <div id="toc-bar"
             class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 left-0 right-0"
             style="position: relative; z-index: 40; transition: none;">
-            <div id="toc-container" class="container mx-auto px-4 sm:px-6 lg:px-8 py-2"
+            <div id="toc-container" class="container mx-auto px-4 sm:px-4 md:px-0 py-2"
                  style="transition: padding 0.2s ease-in-out;">
                 <div class="flex items-center">
                     <div
@@ -386,7 +386,7 @@
             </div>
         </div>
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8">
             <div class="grid lg:grid-cols-3 gap-8 items-start">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div class="lg:col-span-2 min-h-screen">
@@ -1075,7 +1075,7 @@
 
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
     <section id="trust-signals" class="relative mt-16 scroll-mt-24">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="container mx-auto px-4 sm:px-4 md:px-0">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
@@ -1120,14 +1120,14 @@
     </section>
 
     {{-- 📬 MODERN CONTACT FORM --}}
-    <section id="contact" class="relative mt-32 overflow-hidden bg-gradient-to-br from-purple-600 via-purple-700 to-orange-600 dark:from-purple-900 dark:via-purple-800 dark:to-yellow-600">
+    <section id="contact" class="relative mt-32 overflow-hidden bg-gray-50 dark:bg-slate-900">
         {{-- Animated Background Blobs --}}
         <div class="absolute inset-0 opacity-20">
             <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-300 dark:bg-white rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute bottom-20 -right-20 w-96 h-96 bg-orange-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
         </div>
 
-        <div class="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+        <div class="relative container mx-auto px-4 sm:px-4 md:px-0 py-16 md:py-20">
             <div class="flex flex-col md:flex-row gap-8 items-start">
                 {{-- SOL: FORM (7/12) --}}
                 <div class="w-full md:w-7/12">
@@ -1270,22 +1270,6 @@
         </div>
     </section>
 
-    {{-- AI Chat Section --}}
-    <section class="py-16 bg-white dark:bg-gray-800">
-        <div class="container mx-auto px-4 max-w-4xl">
-
-            {{-- Inline AI Widget - Commented out, moved to hero section
-            <x-ai.inline-widget
-                title="Ürün Hakkında Soru Sor"
-                :product-id="$item->product_id"
-                :initially-open="false"
-                height="600px"
-                theme="blue"
-            />
-            --}}
-        </div>
-    </section>
-
     {{-- Floating CTA (Dinamik - AI bot'a göre yer açar, contact section'da gizlenir) --}}
     <div x-data="{
             show: false,
@@ -1347,4 +1331,140 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+/**
+ * Sticky TOC & Sidebar - Shop Product Show Page
+ * TOC bar'ı ve sidebar'ı scroll'da sticky yapan fonksiyonlar
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // ==========================================
+    // 1. STICKY TOC BAR
+    // ==========================================
+    const tocBar = document.getElementById('toc-bar');
+    const tocPlaceholder = document.getElementById('toc-placeholder');
+    const tocContainer = document.getElementById('toc-container');
+    const header = document.getElementById('main-header');
+
+    if (tocBar && tocPlaceholder && header) {
+        let lastScrollTop = 0;
+        const headerHeight = header.offsetHeight;
+        const tocBarOffsetTop = tocBar.offsetTop;
+
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // TOC bar scroll pozisyonunu geçtiyse
+            if (scrollTop >= tocBarOffsetTop) {
+                // Fixed yap
+                tocBar.style.position = 'fixed';
+                tocBar.style.top = headerHeight + 'px';
+                tocBar.style.left = '0';
+                tocBar.style.right = '0';
+
+                // Placeholder'ı göster (layout shift önlemek için)
+                tocPlaceholder.style.display = 'block';
+                tocPlaceholder.style.height = tocBar.offsetHeight + 'px';
+
+                // Container padding'i küçült (fixed olunca)
+                if (tocContainer) {
+                    tocContainer.style.paddingTop = '0.5rem';
+                    tocContainer.style.paddingBottom = '0.5rem';
+                }
+            } else {
+                // Normal pozisyona dön
+                tocBar.style.position = 'relative';
+                tocBar.style.top = 'auto';
+
+                // Placeholder'ı gizle
+                tocPlaceholder.style.display = 'none';
+
+                // Container padding'i normale dön
+                if (tocContainer) {
+                    tocContainer.style.paddingTop = '0.5rem';
+                    tocContainer.style.paddingBottom = '0.5rem';
+                }
+            }
+
+            lastScrollTop = scrollTop;
+        });
+
+        console.log('✅ Sticky TOC initialized');
+    }
+
+    // ==========================================
+    // 2. STICKY SIDEBAR
+    // ==========================================
+    const sidebar = document.getElementById('sticky-sidebar');
+
+    if (sidebar) {
+        // Sidebar zaten CSS ile lg:sticky lg:top-24 şeklinde tanımlı
+        // JavaScript ile ek bir işlem gerekmiyor, CSS yeterli
+        console.log('✅ Sticky sidebar (CSS-based)');
+    }
+
+    // ==========================================
+    // 3. TOC ACTIVE LINK HIGHLIGHTING
+    // ==========================================
+    const tocLinks = document.querySelectorAll('.toc-link');
+    const sections = document.querySelectorAll('[id^="description"], [id^="features"], [id^="competitive"], [id^="gallery"], [id^="variants"], [id^="technical"], [id^="accessories"], [id^="usecases"], [id^="industries"], [id^="certifications"], [id^="warranty"], [id^="faq"], [id^="contact"]');
+
+    if (tocLinks.length > 0 && sections.length > 0) {
+        window.addEventListener('scroll', function() {
+            let currentSection = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                if (window.pageYOffset >= (sectionTop - 200)) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+
+            tocLinks.forEach(link => {
+                link.classList.remove('bg-blue-600', 'text-white');
+                link.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+
+                const target = link.getAttribute('data-target');
+                if (target === currentSection) {
+                    link.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                    link.classList.add('bg-blue-600', 'text-white');
+                }
+            });
+        });
+
+        console.log('✅ TOC active link highlighting initialized');
+    }
+
+    // ==========================================
+    // 4. SMOOTH SCROLL FOR TOC LINKS
+    // ==========================================
+    tocLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('href');
+            const targetElement = document.querySelector(target);
+
+            if (targetElement) {
+                const headerHeight = header ? header.offsetHeight : 0;
+                const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
+                const offset = headerHeight + tocBarHeight + 20;
+
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    console.log('✅ Product show page sticky scripts loaded');
+});
+</script>
+@endpush
 

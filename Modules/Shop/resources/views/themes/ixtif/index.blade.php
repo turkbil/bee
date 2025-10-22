@@ -15,7 +15,7 @@
         <div class="relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
             <div class="relative py-12">
-                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="container mx-auto px-4 sm:px-4 md:px-0">
                     <div class="max-w-3xl">
                         <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
                             {{ $moduleTitle ?? __('shop::front.general.shops') }}
@@ -26,7 +26,7 @@
         </div>
 
         <div class="py-20">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if ($products->count() > 0)
 
                     <!-- Grid: 2 kolon (her satırda 2 ürün) -->

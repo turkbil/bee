@@ -9,7 +9,7 @@
 @if(isset($is_homepage) && $is_homepage)
     <div x-data="homepage()" x-init="init()">
         <section class="py-8 md:py-12 lg:py-16 flex items-center relative overflow-hidden">
-        <div class="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
+        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
             <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
                 <!-- Left Content -->
                 <div class="text-gray-900 dark:text-white">

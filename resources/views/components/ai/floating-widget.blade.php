@@ -47,9 +47,11 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
 
     init() {
         // Auto-open after 10 seconds if user hasn't interacted
+        // BUT only on desktop (NOT on mobile/tablet: sm/xs/md breakpoints)
         this.autoOpenTimer = setTimeout(() => {
-            if (!this.chat.floatingOpen && !this.chat.hasConversation) {
-                console.log('🤖 Auto-opening AI chat...');
+            const isMobile = window.innerWidth < 1024; // lg breakpoint (1024px)
+            if (!this.chat.floatingOpen && !this.chat.hasConversation && !isMobile) {
+                console.log('🤖 Auto-opening AI chat (desktop only)...');
                 this.chat.openFloating();
             }
         }, 10000);

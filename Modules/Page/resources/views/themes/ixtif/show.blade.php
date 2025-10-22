@@ -180,13 +180,13 @@
                 @endphp
                 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all cursor-pointer">
                     <!-- Product Image -->
-                    <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center mb-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800">
+                    <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center mb-4 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700">
                         @if($productImage)
                             <img src="{{ $productImage }}"
                                  alt="{{ $productTitle }}"
-                                 class="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-300">
+                                 class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark">
                         @else
-                            <i class="fa-light fa-box text-6xl text-blue-400 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
+                            <i class="fa-light fa-box text-6xl text-blue-400 dark:text-blue-400"></i>
                         @endif
                     </a>
 

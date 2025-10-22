@@ -24,6 +24,11 @@
 }
 
 @layer components {
+    /* Global Icon Hover Effect: Light → Solid */
+    .group:hover .fa-light {
+        font-weight: 900 !important;
+    }
+
     /* Tenant-aware navigation */
     .tenant-nav {
         @apply bg-white shadow-sm border-b border-gray-200;

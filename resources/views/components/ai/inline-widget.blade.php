@@ -63,104 +63,11 @@ $themeClasses = [
 $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
 @endphp
 
-{{-- Markdown renderer function (outside x-data to avoid escaping issues) --}}
-<script>
-window.aiChatRenderMarkdown = function(text) {
-    if (!text) return '';
-
-    let html = text;
-
-    // Convert [text](url) to <a> links - SITE RENKLERİNE UYGUN (turuncu/yeşil) + DARK MODE
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-semibold border-b-2 border-orange-400 dark:border-orange-500 hover:border-orange-600 dark:hover:border-orange-400 transition-colors">$1</a>');
-
-    // Convert **bold** to <strong>
-    html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>');
-
-    // Convert *italic* to <em>
-    html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
-
-    // Convert ### heading to h3
-    html = html.replace(/^### (.*?)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>');
-
-    // Convert ## heading to h2
-    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-xl font-bold mt-4 mb-2">$1</h2>');
-
-    // Convert # heading to h1
-    html = html.replace(/^# (.*?)$/gm, '<h1 class="text-2xl font-bold mt-4 mb-3">$1</h1>');
-
-    // Split into blocks first (separated by double newline or list patterns)
-    const blocks = [];
-    const lines = html.split('\n');
-    let currentBlock = [];
-    let blockType = null;
-
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-
-        // Empty line - finish current block
-        if (!line) {
-            if (currentBlock.length > 0) {
-                blocks.push({ type: blockType, lines: currentBlock });
-                currentBlock = [];
-                blockType = null;
-            }
-            continue;
-        }
-
-        // Determine block type
-        if (line.startsWith('- ')) {
-            if (blockType !== 'list') {
-                // Finish previous block
-                if (currentBlock.length > 0) {
-                    blocks.push({ type: blockType, lines: currentBlock });
-                    currentBlock = [];
-                }
-                blockType = 'list';
-            }
-            currentBlock.push(line);
-        } else if (line.startsWith('<h')) {
-            // Finish previous block
-            if (currentBlock.length > 0) {
-                blocks.push({ type: blockType, lines: currentBlock });
-                currentBlock = [];
-            }
-            blocks.push({ type: 'heading', lines: [line] });
-            blockType = null;
-        } else {
-            if (blockType !== 'text') {
-                // Finish previous block
-                if (currentBlock.length > 0) {
-                    blocks.push({ type: blockType, lines: currentBlock });
-                    currentBlock = [];
-                }
-                blockType = 'text';
-            }
-            currentBlock.push(line);
-        }
-    }
-
-    // Add final block
-    if (currentBlock.length > 0) {
-        blocks.push({ type: blockType, lines: currentBlock });
-    }
-
-    // Render blocks
-    const result = blocks.map(block => {
-        if (block.type === 'list') {
-            const items = block.lines.map(line => '<li>' + line.substring(2) + '</li>').join('\n');
-            return '<ul class="list-disc ml-5 my-3 space-y-2">\n' + items + '\n</ul>';
-        } else if (block.type === 'heading') {
-            return block.lines.join('\n');
-        } else if (block.type === 'text') {
-            // Each line becomes a paragraph for better spacing
-            return block.lines.map(line => '<p class="mb-2">' + line + '</p>').join('\n');
-        }
-        return '';
-    });
-
-    return result.join('\n');
-};
-</script>
+{{-- AI Chat External CSS/JS (once per page) --}}
+@once
+    <link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ now()->timestamp }}" media="all">
+    <script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}" defer></script>
+@endonce
 
 <div
     x-data="{
@@ -373,43 +280,7 @@ window.aiChatRenderMarkdown = function(text) {
     </div>
 </div>
 
-<style>
-[x-cloak] { display: none !important; }
-
-/* USER MESSAGES - Always white text (both light and dark mode) */
-.ai-message-content[data-role="user"],
-.ai-message-content[data-role="user"] *,
-.ai-message-content[data-role="user"] p,
-.ai-message-content[data-role="user"] span,
-.ai-message-content[data-role="user"] strong,
-.ai-message-content[data-role="user"] em,
-.ai-message-content[data-role="user"] li,
-.ai-message-content[data-role="user"] ul,
-.ai-message-content[data-role="user"] ol,
-.ai-message-content[data-role="user"] h1,
-.ai-message-content[data-role="user"] h2,
-.ai-message-content[data-role="user"] h3 {
-    color: white !important;
-}
-
-/* DARK MODE TEXT FIX - Assistant/System messages white in dark mode */
-.dark .ai-message-content[data-role="assistant"],
-.dark .ai-message-content[data-role="assistant"] *,
-.dark .ai-message-content[data-role="system"],
-.dark .ai-message-content[data-role="system"] * {
-    color: white !important;
-}
-
-/* Links - Special colors */
-.ai-message-content[data-role="user"] a {
-    color: rgba(255, 255, 255, 0.9) !important;
-    text-decoration: underline;
-}
-
-.dark .ai-message-content a {
-    color: #fb923c !important; /* orange-400 */
-}
-</style>
+{{-- Inline CSS kaldırıldı - Tüm stiller /public/assets/css/ai-chat.css dosyasında --}}
 
 {{-- DEBUG CONSOLE KODU (Console'a yapıştır) --}}
 {{--

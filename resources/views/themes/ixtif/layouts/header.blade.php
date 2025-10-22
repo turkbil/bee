@@ -401,18 +401,18 @@
                             </button>
                             {{-- Tooltip --}}
                             <div x-show="showTooltip"
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 scale-90"
-                                 x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-100"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 scale-90"
-                                 class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium rounded-lg whitespace-nowrap pointer-events-none z-50 shadow-lg"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-blue-600/95 to-blue-700/95 dark:from-blue-500/95 dark:to-blue-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
                                  x-cloak>
                                 <span x-text="searchOpen ? 'Aramayı Kapat' : 'Ara'"></span>
                                 {{-- Tooltip Arrow --}}
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
-                                    <div class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+                                    <div class="border-[5px] border-transparent border-b-blue-600/95 dark:border-b-blue-500/95"></div>
                                 </div>
                             </div>
                         </div>
@@ -432,18 +432,18 @@
                             </button>
                             {{-- Tooltip --}}
                             <div x-show="showTooltip"
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 scale-90"
-                                 x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-100"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 scale-90"
-                                 class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 dark:bg-gray-700 text-white text-xs font-medium rounded-lg whitespace-nowrap pointer-events-none z-50 shadow-lg"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-purple-600/95 to-purple-700/95 dark:from-purple-500/95 dark:to-purple-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
                                  x-cloak>
                                 <span x-text="darkMode === 'dark' ? 'Aydınlık Mod' : 'Karanlık Mod'"></span>
                                 {{-- Tooltip Arrow --}}
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
-                                    <div class="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+                                    <div class="border-[5px] border-transparent border-b-purple-600/95 dark:border-b-purple-500/95"></div>
                                 </div>
                             </div>
                         </div>

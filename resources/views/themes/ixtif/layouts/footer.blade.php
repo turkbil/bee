@@ -366,50 +366,7 @@
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css"></noscript>
 <script defer src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js" onload="initGLightbox()"></script>
 
-{{-- AI Chat Admin Functions --}}
-<script>
-function clearAIConversation(button) {
-    if (!window.Alpine || !window.Alpine.store('aiChat')) {
-        alert('❌ AI Chat sistemi yüklü değil!');
-        return;
-    }
-
-    const chat = window.Alpine.store('aiChat');
-
-    if (!chat.conversationId) {
-        alert('ℹ️ Aktif bir konuşma bulunamadı.');
-        return;
-    }
-
-    // Show loading
-    const originalText = button.querySelector('.button-text').textContent;
-    const spinner = button.querySelector('.loading-spinner');
-    button.querySelector('.button-text').textContent = 'Siliniyor...';
-    spinner.classList.remove('hidden');
-    button.disabled = true;
-
-    // Delete from database
-    fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
-        .then(response => {
-            if (!response.ok) throw new Error('API hatası');
-
-            // Clear from Alpine store
-            chat.clearConversation();
-
-            alert('✅ AI konuşma geçmişi silindi!');
-        })
-        .catch(err => {
-            console.error('AI conversation clear error:', err);
-            alert('❌ Hata: ' + err.message);
-        })
-        .finally(() => {
-            // Reset button
-            button.querySelector('.button-text').textContent = originalText;
-            spinner.classList.add('hidden');
-            button.disabled = false;
-        });
-}
-</script>
+{{-- AI Chat Admin Functions: clearAIConversation() → /public/assets/js/ai-chat.js --}}
 
 {{-- Theme Main Scripts --}}
 @php

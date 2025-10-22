@@ -599,20 +599,20 @@
     <div x-data="{
             show: false,
             hideButton: false,
-            position: 'right-10',
+            rightPosition: '135px',
             updatePosition() {
                 // Mobile'da sabit kal
                 if (window.innerWidth < 1024) {
-                    this.position = 'right-10';
+                    this.rightPosition = '40px';
                     return;
                 }
 
                 // Desktop'ta AI bot durumuna göre
                 const aiChat = window.Alpine?.store('aiChat');
                 if (aiChat?.floatingOpen) {
-                    this.position = 'right-[420px]'; // AI bot genişliği (384px) + 36px margin
+                    this.rightPosition = '435px'; // AI bot genişliği (384px) + 51px margin
                 } else {
-                    this.position = 'right-10';
+                    this.rightPosition = '135px'; // AI bot kapalıyken - sağda, AI button ile 30px boşluk
                 }
             },
             init() {
@@ -641,8 +641,8 @@
         @resize.window="updatePosition()"
         x-show="show && !hideButton"
         x-transition
-        :class="position"
-        class="fixed bottom-8 z-[60] hidden md:block transition-all duration-300">
+        :style="`right: ${rightPosition}`"
+        class="fixed bottom-8 z-[60] hidden lg:block transition-all duration-300">
         <a href="#contact"
             class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:shadow-3xl transition-all">
             <i class="fa-solid fa-envelope"></i>

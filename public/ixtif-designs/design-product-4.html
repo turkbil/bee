@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product V1: Split View - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Nav -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                    <i class="fa-solid fa-home text-gray-700"></i>
+                    <span class="hidden sm:inline text-gray-700 font-medium">Ana Sayfa</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">Product 4 / 10</div>
+                    <div class="text-xs text-gray-500 mt-1">Full Width</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button href="design-product-3.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <a href="design-product-5.html" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Detail -->
+    <div class="pt-24 pb-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Left: Image -->
+                <div class="space-y-4">
+                    <div class="aspect-square bg-white rounded-3xl overflow-hidden shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=800&fit=crop"
+                             alt="İXTİF CPD18FVL Forklift"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid grid-cols-4 gap-4">
+                        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=200&h=200&fit=crop" class="aspect-square rounded-xl object-cover cursor-pointer hover:opacity-75 transition">
+                        <img src="https://images.unsplash.com/photo-1596651976841-74e1fe59e4cf?w=200&h=200&fit=crop" class="aspect-square rounded-xl object-cover cursor-pointer hover:opacity-75 transition">
+                        <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=200&h=200&fit=crop" class="aspect-square rounded-xl object-cover cursor-pointer hover:opacity-75 transition">
+                        <img src="https://images.unsplash.com/photo-1594737513044-c4bb5ecfd6cb?w=200&h=200&fit=crop" class="aspect-square rounded-xl object-cover cursor-pointer hover:opacity-75 transition">
+                    </div>
+                </div>
+
+                <!-- Right: Info -->
+                <div class="space-y-6">
+                    <div>
+                        <div class="text-sm text-blue-600 font-semibold mb-2">FORKLIFT</div>
+                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">İXTİF CPD18FVL - 1.8 Ton Li-Ion Forklift</h1>
+                        <p class="text-xl text-gray-600">Güçlü Li-Ion bataryalı, sessiz çalışan, verimli forklift. Depo ve lojistik operasyonları için ideal.</p>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border border-blue-100">
+                        <div class="text-sm text-gray-600 mb-2">Fiyat</div>
+                        <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">245.000 ₺</div>
+                    </div>
+
+                    <!-- Specs -->
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-bold text-gray-900">Teknik Özellikler</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Kapasite</span>
+                                <span class="font-semibold text-gray-900">1.8 Ton</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Enerji</span>
+                                <span class="font-semibold text-gray-900">Li-Ion Batarya</span>
+                            </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Kaldırma Yüksekliği</span>
+                                <span class="font-semibold text-gray-900">4.8 m</span>
+                            </div>
+                            <div class="flex justify-between py-3">
+                                <span class="text-gray-600">Ürün Kodu</span>
+                                <span class="font-semibold text-gray-900">CPD18FVL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="flex gap-4">
+                        <button class="flex-1 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all">
+                            <i class="fa-solid fa-envelope mr-2"></i>Teklif Al
+                        </button>
+                        <button class="px-6 py-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-600 transition-all">
+                            <i class="fa-solid fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

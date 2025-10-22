@@ -31,7 +31,7 @@
                     <!-- CTA Button -->
                     <div class="mb-16">
                         <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
-                            <i class="fa-solid fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                            <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                             Ürünleri İncele
                         </a>
                     </div>
@@ -101,7 +101,7 @@
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Forklift</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
-                            <i class="fa-solid fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                            <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </div>
                 </a>
@@ -113,7 +113,7 @@
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Transpalet</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
-                            <i class="fa-solid fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                            <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </div>
                 </a>
@@ -125,7 +125,7 @@
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">İstif Makinesi</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
-                            <i class="fa-solid fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                            <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </div>
                 </a>
@@ -137,7 +137,7 @@
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Reach Truck</h3>
                         <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                             <span class="text-sm lg:text-base">Keşfet</span>
-                            <i class="fa-solid fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                            <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                         </div>
                     </div>
                 </a>
@@ -181,7 +181,7 @@
                                  alt="{{ $productTitle }}"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                         @else
-                            <i class="fa-solid fa-box text-6xl text-blue-400 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
+                            <i class="fa-light fa-box text-6xl text-blue-400 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
                         @endif
                     </a>
 
@@ -206,7 +206,7 @@
                             images: {{ json_encode($product->getMedia('product_images')->map(fn($media) => $media->getUrl())->toArray()) }}
                         })"
                         class="mt-4 w-full bg-white/10 dark:bg-white/10 hover:bg-white/20 dark:hover:bg-white/20 text-gray-900 dark:text-white py-2 rounded-lg text-sm font-semibold transition-colors">
-                        <i class="fa-solid fa-eye mr-2"></i>
+                        <i class="fa-light fa-eye mr-2"></i>
                         Hızlı Bak
                     </button>
                 </div>
@@ -234,7 +234,7 @@
 
             <!-- Close Button -->
             <button @click="closeModal()" class="absolute top-4 right-4 w-12 h-12 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 rounded-full flex items-center justify-center z-10 transition-colors">
-                <i class="fa-solid fa-xmark text-2xl text-gray-900 dark:text-white"></i>
+                <i class="fa-light fa-xmark text-2xl text-gray-900 dark:text-white"></i>
             </button>
 
             <div class="p-6 lg:p-12">
@@ -250,7 +250,7 @@
                                          class="w-full h-full object-cover">
                                 </template>
                                 <template x-if="selectedProduct && (!selectedProduct.images || selectedProduct.images.length === 0)">
-                                    <i class="fa-solid fa-box text-[8rem] lg:text-[12rem] text-blue-400 dark:text-blue-300"></i>
+                                    <i class="fa-light fa-box text-[8rem] lg:text-[12rem] text-blue-400 dark:text-blue-300"></i>
                                 </template>
                             </div>
 
@@ -298,7 +298,7 @@
                                         <!-- Icon + Label -->
                                         <div class="flex items-center gap-2 mb-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-lg flex items-center justify-center flex-shrink-0">
-                                                <i class="fa-solid fa-bolt text-white text-sm"></i>
+                                                <i class="fa-light fa-bolt text-white text-sm"></i>
                                             </div>
                                             <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300" x-text="spec.label"></h4>
                                         </div>
@@ -313,11 +313,11 @@
                         <div class="flex gap-4">
                             <a :href="selectedProduct?.url || '#'"
                                class="flex-grow bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl font-bold text-base lg:text-lg transition-all text-center">
-                                <i class="fa-solid fa-arrow-right mr-2"></i>
+                                <i class="fa-light fa-arrow-right mr-2"></i>
                                 Ürün Sayfasına Git
                             </a>
                             <button class="w-14 h-14 lg:w-16 lg:h-16 border-2 border-gray-300 dark:border-gray-600 rounded-xl flex items-center justify-center hover:border-red-500 hover:text-red-500 transition-colors">
-                                <i class="fa-solid fa-heart text-xl lg:text-2xl"></i>
+                                <i class="fa-light fa-heart text-xl lg:text-2xl"></i>
                             </button>
                         </div>
                     </div>
@@ -336,7 +336,7 @@
                     <a href="{{ route('shop.index') }}" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                                <i class="fa-solid fa-shopping-cart text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                                <i class="fa-light fa-shopping-cart text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
                             </div>
                             <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Satın Alma</h3>
                         </div>
@@ -349,7 +349,7 @@
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                                <i class="fa-solid fa-calendar-days text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                                <i class="fa-light fa-calendar-days text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
                             </div>
                             <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Kiralama</h3>
                         </div>
@@ -362,7 +362,7 @@
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                                <i class="fa-solid fa-recycle text-2xl md:text-4xl text-white group-hover:rotate-180 transition-all duration-500"></i>
+                                <i class="fa-light fa-recycle text-2xl md:text-4xl text-white group-hover:rotate-180 transition-all duration-500"></i>
                             </div>
                             <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">İkinci El</h3>
                         </div>
@@ -375,7 +375,7 @@
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                                <i class="fa-solid fa-gears text-2xl md:text-4xl text-white group-hover:rotate-90 transition-all duration-500"></i>
+                                <i class="fa-light fa-gears text-2xl md:text-4xl text-white group-hover:rotate-90 transition-all duration-500"></i>
                             </div>
                             <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Yedek Parça</h3>
                         </div>
@@ -388,7 +388,7 @@
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                                <i class="fa-solid fa-wrench text-2xl md:text-4xl text-white group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"></i>
+                                <i class="fa-light fa-wrench text-2xl md:text-4xl text-white group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"></i>
                             </div>
                             <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Teknik Servis</h3>
                         </div>
@@ -400,7 +400,7 @@
                     <a href="#" class="group block">
                         <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg relative">
                             <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                                <i class="fa-solid fa-file-contract text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                                <i class="fa-light fa-file-contract text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
                             </div>
                             <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap">Bakım Anlaşması</h3>
                         </div>
@@ -418,7 +418,7 @@
                 <!-- Phone -->
                 <a href="tel:02167553555" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-3xl p-6 md:p-8 hover:scale-105 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-white/10 transition-all duration-300 text-center max-md:text-left group max-md:flex max-md:flex-row max-md:items-center max-md:gap-4">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 max-md:mx-0 max-md:mb-0 max-md:flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                        <i class="fa-solid fa-phone text-3xl md:text-4xl text-white"></i>
+                        <i class="fa-light fa-phone text-3xl md:text-4xl text-white"></i>
                     </div>
                     <div class="max-md:flex-1">
                         <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white mb-3">Telefon</h3>
@@ -442,7 +442,7 @@
                 <!-- Email -->
                 <a href="mailto:info@ixtif.com" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-3xl p-6 md:p-8 hover:scale-105 hover:shadow-2xl hover:bg-white/90 dark:hover:bg-white/10 transition-all duration-300 text-center max-md:text-left group max-md:flex max-md:flex-row max-md:items-center max-md:gap-4">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 max-md:mx-0 max-md:mb-0 max-md:flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                        <i class="fa-solid fa-envelope text-3xl md:text-4xl text-white"></i>
+                        <i class="fa-light fa-envelope text-3xl md:text-4xl text-white"></i>
                     </div>
                     <div class="max-md:flex-1">
                         <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white mb-3">E-posta</h3>
@@ -456,12 +456,12 @@
                     <!-- AI Badge -->
                     <div class="absolute top-2 right-2 md:top-4 md:right-4">
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 md:px-3 md:py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-gray-900 dark:text-white text-[10px] md:text-xs font-bold rounded-full italic border border-cyan-300 dark:border-cyan-600">
-                            <i class="fa-solid fa-sparkles text-yellow-600 dark:text-yellow-400"></i>
+                            <i class="fa-light fa-sparkles text-yellow-600 dark:text-yellow-400"></i>
                             Yapay Zeka
                         </span>
                     </div>
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 max-md:mx-0 max-md:mb-0 max-md:flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                        <i class="fa-solid fa-robot text-3xl md:text-4xl text-white"></i>
+                        <i class="fa-light fa-robot text-3xl md:text-4xl text-white"></i>
                     </div>
                     <div class="max-md:flex-1">
                         <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white mb-3">Canlı Destek</h3>

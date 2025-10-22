@@ -62,6 +62,7 @@
                                 $description = $metadesc ?? (strip_tags($body) ?? null);
 
                                 $category = $item->category->getTranslated('title') ?? 'Ürün';
+                                $categoryIcon = $item->category?->icon_class ?? 'fa-light fa-box';
                                 $featuredImage = $item->getFirstMedia('featured_image');
                                 $imageUrl = $featuredImage ? ($featuredImage->hasGeneratedConversion('thumb') ? $featuredImage->getUrl('thumb') : $featuredImage->getUrl()) : '';
                             @endphp
@@ -79,7 +80,7 @@
                                         @else
                                             <!-- Category Icon Fallback -->
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <i class="fa-light fa-box text-8xl text-blue-400 dark:text-blue-300"></i>
+                                                <i class="{{ $categoryIcon }} text-8xl text-blue-400 dark:text-blue-300"></i>
                                             </div>
                                         @endif
 

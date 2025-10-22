@@ -185,26 +185,25 @@ class="fixed {{ $selectedPosition }} z-50">
             ></div>
         </div>
 
-        {{-- MOBILE CIRCLE: Same size as robot button (80x80), directly on top of robot --}}
-        <div
-            :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
-            class="lg:hidden absolute z-[101] transition-opacity duration-300
-                   w-20 h-20 rounded-full
-                   top-[-90px] left-0
-                   flex items-center justify-center text-center
-                   bg-white shadow-2xl"
-            style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
-        >
-            <p
-                x-text="currentMessage"
-                class="text-[10px] font-bold leading-tight px-2"
-                style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
-            ></p>
-        </div>
-
         {{-- Main Button with V1 Classic Pulse --}}
         <div class="relative w-20 h-20 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center group-hover:scale-110 v1-classic-button"
-             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);">
+             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); z-index: 1;">
+
+            {{-- MOBILE CIRCLE: Overlays robot at EXACT same position, z-index on top --}}
+            <div
+                :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+                class="lg:hidden absolute inset-0 z-[2] transition-opacity duration-300
+                       w-20 h-20 rounded-full
+                       flex items-center justify-center text-center
+                       bg-white shadow-2xl"
+                style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
+            >
+                <p
+                    x-text="currentMessage"
+                    class="text-[10px] font-bold leading-tight px-2"
+                    style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);"
+                ></p>
+            </div>
                 {{-- Chatbot SVG Icon --}}
                 <svg class="w-12 h-12 transition-transform group-hover:scale-110 group-hover:rotate-6" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
                     <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>

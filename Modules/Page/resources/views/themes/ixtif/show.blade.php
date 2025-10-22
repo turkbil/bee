@@ -186,7 +186,10 @@
                                  alt="{{ $productTitle }}"
                                  class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark">
                         @else
-                            <i class="fa-light fa-box text-6xl text-blue-400 dark:text-blue-400"></i>
+                            @php
+                                $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
+                            @endphp
+                            <i class="{{ $categoryIcon }} text-6xl text-blue-400 dark:text-blue-400"></i>
                         @endif
                     </a>
 

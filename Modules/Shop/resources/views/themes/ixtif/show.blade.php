@@ -1375,6 +1375,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Fixed yap
                 tocBar.style.position = 'fixed';
                 tocBar.style.top = currentHeaderHeight + 'px';
+                tocBar.style.transition = 'top 0.15s ease-out'; // Header gap önlemek için
                 tocBar.style.left = '0';
                 tocBar.style.right = '0';
                 tocBar.style.zIndex = '40';

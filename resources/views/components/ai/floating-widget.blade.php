@@ -116,14 +116,14 @@ class="fixed {{ $selectedPosition }} z-50">
             // Mobile messages (shorter, concise, formal "siz")
             mobileMessages: [
                 'Merhaba! 👋',
-                'Size yardımcı olalım',
-                'Sorularınızı yanıtlayalım',
-                'Ürün bilgisi alın',
-                'Hızlı destek ⚡',
-                '7/24 hizmetinizdeyiz 🤖',
-                'Sizi dinliyoruz',
-                'Bilgi için tıklayın',
-                'Hemen yazın! 💬'
+                'Yardımcı olalım',
+                'Sorularınızı bekliyoruz',
+                'Ürünler hakkında',
+                'Hızlı yanıt ⚡',
+                '7/24 hizmetinizde 🤖',
+                'Sorun bize',
+                'Bilgi için yazın',
+                'Hemen başlayalım! 💬'
             ],
             currentIndex: 0,
             currentMessage: 'Merhaba! 👋',

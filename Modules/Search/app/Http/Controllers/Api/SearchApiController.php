@@ -153,7 +153,7 @@ class SearchApiController extends Controller
 
             $products = $formattedResults
                 ->filter(fn ($item) => ($item['type'] ?? null) === 'products')
-                ->sortByDesc(fn ($item) => !empty($item['is_master_product']) ? 1 : 0)
+                ->sortBy(fn ($item) => $item['is_variant'] ?? 0)
                 ->take($productLimit)
                 ->map(function ($item) {
                     return [

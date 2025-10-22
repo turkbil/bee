@@ -1010,7 +1010,7 @@
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Clean Version --}}
             <div class="lg:col-span-1 order-first lg:order-last">
-                <div class="space-y-8 lg:sticky lg:top-24" id="sticky-sidebar">
+                <div class="space-y-8" id="sticky-sidebar">
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
@@ -1346,6 +1346,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocPlaceholder = document.getElementById('toc-placeholder');
     const tocContainer = document.getElementById('toc-container');
     const header = document.getElementById('main-header');
+    const sidebar = document.getElementById('sticky-sidebar');
+
+    // Sidebar top pozisyonunu güncelle (TOC bar değiştiğinde)
+    function updateSidebarTop() {
+        if (!sidebar || window.innerWidth < 1024) return;
+
+        const headerHeight = header ? header.offsetHeight : 0;
+        const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
+        sidebar.style.top = (headerHeight + tocBarHeight + 24) + 'px';
+    }
 
     if (tocBar && tocPlaceholder && header) {
         let lastScrollTop = 0;
@@ -1387,6 +1397,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
+            // Sidebar pozisyonunu güncelle (TOC bar değiştiğinde)
+            updateSidebarTop();
+
             lastScrollTop = scrollTop;
         });
 
@@ -1394,10 +1407,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================
-    // 2. STICKY SIDEBAR - BASİT VERSİYON
+    // 2. STICKY SIDEBAR - SCROLL KONTROLÜ İLE
     // ==========================================
-    const sidebar = document.getElementById('sticky-sidebar');
-
     if (sidebar) {
         // Parent overflow kontrolü (sticky çalışması için gerekli)
         const gridContainer = sidebar.closest('.grid');
@@ -1405,19 +1416,42 @@ document.addEventListener('DOMContentLoaded', function() {
             gridContainer.style.overflow = 'visible';
         }
 
-        // Dinamik top pozisyonu (header + tocBar yüksekliği)
-        function updateSidebarTop() {
-            if (window.innerWidth < 1024) return;
+        // Sidebar'ın başlangıç pozisyonunu kaydet
+        const sidebarInitialTop = sidebar.getBoundingClientRect().top + window.pageYOffset;
 
+        // Scroll event'inde sidebar'ı kontrol et
+        window.addEventListener('scroll', function() {
+            if (window.innerWidth < 1024) {
+                // Mobile'da sticky kaldır
+                sidebar.classList.remove('lg:sticky');
+                sidebar.style.position = '';
+                sidebar.style.top = '';
+                return;
+            }
+
+            const scrollTop = window.pageYOffset;
             const headerHeight = header ? header.offsetHeight : 0;
             const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
-            sidebar.style.top = (headerHeight + tocBarHeight + 24) + 'px';
-        }
+            const stickyTop = headerHeight + tocBarHeight + 24;
 
+            // Sidebar scroll pozisyonuna ulaştıysa sticky yap
+            if (scrollTop >= (sidebarInitialTop - stickyTop)) {
+                sidebar.style.position = 'sticky';
+                sidebar.style.top = stickyTop + 'px';
+            } else {
+                // Henüz ulaşmadıysa normal pozisyon
+                sidebar.style.position = 'relative';
+                sidebar.style.top = 'auto';
+            }
+        });
+
+        // İlk yükleme - pozisyonu ayarla
         updateSidebarTop();
+
+        // Resize'da güncelle
         window.addEventListener('resize', updateSidebarTop);
 
-        console.log('✅ Sticky sidebar enabled');
+        console.log('✅ Sticky sidebar enabled with scroll control');
     }
 
     // ==========================================

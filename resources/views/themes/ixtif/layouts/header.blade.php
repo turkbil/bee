@@ -50,8 +50,8 @@
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
 
-    {{-- Google Fonts - Roboto Only (Performance Optimized) --}}
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    {{-- Google Fonts - Roboto All Weights --}}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     {{-- iXtif Theme Styles - Bundle if available, fallback to individual files --}}
     @if(file_exists(public_path('css/ixtif-bundle.min.css')))

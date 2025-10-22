@@ -288,13 +288,12 @@ body.dark-mode-active::after {
 
 /* Light Mode: Koyu gölge (siyah) */
 .drop-shadow-product-light {
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15)) 
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15))
             drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-/* Dark Mode: Açık gölge + hafif ışıltı (beyaz/mavi) */
+/* Dark Mode: ÇOK hafif gölge (neredeyse yok) */
 .dark .drop-shadow-product-dark {
-    filter: drop-shadow(0 4px 16px rgba(255, 255, 255, 0.12)) 
-            drop-shadow(0 2px 8px rgba(147, 197, 253, 0.15))
-            drop-shadow(0 1px 4px rgba(255, 255, 255, 0.08));
+    filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.04))
+            drop-shadow(0 1px 3px rgba(255, 255, 255, 0.03));
 }

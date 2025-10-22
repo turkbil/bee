@@ -231,7 +231,8 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
-                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
+                                 class="dropdown-content absolute top-full mt-2 w-44 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-1 z-20"
+                                 x-cloak>
 
                                 @if(count($languageSwitcherLinks) > 0)
                                     @php
@@ -387,7 +388,8 @@
                                         <div x-show="open"
                                              @click.away="open = false"
                                              x-transition
-                                             class="dropdown-content absolute top-full mt-2 w-48 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                                             class="dropdown-content absolute top-full mt-2 w-48 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 py-2 z-50"
+                                             x-cloak>
                                             @foreach($menuItem['children'] as $child)
                                                 <a href="{{ $child['url'] }}"
                                                    {{ $child['target'] === '_blank' ? 'target="_blank"' : '' }}

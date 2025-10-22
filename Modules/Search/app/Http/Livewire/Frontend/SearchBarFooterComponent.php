@@ -8,11 +8,10 @@ use Livewire\Component;
 use Modules\Search\App\Services\UniversalSearchService;
 use Modules\Search\App\Services\SearchClickTracker;
 
-class SearchBarComponent extends Component
+class SearchBarFooterComponent extends Component
 {
     public $query = '';
     public $isOpen = false;
-    public $viewMode = 'default'; // default or footer
 
     public function updatedQuery()
     {
@@ -71,10 +70,6 @@ class SearchBarComponent extends Component
 
     public function render()
     {
-        $viewName = $this->viewMode === 'footer'
-            ? 'search::livewire.frontend.search-bar-footer'
-            : 'search::livewire.frontend.search-bar';
-
-        return view($viewName);
+        return view('search::livewire.frontend.search-bar-footer');
     }
 }

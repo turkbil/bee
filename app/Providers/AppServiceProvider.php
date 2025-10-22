@@ -139,7 +139,10 @@ class AppServiceProvider extends ServiceProvider
                 'responsecache.cache_lifetime_in_seconds' => 86400, // 24 saat
             ]);
 
-            $tenantStorageRoot = storage_path("tenant{$tenantId}/app");
+            // ⚠️ CRITICAL FIX: isTenant() true ise tenancy ZATEN initialized!
+            // storage_path() otomatik tenant prefix ekliyor (suffix_storage_path=true)
+            // Manuel "tenant{$tenantId}/" EKLEMEMELIYIZ!
+            $tenantStorageRoot = storage_path("app");
 
             // Tenant özel disk yapılandırması (private storage kökü)
             config([
@@ -163,7 +166,7 @@ class AppServiceProvider extends ServiceProvider
 
             // Media Library temp path için tenant-aware
             config([
-                'media-library.temporary_directory_path' => storage_path("tenant{$tenantId}/media-library/temp"),
+                'media-library.temporary_directory_path' => storage_path("media-library/temp"),
             ]);
 
             // Public disk URL için tenant-aware (Media Library URL generation için kritik!)

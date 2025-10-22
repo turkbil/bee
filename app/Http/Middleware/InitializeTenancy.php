@@ -180,7 +180,17 @@ class InitializeTenancy extends BaseMiddleware
     {
         $tenantKey = $tenant->id;
         $tenantDiskName = "tenant{$tenantKey}";
-        $root = storage_path("tenant{$tenantKey}/app/public");
+
+        // ⚠️ CRITICAL FIX: Bu metod tenancy->initialize() SONRASINDA çalışıyor!
+        // storage_path() zaten otomatik tenant prefix ekliyor (suffix_storage_path=true)
+        // Manuel "tenant{$tenantKey}/" EKLEMEMELIYIZ!
+        //
+        // ❌ YANLIŞ: storage_path("tenant{$tenantKey}/app/public")
+        //    → /storage/tenant2/tenant2/app/public (çift prefix!)
+        //
+        // ✅ DOĞRU: storage_path("app/public")
+        //    → /storage/tenant2/app/public
+        $root = storage_path("app/public");
 
         // 🔥 Request'ten gerçek URL al (config('app.url') yanlış domain döndürüyor!)
         $appUrl = request() ? request()->getSchemeAndHttpHost() : rtrim((string) config('app.url'), '/');

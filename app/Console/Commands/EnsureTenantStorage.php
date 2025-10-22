@@ -5,6 +5,11 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Tenant;
 
+/**
+ * ⚠️ NOT: Bu command CONSOLE context'te çalışır
+ * Tenant initialize EDİLMEZ, storage_path() suffix eklemez
+ * Bu yüzden storage_path("tenant{$id}") kullanımı DOĞRUDUR
+ */
 class EnsureTenantStorage extends Command
 {
     protected $signature = 'tenants:ensure-storage';

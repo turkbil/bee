@@ -249,7 +249,11 @@ class Widget extends Model implements HasMedia
         // Tenant context varsa tenant disk kullan
         if ($tenantId) {
             $diskName = 'tenant';
-            $root = storage_path("tenant{$tenantId}/app/public");
+
+            // ⚠️ CRITICAL FIX: Tenancy package zaten suffix_storage_path=true ile
+            // storage_path()'i otomatik prefix ediyor: storage/tenant{id}/
+            // Bu yüzden manuel "tenant{$tenantId}/" EKLEMEMELIYIZ!
+            $root = storage_path("app/public");
 
             if (!is_dir($root)) {
                 @mkdir($root, 0775, true);

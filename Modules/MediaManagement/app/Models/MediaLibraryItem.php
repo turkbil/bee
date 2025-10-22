@@ -162,7 +162,17 @@ class MediaLibraryItem extends Model implements HasMedia
         // Tenant context varsa tenant disk kullan
         if ($tenantId) {
             $diskName = 'tenant';
-            $root = storage_path("tenant{$tenantId}/app/public");
+
+            // ⚠️ CRITICAL FIX: Tenancy package zaten suffix_storage_path=true ile
+            // storage_path()'i otomatik prefix ediyor: storage/tenant{id}/
+            // Bu yüzden manuel "tenant{$tenantId}/" EKLEMEMELIYIZ!
+            //
+            // ❌ YANLIŞ: storage_path("tenant{$tenantId}/app/public")
+            //    → /storage/tenant2/ + tenant2/app/public = /storage/tenant2/tenant2/app/public
+            //
+            // ✅ DOĞRU: storage_path("app/public")
+            //    → /storage/tenant2/app/public (tenancy package otomatik prefix ekler)
+            $root = storage_path("app/public");
 
             if (!is_dir($root)) {
                 @mkdir($root, 0775, true);

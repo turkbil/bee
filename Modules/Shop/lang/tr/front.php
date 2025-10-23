@@ -14,4 +14,22 @@ return [
         'updated_at' => 'Son Güncelleme',
         'published_at' => 'Yayın Tarihi',
     ],
+
+    // Category Pages
+    'all_products' => 'Tüm Ürünler',
+    'subcategories' => 'Alt Kategoriler',
+    'browse_subcategories' => 'Alt Kategorilere Göz Atın',
+    'products' => 'Ürün',
+    'products_in_category' => 'Kategorideki Ürünler',
+    'showing' => 'Gösterilen',
+    'of' => '/',
+    'no_products_found' => 'Ürün Bulunamadı',
+    'no_products_description' => 'Bu kategoride henüz ürün bulunmamaktadır.',
+    'no_products_in_category' => 'Bu Kategoride Ürün Yok',
+    'no_products_category_description' => 'Bu kategoride henüz ürün eklenmemiş. Alt kategorilere göz atabilirsiniz.',
+    'back_to_all_products' => 'Tüm Ürünlere Dön',
+    'price_on_request' => 'Fiyat Sorunuz',
+
+    // Module Title
+    'module_title' => 'Ürünler',
 ];

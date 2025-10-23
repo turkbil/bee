@@ -23,29 +23,77 @@ class ShopController extends Controller
 
     public function index()
     {
-        $products = ShopProduct::query()
+        $locale = app()->getLocale();
+
+        // Get all root categories (parent_id = null) for display
+        $categories = ShopCategory::query()
+            ->whereNull('parent_id')
+            ->active()
+            ->orderBy('sort_order', 'asc')
+            ->get();
+
+        // Build products query
+        $productsQuery = ShopProduct::query()
             ->with(['category', 'brand', 'media', 'childProducts' => function ($q) {
                 $q->active()->published()->orderBy('variant_type')->orderBy('product_id');
             }])
             ->whereNull('parent_product_id') // Sadece ana ürünler (varyant olmayanlar)
-            ->where('show_on_homepage', 1) // Ana sayfada göster = 1 olanlar
             ->published()
-            ->active()
+            ->active();
+
+        // Filter by category if provided
+        $selectedCategoryId = request('category');
+        $selectedCategory = null;
+
+        if ($selectedCategoryId) {
+            $selectedCategory = ShopCategory::where('category_id', $selectedCategoryId)
+                ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"{$locale}\"')) = ?", [$selectedCategoryId])
+                ->first();
+
+            if ($selectedCategory) {
+                // Get category and all its children IDs
+                $categoryIds = $this->getCategoryWithChildren($selectedCategory);
+                $productsQuery->whereIn('category_id', $categoryIds);
+            }
+        }
+
+        $products = $productsQuery
             ->orderBy('sort_order', 'asc')
             ->orderByDesc('published_at')
-            ->simplePaginate(config('shop.pagination.front_per_shop', 12));
+            ->paginate(config('shop.pagination.front_per_shop', 12));
 
         $moduleTitle = __('shop::front.module_title');
+
+        // SEO injection
+        view()->share('currentModel', $selectedCategory ?? null);
 
         try {
             $viewPath = $this->themeService->getThemeViewPath('index', 'shop');
 
-            return view($viewPath, compact('products', 'moduleTitle'));
+            return view($viewPath, compact('products', 'moduleTitle', 'categories', 'selectedCategory'));
         } catch (\Throwable $e) {
             Log::error('Shop theme index view error', ['message' => $e->getMessage()]);
 
-            return view('shop::front.index', compact('products', 'moduleTitle'));
+            return view('shop::front.index', compact('products', 'moduleTitle', 'categories', 'selectedCategory'));
         }
+    }
+
+    /**
+     * Get category ID and all its children IDs recursively
+     */
+    private function getCategoryWithChildren(ShopCategory $category): array
+    {
+        $ids = [$category->category_id];
+
+        $children = ShopCategory::where('parent_id', $category->category_id)
+            ->active()
+            ->get();
+
+        foreach ($children as $child) {
+            $ids = array_merge($ids, $this->getCategoryWithChildren($child));
+        }
+
+        return $ids;
     }
 
     /**
@@ -295,18 +343,36 @@ class ShopController extends Controller
         $locale = app()->getLocale();
 
         $category = ShopCategory::query()
-            ->with(['products' => fn($query) => $query->active()->published()])
+            ->with(['children' => fn($query) => $query->active()->orderBy('sort_order')])
             ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"{$locale}\"')) = ?", [$slug])
             ->firstOrFail();
 
-        $products = $category->products()->active()->published()->paginate(12);
+        // Get all category IDs (this category + all children recursively)
+        $categoryIds = $this->getCategoryWithChildren($category);
+
+        // Get products from this category and all subcategories
+        $products = ShopProduct::query()
+            ->with(['category', 'brand', 'media'])
+            ->whereIn('category_id', $categoryIds)
+            ->whereNull('parent_product_id') // Sadece ana ürünler
+            ->active()
+            ->published()
+            ->orderBy('sort_order', 'asc')
+            ->orderByDesc('published_at')
+            ->paginate(config('shop.pagination.front_per_shop', 12));
+
+        // Get direct subcategories for display
+        $subcategories = $category->children;
+
+        // SEO injection
+        view()->share('currentModel', $category);
 
         try {
             $viewPath = $this->themeService->getThemeViewPath('category', 'shop');
-            return view($viewPath, compact('category', 'products'));
+            return view($viewPath, compact('category', 'products', 'subcategories'));
         } catch (\Throwable $e) {
             Log::error('Shop theme category view error', ['message' => $e->getMessage()]);
-            return view('shop::front.category', compact('category', 'products'));
+            return view('shop::front.category', compact('category', 'products', 'subcategories'));
         }
     }
 

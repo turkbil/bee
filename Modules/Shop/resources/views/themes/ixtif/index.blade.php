@@ -14,16 +14,31 @@
         <section class="relative py-16 md:py-20 overflow-hidden">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div class="text-center max-w-3xl mx-auto">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                        @if($selectedCategory)
-                            {{ $selectedCategory->getTranslated('title') }}
-                        @else
-                            {{ $moduleTitle ?? __('shop::front.all_products') }}
+                    @if($selectedCategory)
+                        {{-- Kategori seçili --}}
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                            {{ $selectedCategory->getTranslated('title') }} {{ __('shop::front.products') }}
+                        </h1>
+                        @if($selectedCategory->getTranslated('description'))
+                            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {!! Str::limit(strip_tags($selectedCategory->getTranslated('description')), 200) !!}
+                            </p>
                         @endif
-                    </h1>
-                    @if($selectedCategory && $selectedCategory->getTranslated('description'))
+                    @elseif(request('search'))
+                        {{-- Arama yapıldı --}}
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                            "{{ request('search') }}" {{ __('shop::front.search_results') }}
+                        </h1>
+                        <p class="text-lg text-gray-600 dark:text-gray-300">
+                            {{ $products->total() }} {{ __('shop::front.products_found') }}
+                        </p>
+                    @else
+                        {{-- Ana sayfa --}}
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                            {{ __('shop::front.hero_title') }}
+                        </h1>
                         <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                            {!! Str::limit(strip_tags($selectedCategory->getTranslated('description')), 200) !!}
+                            {{ __('shop::front.hero_subtitle') }}
                         </p>
                     @endif
                 </div>

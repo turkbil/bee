@@ -35,4 +35,10 @@ return [
 
     // Search
     'search_products' => 'Ürün ara... (İsim, SKU, Açıklama)',
+    'search_results' => 'Arama Sonuçları',
+    'products_found' => 'ürün bulundu',
+
+    // Hero Section
+    'hero_title' => 'Forklift, Transpalet ve İstif Makineleri',
+    'hero_subtitle' => 'Profesyonel depo ve lojistik ekipmanları. Satış, kiralama ve servis hizmetleri.',
 ];

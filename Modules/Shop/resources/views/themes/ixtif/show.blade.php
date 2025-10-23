@@ -1357,7 +1357,7 @@
     const config = {
         SIDEBAR_GAP: 16, // Sidebar top gap (px)
         DESKTOP_BREAKPOINT: 1024,
-        DEBUG: true // Console debug logs
+        DEBUG: true // Console debug logs - TEMPORARY for debugging
     };
 
     // ============================================
@@ -1656,6 +1656,8 @@
 
         console.log('✅ Modern Sticky System V7 initialized');
         console.log('📊 State:', state);
+        console.log('🔍 Desktop mode:', state.isDesktop);
+        console.log('🔍 Sidebar element:', elements.sidebar ? 'Found' : 'NOT FOUND!');
     }
 
     // Start when DOM ready

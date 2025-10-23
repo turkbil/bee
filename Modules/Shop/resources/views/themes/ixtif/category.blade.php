@@ -55,6 +55,11 @@
                         <div>
                             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
                                 {{ $category->getTranslated('title') }}
+                                @if($subcategories->count() === 0 && $products->total() > 0)
+                                    <span class="text-3xl md:text-4xl lg:text-5xl font-normal text-gray-600 dark:text-gray-400">
+                                        - {{ __('shop::front.products') }}
+                                    </span>
+                                @endif
                             </h1>
                         </div>
                     </div>

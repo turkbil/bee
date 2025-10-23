@@ -78,15 +78,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('✅ Tenant-safe frontend assets loaded');
-
-// GSAP ScrollTrigger - Progressive sticky elements
-import gsap from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
-
-// Make GSAP globally available for blade templates
-window.gsap = gsap;
-window.ScrollTrigger = ScrollTrigger;
-
-console.log('✅ GSAP ScrollTrigger initialized and available globally');

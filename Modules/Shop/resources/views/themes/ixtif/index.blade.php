@@ -16,13 +16,20 @@
                 <div class="text-center max-w-3xl mx-auto">
                     @if($selectedCategory)
                         {{-- Kategori seçili --}}
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                            {{ $selectedCategory->getTranslated('title') }} {{ __('shop::front.products') }}
-                        </h1>
+                        <div class="flex items-center justify-center gap-4 mb-6">
+                            @if($selectedCategory->icon_class)
+                                <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                    <i class="{{ $selectedCategory->icon_class }} text-3xl md:text-4xl text-white"></i>
+                                </div>
+                            @endif
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
+                                {{ $selectedCategory->getTranslated('title') }}
+                            </h1>
+                        </div>
                         @if($selectedCategory->getTranslated('description'))
-                            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                                {!! Str::limit(strip_tags($selectedCategory->getTranslated('description')), 200) !!}
-                            </p>
+                            <div class="prose dark:prose-invert mx-auto text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {!! Str::limit(strip_tags($selectedCategory->getTranslated('description')), 300) !!}
+                            </div>
                         @endif
                     @elseif(request('search'))
                         {{-- Arama yapıldı --}}
@@ -74,14 +81,8 @@
                         @endif
                     </form>
 
-                    {{-- Quick Actions --}}
-                    <div class="mt-6 flex items-center justify-center gap-4">
-                        <button @click="$refs.categoryModal.classList.remove('hidden')"
-                                class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-bold text-base hover:shadow-2xl hover:scale-105 transition-all">
-                            <i class="fa-light fa-grid-2 text-xl"></i>
-                            <span>Tüm Kategoriler</span>
-                            <i class="fa-light fa-chevron-right text-sm ml-2"></i>
-                        </button>
+                    {{-- Quick Info --}}
+                    <div class="mt-4 flex items-center justify-center">
                         <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-700 dark:text-gray-300 font-semibold">
                             <i class="fa-light fa-sparkles text-purple-600 dark:text-purple-400"></i>
                             <span>Geniş Ürün Yelpazesi</span>

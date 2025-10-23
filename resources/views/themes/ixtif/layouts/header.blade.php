@@ -1021,16 +1021,29 @@
     {{-- Dynamic Content Areas --}}
     @stack('header-content')
 
-    {{-- Sticky Header CSS --}}
+    {{-- Header Scroll Behavior CSS --}}
     <style>
-        /* Scroll'da topbar'ı gizle ve header'ı küçült */
-        #main-header.scrolled #top-bar {
-            display: none !important;
+        /* Topbar smooth transition */
+        #top-bar {
+            max-height: 45px;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s ease,
+                        margin 0.3s ease;
+            will-change: max-height, opacity;
         }
 
-        /* Smooth transition */
-        #top-bar {
-            transition: all 0.3s ease-in-out;
+        /* Scroll edildiğinde topbar'ı kapat */
+        #main-header.scrolled #top-bar {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        /* Main header smooth transition */
+        #main-header {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 

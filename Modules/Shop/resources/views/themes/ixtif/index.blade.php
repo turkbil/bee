@@ -6,245 +6,139 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
-    <div class="relative" x-data="shopsList()" x-init="init()">
+    <div class="relative" x-data="shopIndexPage()" x-init="init()">
+        {{-- Gradient Background --}}
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
 
-        <!-- Gradient Background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:bg-slate-900 -z-10"></div>
-
-        <!-- Header -->
-        <div class="relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
-            <div class="relative py-12">
-                <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                    <div class="max-w-3xl">
-                        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
-                            {{ $moduleTitle ?? __('shop::front.general.shops') }}
-                        </h1>
-                    </div>
+        {{-- Header Section --}}
+        <section class="relative py-16 md:py-20 overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                        @if($selectedCategory)
+                            {{ $selectedCategory->getTranslated('title') }}
+                        @else
+                            {{ $moduleTitle ?? __('shop::front.all_products') }}
+                        @endif
+                    </h1>
+                    @if($selectedCategory && $selectedCategory->getTranslated('description'))
+                        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                            {!! Str::limit(strip_tags($selectedCategory->getTranslated('description')), 200) !!}
+                        </p>
+                    @endif
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="py-20">
+        {{-- Categories Filter (Root Categories) --}}
+        @if($categories->count() > 0)
+        <section class="py-8 border-b border-gray-200 dark:border-white/10">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                @if ($products->count() > 0)
+                <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    {{-- All Products --}}
+                    <a href="{{ route('shop.index') }}"
+                       class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all {{ !$selectedCategory ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                        <i class="fa-light fa-grid-2 mr-2"></i>
+                        {{ __('shop::front.all_products') }}
+                    </a>
 
-                    <!-- Grid: 3 kolonlu modern tasarım -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-                        @foreach ($products as $item)
-                            @php
-                                $currentLocale = app()->getLocale();
-                                $slugData = $item->getRawOriginal('slug');
-
-                                if (is_string($slugData)) {
-                                    $slugData = json_decode($slugData, true) ?: [];
-                                }
-
-                                if (is_array($slugData) && isset($slugData[$currentLocale]) && !empty($slugData[$currentLocale])) {
-                                    $slug = $slugData[$currentLocale];
-                                } else {
-                                    $slug = is_array($slugData) ? ($slugData['tr'] ?? reset($slugData)) : $slugData;
-                                }
-                                $slug = $slug ?: $item->shop_id;
-
-                                $title = $item->getTranslated('title') ?? ($item->getRawOriginal('title') ?? ($item->title ?? 'Başlıksız'));
-
-                                $showSlug = \App\Services\ModuleSlugService::getSlug('Shop', 'show');
-                                $defaultLocale = get_tenant_default_locale();
-                                if ($currentLocale === $defaultLocale) {
-                                    $dynamicUrl = '/' . $showSlug . '/' . $slug;
-                                } else {
-                                    $dynamicUrl = '/' . $currentLocale . '/' . $showSlug . '/' . $slug;
-                                }
-
-                                $metadesc = $item->getTranslated('metadesc') ?? ($item->getRawOriginal('metadesc') ?? ($item->metadesc ?? null));
-                                $body = $item->getTranslated('body') ?? ($item->getRawOriginal('body') ?? ($item->body ?? null));
-                                $description = $metadesc ?? (strip_tags($body) ?? null);
-
-                                $category = $item->category->getTranslated('title') ?? 'Ürün';
-                                $categoryIcon = $item->category?->icon_class ?? 'fa-light fa-box';
-                                $featuredImage = $item->getFirstMedia('featured_image');
-                                $imageUrl = $featuredImage ? ($featuredImage->hasGeneratedConversion('thumb') ? $featuredImage->getUrl('thumb') : $featuredImage->getUrl()) : '';
-                            @endphp
-
-                            <!-- Modern Ürün Kartı -->
-                            <article class="group relative bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-gray-100 dark:border-slate-700 hover:border-gray-200 dark:hover:border-slate-600 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
-                                <a href="{{ $dynamicUrl }}" class="block">
-                                    <!-- Image Section -->
-                                    <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-                                        @if ($featuredImage)
-                                            <img src="{{ $imageUrl }}"
-                                                 alt="{{ $title }}"
-                                                 class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark"
-                                                 loading="lazy">
-                                        @else
-                                            <!-- Category Icon Fallback -->
-                                            <div class="w-full h-full flex items-center justify-center">
-                                                <i class="{{ $categoryIcon }} text-8xl text-blue-400 dark:text-blue-300"></i>
-                                            </div>
-                                        @endif
-
-                                        <!-- Hover Overlay -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                        <!-- Badges - Dinamik Badge Sistemi -->
-                                        <div class="absolute top-4 left-4 flex flex-col gap-2">
-                                            @php
-                                                $productBadges = collect($item->badges ?? [])
-                                                    ->where('is_active', true)
-                                                    ->sortBy('priority')
-                                                    ->take(3); // Max 3 badge göster
-                                            @endphp
-
-                                            @foreach ($productBadges as $badge)
-                                                @php
-                                                    $badgeColor = $badge['color'] ?? 'gray';
-                                                    $badgeIcon = $badge['icon'] ?? 'tag';
-                                                    $badgeType = $badge['type'] ?? 'custom';
-                                                    $badgeValue = $badge['value'] ?? null;
-
-                                                    // Badge label'ı belirle
-                                                    $badgeLabels = [
-                                                        'new_arrival' => 'Yeni',
-                                                        'discount' => '%' . $badgeValue . ' İndirim',
-                                                        'limited_stock' => 'Son ' . $badgeValue . ' Adet',
-                                                        'free_shipping' => 'Ücretsiz Kargo',
-                                                        'bestseller' => 'Çok Satan',
-                                                        'featured' => 'Öne Çıkan',
-                                                        'eco_friendly' => 'Çevre Dostu',
-                                                        'warranty' => $badgeValue . ' Ay Garanti',
-                                                        'pre_order' => 'Ön Sipariş',
-                                                        'imported' => 'İthal',
-                                                        'custom' => $badge['label']['tr'] ?? 'Özel'
-                                                    ];
-
-                                                    $badgeLabel = $badgeLabels[$badgeType] ?? ($badge['label']['tr'] ?? 'Badge');
-                                                @endphp
-
-                                                <span class="px-3 py-1.5 bg-{{ $badgeColor }}-500 text-white text-xs font-semibold rounded-lg shadow-lg">
-                                                    <i class="fa-solid fa-{{ $badgeIcon }} mr-1"></i>{{ $badgeLabel }}
-                                                </span>
-                                            @endforeach
-                                        </div>
-
-                                        <!-- Quick Actions -->
-                                        <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
-                                            <button class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
-                                                <i class="fa-solid fa-heart"></i>
-                                            </button>
-                                            <button @click.prevent="openProductModal({
-                                                id: {{ $item->shop_id }},
-                                                title: '{{ addslashes($title) }}',
-                                                slug: '{{ $slug }}',
-                                                url: '{{ $dynamicUrl }}',
-                                                image: '{{ $imageUrl }}',
-                                                category: '{{ $category }}',
-                                                brand: 'iXtif',
-                                                shortDescription: '{{ addslashes(Str::limit($description ?? '', 150)) }}',
-                                                sku: '{{ $item->sku ?? '' }}',
-                                                primarySpecs: [],
-                                                images: ['{{ $imageUrl }}']
-                                            })" class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Content Section -->
-                                    <div class="p-6 space-y-4">
-                                        <!-- Category -->
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-xs text-blue-600 font-medium uppercase tracking-wider">{{ $category }}</span>
-                                        </div>
-
-                                        <!-- Title -->
-                                        <h3 class="text-xl font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                            {{ $title }}
-                                        </h3>
-
-                                        <!-- Description -->
-                                        @if ($description)
-                                            <p class="text-sm text-gray-600 line-clamp-2 leading-relaxed">
-                                                {{ Str::limit($description, 100) }}
-                                            </p>
-                                        @endif
-
-                                        <!-- Meta Info -->
-                                        <div class="flex items-center gap-4 text-xs text-gray-500">
-                                            @if ($item->sku)
-                                                <span class="flex items-center gap-1">
-                                                    <i class="fa-solid fa-barcode"></i>
-                                                    <span>{{ $item->sku }}</span>
-                                                </span>
-                                            @endif
-                                            <span class="flex items-center gap-1">
-                                                <i class="fa-solid fa-eye"></i>
-                                                <span>{{ $item->view_count ?? 0 }}</span>
-                                            </span>
-                                        </div>
-
-                                        <!-- Price + CTA -->
-                                        <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
-                                            @if ($item->price ?? false)
-                                                <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                                                    {{ number_format($item->price, 0, ',', '.') }} ₺
-                                                </div>
-                                            @else
-                                                <div class="text-lg font-semibold text-gray-600">
-                                                    Fiyat Sorunuz
-                                                </div>
-                                            @endif
-                                            <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
-                                                <span>Detay</span>
-                                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </article>
-                        @endforeach
+                    {{-- Root Categories --}}
+                    @foreach($categories as $category)
                         @php
-                            unset($item);
+                            $categorySlug = $category->getTranslated('slug');
+                            $isActive = $selectedCategory && $selectedCategory->category_id === $category->category_id;
                         @endphp
+                        <a href="{{ route('shop.index', ['category' => $categorySlug]) }}"
+                           class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                            @if($category->icon_class)
+                                <i class="{{ $category->icon_class }} mr-2"></i>
+                            @endif
+                            {{ $category->getTranslated('title') }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- Subcategories (if category is selected and has children) --}}
+        @if($selectedCategory && $selectedCategory->children->count() > 0)
+        <section class="py-12">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                    <i class="fa-light fa-folder-tree mr-2 text-blue-600 dark:text-blue-400"></i>
+                    {{ __('shop::front.subcategories') }}
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    @foreach($selectedCategory->children->sortBy('sort_order') as $subcategory)
+                        @php
+                            $subcategorySlug = $subcategory->getTranslated('slug');
+                        @endphp
+                        <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
+                           class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
+                            <div class="flex flex-col items-center text-center">
+                                @if($subcategory->icon_class)
+                                    <i class="{{ $subcategory->icon_class }} text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                                @else
+                                    <i class="fa-light fa-folder text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                                @endif
+                                <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    {{ $subcategory->getTranslated('title') }}
+                                </h3>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- Products Section --}}
+        <section class="py-12">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                @if($products->count() > 0)
+                    {{-- Products Grid - iXtif Design --}}
+                    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" x-ref="productsGrid">
+                        @foreach($products as $product)
+                            @include('shop::themes.ixtif.partials.product-card', ['product' => $product])
+                        @endforeach
                     </div>
 
-                    <!-- Pagination -->
-                    @if ($products->hasPages())
-                        <div class="mt-20">
-                            <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-white/30 dark:border-white/10 p-4">
+                    {{-- Pagination --}}
+                    @if($products->hasPages())
+                        <div class="mt-12">
+                            <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 p-6">
                                 {{ $products->links() }}
                             </div>
                         </div>
                     @endif
                 @else
-                    <!-- Empty State -->
-                    <div class="text-center py-20" x-data="{ show: false }" x-init="setTimeout(() => show = true, 100)">
-                        <div x-show="show" x-transition:enter="transition ease-out duration-500"
-                            x-transition:enter-start="opacity-0 transform scale-90"
-                            x-transition:enter-end="opacity-100 transform scale-100" class="inline-block">
+                    {{-- Empty State --}}
+                    <div class="text-center py-20">
+                        <div class="inline-block">
                             <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                                <svg class="h-10 w-10 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                    </path>
-                                </svg>
+                                <i class="fa-light fa-box-open text-4xl text-gray-400 dark:text-gray-500"></i>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Henüz sayfa yok</h3>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                                {{ __('shop::front.no_products_found') }}
+                            </h3>
                             <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                                {{ __('shop::front.general.no_shops_found') }}</p>
+                                {{ __('shop::front.no_products_description') }}
+                            </p>
                         </div>
                     </div>
                 @endif
             </div>
-        </div>
+        </section>
     </div>
 
     <script>
-        function shopsList() {
+        function shopIndexPage() {
             return {
                 loaded: false,
-                hover: null,
-                prefetchedUrls: new Set(),
+                page: 1,
+                loading: false,
+                hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
 
                 init() {
                     this.$nextTick(() => {
@@ -252,19 +146,15 @@
                     });
                 },
 
-                prefetch(url) {
-                    if (this.prefetchedUrls.has(url)) return;
+                // Infinite scroll için hazır - opsiyonel olarak eklenebilir
+                loadMore() {
+                    if (this.loading || !this.hasMore) return;
 
-                    const link = document.createElement('link');
-                    link.rel = 'prefetch';
-                    link.href = url;
-                    document.head.appendChild(link);
-                    this.prefetchedUrls.add(url);
-                },
+                    this.loading = true;
+                    this.page++;
 
-                navigate(url) {
-                    document.body.style.cursor = 'wait';
-                    window.location.href = url;
+                    // AJAX ile daha fazla ürün yükle
+                    // Bu kısım opsiyonel - şimdilik pagination kullanıyoruz
                 }
             }
         }

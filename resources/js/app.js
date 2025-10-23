@@ -78,3 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 console.log('✅ Tenant-safe frontend assets loaded');
+
+// GSAP ScrollTrigger - Progressive sticky elements
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+// ScrollTrigger init
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ GSAP ScrollTrigger initialized');
+});

@@ -32,4 +32,7 @@ return [
 
     // Module Title
     'module_title' => 'Ürünler',
+
+    // Search
+    'search_products' => 'Ürün ara... (İsim, SKU, Açıklama)',
 ];

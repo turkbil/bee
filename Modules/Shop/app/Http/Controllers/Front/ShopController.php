@@ -41,6 +41,16 @@ class ShopController extends Controller
             ->published()
             ->active();
 
+        // Search functionality
+        $searchTerm = request('search');
+        if ($searchTerm) {
+            $productsQuery->where(function ($query) use ($searchTerm, $locale) {
+                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", ["%{$searchTerm}%"])
+                      ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.\"{$locale}\"')) LIKE ?", ["%{$searchTerm}%"])
+                      ->orWhere('sku', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
         // Filter by category if provided
         $selectedCategoryId = request('category');
         $selectedCategory = null;
@@ -57,12 +67,23 @@ class ShopController extends Controller
             }
         }
 
-        // Basit sıralama - sadece ürün sırası
-        $products = $productsQuery
-            ->with(['category', 'brand', 'media'])
-            ->orderBy('sort_order', 'asc')
-            ->orderByDesc('published_at')
-            ->paginate(config('shop.pagination.front_per_shop', 12));
+        // Özel sıralama: Yedek Parça kategorisi alfabetik, diğerleri normal
+        $yedekParcaCategoryId = 7; // Yedek Parça category_id
+
+        if ($selectedCategory && $selectedCategory->category_id === $yedekParcaCategoryId) {
+            // Yedek Parça: Alfabetik sıralama
+            $products = $productsQuery
+                ->with(['category', 'brand', 'media'])
+                ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
+                ->paginate(config('shop.pagination.front_per_shop', 12));
+        } else {
+            // Diğer kategoriler: Normal sıralama
+            $products = $productsQuery
+                ->with(['category', 'brand', 'media'])
+                ->orderBy('sort_order', 'asc')
+                ->orderByDesc('published_at')
+                ->paginate(config('shop.pagination.front_per_shop', 12));
+        }
 
         $moduleTitle = __('shop::front.module_title');
 
@@ -353,14 +374,28 @@ class ShopController extends Controller
         $categoryIds = $this->getCategoryWithChildren($category);
 
         // Get products from this category and all subcategories
-        $products = ShopProduct::query()
-            ->with(['category', 'brand', 'media'])
-            ->whereIn('category_id', $categoryIds)
-            ->active()
-            ->published()
-            ->orderBy('sort_order', 'asc')
-            ->orderByDesc('published_at')
-            ->paginate(config('shop.pagination.front_per_shop', 12));
+        $yedekParcaCategoryId = 7;
+
+        if ($category->category_id === $yedekParcaCategoryId || in_array($yedekParcaCategoryId, $categoryIds)) {
+            // Yedek Parça veya alt kategorisi: Alfabetik sıralama
+            $products = ShopProduct::query()
+                ->with(['category', 'brand', 'media'])
+                ->whereIn('category_id', $categoryIds)
+                ->active()
+                ->published()
+                ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
+                ->paginate(config('shop.pagination.front_per_shop', 12));
+        } else {
+            // Diğer kategoriler: Normal sıralama
+            $products = ShopProduct::query()
+                ->with(['category', 'brand', 'media'])
+                ->whereIn('category_id', $categoryIds)
+                ->active()
+                ->published()
+                ->orderBy('sort_order', 'asc')
+                ->orderByDesc('published_at')
+                ->paginate(config('shop.pagination.front_per_shop', 12));
+        }
 
         // Get direct subcategories for display
         $subcategories = $category->children;

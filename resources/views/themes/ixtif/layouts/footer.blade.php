@@ -419,6 +419,7 @@
     $themeName = $activeTheme ? $activeTheme->name : 'simple';
 @endphp
 <script defer src="{{ asset('assets/js/themes/' . $themeName . '/main.js') }}?v=1.0.1"></script>
+<script src="{{ mix('js/app.js') }}" defer></script>
 
 {{-- Dynamic Script Stack --}}
 @stack('scripts')

@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Menu V2 - Modern Detaylı Tasarımlar | iXtif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 140px;
+        }
+
+        /* ===== CUSTOM ANIMATIONS ===== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-slide-in-left {
+            animation: slideInLeft 0.5s ease-out forwards;
+        }
+
+        .animate-slide-in-right {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.4s ease-out forwards;
+        }
+
+        /* ===== GLASSMORPHISM ===== */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== GRADIENT OVERLAYS ===== */
+        .gradient-overlay-blue {
+            position: relative;
+        }
+
+        .gradient-overlay-blue::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .gradient-overlay-blue:hover::before {
+            opacity: 1;
+        }
+
+        /* ===== SHIMMER EFFECT ===== */
+        .shimmer {
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        /* ===== GLOW EFFECT ===== */
+        .glow-on-hover {
+            transition: all 0.3s ease;
+        }
+
+        .glow-on-hover:hover {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6),
+                        0 0 40px rgba(59, 130, 246, 0.4),
+                        0 0 60px rgba(59, 130, 246, 0.2);
+        }
+
+        /* ===== ADVANCED HOVER EFFECTS ===== */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .hover-scale {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+
+        /* ===== GRADIENT TEXT ===== */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-blue {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== BORDER GRADIENT ===== */
+        .border-gradient {
+            position: relative;
+            background: white;
+            border-radius: 1rem;
+        }
+
+        .border-gradient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            padding: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        /* ===== FLOATING ANIMATION ===== */
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* ===== CUSTOM SCROLLBAR ===== */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        /* ===== MEGA MENU CONTAINER ===== */
+        .mega-menu-container {
+            min-height: 450px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ===== RIPPLE EFFECT ===== */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* ===== STICKY NAV ===== */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: white;
+            border-bottom: 2px solid #e5e7eb;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50" x-data="{ activeStyle: 1 }">
+
+<!-- Header -->
+<div class="sticky-nav">
+    <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold gradient-text-blue">🎨 Mega Menu V2 - Modern Tasarımlar</h1>
+                <p class="text-sm text-gray-600">Gerçek sistem yeteneklerine göre detaylı CSS ile</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/design/mega-menu-categoryless.html" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                    <i class="fa-solid fa-list mr-2"></i>V1 Kategorisiz
+                </a>
+                <a href="/design/mega-menu-alternatives.html" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+                    <i class="fa-solid fa-folder mr-2"></i>V1 Kategorili
+                </a>
+                <a href="/" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition ripple">
+                    <i class="fa-solid fa-home mr-2"></i>Ana Sayfa
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Nav -->
+<div class="bg-white border-b border-gray-200 sticky top-[72px] z-40">
+    <div class="container mx-auto px-6">
+        <div class="flex items-center gap-4 overflow-x-auto py-3 custom-scrollbar">
+            <a href="#v2-style-1" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap transition">
+                V2.1: Glassmorphism Grid
+            </a>
+            <a href="#v2-style-2" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap transition">
+                V2.2: Gradient Sidebar
+            </a>
+            <a href="#v2-style-3" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap transition">
+                V2.3: Minimal Cards
+            </a>
+            <a href="#v2-style-4" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap transition">
+                V2.4: Visual Rich
+            </a>
+            <a href="#v2-style-5" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap transition">
+                V2.5: Asymmetric Pro
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mx-auto px-6 py-12 space-y-20">
+
+    <!-- V2 Style 1: Glassmorphism Grid -->
+    <section id="v2-style-1" class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-4xl font-bold gradient-text-blue mb-2">V2.1: Glassmorphism Grid</h2>
+                <p class="text-gray-600">Modern glassmorphism effect + gradient backgrounds</p>
+            </div>
+            <span class="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full text-sm font-bold shadow-lg">
+                ⭐ MODERN
+            </span>
+        </div>
+
+        <div class="mega-menu-container" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="grid md:grid-cols-2 gap-0 min-h-[500px]">
+                <!-- Sol: Kategoriler - Glassmorphism -->
+                <div class="p-8 glass backdrop-blur-xl">
+                    <div class="mb-6 animate-fade-in-up">
+                        <h3 class="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                            <i class="fa-solid fa-forklift text-white/90"></i>
+                            Forklift Kategorileri
+                        </h3>
+                        <p class="text-white/80 text-sm">128 çeşit forklift modeli</p>
+                    </div>
+
+                    <!-- Kategori Grid -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Elektrikli -->
+                        <a href="#" class="group glass hover:bg-white/20 rounded-xl p-4 transition-all duration-300 hover-lift">
+                            <div class="text-3xl mb-2 float-animation">⚡</div>
+                            <h4 class="font-bold text-white mb-1 group-hover:text-yellow-300 transition">Elektrikli</h4>
+                            <p class="text-xs text-white/70">Sessiz & Çevreci</p>
+                        </a>
+
+                        <!-- Dizel -->
+                        <a href="#" class="group glass hover:bg-white/20 rounded-xl p-4 transition-all duration-300 hover-lift" style="animation-delay: 0.1s;">
+                            <div class="text-3xl mb-2">🛢️</div>
+                            <h4 class="font-bold text-white mb-1 group-hover:text-orange-300 transition">Dizel</h4>
+                            <p class="text-xs text-white/70">Güçlü Motor</p>
+                        </a>
+
+                        <!-- LPG -->
+                        <a href="#" class="group glass hover:bg-white/20 rounded-xl p-4 transition-all duration-300 hover-lift" style="animation-delay: 0.2s;">
+                            <div class="text-3xl mb-2">🔥</div>
+                            <h4 class="font-bold text-white mb-1 group-hover:text-red-300 transition">LPG</h4>
+                            <p class="text-xs text-white/70">Ekonomik</p>
+                        </a>
+
+                        <!-- Manuel -->
+                        <a href="#" class="group glass hover:bg-white/20 rounded-xl p-4 transition-all duration-300 hover-lift" style="animation-delay: 0.3s;">
+                            <div class="text-3xl mb-2">🖐️</div>
+                            <h4 class="font-bold text-white mb-1 group-hover:text-green-300 transition">Manuel</h4>
+                            <p class="text-xs text-white/70">Basit Kullanım</p>
+                        </a>
+
+                        <!-- 4 Tekerli -->
+                        <a href="#" class="group glass hover:bg-white/20 rounded-xl p-4 transition-all duration-300 hover-lift" style="animation-delay: 0.4s;">
+                            <div class="text-3xl mb-2">⚪</div>
+                            <h4 class="font-bold text-white mb-1 group-hover:text-blue-300 transition">4 Tekerli</h4>
+                            <p class="text-xs text-white/70">Stabil</p>
+                        </a>
+
+                        <!-- 3 Tekerli -->
+                        <a href="#" class="group glass hover:bg-white/20 rounded-xl p-4 transition-all duration-300 hover-lift" style="animation-delay: 0.5s;">
+                            <div class="text-3xl mb-2">🔄</div>
+                            <h4 class="font-bold text-white mb-1 group-hover:text-purple-300 transition">3 Tekerli</h4>
+                            <p class="text-xs text-white/70">Dar Alan</p>
+                        </a>
+                    </div>
+
+                    <a href="#" class="mt-6 w-full block text-center glass hover:bg-white/30 text-white font-bold py-3 rounded-xl transition-all duration-300 ripple">
+                        Tüm Kategoriler <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Sağ: Latest Ürünler -->
+                <div class="p-8 bg-white/95 backdrop-blur-sm">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-sparkles text-yellow-500"></i>
+                            En Yeni Modeller
+                        </h3>
+                        <p class="text-sm text-gray-600">Son eklenen forklift çözümleri</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Product 1 -->
+                        <a href="#" class="group flex items-center gap-4 bg-gradient-to-r from-white to-blue-50 rounded-2xl p-4 hover-lift border border-gray-200 hover:border-blue-300 transition-all duration-300">
+                            <div class="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 glow-on-hover">
+                                <i class="fa-solid fa-forklift text-4xl text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="inline-block px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded mb-1">
+                                    YENİ
+                                </div>
+                                <h4 class="font-bold text-gray-800 group-hover:text-blue-600 transition">Elektrikli Forklift 3.5T</h4>
+                                <p class="text-xs text-gray-600 mb-2">Sessiz çalışma, uzun pil ömrü</p>
+                                <div class="text-sm font-bold text-blue-600">Fiyat Sorunuz</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-blue-600 group-hover:translate-x-2 transition-all"></i>
+                        </a>
+
+                        <!-- Product 2 -->
+                        <a href="#" class="group flex items-center gap-4 bg-gradient-to-r from-white to-purple-50 rounded-2xl p-4 hover-lift border border-gray-200 hover:border-purple-300 transition-all duration-300">
+                            <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 glow-on-hover">
+                                <i class="fa-solid fa-forklift text-4xl text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded mb-1">
+                                    POPÜLER
+                                </div>
+                                <h4 class="font-bold text-gray-800 group-hover:text-purple-600 transition">Dizel Forklift 5T</h4>
+                                <p class="text-xs text-gray-600 mb-2">Açık alan, yüksek güç</p>
+                                <div class="text-sm font-bold text-purple-600">Fiyat Sorunuz</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-purple-600 group-hover:translate-x-2 transition-all"></i>
+                        </a>
+
+                        <!-- Product 3 -->
+                        <a href="#" class="group flex items-center gap-4 bg-gradient-to-r from-white to-orange-50 rounded-2xl p-4 hover-lift border border-gray-200 hover:border-orange-300 transition-all duration-300">
+                            <div class="w-24 h-24 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0 glow-on-hover">
+                                <i class="fa-solid fa-forklift text-4xl text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded mb-1">
+                                    STOKTA
+                                </div>
+                                <h4 class="font-bold text-gray-800 group-hover:text-orange-600 transition">LPG Forklift 2.5T</h4>
+                                <p class="text-xs text-gray-600 mb-2">Hem iç hem dış mekan</p>
+                                <div class="text-sm font-bold text-orange-600">Fiyat Sorunuz</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-gray-400 group-hover:text-orange-600 group-hover:translate-x-2 transition-all"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 border border-purple-200">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
+                    <div>
+                        <strong>Glassmorphism Effect:</strong> Modern blur + transparency efektleri
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
+                    <div>
+                        <strong>Gradient Background:</strong> Canlı renk geçişleri
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
+                    <div>
+                        <strong>Hover Animations:</strong> Lift, glow, translate efektleri
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-check-circle text-green-500 mt-1"></i>
+                    <div>
+                        <strong>Latest Products:</strong> En yeni eklenen ürünler
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- V2 Style 2: Gradient Sidebar + Product Showcase -->
+    <section id="v2-style-2" class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-4xl font-bold gradient-text mb-2">V2.2: Gradient Sidebar Showcase</h2>
+                <p class="text-gray-600">Bold gradient sidebar + modern product cards</p>
+            </div>
+            <span class="px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-full text-sm font-bold shadow-lg">
+                🎨 CREATIVE
+            </span>
+        </div>
+
+        <div class="mega-menu-container bg-white shadow-2xl">
+            <div class="grid md:grid-cols-5 gap-0 min-h-[550px]">
+                <!-- Sol Sidebar: Gradient Categories -->
+                <div class="md:col-span-2 relative overflow-hidden">
+                    <!-- Animated Gradient Background -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-green-400 via-teal-500 to-blue-600 opacity-90"></div>
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE2YzAtNi42MjcgNS4zNzMtMTIgMTItMTJzMTIgNS4zNzMgMTIgMTItNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTJ6bS03Mi0zNmMwLTYuNjI3IDUuMzczLTEyIDEyLTEyczEyIDUuMzczIDEyIDEyLTUuMzczIDEyLTEyIDEyLTEyLTUuMzczLTEyLTEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
+
+                    <div class="relative z-10 p-8">
+                        <div class="mb-8 animate-slide-in-left">
+                            <h3 class="text-3xl font-bold text-white mb-2">Transpalet</h3>
+                            <p class="text-white/90 text-sm">69 farklı transpalet çeşidi</p>
+                        </div>
+
+                        <!-- Categories List -->
+                        <div class="space-y-3">
+                            <a href="#" class="group flex items-center gap-4 glass-dark hover:bg-white/30 rounded-xl p-4 transition-all duration-300 transform hover:translate-x-2">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/40 transition">
+                                    <span class="text-2xl">🖐️</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white group-hover:text-yellow-200 transition">Manuel Transpalet</h4>
+                                    <p class="text-xs text-white/70">Ekonomik çözüm</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-white/50 group-hover:text-white transition"></i>
+                            </a>
+
+                            <a href="#" class="group flex items-center gap-4 glass-dark hover:bg-white/30 rounded-xl p-4 transition-all duration-300 transform hover:translate-x-2">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/40 transition">
+                                    <span class="text-2xl">⚡</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white group-hover:text-yellow-200 transition">Elektrikli Transpalet</h4>
+                                    <p class="text-xs text-white/70">Kolay kullanım</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-white/50 group-hover:text-white transition"></i>
+                            </a>
+
+                            <a href="#" class="group flex items-center gap-4 glass-dark hover:bg-white/30 rounded-xl p-4 transition-all duration-300 transform hover:translate-x-2">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/40 transition">
+                                    <span class="text-2xl">⚖️</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white group-hover:text-yellow-200 transition">Terazili Transpalet</h4>
+                                    <p class="text-xs text-white/70">Anlık tartım</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-white/50 group-hover:text-white transition"></i>
+                            </a>
+
+                            <a href="#" class="group flex items-center gap-4 glass-dark hover:bg-white/30 rounded-xl p-4 transition-all duration-300 transform hover:translate-x-2">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-white/40 transition">
+                                    <span class="text-2xl">🛡️</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-white group-hover:text-yellow-200 transition">Paslanmaz Transpalet</h4>
+                                    <p class="text-xs text-white/70">Gıda sektörü</p>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-white/50 group-hover:text-white transition"></i>
+                            </a>
+                        </div>
+
+                        <div class="mt-6">
+                            <a href="#" class="block w-full bg-white text-green-600 font-bold py-4 rounded-xl text-center hover:bg-yellow-300 hover:text-green-700 transition-all duration-300 shadow-lg hover:shadow-2xl ripple">
+                                Tüm Transpalet Modelleri
+                                <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Product Showcase -->
+                <div class="md:col-span-3 p-8 bg-gray-50">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">📦 En Yeni Transpaletler</h3>
+                        <p class="text-sm text-gray-600">Son eklenen modeller</p>
+                    </div>
+
+                    <div class="grid gap-6">
+                        <!-- Product Card 1 -->
+                        <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-green-500">
+                            <div class="grid md:grid-cols-5 gap-4">
+                                <div class="md:col-span-2 bg-gradient-to-br from-green-100 to-teal-100 p-6 flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 shimmer"></div>
+                                    <i class="fa-solid fa-dolly text-7xl text-green-600 group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <div class="md:col-span-3 p-6 flex flex-col justify-between">
+                                    <div>
+                                        <div class="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full mb-2">
+                                            ✨ YENİ MODEL
+                                        </div>
+                                        <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition">Manuel Transpalet 2.5T</h4>
+                                        <p class="text-sm text-gray-600 mb-4">Hidrolik kaldırma, ergonomik tasarım, dayanıklı çelik konstrüksiyon</p>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="text-2xl font-bold text-green-600">Fiyat Sorunuz</div>
+                                            <div class="text-xs text-gray-500">Ücretsiz kargo</div>
+                                        </div>
+                                        <button class="px-6 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition ripple">
+                                            İncele
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Card 2 -->
+                        <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-blue-500">
+                            <div class="grid md:grid-cols-5 gap-4">
+                                <div class="md:col-span-2 bg-gradient-to-br from-blue-100 to-purple-100 p-6 flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 shimmer"></div>
+                                    <i class="fa-solid fa-dolly text-7xl text-blue-600 group-hover:scale-110 transition-transform duration-300"></i>
+                                </div>
+                                <div class="md:col-span-3 p-6 flex flex-col justify-between">
+                                    <div>
+                                        <div class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full mb-2">
+                                            🔥 POPÜLER
+                                        </div>
+                                        <h4 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition">Elektrikli Transpalet 1.5T</h4>
+                                        <p class="text-sm text-gray-600 mb-4">Lithium pil, 8 saat çalışma, dijital gösterge, sessiz motor</p>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="text-2xl font-bold text-blue-600">Fiyat Sorunuz</div>
+                                            <div class="text-xs text-gray-500">Hızlı teslimat</div>
+                                        </div>
+                                        <button class="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition ripple">
+                                            İncele
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-6 border border-green-200">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-palette text-purple-500 mt-1"></i>
+                    <div>
+                        <strong>Bold Gradient Sidebar:</strong> Dikkat çekici renk geçişleri
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-500 mt-1"></i>
+                    <div>
+                        <strong>Shimmer Effect:</strong> Ürün kartlarında parıltı animasyonu
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-layer-group text-purple-500 mt-1"></i>
+                    <div>
+                        <strong>Depth & Shadows:</strong> Katmanlı shadow efektleri
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-fire text-purple-500 mt-1"></i>
+                    <div>
+                        <strong>Badge System:</strong> Yeni, popüler etiketleri
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- V2 Style 3: Minimal Clean Cards -->
+    <section id="v2-style-3" class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-4xl font-bold gradient-text-blue mb-2">V2.3: Minimal Clean Cards</h2>
+                <p class="text-gray-600">Ultra minimal, clean, white-space focused design</p>
+            </div>
+            <span class="px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white rounded-full text-sm font-bold shadow-lg">
+                🤍 MINIMAL
+            </span>
+        </div>
+
+        <div class="mega-menu-container bg-white shadow-2xl">
+            <div class="grid md:grid-cols-3 gap-0 min-h-[500px]">
+                <!-- Sol: Kategoriler - Minimal List -->
+                <div class="p-8 bg-gray-50 border-r border-gray-200">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-1">İstif Makinesi</h3>
+                        <p class="text-sm text-gray-500">106 model</p>
+                    </div>
+
+                    <!-- Minimal Category List -->
+                    <div class="space-y-1">
+                        <a href="#" class="group block py-3 px-4 rounded-lg hover:bg-white transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium group-hover:text-purple-600 transition">Manuel İstif</span>
+                                <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-purple-600 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+
+                        <a href="#" class="group block py-3 px-4 rounded-lg hover:bg-white transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium group-hover:text-blue-600 transition">Elektrikli İstif</span>
+                                <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+
+                        <a href="#" class="group block py-3 px-4 rounded-lg hover:bg-white transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium group-hover:text-green-600 transition">Yarı Elektrikli</span>
+                                <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-green-600 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+
+                        <a href="#" class="group block py-3 px-4 rounded-lg hover:bg-white transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium group-hover:text-orange-600 transition">Reach İstif</span>
+                                <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-orange-600 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+
+                        <a href="#" class="group block py-3 px-4 rounded-lg hover:bg-white transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium group-hover:text-red-600 transition">Geniş Bacak</span>
+                                <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-red-600 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+
+                        <a href="#" class="group block py-3 px-4 rounded-lg hover:bg-white transition-all duration-200">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium group-hover:text-indigo-600 transition">Platform İstif</span>
+                                <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <a href="#" class="block text-center py-3 text-gray-700 font-medium hover:text-purple-600 transition">
+                            Tümünü Gör →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Orta + Sağ: Latest Products - Minimal Cards -->
+                <div class="md:col-span-2 p-8 bg-white">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">En Yeni Modeller</h3>
+                        <p class="text-sm text-gray-500">Son eklenen istif makineleri</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Minimal Product Card 1 -->
+                        <a href="#" class="group block">
+                            <div class="grid md:grid-cols-3 gap-6 p-6 rounded-2xl border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300">
+                                <div class="flex items-center justify-center bg-gray-50 rounded-xl p-6">
+                                    <i class="fa-solid fa-box-open-full text-6xl text-purple-600 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <div class="md:col-span-2 flex flex-col justify-center">
+                                    <div class="text-xs text-purple-600 font-semibold mb-2">YENİ MODEL</div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition">Elektrikli İstif Makinesi 2.5T</h4>
+                                    <p class="text-sm text-gray-600 mb-4">5m yükseklik, lithium pil, dijital panel</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-lg font-bold text-gray-900">Fiyat Sorunuz</span>
+                                        <span class="text-purple-600 text-sm font-medium group-hover:translate-x-2 transition-transform inline-flex items-center gap-2">
+                                            Detaylar <i class="fa-solid fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Minimal Product Card 2 -->
+                        <a href="#" class="group block">
+                            <div class="grid md:grid-cols-3 gap-6 p-6 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+                                <div class="flex items-center justify-center bg-gray-50 rounded-xl p-6">
+                                    <i class="fa-solid fa-box-open-full text-6xl text-blue-600 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <div class="md:col-span-2 flex flex-col justify-center">
+                                    <div class="text-xs text-blue-600 font-semibold mb-2">STOKTA</div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">Manuel İstif Makinesi 1.5T</h4>
+                                    <p class="text-sm text-gray-600 mb-4">3m yükseklik, hidrolik sistem, dayanıklı</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-lg font-bold text-gray-900">Fiyat Sorunuz</span>
+                                        <span class="text-blue-600 text-sm font-medium group-hover:translate-x-2 transition-transform inline-flex items-center gap-2">
+                                            Detaylar <i class="fa-solid fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Minimal Product Card 3 -->
+                        <a href="#" class="group block">
+                            <div class="grid md:grid-cols-3 gap-6 p-6 rounded-2xl border border-gray-200 hover:border-green-300 hover:shadow-lg transition-all duration-300">
+                                <div class="flex items-center justify-center bg-gray-50 rounded-xl p-6">
+                                    <i class="fa-solid fa-box-open-full text-6xl text-green-600 group-hover:scale-110 transition-transform"></i>
+                                </div>
+                                <div class="md:col-span-2 flex flex-col justify-center">
+                                    <div class="text-xs text-green-600 font-semibold mb-2">ÖNERİLEN</div>
+                                    <h4 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition">Yarı Elektrikli İstif 2T</h4>
+                                    <p class="text-sm text-gray-600 mb-4">4m yükseklik, akülü kaldırma, ergonomik</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-lg font-bold text-gray-900">Fiyat Sorunuz</span>
+                                        <span class="text-green-600 text-sm font-medium group-hover:translate-x-2 transition-transform inline-flex items-center gap-2">
+                                            Detaylar <i class="fa-solid fa-arrow-right"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-minimize text-gray-600 mt-1"></i>
+                    <div>
+                        <strong>Ultra Minimal:</strong> Sade, temiz, beyaz alan odaklı
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-border-all text-gray-600 mt-1"></i>
+                    <div>
+                        <strong>Border Focus:</strong> İnce border hover efektleri
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-font text-gray-600 mt-1"></i>
+                    <div>
+                        <strong>Typography:</strong> Font ağırlıklı, ikonlar minimal
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-leaf text-gray-600 mt-1"></i>
+                    <div>
+                        <strong>Clean & Fast:</strong> Hafif, hızlı yüklenen tasarım
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- V2 Style 4: Visual Rich -->
+    <section id="v2-style-4" class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-4xl font-bold gradient-text mb-2">V2.4: Visual Rich Hero</h2>
+                <p class="text-gray-600">Large imagery, rich visuals, immersive experience</p>
+            </div>
+            <span class="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full text-sm font-bold shadow-lg">
+                🎬 VISUAL
+            </span>
+        </div>
+
+        <div class="mega-menu-container overflow-hidden bg-gray-900">
+            <div class="grid md:grid-cols-2 gap-0 min-h-[550px]">
+                <!-- Sol: Hero Visual -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-orange-500 via-red-500 to-pink-600">
+                    <!-- Animated Pattern Background -->
+                    <div class="absolute inset-0 opacity-10">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0iI2ZmZiIgY3g9IjIwIiBjeT0iMjAiIHI9IjMiLz48L2c+PC9zdmc+')] animate-pulse"></div>
+                    </div>
+
+                    <div class="relative z-10 p-8 h-full flex flex-col justify-between">
+                        <div>
+                            <div class="inline-block px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white text-sm font-bold mb-4">
+                                ⚡ FORKLIFT
+                            </div>
+                            <h3 class="text-5xl font-black text-white mb-4 leading-tight">
+                                Güçlü<br>Forklift<br>Çözümleri
+                            </h3>
+                            <p class="text-white/90 text-lg mb-6">128 farklı model, her işe uygun</p>
+                        </div>
+
+                        <!-- Large Icon Visual -->
+                        <div class="flex items-center justify-center py-8">
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-white/20 blur-3xl rounded-full"></div>
+                                <i class="fa-solid fa-forklift text-[200px] text-white/90 drop-shadow-2xl float-animation"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <a href="#" class="inline-flex items-center gap-3 bg-white text-orange-600 font-bold px-8 py-4 rounded-xl hover:bg-yellow-300 hover:scale-105 transition-all duration-300 shadow-2xl">
+                                <span>Tüm Modelleri Keşfet</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Categories & Products -->
+                <div class="bg-white p-8">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-2">Kategoriler</h3>
+                        <p class="text-sm text-gray-600">Forklift çeşitlerini keşfedin</p>
+                    </div>
+
+                    <!-- Category Grid -->
+                    <div class="grid grid-cols-2 gap-3 mb-8">
+                        <a href="#" class="group bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl p-4 transition-all duration-300 hover-scale border border-blue-200">
+                            <div class="text-4xl mb-2">⚡</div>
+                            <h4 class="font-bold text-gray-800 text-sm">Elektrikli</h4>
+                        </a>
+
+                        <a href="#" class="group bg-gradient-to-br from-orange-50 to-orange-100 hover:from-orange-100 hover:to-orange-200 rounded-xl p-4 transition-all duration-300 hover-scale border border-orange-200">
+                            <div class="text-4xl mb-2">🛢️</div>
+                            <h4 class="font-bold text-gray-800 text-sm">Dizel</h4>
+                        </a>
+
+                        <a href="#" class="group bg-gradient-to-br from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 rounded-xl p-4 transition-all duration-300 hover-scale border border-red-200">
+                            <div class="text-4xl mb-2">🔥</div>
+                            <h4 class="font-bold text-gray-800 text-sm">LPG</h4>
+                        </a>
+
+                        <a href="#" class="group bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-xl p-4 transition-all duration-300 hover-scale border border-green-200">
+                            <div class="text-4xl mb-2">🖐️</div>
+                            <h4 class="font-bold text-gray-800 text-sm">Manuel</h4>
+                        </a>
+                    </div>
+
+                    <!-- Latest Product Highlight -->
+                    <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
+                        <div class="flex items-center gap-2 text-xs font-bold text-orange-600 mb-3">
+                            <i class="fa-solid fa-fire"></i>
+                            <span>EN YENİ MODEL</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">Elektrikli Forklift 3.5T</h4>
+                        <p class="text-sm text-gray-600 mb-4">Lithium pil teknolojisi, 8 saat çalışma süresi, sessiz motor</p>
+                        <div class="flex items-center justify-between">
+                            <div class="text-2xl font-bold text-orange-600">Fiyat Sorunuz</div>
+                            <button class="px-4 py-2 bg-orange-600 text-white rounded-lg font-bold hover:bg-orange-700 transition">
+                                İncele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-image text-orange-500 mt-1"></i>
+                    <div>
+                        <strong>Visual Hero:</strong> Büyük, etkileyici görsel alan
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-paintbrush text-orange-500 mt-1"></i>
+                    <div>
+                        <strong>Bold Typography:</strong> Cesur, büyük başlıklar
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-palette text-orange-500 mt-1"></i>
+                    <div>
+                        <strong>Rich Colors:</strong> Canlı gradient arka planlar
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-wand-magic-sparkles text-orange-500 mt-1"></i>
+                    <div>
+                        <strong>Immersive:</strong> Sürükleyici kullanıcı deneyimi
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- V2 Style 5: Asymmetric Pro -->
+    <section id="v2-style-5" class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-4xl font-bold gradient-text-blue mb-2">V2.5: Asymmetric Pro</h2>
+                <p class="text-gray-600">Asymmetric layout, modern professional design</p>
+            </div>
+            <span class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full text-sm font-bold shadow-lg">
+                💼 PRO
+            </span>
+        </div>
+
+        <div class="mega-menu-container bg-white shadow-2xl">
+            <div class="grid md:grid-cols-7 gap-0 min-h-[520px]">
+                <!-- Sol: Compact Categories (2/7) -->
+                <div class="md:col-span-2 bg-gradient-to-br from-indigo-600 to-purple-700 p-6">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-white mb-1">Transpalet</h3>
+                        <div class="w-12 h-1 bg-yellow-400 rounded-full"></div>
+                    </div>
+
+                    <!-- Compact Category List -->
+                    <div class="space-y-2">
+                        <a href="#" class="group flex items-center gap-3 text-white/80 hover:text-white transition py-2">
+                            <div class="w-1 h-8 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                            <span class="text-sm font-medium">Manuel</span>
+                        </a>
+                        <a href="#" class="group flex items-center gap-3 text-white/80 hover:text-white transition py-2">
+                            <div class="w-1 h-8 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                            <span class="text-sm font-medium">Elektrikli</span>
+                        </a>
+                        <a href="#" class="group flex items-center gap-3 text-white/80 hover:text-white transition py-2">
+                            <div class="w-1 h-8 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                            <span class="text-sm font-medium">Terazili</span>
+                        </a>
+                        <a href="#" class="group flex items-center gap-3 text-white/80 hover:text-white transition py-2">
+                            <div class="w-1 h-8 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                            <span class="text-sm font-medium">Paslanmaz</span>
+                        </a>
+                        <a href="#" class="group flex items-center gap-3 text-white/80 hover:text-white transition py-2">
+                            <div class="w-1 h-8 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                            <span class="text-sm font-medium">Yüksek Kaldırma</span>
+                        </a>
+                        <a href="#" class="group flex items-center gap-3 text-white/80 hover:text-white transition py-2">
+                            <div class="w-1 h-8 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                            <span class="text-sm font-medium">Geniş Çatal</span>
+                        </a>
+                    </div>
+
+                    <div class="mt-8">
+                        <a href="#" class="block w-full bg-yellow-400 text-indigo-900 font-bold py-3 rounded-lg text-center text-sm hover:bg-yellow-300 transition">
+                            Tümünü Gör
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Orta: Featured Product Large (3/7) -->
+                <div class="md:col-span-3 bg-gradient-to-br from-gray-50 to-indigo-50 p-8 flex flex-col justify-center">
+                    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-indigo-500">
+                        <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 mb-4">
+                            <div class="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
+                            <span>ÖNE ÇIKAN MODEL</span>
+                        </div>
+
+                        <!-- Large Product Icon -->
+                        <div class="flex items-center justify-center mb-6 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl p-8">
+                            <i class="fa-solid fa-dolly text-8xl text-indigo-600"></i>
+                        </div>
+
+                        <h4 class="text-2xl font-black text-gray-900 mb-3">Elektrikli Transpalet 2T</h4>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Lithium pil teknolojisi, 8 saat çalışma, ergonomik kontroller, dijital ekran
+                        </p>
+
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <div class="text-3xl font-black text-indigo-600">Fiyat Sorunuz</div>
+                                <div class="text-xs text-gray-500">Hızlı teslimat mevcut</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="px-4 py-3 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">
+                                Fiyat Al
+                            </button>
+                            <button class="px-4 py-3 border-2 border-indigo-600 text-indigo-600 rounded-lg font-bold hover:bg-indigo-50 transition">
+                                Detaylar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ: Secondary Products (2/7) -->
+                <div class="md:col-span-2 bg-white p-6 border-l border-gray-200">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">Diğer Modeller</h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Small Product Card 1 -->
+                        <a href="#" class="group block bg-gray-50 hover:bg-indigo-50 rounded-xl p-4 transition-all duration-200 border border-gray-200 hover:border-indigo-300">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-dolly text-white text-lg"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-bold text-gray-800 text-sm truncate group-hover:text-indigo-600 transition">Manuel 2.5T</h5>
+                                    <p class="text-xs text-gray-500">Hidrolik sistem</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-gray-700">Fiyat Sorunuz →</div>
+                        </a>
+
+                        <!-- Small Product Card 2 -->
+                        <a href="#" class="group block bg-gray-50 hover:bg-indigo-50 rounded-xl p-4 transition-all duration-200 border border-gray-200 hover:border-indigo-300">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-dolly text-white text-lg"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-bold text-gray-800 text-sm truncate group-hover:text-indigo-600 transition">Terazili 1.5T</h5>
+                                    <p class="text-xs text-gray-500">Hassas tartım</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-gray-700">Fiyat Sorunuz →</div>
+                        </a>
+
+                        <!-- Small Product Card 3 -->
+                        <a href="#" class="group block bg-gray-50 hover:bg-indigo-50 rounded-xl p-4 transition-all duration-200 border border-gray-200 hover:border-indigo-300">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-dolly text-white text-lg"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-bold text-gray-800 text-sm truncate group-hover:text-indigo-600 transition">Paslanmaz 2T</h5>
+                                    <p class="text-xs text-gray-500">Gıda sektörü</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-gray-700">Fiyat Sorunuz →</div>
+                        </a>
+
+                        <!-- Small Product Card 4 -->
+                        <a href="#" class="group block bg-gray-50 hover:bg-indigo-50 rounded-xl p-4 transition-all duration-200 border border-gray-200 hover:border-indigo-300">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-dolly text-white text-lg"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h5 class="font-bold text-gray-800 text-sm truncate group-hover:text-indigo-600 transition">Geniş Çatal</h5>
+                                    <p class="text-xs text-gray-500">Özel boyut</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-gray-700">Fiyat Sorunuz →</div>
+                        </a>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="#" class="block text-center py-2 text-indigo-600 text-sm font-bold hover:text-indigo-700 transition">
+                            + Daha Fazla Göster
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-grip text-indigo-600 mt-1"></i>
+                    <div>
+                        <strong>Asymmetric Layout:</strong> 2-3-2 grid sistemi, asimetrik yerleşim
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-crown text-indigo-600 mt-1"></i>
+                    <div>
+                        <strong>Featured Focus:</strong> Ana ürün vurgusu merkez alanda
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-briefcase text-indigo-600 mt-1"></i>
+                    <div>
+                        <strong>Professional:</strong> Kurumsal, profesyonel görünüm
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-layer-group text-indigo-600 mt-1"></i>
+                    <div>
+                        <strong>Multi-product:</strong> Bir menüde 5 farklı ürün gösterimi
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="bg-white rounded-2xl p-8 shadow-lg">
+        <h2 class="text-3xl font-bold gradient-text-blue mb-6">📊 V2 Tasarım Karşılaştırması</h2>
+
+        <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="text-left py-3 px-3 font-bold text-gray-700 sticky left-0 bg-white">Özellik</th>
+                        <th class="text-center py-3 px-3 font-bold text-purple-600">V2.1<br><span class="text-xs font-normal text-gray-600">Glassmorphism</span></th>
+                        <th class="text-center py-3 px-3 font-bold text-green-600">V2.2<br><span class="text-xs font-normal text-gray-600">Gradient Sidebar</span></th>
+                        <th class="text-center py-3 px-3 font-bold text-gray-600">V2.3<br><span class="text-xs font-normal text-gray-500">Minimal</span></th>
+                        <th class="text-center py-3 px-3 font-bold text-orange-600">V2.4<br><span class="text-xs font-normal text-gray-600">Visual Rich</span></th>
+                        <th class="text-center py-3 px-3 font-bold text-indigo-600">V2.5<br><span class="text-xs font-normal text-gray-600">Asymmetric</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Modern Görünüm</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Detaylı CSS</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Hover Efektleri</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Animasyonlar</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Görsel Etkisi</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Sayfa Hızı</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Kullanıcı Dostu</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐</td>
+                        <td class="text-center py-3 px-3">⭐⭐⭐⭐⭐</td>
+                    </tr>
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="py-3 px-3 font-medium text-gray-700 sticky left-0 bg-white">Ürün Sayısı</td>
+                        <td class="text-center py-3 px-3 text-xs">3 ürün</td>
+                        <td class="text-center py-3 px-3 text-xs">2 ürün</td>
+                        <td class="text-center py-3 px-3 text-xs">3 ürün</td>
+                        <td class="text-center py-3 px-3 text-xs">1 ürün</td>
+                        <td class="text-center py-3 px-3 text-xs">5 ürün</td>
+                    </tr>
+                    <tr class="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 font-semibold text-xs">
+                        <td class="py-3 px-3 text-gray-900 sticky left-0 bg-gradient-to-r from-purple-50">💡 En Uygun</td>
+                        <td class="text-center py-3 px-3 text-purple-700">Premium<br>Siteler</td>
+                        <td class="text-center py-3 px-3 text-green-700">E-ticaret<br>Dinamik</td>
+                        <td class="text-center py-3 px-3 text-gray-700">Kurumsal<br>Minimal</td>
+                        <td class="text-center py-3 px-3 text-orange-700">Marka<br>Odaklı</td>
+                        <td class="text-center py-3 px-3 text-indigo-700">Çok Ürünlü<br>Pro</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Final Recommendation -->
+    <div class="bg-gradient-to-r from-purple-600 via-blue-600 to-teal-600 rounded-2xl p-8 text-white shadow-2xl">
+        <div class="flex items-start gap-6">
+            <div class="text-6xl float-animation">💎</div>
+            <div class="flex-1">
+                <h3 class="text-3xl font-bold mb-3">Detaylı CSS ile Modern Mega Menu</h3>
+                <p class="text-white/90 mb-4 text-lg">
+                    V2 tasarımlarında <strong>glassmorphism, gradient overlays, hover animations, shimmer effects</strong> gibi modern CSS teknikleri kullanıldı.
+                </p>
+                <ul class="space-y-2 mb-6">
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-300"></i>
+                        <span>Custom @keyframes animasyonları</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-300"></i>
+                        <span>Backdrop-filter blur efektleri</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-300"></i>
+                        <span>Gradient text & border teknikleri</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-300"></i>
+                        <span>Advanced hover states (lift, scale, glow)</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-300"></i>
+                        <span>Ripple click efektleri</span>
+                    </li>
+                </ul>
+                <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+                    <strong class="text-yellow-300">📌 NOT:</strong> Tüm tasarımlar sisteminizin <strong>GERÇEK</strong> yeteneklerine göre yapıldı:
+                    <ul class="mt-2 ml-4 list-disc text-sm">
+                        <li>Alt kategoriler (8 adet)</li>
+                        <li>En yeni ürünler (latest)</li>
+                        <li>Price on request (779 ürün)</li>
+                        <li>❌ Featured/bestseller YOK (0 ürün işaretli)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<footer class="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12 mt-20">
+    <div class="container mx-auto px-6 text-center">
+        <h3 class="text-2xl font-bold mb-2 gradient-text-blue">🎨 Mega Menu V2 - Detaylı CSS Tasarımlar</h3>
+        <p class="text-gray-400 mb-6">Modern, şık ve gerçekçi mega menu alternatifleri</p>
+        <div class="flex items-center justify-center gap-4">
+            <a href="/design/mega-menu-alternatives.html" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition ripple">
+                <i class="fa-solid fa-folder"></i>
+                <span>V1 Kategorili</span>
+            </a>
+            <a href="/design/mega-menu-categoryless.html" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition ripple">
+                <i class="fa-solid fa-list"></i>
+                <span>V1 Kategorisiz</span>
+            </a>
+            <a href="/" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition ripple">
+                <i class="fa-solid fa-home"></i>
+                <span>Ana Sayfaya Dön</span>
+            </a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

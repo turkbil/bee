@@ -1,7 +1,7 @@
 <div class="relative mb-6"
      x-data="{
-         query: @entangle('query'),
-         open: @entangle('isOpen'),
+         query: @entangle('query').live,
+         open: @entangle('isOpen').live,
          keywords: [],
          products: [],
          total: 0,
@@ -56,7 +56,7 @@
          }
      }"
      @click.away="open = false"
-     x-init="$watch('query', () => debouncedFetch())">
+     x-init="$nextTick(() => $watch('query', () => debouncedFetch()))">
 
     <div class="flex gap-3">
         <div class="flex-1 relative">

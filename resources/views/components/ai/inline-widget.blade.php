@@ -66,7 +66,8 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
 {{-- AI Chat External CSS/JS (once per page) --}}
 @once
     <link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ now()->timestamp }}" media="all">
-    <script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}" defer></script>
+    {{-- DEFER KALDIRILDI: Livewire Alpine ile senkronize çalışsın --}}
+    <script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}"></script>
 @endonce
 
 <div

@@ -3,8 +3,8 @@
  * Bu dosya tenant sistemde güvenli çalışacak şekilde tasarlandı
  */
 
-// Alpine.js - Tenant bağımsız frontend interactivity
-import Alpine from 'alpinejs';
+// ⚠️ Alpine.js KALDIRILDI - Livewire zaten Alpine.js sağlıyor!
+// Livewire 3 Alpine.js ile birlikte gelir, duplicate import sorun yaratıyor
 
 // Axios - CSRF token ve tenant-aware requests
 import axios from 'axios';
@@ -12,22 +12,10 @@ import axios from 'axios';
 // iXtif Theme JavaScript - Sticky systems, animations
 import './ixtif-theme.js';
 
-// Bootstrap Alpine.js globally
-window.Alpine = Alpine;
-
-// Livewire search entangle fix - Alpine başlamadan önce Livewire'ı bekle
+// Livewire init event - debugging
 document.addEventListener('livewire:init', () => {
-    console.log('✅ Livewire initialized, Alpine can safely start');
+    console.log('✅ Livewire initialized with Alpine.js');
 });
-
-// Livewire zaten Alpine'i başlatıyor, duplicate start'ı önle
-if (!window.livewire) {
-    // Alpine'i 100ms geciktir, Livewire components yüklensin
-    setTimeout(() => {
-        Alpine.start();
-        console.log('✅ Alpine started after Livewire');
-    }, 100);
-}
 
 // Configure Axios for tenant requests
 window.axios = axios;

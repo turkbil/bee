@@ -321,32 +321,35 @@
 
                     {{-- Main Navigation (Desktop) --}}
                     <div class="hidden lg:flex items-center gap-6">
-                        {{-- Forklift (Mega Menu) --}}
-                        <button @mouseenter="activeMegaMenu = 'forklift'"
-                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
+                        {{-- Forklift (Mega Menu) - Tıklanabilir + Hover --}}
+                        <a href="/shop/kategori/forklift"
+                           @mouseenter="activeMegaMenu = 'forklift'"
+                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
                             <i class="fa-light fa-forklift group-hover:fa-solid text-sm transition-all"></i>
                             <span>Forklift</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'forklift' }"></i>
-                        </button>
+                        </a>
 
-                        {{-- Transpalet (Mega Menu) --}}
-                        <button @mouseenter="activeMegaMenu = 'transpalet'"
-                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
+                        {{-- Transpalet (Mega Menu) - Tıklanabilir + Hover --}}
+                        <a href="/shop/kategori/transpalet"
+                           @mouseenter="activeMegaMenu = 'transpalet'"
+                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
                             <i class="fa-light fa-dolly group-hover:fa-solid text-sm transition-all"></i>
                             <span>Transpalet</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
-                        </button>
+                        </a>
 
-                        {{-- İstif Makinesi (Mega Menu) - Sadece XL ve üstünde göster --}}
-                        <button @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                                class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
+                        {{-- İstif Makinesi (Mega Menu) - Tıklanabilir + Hover - Sadece XL ve üstünde göster --}}
+                        <a href="/shop/kategori/istif-makinesi"
+                           @mouseenter="activeMegaMenu = 'istif-makinesi'"
+                           class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
                             <i class="fa-light fa-box-open-full group-hover:fa-solid text-sm transition-all"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'istif-makinesi' }"></i>
-                        </button>
+                        </a>
 
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <button @mouseenter="activeMegaMenu = 'all-categories'"

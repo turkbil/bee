@@ -291,96 +291,37 @@
             </div>
         </section>
 
-        {{-- 📑 TABLE OF CONTENTS - Modern Scroll-Driven Sticky --}}
-        <div id="toc-bar"
-            class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 w-full z-40 transition-transform duration-300"
-            style="position: relative; will-change: transform;">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0 py-2">
-                <div class="flex items-center">
-                    <div
-                        class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
-                        <div class="flex gap-2" id="toc-buttons">
-                            @if ($longDescription)
-                                <a href="#description" data-target="description"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-align-left mr-1.5"></i>Açıklama
-                                </a>
-                            @endif
-                            @if ($highlightedFeatures->isNotEmpty() || !empty($featuresList))
-                                <a href="#features" data-target="features"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-sparkles mr-1.5"></i>Özellikler
-                                </a>
-                            @endif
-                            @if (!empty($competitiveAdvantages))
-                                <a href="#competitive" data-target="competitive"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-trophy mr-1.5"></i>Avantajlar
-                                </a>
-                            @endif
-                            @if ($galleryImages->count() > 0)
-                                <a href="#gallery" data-target="gallery"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-images mr-1.5"></i>Galeri
-                                </a>
-                            @endif
-                            @if ($siblingVariants->count() > 0)
-                                <a href="#variants" data-target="variants"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
-                                </a>
-                            @endif
-                            @if (!empty($technicalSpecs))
-                                <a href="#technical" data-target="technical"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-cogs mr-1.5"></i>Teknik
-                                </a>
-                            @endif
-                            @if (!empty($accessories))
-                                <a href="#accessories" data-target="accessories"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-puzzle-piece mr-1.5"></i>Aksesuarlar
-                                </a>
-                            @endif
-                            @if (!empty($useCases))
-                                <a href="#usecases" data-target="usecases"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-bullseye mr-1.5"></i>Kullanım
-                                </a>
-                            @endif
-                            @if (!empty($targetIndustries))
-                                <a href="#industries" data-target="industries"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-briefcase mr-1.5"></i>Sektörler
-                                </a>
-                            @endif
-                            @if (!empty($certifications))
-                                <a href="#certifications" data-target="certifications"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-certificate mr-1.5"></i>Sertifikalar
-                                </a>
-                            @endif
-                            @if ($warrantyInfo)
-                                <a href="#warranty" data-target="warranty"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-shield-heart mr-1.5"></i>Garanti
-                                </a>
-                            @endif
-                            @if ($faqEntries->isNotEmpty())
-                                <a href="#faq" data-target="faq"
-                                    class="toc-link inline-flex items-center px-2 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-question-circle mr-1.5"></i>SSS
-                                </a>
-                            @endif
-                            <a href="#contact" data-target="contact"
-                                class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-blue-600 dark:bg-blue-600 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-700 transition-all whitespace-nowrap">
-                                <i class="fa-solid fa-envelope mr-1.5"></i>Teklif
-                            </a>
-                        </div>
-                    </div>
+        {{-- 📋 TOC BAR - Header ile beraber hareket edecek --}}
+        <nav id="toc-bar" class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 shadow-sm z-40">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <div class="flex items-center gap-2 overflow-x-auto py-1.5 scrollbar-hide">
+                    <a href="#description"
+                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-file-lines mr-2"></i>Ürün Detayı
+                    </a>
+                    <a href="#primary-specs"
+                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-star mr-2"></i>Öne Çıkan Özellikler
+                    </a>
+                    <a href="#features"
+                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-list-check mr-2"></i>Özellikler
+                    </a>
+                    <a href="#faq"
+                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-circle-question mr-2"></i>S.S.S
+                    </a>
+                    <a href="#trust-signals"
+                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-shield-halved mr-2"></i>Güvenilirlik
+                    </a>
+                    <a href="#contact"
+                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                        <i class="fa-solid fa-envelope mr-2"></i>İletişim
+                    </a>
                 </div>
             </div>
-        </div>
+        </nav>
 
         <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8">
             <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start">
@@ -1327,292 +1268,3 @@
     </div>
 
 @endsection
-
-@push('scripts')
-<script>
-/**
- * 🎯 MODERN STICKY SYSTEM V7 - Zero Dependencies
- * TOC Bar: Scroll-driven positioning (header altına yapışır, trust-signals'da kaybolur)
- * Sidebar: Transform-based scrolling (header+toc+16px gap, FAQ bottom'da durur)
- * Performance: RequestAnimationFrame + Throttled scroll
- */
-
-(function() {
-    'use strict';
-
-    // ============================================
-    // 📊 STATE & CONFIG
-    // ============================================
-    const state = {
-        isDesktop: window.innerWidth >= 1024,
-        headerHeight: 0,
-        tocHeight: 0,
-        tocInitialTop: 0,
-        sidebarInitialTop: 0,
-        trustSignalsTop: 0,
-        faqBottom: 0,
-        ticking: false
-    };
-
-    const config = {
-        SIDEBAR_GAP: 16, // Sidebar top gap (px)
-        DESKTOP_BREAKPOINT: 1024
-    };
-
-    // ============================================
-    // 🎯 DOM ELEMENTS
-    // ============================================
-    const elements = {
-        header: document.getElementById('main-header'),
-        tocBar: document.getElementById('toc-bar'),
-        sidebar: document.getElementById('sticky-sidebar'),
-        trustSignals: document.getElementById('trust-signals'),
-        faqSection: document.getElementById('faq'),
-        tocLinks: document.querySelectorAll('.toc-link'),
-        sections: document.querySelectorAll('[id^="description"], [id^="features"], [id^="competitive"], [id^="gallery"], [id^="variants"], [id^="technical"], [id^="accessories"], [id^="usecases"], [id^="industries"], [id^="certifications"], [id^="warranty"], [id^="faq"], [id^="contact"]')
-    };
-
-    // ============================================
-    // 📐 MEASUREMENT FUNCTIONS
-    // ============================================
-    function measureElements() {
-        if (!elements.header || !elements.tocBar) return;
-
-        state.headerHeight = elements.header.offsetHeight;
-        state.tocHeight = elements.tocBar.offsetHeight;
-        state.tocInitialTop = elements.tocBar.offsetTop;
-
-        if (elements.sidebar) {
-            const sidebarRect = elements.sidebar.getBoundingClientRect();
-            state.sidebarInitialTop = window.pageYOffset + sidebarRect.top;
-        }
-
-        if (elements.trustSignals) {
-            const trustRect = elements.trustSignals.getBoundingClientRect();
-            state.trustSignalsTop = window.pageYOffset + trustRect.top;
-        }
-
-        if (elements.faqSection) {
-            const faqRect = elements.faqSection.getBoundingClientRect();
-            state.faqBottom = window.pageYOffset + faqRect.top + faqRect.height;
-        }
-    }
-
-    // ============================================
-    // 🎨 TOC BAR - SCROLL-DRIVEN POSITIONING
-    // ============================================
-    function updateTOC(scrollY) {
-        if (!elements.tocBar || !elements.header) return;
-
-        const tocBar = elements.tocBar;
-        const headerHeight = elements.header.offsetHeight;
-
-        // TOC starts sticking when it reaches header bottom
-        const tocStickyPoint = state.tocInitialTop - headerHeight;
-        const scrolledPastInitial = scrollY >= tocStickyPoint;
-
-        // Trust Signals bottom check - TOC should STOP (not hide) when reaching trust signals
-        let reachedTrustSignals = false;
-        if (elements.trustSignals) {
-            const trustSignalsTop = elements.trustSignals.offsetTop;
-            reachedTrustSignals = scrollY >= (trustSignalsTop - headerHeight - state.tocHeight);
-        }
-
-        if (scrolledPastInitial && !reachedTrustSignals) {
-            // Sticky mode - fixed position, header altına yapış (gap: 0)
-            tocBar.style.position = 'fixed';
-            tocBar.style.top = headerHeight + 'px';
-            tocBar.style.left = '0';
-            tocBar.style.right = '0';
-            tocBar.style.zIndex = '40';
-            tocBar.style.transform = 'translateY(0)';
-            tocBar.style.opacity = '1';
-            tocBar.style.pointerEvents = 'auto';
-        } else if (reachedTrustSignals) {
-            // Reached trust signals - stop and stay there (absolute positioning)
-            const trustSignalsTop = elements.trustSignals.offsetTop;
-            tocBar.style.position = 'absolute';
-            tocBar.style.top = (trustSignalsTop - state.tocHeight) + 'px';
-            tocBar.style.left = '0';
-            tocBar.style.right = '0';
-            tocBar.style.zIndex = '40';
-            tocBar.style.transform = 'translateY(0)';
-            tocBar.style.opacity = '1';
-            tocBar.style.pointerEvents = 'auto';
-        } else {
-            // Initial state - relative position
-            tocBar.style.position = 'relative';
-            tocBar.style.top = 'auto';
-            tocBar.style.left = 'auto';
-            tocBar.style.right = 'auto';
-            tocBar.style.transform = 'translateY(0)';
-            tocBar.style.opacity = '1';
-            tocBar.style.pointerEvents = 'auto';
-        }
-    }
-
-    // ============================================
-    // 📌 SIDEBAR - TRANSFORM-BASED SCROLLING
-    // ============================================
-    function updateSidebar(scrollY) {
-        if (!elements.sidebar || !state.isDesktop) return;
-
-        const sidebar = elements.sidebar;
-        const sidebarHeight = sidebar.offsetHeight;
-        const sidebarParent = sidebar.parentElement;
-
-        // Calculate sticky positions
-        const stickyTopOffset = state.headerHeight + state.tocHeight + config.SIDEBAR_GAP;
-        const sidebarNaturalTop = state.sidebarInitialTop;
-
-        // Calculate FAQ bottom position (where sidebar should stop)
-        const faqBottomPosition = state.faqBottom - sidebarHeight;
-
-        // Start sticking when: viewport reaches sidebar's natural position
-        const shouldStartSticky = scrollY + stickyTopOffset >= sidebarNaturalTop;
-
-        // Stop sticking when: sidebar would go past FAQ bottom
-        const reachedFaqBottom = scrollY >= faqBottomPosition - stickyTopOffset;
-
-        if (!shouldStartSticky) {
-            // Before sticky - natural flow
-            sidebar.style.position = '';
-            sidebar.style.top = '';
-            sidebar.style.width = '';
-        } else if (shouldStartSticky && !reachedFaqBottom) {
-            // Sticky range - follow scroll with fixed position
-            sidebar.style.position = 'fixed';
-            sidebar.style.top = stickyTopOffset + 'px';
-            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
-        } else {
-            // Reached FAQ bottom - stop here with absolute positioning
-            sidebar.style.position = 'absolute';
-            sidebar.style.top = faqBottomPosition + 'px';
-            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
-        }
-    }
-
-    // ============================================
-    // 🎯 ACTIVE SECTION TRACKING (IntersectionObserver)
-    // ============================================
-    function initSectionTracking() {
-        if (!elements.tocLinks.length || !elements.sections.length) return;
-
-        const observerOptions = {
-            rootMargin: '-20% 0px -75% 0px',
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const sectionId = entry.target.getAttribute('id');
-
-                    // Update TOC links
-                    elements.tocLinks.forEach(link => {
-                        const target = link.getAttribute('data-target');
-                        if (target === sectionId) {
-                            link.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
-                            link.classList.add('bg-blue-600', 'text-white');
-                        } else {
-                            link.classList.remove('bg-blue-600', 'text-white');
-                            link.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
-                        }
-                    });
-                }
-            });
-        }, observerOptions);
-
-        elements.sections.forEach(section => observer.observe(section));
-    }
-
-    // ============================================
-    // 🎯 SMOOTH SCROLL FOR TOC LINKS
-    // ============================================
-    function initSmoothScroll() {
-        elements.tocLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = this.getAttribute('href');
-                const targetElement = document.querySelector(target);
-
-                if (targetElement) {
-                    const offset = state.headerHeight + state.tocHeight + 20;
-                    const elementPosition = targetElement.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    }
-
-    // ============================================
-    // 🔄 SCROLL HANDLER (RAF-based throttle)
-    // ============================================
-    function onScroll() {
-        if (!state.ticking) {
-            window.requestAnimationFrame(() => {
-                const scrollY = window.pageYOffset;
-
-                // Update header height (changes on scroll - topbar collapses)
-                if (elements.header) {
-                    state.headerHeight = elements.header.offsetHeight;
-                }
-
-                updateTOC(scrollY);
-                updateSidebar(scrollY);
-
-                state.ticking = false;
-            });
-
-            state.ticking = true;
-        }
-    }
-
-    // ============================================
-    // 📱 RESIZE HANDLER
-    // ============================================
-    let resizeTimeout;
-    function onResize() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            state.isDesktop = window.innerWidth >= config.DESKTOP_BREAKPOINT;
-            measureElements();
-            onScroll(); // Re-calculate positions
-        }, 150);
-    }
-
-    // ============================================
-    // 🚀 INITIALIZATION
-    // ============================================
-    function init() {
-        // Initial measurements
-        measureElements();
-
-        // Init features
-        initSectionTracking();
-        initSmoothScroll();
-
-        // Event listeners
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onResize);
-
-        // Initial position update
-        onScroll();
-    }
-
-    // Start when DOM ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-
-})();
-</script>
-@endpush
-

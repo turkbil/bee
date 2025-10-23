@@ -147,6 +147,17 @@ html {
 header {
     will-change: transform;
     backface-visibility: hidden;
+    transition: all 700ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+#top-bar {
+    transition: transform 700ms cubic-bezier(0.19, 1, 0.22, 1),
+                opacity 700ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+#toc-bar {
+    transition: all 500ms cubic-bezier(0.19, 1, 0.22, 1);
+    will-change: position, top;
 }
 
 #main-header {

@@ -144,3 +144,118 @@ function initGLightbox() {
 
 // Global olarak erişilebilir yap
 window.initGLightbox = initGLightbox;
+
+/**
+ * 🎯 STICKY SYSTEM V2 - Header Topbar + TOC Bar
+ *
+ * 1. Topbar: Scroll > 50px → Kaybolur (smooth)
+ * 2. TOC: Header altına değdiğinde → Sticky (80px), Trust Signals'da durur
+ */
+(function() {
+    'use strict';
+
+    const HEADER_HEIGHT = 80;
+
+    const elements = {
+        topbar: document.getElementById('top-bar'),
+        tocBar: document.getElementById('toc-bar'),
+        heroSection: document.getElementById('hero-section'),
+        trustSignals: document.getElementById('trust-signals')
+    };
+
+    let topbarVisible = true;
+    let tocSticky = false;
+    let ticking = false;
+    let tocOriginalOffset = 0;
+    let trustSignalsOffset = 0;
+
+    function init() {
+        if (!elements.topbar) return;
+
+        // TOC bar için başlangıç offsetini hesapla
+        if (elements.tocBar && elements.heroSection) {
+            tocOriginalOffset = elements.heroSection.offsetHeight;
+        }
+
+        // Trust Signals offset
+        if (elements.trustSignals) {
+            trustSignalsOffset = elements.trustSignals.offsetTop;
+        }
+
+        // Scroll listener
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', calculateOffsets, { passive: true });
+    }
+
+    function calculateOffsets() {
+        if (elements.heroSection) {
+            tocOriginalOffset = elements.heroSection.offsetHeight;
+        }
+        if (elements.trustSignals) {
+            trustSignalsOffset = elements.trustSignals.offsetTop;
+        }
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const scrollY = window.pageYOffset;
+                updateTopbar(scrollY);
+                updateTOC(scrollY);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    function updateTopbar(scrollY) {
+        if (!elements.topbar) return;
+
+        const shouldHide = scrollY > 50;
+
+        if (shouldHide && topbarVisible) {
+            elements.topbar.style.transform = 'translateY(-100%)';
+            elements.topbar.style.opacity = '0';
+            topbarVisible = false;
+        } else if (!shouldHide && !topbarVisible) {
+            elements.topbar.style.transform = 'translateY(0)';
+            elements.topbar.style.opacity = '1';
+            topbarVisible = true;
+        }
+    }
+
+    function updateTOC(scrollY) {
+        if (!elements.tocBar) return;
+
+        const shouldStick = scrollY >= tocOriginalOffset;
+        const shouldStop = scrollY + HEADER_HEIGHT >= trustSignalsOffset;
+
+        if (shouldStop) {
+            // Trust Signals'a ulaştı - dur
+            if (tocSticky) {
+                elements.tocBar.style.position = 'absolute';
+                elements.tocBar.style.top = (trustSignalsOffset - elements.tocBar.offsetHeight) + 'px';
+                tocSticky = false;
+            }
+        } else if (shouldStick && !tocSticky) {
+            // Hero'dan sonra - sticky yap
+            elements.tocBar.style.position = 'fixed';
+            elements.tocBar.style.top = HEADER_HEIGHT + 'px';
+            elements.tocBar.style.left = '0';
+            elements.tocBar.style.right = '0';
+            tocSticky = true;
+        } else if (!shouldStick && tocSticky) {
+            // Hero içinde - normal position
+            elements.tocBar.style.position = 'static';
+            tocSticky = false;
+        }
+    }
+
+    // Start
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();

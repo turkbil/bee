@@ -73,6 +73,9 @@
             <a href="#style-6" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap transition">
                 Style 6: Compact List
             </a>
+            <a href="#style-7" class="px-4 py-2 text-sm font-medium text-purple-700 hover:text-purple-900 whitespace-nowrap transition font-semibold">
+                Style 7: Categories + Products ⭐
+            </a>
         </div>
     </div>
 </div>
@@ -646,6 +649,184 @@
         <div class="flex items-center gap-3 text-sm">
             <span class="font-semibold text-gray-700">⚠️ Dezavantajlar:</span>
             <span class="text-gray-600">Görsel çekicilik düşük, detay yok</span>
+        </div>
+    </section>
+
+    <!-- Style 7: Categories + Featured Products -->
+    <section id="style-7" class="space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Style 7: Categories + Featured Products</h2>
+                <p class="text-gray-600 mt-2">Sol tarafta kategoriler, sağ tarafta öne çıkan ürünler</p>
+            </div>
+            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">⭐ Önerilen</span>
+        </div>
+
+        <div class="mega-menu-container bg-white p-0 overflow-hidden">
+            <div class="grid md:grid-cols-5 min-h-[450px]">
+                <!-- Left: Categories (2/5) -->
+                <div class="md:col-span-2 bg-gray-50 p-6 border-r border-gray-200">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-forklift text-blue-600"></i>
+                            Forklift Kategorileri
+                        </h3>
+                        <p class="text-sm text-gray-600">Tüm forklift çeşitleri</p>
+                    </div>
+
+                    <div class="space-y-1">
+                        <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-white hover:shadow-sm transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition">
+                                    <i class="fa-solid fa-bolt text-sm text-blue-600 group-hover:text-white transition"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900 text-sm">Elektrikli Forklift</div>
+                                    <div class="text-xs text-gray-500">2.5-3.5 Ton</div>
+                                </div>
+                            </div>
+                            <div class="text-xs font-medium text-gray-400 group-hover:text-blue-600">25+</div>
+                        </a>
+
+                        <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-white hover:shadow-sm transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-600 transition">
+                                    <i class="fa-solid fa-gas-pump text-sm text-green-600 group-hover:text-white transition"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900 text-sm">Dizel Forklift</div>
+                                    <div class="text-xs text-gray-500">3-5 Ton</div>
+                                </div>
+                            </div>
+                            <div class="text-xs font-medium text-gray-400 group-hover:text-green-600">18+</div>
+                        </a>
+
+                        <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-white hover:shadow-sm transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-600 transition">
+                                    <i class="fa-solid fa-fire-flame text-sm text-purple-600 group-hover:text-white transition"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900 text-sm">LPG'li Forklift</div>
+                                    <div class="text-xs text-gray-500">2-4 Ton</div>
+                                </div>
+                            </div>
+                            <div class="text-xs font-medium text-gray-400 group-hover:text-purple-600">12+</div>
+                        </a>
+
+                        <a href="#" class="flex items-center justify-between p-3 rounded-lg hover:bg-white hover:shadow-sm transition group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-600 transition">
+                                    <i class="fa-solid fa-warehouse text-sm text-orange-600 group-hover:text-white transition"></i>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-gray-900 text-sm">Kapalı Alan</div>
+                                    <div class="text-xs text-gray-500">Elektrikli</div>
+                                </div>
+                            </div>
+                            <div class="text-xs font-medium text-gray-400 group-hover:text-orange-600">30+</div>
+                        </a>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <a href="/shop/kategori/forklift" class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-semibold hover:shadow-lg transition">
+                            <span>Tüm Forklift Ürünleri</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Featured Products (3/5) -->
+                <div class="md:col-span-3 p-6 bg-gradient-to-br from-blue-50 to-purple-50">
+                    <div class="mb-6">
+                        <h4 class="text-lg font-bold text-gray-900 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-star text-yellow-500"></i>
+                            Öne Çıkan Ürünler
+                        </h4>
+                        <p class="text-sm text-gray-600">Bu kategorideki en popüler modeller</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Product 1 -->
+                        <a href="#" class="flex gap-4 bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition group">
+                            <div class="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-50 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <i class="fa-solid fa-forklift text-5xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-semibold rounded">
+                                            <i class="fa-solid fa-fire text-xs mr-1"></i>Çok Satan
+                                        </span>
+                                        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">
+                                            Elektrikli
+                                        </span>
+                                    </div>
+                                    <h5 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-600 transition">İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet</h5>
+                                    <p class="text-sm text-gray-600 line-clamp-2">Lityum-ion bataryalı, kompakt tasarım. Kapalı alan kullanımı için ideal.</p>
+                                </div>
+                                <div class="flex items-center justify-between mt-3">
+                                    <div>
+                                        <div class="text-xs text-gray-500 mb-1">Fiyat</div>
+                                        <div class="text-2xl font-bold text-blue-600">Fiyat Sorunuz</div>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-blue-600 font-semibold group-hover:gap-3 transition-all">
+                                        <span>İncele</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+
+                        <!-- Product 2 -->
+                        <a href="#" class="flex gap-4 bg-white rounded-xl p-4 shadow-sm hover:shadow-xl transition group">
+                            <div class="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-50 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <i class="fa-solid fa-bolt text-5xl text-green-400 group-hover:scale-110 transition-transform"></i>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded">
+                                            <i class="fa-solid fa-star text-xs mr-1"></i>Öne Çıkan
+                                        </span>
+                                        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded">
+                                            Elektrikli
+                                        </span>
+                                    </div>
+                                    <h5 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-green-600 transition">İXTİF CPD20TVL - Li-Ion Forklift</h5>
+                                    <p class="text-sm text-gray-600 line-clamp-2">2.0 Ton kapasiteli, yeni nesil lityum batarya teknolojisi. Hızlı şarj özelliği.</p>
+                                </div>
+                                <div class="flex items-center justify-between mt-3">
+                                    <div>
+                                        <div class="text-xs text-gray-500 mb-1">Fiyat</div>
+                                        <div class="text-2xl font-bold text-green-600">Fiyat Sorunuz</div>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-green-600 font-semibold group-hover:gap-3 transition-all">
+                                        <span>İncele</span>
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 text-sm">
+            <span class="font-semibold text-gray-700">✅ Avantajlar:</span>
+            <span class="text-gray-600">Hem kategori gezinme hem ürün gösterimi, conversion odaklı, featured ürünleri öne çıkarır</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+            <span class="font-semibold text-gray-700">⚠️ Dezavantajlar:</span>
+            <span class="text-gray-600">Ürün seçimi önemli (hangi 2 ürün gösterilecek?)</span>
+        </div>
+        <div class="flex items-center gap-3 text-sm bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <i class="fa-solid fa-lightbulb text-purple-600 text-xl"></i>
+            <div>
+                <div class="font-semibold text-purple-900">💡 Önerim:</div>
+                <div class="text-purple-700">Bu stil hem kategoride gezinmeyi kolaylaştırır hem de direkt ürün satışına yönlendirir. E-ticaret için ideal!</div>
+            </div>
         </div>
     </section>
 

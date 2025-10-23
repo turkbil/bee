@@ -37,14 +37,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     {{-- Performance: Preload Critical CSS --}}
-    <link rel="preload" href="{{ asset('css/app.css') }}" as="style">
-    @if(file_exists(public_path('css/ixtif-bundle.min.css')))
-    <link rel="preload" href="{{ asset('css/ixtif-bundle.min.css') }}" as="style">
-    @else
-    <link rel="preload" href="{{ asset('css/ixtif-theme.css') }}" as="style">
-    @endif
-
-    {{-- Tailwind CSS - Compiled & Minified --}}
+    {{-- Tailwind CSS - Compiled & Minified (Direct load, no preload needed) --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
 
     {{-- Font Awesome Pro --}}

@@ -1426,29 +1426,36 @@
                 const trustTop = trustRect.top;
                 const tocBottom = headerHeight + state.tocHeight;
 
-                // TOC slide up when trust signals approach (with buffer)
-                if (trustTop <= tocBottom + 10) {
+                // TOC should hide ONLY when trust signals OVERLAPS with TOC bottom
+                // Add negative buffer so it hides slightly before collision
+                const shouldHide = trustTop <= (tocBottom - 20);
+
+                if (shouldHide) {
                     tocBar.style.transform = 'translateY(-100%)';
                     tocBar.style.pointerEvents = 'none';
 
                     if (config.DEBUG) {
-                        console.log('🔴 TOC: Hidden (trust-signals reached)', {
+                        console.log('🔴 TOC: Hidden (trust-signals collision)', {
                             trustTop: trustTop.toFixed(0),
-                            tocBottom: tocBottom.toFixed(0)
+                            tocBottom: tocBottom.toFixed(0),
+                            gap: (trustTop - tocBottom).toFixed(0) + 'px'
                         });
                     }
                 } else {
                     tocBar.style.transform = 'translateY(0)';
                     tocBar.style.pointerEvents = 'auto';
-                }
-            }
 
-            if (config.DEBUG && scrollY % 100 === 0) {
-                console.log('📌 TOC: Fixed', {
-                    headerHeight: headerHeight,
-                    scrollY: scrollY.toFixed(0),
-                    stickyPoint: tocStickyPoint.toFixed(0)
-                });
+                    if (config.DEBUG) {
+                        console.log('✅ TOC: Visible (fixed to header)', {
+                            trustTop: trustTop.toFixed(0),
+                            tocBottom: tocBottom.toFixed(0),
+                            gap: (trustTop - tocBottom).toFixed(0) + 'px'
+                        });
+                    }
+                }
+            } else {
+                tocBar.style.transform = 'translateY(0)';
+                tocBar.style.pointerEvents = 'auto';
             }
         } else {
             // Relative position - initial state
@@ -1491,11 +1498,11 @@
 
         if (!shouldStick) {
             // Before sticky - natural flow
-            sidebar.style.position = 'static';
+            sidebar.style.position = '';
             sidebar.style.top = '';
             sidebar.style.width = '';
 
-            if (config.DEBUG && scrollY === 0) {
+            if (config.DEBUG) {
                 console.log('⚪ SIDEBAR: Static (before sticky)', {
                     scrollY: scrollY.toFixed(0),
                     sidebarNaturalTop: sidebarNaturalTop.toFixed(0),
@@ -1508,7 +1515,7 @@
             sidebar.style.top = stickyTopOffset + 'px';
             sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
 
-            if (config.DEBUG && scrollY % 200 === 0) {
+            if (config.DEBUG) {
                 console.log('📌 SIDEBAR: Fixed (sticky)', {
                     scrollY: scrollY.toFixed(0),
                     top: stickyTopOffset.toFixed(0),
@@ -1519,16 +1526,15 @@
             }
         } else {
             // After sticky - stop at FAQ bottom
-            // Calculate absolute position within parent
-            const stopPosition = state.faqBottom - state.sidebarInitialTop - sidebarHeight;
-            sidebar.style.position = 'relative';
-            sidebar.style.top = stopPosition + 'px';
-            sidebar.style.width = '';
+            // Use transform instead of relative position to avoid layout shift
+            sidebar.style.position = 'fixed';
+            sidebar.style.top = (state.faqBottom - sidebarHeight - scrollY) + 'px';
+            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
 
             if (config.DEBUG) {
                 console.log('🔴 SIDEBAR: Stopped at FAQ bottom', {
                     scrollY: scrollY.toFixed(0),
-                    stopPosition: stopPosition.toFixed(0),
+                    calculatedTop: (state.faqBottom - sidebarHeight - scrollY).toFixed(0),
                     faqBottom: state.faqBottom.toFixed(0),
                     sidebarHeight: sidebarHeight.toFixed(0)
                 });

@@ -57,34 +57,12 @@ class ShopController extends Controller
             }
         }
 
-        // Eager load category ile al ve PHP'de sırala
-        $allProducts = $productsQuery
+        // Basit sıralama - sadece ürün sırası
+        $products = $productsQuery
             ->with(['category', 'brand', 'media'])
-            ->get()
-            ->sortBy(function ($product) {
-                $catSort = 9999;
-                if ($product->category) {
-                    $catSort = $product->category->sort_order ?? 9999;
-                }
-                return [
-                    $catSort,  // Kategori sırası
-                    $product->sort_order ?? 9999,            // Ürün sırası
-                    $product->published_at ? -strtotime($product->published_at) : 0, // Yayın tarihi (DESC)
-                ];
-            });
-
-        // Manuel pagination
-        $perPage = config('shop.pagination.front_per_shop', 12);
-        $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage();
-        $currentItems = $allProducts->slice(($currentPage - 1) * $perPage, $perPage)->values();
-
-        $products = new \Illuminate\Pagination\LengthAwarePaginator(
-            $currentItems,
-            $allProducts->count(),
-            $perPage,
-            $currentPage,
-            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
-        );
+            ->orderBy('sort_order', 'asc')
+            ->orderByDesc('published_at')
+            ->paginate(config('shop.pagination.front_per_shop', 12));
 
         $moduleTitle = __('shop::front.module_title');
 
@@ -375,36 +353,14 @@ class ShopController extends Controller
         $categoryIds = $this->getCategoryWithChildren($category);
 
         // Get products from this category and all subcategories
-        $allProducts = ShopProduct::query()
+        $products = ShopProduct::query()
             ->with(['category', 'brand', 'media'])
             ->whereIn('category_id', $categoryIds)
             ->active()
             ->published()
-            ->get()
-            ->sortBy(function ($product) {
-                $catSort = 9999;
-                if ($product->category) {
-                    $catSort = $product->category->sort_order ?? 9999;
-                }
-                return [
-                    $catSort,
-                    $product->sort_order ?? 9999,
-                    $product->published_at ? -strtotime($product->published_at) : 0,
-                ];
-            });
-
-        // Manuel pagination
-        $perPage = config('shop.pagination.front_per_shop', 12);
-        $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage();
-        $currentItems = $allProducts->slice(($currentPage - 1) * $perPage, $perPage)->values();
-
-        $products = new \Illuminate\Pagination\LengthAwarePaginator(
-            $currentItems,
-            $allProducts->count(),
-            $perPage,
-            $currentPage,
-            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
-        );
+            ->orderBy('sort_order', 'asc')
+            ->orderByDesc('published_at')
+            ->paginate(config('shop.pagination.front_per_shop', 12));
 
         // Get direct subcategories for display
         $subcategories = $category->children;

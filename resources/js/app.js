@@ -85,7 +85,8 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ScrollTrigger init
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ GSAP ScrollTrigger initialized');
-});
+// Make GSAP globally available for blade templates
+window.gsap = gsap;
+window.ScrollTrigger = ScrollTrigger;
+
+console.log('✅ GSAP ScrollTrigger initialized and available globally');

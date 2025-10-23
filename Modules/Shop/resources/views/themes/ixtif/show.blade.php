@@ -291,15 +291,11 @@
             </div>
         </section>
 
-        {{-- 📑 TABLE OF CONTENTS - Initially relative, becomes fixed on scroll --}}
-        {{-- Placeholder: TOC fixed olduğunda layout shift önlemek için --}}
-        <div id="toc-placeholder" style="display: none;"></div>
-
+        {{-- 📑 TABLE OF CONTENTS - Modern Scroll-Driven Sticky --}}
         <div id="toc-bar"
-            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 left-0 right-0"
-            style="position: relative; z-index: 40; transition: none;">
-            <div id="toc-container" class="container mx-auto px-4 sm:px-4 md:px-0 py-2"
-                 style="transition: padding 0.2s ease-in-out;">
+            class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 w-full z-40 transition-transform duration-300"
+            style="position: relative; will-change: transform;">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0 py-2">
                 <div class="flex items-center">
                     <div
                         class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
@@ -1008,10 +1004,9 @@
 
             </div>
 
-            {{-- RIGHT: Sticky Sidebar (1/3) - Clean Version --}}
-            <div class="lg:col-span-1 order-first lg:order-last relative">
-                <div id="sticky-sidebar">
-                    <div class="sticky-sidebar__inner space-y-8">
+            {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky --}}
+            <div class="lg:col-span-1 order-first lg:order-last">
+                <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform;">
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
@@ -1068,8 +1063,7 @@
                             </div>
                         </div>
                     </div>
-                    </div> {{-- Close sticky-sidebar__inner --}}
-                </div> {{-- Close sticky-sidebar --}}
+                </aside> {{-- Close sticky-sidebar --}}
             </div> {{-- Close lg:col-span-1 --}}
         </div>
     </div>
@@ -1337,190 +1331,270 @@
 @push('scripts')
 <script>
 /**
- * Sticky TOC & Sidebar - Shop Product Show Page
- * TOC bar'ı ve sidebar'ı scroll'da sticky yapan fonksiyonlar
+ * 🎯 MODERN STICKY SYSTEM V7 - Zero Dependencies
+ * TOC Bar: Scroll-driven positioning (header altına yapışır, trust-signals'da kaybolur)
+ * Sidebar: Transform-based scrolling (header+toc+16px gap, FAQ bottom'da durur)
+ * Performance: RequestAnimationFrame + Throttled scroll
  */
-document.addEventListener('DOMContentLoaded', function() {
-    // ==========================================
-    // 1. STICKY TOC BAR
-    // ==========================================
-    const tocBar = document.getElementById('toc-bar');
-    const tocPlaceholder = document.getElementById('toc-placeholder');
-    const tocContainer = document.getElementById('toc-container');
-    const header = document.getElementById('main-header');
-    const sidebar = document.getElementById('sticky-sidebar');
 
-    // Sidebar top pozisyonunu güncelle (TOC bar değiştiğinde)
-    function updateSidebarTop() {
-        if (!sidebar || window.innerWidth < 1024) return;
+(function() {
+    'use strict';
 
-        const headerHeight = header ? header.offsetHeight : 0;
-        const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
-        sidebar.style.top = (headerHeight + tocBarHeight + 24) + 'px';
+    // ============================================
+    // 📊 STATE & CONFIG
+    // ============================================
+    const state = {
+        isDesktop: window.innerWidth >= 1024,
+        headerHeight: 0,
+        tocHeight: 0,
+        tocInitialTop: 0,
+        sidebarInitialTop: 0,
+        trustSignalsTop: 0,
+        faqBottom: 0,
+        ticking: false
+    };
+
+    const config = {
+        SIDEBAR_GAP: 16, // Sidebar top gap (px)
+        DESKTOP_BREAKPOINT: 1024
+    };
+
+    // ============================================
+    // 🎯 DOM ELEMENTS
+    // ============================================
+    const elements = {
+        header: document.getElementById('main-header'),
+        tocBar: document.getElementById('toc-bar'),
+        sidebar: document.getElementById('sticky-sidebar'),
+        trustSignals: document.getElementById('trust-signals'),
+        faqSection: document.getElementById('faq'),
+        tocLinks: document.querySelectorAll('.toc-link'),
+        sections: document.querySelectorAll('[id^="description"], [id^="features"], [id^="competitive"], [id^="gallery"], [id^="variants"], [id^="technical"], [id^="accessories"], [id^="usecases"], [id^="industries"], [id^="certifications"], [id^="warranty"], [id^="faq"], [id^="contact"]')
+    };
+
+    // ============================================
+    // 📐 MEASUREMENT FUNCTIONS
+    // ============================================
+    function measureElements() {
+        if (!elements.header || !elements.tocBar) return;
+
+        state.headerHeight = elements.header.offsetHeight;
+        state.tocHeight = elements.tocBar.offsetHeight;
+        state.tocInitialTop = elements.tocBar.offsetTop;
+
+        if (elements.sidebar) {
+            const sidebarRect = elements.sidebar.getBoundingClientRect();
+            state.sidebarInitialTop = window.pageYOffset + sidebarRect.top;
+        }
+
+        if (elements.trustSignals) {
+            const trustRect = elements.trustSignals.getBoundingClientRect();
+            state.trustSignalsTop = window.pageYOffset + trustRect.top;
+        }
+
+        if (elements.faqSection) {
+            const faqRect = elements.faqSection.getBoundingClientRect();
+            state.faqBottom = window.pageYOffset + faqRect.top + faqRect.height;
+        }
     }
 
-    if (tocBar && tocPlaceholder && header) {
-        let lastScrollTop = 0;
-        const tocBarOffsetTop = tocBar.offsetTop;
-        const trustSignals = document.getElementById('trust-signals');
+    // ============================================
+    // 🎨 TOC BAR - SCROLL-DRIVEN POSITIONING
+    // ============================================
+    function updateTOC(scrollY) {
+        if (!elements.tocBar || !elements.header) return;
 
-        window.addEventListener('scroll', function() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const tocBar = elements.tocBar;
+        const headerHeight = elements.header.offsetHeight;
+        const scrolledPastInitial = scrollY >= state.tocInitialTop;
 
-            // DİNAMİK header height (scroll'da değişebilir)
-            const currentHeaderHeight = header.offsetHeight;
+        if (scrolledPastInitial) {
+            // Fixed position - header altına yapış (gap: 0)
+            tocBar.style.position = 'fixed';
+            tocBar.style.top = headerHeight + 'px';
+            tocBar.style.left = '0';
+            tocBar.style.right = '0';
 
-            // TOC bar scroll pozisyonunu geçtiyse
-            if (scrollTop >= tocBarOffsetTop) {
-                // Fixed yap
-                tocBar.style.position = 'fixed';
-                tocBar.style.top = currentHeaderHeight + 'px';
-                tocBar.style.transition = 'top 0.15s ease-out'; // Header gap önlemek için
-                tocBar.style.left = '0';
-                tocBar.style.right = '0';
-                tocBar.style.zIndex = '40';
+            // Trust Signals collision check
+            if (elements.trustSignals) {
+                const trustTop = elements.trustSignals.getBoundingClientRect().top;
+                const tocBottom = headerHeight + state.tocHeight;
 
-                // Trust Signals kontrolü - SOFT SLIDE ANIMATION
-                if (trustSignals) {
-                    const trustTop = trustSignals.getBoundingClientRect().top;
-                    const tocHeight = tocBar.offsetHeight;
-
-                    // Trust signals header+toc altına geldiğinde yumuşak slide up
-                    if (trustTop <= (currentHeaderHeight + tocHeight + 50)) {
-                        tocBar.style.transform = 'translateY(-100%)';
-                        tocBar.style.transition = 'transform 0.3s ease-out';
-                        tocBar.style.pointerEvents = 'none';
-                    } else {
-                        tocBar.style.transform = 'translateY(0)';
-                        tocBar.style.transition = 'transform 0.3s ease-in';
-                        tocBar.style.pointerEvents = 'auto';
-                    }
+                // TOC slide up when trust signals approach
+                if (trustTop <= tocBottom) {
+                    tocBar.style.transform = 'translateY(-100%)';
+                    tocBar.style.pointerEvents = 'none';
                 } else {
                     tocBar.style.transform = 'translateY(0)';
                     tocBar.style.pointerEvents = 'auto';
                 }
-
-                // Placeholder'ı göster (layout shift önlemek için)
-                tocPlaceholder.style.display = 'block';
-                tocPlaceholder.style.height = tocBar.offsetHeight + 'px';
-
-                // Container padding'i küçült (fixed olunca)
-                if (tocContainer) {
-                    tocContainer.style.paddingTop = '0.5rem';
-                    tocContainer.style.paddingBottom = '0.5rem';
-                }
-            } else {
-                // Normal pozisyona dön
-                tocBar.style.position = 'relative';
-                tocBar.style.top = 'auto';
-                tocBar.style.transform = 'translateY(0)';
-                tocBar.style.pointerEvents = 'auto';
-
-                // Placeholder'ı gizle
-                tocPlaceholder.style.display = 'none';
-
-                // Container padding'i normale dön
-                if (tocContainer) {
-                    tocContainer.style.paddingTop = '0.5rem';
-                    tocContainer.style.paddingBottom = '0.5rem';
-                }
             }
-
-            // Sidebar pozisyonunu güncelle (TOC bar değiştiğinde)
-            updateSidebarTop();
-
-            lastScrollTop = scrollTop;
-        });
-
-        console.log('✅ Sticky TOC initialized');
+        } else {
+            // Relative position - initial state
+            tocBar.style.position = 'relative';
+            tocBar.style.top = 'auto';
+            tocBar.style.transform = 'translateY(0)';
+            tocBar.style.pointerEvents = 'auto';
+        }
     }
 
-    // ==========================================
-    // 2. SIDEBAR STICKY - KÜTÜPHANE İLE (StickySidebar)
-    // ==========================================
-    if (sidebar && window.innerWidth >= 1024) {
-        // StickySidebar kütüphanesini yükle ve init et
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/sticky-sidebar@3.3.1/dist/sticky-sidebar.min.js';
-        script.onload = function() {
-            const headerHeight = header ? header.offsetHeight : 0;
-            const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
+    // ============================================
+    // 📌 SIDEBAR - TRANSFORM-BASED SCROLLING
+    // ============================================
+    function updateSidebar(scrollY) {
+        if (!elements.sidebar || !state.isDesktop) return;
 
-            new StickySidebar('#sticky-sidebar', {
-                containerSelector: '#main-content-column',
-                innerWrapperSelector: '.sticky-sidebar__inner',
-                topSpacing: headerHeight + tocBarHeight + 24,
-                bottomSpacing: 20,
-                minWidth: 1024,
-                resizeSensor: true
-            });
+        const sidebar = elements.sidebar;
+        const sidebarHeight = sidebar.offsetHeight;
 
-            console.log('✅ StickySidebar: container=#main-content-column (stops at FAQ end)');
+        // Start position: header + toc + gap
+        const stickyStart = state.sidebarInitialTop - state.headerHeight - state.tocHeight - config.SIDEBAR_GAP;
+
+        // Stop position: FAQ section bottom
+        const stickyStop = state.faqBottom - sidebarHeight - state.headerHeight - state.tocHeight - config.SIDEBAR_GAP;
+
+        if (scrollY < stickyStart) {
+            // Before sticky range - natural position
+            sidebar.style.position = 'relative';
+            sidebar.style.top = '0';
+            sidebar.style.transform = 'translateY(0)';
+        } else if (scrollY >= stickyStart && scrollY < stickyStop) {
+            // Sticky range - fixed with transform
+            sidebar.style.position = 'fixed';
+            sidebar.style.top = (state.headerHeight + state.tocHeight + config.SIDEBAR_GAP) + 'px';
+            sidebar.style.transform = 'translateY(0)';
+        } else {
+            // After sticky range - stop at FAQ bottom
+            sidebar.style.position = 'absolute';
+            sidebar.style.top = (state.faqBottom - sidebarHeight) + 'px';
+            sidebar.style.transform = 'translateY(0)';
+        }
+    }
+
+    // ============================================
+    // 🎯 ACTIVE SECTION TRACKING (IntersectionObserver)
+    // ============================================
+    function initSectionTracking() {
+        if (!elements.tocLinks.length || !elements.sections.length) return;
+
+        const observerOptions = {
+            rootMargin: '-20% 0px -75% 0px',
+            threshold: 0
         };
-        document.head.appendChild(script);
-    }
 
-    // ==========================================
-    // 3. TOC ACTIVE LINK HIGHLIGHTING
-    // ==========================================
-    const tocLinks = document.querySelectorAll('.toc-link');
-    const sections = document.querySelectorAll('[id^="description"], [id^="features"], [id^="competitive"], [id^="gallery"], [id^="variants"], [id^="technical"], [id^="accessories"], [id^="usecases"], [id^="industries"], [id^="certifications"], [id^="warranty"], [id^="faq"], [id^="contact"]');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.getAttribute('id');
 
-    if (tocLinks.length > 0 && sections.length > 0) {
-        window.addEventListener('scroll', function() {
-            let currentSection = '';
-
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-
-                if (window.pageYOffset >= (sectionTop - 200)) {
-                    currentSection = section.getAttribute('id');
+                    // Update TOC links
+                    elements.tocLinks.forEach(link => {
+                        const target = link.getAttribute('data-target');
+                        if (target === sectionId) {
+                            link.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                            link.classList.add('bg-blue-600', 'text-white');
+                        } else {
+                            link.classList.remove('bg-blue-600', 'text-white');
+                            link.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                        }
+                    });
                 }
             });
+        }, observerOptions);
 
-            tocLinks.forEach(link => {
-                link.classList.remove('bg-blue-600', 'text-white');
-                link.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+        elements.sections.forEach(section => observer.observe(section));
+    }
 
-                const target = link.getAttribute('data-target');
-                if (target === currentSection) {
-                    link.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
-                    link.classList.add('bg-blue-600', 'text-white');
+    // ============================================
+    // 🎯 SMOOTH SCROLL FOR TOC LINKS
+    // ============================================
+    function initSmoothScroll() {
+        elements.tocLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = this.getAttribute('href');
+                const targetElement = document.querySelector(target);
+
+                if (targetElement) {
+                    const offset = state.headerHeight + state.tocHeight + 20;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
-
-        console.log('✅ TOC active link highlighting initialized');
     }
 
-    // ==========================================
-    // 4. SMOOTH SCROLL FOR TOC LINKS
-    // ==========================================
-    tocLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = this.getAttribute('href');
-            const targetElement = document.querySelector(target);
+    // ============================================
+    // 🔄 SCROLL HANDLER (RAF-based throttle)
+    // ============================================
+    function onScroll() {
+        if (!state.ticking) {
+            window.requestAnimationFrame(() => {
+                const scrollY = window.pageYOffset;
 
-            if (targetElement) {
-                const headerHeight = header ? header.offsetHeight : 0;
-                const tocBarHeight = tocBar ? tocBar.offsetHeight : 0;
-                const offset = headerHeight + tocBarHeight + 20;
+                // Update header height (changes on scroll - topbar collapses)
+                if (elements.header) {
+                    state.headerHeight = elements.header.offsetHeight;
+                }
 
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                updateTOC(scrollY);
+                updateSidebar(scrollY);
 
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
+                state.ticking = false;
+            });
 
-    console.log('✅ Product show page sticky scripts loaded');
-});
+            state.ticking = true;
+        }
+    }
+
+    // ============================================
+    // 📱 RESIZE HANDLER
+    // ============================================
+    let resizeTimeout;
+    function onResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            state.isDesktop = window.innerWidth >= config.DESKTOP_BREAKPOINT;
+            measureElements();
+            onScroll(); // Re-calculate positions
+        }, 150);
+    }
+
+    // ============================================
+    // 🚀 INITIALIZATION
+    // ============================================
+    function init() {
+        // Initial measurements
+        measureElements();
+
+        // Init features
+        initSectionTracking();
+        initSmoothScroll();
+
+        // Event listeners
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onResize);
+
+        // Initial position update
+        onScroll();
+
+        console.log('✅ Modern Sticky System V7 initialized');
+        console.log('📊 State:', state);
+    }
+
+    // Start when DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
 </script>
 @endpush
 

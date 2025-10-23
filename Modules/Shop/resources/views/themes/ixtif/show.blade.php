@@ -1411,40 +1411,42 @@
         const tocStickyPoint = state.tocInitialTop - headerHeight;
         const scrolledPastInitial = scrollY >= tocStickyPoint;
 
-        if (scrolledPastInitial) {
-            // Fixed position - header altına yapış (gap: 0)
+        // Trust Signals bottom check - TOC should STOP (not hide) when reaching trust signals
+        let reachedTrustSignals = false;
+        if (elements.trustSignals) {
+            const trustSignalsTop = elements.trustSignals.offsetTop;
+            reachedTrustSignals = scrollY >= (trustSignalsTop - headerHeight - state.tocHeight);
+        }
+
+        if (scrolledPastInitial && !reachedTrustSignals) {
+            // Sticky mode - fixed position, header altına yapış (gap: 0)
             tocBar.style.position = 'fixed';
             tocBar.style.top = headerHeight + 'px';
             tocBar.style.left = '0';
             tocBar.style.right = '0';
             tocBar.style.zIndex = '40';
-
-            // Trust Signals collision check
-            if (elements.trustSignals) {
-                const trustRect = elements.trustSignals.getBoundingClientRect();
-                const trustTop = trustRect.top;
-                const tocBottom = headerHeight + state.tocHeight;
-
-                // TOC should hide ONLY when trust signals OVERLAPS with TOC bottom
-                // Add negative buffer so it hides slightly before collision
-                const shouldHide = trustTop <= (tocBottom - 20);
-
-                if (shouldHide) {
-                    tocBar.style.transform = 'translateY(-100%)';
-                    tocBar.style.pointerEvents = 'none';
-                } else {
-                    tocBar.style.transform = 'translateY(0)';
-                    tocBar.style.pointerEvents = 'auto';
-                }
-            } else {
-                tocBar.style.transform = 'translateY(0)';
-                tocBar.style.pointerEvents = 'auto';
-            }
+            tocBar.style.transform = 'translateY(0)';
+            tocBar.style.opacity = '1';
+            tocBar.style.pointerEvents = 'auto';
+        } else if (reachedTrustSignals) {
+            // Reached trust signals - stop and stay there (absolute positioning)
+            const trustSignalsTop = elements.trustSignals.offsetTop;
+            tocBar.style.position = 'absolute';
+            tocBar.style.top = (trustSignalsTop - state.tocHeight) + 'px';
+            tocBar.style.left = '0';
+            tocBar.style.right = '0';
+            tocBar.style.zIndex = '40';
+            tocBar.style.transform = 'translateY(0)';
+            tocBar.style.opacity = '1';
+            tocBar.style.pointerEvents = 'auto';
         } else {
-            // Relative position - initial state
+            // Initial state - relative position
             tocBar.style.position = 'relative';
             tocBar.style.top = 'auto';
+            tocBar.style.left = 'auto';
+            tocBar.style.right = 'auto';
             tocBar.style.transform = 'translateY(0)';
+            tocBar.style.opacity = '1';
             tocBar.style.pointerEvents = 'auto';
         }
     }
@@ -1459,33 +1461,33 @@
         const sidebarHeight = sidebar.offsetHeight;
         const sidebarParent = sidebar.parentElement;
 
-        // Calculate sticky range
-        const viewportTop = scrollY;
+        // Calculate sticky positions
         const stickyTopOffset = state.headerHeight + state.tocHeight + config.SIDEBAR_GAP;
         const sidebarNaturalTop = state.sidebarInitialTop;
 
-        // Start sticking when: viewport top + sticky offset >= sidebar natural top
-        const shouldStick = viewportTop + stickyTopOffset >= sidebarNaturalTop;
+        // Calculate FAQ bottom position (where sidebar should stop)
+        const faqBottomPosition = state.faqBottom - sidebarHeight;
 
-        // Stop sticking when: sidebar bottom >= FAQ bottom
-        const sidebarBottom = viewportTop + stickyTopOffset + sidebarHeight;
-        const shouldStop = sidebarBottom >= state.faqBottom;
+        // Start sticking when: viewport reaches sidebar's natural position
+        const shouldStartSticky = scrollY + stickyTopOffset >= sidebarNaturalTop;
 
-        if (!shouldStick) {
+        // Stop sticking when: sidebar would go past FAQ bottom
+        const reachedFaqBottom = scrollY >= faqBottomPosition - stickyTopOffset;
+
+        if (!shouldStartSticky) {
             // Before sticky - natural flow
             sidebar.style.position = '';
             sidebar.style.top = '';
             sidebar.style.width = '';
-        } else if (shouldStick && !shouldStop) {
-            // Sticky range - fixed position
+        } else if (shouldStartSticky && !reachedFaqBottom) {
+            // Sticky range - follow scroll with fixed position
             sidebar.style.position = 'fixed';
             sidebar.style.top = stickyTopOffset + 'px';
             sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
         } else {
-            // After sticky - stop at FAQ bottom
-            // Use transform instead of relative position to avoid layout shift
-            sidebar.style.position = 'fixed';
-            sidebar.style.top = (state.faqBottom - sidebarHeight - scrollY) + 'px';
+            // Reached FAQ bottom - stop here with absolute positioning
+            sidebar.style.position = 'absolute';
+            sidebar.style.top = faqBottomPosition + 'px';
             sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
         }
     }

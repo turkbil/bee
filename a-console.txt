@@ -2,299 +2,491 @@ ixtif-f4-15-ton-li-ion-transpalet:643 Refused to load the script 'https://mc.yan
 
 (anonymous) @ ixtif-f4-15-ton-li-ion-transpalet:643
 (anonymous) @ ixtif-f4-15-ton-li-ion-transpalet:644
-VM24758 ai-chat.js:732 ✅ AI Chat System JavaScript loaded
-VM24758 ai-chat.js:733 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
-ixtif-theme.js?v=1761181657:123 ✅ GLightbox initialized
-ai-chat.js?v=1761181657:732 ✅ AI Chat System JavaScript loaded
-ai-chat.js?v=1761181657:733 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
-VM24758 ai-chat.js:81 🤖 AI Chat Store initialized {floatingOpen: true, sessionId: null}
-ai-chat.js?v=1761181657:81 🤖 AI Chat Store initialized {floatingOpen: true, sessionId: null}
-ai-chat.js?v=1761181657:90 🔄 Context updated: Proxy(Object) {product_id: 245, category_id: null, page_slug: null}
-ai-chat.js?v=1761181657:374 🔍 Placeholder init started {productId: '245'}
-ai-chat.js?v=1761181657:380 ⚡ Fallback shown immediately
-ai-chat.js?v=1761181657:396 ✅ Placeholder init completed {conversationLength: 6}
-ai-chat.js?v=1761181657:374 🔍 Placeholder init started {productId: '245'}
-ai-chat.js?v=1761181657:380 ⚡ Fallback shown immediately
-ai-chat.js?v=1761181657:396 ✅ Placeholder init completed {conversationLength: 6}
-ai-chat.js?v=1761181657:445 🎬 Placeholder animation started
-ixtif-theme.js?v=1761181657:80 Top bar height: 45px
-ixtif-theme.js?v=1761181657:95 ✅ Sticky header initialized
-ixtif-f4-15-ton-li-ion-transpalet:5305 ✅ Modern Sticky System V7 initialized
-ixtif-f4-15-ton-li-ion-transpalet:5306 📊 State: {isDesktop: true, headerHeight: 125, tocHeight: 49, tocInitialTop: 1412, sidebarInitialTop: 1618, …}
-ixtif-f4-15-ton-li-ion-transpalet:5307 🔍 Desktop mode: true
-ixtif-f4-15-ton-li-ion-transpalet:5308 🔍 Sidebar element: Found
-dev-tools.js?v=1761181657:93 ✅ Development Tools loaded (Admin/Root only)
+VM25024 ai-chat.js:732 ✅ AI Chat System JavaScript loaded
+VM25024 ai-chat.js:733 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
+ixtif-theme.js?v=1761181796:123 ✅ GLightbox initialized
+ai-chat.js?v=1761181796:732 ✅ AI Chat System JavaScript loaded
+ai-chat.js?v=1761181796:733 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
+VM25024 ai-chat.js:81 🤖 AI Chat Store initialized {floatingOpen: true, sessionId: null}
+ai-chat.js?v=1761181796:81 🤖 AI Chat Store initialized {floatingOpen: true, sessionId: null}
+ai-chat.js?v=1761181796:90 🔄 Context updated: Proxy(Object) {product_id: 245, category_id: null, page_slug: null}
+ai-chat.js?v=1761181796:374 🔍 Placeholder init started {productId: '245'}
+ai-chat.js?v=1761181796:380 ⚡ Fallback shown immediately
+ai-chat.js?v=1761181796:396 ✅ Placeholder init completed {conversationLength: 6}
+ai-chat.js?v=1761181796:374 🔍 Placeholder init started {productId: '245'}
+ai-chat.js?v=1761181796:380 ⚡ Fallback shown immediately
+ai-chat.js?v=1761181796:396 ✅ Placeholder init completed {conversationLength: 6}
+ai-chat.js?v=1761181796:445 🎬 Placeholder animation started
+ixtif-theme.js?v=1761181796:80 Top bar height: 45px
+ixtif-theme.js?v=1761181796:95 ✅ Sticky header initialized
+ixtif-f4-15-ton-li-ion-transpalet:5318 ✅ Modern Sticky System V7 initialized
+ixtif-f4-15-ton-li-ion-transpalet:5319 📊 State: {isDesktop: true, headerHeight: 125, tocHeight: 49, tocInitialTop: 1412, sidebarInitialTop: 1618, …}
+ixtif-f4-15-ton-li-ion-transpalet:5320 🔍 Desktop mode: true
+ixtif-f4-15-ton-li-ion-transpalet:5321 🔍 Sidebar element: Found
+dev-tools.js?v=1761181796:93 ✅ Development Tools loaded (Admin/Root only)
 main.js?v=1.0.1:3 Blank tema yüklendi!
-ixtif-f4-15-ton-li-ion-transpalet:5116 ⚪ TOC: Relative (initial) {scrollY: 0, initialTop: 1412, stickyPoint: '1287'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '0', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ai-chat.js?v=1761181657:385 🔄 Loading real placeholder from API...
-ai-chat.js?v=1761181657:385 🔄 Loading real placeholder from API...
-ai-chat.js?v=1761181657:409 ✅ Product placeholder loaded {from_cache: false, load_time_ms: 774}
-ai-chat.js?v=1761181657:409 ✅ Product placeholder loaded {from_cache: false, load_time_ms: 1129}
-
+ixtif-f4-15-ton-li-ion-transpalet:5129 ⚪ TOC: Relative (initial) {scrollY: 0, initialTop: 1412, stickyPoint: '1287'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '0', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ai-chat.js?v=1761181796:385 🔄 Loading real placeholder from API...
+ai-chat.js?v=1761181796:385 🔄 Loading real placeholder from API...
+ai-chat.js?v=1761181796:409 ✅ Product placeholder loaded {from_cache: false, load_time_ms: 1908}
+ai-chat.js?v=1761181796:409 ✅ Product placeholder loaded {from_cache: false, load_time_ms: 2640}
   const header = document.getElementById('main-header');
   setInterval(() => {
-      console.log('Header class:', header.className.includes('scrolled') ? 'SCROLLED ✅' : 'NORMAL', 'Height:', header.offsetHeight);
+      console.log('Header:', header.className.includes('scrolled') ? 'SCROLLED' : 'NORMAL', '| Height:', header.offsetHeight + 'px');
   }, 1000);
 
-67
-VM24979:4 Header class: NORMAL Height: 125
-VM24979:4 Header class: NORMAL Height: 125
-VM24979:4 Header class: NORMAL Height: 125
-VM24979:4 Header class: NORMAL Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:1 The resource https://ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '2', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '6', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '14', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '20', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '21', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '22', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-VM24979:4 Header class: NORMAL Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '23', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '24', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '26', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '28', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '30', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '32', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '36', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '44', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '52', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '60', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '66', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '70', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '76', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '79', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '81', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '88', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '95', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '103', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '110', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '111', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '112', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '114', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '120', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '128', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '136', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '144', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '152', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '159', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '163', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '170', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '178', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '186', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '194', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '202', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '210', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '218', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '228', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '234', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '240', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '248', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '256', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '265', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '276', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '289', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '303', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '317', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '327', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '337', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '348', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '360', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '374', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '391', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '418', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '448', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '476', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '493', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '506', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '530', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '557', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '581', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '601', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '617', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '631', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '643', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '655', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '664', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '672', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '680', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '689', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '693', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '697', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '699', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '701', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '703', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '704', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '705', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '706', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '707', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '718', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '739', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '758', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '774', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '805', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '853', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '900', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '930', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '968', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1022', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1087', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1143', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1188', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1228', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1261', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13740', tocBottom: '174', gap: '13566px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1290', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13718', tocBottom: '174', gap: '13544px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1312', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13699', tocBottom: '174', gap: '13525px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1331', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13683', tocBottom: '174', gap: '13509px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1347', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13669', tocBottom: '174', gap: '13495px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1361', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13657', tocBottom: '174', gap: '13483px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1373', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13645', tocBottom: '174', gap: '13471px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1385', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13636', tocBottom: '174', gap: '13462px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1394', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13628', tocBottom: '174', gap: '13454px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1402', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13620', tocBottom: '174', gap: '13446px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1410', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13615', tocBottom: '174', gap: '13441px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1415', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13611', tocBottom: '174', gap: '13437px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1419', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13607', tocBottom: '174', gap: '13433px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1423', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13605', tocBottom: '174', gap: '13431px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1425', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13603', tocBottom: '174', gap: '13429px'}
-ixtif-f4-15-ton-li-ion-transpalet:5154 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1427', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13600', tocBottom: '174', gap: '13426px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1430', top: '190', sidebarBottom: '2201', faqBottom: '14887', remaining: '12686'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13593', tocBottom: '174', gap: '13419px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1437', top: '190', sidebarBottom: '2208', faqBottom: '14887', remaining: '12679'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13578', tocBottom: '174', gap: '13404px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1452', top: '190', sidebarBottom: '2223', faqBottom: '14887', remaining: '12664'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13563', tocBottom: '174', gap: '13389px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1467', top: '190', sidebarBottom: '2238', faqBottom: '14887', remaining: '12649'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13546', tocBottom: '174', gap: '13372px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1484', top: '190', sidebarBottom: '2255', faqBottom: '14887', remaining: '12632'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13521', tocBottom: '174', gap: '13347px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1509', top: '190', sidebarBottom: '2280', faqBottom: '14887', remaining: '12607'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13495', tocBottom: '174', gap: '13321px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1535', top: '190', sidebarBottom: '2306', faqBottom: '14887', remaining: '12581'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13466', tocBottom: '174', gap: '13292px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1564', top: '190', sidebarBottom: '2335', faqBottom: '14887', remaining: '12552'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13426', tocBottom: '174', gap: '13252px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1604', top: '190', sidebarBottom: '2375', faqBottom: '14887', remaining: '12512'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13395', tocBottom: '174', gap: '13221px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1635', top: '190', sidebarBottom: '2406', faqBottom: '14887', remaining: '12481'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13371', tocBottom: '174', gap: '13197px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1659', top: '190', sidebarBottom: '2430', faqBottom: '14887', remaining: '12457'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13355', tocBottom: '174', gap: '13181px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1675', top: '190', sidebarBottom: '2446', faqBottom: '14887', remaining: '12441'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13327', tocBottom: '174', gap: '13153px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1703', top: '190', sidebarBottom: '2474', faqBottom: '14887', remaining: '12413'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13294', tocBottom: '174', gap: '13120px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1736', top: '190', sidebarBottom: '2507', faqBottom: '14887', remaining: '12380'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13261', tocBottom: '174', gap: '13087px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1769', top: '190', sidebarBottom: '2540', faqBottom: '14887', remaining: '12347'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13233', tocBottom: '174', gap: '13059px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1797', top: '190', sidebarBottom: '2568', faqBottom: '14887', remaining: '12319'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13215', tocBottom: '174', gap: '13041px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1815', top: '190', sidebarBottom: '2586', faqBottom: '14887', remaining: '12301'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13213', tocBottom: '174', gap: '13039px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1817', top: '190', sidebarBottom: '2588', faqBottom: '14887', remaining: '12299'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13206', tocBottom: '174', gap: '13032px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1824', top: '190', sidebarBottom: '2595', faqBottom: '14887', remaining: '12292'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13198', tocBottom: '174', gap: '13024px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1832', top: '190', sidebarBottom: '2603', faqBottom: '14887', remaining: '12284'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13190', tocBottom: '174', gap: '13016px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1840', top: '190', sidebarBottom: '2611', faqBottom: '14887', remaining: '12276'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13183', tocBottom: '174', gap: '13009px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1847', top: '190', sidebarBottom: '2618', faqBottom: '14887', remaining: '12269'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13179', tocBottom: '174', gap: '13005px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1851', top: '190', sidebarBottom: '2622', faqBottom: '14887', remaining: '12265'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13173', tocBottom: '174', gap: '12999px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1857', top: '190', sidebarBottom: '2628', faqBottom: '14887', remaining: '12259'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13165', tocBottom: '174', gap: '12991px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1865', top: '190', sidebarBottom: '2636', faqBottom: '14887', remaining: '12251'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13157', tocBottom: '174', gap: '12983px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1873', top: '190', sidebarBottom: '2644', faqBottom: '14887', remaining: '12243'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13149', tocBottom: '174', gap: '12975px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1881', top: '190', sidebarBottom: '2652', faqBottom: '14887', remaining: '12235'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13141', tocBottom: '174', gap: '12967px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1889', top: '190', sidebarBottom: '2660', faqBottom: '14887', remaining: '12227'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13133', tocBottom: '174', gap: '12959px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1897', top: '190', sidebarBottom: '2668', faqBottom: '14887', remaining: '12219'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13125', tocBottom: '174', gap: '12951px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1905', top: '190', sidebarBottom: '2676', faqBottom: '14887', remaining: '12211'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13118', tocBottom: '174', gap: '12944px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1912', top: '190', sidebarBottom: '2683', faqBottom: '14887', remaining: '12204'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13111', tocBottom: '174', gap: '12937px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1919', top: '190', sidebarBottom: '2690', faqBottom: '14887', remaining: '12197'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13103', tocBottom: '174', gap: '12929px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1927', top: '190', sidebarBottom: '2698', faqBottom: '14887', remaining: '12189'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13095', tocBottom: '174', gap: '12921px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1935', top: '190', sidebarBottom: '2706', faqBottom: '14887', remaining: '12181'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13087', tocBottom: '174', gap: '12913px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1943', top: '190', sidebarBottom: '2714', faqBottom: '14887', remaining: '12173'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13079', tocBottom: '174', gap: '12905px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1951', top: '190', sidebarBottom: '2722', faqBottom: '14887', remaining: '12165'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13071', tocBottom: '174', gap: '12897px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1959', top: '190', sidebarBottom: '2730', faqBottom: '14887', remaining: '12157'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13063', tocBottom: '174', gap: '12889px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1967', top: '190', sidebarBottom: '2738', faqBottom: '14887', remaining: '12149'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13055', tocBottom: '174', gap: '12881px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1975', top: '190', sidebarBottom: '2746', faqBottom: '14887', remaining: '12141'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13050', tocBottom: '174', gap: '12876px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1980', top: '190', sidebarBottom: '2751', faqBottom: '14887', remaining: '12136'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13046', tocBottom: '174', gap: '12872px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1984', top: '190', sidebarBottom: '2755', faqBottom: '14887', remaining: '12132'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13043', tocBottom: '174', gap: '12869px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1987', top: '190', sidebarBottom: '2758', faqBottom: '14887', remaining: '12129'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13042', tocBottom: '174', gap: '12868px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1988', top: '190', sidebarBottom: '2759', faqBottom: '14887', remaining: '12128'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13039', tocBottom: '174', gap: '12865px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1991', top: '190', sidebarBottom: '2762', faqBottom: '14887', remaining: '12125'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13031', tocBottom: '174', gap: '12857px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '1999', top: '190', sidebarBottom: '2770', faqBottom: '14887', remaining: '12117'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13019', tocBottom: '174', gap: '12845px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2011', top: '190', sidebarBottom: '2782', faqBottom: '14887', remaining: '12105'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '13002', tocBottom: '174', gap: '12828px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2028', top: '190', sidebarBottom: '2799', faqBottom: '14887', remaining: '12088'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '12982', tocBottom: '174', gap: '12808px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2048', top: '190', sidebarBottom: '2819', faqBottom: '14887', remaining: '12068'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '12966', tocBottom: '174', gap: '12792px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2064', top: '190', sidebarBottom: '2835', faqBottom: '14887', remaining: '12052'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '12955', tocBottom: '174', gap: '12781px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2075', top: '190', sidebarBottom: '2846', faqBottom: '14887', remaining: '12041'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '12948', tocBottom: '174', gap: '12774px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2082', top: '190', sidebarBottom: '2853', faqBottom: '14887', remaining: '12034'}
-ixtif-f4-15-ton-li-ion-transpalet:5097 ✅ TOC: Visible (fixed to header) {trustTop: '12942', tocBottom: '174', gap: '12768px'}
-ixtif-f4-15-ton-li-ion-transpalet:5167 📌 SIDEBAR: Fixed (sticky) {scrollY: '2088', top: '190', sidebarBottom: '2859', faqBottom: '14887', remaining: '12028'}
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
-VM24979:4 Header class: SCROLLED ✅ Height: 125
+  4. Yavaşça aşağı scroll et
+  5. Console'da şunu göreceksin:
+    - NORMAL | Height: 125px (başlangıç)
+    - SCROLLED | Height: 80px ✅ (scroll sonrası - topbar gizlendi!)
 
+VM25245:6 Uncaught SyntaxError: Unexpected identifier 'Yavaşça'
+ixtif-f4-15-ton-li-ion-transpalet:1 The resource https://ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '5', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '13', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '20', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '24', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '25', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '26', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '30', sidebarNaturalTop: '1618', stickyTopOffset: '190'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '32', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '33', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '38', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '46', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '48', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '50', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '55', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '60', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '63', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '64', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '66', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '70', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '71', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '73', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '80', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '88', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '96', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '100', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '102', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '106', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '113', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '117', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '119', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '127', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '133', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '139', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '143', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '146', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '150', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '151', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '156', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '164', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '172', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '180', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '186', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '190', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '197', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '205', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '209', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '210', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '212', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '218', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '226', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '232', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '234', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '237', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '242', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '248', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '249', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '252', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '257', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '258', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '259', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '266', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '274', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '282', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '290', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '292', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '293', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '297', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '305', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '313', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '320', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '328', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '335', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '341', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '345', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '350', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '358', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '366', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '374', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '382', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '390', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '398', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '404', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '406', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '407', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '408', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '411', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '419', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '427', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '435', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '443', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '446', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '447', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '449', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '456', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '464', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '472', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '480', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '488', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '496', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '500', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '504', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '509', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '517', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '525', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '533', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '541', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '549', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '555', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '556', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '561', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '569', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '577', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '584', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '592', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '599', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '606', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '611', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '615', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '623', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '631', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '639', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '647', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '655', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '663', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '670', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '674', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '680', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '688', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '696', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '704', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '712', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '720', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '728', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '735', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '739', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '741', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '742', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '748', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '754', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '755', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '761', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '769', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '777', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '784', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '788', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '790', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '798', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '806', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '811', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '819', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '827', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '835', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '842', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '846', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '847', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '848', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '852', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '859', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '867', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '875', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '883', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '886', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '887', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '890', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '898', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '906', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '914', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '921', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '929', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '937', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '943', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '947', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '953', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '961', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '969', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '977', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '985', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '993', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1001', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1006', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1009', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1014', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1022', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1029', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1037', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1044', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1052', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1059', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1064', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1068', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1074', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1082', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1086', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1088', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1092', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1098', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1103', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1110', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1117', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1125', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1133', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1140', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1147', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1155', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1160', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1165', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1173', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1181', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1189', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1197', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1205', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1213', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1221', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1226', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1232', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1240', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1248', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1256', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1264', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1275', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1286', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1292', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1293', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1289', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1297', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1304', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1312', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1320', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1328', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13649', tocBottom: '129', gap: '13520px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1336', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13640', tocBottom: '129', gap: '13511px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1345', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13630', tocBottom: '129', gap: '13501px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1355', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13626', tocBottom: '129', gap: '13497px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1359', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13621', tocBottom: '129', gap: '13492px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1364', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13613', tocBottom: '129', gap: '13484px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1372', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13605', tocBottom: '129', gap: '13476px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1380', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13597', tocBottom: '129', gap: '13468px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1388', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13589', tocBottom: '129', gap: '13460px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1396', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13581', tocBottom: '129', gap: '13452px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1404', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13573', tocBottom: '129', gap: '13444px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1412', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13567', tocBottom: '129', gap: '13438px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1418', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13563', tocBottom: '129', gap: '13434px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1422', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13558', tocBottom: '129', gap: '13429px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1427', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13552', tocBottom: '129', gap: '13423px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1433', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13546', tocBottom: '129', gap: '13417px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1439', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13538', tocBottom: '129', gap: '13409px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1447', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13530', tocBottom: '129', gap: '13401px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1455', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13524', tocBottom: '129', gap: '13395px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1461', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13523', tocBottom: '129', gap: '13394px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1462', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13522', tocBottom: '129', gap: '13393px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1463', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13520', tocBottom: '129', gap: '13391px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1465', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13517', tocBottom: '129', gap: '13388px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1468', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13513', tocBottom: '129', gap: '13384px'}
+ixtif-f4-15-ton-li-ion-transpalet:5167 ⚪ SIDEBAR: Static (before sticky) {scrollY: '1472', sidebarNaturalTop: '1618', stickyTopOffset: '145'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13512', tocBottom: '129', gap: '13383px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1473', top: '145', sidebarBottom: '2199', faqBottom: '14887', remaining: '12688'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13511', tocBottom: '129', gap: '13382px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1474', top: '145', sidebarBottom: '2200', faqBottom: '14887', remaining: '12687'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13510', tocBottom: '129', gap: '13381px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1475', top: '145', sidebarBottom: '2201', faqBottom: '14887', remaining: '12686'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13509', tocBottom: '129', gap: '13380px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1476', top: '145', sidebarBottom: '2202', faqBottom: '14887', remaining: '12685'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13506', tocBottom: '129', gap: '13377px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1479', top: '145', sidebarBottom: '2205', faqBottom: '14887', remaining: '12682'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13498', tocBottom: '129', gap: '13369px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1487', top: '145', sidebarBottom: '2213', faqBottom: '14887', remaining: '12674'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13491', tocBottom: '129', gap: '13362px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1494', top: '145', sidebarBottom: '2220', faqBottom: '14887', remaining: '12667'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13487', tocBottom: '129', gap: '13358px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1498', top: '145', sidebarBottom: '2224', faqBottom: '14887', remaining: '12663'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13486', tocBottom: '129', gap: '13357px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1499', top: '145', sidebarBottom: '2225', faqBottom: '14887', remaining: '12662'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13484', tocBottom: '129', gap: '13355px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1501', top: '145', sidebarBottom: '2227', faqBottom: '14887', remaining: '12660'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13482', tocBottom: '129', gap: '13353px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1503', top: '145', sidebarBottom: '2229', faqBottom: '14887', remaining: '12658'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13481', tocBottom: '129', gap: '13352px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1504', top: '145', sidebarBottom: '2230', faqBottom: '14887', remaining: '12657'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13477', tocBottom: '129', gap: '13348px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1508', top: '145', sidebarBottom: '2234', faqBottom: '14887', remaining: '12653'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13469', tocBottom: '129', gap: '13340px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1516', top: '145', sidebarBottom: '2242', faqBottom: '14887', remaining: '12645'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13461', tocBottom: '129', gap: '13332px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1524', top: '145', sidebarBottom: '2250', faqBottom: '14887', remaining: '12637'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13453', tocBottom: '129', gap: '13324px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1532', top: '145', sidebarBottom: '2258', faqBottom: '14887', remaining: '12629'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13445', tocBottom: '129', gap: '13316px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1540', top: '145', sidebarBottom: '2266', faqBottom: '14887', remaining: '12621'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13443', tocBottom: '129', gap: '13314px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1542', top: '145', sidebarBottom: '2268', faqBottom: '14887', remaining: '12619'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13442', tocBottom: '129', gap: '13313px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1543', top: '145', sidebarBottom: '2269', faqBottom: '14887', remaining: '12618'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13441', tocBottom: '129', gap: '13312px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1544', top: '145', sidebarBottom: '2270', faqBottom: '14887', remaining: '12617'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13434', tocBottom: '129', gap: '13305px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1551', top: '145', sidebarBottom: '2277', faqBottom: '14887', remaining: '12610'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13426', tocBottom: '129', gap: '13297px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1559', top: '145', sidebarBottom: '2285', faqBottom: '14887', remaining: '12602'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13418', tocBottom: '129', gap: '13289px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1567', top: '145', sidebarBottom: '2293', faqBottom: '14887', remaining: '12594'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13411', tocBottom: '129', gap: '13282px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1574', top: '145', sidebarBottom: '2300', faqBottom: '14887', remaining: '12587'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13407', tocBottom: '129', gap: '13278px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1578', top: '145', sidebarBottom: '2304', faqBottom: '14887', remaining: '12583'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13399', tocBottom: '129', gap: '13270px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1586', top: '145', sidebarBottom: '2312', faqBottom: '14887', remaining: '12575'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13391', tocBottom: '129', gap: '13262px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1594', top: '145', sidebarBottom: '2320', faqBottom: '14887', remaining: '12567'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13386', tocBottom: '129', gap: '13257px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1599', top: '145', sidebarBottom: '2325', faqBottom: '14887', remaining: '12562'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13382', tocBottom: '129', gap: '13253px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1603', top: '145', sidebarBottom: '2329', faqBottom: '14887', remaining: '12558'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13374', tocBottom: '129', gap: '13245px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1611', top: '145', sidebarBottom: '2337', faqBottom: '14887', remaining: '12550'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13366', tocBottom: '129', gap: '13237px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1619', top: '145', sidebarBottom: '2345', faqBottom: '14887', remaining: '12542'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13358', tocBottom: '129', gap: '13229px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1627', top: '145', sidebarBottom: '2353', faqBottom: '14887', remaining: '12534'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13350', tocBottom: '129', gap: '13221px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1635', top: '145', sidebarBottom: '2361', faqBottom: '14887', remaining: '12526'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13342', tocBottom: '129', gap: '13213px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1643', top: '145', sidebarBottom: '2369', faqBottom: '14887', remaining: '12518'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13334', tocBottom: '129', gap: '13205px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1651', top: '145', sidebarBottom: '2377', faqBottom: '14887', remaining: '12510'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13327', tocBottom: '129', gap: '13198px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1658', top: '145', sidebarBottom: '2384', faqBottom: '14887', remaining: '12503'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13322', tocBottom: '129', gap: '13193px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1663', top: '145', sidebarBottom: '2389', faqBottom: '14887', remaining: '12498'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13315', tocBottom: '129', gap: '13186px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1670', top: '145', sidebarBottom: '2396', faqBottom: '14887', remaining: '12491'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13307', tocBottom: '129', gap: '13178px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1678', top: '145', sidebarBottom: '2404', faqBottom: '14887', remaining: '12483'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13299', tocBottom: '129', gap: '13170px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1686', top: '145', sidebarBottom: '2412', faqBottom: '14887', remaining: '12475'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13293', tocBottom: '129', gap: '13164px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1692', top: '145', sidebarBottom: '2418', faqBottom: '14887', remaining: '12469'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13284', tocBottom: '129', gap: '13155px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1701', top: '145', sidebarBottom: '2427', faqBottom: '14887', remaining: '12460'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13273', tocBottom: '129', gap: '13144px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1712', top: '145', sidebarBottom: '2438', faqBottom: '14887', remaining: '12449'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13261', tocBottom: '129', gap: '13132px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1724', top: '145', sidebarBottom: '2450', faqBottom: '14887', remaining: '12437'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13250', tocBottom: '129', gap: '13121px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1735', top: '145', sidebarBottom: '2461', faqBottom: '14887', remaining: '12426'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13241', tocBottom: '129', gap: '13112px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1744', top: '145', sidebarBottom: '2470', faqBottom: '14887', remaining: '12417'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13231', tocBottom: '129', gap: '13102px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1754', top: '145', sidebarBottom: '2480', faqBottom: '14887', remaining: '12407'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13223', tocBottom: '129', gap: '13094px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1762', top: '145', sidebarBottom: '2488', faqBottom: '14887', remaining: '12399'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13215', tocBottom: '129', gap: '13086px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1770', top: '145', sidebarBottom: '2496', faqBottom: '14887', remaining: '12391'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13207', tocBottom: '129', gap: '13078px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1778', top: '145', sidebarBottom: '2504', faqBottom: '14887', remaining: '12383'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13199', tocBottom: '129', gap: '13070px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1786', top: '145', sidebarBottom: '2512', faqBottom: '14887', remaining: '12375'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13190', tocBottom: '129', gap: '13061px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1795', top: '145', sidebarBottom: '2521', faqBottom: '14887', remaining: '12366'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13177', tocBottom: '129', gap: '13048px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1808', top: '145', sidebarBottom: '2534', faqBottom: '14887', remaining: '12353'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13167', tocBottom: '129', gap: '13038px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1818', top: '145', sidebarBottom: '2544', faqBottom: '14887', remaining: '12343'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13159', tocBottom: '129', gap: '13030px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1826', top: '145', sidebarBottom: '2552', faqBottom: '14887', remaining: '12335'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13150', tocBottom: '129', gap: '13021px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1835', top: '145', sidebarBottom: '2561', faqBottom: '14887', remaining: '12326'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13142', tocBottom: '129', gap: '13013px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1843', top: '145', sidebarBottom: '2569', faqBottom: '14887', remaining: '12318'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13134', tocBottom: '129', gap: '13005px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1851', top: '145', sidebarBottom: '2577', faqBottom: '14887', remaining: '12310'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13126', tocBottom: '129', gap: '12997px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1859', top: '145', sidebarBottom: '2585', faqBottom: '14887', remaining: '12302'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13118', tocBottom: '129', gap: '12989px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1867', top: '145', sidebarBottom: '2593', faqBottom: '14887', remaining: '12294'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13110', tocBottom: '129', gap: '12981px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1875', top: '145', sidebarBottom: '2601', faqBottom: '14887', remaining: '12286'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13102', tocBottom: '129', gap: '12973px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1883', top: '145', sidebarBottom: '2609', faqBottom: '14887', remaining: '12278'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13094', tocBottom: '129', gap: '12965px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1891', top: '145', sidebarBottom: '2617', faqBottom: '14887', remaining: '12270'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13087', tocBottom: '129', gap: '12958px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1898', top: '145', sidebarBottom: '2624', faqBottom: '14887', remaining: '12263'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13079', tocBottom: '129', gap: '12950px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1906', top: '145', sidebarBottom: '2632', faqBottom: '14887', remaining: '12255'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13067', tocBottom: '129', gap: '12938px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1918', top: '145', sidebarBottom: '2644', faqBottom: '14887', remaining: '12243'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13058', tocBottom: '129', gap: '12929px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1927', top: '145', sidebarBottom: '2653', faqBottom: '14887', remaining: '12234'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13050', tocBottom: '129', gap: '12921px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1935', top: '145', sidebarBottom: '2661', faqBottom: '14887', remaining: '12226'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13041', tocBottom: '129', gap: '12912px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1944', top: '145', sidebarBottom: '2670', faqBottom: '14887', remaining: '12217'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13030', tocBottom: '129', gap: '12901px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1955', top: '145', sidebarBottom: '2681', faqBottom: '14887', remaining: '12206'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13019', tocBottom: '129', gap: '12890px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1966', top: '145', sidebarBottom: '2692', faqBottom: '14887', remaining: '12195'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13012', tocBottom: '129', gap: '12883px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1973', top: '145', sidebarBottom: '2699', faqBottom: '14887', remaining: '12188'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13007', tocBottom: '129', gap: '12878px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1978', top: '145', sidebarBottom: '2704', faqBottom: '14887', remaining: '12183'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '13000', tocBottom: '129', gap: '12871px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1985', top: '145', sidebarBottom: '2711', faqBottom: '14887', remaining: '12176'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12989', tocBottom: '129', gap: '12860px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '1996', top: '145', sidebarBottom: '2722', faqBottom: '14887', remaining: '12165'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12980', tocBottom: '129', gap: '12851px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2005', top: '145', sidebarBottom: '2731', faqBottom: '14887', remaining: '12156'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12974', tocBottom: '129', gap: '12845px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2011', top: '145', sidebarBottom: '2737', faqBottom: '14887', remaining: '12150'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12966', tocBottom: '129', gap: '12837px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2019', top: '145', sidebarBottom: '2745', faqBottom: '14887', remaining: '12142'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12958', tocBottom: '129', gap: '12829px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2027', top: '145', sidebarBottom: '2753', faqBottom: '14887', remaining: '12134'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12948', tocBottom: '129', gap: '12819px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2037', top: '145', sidebarBottom: '2763', faqBottom: '14887', remaining: '12124'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12937', tocBottom: '129', gap: '12808px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2048', top: '145', sidebarBottom: '2774', faqBottom: '14887', remaining: '12113'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12929', tocBottom: '129', gap: '12800px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2056', top: '145', sidebarBottom: '2782', faqBottom: '14887', remaining: '12105'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12921', tocBottom: '129', gap: '12792px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2064', top: '145', sidebarBottom: '2790', faqBottom: '14887', remaining: '12097'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12913', tocBottom: '129', gap: '12784px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2072', top: '145', sidebarBottom: '2798', faqBottom: '14887', remaining: '12089'}
+ixtif-f4-15-ton-li-ion-transpalet:5110 ✅ TOC: Visible (fixed to header) {trustTop: '12909', tocBottom: '129', gap: '12780px'}
+ixtif-f4-15-ton-li-ion-transpalet:5180 📌 SIDEBAR: Fixed (sticky) {scrollY: '2076', top: '145', sidebarBottom: '2802', faqBottom: '14887', remaining: '12085'}

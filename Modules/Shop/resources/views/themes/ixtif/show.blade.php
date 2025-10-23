@@ -1331,31 +1331,29 @@
 @push('scripts')
 <script>
 /**
- * 🎯 MODERN STICKY SYSTEM V7 - Zero Dependencies
- * TOC Bar: Scroll-driven positioning (header altına yapışır, trust-signals'da kaybolur)
- * Sidebar: Transform-based scrolling (header+toc+16px gap, FAQ bottom'da durur)
- * Performance: RequestAnimationFrame + Throttled scroll
+ * 🎯 GSAP PROGRESSIVE STICKY SYSTEM V8
+ * TOC Bar: Smooth header sticking → Disappears at trust-signals
+ * Sidebar: Smooth header+TOC+16px tracking → Stops at FAQ bottom
+ * Performance: GSAP ScrollTrigger + Smooth easing
  */
 
 (function() {
     'use strict';
 
-    // ============================================
-    // 📊 STATE & CONFIG
-    // ============================================
-    const state = {
-        isDesktop: window.innerWidth >= 1024,
-        headerHeight: 0,
-        tocHeight: 0,
-        tocInitialTop: 0,
-        sidebarInitialTop: 0,
-        trustSignalsTop: 0,
-        faqBottom: 0,
-        ticking: false
-    };
+    // Use globally available GSAP (from app.js)
+    const gsap = window.gsap;
+    const ScrollTrigger = window.ScrollTrigger;
 
-    const config = {
-        SIDEBAR_GAP: 16, // Sidebar top gap (px)
+    if (!gsap || !ScrollTrigger) {
+        console.error('❌ GSAP or ScrollTrigger not found! Make sure app.js is loaded first.');
+        return;
+    }
+
+    // ============================================
+    // 📊 CONFIG
+    // ============================================
+    const CONFIG = {
+        SIDEBAR_GAP: 16,
         DESKTOP_BREAKPOINT: 1024
     };
 
@@ -1373,121 +1371,106 @@
     };
 
     // ============================================
-    // 📐 MEASUREMENT FUNCTIONS
+    // 🎨 TOC BAR - GSAP SCROLL TRIGGER
     // ============================================
-    function measureElements() {
-        if (!elements.header || !elements.tocBar) return;
-
-        state.headerHeight = elements.header.offsetHeight;
-        state.tocHeight = elements.tocBar.offsetHeight;
-        state.tocInitialTop = elements.tocBar.offsetTop;
-
-        if (elements.sidebar) {
-            const sidebarRect = elements.sidebar.getBoundingClientRect();
-            state.sidebarInitialTop = window.pageYOffset + sidebarRect.top;
-        }
-
-        if (elements.trustSignals) {
-            const trustRect = elements.trustSignals.getBoundingClientRect();
-            state.trustSignalsTop = window.pageYOffset + trustRect.top;
-        }
-
-        if (elements.faqSection) {
-            const faqRect = elements.faqSection.getBoundingClientRect();
-            state.faqBottom = window.pageYOffset + faqRect.top + faqRect.height;
-        }
-    }
-
-    // ============================================
-    // 🎨 TOC BAR - SCROLL-DRIVEN POSITIONING
-    // ============================================
-    function updateTOC(scrollY) {
+    function initTOC() {
         if (!elements.tocBar || !elements.header) return;
 
         const tocBar = elements.tocBar;
-        const headerHeight = elements.header.offsetHeight;
+        const header = elements.header;
 
-        // TOC starts sticking when it reaches header bottom
-        const tocStickyPoint = state.tocInitialTop - headerHeight;
-        const scrolledPastInitial = scrollY >= tocStickyPoint;
+        // Get initial TOC position
+        const tocInitialTop = tocBar.offsetTop;
 
-        if (scrolledPastInitial) {
-            // Fixed position - header altına yapış (gap: 0)
-            tocBar.style.position = 'fixed';
-            tocBar.style.top = headerHeight + 'px';
-            tocBar.style.left = '0';
-            tocBar.style.right = '0';
-            tocBar.style.zIndex = '40';
+        ScrollTrigger.create({
+            trigger: tocBar,
+            start: () => `top ${header.offsetHeight}px`,
+            end: () => elements.trustSignals ? `${elements.trustSignals.offsetTop - header.offsetHeight - tocBar.offsetHeight}px top` : 'bottom top',
+            pin: true,
+            pinSpacing: false,
+            onUpdate: (self) => {
+                const headerHeight = header.offsetHeight;
 
-            // Trust Signals collision check
-            if (elements.trustSignals) {
-                const trustRect = elements.trustSignals.getBoundingClientRect();
-                const trustTop = trustRect.top;
-                const tocBottom = headerHeight + state.tocHeight;
+                // Update TOC position smoothly
+                gsap.set(tocBar, {
+                    position: 'fixed',
+                    top: headerHeight,
+                    left: 0,
+                    right: 0,
+                    zIndex: 40
+                });
 
-                // TOC should hide ONLY when trust signals OVERLAPS with TOC bottom
-                // Add negative buffer so it hides slightly before collision
-                const shouldHide = trustTop <= (tocBottom - 20);
+                // Trust signals collision detection
+                if (elements.trustSignals) {
+                    const trustRect = elements.trustSignals.getBoundingClientRect();
+                    const tocBottom = headerHeight + tocBar.offsetHeight;
+                    const shouldHide = trustRect.top <= (tocBottom - 20);
 
-                if (shouldHide) {
-                    tocBar.style.transform = 'translateY(-100%)';
-                    tocBar.style.pointerEvents = 'none';
-                } else {
-                    tocBar.style.transform = 'translateY(0)';
-                    tocBar.style.pointerEvents = 'auto';
+                    gsap.to(tocBar, {
+                        y: shouldHide ? '-100%' : '0%',
+                        opacity: shouldHide ? 0 : 1,
+                        pointerEvents: shouldHide ? 'none' : 'auto',
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
                 }
-            } else {
-                tocBar.style.transform = 'translateY(0)';
-                tocBar.style.pointerEvents = 'auto';
+            },
+            onLeaveBack: () => {
+                // Return to initial state
+                gsap.set(tocBar, {
+                    clearProps: 'all'
+                });
             }
-        } else {
-            // Relative position - initial state
-            tocBar.style.position = 'relative';
-            tocBar.style.top = 'auto';
-            tocBar.style.transform = 'translateY(0)';
-            tocBar.style.pointerEvents = 'auto';
-        }
+        });
+
+        // Refresh on resize (responsive header height changes)
+        ScrollTrigger.addEventListener('refresh', () => {
+            ScrollTrigger.refresh();
+        });
     }
 
     // ============================================
-    // 📌 SIDEBAR - TRANSFORM-BASED SCROLLING
+    // 📌 SIDEBAR - GSAP DYNAMIC STICKY
     // ============================================
-    function updateSidebar(scrollY) {
-        if (!elements.sidebar || !state.isDesktop) return;
+    function initSidebar() {
+        if (!elements.sidebar || !elements.faqSection) return;
 
-        const sidebar = elements.sidebar;
-        const sidebarHeight = sidebar.offsetHeight;
-        const sidebarParent = sidebar.parentElement;
+        // Desktop only
+        const mm = gsap.matchMedia();
 
-        // Calculate sticky range
-        const viewportTop = scrollY;
-        const stickyTopOffset = state.headerHeight + state.tocHeight + config.SIDEBAR_GAP;
-        const sidebarNaturalTop = state.sidebarInitialTop;
+        mm.add(`(min-width: ${CONFIG.DESKTOP_BREAKPOINT}px)`, () => {
+            const sidebar = elements.sidebar;
+            const sidebarParent = sidebar.parentElement;
 
-        // Start sticking when: viewport top + sticky offset >= sidebar natural top
-        const shouldStick = viewportTop + stickyTopOffset >= sidebarNaturalTop;
+            ScrollTrigger.create({
+                trigger: sidebar,
+                start: () => {
+                    const headerHeight = elements.header ? elements.header.offsetHeight : 0;
+                    const tocHeight = elements.tocBar ? elements.tocBar.offsetHeight : 0;
+                    return `top ${headerHeight + tocHeight + CONFIG.SIDEBAR_GAP}px`;
+                },
+                end: () => {
+                    const faqRect = elements.faqSection.getBoundingClientRect();
+                    const faqBottom = window.pageYOffset + faqRect.top + faqRect.height;
+                    const sidebarHeight = sidebar.offsetHeight;
+                    return `${faqBottom - sidebarHeight}px bottom`;
+                },
+                pin: true,
+                pinSpacing: false,
+                onUpdate: (self) => {
+                    const headerHeight = elements.header ? elements.header.offsetHeight : 0;
+                    const tocHeight = elements.tocBar ? elements.tocBar.offsetHeight : 0;
+                    const stickyTop = headerHeight + tocHeight + CONFIG.SIDEBAR_GAP;
 
-        // Stop sticking when: sidebar bottom >= FAQ bottom
-        const sidebarBottom = viewportTop + stickyTopOffset + sidebarHeight;
-        const shouldStop = sidebarBottom >= state.faqBottom;
-
-        if (!shouldStick) {
-            // Before sticky - natural flow
-            sidebar.style.position = '';
-            sidebar.style.top = '';
-            sidebar.style.width = '';
-        } else if (shouldStick && !shouldStop) {
-            // Sticky range - fixed position
-            sidebar.style.position = 'fixed';
-            sidebar.style.top = stickyTopOffset + 'px';
-            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
-        } else {
-            // After sticky - stop at FAQ bottom
-            // Use transform instead of relative position to avoid layout shift
-            sidebar.style.position = 'fixed';
-            sidebar.style.top = (state.faqBottom - sidebarHeight - scrollY) + 'px';
-            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
-        }
+                    // Smooth sidebar positioning
+                    gsap.set(sidebar, {
+                        position: 'fixed',
+                        top: stickyTop,
+                        width: sidebarParent ? sidebarParent.offsetWidth : 'auto'
+                    });
+                }
+            });
+        });
     }
 
     // ============================================
@@ -1506,15 +1489,23 @@
                 if (entry.isIntersecting) {
                     const sectionId = entry.target.getAttribute('id');
 
-                    // Update TOC links
+                    // Update TOC links with smooth transition
                     elements.tocLinks.forEach(link => {
                         const target = link.getAttribute('data-target');
                         if (target === sectionId) {
-                            link.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
-                            link.classList.add('bg-blue-600', 'text-white');
+                            gsap.to(link, {
+                                backgroundColor: '#2563eb',
+                                color: '#ffffff',
+                                duration: 0.3,
+                                ease: 'power2.out'
+                            });
                         } else {
-                            link.classList.remove('bg-blue-600', 'text-white');
-                            link.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                            gsap.to(link, {
+                                backgroundColor: '#f3f4f6',
+                                color: '#374151',
+                                duration: 0.3,
+                                ease: 'power2.out'
+                            });
                         }
                     });
                 }
@@ -1525,7 +1516,7 @@
     }
 
     // ============================================
-    // 🎯 SMOOTH SCROLL FOR TOC LINKS
+    // 🎯 SMOOTH SCROLL FOR TOC LINKS (GSAP)
     // ============================================
     function initSmoothScroll() {
         elements.tocLinks.forEach(link => {
@@ -1535,13 +1526,16 @@
                 const targetElement = document.querySelector(target);
 
                 if (targetElement) {
-                    const offset = state.headerHeight + state.tocHeight + 20;
+                    const headerHeight = elements.header ? elements.header.offsetHeight : 0;
+                    const tocHeight = elements.tocBar ? elements.tocBar.offsetHeight : 0;
+                    const offset = headerHeight + tocHeight + 20;
                     const elementPosition = targetElement.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.pageYOffset - offset;
 
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
+                    gsap.to(window, {
+                        scrollTo: offsetPosition,
+                        duration: 1,
+                        ease: 'power2.inOut'
                     });
                 }
             });
@@ -1549,58 +1543,25 @@
     }
 
     // ============================================
-    // 🔄 SCROLL HANDLER (RAF-based throttle)
-    // ============================================
-    function onScroll() {
-        if (!state.ticking) {
-            window.requestAnimationFrame(() => {
-                const scrollY = window.pageYOffset;
-
-                // Update header height (changes on scroll - topbar collapses)
-                if (elements.header) {
-                    state.headerHeight = elements.header.offsetHeight;
-                }
-
-                updateTOC(scrollY);
-                updateSidebar(scrollY);
-
-                state.ticking = false;
-            });
-
-            state.ticking = true;
-        }
-    }
-
-    // ============================================
-    // 📱 RESIZE HANDLER
-    // ============================================
-    let resizeTimeout;
-    function onResize() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            state.isDesktop = window.innerWidth >= config.DESKTOP_BREAKPOINT;
-            measureElements();
-            onScroll(); // Re-calculate positions
-        }, 150);
-    }
-
-    // ============================================
     // 🚀 INITIALIZATION
     // ============================================
     function init() {
-        // Initial measurements
-        measureElements();
-
-        // Init features
+        // Init GSAP ScrollTrigger features
+        initTOC();
+        initSidebar();
         initSectionTracking();
         initSmoothScroll();
 
-        // Event listeners
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onResize);
+        // Refresh on window resize (responsive)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 150);
+        });
 
-        // Initial position update
-        onScroll();
+        console.log('✅ GSAP Progressive Sticky System initialized');
     }
 
     // Start when DOM ready

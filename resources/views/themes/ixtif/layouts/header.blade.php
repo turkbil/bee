@@ -45,7 +45,7 @@
     @endif
 
     {{-- Tailwind CSS - Compiled & Minified --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}" media="all">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
@@ -95,9 +95,6 @@
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')
-
-    {{-- Core Frontend Assets (Alpine.js, Axios, GSAP) --}}
-    <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
 </head>
 
 <body class="font-sans antialiased min-h-screen transition-all duration-500 flex flex-col"

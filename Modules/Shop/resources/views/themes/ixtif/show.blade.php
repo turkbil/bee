@@ -1329,6 +1329,288 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/shop-product-sticky.js') }}?v={{ filemtime(public_path('js/shop-product-sticky.js')) }}"></script>
+<script>
+/**
+ * 🎯 MODERN STICKY SYSTEM V7 - Zero Dependencies
+ * TOC Bar: Scroll-driven positioning (header altına yapışır, trust-signals'da kaybolur)
+ * Sidebar: Transform-based scrolling (header+toc+16px gap, FAQ bottom'da durur)
+ * Performance: RequestAnimationFrame + Throttled scroll
+ */
+
+(function() {
+    'use strict';
+
+    // ============================================
+    // 📊 STATE & CONFIG
+    // ============================================
+    const state = {
+        isDesktop: window.innerWidth >= 1024,
+        headerHeight: 0,
+        tocHeight: 0,
+        tocInitialTop: 0,
+        sidebarInitialTop: 0,
+        trustSignalsTop: 0,
+        faqBottom: 0,
+        ticking: false
+    };
+
+    const config = {
+        SIDEBAR_GAP: 16, // Sidebar top gap (px)
+        DESKTOP_BREAKPOINT: 1024
+    };
+
+    // ============================================
+    // 🎯 DOM ELEMENTS
+    // ============================================
+    const elements = {
+        header: document.getElementById('main-header'),
+        tocBar: document.getElementById('toc-bar'),
+        sidebar: document.getElementById('sticky-sidebar'),
+        trustSignals: document.getElementById('trust-signals'),
+        faqSection: document.getElementById('faq'),
+        tocLinks: document.querySelectorAll('.toc-link'),
+        sections: document.querySelectorAll('[id^="description"], [id^="features"], [id^="competitive"], [id^="gallery"], [id^="variants"], [id^="technical"], [id^="accessories"], [id^="usecases"], [id^="industries"], [id^="certifications"], [id^="warranty"], [id^="faq"], [id^="contact"]')
+    };
+
+    // ============================================
+    // 📐 MEASUREMENT FUNCTIONS
+    // ============================================
+    function measureElements() {
+        if (!elements.header || !elements.tocBar) return;
+
+        state.headerHeight = elements.header.offsetHeight;
+        state.tocHeight = elements.tocBar.offsetHeight;
+        state.tocInitialTop = elements.tocBar.offsetTop;
+
+        if (elements.sidebar) {
+            const sidebarRect = elements.sidebar.getBoundingClientRect();
+            state.sidebarInitialTop = window.pageYOffset + sidebarRect.top;
+        }
+
+        if (elements.trustSignals) {
+            const trustRect = elements.trustSignals.getBoundingClientRect();
+            state.trustSignalsTop = window.pageYOffset + trustRect.top;
+        }
+
+        if (elements.faqSection) {
+            const faqRect = elements.faqSection.getBoundingClientRect();
+            state.faqBottom = window.pageYOffset + faqRect.top + faqRect.height;
+        }
+    }
+
+    // ============================================
+    // 🎨 TOC BAR - SCROLL-DRIVEN POSITIONING
+    // ============================================
+    function updateTOC(scrollY) {
+        if (!elements.tocBar || !elements.header) return;
+
+        const tocBar = elements.tocBar;
+        const headerHeight = elements.header.offsetHeight;
+
+        // TOC starts sticking when it reaches header bottom
+        const tocStickyPoint = state.tocInitialTop - headerHeight;
+        const scrolledPastInitial = scrollY >= tocStickyPoint;
+
+        if (scrolledPastInitial) {
+            // Fixed position - header altına yapış (gap: 0)
+            tocBar.style.position = 'fixed';
+            tocBar.style.top = headerHeight + 'px';
+            tocBar.style.left = '0';
+            tocBar.style.right = '0';
+            tocBar.style.zIndex = '40';
+
+            // Trust Signals collision check
+            if (elements.trustSignals) {
+                const trustRect = elements.trustSignals.getBoundingClientRect();
+                const trustTop = trustRect.top;
+                const tocBottom = headerHeight + state.tocHeight;
+
+                // TOC should hide ONLY when trust signals OVERLAPS with TOC bottom
+                // Add negative buffer so it hides slightly before collision
+                const shouldHide = trustTop <= (tocBottom - 20);
+
+                if (shouldHide) {
+                    tocBar.style.transform = 'translateY(-100%)';
+                    tocBar.style.pointerEvents = 'none';
+                } else {
+                    tocBar.style.transform = 'translateY(0)';
+                    tocBar.style.pointerEvents = 'auto';
+                }
+            } else {
+                tocBar.style.transform = 'translateY(0)';
+                tocBar.style.pointerEvents = 'auto';
+            }
+        } else {
+            // Relative position - initial state
+            tocBar.style.position = 'relative';
+            tocBar.style.top = 'auto';
+            tocBar.style.transform = 'translateY(0)';
+            tocBar.style.pointerEvents = 'auto';
+        }
+    }
+
+    // ============================================
+    // 📌 SIDEBAR - TRANSFORM-BASED SCROLLING
+    // ============================================
+    function updateSidebar(scrollY) {
+        if (!elements.sidebar || !state.isDesktop) return;
+
+        const sidebar = elements.sidebar;
+        const sidebarHeight = sidebar.offsetHeight;
+        const sidebarParent = sidebar.parentElement;
+
+        // Calculate sticky range
+        const viewportTop = scrollY;
+        const stickyTopOffset = state.headerHeight + state.tocHeight + config.SIDEBAR_GAP;
+        const sidebarNaturalTop = state.sidebarInitialTop;
+
+        // Start sticking when: viewport top + sticky offset >= sidebar natural top
+        const shouldStick = viewportTop + stickyTopOffset >= sidebarNaturalTop;
+
+        // Stop sticking when: sidebar bottom >= FAQ bottom
+        const sidebarBottom = viewportTop + stickyTopOffset + sidebarHeight;
+        const shouldStop = sidebarBottom >= state.faqBottom;
+
+        if (!shouldStick) {
+            // Before sticky - natural flow
+            sidebar.style.position = '';
+            sidebar.style.top = '';
+            sidebar.style.width = '';
+        } else if (shouldStick && !shouldStop) {
+            // Sticky range - fixed position
+            sidebar.style.position = 'fixed';
+            sidebar.style.top = stickyTopOffset + 'px';
+            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
+        } else {
+            // After sticky - stop at FAQ bottom
+            // Use transform instead of relative position to avoid layout shift
+            sidebar.style.position = 'fixed';
+            sidebar.style.top = (state.faqBottom - sidebarHeight - scrollY) + 'px';
+            sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
+        }
+    }
+
+    // ============================================
+    // 🎯 ACTIVE SECTION TRACKING (IntersectionObserver)
+    // ============================================
+    function initSectionTracking() {
+        if (!elements.tocLinks.length || !elements.sections.length) return;
+
+        const observerOptions = {
+            rootMargin: '-20% 0px -75% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.getAttribute('id');
+
+                    // Update TOC links
+                    elements.tocLinks.forEach(link => {
+                        const target = link.getAttribute('data-target');
+                        if (target === sectionId) {
+                            link.classList.remove('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                            link.classList.add('bg-blue-600', 'text-white');
+                        } else {
+                            link.classList.remove('bg-blue-600', 'text-white');
+                            link.classList.add('bg-gray-100', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-200');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        elements.sections.forEach(section => observer.observe(section));
+    }
+
+    // ============================================
+    // 🎯 SMOOTH SCROLL FOR TOC LINKS
+    // ============================================
+    function initSmoothScroll() {
+        elements.tocLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = this.getAttribute('href');
+                const targetElement = document.querySelector(target);
+
+                if (targetElement) {
+                    const offset = state.headerHeight + state.tocHeight + 20;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }
+
+    // ============================================
+    // 🔄 SCROLL HANDLER (RAF-based throttle)
+    // ============================================
+    function onScroll() {
+        if (!state.ticking) {
+            window.requestAnimationFrame(() => {
+                const scrollY = window.pageYOffset;
+
+                // Update header height (changes on scroll - topbar collapses)
+                if (elements.header) {
+                    state.headerHeight = elements.header.offsetHeight;
+                }
+
+                updateTOC(scrollY);
+                updateSidebar(scrollY);
+
+                state.ticking = false;
+            });
+
+            state.ticking = true;
+        }
+    }
+
+    // ============================================
+    // 📱 RESIZE HANDLER
+    // ============================================
+    let resizeTimeout;
+    function onResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            state.isDesktop = window.innerWidth >= config.DESKTOP_BREAKPOINT;
+            measureElements();
+            onScroll(); // Re-calculate positions
+        }, 150);
+    }
+
+    // ============================================
+    // 🚀 INITIALIZATION
+    // ============================================
+    function init() {
+        // Initial measurements
+        measureElements();
+
+        // Init features
+        initSectionTracking();
+        initSmoothScroll();
+
+        // Event listeners
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onResize);
+
+        // Initial position update
+        onScroll();
+    }
+
+    // Start when DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
+</script>
 @endpush
 

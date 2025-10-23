@@ -403,7 +403,7 @@
 <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
 {{-- iXtif Theme Scripts (ÖNCE yükle - initGLightbox fonksiyonu için) --}}
-<script src="{{ asset('js/ixtif-theme.js') }}?v={{ now()->timestamp }}"></script>
+<script src="{{ asset('js/ixtif-theme.js') }}?v={{ filemtime(public_path('js/ixtif-theme.js')) }}"></script>
 
 {{-- GLightbox (ixtif-theme.js yüklendikten SONRA) --}}
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">

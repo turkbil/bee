@@ -75,14 +75,14 @@
                     </form>
 
                     {{-- Quick Actions --}}
-                    <div class="mt-4 flex items-center justify-center gap-6 text-sm">
+                    <div class="mt-6 flex items-center justify-center gap-4">
                         <button @click="$refs.categoryModal.classList.remove('hidden')"
-                                class="flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors font-semibold">
-                            <i class="fa-light fa-filter"></i>
-                            Kategorilere Göz At
+                                class="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-bold text-base hover:shadow-2xl hover:scale-105 transition-all">
+                            <i class="fa-light fa-grid-2 text-xl"></i>
+                            <span>Tüm Kategoriler</span>
+                            <i class="fa-light fa-chevron-right text-sm ml-2"></i>
                         </button>
-                        <div class="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
-                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-700 dark:text-gray-300 font-semibold">
                             <i class="fa-light fa-sparkles text-purple-600 dark:text-purple-400"></i>
                             <span>Geniş Ürün Yelpazesi</span>
                         </div>
@@ -91,31 +91,56 @@
             </div>
         </section>
 
-        {{-- Categories Filter (Root Categories) --}}
+        {{-- Categories Filter --}}
         @if($categories->count() > 0)
         <section class="py-8 border-b border-gray-200 dark:border-white/10">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                    {{-- All Products --}}
-                    <a href="{{ route('shop.index') }}"
+                    {{-- All Categories (Modal Trigger) --}}
+                    <button @click="$refs.categoryModal.classList.remove('hidden')"
                        class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all {{ !$selectedCategory ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                         <i class="fa-light fa-grid-2 mr-2"></i>
-                        {{ __('shop::front.all_products') }}
-                    </a>
+                        Tüm Kategoriler
+                    </button>
 
-                    {{-- Root Categories --}}
+                    {{-- Root Categories + Subcategories --}}
                     @foreach($categories as $category)
                         @php
                             $categorySlug = $category->getTranslated('slug');
                             $isActive = $selectedCategory && $selectedCategory->category_id === $category->category_id;
+                            $subcategories = \Modules\Shop\App\Models\ShopCategory::where('parent_id', $category->category_id)
+                                ->active()
+                                ->orderBy('sort_order')
+                                ->get();
                         @endphp
+
+                        {{-- Root Category --}}
                         <a href="{{ route('shop.index', ['category' => $categorySlug]) }}"
-                           class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                           class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                             @if($category->icon_class)
                                 <i class="{{ $category->icon_class }} mr-2"></i>
                             @endif
                             {{ $category->getTranslated('title') }}
                         </a>
+
+                        {{-- Subcategories (inline after parent) --}}
+                        @if($subcategories->count() > 0)
+                            @foreach($subcategories as $subcategory)
+                                @php
+                                    $subcategorySlug = $subcategory->getTranslated('slug');
+                                    $isSubActive = $selectedCategory && $selectedCategory->category_id === $subcategory->category_id;
+                                @endphp
+                                <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
+                                   class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all {{ $isSubActive ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-600' : 'bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400' }}">
+                                    @if($subcategory->icon_class)
+                                        <i class="{{ $subcategory->icon_class }} mr-1 text-xs"></i>
+                                    @else
+                                        <i class="fa-light fa-angle-right mr-1 text-xs opacity-50"></i>
+                                    @endif
+                                    {{ $subcategory->getTranslated('title') }}
+                                </a>
+                            @endforeach
+                        @endif
                     @endforeach
                 </div>
             </div>

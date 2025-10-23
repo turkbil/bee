@@ -363,8 +363,6 @@ class ShopController extends Controller
 
     public function category(string $slug)
     {
-        \Log::info('🔍 ShopController::category() CALLED', ['slug' => $slug, 'url' => request()->url()]);
-
         $locale = app()->getLocale();
 
         $category = ShopCategory::query()

@@ -31,7 +31,7 @@
                         @if($category->parent)
                             <li><i class="fa-light fa-chevron-right text-xs"></i></li>
                             <li>
-                                <a href="{{ url('/shop/category/' . $category->parent->getTranslated('slug')) }}"
+                                <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}"
                                    class="hover:text-blue-600 dark:hover:text-blue-400 transition">
                                     {{ $category->parent->getTranslated('title') }}
                                 </a>
@@ -104,7 +104,7 @@
                             $subcategorySlug = $subcategory->getTranslated('slug');
                             $subcategoryProductCount = $subcategory->products()->active()->published()->count();
                         @endphp
-                        <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
+                        <a href="{{ url('/shop/kategori/' . $subcategorySlug) }}"
                            class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
                             <div class="flex flex-col items-center text-center">
                                 @if($subcategory->icon_class)
@@ -154,14 +154,23 @@
                         @endforeach
                     </div>
 
-                    {{-- Pagination --}}
-                    @if($products->hasPages())
-                        <div class="mt-12">
-                            <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 p-6">
-                                {{ $products->links() }}
-                            </div>
+                    {{-- Infinite Scroll Loading Indicator --}}
+                    <div x-show="loading" class="flex justify-center items-center py-12" x-cloak>
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600"></div>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium">Daha fazla ürün yükleniyor...</p>
                         </div>
-                    @endif
+                    </div>
+
+                    {{-- End Message --}}
+                    <div x-show="!hasMore && loaded" class="flex justify-center items-center py-12" x-cloak>
+                        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
+                            <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
+                                <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
+                                Tüm ürünler yüklendi ({{ $products->total() }} ürün)
+                            </p>
+                        </div>
+                    </div>
                 @else
                     {{-- Empty State --}}
                     <div class="text-center py-20">
@@ -199,25 +208,93 @@
         function shopCategoryPage() {
             return {
                 loaded: false,
-                page: 1,
+                page: {{ $products->currentPage() }},
                 loading: false,
                 hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
+                lastPage: {{ $products->lastPage() }},
 
                 init() {
                     this.$nextTick(() => {
                         this.loaded = true;
+                        this.setupInfiniteScroll();
                     });
                 },
 
-                // Infinite scroll için hazır - opsiyonel olarak eklenebilir
-                loadMore() {
+                setupInfiniteScroll() {
+                    const options = {
+                        root: null,
+                        rootMargin: '200px',
+                        threshold: 0.1
+                    };
+
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting && this.hasMore && !this.loading) {
+                                this.loadMore();
+                            }
+                        });
+                    }, options);
+
+                    // Observer'ı grid'e bağla
+                    const grid = this.$refs.productsGrid;
+                    if (grid) {
+                        observer.observe(grid);
+                    }
+
+                    // Scroll event fallback
+                    window.addEventListener('scroll', () => {
+                        const scrollPosition = window.innerHeight + window.scrollY;
+                        const threshold = document.documentElement.scrollHeight - 400;
+
+                        if (scrollPosition >= threshold && this.hasMore && !this.loading) {
+                            this.loadMore();
+                        }
+                    });
+                },
+
+                async loadMore() {
                     if (this.loading || !this.hasMore) return;
 
                     this.loading = true;
                     this.page++;
 
-                    // AJAX ile daha fazla ürün yükle
-                    // Bu kısım opsiyonel - şimdilik pagination kullanıyoruz
+                    try {
+                        // Mevcut URL'i al ve sayfa parametresini güncelle
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('page', this.page);
+
+                        const response = await fetch(url.toString(), {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) throw new Error('Network response was not ok');
+
+                        const html = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+
+                        // Yeni ürünleri grid'e ekle
+                        const newProducts = doc.querySelectorAll('[x-ref="productsGrid"] > div');
+                        const grid = this.$refs.productsGrid;
+
+                        newProducts.forEach(product => {
+                            grid.appendChild(product.cloneNode(true));
+                        });
+
+                        // Daha sayfa var mı kontrol et
+                        if (this.page >= this.lastPage) {
+                            this.hasMore = false;
+                        }
+
+                    } catch (error) {
+                        console.error('Error loading more products:', error);
+                        this.page--; // Hata durumunda sayfa numarasını geri al
+                    } finally {
+                        this.loading = false;
+                    }
                 }
             }
         }

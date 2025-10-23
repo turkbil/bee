@@ -388,7 +388,20 @@ Route::middleware([InitializeTenancy::class, 'site'])
          ->where('slug1', '[^/]+')
          ->where('slug2', '^(?!pdf)[^/]+$')
          ->where('slug3', '[^/]+');
-         
+
+        // ⚡ SHOP MODULE EXPLICIT ROUTES (catch-all'dan ÖNCE tanımlanmalı!)
+        Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
+            ->prefix('shop')
+            ->group(function () {
+                // Shop Category (2-level route)
+                Route::get('/kategori/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'category'])
+                    ->name('shop.category.explicit');
+
+                // Shop Brand (2-level route)
+                Route::get('/brand/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'brand'])
+                    ->name('shop.brand.explicit');
+            });
+
         // Catch-all route'ları - prefix olmayan - sadece content route'ları için
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {

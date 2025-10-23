@@ -1340,14 +1340,17 @@
 (function() {
     'use strict';
 
-    // Use globally available GSAP (from app.js)
-    const gsap = window.gsap;
-    const ScrollTrigger = window.ScrollTrigger;
+    // Wait for GSAP to be available (app.js might still be loading)
+    function initWhenGSAPReady() {
+        if (!window.gsap || !window.ScrollTrigger) {
+            // GSAP not ready, wait 50ms and try again
+            setTimeout(initWhenGSAPReady, 50);
+            return;
+        }
 
-    if (!gsap || !ScrollTrigger) {
-        console.error('❌ GSAP or ScrollTrigger not found! Make sure app.js is loaded first.');
-        return;
-    }
+        // GSAP is ready, proceed with initialization
+        const gsap = window.gsap;
+        const ScrollTrigger = window.ScrollTrigger;
 
     // ============================================
     // 📊 CONFIG
@@ -1570,6 +1573,11 @@
     } else {
         init();
     }
+
+    } // Close initWhenGSAPReady function
+
+    // Start initialization (will wait for GSAP if needed)
+    initWhenGSAPReady();
 
 })();
 </script>

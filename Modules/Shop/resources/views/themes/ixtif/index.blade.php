@@ -30,6 +30,28 @@
             </div>
         </section>
 
+        {{-- Search Bar --}}
+        <section class="py-8 border-b border-gray-200 dark:border-white/10">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <form action="{{ route('shop.index') }}" method="GET" class="max-w-2xl mx-auto">
+                    <div class="relative">
+                        <input type="search"
+                               name="search"
+                               value="{{ request('search') }}"
+                               placeholder="{{ __('shop::front.search_products') }}"
+                               class="w-full px-6 py-4 pr-12 rounded-2xl border-2 border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-md focus:border-blue-400 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/50 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
+                        <button type="submit"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition-all">
+                            <i class="fa-light fa-search"></i>
+                        </button>
+                    </div>
+                    @if(request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
+                </form>
+            </div>
+        </section>
+
         {{-- Categories Filter (Root Categories) --}}
         @if($categories->count() > 0)
         <section class="py-8 border-b border-gray-200 dark:border-white/10">

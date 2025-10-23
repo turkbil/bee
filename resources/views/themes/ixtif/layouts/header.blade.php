@@ -1021,5 +1021,18 @@
     {{-- Dynamic Content Areas --}}
     @stack('header-content')
 
+    {{-- Sticky Header CSS --}}
+    <style>
+        /* Scroll'da topbar'ı gizle ve header'ı küçült */
+        #main-header.scrolled #top-bar {
+            display: none !important;
+        }
+
+        /* Smooth transition */
+        #top-bar {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+
     {{-- Ekran Boyutu Göstergesi (Development için) --}}
     <x-screen-size-indicator />

@@ -11,8 +11,22 @@
                  width="400"
                  height="400">
         @else
-            <div class="w-full h-full flex items-center justify-center">
-                <i class="fa-light fa-box text-6xl text-gray-300 dark:text-gray-600"></i>
+            {{-- Fallback: Kategori ikonu --}}
+            <div class="w-full h-full flex flex-col items-center justify-center gap-4 p-8 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
+                @if($product->category && $product->category->icon_class)
+                    {{-- Kategori ikonu büyük fallback --}}
+                    <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                        <i class="{{ $product->category->icon_class }} text-7xl text-white"></i>
+                    </div>
+                    <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 text-center">
+                        {{ $product->category->getTranslated('title') }}
+                    </span>
+                @else
+                    {{-- Varsayılan box ikonu --}}
+                    <div class="w-32 h-32 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 rounded-3xl flex items-center justify-center shadow-xl">
+                        <i class="fa-light fa-box text-7xl text-gray-400 dark:text-gray-500"></i>
+                    </div>
+                @endif
             </div>
         @endif
     </a>

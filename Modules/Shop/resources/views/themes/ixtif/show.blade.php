@@ -1356,8 +1356,7 @@
 
     const config = {
         SIDEBAR_GAP: 16, // Sidebar top gap (px)
-        DESKTOP_BREAKPOINT: 1024,
-        DEBUG: true // Console debug logs - TEMPORARY for debugging
+        DESKTOP_BREAKPOINT: 1024
     };
 
     // ============================================
@@ -1433,25 +1432,9 @@
                 if (shouldHide) {
                     tocBar.style.transform = 'translateY(-100%)';
                     tocBar.style.pointerEvents = 'none';
-
-                    if (config.DEBUG) {
-                        console.log('🔴 TOC: Hidden (trust-signals collision)', {
-                            trustTop: trustTop.toFixed(0),
-                            tocBottom: tocBottom.toFixed(0),
-                            gap: (trustTop - tocBottom).toFixed(0) + 'px'
-                        });
-                    }
                 } else {
                     tocBar.style.transform = 'translateY(0)';
                     tocBar.style.pointerEvents = 'auto';
-
-                    if (config.DEBUG) {
-                        console.log('✅ TOC: Visible (fixed to header)', {
-                            trustTop: trustTop.toFixed(0),
-                            tocBottom: tocBottom.toFixed(0),
-                            gap: (trustTop - tocBottom).toFixed(0) + 'px'
-                        });
-                    }
                 }
             } else {
                 tocBar.style.transform = 'translateY(0)';
@@ -1463,14 +1446,6 @@
             tocBar.style.top = 'auto';
             tocBar.style.transform = 'translateY(0)';
             tocBar.style.pointerEvents = 'auto';
-
-            if (config.DEBUG && scrollY === 0) {
-                console.log('⚪ TOC: Relative (initial)', {
-                    scrollY: scrollY,
-                    initialTop: state.tocInitialTop,
-                    stickyPoint: tocStickyPoint.toFixed(0)
-                });
-            }
         }
     }
 
@@ -1501,44 +1476,17 @@
             sidebar.style.position = '';
             sidebar.style.top = '';
             sidebar.style.width = '';
-
-            if (config.DEBUG) {
-                console.log('⚪ SIDEBAR: Static (before sticky)', {
-                    scrollY: scrollY.toFixed(0),
-                    sidebarNaturalTop: sidebarNaturalTop.toFixed(0),
-                    stickyTopOffset: stickyTopOffset.toFixed(0)
-                });
-            }
         } else if (shouldStick && !shouldStop) {
             // Sticky range - fixed position
             sidebar.style.position = 'fixed';
             sidebar.style.top = stickyTopOffset + 'px';
             sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
-
-            if (config.DEBUG) {
-                console.log('📌 SIDEBAR: Fixed (sticky)', {
-                    scrollY: scrollY.toFixed(0),
-                    top: stickyTopOffset.toFixed(0),
-                    sidebarBottom: sidebarBottom.toFixed(0),
-                    faqBottom: state.faqBottom.toFixed(0),
-                    remaining: (state.faqBottom - sidebarBottom).toFixed(0)
-                });
-            }
         } else {
             // After sticky - stop at FAQ bottom
             // Use transform instead of relative position to avoid layout shift
             sidebar.style.position = 'fixed';
             sidebar.style.top = (state.faqBottom - sidebarHeight - scrollY) + 'px';
             sidebar.style.width = sidebarParent ? sidebarParent.offsetWidth + 'px' : '';
-
-            if (config.DEBUG) {
-                console.log('🔴 SIDEBAR: Stopped at FAQ bottom', {
-                    scrollY: scrollY.toFixed(0),
-                    calculatedTop: (state.faqBottom - sidebarHeight - scrollY).toFixed(0),
-                    faqBottom: state.faqBottom.toFixed(0),
-                    sidebarHeight: sidebarHeight.toFixed(0)
-                });
-            }
         }
     }
 
@@ -1653,11 +1601,6 @@
 
         // Initial position update
         onScroll();
-
-        console.log('✅ Modern Sticky System V7 initialized');
-        console.log('📊 State:', state);
-        console.log('🔍 Desktop mode:', state.isDesktop);
-        console.log('🔍 Sidebar element:', elements.sidebar ? 'Found' : 'NOT FOUND!');
     }
 
     // Start when DOM ready

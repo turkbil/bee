@@ -131,7 +131,7 @@
                                     $subcategorySlug = $subcategory->getTranslated('slug');
                                     $isSubActive = $selectedCategory && $selectedCategory->category_id === $subcategory->category_id;
                                 @endphp
-                                <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
+                                <a href="{{ url('/shop/kategori/' . $subcategorySlug) }}"
                                    class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all {{ $isSubActive ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-600' : 'bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400' }}">
                                     @if($subcategory->icon_class)
                                         <i class="{{ $subcategory->icon_class }} mr-1 text-xs"></i>
@@ -191,14 +191,23 @@
                         @endforeach
                     </div>
 
-                    {{-- Pagination --}}
-                    @if($products->hasPages())
-                        <div class="mt-12">
-                            <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 p-6">
-                                {{ $products->links() }}
-                            </div>
+                    {{-- Infinite Scroll Loading Indicator --}}
+                    <div x-show="loading" class="flex justify-center items-center py-12" x-cloak>
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600"></div>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium">Daha fazla ürün yükleniyor...</p>
                         </div>
-                    @endif
+                    </div>
+
+                    {{-- End Message --}}
+                    <div x-show="!hasMore && loaded" class="flex justify-center items-center py-12" x-cloak>
+                        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
+                            <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
+                                <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
+                                Tüm ürünler yüklendi ({{ $products->total() }} ürün)
+                            </p>
+                        </div>
+                    </div>
                 @else
                     {{-- Empty State --}}
                     <div class="text-center py-20">
@@ -284,7 +293,7 @@
                                                 @php
                                                     $subProductCount = $subCategory->products()->active()->published()->count();
                                                 @endphp
-                                                <a href="{{ url('/shop/category/' . $subCategory->getTranslated('slug')) }}"
+                                                <a href="{{ url('/shop/kategori/' . $subCategory->getTranslated('slug')) }}"
                                                    class="flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all group">
                                                     @if($subCategory->icon_class)
                                                         <i class="{{ $subCategory->icon_class }} text-xs opacity-60 group-hover:opacity-100"></i>
@@ -327,25 +336,93 @@
         function shopIndexPage() {
             return {
                 loaded: false,
-                page: 1,
+                page: {{ $products->currentPage() }},
                 loading: false,
                 hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
+                lastPage: {{ $products->lastPage() }},
 
                 init() {
                     this.$nextTick(() => {
                         this.loaded = true;
+                        this.setupInfiniteScroll();
                     });
                 },
 
-                // Infinite scroll için hazır - opsiyonel olarak eklenebilir
-                loadMore() {
+                setupInfiniteScroll() {
+                    const options = {
+                        root: null,
+                        rootMargin: '200px',
+                        threshold: 0.1
+                    };
+
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting && this.hasMore && !this.loading) {
+                                this.loadMore();
+                            }
+                        });
+                    }, options);
+
+                    // Observer'ı grid'e bağla
+                    const grid = this.$refs.productsGrid;
+                    if (grid) {
+                        observer.observe(grid);
+                    }
+
+                    // Scroll event fallback
+                    window.addEventListener('scroll', () => {
+                        const scrollPosition = window.innerHeight + window.scrollY;
+                        const threshold = document.documentElement.scrollHeight - 400;
+
+                        if (scrollPosition >= threshold && this.hasMore && !this.loading) {
+                            this.loadMore();
+                        }
+                    });
+                },
+
+                async loadMore() {
                     if (this.loading || !this.hasMore) return;
 
                     this.loading = true;
                     this.page++;
 
-                    // AJAX ile daha fazla ürün yükle
-                    // Bu kısım opsiyonel - şimdilik pagination kullanıyoruz
+                    try {
+                        // URL parametrelerini koru (category, search vb.)
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('page', this.page);
+
+                        const response = await fetch(url.toString(), {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        if (!response.ok) throw new Error('Network response was not ok');
+
+                        const html = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+
+                        // Yeni ürünleri grid'e ekle
+                        const newProducts = doc.querySelectorAll('[x-ref="productsGrid"] > div');
+                        const grid = this.$refs.productsGrid;
+
+                        newProducts.forEach(product => {
+                            grid.appendChild(product.cloneNode(true));
+                        });
+
+                        // Daha sayfa var mı kontrol et
+                        if (this.page >= this.lastPage) {
+                            this.hasMore = false;
+                        }
+
+                    } catch (error) {
+                        console.error('Error loading more products:', error);
+                        this.page--; // Hata durumunda sayfa numarasını geri al
+                    } finally {
+                        this.loading = false;
+                    }
                 }
             }
         }

@@ -34,10 +34,10 @@ class ShopController extends Controller
 
         // Build products query
         $productsQuery = ShopProduct::query()
-            ->with(['category', 'brand', 'media', 'childProducts' => function ($q) {
+            ->with(['category', 'brand', 'media', 'parentProduct', 'childProducts' => function ($q) {
                 $q->active()->published()->orderBy('variant_type')->orderBy('product_id');
             }])
-            ->whereNull('parent_product_id') // Sadece ana ürünler (varyant olmayanlar)
+            // TÜM ÜRÜNLER (ana + varyantlar) göster
             ->published()
             ->active();
 
@@ -57,10 +57,34 @@ class ShopController extends Controller
             }
         }
 
-        $products = $productsQuery
-            ->orderBy('sort_order', 'asc')
-            ->orderByDesc('published_at')
-            ->paginate(config('shop.pagination.front_per_shop', 12));
+        // Eager load category ile al ve PHP'de sırala
+        $allProducts = $productsQuery
+            ->with(['category', 'brand', 'media'])
+            ->get()
+            ->sortBy(function ($product) {
+                $catSort = 9999;
+                if ($product->category) {
+                    $catSort = $product->category->sort_order ?? 9999;
+                }
+                return [
+                    $catSort,  // Kategori sırası
+                    $product->sort_order ?? 9999,            // Ürün sırası
+                    $product->published_at ? -strtotime($product->published_at) : 0, // Yayın tarihi (DESC)
+                ];
+            });
+
+        // Manuel pagination
+        $perPage = config('shop.pagination.front_per_shop', 12);
+        $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage();
+        $currentItems = $allProducts->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $products = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $allProducts->count(),
+            $perPage,
+            $currentPage,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
 
         $moduleTitle = __('shop::front.module_title');
 
@@ -351,15 +375,36 @@ class ShopController extends Controller
         $categoryIds = $this->getCategoryWithChildren($category);
 
         // Get products from this category and all subcategories
-        $products = ShopProduct::query()
+        $allProducts = ShopProduct::query()
             ->with(['category', 'brand', 'media'])
             ->whereIn('category_id', $categoryIds)
-            ->whereNull('parent_product_id') // Sadece ana ürünler
             ->active()
             ->published()
-            ->orderBy('sort_order', 'asc')
-            ->orderByDesc('published_at')
-            ->paginate(config('shop.pagination.front_per_shop', 12));
+            ->get()
+            ->sortBy(function ($product) {
+                $catSort = 9999;
+                if ($product->category) {
+                    $catSort = $product->category->sort_order ?? 9999;
+                }
+                return [
+                    $catSort,
+                    $product->sort_order ?? 9999,
+                    $product->published_at ? -strtotime($product->published_at) : 0,
+                ];
+            });
+
+        // Manuel pagination
+        $perPage = config('shop.pagination.front_per_shop', 12);
+        $currentPage = \Illuminate\Pagination\Paginator::resolveCurrentPage();
+        $currentItems = $allProducts->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $products = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $allProducts->count(),
+            $perPage,
+            $currentPage,
+            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+        );
 
         // Get direct subcategories for display
         $subcategories = $category->children;

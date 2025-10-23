@@ -19,9 +19,12 @@
 
     {{-- Content Section --}}
     <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
-        {{-- Category --}}
+        {{-- Category with Icon --}}
         @if($product->category)
         <div class="flex items-center gap-2 mb-2">
+            @if($product->category->icon_class)
+                <i class="{{ $product->category->icon_class }} text-blue-600 dark:text-blue-400"></i>
+            @endif
             <span class="text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-wider">
                 {{ $product->category->getTranslated('title') }}
             </span>

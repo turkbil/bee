@@ -21,4 +21,5 @@
 
 {{-- AI Chat System External Files --}}
 <link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ now()->timestamp }}" media="all">
-<script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}" defer></script>
+{{-- DEFER KALDIRILDI: Alpine:init event'inde çalıştığı için sorun yok, ama defer timing problemlerine yol açıyordu --}}
+<script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}"></script>

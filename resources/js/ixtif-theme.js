@@ -146,10 +146,10 @@ function initGLightbox() {
 window.initGLightbox = initGLightbox;
 
 /**
- * 🎯 STICKY SYSTEM V2 - Header Topbar + TOC Bar
+ * 🎯 STICKY SYSTEM V3 - Header Topbar + TOC Bar
  *
  * 1. Topbar: Scroll > 50px → Kaybolur (smooth)
- * 2. TOC: Header altına değdiğinde → Sticky (80px), Trust Signals'da durur
+ * 2. TOC: Hero'dan sonra sticky → Contact'ta smooth kaybolur (topbar gibi)
  */
 (function() {
     'use strict';
@@ -160,14 +160,15 @@ window.initGLightbox = initGLightbox;
         topbar: document.getElementById('top-bar'),
         tocBar: document.getElementById('toc-bar'),
         heroSection: document.getElementById('hero-section'),
-        trustSignals: document.getElementById('trust-signals')
+        contactSection: document.getElementById('contact')
     };
 
     let topbarVisible = true;
+    let tocVisible = true;
     let tocSticky = false;
     let ticking = false;
     let tocOriginalOffset = 0;
-    let trustSignalsOffset = 0;
+    let contactOffset = 0;
 
     function init() {
         if (!elements.topbar) return;
@@ -177,9 +178,9 @@ window.initGLightbox = initGLightbox;
             tocOriginalOffset = elements.heroSection.offsetHeight;
         }
 
-        // Trust Signals offset
-        if (elements.trustSignals) {
-            trustSignalsOffset = elements.trustSignals.offsetTop;
+        // Contact section offset
+        if (elements.contactSection) {
+            contactOffset = elements.contactSection.offsetTop;
         }
 
         // Scroll listener
@@ -191,8 +192,8 @@ window.initGLightbox = initGLightbox;
         if (elements.heroSection) {
             tocOriginalOffset = elements.heroSection.offsetHeight;
         }
-        if (elements.trustSignals) {
-            trustSignalsOffset = elements.trustSignals.offsetTop;
+        if (elements.contactSection) {
+            contactOffset = elements.contactSection.offsetTop;
         }
     }
 
@@ -228,16 +229,22 @@ window.initGLightbox = initGLightbox;
         if (!elements.tocBar) return;
 
         const shouldStick = scrollY >= tocOriginalOffset;
-        const shouldStop = scrollY + HEADER_HEIGHT >= trustSignalsOffset;
+        const shouldHide = scrollY + HEADER_HEIGHT >= contactOffset;
 
-        if (shouldStop) {
-            // Trust Signals'a ulaştı - dur
-            if (tocSticky) {
-                elements.tocBar.style.position = 'absolute';
-                elements.tocBar.style.top = (trustSignalsOffset - elements.tocBar.offsetHeight) + 'px';
-                tocSticky = false;
-            }
-        } else if (shouldStick && !tocSticky) {
+        if (shouldHide && tocVisible) {
+            // Contact'a yaklaştı - topbar gibi kaybol
+            elements.tocBar.style.transform = 'translateY(-100%)';
+            elements.tocBar.style.opacity = '0';
+            tocVisible = false;
+        } else if (!shouldHide && !tocVisible) {
+            // Contact'tan uzaklaştı - geri göster
+            elements.tocBar.style.transform = 'translateY(0)';
+            elements.tocBar.style.opacity = '1';
+            tocVisible = true;
+        }
+
+        // Sticky/Static pozisyon kontrolü (kaybolma animasyonundan bağımsız)
+        if (shouldStick && !tocSticky) {
             // Hero'dan sonra - sticky yap
             elements.tocBar.style.position = 'fixed';
             elements.tocBar.style.top = HEADER_HEIGHT + 'px';
@@ -247,6 +254,9 @@ window.initGLightbox = initGLightbox;
         } else if (!shouldStick && tocSticky) {
             // Hero içinde - normal position
             elements.tocBar.style.position = 'static';
+            elements.tocBar.style.transform = 'translateY(0)';
+            elements.tocBar.style.opacity = '1';
+            tocVisible = true;
             tocSticky = false;
         }
     }

@@ -103,11 +103,16 @@ class SchemaGeneratorService
         // Açıklama alanını bul ve ekle
         if (isset($detectedFields['description'])) {
             $descField = $detectedFields['description'][0];
-            $description = $hasTranslations ? 
-                ($model->getTranslated($descField, $language) ?? $model->$descField) : 
+            $description = $hasTranslations ?
+                ($model->getTranslated($descField, $language) ?? $model->$descField) :
                 $model->$descField;
-            
+
             if ($description) {
+                // Array ise string'e çevir (JSON field olabilir)
+                if (is_array($description)) {
+                    $description = implode(' ', array_filter($description));
+                }
+
                 $schema['description'] = $this->extractDescription($description);
                 if (in_array($schemaType, ['Article', 'NewsArticle'])) {
                     $schema['articleBody'] = $this->cleanArticleBody($description);

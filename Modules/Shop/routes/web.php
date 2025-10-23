@@ -35,7 +35,7 @@ Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
         Route::get('/', [ShopController::class, 'index'])->name('shop.index');
 
         // Shop Category
-        Route::get('/category/{slug}', [ShopController::class, 'category'])->name('shop.category');
+        Route::get('/kategori/{slug}', [ShopController::class, 'category'])->name('shop.category');
 
         // Shop Brand
         Route::get('/brand/{slug}', [ShopController::class, 'brand'])->name('shop.brand');

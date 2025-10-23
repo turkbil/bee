@@ -393,16 +393,16 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|shop)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|shop)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design)[^/]+$')
          ->where('slug2', '^(?!pdf)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|shop)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design)[^/]+$')
          ->where('slug2', '^(?!pdf)[^/]+$')
          ->where('slug3', '[^/]+');
     });

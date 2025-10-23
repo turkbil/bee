@@ -1021,31 +1021,5 @@
     {{-- Dynamic Content Areas --}}
     @stack('header-content')
 
-    {{-- Header Scroll Behavior CSS --}}
-    <style>
-        /* Topbar smooth transition */
-        #top-bar {
-            max-height: 45px;
-            overflow: hidden;
-            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.3s ease,
-                        margin 0.3s ease;
-            will-change: max-height, opacity;
-        }
-
-        /* Scroll edildiğinde topbar'ı kapat */
-        #main-header.scrolled #top-bar {
-            max-height: 0;
-            opacity: 0;
-            margin: 0;
-            border: 0;
-        }
-
-        /* Main header smooth transition */
-        #main-header {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-    </style>
-
     {{-- Ekran Boyutu Göstergesi (Development için) --}}
     <x-screen-size-indicator />

@@ -1,1 +1,30 @@
+ixtif-f4-201-20-ton-li-ion-transpalet:619 Refused to load the script 'https://mc.yandex.ru/metrika/tag.js?id=104794443' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://www.googletagmanager.com https://www.google-analytics.com". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.
 
+(anonymous) @ ixtif-f4-201-20-ton-li-ion-transpalet:619
+ ❌ GSAP or ScrollTrigger not found! Make sure app.js is loaded first.
+(anonymous) @ ixtif-f4-201-20-ton-…ion-transpalet:4903
+ai-chat.js?v=1761188657:732 ✅ AI Chat System JavaScript loaded
+ai-chat.js?v=1761188657:733 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
+ixtif-theme.js?v=1761188657:123 ✅ GLightbox initialized
+ai-chat.js?v=1761188657:732 ✅ AI Chat System JavaScript loaded
+ai-chat.js?v=1761188657:733 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
+ai-chat.js?v=1761188657:81 🤖 AI Chat Store initialized Object
+ai-chat.js?v=1761188657:81 🤖 AI Chat Store initialized Object
+ai-chat.js?v=1761188657:90 🔄 Context updated: Proxy(Object)
+ai-chat.js?v=1761188657:374 🔍 Placeholder init started Object
+ai-chat.js?v=1761188657:380 ⚡ Fallback shown immediately
+ai-chat.js?v=1761188657:396 ✅ Placeholder init completed Object
+ai-chat.js?v=1761188657:374 🔍 Placeholder init started Object
+ai-chat.js?v=1761188657:380 ⚡ Fallback shown immediately
+ai-chat.js?v=1761188657:396 ✅ Placeholder init completed Object
+ai-chat.js?v=1761188657:445 🎬 Placeholder animation started
+ixtif-theme.js?v=1761188657:80 Top bar height: 45px
+ixtif-theme.js?v=1761188657:95 ✅ Sticky header initialized
+dev-tools.js?v=1761188657:93 ✅ Development Tools loaded (Admin/Root only)
+main.js?v=1.0.1:3 Blank tema yüklendi!
+ai-chat.js?v=1761188657:385 🔄 Loading real placeholder from API...
+ai-chat.js?v=1761188657:385 🔄 Loading real placeholder from API...
+ai-chat.js?v=1761188657:409 ✅ Product placeholder loaded Object
+ai-chat.js?v=1761188657:409 ✅ Product placeholder loaded Object
+ixtif-f4-201-20-ton-li-ion-transpalet:1 The resource https://www.ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+ixtif-f4-201-20-ton-li-ion-transpalet:1 The resource https://www.ixtif.com/css/app.css was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.

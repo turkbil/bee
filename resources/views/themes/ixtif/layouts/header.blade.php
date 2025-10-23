@@ -95,6 +95,9 @@
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')
+
+    {{-- Core Frontend Assets (Alpine.js, Axios, GSAP) --}}
+    <script defer src="{{ asset('js/app.js') }}?v={{ now()->timestamp }}"></script>
 </head>
 
 <body class="font-sans antialiased min-h-screen transition-all duration-500 flex flex-col"

@@ -52,27 +52,48 @@
             </div>
         </section>
 
-        {{-- Search Bar + Category Filter --}}
-        <section class="py-8 border-b border-gray-200 dark:border-white/10 bg-white/30 dark:bg-white/5">
+        {{-- Search Bar --}}
+        <section class="py-12 border-b border-gray-200 dark:border-white/10">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div class="max-w-4xl mx-auto">
+                <div class="max-w-5xl mx-auto">
                     <form action="{{ route('shop.index') }}" method="GET" class="relative">
-                        {{-- Search Input --}}
                         <div class="relative group">
-                            <div class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors">
-                                <i class="fa-light fa-search text-xl"></i>
+                            {{-- Search Icon --}}
+                            <div class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-all duration-300 group-focus-within:scale-110">
+                                <i class="fa-light fa-magnifying-glass text-2xl"></i>
                             </div>
+
+                            {{-- Search Input --}}
                             <input type="search"
                                    name="search"
                                    value="{{ request('search') }}"
                                    placeholder="{{ __('shop::front.search_products') }}"
-                                   class="w-full pl-14 pr-40 py-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 bg-white dark:bg-slate-800 shadow-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 text-lg font-medium">
+                                   class="w-full pl-20 pr-48 py-6 rounded-2xl border-2 border-gray-200 dark:border-white/20
+                                          bg-gradient-to-r from-white via-gray-50 to-white dark:from-slate-800 dark:via-slate-900 dark:to-slate-800
+                                          shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]
+                                          focus:border-blue-500 dark:focus:border-blue-400
+                                          focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/30
+                                          focus:shadow-[0_8px_40px_rgb(59,130,246,0.15)]
+                                          transition-all duration-300
+                                          text-gray-900 dark:text-white
+                                          placeholder-gray-400 dark:placeholder-gray-500
+                                          text-lg font-medium
+                                          backdrop-blur-sm">
 
                             {{-- Submit Button --}}
                             <button type="submit"
-                                    class="absolute right-2 top-1/2 -translate-y-1/2 px-8 py-3 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-xl hover:scale-105 transition-all">
-                                <i class="fa-light fa-arrow-right mr-2"></i>
-                                Ara
+                                    class="absolute right-3 top-1/2 -translate-y-1/2
+                                           px-10 py-4
+                                           bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600
+                                           text-white rounded-xl font-bold text-base
+                                           shadow-[0_4px_20px_rgba(59,130,246,0.3)]
+                                           hover:shadow-[0_8px_30px_rgba(59,130,246,0.4)]
+                                           hover:scale-105
+                                           active:scale-95
+                                           transition-all duration-300
+                                           flex items-center gap-2">
+                                <span>Ara</span>
+                                <i class="fa-light fa-arrow-right"></i>
                             </button>
                         </div>
 
@@ -80,14 +101,6 @@
                             <input type="hidden" name="category" value="{{ request('category') }}">
                         @endif
                     </form>
-
-                    {{-- Quick Info --}}
-                    <div class="mt-4 flex items-center justify-center">
-                        <div class="inline-flex items-center gap-2 px-6 py-3 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-xl text-gray-700 dark:text-gray-300 font-semibold">
-                            <i class="fa-light fa-sparkles text-purple-600 dark:text-purple-400"></i>
-                            <span>Geniş Ürün Yelpazesi</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>

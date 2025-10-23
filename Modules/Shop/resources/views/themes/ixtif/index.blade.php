@@ -52,55 +52,202 @@
             </div>
         </section>
 
-        {{-- Search Bar --}}
+        {{-- Search Bar with Autocomplete --}}
         <section class="py-12 border-b border-gray-200 dark:border-white/10">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div class="max-w-5xl mx-auto">
-                    <form action="{{ route('shop.index') }}" method="GET" class="relative">
-                        <div class="relative group">
-                            {{-- Search Icon --}}
-                            <div class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-all duration-300 group-focus-within:scale-110">
-                                <i class="fa-light fa-magnifying-glass text-2xl"></i>
+                    <div x-data="{
+                        query: '{{ request('search') }}',
+                        selectedCategory: '{{ request('category') }}',
+                        categoryDropdownOpen: false,
+                        keywords: [],
+                        products: [],
+                        total: 0,
+                        isOpen: false,
+                        loading: false,
+                        error: null,
+                        get hasResults() {
+                            return this.keywords.length > 0 || this.products.length > 0;
+                        },
+                        async search() {
+                            const trimmed = this.query.trim();
+                            if (trimmed.length < 2) {
+                                this.keywords = [];
+                                this.products = [];
+                                this.total = 0;
+                                this.isOpen = false;
+                                return;
+                            }
+                            this.loading = true;
+                            this.error = null;
+                            try {
+                                let url = `/api/search/suggestions?q=${encodeURIComponent(trimmed)}`;
+                                // Kategori varsa API'ye ekle
+                                if (this.selectedCategory) {
+                                    url += `&category=${encodeURIComponent(this.selectedCategory)}`;
+                                }
+                                const response = await fetch(url, {
+                                    headers: { 'Accept': 'application/json' }
+                                });
+                                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                                const data = await response.json();
+                                if (data.success && data.data) {
+                                    this.keywords = data.data.keywords || [];
+                                    this.products = data.data.products || [];
+                                    this.total = data.data.total || 0;
+                                    this.isOpen = this.hasResults;
+                                } else {
+                                    this.keywords = [];
+                                    this.products = [];
+                                    this.total = 0;
+                                }
+                            } catch (e) {
+                                console.error('Search error:', e);
+                                this.error = 'Arama başarısız';
+                            }
+                            this.loading = false;
+                        },
+                        goToSearch() {
+                            if (this.query.trim().length >= 1) {
+                                // Kategori varsa kategori sayfasında ara, yoksa ana shop'ta ara
+                                if (this.selectedCategory) {
+                                    window.location.href = '/shop/kategori/' + encodeURIComponent(this.selectedCategory) + '?search=' + encodeURIComponent(this.query);
+                                } else {
+                                    window.location.href = '{{ route('shop.index') }}?search=' + encodeURIComponent(this.query);
+                                }
+                            }
+                        },
+                        selectKeyword(keyword) {
+                            if (!keyword?.text) return;
+                            window.location.href = '/search?q=' + encodeURIComponent(keyword.text);
+                        },
+                        selectProduct(product) {
+                            if (product?.url) window.location.href = product.url;
+                        }
+                    }" @click.away="isOpen = false" class="relative">
+                        <form action="{{ route('shop.index') }}" method="GET" @submit.prevent="goToSearch()">
+                            <div class="relative group">
+                                {{-- Search Icon (Dynamic) --}}
+                                <div class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-all duration-300 group-focus-within:scale-110">
+                                    @if(isset($category) && $category->icon_class)
+                                        <i class="{{ $category->icon_class }} text-2xl"></i>
+                                    @else
+                                        <i class="fa-light fa-magnifying-glass text-2xl"></i>
+                                    @endif
+                                </div>
+
+                                {{-- Search Input (Dynamic Placeholder) --}}
+                                <input type="search"
+                                       x-model="query"
+                                       @input.debounce.300ms="search()"
+                                       @focus="if(query.trim().length >= 2) isOpen = hasResults"
+                                       placeholder="@if(isset($category)){{ $category->getTranslated('title') }} ürünlerinde ara...@else{{ __('shop::front.search_products') }}@endif"
+                                       class="w-full pl-20 pr-48 py-6 rounded-2xl border-2 border-gray-200 dark:border-white/20
+                                              bg-gradient-to-r from-white via-gray-50 to-white dark:from-slate-800 dark:via-slate-900 dark:to-slate-800
+                                              shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]
+                                              focus:border-blue-500 dark:focus:border-blue-400
+                                              focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/30
+                                              focus:shadow-[0_8px_40px_rgb(59,130,246,0.15)]
+                                              transition-all duration-300
+                                              text-gray-900 dark:text-white
+                                              placeholder-gray-400 dark:placeholder-gray-500
+                                              text-lg font-medium
+                                              backdrop-blur-sm"
+                                       autocomplete="off">
+
+                                {{-- Submit Button --}}
+                                <button type="submit"
+                                        :disabled="loading"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2
+                                               px-10 py-4
+                                               bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600
+                                               text-white rounded-xl font-bold text-base
+                                               shadow-[0_4px_20px_rgba(59,130,246,0.3)]
+                                               hover:shadow-[0_8px_30px_rgba(59,130,246,0.4)]
+                                               hover:scale-105
+                                               active:scale-95
+                                               transition-all duration-300
+                                               flex items-center gap-2
+                                               disabled:opacity-70 disabled:cursor-not-allowed">
+                                    <i class="fa-solid fa-spinner fa-spin" x-show="loading" x-cloak></i>
+                                    <span x-show="!loading">Ara</span>
+                                    <i class="fa-light fa-arrow-right" x-show="!loading"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                        {{-- Autocomplete Dropdown --}}
+                        <div x-show="isOpen"
+                             x-transition
+                             class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
+                             x-cloak>
+                            <div class="max-h-[28rem] overflow-y-auto">
+                                <div class="grid gap-4 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                                    {{-- Keywords Section --}}
+                                    <div x-show="keywords.length > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
+                                        <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                            <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar</span>
+                                            <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <template x-for="(keyword, index) in keywords" :key="'k-'+index">
+                                                <a href="#"
+                                                   @click.prevent="selectKeyword(keyword)"
+                                                   class="flex items-center justify-between gap-3 px-3 py-2 rounded-md transition group hover:bg-white dark:hover:bg-gray-800">
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="w-7 h-7 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                                                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                                                        </span>
+                                                        <span class="font-medium text-sm text-gray-900 dark:text-white" x-text="keyword.text"></span>
+                                                    </div>
+                                                    <span x-show="keyword.count" class="text-xs text-gray-400 dark:text-gray-500" x-text="`${keyword.count} sonuç`"></span>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    {{-- Products Section --}}
+                                    <div x-show="products.length > 0" class="space-y-3">
+                                        <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                            <span><i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler</span>
+                                            <span x-show="total > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products.length} / ${total}`"></span>
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <template x-for="(product, index) in products" :key="'p-'+index">
+                                                <a href="#"
+                                                   @click.prevent="selectProduct(product)"
+                                                   class="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition group hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md">
+                                                    <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                        <template x-if="product.image">
+                                                            <img :src="product.image" :alt="product.title" class="w-full h-full object-cover">
+                                                        </template>
+                                                        <template x-if="!product.image">
+                                                            <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 text-xl"></i>
+                                                        </template>
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="font-medium text-sm text-gray-900 dark:text-white leading-snug line-clamp-2" x-html="product.highlighted_title || product.title"></div>
+                                                        <p x-show="product.highlighted_description" class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2" x-html="product.highlighted_description"></p>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                                            <span x-text="product.type_label"></span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {{-- Search Input --}}
-                            <input type="search"
-                                   name="search"
-                                   value="{{ request('search') }}"
-                                   placeholder="{{ __('shop::front.search_products') }}"
-                                   class="w-full pl-20 pr-48 py-6 rounded-2xl border-2 border-gray-200 dark:border-white/20
-                                          bg-gradient-to-r from-white via-gray-50 to-white dark:from-slate-800 dark:via-slate-900 dark:to-slate-800
-                                          shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]
-                                          focus:border-blue-500 dark:focus:border-blue-400
-                                          focus:ring-4 focus:ring-blue-100/50 dark:focus:ring-blue-900/30
-                                          focus:shadow-[0_8px_40px_rgb(59,130,246,0.15)]
-                                          transition-all duration-300
-                                          text-gray-900 dark:text-white
-                                          placeholder-gray-400 dark:placeholder-gray-500
-                                          text-lg font-medium
-                                          backdrop-blur-sm">
-
-                            {{-- Submit Button --}}
-                            <button type="submit"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2
-                                           px-10 py-4
-                                           bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600
-                                           text-white rounded-xl font-bold text-base
-                                           shadow-[0_4px_20px_rgba(59,130,246,0.3)]
-                                           hover:shadow-[0_8px_30px_rgba(59,130,246,0.4)]
-                                           hover:scale-105
-                                           active:scale-95
-                                           transition-all duration-300
-                                           flex items-center gap-2">
-                                <span>Ara</span>
-                                <i class="fa-light fa-arrow-right"></i>
-                            </button>
+                            {{-- View All Results --}}
+                            <a :href="`/search?q=${encodeURIComponent(query)}`"
+                               x-show="total > 0"
+                               class="block p-4 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold transition border-t border-gray-200 dark:border-gray-700">
+                                <i class="fa-solid fa-arrow-right mr-2"></i>
+                                <span x-text="`Tüm ${total} sonucu gör`"></span>
+                            </a>
                         </div>
-
-                        @if(request('category'))
-                            <input type="hidden" name="category" value="{{ request('category') }}">
-                        @endif
-                    </form>
+                    </div>
                 </div>
             </div>
         </section>
@@ -129,7 +276,7 @@
                         @endphp
 
                         {{-- Root Category --}}
-                        <a href="{{ route('shop.index', ['category' => $categorySlug]) }}"
+                        <a href="/shop/kategori/{{ $categorySlug }}"
                            class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                             @if($category->icon_class)
                                 <i class="{{ $category->icon_class }} mr-2"></i>
@@ -272,7 +419,7 @@
                             @foreach($categories as $rootCategory)
                                 <div class="bg-gray-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-gray-200 dark:border-white/10">
                                     {{-- Root Category --}}
-                                    <a href="{{ route('shop.index', ['category' => $rootCategory->getTranslated('slug')]) }}"
+                                    <a href="/shop/kategori/{{ $rootCategory->getTranslated('slug') }}"
                                        class="group flex items-center gap-3 mb-4 hover:bg-white dark:hover:bg-slate-700 rounded-xl p-3 -m-3 transition-all">
                                         @if($rootCategory->icon_class)
                                             <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

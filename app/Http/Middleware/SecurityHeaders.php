@@ -43,7 +43,8 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.re https://fonts.googleapis.com",
             "img-src 'self' data: https: blob:",
             "font-src 'self' data: https: https://fonts.gstatic.com",
-            "connect-src 'self' https://cdn.jsdelivr.net https://www.google-analytics.com https://stats.g.doubleclick.net https://mc.yandex.ru https://mc.yandex.com",
+            "connect-src 'self' https://cdn.jsdelivr.net https://www.google-analytics.com https://stats.g.doubleclick.net https://mc.yandex.ru https://mc.yandex.com wss://mc.yandex.com",
+            "frame-src 'self' https://mc.yandex.ru https://mc.yandex.com",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'"

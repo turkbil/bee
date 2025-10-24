@@ -75,11 +75,17 @@ class ShopController extends Controller
                 ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         } else {
-            // Diğer kategoriler: Normal sıralama
+            // Shop Index Sıralaması:
+            // 1. show_on_homepage (vitrin ürünleri önce)
+            // 2. category.sort_order (kategori sıralaması)
+            // 3. product.sort_order (ürün sıralaması)
             $products = $productsQuery
                 ->with(['category', 'brand', 'media'])
-                ->orderBy('sort_order', 'asc')
-                ->orderByDesc('published_at')
+                ->leftJoin('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id')
+                ->select('shop_products.*')
+                ->orderByDesc('shop_products.show_on_homepage')
+                ->orderBy('shop_categories.sort_order', 'asc')
+                ->orderBy('shop_products.sort_order', 'asc')
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         }
 
@@ -364,14 +370,13 @@ class ShopController extends Controller
                 ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         } else {
-            // Diğer kategoriler: Normal sıralama
+            // Kategori Sayfası Sıralaması: Sadece product.sort_order
             $products = ShopProduct::query()
                 ->with(['category', 'brand', 'media'])
                 ->whereIn('category_id', $categoryIds)
                 ->active()
                 ->published()
                 ->orderBy('sort_order', 'asc')
-                ->orderByDesc('published_at')
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         }
 

@@ -56,21 +56,21 @@
          }
      }"
      @click.away="open = false"
-     x-init="$nextTick(() => $watch('query', () => debouncedFetch()))">
+     x-init="$nextTick(() => { if (typeof query !== 'undefined') $watch('query', () => debouncedFetch()); })">
 
     <div class="flex gap-3">
         <div class="flex-1 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
             <input type="search"
                    x-model="query"
-                   @keydown.enter.prevent="if(query.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+                   @keydown.enter.prevent="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
                    placeholder="Ürün, kategori veya marka arayın..."
                    class="w-full bg-white border-0 rounded-2xl pl-16 pr-6 py-5 text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 transition-shadow">
         </div>
         <button
-            @click="if(query.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
-            :disabled="!query.trim()"
-            :class="{'opacity-50 cursor-not-allowed': !query.trim()}"
+            @click="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+            :disabled="!query?.trim()"
+            :class="{'opacity-50 cursor-not-allowed': !query?.trim()}"
             class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
             <i class="fa-solid fa-search"></i>
             <span class="hidden md:inline">Ara</span>
@@ -78,7 +78,7 @@
     </div>
 
     {{-- Dropdown --}}
-    <div x-show="open && (keywords.length > 0 || products.length > 0)"
+    <div x-show="open && ((keywords?.length || 0) > 0 || (products?.length || 0) > 0)"
          x-cloak
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 translate-y-1"
@@ -92,10 +92,10 @@
             <div class="grid gap-4 md:gap-6 px-4 py-4 grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
 
                 {{-- Keywords Section --}}
-                <div x-show="keywords.length > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
+                <div x-show="(keywords?.length || 0) > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
                     <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                         <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar</span>
-                        <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
+                        <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords?.length || 0}`"></span>
                     </div>
                     <div class="space-y-1">
                         <template x-for="(keyword, index) in keywords" :key="'k-'+index">
@@ -115,10 +115,10 @@
                 </div>
 
                 {{-- Products Section --}}
-                <div x-show="products.length > 0" class="space-y-3">
+                <div x-show="(products?.length || 0) > 0" class="space-y-3">
                     <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                         <span><i class="fa-solid fa-box text-indigo-500 mr-1"></i> Ürünler</span>
-                        <span x-show="total > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products.length} / ${total}`"></span>
+                        <span x-show="(total || 0) > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products?.length || 0} / ${total || 0}`"></span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <template x-for="(product, index) in products" :key="'p-'+index">
@@ -156,11 +156,11 @@
         </div>
 
         {{-- View All Results --}}
-        <a :href="`{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}`.replace('_PLACEHOLDER_', encodeURIComponent(query))"
-           x-show="total > 0"
+        <a :href="`{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}`.replace('_PLACEHOLDER_', encodeURIComponent(query || ''))"
+           x-show="(total || 0) > 0"
            class="block p-4 text-center text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold transition border-t border-gray-200 dark:border-gray-700">
             <i class="fa-solid fa-arrow-right mr-2"></i>
-            <span x-text="`Tüm ${total} sonucu gör`"></span>
+            <span x-text="`Tüm ${total || 0} sonucu gör`"></span>
         </a>
     </div>
 </div>

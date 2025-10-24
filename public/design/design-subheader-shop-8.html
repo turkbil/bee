@@ -3,63 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subheader Shop 8 - E-commerce Style with Breadcrumb Trail</title>
+    <title>Design 8 - E-commerce Professional | Shop Subheader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        * { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50" x-data="{ selected: 'all' }">
 
     <!-- Navigation Buttons -->
-    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50">
+    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50 space-y-2">
         <a href="design-subheader-shop-index.html"
-           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition mb-2"
+           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl transition-all"
            title="Ana Sayfa">
             <i class="fa-solid fa-grid-2 text-gray-700"></i>
         </a>
         <a href="design-subheader-shop-7.html"
-           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition"
+           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl transition-all"
            title="Önceki">
             <i class="fa-solid fa-chevron-left text-gray-700"></i>
         </a>
     </div>
     <div class="fixed top-1/2 -translate-y-1/2 right-4 z-50">
         <a href="design-subheader-shop-1.html"
-           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition"
+           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl transition-all"
            title="Sonraki (İlk Tasarım)">
             <i class="fa-solid fa-chevron-right text-gray-700"></i>
         </a>
     </div>
 
     <!-- Design Label -->
-    <div class="fixed top-4 right-4 z-40 bg-white rounded-full px-4 py-2 shadow-lg">
-        <span class="text-xs font-bold text-gray-600">Design 8/8 - E-commerce Pro</span>
+    <div class="fixed top-4 right-4 z-40 bg-gradient-to-r from-rose-600 to-pink-600 text-white rounded-full px-4 py-2 shadow-lg">
+        <span class="text-xs font-bold">Design 8/8 - E-commerce Pro</span>
     </div>
 
-    <!-- Subheader 8: E-commerce Professional -->
+    <!-- Subheader: E-commerce Professional -->
 
     <!-- Top Bar: Breadcrumb -->
     <section class="bg-gray-100 border-b border-gray-200">
-        <div class="container mx-auto px-4 py-3">
+        <div class="container mx-auto px-4 max-w-7xl py-3">
             <nav>
                 <ol class="flex items-center gap-2 text-sm text-gray-600">
                     <li>
-                        <a href="#" class="hover:text-blue-600 flex items-center gap-1.5">
+                        <a href="#" class="hover:text-blue-600 transition flex items-center gap-1.5">
                             <i class="fa-light fa-home text-xs"></i>
                             Ana Sayfa
                         </a>
                     </li>
                     <li><i class="fa-light fa-chevron-right text-xs text-gray-400"></i></li>
                     <li>
-                        <a href="#" class="hover:text-blue-600">Ürünler</a>
+                        <a href="#" class="hover:text-blue-600 transition">Ürünler</a>
                     </li>
                     <li><i class="fa-light fa-chevron-right text-xs text-gray-400"></i></li>
                     <li>
-                        <a href="#" class="hover:text-blue-600">Malzeme Taşıma</a>
+                        <a href="#" class="hover:text-blue-600 transition">Malzeme Taşıma</a>
                     </li>
                     <li><i class="fa-light fa-chevron-right text-xs text-gray-400"></i></li>
                     <li class="text-gray-900 font-medium">Transpalet</li>
@@ -70,10 +82,10 @@
 
     <!-- Main Header -->
     <section class="bg-white border-b-2 border-gray-100">
-        <div class="container mx-auto px-4 py-8">
+        <div class="container mx-auto px-4 max-w-7xl py-8">
             <div class="grid lg:grid-cols-[250px_1fr] gap-8">
                 <!-- Left: Category Card -->
-                <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100">
+                <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100 h-fit">
                     <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                         <i class="fa-solid fa-dolly text-2xl text-white"></i>
                     </div>
@@ -104,8 +116,8 @@
                 <div>
                     <!-- Title Section -->
                     <div class="mb-6">
-                        <h1 class="text-4xl font-black text-gray-900 mb-3">Transpalet Koleksiyonu</h1>
-                        <p class="text-lg text-gray-600 leading-relaxed max-w-3xl">
+                        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Transpalet Koleksiyonu</h1>
+                        <p class="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl">
                             Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın.
                             Sektörde 20 yılı aşkın deneyimimiz ve teknoloji liderliğimiz ile en iyi çözümleri sunuyoruz.
                         </p>
@@ -115,21 +127,24 @@
                     <div class="grid md:grid-cols-[1fr_auto] gap-4 items-center">
                         <!-- Search -->
                         <div class="relative">
-                            <input type="search" placeholder="Transpalet modelleri içinde ara..."
-                                   class="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition">
+                            <input type="search"
+                                   placeholder="Transpalet modelleri içinde ara..."
+                                   class="w-full pl-12 pr-24 py-3.5 rounded-xl border-2 border-gray-200
+                                          focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <button class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition">
+                            <button class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-all shadow-sm">
                                 Ara
                             </button>
                         </div>
 
                         <!-- Sort & View -->
-                        <div class="flex items-center gap-3">
-                            <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <div class="flex items-center gap-3 flex-shrink-0">
+                            <div class="items-center gap-2 text-sm text-gray-600 hidden lg:flex">
                                 <i class="fa-solid fa-arrow-down-short-wide"></i>
-                                <span class="hidden lg:inline">Sırala:</span>
+                                <span>Sırala:</span>
                             </div>
-                            <select class="px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium focus:border-blue-500 focus:ring-4 focus:ring-blue-50">
+                            <select class="px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium
+                                           focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all">
                                 <option>Önerilen</option>
                                 <option>En Yeni</option>
                                 <option>İsim (A-Z)</option>
@@ -142,7 +157,7 @@
                                 <button class="px-3 py-2 bg-white rounded-lg shadow-sm">
                                     <i class="fa-solid fa-grid-2 text-blue-600"></i>
                                 </button>
-                                <button class="px-3 py-2 text-gray-500 hover:text-gray-700">
+                                <button class="px-3 py-2 text-gray-500 hover:text-gray-700 hover:bg-white/50 rounded-lg transition">
                                     <i class="fa-solid fa-list"></i>
                                 </button>
                             </div>
@@ -154,48 +169,48 @@
     </section>
 
     <!-- Filter Tags Bar (Sticky) -->
-    <section class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm" x-data="{ selected: 'all' }">
-        <div class="container mx-auto px-4 py-3">
+    <section class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="container mx-auto px-4 max-w-7xl py-3">
             <div class="flex items-center gap-3 overflow-x-auto">
                 <span class="text-sm text-gray-600 font-medium whitespace-nowrap">Filtrele:</span>
 
                 <button @click="selected = 'all'"
-                        :class="selected === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="selected === 'all' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all">
                     <i class="fa-solid fa-grid-2 mr-1.5"></i>
                     Tüm Modeller
                 </button>
 
                 <button @click="selected = 'electric'"
-                        :class="selected === 'electric' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="selected === 'electric' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all">
                     <i class="fa-solid fa-bolt mr-1.5 text-yellow-500"></i>
                     Elektrikli
                 </button>
 
                 <button @click="selected = 'platform'"
-                        :class="selected === 'platform' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="selected === 'platform' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all">
                     <i class="fa-solid fa-person-dolly mr-1.5 text-orange-500"></i>
                     Platformlu
                 </button>
 
                 <button @click="selected = 'driver'"
-                        :class="selected === 'driver' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="selected === 'driver' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all">
                     <i class="fa-solid fa-person-seat mr-1.5 text-purple-500"></i>
                     Sürücülü
                 </button>
 
                 <button @click="selected = 'manual'"
-                        :class="selected === 'manual' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="selected === 'manual' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all">
                     <i class="fa-solid fa-hand mr-1.5 text-gray-500"></i>
                     Manuel
                 </button>
 
                 <button @click="selected = 'scale'"
-                        :class="selected === 'scale' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                        :class="selected === 'scale' ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
                         class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all">
                     <i class="fa-solid fa-scale-balanced mr-1.5 text-teal-500"></i>
                     Tartılı
@@ -203,15 +218,29 @@
 
                 <!-- Clear Filter -->
                 <button x-show="selected !== 'all'" @click="selected = 'all'"
-                        class="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-full font-medium whitespace-nowrap transition-all">
+                        class="px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-full font-medium whitespace-nowrap transition-all"
+                        style="display: none;">
                     <i class="fa-solid fa-xmark mr-1.5"></i>
                     Temizle
                 </button>
+
+                <!-- Product Count -->
+                <div class="ml-auto flex items-center gap-2 text-sm text-gray-600 whitespace-nowrap bg-blue-50 px-4 py-2 rounded-full">
+                    <i class="fa-solid fa-box text-blue-600"></i>
+                    <span class="font-semibold text-blue-900">12 Ürün</span>
+                </div>
             </div>
         </div>
     </section>
 
-    <div class="h-96 bg-white"></div>
+    <!-- Demo Content -->
+    <div class="h-96 bg-white flex items-center justify-center">
+        <div class="text-center text-gray-400">
+            <i class="fa-solid fa-box-open text-6xl mb-4"></i>
+            <p class="text-xl font-semibold">Ürün listesi buraya gelecek</p>
+            <p class="text-sm mt-2">Design 8: E-commerce Professional Layout</p>
+        </div>
+    </div>
 
 </body>
 </html>

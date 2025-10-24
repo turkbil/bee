@@ -1,10 +1,10 @@
-<div class="w-full bg-white shadow-2xl rounded-2xl overflow-hidden relative">
+<div class="w-full bg-white dark:bg-gray-800 rounded-2xl overflow-hidden relative">
     <div class="grid grid-cols-12 gap-0 min-h-[480px]">
 
         {{-- ========================================== --}}
         {{-- SOL: VISUAL HERO (4/12) --}}
         {{-- ========================================== --}}
-        <div class="col-span-4 relative overflow-hidden bg-gradient-to-br {{ $config['gradient'] }}">
+        <div class="col-span-4 relative overflow-hidden bg-gradient-to-br {{ $config['gradient'] }} dark:opacity-90">
             {{-- Animated Pattern Background --}}
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0iI2ZmZiIgY3g9IjIwIiBjeT0iMjAiIHI9IjMiLz48L2c+PC9zdmc+')] animate-pulse"></div>
@@ -37,10 +37,10 @@
         {{-- ========================================== --}}
         {{-- ORTA: FEATURED PRODUCT (4/12) --}}
         {{-- ========================================== --}}
-        <div class="col-span-4 bg-gradient-to-br from-gray-50 to-indigo-50 p-6 flex flex-col">
+        <div class="col-span-4 bg-gradient-to-br from-gray-50 to-indigo-50 dark:from-gray-800 dark:to-indigo-900/20 p-6 flex flex-col">
             @if($featuredProduct)
                 <a href="/shop/urun/{{ is_array($featuredProduct->slug) ? $featuredProduct->slug['tr'] : $featuredProduct->slug }}"
-                   class="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col group">
+                   class="bg-white dark:bg-gray-800 rounded-2xl p-6 transition-all duration-300 h-full flex flex-col group border-2 border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 mb-3">
                         <div class="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></div>
                         <span>ÖNE ÇIKAN MODEL</span>

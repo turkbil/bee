@@ -89,6 +89,9 @@
     @stack('head')
     @stack('styles')
 
+    {{-- AI Chat Store - MUST load before Alpine.js initializes widgets --}}
+    <x-ai.chat-store />
+
     {{-- Livewire Styles --}}
     @livewireStyles
 </head>

@@ -25,7 +25,15 @@
  * - Chat penceresini açar/kapatır
  * - LocalStorage'da session ID tutar
  */
-document.addEventListener('alpine:init', () => {
+
+// Register store - handle both cases: before and after Alpine init
+function registerAiChatStore() {
+    if (typeof Alpine === 'undefined') {
+        console.warn('⏳ Alpine not loaded yet, waiting...');
+        setTimeout(registerAiChatStore, 50);
+        return;
+    }
+
     Alpine.store('aiChat', {
         // State
         sessionId: null,
@@ -350,7 +358,18 @@ document.addEventListener('alpine:init', () => {
             return this.messages.length > 0;
         },
     });
-});
+}
+
+// Call the register function
+// If Alpine is already initialized, register immediately
+// Otherwise, wait for alpine:init event
+if (typeof Alpine !== 'undefined' && Alpine.version) {
+    // Alpine already loaded, register immediately
+    registerAiChatStore();
+} else {
+    // Wait for Alpine to initialize
+    document.addEventListener('alpine:init', registerAiChatStore);
+}
 
 /**
  * =============================================================================

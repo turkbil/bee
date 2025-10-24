@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Compact 1 - Single Row Glass | Shop Subheader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 min-h-screen">
+
+    <!-- Navigation Buttons -->
+    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50 space-y-2">
+        <a href="design-subheader-shop-index.html" class="block w-12 h-12 glass rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all" title="Ana Sayfa">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-glass-compact-3.html" class="block w-12 h-12 glass rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all" title="Önceki">
+            <i class="fa-solid fa-chevron-left text-white"></i>
+        </a>
+    </div>
+    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-50">
+        <a href="design-glass-compact-2.html" class="block w-12 h-12 glass rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all" title="Sonraki">
+            <i class="fa-solid fa-chevron-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Design Label -->
+    <div class="fixed top-4 right-4 z-40 glass rounded-full px-4 py-2 shadow-lg">
+        <span class="text-xs font-bold text-white">Glass Compact 1/3 - Single Row</span>
+    </div>
+
+    <!-- Compact Glass Subheader - Tek Satır -->
+    <section class="py-8">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <!-- Main Glass Card -->
+            <div class="glass rounded-2xl p-6 shadow-2xl">
+                <!-- Row 1: Icon + Title + Breadcrumb -->
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-4">
+                        <!-- Icon -->
+                        <div class="w-14 h-14 glass rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fa-solid fa-dolly text-3xl text-white"></i>
+                        </div>
+
+                        <!-- Title + Breadcrumb -->
+                        <div>
+                            <nav class="mb-1.5">
+                                <ol class="flex items-center gap-1.5 text-xs text-white/70">
+                                    <li><a href="#" class="hover:text-white transition"><i class="fa-light fa-home mr-1"></i>Ana Sayfa</a></li>
+                                    <li><i class="fa-light fa-chevron-right text-[10px]"></i></li>
+                                    <li><a href="#" class="hover:text-white transition">Shop</a></li>
+                                    <li><i class="fa-light fa-chevron-right text-[10px]"></i></li>
+                                    <li class="text-white font-semibold">Transpalet</li>
+                                </ol>
+                            </nav>
+                            <h1 class="text-3xl font-bold text-white">Transpalet</h1>
+                        </div>
+                    </div>
+
+                    <!-- Category Description -->
+                    <p class="text-white/80 text-sm max-w-md hidden lg:block">
+                        Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın
+                    </p>
+                </div>
+
+                <!-- Row 2: Search + Filters + Sort + View -->
+                <div class="grid lg:grid-cols-[1fr_auto] gap-4 items-center">
+                    <!-- Search -->
+                    <div class="relative">
+                        <input type="search" placeholder="Transpalet içinde ara..."
+                               class="w-full pl-12 pr-4 py-3.5 glass rounded-xl text-white placeholder-white/60 border-none focus:ring-2 focus:ring-white/50 transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
+                    </div>
+
+                    <!-- Filters + Sort + View -->
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <!-- Filter Pills -->
+                        <button class="px-4 py-2.5 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-white/90 transition shadow-lg">
+                            <i class="fa-solid fa-grid-2 mr-1.5"></i>
+                            Tümü
+                        </button>
+                        <button class="px-4 py-2.5 glass rounded-lg font-medium text-sm text-white hover:bg-white/20 transition">
+                            <i class="fa-solid fa-bolt mr-1.5 text-yellow-300"></i>
+                            Elektrikli
+                        </button>
+                        <button class="px-4 py-2.5 glass rounded-lg font-medium text-sm text-white hover:bg-white/20 transition">
+                            <i class="fa-solid fa-person-dolly mr-1.5 text-orange-300"></i>
+                            Platformlu
+                        </button>
+
+                        <!-- Sort -->
+                        <select class="px-4 py-2.5 glass rounded-lg text-white font-medium border-none text-sm focus:ring-2 focus:ring-white/50">
+                            <option class="text-gray-900">Varsayılan</option>
+                            <option class="text-gray-900">İsim (A-Z)</option>
+                            <option class="text-gray-900">İsim (Z-A)</option>
+                            <option class="text-gray-900">Kapasite</option>
+                        </select>
+
+                        <!-- View Toggle -->
+                        <div class="flex items-center gap-1 glass rounded-lg p-1">
+                            <button class="px-3 py-2 bg-white/30 rounded-md text-white">
+                                <i class="fa-solid fa-grid-2"></i>
+                            </button>
+                            <button class="px-3 py-2 text-white/70">
+                                <i class="fa-solid fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Content -->
+    <div class="container mx-auto px-4 max-w-7xl mt-8">
+        <div class="glass rounded-2xl p-12 flex items-center justify-center">
+            <div class="text-center text-white">
+                <i class="fa-solid fa-box-open text-6xl mb-4 opacity-60"></i>
+                <p class="text-xl font-semibold">Ürün listesi buraya gelecek</p>
+                <p class="text-sm mt-2 opacity-80">Glass Compact 1: Single Row - Tüm özellikler 2 satırda</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

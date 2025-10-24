@@ -446,8 +446,7 @@
     </div>
 </div>
 
-{{-- AI Chat Components --}}
-<x-ai.chat-store />
+{{-- AI Chat Components - Store moved to HEAD, only widget here --}}
 <x-ai.floating-widget button-text="AI Destek" theme="blue" />
 
 {{-- Livewire Scripts --}}

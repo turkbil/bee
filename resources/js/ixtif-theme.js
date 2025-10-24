@@ -226,12 +226,19 @@ window.initGLightbox = initGLightbox;
 
             if (trustBounds.top !== Infinity) {
                 trustSignalsOffset = trustBounds.top;
-                stopBoundary = trustBounds.top;
+
+                if (trustBounds.top > faqBounds.top) {
+                    stopBoundary = Math.min(stopBoundary, trustBounds.top);
+                }
             } else {
                 trustSignalsOffset = null;
             }
         } else {
             trustSignalsOffset = null;
+        }
+
+        if (stopBoundary !== Infinity) {
+            stopBoundary = Math.max(stopBoundary, faqBounds.top);
         }
 
         return {
@@ -307,20 +314,19 @@ window.initGLightbox = initGLightbox;
         }
     }
 
-    function updateTOC(scrollY) {
+    function updateTOC(scrollY, stickyBounds) {
         if (!elements.tocBar) return;
 
-        const shouldStick = scrollY >= tocOriginalOffset;
-        const faqOffset = elements.faqSection ? getDocumentOffsetTop(elements.faqSection) : Infinity;
+        const bounds = stickyBounds || getStickyBounds();
+        const stopBoundary = bounds && bounds.stopBoundary !== undefined ? bounds.stopBoundary : Infinity;
 
-        // TOC'un ALTININ FAQ BAŞINA değip değmediğini kontrol et
+        const shouldStick = scrollY >= tocOriginalOffset;
+
         const tocHeight = elements.tocBar.offsetHeight;
         const tocBottom = scrollY + HEADER_HEIGHT + tocHeight;
-        const shouldStop = tocBottom >= faqOffset;
+        const shouldStop = shouldStick && stopBoundary !== Infinity && tocBottom >= stopBoundary;
 
-        // Sticky/Static/Stop pozisyon kontrolü
         if (!shouldStick) {
-            // Normal mode - sticky değil
             elements.tocBar.style.position = 'static';
             elements.tocBar.style.top = 'auto';
             elements.tocBar.style.left = 'auto';
@@ -330,10 +336,9 @@ window.initGLightbox = initGLightbox;
             tocVisible = true;
             tocSticky = false;
         } else if (shouldStop) {
-            // Stop mode - FAQ BAŞINDA dur (absolute position ile sabitle)
             const offsetParent = elements.tocBar.offsetParent || document.body;
             const offsetParentTop = getDocumentOffsetTop(offsetParent);
-            const absoluteTop = faqOffset - offsetParentTop - tocHeight;
+            const absoluteTop = Math.max(stopBoundary - offsetParentTop - tocHeight, 0);
 
             elements.tocBar.style.position = 'absolute';
             elements.tocBar.style.top = absoluteTop + 'px';
@@ -344,7 +349,6 @@ window.initGLightbox = initGLightbox;
             tocVisible = true;
             tocSticky = true;
         } else {
-            // Sticky mode - takip et
             elements.tocBar.style.position = 'fixed';
             elements.tocBar.style.top = HEADER_HEIGHT + 'px';
             elements.tocBar.style.left = '0';
@@ -356,26 +360,22 @@ window.initGLightbox = initGLightbox;
         }
     }
 
-    function updateSidebar(scrollY) {
+    function updateSidebar(scrollY, stickyBounds) {
         if (!elements.sidebar || !elements.tocBar) return;
 
-        // TOC height hesapla
-        const tocHeight = tocSticky ? elements.tocBar.offsetHeight : 0;
+        const bounds = stickyBounds || getStickyBounds();
+        const stopBoundary = bounds && bounds.stopBoundary !== undefined ? bounds.stopBoundary : Infinity;
 
-        // Sidebar sticky top position (TOC altında boşluk)
+        const tocHeight = tocSticky ? elements.tocBar.offsetHeight : 0;
         const stickyTop = HEADER_HEIGHT + tocHeight + TOC_SIDEBAR_GAP;
 
-        // Sidebar sticky başlamalı mı? (TOC sticky ise)
         const shouldStick = tocSticky;
 
-        // Sidebar'ın ALTININ FAQ BAŞINA değip değmediğini kontrol et
         const sidebarHeight = elements.sidebar.offsetHeight;
         const sidebarBottom = scrollY + stickyTop + sidebarHeight;
-        const faqOffset = elements.faqSection ? getDocumentOffsetTop(elements.faqSection) : Infinity;
-        const shouldStop = shouldStick && (sidebarBottom >= faqOffset);
+        const shouldStop = shouldStick && stopBoundary !== Infinity && sidebarBottom >= stopBoundary;
 
         if (!shouldStick) {
-            // Normal mode - TOC henüz sticky değil
             elements.sidebar.style.position = 'static';
             elements.sidebar.style.top = 'auto';
             elements.sidebar.style.width = 'auto';
@@ -385,11 +385,9 @@ window.initGLightbox = initGLightbox;
             elements.sidebar.style.visibility = 'visible';
             sidebarSticky = false;
             sidebarVisible = true;
-            // Cache'i sıfırla
             cachedSidebarWidth = 0;
             cachedSidebarLeft = 0;
         } else {
-            // Sticky mode - cache width/left (sadece ilk sticky'de)
             if (!sidebarSticky || cachedSidebarWidth === 0) {
                 const sidebarParent = elements.sidebar.parentElement;
                 const parentRect = sidebarParent.getBoundingClientRect();
@@ -398,10 +396,9 @@ window.initGLightbox = initGLightbox;
             }
 
             if (shouldStop) {
-                // Stop mode - FAQ BAŞINDA dur (absolute position ile sabitle)
                 const sidebarParent = elements.sidebar.parentElement;
                 const parentTop = getDocumentOffsetTop(sidebarParent);
-                const absoluteTop = faqOffset - parentTop - sidebarHeight;
+                const absoluteTop = Math.max(stopBoundary - parentTop - sidebarHeight, 0);
 
                 elements.sidebar.style.position = 'absolute';
                 elements.sidebar.style.top = absoluteTop + 'px';
@@ -412,11 +409,11 @@ window.initGLightbox = initGLightbox;
                 elements.sidebar.style.visibility = 'visible';
                 sidebarVisible = true;
             } else {
-                // Sticky mode - TOC altında takip et
                 elements.sidebar.style.position = 'fixed';
                 elements.sidebar.style.top = stickyTop + 'px';
                 elements.sidebar.style.width = cachedSidebarWidth + 'px';
                 elements.sidebar.style.left = cachedSidebarLeft + 'px';
+                elements.sidebar.style.right = 'auto';
                 elements.sidebar.style.opacity = '1';
                 elements.sidebar.style.visibility = 'visible';
                 sidebarVisible = true;

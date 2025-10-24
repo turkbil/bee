@@ -50,15 +50,15 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
                                     </svg>
                                 </div>
-                                <input 
-                                    type="email" 
-                                    name="email" 
+                                <input
+                                    type="email"
+                                    name="email"
                                     id="email"
-                                    value="{{ old('email') }}" 
-                                    required 
+                                    value="{{ old('email') }}"
+                                    required
                                     autocomplete="email"
                                     autofocus
-                                    placeholder="email@domain.com"
+                                    placeholder="{{ __('auth.email_placeholder') }}"
                                     class="w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('email') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
                                 />
                             </div>

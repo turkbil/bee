@@ -85,6 +85,66 @@
     <!-- /Yandex.Metrica counter -->
     @endif
 
+    {{-- Console Error Filter - Ad Blocker Suppress --}}
+    <script>
+    (function() {
+        'use strict';
+
+        // Ignore list - Wildcard support with regex
+        const consoleErrorIgnoreList = [
+            /yandex\.ru/i,                    // Yandex Metrika (tüm subdomainler)
+            /yandex\.com/i,                   // Yandex alternative domains
+            /mc\.yandex/i,                    // Yandex Metrika CDN
+            /metrika.*yandex/i,               // Yandex Metrika variations
+            /googletagmanager\.com/i,         // Google Tag Manager
+            /google-analytics\.com/i,         // Google Analytics
+            /doubleclick\.net/i,              // Google Ads
+            /facebook\.net/i,                 // Facebook Pixel
+            /connect\.facebook/i,             // Facebook SDK
+            /ERR_BLOCKED_BY_CLIENT/i          // Generic ad blocker error
+        ];
+
+        // Check if error should be ignored
+        function shouldIgnoreError(message) {
+            if (!message) return false;
+
+            return consoleErrorIgnoreList.some(function(pattern) {
+                return pattern.test(message);
+            });
+        }
+
+        // Override console.error
+        const originalConsoleError = console.error;
+        console.error = function() {
+            const message = Array.prototype.slice.call(arguments).join(' ');
+
+            if (!shouldIgnoreError(message)) {
+                originalConsoleError.apply(console, arguments);
+            }
+        };
+
+        // Suppress window.onerror for ignored patterns
+        const originalOnError = window.onerror;
+        window.onerror = function(message, source, lineno, colno, error) {
+            if (shouldIgnoreError(message) || shouldIgnoreError(source)) {
+                return true; // Suppress error
+            }
+
+            if (originalOnError) {
+                return originalOnError.apply(this, arguments);
+            }
+            return false;
+        };
+
+        // Suppress unhandledrejection for network errors
+        window.addEventListener('unhandledrejection', function(event) {
+            if (event.reason && shouldIgnoreError(event.reason.toString())) {
+                event.preventDefault();
+            }
+        });
+    })();
+    </script>
+
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')

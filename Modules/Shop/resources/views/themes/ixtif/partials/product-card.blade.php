@@ -65,7 +65,8 @@
             @endif
             <button
                 onclick="window.location.href='{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product) }}'"
-                class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 text-white px-4 md:px-5 lg:px-6 py-2 md:py-2.5 lg:py-3 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all text-sm md:text-base lg:text-base">
+                class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 text-white w-12 h-12 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center text-2xl">
+                →
             </button>
         </div>
     </div>

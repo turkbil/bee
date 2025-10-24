@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subheader Shop 7 - Glassmorphism Style</title>
+    <title>Design 7 - Glassmorphism Style | Shop Subheader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        * { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
 
         .glass-card {
             background: rgba(255, 255, 255, 0.1);
@@ -19,24 +31,24 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 min-h-screen">
+<body class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 min-h-screen" x-data="{ activeFilter: 'all' }">
 
     <!-- Navigation Buttons -->
-    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50">
+    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50 space-y-2">
         <a href="design-subheader-shop-index.html"
-           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition mb-2"
+           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all border border-white/30"
            title="Ana Sayfa">
             <i class="fa-solid fa-grid-2 text-white"></i>
         </a>
         <a href="design-subheader-shop-6.html"
-           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition"
+           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all border border-white/30"
            title="Önceki">
             <i class="fa-solid fa-chevron-left text-white"></i>
         </a>
     </div>
     <div class="fixed top-1/2 -translate-y-1/2 right-4 z-50">
         <a href="design-subheader-shop-8.html"
-           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition"
+           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all border border-white/30"
            title="Sonraki">
             <i class="fa-solid fa-chevron-right text-white"></i>
         </a>
@@ -47,31 +59,32 @@
         <span class="text-xs font-bold text-white">Design 7/8 - Glassmorphism</span>
     </div>
 
-    <!-- Subheader 7: Glassmorphism -->
+    <!-- Subheader: Glassmorphism Style -->
     <section class="py-12">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-4 max-w-7xl">
             <!-- Breadcrumb Glass Card -->
-            <div class="glass-card rounded-2xl px-6 py-3 inline-flex items-center gap-2 mb-8 text-sm text-white">
-                <a href="#" class="hover:text-white/80 flex items-center gap-2">
-                    <i class="fa-light fa-home"></i> Ana Sayfa
+            <div class="glass-card rounded-2xl px-6 py-3 inline-flex items-center gap-2 mb-8 text-sm text-white shadow-lg">
+                <a href="#" class="hover:text-white/80 transition flex items-center gap-2">
+                    <i class="fa-light fa-home"></i>
+                    <span>Ana Sayfa</span>
                 </a>
                 <i class="fa-light fa-chevron-right text-xs"></i>
-                <a href="#" class="hover:text-white/80">Shop</a>
+                <a href="#" class="hover:text-white/80 transition">Shop</a>
                 <i class="fa-light fa-chevron-right text-xs"></i>
                 <span class="font-semibold">Transpalet</span>
             </div>
 
             <!-- Main Glass Card -->
-            <div class="glass-card rounded-3xl p-8">
+            <div class="glass-card rounded-3xl p-8 shadow-2xl">
                 <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-center">
                     <!-- Left: Title & Description -->
                     <div>
-                        <div class="flex items-center gap-5 mb-6">
-                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center glass-card">
-                                <i class="fa-solid fa-dolly text-4xl text-white"></i>
+                        <div class="flex items-center gap-6 mb-6">
+                            <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center glass-card shadow-xl">
+                                <i class="fa-solid fa-dolly text-5xl text-white"></i>
                             </div>
                             <div>
-                                <h1 class="text-5xl font-black text-white mb-2">Transpalet</h1>
+                                <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">Transpalet</h1>
                                 <p class="text-lg text-white/90">12+ Ürün Modeli | 2.0 Ton Kapasite | Li-Ion Teknoloji</p>
                             </div>
                         </div>
@@ -83,20 +96,28 @@
 
                         <!-- Filter Pills -->
                         <div class="flex flex-wrap gap-3">
-                            <button class="px-6 py-3 bg-white text-blue-600 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105">
+                            <button @click="activeFilter = 'all'"
+                                    :class="activeFilter === 'all' ? 'bg-white text-blue-600 shadow-xl' : 'glass-card text-white hover:bg-white/20'"
+                                    class="px-6 py-3 rounded-full font-semibold transition-all">
                                 <i class="fa-solid fa-grid-2 mr-2"></i>
-                                Tümü
+                                Tüm Modeller
                             </button>
-                            <button class="px-6 py-3 glass-card text-white rounded-full font-medium hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-bolt mr-2"></i>
+                            <button @click="activeFilter = 'electric'"
+                                    :class="activeFilter === 'electric' ? 'bg-white text-blue-600 shadow-xl' : 'glass-card text-white hover:bg-white/20'"
+                                    class="px-6 py-3 rounded-full font-medium transition-all">
+                                <i class="fa-solid fa-bolt mr-2 text-yellow-400"></i>
                                 Elektrikli
                             </button>
-                            <button class="px-6 py-3 glass-card text-white rounded-full font-medium hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-person-dolly mr-2"></i>
+                            <button @click="activeFilter = 'platform'"
+                                    :class="activeFilter === 'platform' ? 'bg-white text-blue-600 shadow-xl' : 'glass-card text-white hover:bg-white/20'"
+                                    class="px-6 py-3 rounded-full font-medium transition-all">
+                                <i class="fa-solid fa-person-dolly mr-2 text-orange-400"></i>
                                 Platformlu
                             </button>
-                            <button class="px-6 py-3 glass-card text-white rounded-full font-medium hover:bg-white/20 transition-all">
-                                <i class="fa-solid fa-person-seat mr-2"></i>
+                            <button @click="activeFilter = 'driver'"
+                                    :class="activeFilter === 'driver' ? 'bg-white text-blue-600 shadow-xl' : 'glass-card text-white hover:bg-white/20'"
+                                    class="px-6 py-3 rounded-full font-medium transition-all">
+                                <i class="fa-solid fa-person-seat mr-2 text-purple-400"></i>
                                 Sürücülü
                             </button>
                         </div>
@@ -105,32 +126,36 @@
                     <!-- Right: Search & Sort Card -->
                     <div class="space-y-4">
                         <!-- Search -->
-                        <div class="glass-card rounded-2xl p-1.5">
+                        <div class="glass-card rounded-2xl p-1.5 shadow-lg">
                             <div class="relative">
-                                <input type="search" placeholder="Transpalet içinde ara..."
-                                       class="w-full pl-12 pr-4 py-3.5 bg-white/20 rounded-xl text-white placeholder-white/60 border-none focus:bg-white/30 focus:ring-2 focus:ring-white/50 transition">
-                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
+                                <input type="search"
+                                       placeholder="Transpalet içinde ara..."
+                                       class="w-full pl-12 pr-4 py-3.5 bg-white/20 rounded-xl text-white placeholder-white/60
+                                              border-none focus:bg-white/30 focus:ring-2 focus:ring-white/50 transition-all">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/70 text-lg"></i>
                             </div>
                         </div>
 
                         <!-- Sort & View -->
-                        <div class="glass-card rounded-2xl p-4">
+                        <div class="glass-card rounded-2xl p-5 shadow-lg">
                             <div class="flex items-center justify-between mb-3">
                                 <span class="text-white font-medium text-sm">Sıralama & Görünüm</span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <select class="flex-1 px-4 py-3 bg-white/20 rounded-xl text-white font-medium border-none focus:bg-white/30 focus:ring-2 focus:ring-white/50">
+                                <select class="flex-1 px-4 py-3 bg-white/20 rounded-xl text-white font-medium
+                                               border-none focus:bg-white/30 focus:ring-2 focus:ring-white/50 transition-all">
                                     <option class="text-gray-900">Varsayılan Sıralama</option>
                                     <option class="text-gray-900">İsim (A-Z)</option>
                                     <option class="text-gray-900">İsim (Z-A)</option>
                                     <option class="text-gray-900">Kapasite (Düşük-Yüksek)</option>
+                                    <option class="text-gray-900">Kapasite (Yüksek-Düşük)</option>
                                 </select>
 
                                 <div class="flex items-center gap-1 bg-white/20 rounded-xl p-1">
-                                    <button class="px-3 py-2 bg-white/30 rounded-lg text-white">
+                                    <button class="px-3 py-2.5 bg-white/30 rounded-lg text-white">
                                         <i class="fa-solid fa-grid-2"></i>
                                     </button>
-                                    <button class="px-3 py-2 text-white/70">
+                                    <button class="px-3 py-2.5 text-white/70 hover:bg-white/20 rounded-lg transition">
                                         <i class="fa-solid fa-list"></i>
                                     </button>
                                 </div>
@@ -138,15 +163,23 @@
                         </div>
 
                         <!-- Quick Stats -->
-                        <div class="glass-card rounded-2xl p-4">
-                            <div class="grid grid-cols-2 gap-3 text-center">
-                                <div>
+                        <div class="glass-card rounded-2xl p-5 shadow-lg">
+                            <div class="grid grid-cols-2 gap-4 text-center">
+                                <div class="bg-white/10 rounded-xl p-3">
                                     <div class="text-2xl font-bold text-white">12+</div>
-                                    <div class="text-xs text-white/70">Model</div>
+                                    <div class="text-xs text-white/70 mt-1">Model</div>
                                 </div>
-                                <div>
+                                <div class="bg-white/10 rounded-xl p-3">
                                     <div class="text-2xl font-bold text-white">2.0T</div>
-                                    <div class="text-xs text-white/70">Kapasite</div>
+                                    <div class="text-xs text-white/70 mt-1">Kapasite</div>
+                                </div>
+                                <div class="bg-white/10 rounded-xl p-3">
+                                    <div class="text-2xl font-bold text-white">Li-Ion</div>
+                                    <div class="text-xs text-white/70 mt-1">Teknoloji</div>
+                                </div>
+                                <div class="bg-white/10 rounded-xl p-3">
+                                    <div class="text-2xl font-bold text-white">CE</div>
+                                    <div class="text-xs text-white/70 mt-1">Sertifikalı</div>
                                 </div>
                             </div>
                         </div>
@@ -155,6 +188,15 @@
             </div>
         </div>
     </section>
+
+    <!-- Demo Content -->
+    <div class="container mx-auto px-4 max-w-7xl pb-12">
+        <div class="glass-card rounded-3xl p-12 text-center shadow-2xl">
+            <i class="fa-solid fa-box-open text-6xl mb-4 text-white/40"></i>
+            <p class="text-xl font-semibold text-white">Ürün listesi buraya gelecek</p>
+            <p class="text-sm mt-2 text-white/70">Design 7: Glassmorphism Style</p>
+        </div>
+    </div>
 
 </body>
 </html>

@@ -3,96 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subheader Shop 4 - Ultra Compact</title>
+    <title>Design 4 - Ultra Compact | Shop Subheader</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        * { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-50">
 
     <!-- Navigation Buttons -->
-    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50">
+    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50 space-y-2">
         <a href="design-subheader-shop-index.html"
-           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition mb-2"
+           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl transition-all"
            title="Ana Sayfa">
             <i class="fa-solid fa-grid-2 text-gray-700"></i>
         </a>
         <a href="design-subheader-shop-3.html"
-           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition"
+           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl transition-all"
            title="Önceki">
             <i class="fa-solid fa-chevron-left text-gray-700"></i>
         </a>
     </div>
     <div class="fixed top-1/2 -translate-y-1/2 right-4 z-50">
         <a href="design-subheader-shop-5.html"
-           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition"
+           class="block w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl transition-all"
            title="Sonraki">
             <i class="fa-solid fa-chevron-right text-gray-700"></i>
         </a>
     </div>
 
     <!-- Design Label -->
-    <div class="fixed top-4 right-4 z-40 bg-white rounded-full px-4 py-2 shadow-lg">
-        <span class="text-xs font-bold text-gray-600">Design 4/8 - Compact</span>
+    <div class="fixed top-4 right-4 z-40 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-full px-4 py-2 shadow-lg">
+        <span class="text-xs font-bold">Design 4/8 - Ultra Compact</span>
     </div>
 
-    <!-- Subheader 4: Ultra Compact One-Line -->
-    <section class="bg-white border-b border-gray-200 py-4">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between">
+    <!-- Subheader: Ultra Compact One-Line -->
+    <section class="bg-white border-b-2 border-gray-100 py-4 sticky top-0 z-30 shadow-sm">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <div class="flex items-center justify-between gap-4">
                 <!-- Left: Breadcrumb + Title (Inline) -->
                 <div class="flex items-center gap-4">
                     <!-- Icon -->
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fa-solid fa-dolly text-lg text-blue-600"></i>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                        <i class="fa-solid fa-dolly text-xl text-white"></i>
                     </div>
 
                     <!-- Breadcrumb + Title Combined -->
-                    <div>
+                    <div class="min-w-0">
                         <nav class="mb-0.5">
                             <ol class="flex items-center gap-1.5 text-xs text-gray-500">
-                                <li><a href="#" class="hover:text-blue-600">Ana Sayfa</a></li>
+                                <li>
+                                    <a href="#" class="hover:text-blue-600 transition flex items-center gap-1">
+                                        <i class="fa-light fa-home"></i>
+                                        <span class="hidden sm:inline">Ana Sayfa</span>
+                                    </a>
+                                </li>
                                 <li><i class="fa-light fa-chevron-right text-[10px]"></i></li>
-                                <li><a href="#" class="hover:text-blue-600">Shop</a></li>
+                                <li><a href="#" class="hover:text-blue-600 transition">Shop</a></li>
                                 <li><i class="fa-light fa-chevron-right text-[10px]"></i></li>
                                 <li class="text-gray-900 font-medium">Transpalet</li>
                             </ol>
                         </nav>
-                        <h1 class="text-xl font-bold text-gray-900">Transpalet Koleksiyonu</h1>
+                        <h1 class="text-xl md:text-2xl font-bold text-gray-900 truncate">Transpalet Koleksiyonu</h1>
                     </div>
                 </div>
 
                 <!-- Right: Quick Actions -->
-                <div class="flex items-center gap-3">
-                    <div class="relative">
-                        <input type="search" placeholder="Ara..."
-                               class="w-64 pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
+                <div class="flex items-center gap-3 flex-shrink-0">
+                    <!-- Search (Hidden on mobile) -->
+                    <div class="relative hidden lg:block">
+                        <input type="search"
+                               placeholder="Ara..."
+                               class="w-64 pl-10 pr-4 py-2.5 rounded-xl border-2 border-gray-200 text-sm
+                                      focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                     </div>
 
-                    <select class="px-3 py-2 bg-gray-100 rounded-lg text-sm font-medium border-none">
-                        <option>Sırala</option>
+                    <!-- Sort Dropdown -->
+                    <select class="px-4 py-2.5 bg-gray-100 rounded-xl text-sm font-medium border-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option>Varsayılan</option>
                         <option>İsim (A-Z)</option>
-                        <option>Kapasite</option>
+                        <option>İsim (Z-A)</option>
+                        <option>Kapasite (Düşük-Yüksek)</option>
+                        <option>Kapasite (Yüksek-Düşük)</option>
                     </select>
 
-                    <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                        <button class="px-2 py-1.5 bg-white rounded-md shadow-sm">
-                            <i class="fa-solid fa-grid-2 text-sm"></i>
+                    <!-- View Toggle -->
+                    <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+                        <button class="px-3 py-2 bg-white rounded-lg shadow-sm">
+                            <i class="fa-solid fa-grid-2 text-sm text-blue-600"></i>
                         </button>
-                        <button class="px-2 py-1.5">
+                        <button class="px-3 py-2 hover:bg-white/50 rounded-lg transition">
                             <i class="fa-solid fa-list text-sm text-gray-500"></i>
                         </button>
                     </div>
                 </div>
             </div>
+
+            <!-- Mobile Search (Below on small screens) -->
+            <div class="lg:hidden mt-3">
+                <div class="relative">
+                    <input type="search"
+                           placeholder="Transpalet içinde ara..."
+                           class="w-full pl-10 pr-4 py-2.5 rounded-xl border-2 border-gray-200 text-sm
+                                  focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                </div>
+            </div>
         </div>
     </section>
 
-    <div class="h-96 bg-white"></div>
+    <!-- Filter Bar (Secondary) -->
+    <section class="bg-gray-50 border-b border-gray-200 py-3">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <div class="flex items-center gap-2 overflow-x-auto">
+                <button class="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-all shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-grid-2 mr-1.5"></i>
+                    Tüm Modeller
+                </button>
+                <button class="px-5 py-2 bg-white text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50 transition-all border border-gray-200 whitespace-nowrap">
+                    <i class="fa-solid fa-bolt mr-1.5 text-yellow-500"></i>
+                    Elektrikli
+                </button>
+                <button class="px-5 py-2 bg-white text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50 transition-all border border-gray-200 whitespace-nowrap">
+                    <i class="fa-solid fa-person-dolly mr-1.5 text-orange-500"></i>
+                    Platformlu
+                </button>
+                <button class="px-5 py-2 bg-white text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50 transition-all border border-gray-200 whitespace-nowrap">
+                    <i class="fa-solid fa-person-seat mr-1.5 text-purple-500"></i>
+                    Sürücülü
+                </button>
+
+                <!-- Product Count Badge -->
+                <div class="ml-auto flex items-center gap-2 text-sm text-gray-600 whitespace-nowrap">
+                    <i class="fa-solid fa-box"></i>
+                    <span class="font-semibold">12 Ürün</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Content -->
+    <div class="h-96 bg-white flex items-center justify-center">
+        <div class="text-center text-gray-400">
+            <i class="fa-solid fa-box-open text-6xl mb-4"></i>
+            <p class="text-xl font-semibold">Ürün listesi buraya gelecek</p>
+            <p class="text-sm mt-2">Design 4: Ultra Compact One-Line Layout</p>
+        </div>
+    </div>
 
 </body>
 </html>

@@ -6,7 +6,7 @@
         @if($product->hasMedia('featured_image'))
             <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 1, 'format' => 'webp']) }}"
                  alt="{{ $product->getTranslated('title') }}"
-                 class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark group-hover:scale-110 transition-transform duration-700"
+                 class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                  loading="lazy"
                  width="400"
                  height="400">
@@ -15,7 +15,7 @@
             <div class="w-full h-full flex flex-col items-center justify-center gap-4 p-8 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
                 @if($product->category && $product->category->icon_class)
                     {{-- Kategori ikonu büyük fallback --}}
-                    <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                    <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl transition-all duration-500">
                         <i class="{{ $product->category->icon_class }} text-7xl text-white"></i>
                     </div>
                     <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 text-center">
@@ -54,13 +54,18 @@
 
         {{-- Price & CTA --}}
         <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-300 dark:border-gray-500 flex items-center justify-between">
-            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                {{ __('shop::front.price_on_request') }}
-            </div>
+            {{-- Fiyat gösterimi: Sadece gerçek fiyat varsa göster (base_price > 0 ve price_on_request false) --}}
+            @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
+                <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+                    {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
+                </div>
+            @else
+                {{-- Fiyat yoksa boş alan bırak (minimal tasarım) --}}
+                <div></div>
+            @endif
             <button
                 onclick="window.location.href='{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product) }}'"
                 class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 text-white px-4 md:px-5 lg:px-6 py-2 md:py-2.5 lg:py-3 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all text-sm md:text-base lg:text-base">
-                <i class="fa-light fa-arrow-right"></i>
             </button>
         </div>
     </div>

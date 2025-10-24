@@ -25,7 +25,7 @@ Route::middleware([InitializeTenancy::class, 'guest'])
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store'])
-        ->middleware('throttle:5,1'); // Max 5 attempt per minute
+        ->middleware('throttle:15,1'); // Max 15 attempt per minute
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');

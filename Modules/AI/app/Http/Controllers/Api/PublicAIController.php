@@ -1080,7 +1080,12 @@ class PublicAIController extends Controller
         $prompts[] = "";
         $prompts[] = "**ZORUNLU MARKDOWN FORMAT:**";
         $prompts[] = "- Paragraflar: Boş satırla ayır";
-        $prompts[] = "- Liste: Her satır '- ' ile başla (tire+boşluk)";
+        $prompts[] = "- Liste: Her öğe YENİ SATIRDA '- ' ile başla (tire+boşluk)";
+        $prompts[] = "  ❌ YANLIŞ: 'öneriler: - item1 - item2 - item3' (aynı satırda)";
+        $prompts[] = "  ✅ DOĞRU:";
+        $prompts[] = "  - item1";
+        $prompts[] = "  - item2";
+        $prompts[] = "  - item3";
         $prompts[] = "- Vurgu: **kalın metin**";
         $prompts[] = "";
         $prompts[] = "**⛔ YASAKLAR:**";

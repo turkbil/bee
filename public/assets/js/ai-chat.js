@@ -420,7 +420,33 @@ window.aiChatRenderMarkdown = function(content) {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${linkText.trim()}</a>`;
     });
 
-    // STEP 2: Bold Processing
+    // STEP 2: List Processing (MOVED BEFORE BOLD - fixes inline list items!)
+
+    // 2A: Önce satır içi liste öğelerini ayır (AI bazen `- item1 - item2` gibi yazabiliyor)
+    // Pattern: Satır başında OLMAYAN tüm " - **" pattern'lerini yeni satıra al
+    html = html.replace(/(?<!^)\s+-\s+\*\*/gm, '\n- **');
+
+    // 2B: Numbered lists: 1. 2. 3.
+    html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
+        let items = match.split('\n').filter(line => /^\d+[.)](?!\d)\s+/.test(line.trim()));
+        let listItems = items.map(line => {
+            let text = line.replace(/^\d+[.)](?!\d)\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ol>\n${listItems}\n</ol>`;
+    });
+
+    // 2C: Unordered lists: - item (şimdi düzgün alt alta olmalı)
+    html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {
+        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
+        let listItems = items.map(line => {
+            let text = line.replace(/^-\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ul>\n${listItems}\n</ul>`;
+    });
+
+    // STEP 3: Bold Processing (AFTER list processing!)
     let preservedLinks = [];
     html = html.replace(/(<a[\s\S]*?<\/a>)/g, function(match, link) {
         let linkPlaceholder = `___LINK_PRESERVED_${preservedLinks.length}___`;
@@ -432,27 +458,6 @@ window.aiChatRenderMarkdown = function(content) {
 
     preservedLinks.forEach((link, index) => {
         html = html.replace(`___LINK_PRESERVED_${index}___`, link);
-    });
-
-    // STEP 3: List Processing
-    // Numbered lists: 1. 2. 3.
-    html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
-        let items = match.split('\n').filter(line => /^\d+[.)](?!\d)\s+/.test(line.trim()));
-        let listItems = items.map(line => {
-            let text = line.replace(/^\d+[.)](?!\d)\s*/, '').trim();
-            return `<li>${text}</li>`;
-        }).join('\n');
-        return `<ol>\n${listItems}\n</ol>`;
-    });
-
-    // Unordered lists: - item
-    html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {
-        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
-        let listItems = items.map(line => {
-            let text = line.replace(/^-\s*/, '').trim();
-            return `<li>${text}</li>`;
-        }).join('\n');
-        return `<ul>\n${listItems}\n</ul>`;
     });
 
     // STEP 4: Paragraph Processing

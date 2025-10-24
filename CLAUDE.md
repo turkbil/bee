@@ -180,13 +180,33 @@ git log -1 --oneline  # Hash'i al, todo'ya yaz
 - **Karışıklık yaratma**: Sürekli checkpoint = kötü git history
 
 #### 🔄 Geri Dönüş:
+
+**🚨 KRİTİK UYARI: GIT RESET İÇİN MUTLAKA KULLANICI İZNİ AL!**
+
 ```bash
-# Sorun çıkarsa tüm değişiklikleri geri al
+# ❌ ASLA YAPMA - Kullanıcı izni olmadan:
 git reset --hard [checkpoint-hash]
 
-# Veya reflog kullan
+# ✅ YAPILACAK İŞLEM:
+1. Kullanıcıya SOR: "Git checkpoint'e geri döneyim mi? (hash: XXXXX)"
+2. Kullanıcı ONAYLARSA: git reset --hard [checkpoint-hash]
+3. ONAYLAMAZSA: Alternatif çözüm bul
+```
+
+**NEDEN ÖNEMLİ:**
+- Arkaplanda başka işler yapılıyor olabilir
+- Commit'ler başka dosyaları da içerebilir
+- Hard reset GERİ ALINAMAZ - tüm değişiklikler kaybolur
+- Kullanıcı manuel değişiklik yapmış olabilir
+
+**GÜVENLİ ALTERNATİFLER:**
+```bash
+# Sadece belirli dosyaları geri al
+git checkout [checkpoint-hash] -- path/to/file.php
+
+# Veya reflog ile inceleyip sor
 git reflog
-git reset --hard HEAD@{3}
+git show HEAD@{3}  # Önce göster, sonra sor
 ```
 
 ### 📝 ÖNEMLİ NOT

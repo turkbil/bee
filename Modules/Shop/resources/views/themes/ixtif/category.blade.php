@@ -70,21 +70,6 @@
                         </div>
                     @endif
 
-                    {{-- Stats --}}
-                    <div class="mt-8 flex items-center gap-6 text-sm">
-                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                            <i class="fa-light fa-box text-blue-600 dark:text-blue-400"></i>
-                            <span class="font-semibold">{{ $products->total() }}</span>
-                            <span>{{ __('shop::front.products') }}</span>
-                        </div>
-                        @if($subcategories->count() > 0)
-                            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                                <i class="fa-light fa-folder-tree text-purple-600 dark:text-purple-400"></i>
-                                <span class="font-semibold">{{ $subcategories->count() }}</span>
-                                <span>{{ __('shop::front.subcategories') }}</span>
-                            </div>
-                        @endif
-                    </div>
                 </div>
             </div>
         </section>
@@ -232,7 +217,6 @@
                                                         </span>
                                                         <span class="font-medium text-sm text-gray-900 dark:text-white" x-text="keyword.text"></span>
                                                     </div>
-                                                    <span x-show="keyword.count" class="text-xs text-gray-400 dark:text-gray-500" x-text="`${keyword.count} sonuç`"></span>
                                                 </a>
                                             </template>
                                         </div>
@@ -242,7 +226,6 @@
                                     <div x-show="products.length > 0" class="space-y-3">
                                         <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                                             <span><i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler</span>
-                                            <span x-show="total > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products.length} / ${total}`"></span>
                                         </div>
                                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <template x-for="(product, index) in products" :key="'p-'+index">
@@ -307,14 +290,9 @@
                                 @else
                                     <i class="fa-light fa-folder text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
                                 @endif
-                                <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
+                                <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                     {{ $subcategory->getTranslated('title') }}
                                 </h3>
-                                @if($subcategoryProductCount > 0)
-                                    <span class="text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $subcategoryProductCount }} {{ __('shop::front.products') }}
-                                    </span>
-                                @endif
                             </div>
                         </a>
                     @endforeach
@@ -333,13 +311,6 @@
                             <i class="fa-light fa-grid-2 mr-2 text-blue-600 dark:text-blue-400"></i>
                             {{ __('shop::front.products_in_category') }}
                         </h2>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">
-                            {{ __('shop::front.showing') }}
-                            <span class="font-semibold">{{ $products->count() }}</span>
-                            {{ __('shop::front.of') }}
-                            <span class="font-semibold">{{ $products->total() }}</span>
-                            {{ __('shop::front.products') }}
-                        </div>
                     </div>
 
                     {{-- Products Grid - iXtif Design --}}
@@ -362,7 +333,7 @@
                         <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
                             <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
                                 <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
-                                Tüm ürünler yüklendi ({{ $products->total() }} ürün)
+                                Tüm ürünler yüklendi
                             </p>
                         </div>
                     </div>

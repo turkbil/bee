@@ -35,7 +35,8 @@ class ShopController extends Controller
             ->with(['category', 'brand', 'media', 'parentProduct', 'childProducts' => function ($q) {
                 $q->active()->published()->orderBy('variant_type')->orderBy('product_id');
             }])
-            // TÜM ÜRÜNLER (ana + varyantlar) göster
+            // SADECE MASTER PRODUCTLAR (varyantlar değil) - Admin panelle tutarlılık
+            ->whereNull('parent_product_id')
             ->published()
             ->active();
 
@@ -364,19 +365,25 @@ class ShopController extends Controller
             // Yedek Parça veya alt kategorisi: Alfabetik sıralama
             $products = ShopProduct::query()
                 ->with(['category', 'brand', 'media'])
+                ->whereNull('parent_product_id') // Sadece master productlar (varyantlar değil)
                 ->whereIn('category_id', $categoryIds)
                 ->active()
                 ->published()
                 ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         } else {
-            // Kategori Sayfası Sıralaması: Sadece product.sort_order
+            // Kategori Sayfası Sıralaması (Admin ile aynı):
+            // 1. Sadece master productlar (varyantlar değil) - Admin ile tutarlılık
+            // 2. sort_order ASC
+            // 3. product_id ASC (secondary sort)
             $products = ShopProduct::query()
                 ->with(['category', 'brand', 'media'])
+                ->whereNull('parent_product_id') // Admin panelle tutarlılık için
                 ->whereIn('category_id', $categoryIds)
                 ->active()
                 ->published()
                 ->orderBy('sort_order', 'asc')
+                ->orderBy('product_id', 'asc')
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         }
 

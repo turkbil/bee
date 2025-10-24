@@ -36,9 +36,6 @@
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
                             "{{ request('search') }}" {{ __('shop::front.search_results') }}
                         </h1>
-                        <p class="text-lg text-gray-600 dark:text-gray-300">
-                            {{ $products->total() }} {{ __('shop::front.products_found') }}
-                        </p>
                     @else
                         {{-- Ana sayfa --}}
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
@@ -364,7 +361,7 @@
                         <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
                             <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
                                 <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
-                                Tüm ürünler yüklendi ({{ $products->total() }} ürün)
+                                Tüm ürünler yüklendi
                             </p>
                         </div>
                     </div>
@@ -430,12 +427,6 @@
                                             <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                 {{ $rootCategory->getTranslated('title') }}
                                             </h3>
-                                            @php
-                                                $rootProductCount = $rootCategory->products()->active()->published()->count();
-                                            @endphp
-                                            @if($rootProductCount > 0)
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">{{ $rootProductCount }} ürün</span>
-                                            @endif
                                         </div>
                                         <i class="fa-light fa-arrow-right text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"></i>
                                     </a>
@@ -450,9 +441,6 @@
                                     @if($subcategories->count() > 0)
                                         <div class="space-y-1 pl-4 border-l-2 border-gray-200 dark:border-white/10">
                                             @foreach($subcategories as $subCategory)
-                                                @php
-                                                    $subProductCount = $subCategory->products()->active()->published()->count();
-                                                @endphp
                                                 <a href="{{ url('/shop/kategori/' . $subCategory->getTranslated('slug')) }}"
                                                    class="flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all group">
                                                     @if($subCategory->icon_class)
@@ -461,9 +449,6 @@
                                                         <i class="fa-light fa-angle-right text-xs opacity-60 group-hover:opacity-100"></i>
                                                     @endif
                                                     <span class="flex-1 font-medium">{{ $subCategory->getTranslated('title') }}</span>
-                                                    @if($subProductCount > 0)
-                                                        <span class="text-xs text-gray-400">({{ $subProductCount }})</span>
-                                                    @endif
                                                 </a>
                                             @endforeach
                                         </div>

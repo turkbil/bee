@@ -32,14 +32,14 @@
     </a>
 
     {{-- Content Section --}}
-    <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
+    <div class="p-6 md:p-8 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
         {{-- Category with Icon --}}
         @if($product->category)
-        <div class="flex items-center gap-2 mb-2">
+        <div class="flex items-center gap-2.5">
             @if($product->category->icon_class)
-                <i class="{{ $product->category->icon_class }} text-blue-600 dark:text-blue-400"></i>
+                <i class="{{ $product->category->icon_class }} text-blue-600 dark:text-blue-400 text-base"></i>
             @endif
-            <span class="text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-wider">
+            <span class="text-sm text-blue-800 dark:text-blue-300 font-semibold uppercase tracking-wide">
                 {{ $product->category->getTranslated('title') }}
             </span>
         </div>
@@ -47,27 +47,18 @@
 
         {{-- Title --}}
         <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product) }}">
-            <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+            <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
                 {{ $product->getTranslated('title') }}
             </h3>
         </a>
 
-        {{-- Price & CTA --}}
-        <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-300 dark:border-gray-500 flex items-center justify-between">
-            {{-- Fiyat gösterimi: Sadece gerçek fiyat varsa göster (base_price > 0 ve price_on_request false) --}}
-            @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
-                <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+        {{-- Price --}}
+        @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
+            <div class="pt-6 md:pt-8 lg:pt-10 mt-auto border-t border-gray-200/60 dark:border-gray-700/60">
+                <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
                     {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
                 </div>
-            @else
-                {{-- Fiyat yoksa boş alan bırak (minimal tasarım) --}}
-                <div></div>
-            @endif
-            <button
-                onclick="window.location.href='{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product) }}'"
-                class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 text-white w-12 h-12 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center text-2xl">
-                →
-            </button>
-        </div>
+            </div>
+        @endif
     </div>
 </div>

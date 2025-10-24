@@ -2007,34 +2007,26 @@ class PublicAIController extends Controller
      * @param string $productId
      * @return JsonResponse
      */
+    /**
+     * 🎨 Product Placeholder - FALLBACK ONLY
+     *
+     * Placeholder sistemi kaldırıldı, sadece varsayılan konuşma döner.
+     */
     public function getProductPlaceholder(string $productId): JsonResponse
     {
-        try {
-            // Get placeholder service
-            $placeholderService = app(\App\Services\AI\ProductPlaceholderService::class);
+        // Fallback conversation (simple welcome, matching floating widget)
+        $conversation = [
+            ['role' => 'assistant', 'text' => 'Merhaba! Size nasıl yardımcı olabilirim?'],
+        ];
 
-            // Get or generate placeholder
-            $result = $placeholderService->getPlaceholder($productId);
-
-            return response()->json([
-                'success' => $result['success'],
-                'data' => [
-                    'conversation' => $result['conversation'],
-                    'from_cache' => $result['from_cache'] ?? false,
-                    'generated_at' => $result['generated_at'] ?? null,
-                ],
-            ]);
-        } catch (\Exception $e) {
-            Log::error('PublicAIController.getProductPlaceholder failed', [
-                'product_id' => $productId,
-                'error' => $e->getMessage(),
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'error' => 'Placeholder yüklenemedi',
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'conversation' => $conversation,
+                'from_cache' => false,
+                'generated_at' => null,
+            ],
+        ]);
     }
 
     /**

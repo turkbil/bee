@@ -449,6 +449,9 @@
 {{-- AI Chat Components --}}
 <x-ai.chat-store />
 <x-ai.floating-widget button-text="AI Destek" theme="blue" />
+
+{{-- Livewire Scripts --}}
+@livewireScripts
     </div> {{-- Close relative z-10 wrapper --}}
 </body>
 </html>

@@ -300,3 +300,51 @@
         color: #6ee7b7 !important;
     }
 }
+
+/* ========================================
+   Rotating Suggestions (Placeholder Animation)
+   ======================================== */
+
+/* Fade animation for rotating suggestions */
+@keyframes suggestion-fade {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    10%, 90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Container for rotating suggestions */
+.rotating-suggestion-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Individual rotating suggestions */
+.rotating-suggestion {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: translateY(10px);
+}
+
+/* Active suggestion (visible) */
+.rotating-suggestion.active {
+    opacity: 1;
+    transform: translateY(0);
+}

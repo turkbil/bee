@@ -20,6 +20,14 @@
 --}}
 
 {{-- AI Chat System External Files --}}
-<link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ now()->timestamp }}" media="all">
-{{-- DEFER KALDIRILDI: Alpine:init event'inde çalıştığı için sorun yok, ama defer timing problemlerine yol açıyordu --}}
-<script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}"></script>
+@once
+    @php
+        $aiChatCssPath = public_path('assets/css/ai-chat.css');
+        $aiChatJsPath = public_path('assets/js/ai-chat.js');
+        $cssVersion = file_exists($aiChatCssPath) ? filemtime($aiChatCssPath) : time();
+        $jsVersion = file_exists($aiChatJsPath) ? filemtime($aiChatJsPath) : time();
+    @endphp
+    <link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ $cssVersion }}" media="all">
+    {{-- DEFER KALDIRILDI: Alpine:init event'inde çalıştığı için sorun yok, ama defer timing problemlerine yol açıyordu --}}
+    <script src="{{ asset('assets/js/ai-chat.js') }}?v={{ $jsVersion }}"></script>
+@endonce

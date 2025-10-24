@@ -88,6 +88,9 @@
     {{-- Dynamic Content Areas --}}
     @stack('head')
     @stack('styles')
+
+    {{-- Livewire Styles --}}
+    @livewireStyles
 </head>
 
 <body class="font-sans antialiased min-h-screen transition-all duration-500 flex flex-col"

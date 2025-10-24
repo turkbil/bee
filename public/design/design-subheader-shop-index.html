@@ -22,11 +22,30 @@
 <body class="bg-gray-50">
 
     <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-12">
+    <header class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white py-16">
         <div class="container mx-auto px-4">
-            <h1 class="text-5xl font-black mb-4">Shop Subheader Tasarımları</h1>
-            <p class="text-xl text-white/90">Transpalet kategorisi için 8 farklı subheader tasarımı</p>
-            <p class="text-white/70 mt-2">Gerçek veritabanı verileri kullanılarak oluşturulmuştur</p>
+            <div class="max-w-4xl">
+                <h1 class="text-5xl md:text-6xl font-black mb-4">Shop Subheader Tasarımları</h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-4">Transpalet kategorisi için 8 farklı detaylı subheader tasarımı</p>
+                <div class="flex flex-wrap gap-3 mt-6">
+                    <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">
+                        <i class="fa-solid fa-keyboard mr-2"></i>
+                        Klavye Desteği (←/→)
+                    </span>
+                    <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">
+                        <i class="fa-solid fa-database mr-2"></i>
+                        Gerçek Veritabanı Verisi
+                    </span>
+                    <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">
+                        <i class="fa-brands fa-searchengin mr-2"></i>
+                        SEO Optimized
+                    </span>
+                    <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm">
+                        <i class="fa-solid fa-mobile-screen mr-2"></i>
+                        Responsive Design
+                    </span>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -46,8 +65,12 @@
                             <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full">Gradient</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-2">Minimal Gradient</h3>
-                        <p class="text-sm text-gray-600">Basit, temiz ve gradyan arka planlı tasarım</p>
-                        <div class="mt-4 flex items-center text-sm text-gray-500">
+                        <p class="text-sm text-gray-600 mb-3">Basit, temiz ve gradyan arka planlı tasarım. Breadcrumb + Icon + Title yapısı.</p>
+                        <ul class="text-xs text-gray-500 space-y-1 mb-4">
+                            <li><i class="fa-solid fa-check text-green-600 mr-1"></i> Tek section yapısı</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-1"></i> Hızlı yükleme</li>
+                        </ul>
+                        <div class="mt-4 flex items-center text-sm text-blue-600 font-semibold">
                             <i class="fa-solid fa-arrow-right mr-2"></i>
                             Tasarımı Görüntüle
                         </div>
@@ -55,21 +78,29 @@
                 </a>
 
                 <!-- Design 2 -->
-                <a href="design-subheader-shop-2.html" class="design-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100">
-                    <div class="aspect-video bg-white border-b-2 border-gray-100 p-4 flex items-center justify-center">
+                <a href="design-subheader-shop-2.html" class="design-card bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl border border-blue-200">
+                    <div class="aspect-video bg-gradient-to-br from-blue-50 to-purple-50 border-b-2 border-blue-100 p-4 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute top-2 right-2 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded-full">
+                            DETAYLI
+                        </div>
                         <div class="text-center">
-                            <i class="fa-solid fa-chart-line text-5xl text-gray-300 mb-2"></i>
-                            <div class="text-xs text-gray-400 font-medium">Stats + Search</div>
+                            <i class="fa-solid fa-search-plus text-5xl text-blue-400 mb-2"></i>
+                            <div class="text-xs text-gray-600 font-medium">Hero + Advanced Search</div>
                         </div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Stats</span>
-                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">Search</span>
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">Hero</span>
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Autocomplete</span>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Stats + Search</h3>
-                        <p class="text-sm text-gray-600">İstatistikler ve arama kutusu entegre</p>
-                        <div class="mt-4 flex items-center text-sm text-gray-500">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Hero + Detaylı Search</h3>
+                        <p class="text-sm text-gray-600 mb-3">Hero section + Gelişmiş arama + Autocomplete dropdown (keywords + products)</p>
+                        <ul class="text-xs text-gray-500 space-y-1 mb-4">
+                            <li><i class="fa-solid fa-check text-green-600 mr-1"></i> İki section yapısı</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-1"></i> Alpine.js interaktif arama</li>
+                            <li><i class="fa-solid fa-check text-green-600 mr-1"></i> Popüler aramalar + Ürün önizleme</li>
+                        </ul>
+                        <div class="mt-4 flex items-center text-sm text-blue-600 font-semibold">
                             <i class="fa-solid fa-arrow-right mr-2"></i>
                             Tasarımı Görüntüle
                         </div>

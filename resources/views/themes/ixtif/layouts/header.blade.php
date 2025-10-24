@@ -89,8 +89,9 @@
     @stack('head')
     @stack('styles')
 
-    {{-- AI Chat Store - MUST load before Alpine.js initializes widgets --}}
-    <x-ai.chat-store />
+    {{-- AI Chat CSS & JS - Must load BEFORE any inline widget --}}
+    <link rel="stylesheet" href="/assets/css/ai-chat.css?v=<?php echo time(); ?>">
+    <script src="/assets/js/ai-chat.js?v=<?php echo time(); ?>"></script>
 
     {{-- Livewire Styles --}}
     @livewireStyles
@@ -331,7 +332,7 @@
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"
                            class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-light fa-forklift group-hover:fa-solid text-sm transition-all"></i>
+                            <i :class="activeMegaMenu === 'forklift' ? 'fa-solid' : 'fa-light'" class="fa-forklift text-sm transition-all"></i>
                             <span>Forklift</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'forklift' }"></i>
@@ -341,7 +342,7 @@
                         <a href="/shop/kategori/transpalet"
                            @mouseenter="activeMegaMenu = 'transpalet'"
                            class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-light fa-dolly group-hover:fa-solid text-sm transition-all"></i>
+                            <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
                             <span>Transpalet</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
@@ -351,7 +352,7 @@
                         <a href="/shop/kategori/istif-makinesi"
                            @mouseenter="activeMegaMenu = 'istif-makinesi'"
                            class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-light fa-box-open-full group-hover:fa-solid text-sm transition-all"></i>
+                            <i :class="activeMegaMenu === 'istif-makinesi' ? 'fa-solid' : 'fa-light'" class="fa-box-open-full text-sm transition-all"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'istif-makinesi' }"></i>
@@ -360,8 +361,7 @@
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <button @mouseenter="activeMegaMenu = 'all-categories'"
                                 class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
-                            <i class="fa-light fa-grid-2 group-hover:fa-solid transition-all duration-300"
-                               :class="{ 'rotate-180': activeMegaMenu === 'all-categories' }"></i>
+                            <i :class="activeMegaMenu === 'all-categories' ? 'fa-solid' : 'fa-light'" class="fa-grid-2 transition-all duration-300"></i>
                             <span>Tüm Kategoriler</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                :class="{ 'rotate-180': activeMegaMenu === 'all-categories' }"></i>

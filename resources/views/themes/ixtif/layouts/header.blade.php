@@ -92,9 +92,6 @@
     {{-- AI Chat CSS - Load in head for styling --}}
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v=<?php echo time(); ?>">
     {{-- AI Chat JS moved to footer.blade.php AFTER Alpine.js/Livewire --}}
-
-    {{-- Livewire Styles --}}
-    @livewireStyles
 </head>
 
 <body class="font-sans antialiased min-h-screen transition-all duration-500 flex flex-col"
@@ -714,10 +711,10 @@
                                 <div class="max-h-[28rem] overflow-y-auto">
                                     <div class="grid gap-6 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                                         {{-- Keywords Section --}}
-                                        <div x-show="keywords.length > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
+                                        <div x-show="(keywords?.length || 0) > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
                                             <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                                                 <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar</span>
-                                                <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
+                                                <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords?.length || 0}`"></span>
                                             </div>
                                             <div class="space-y-1">
                                                 <template x-for="(keyword, index) in keywords" :key="'k-'+index">
@@ -744,10 +741,10 @@
                                         </div>
 
                                         {{-- Products Section --}}
-                                        <div x-show="products.length > 0" class="space-y-3">
+                                        <div x-show="(products?.length || 0) > 0" class="space-y-3">
                                             <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                                                 <span><i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler</span>
-                                                <span x-show="total > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products.length} / ${total}`"></span>
+                                                <span x-show="(total || 0) > 0" class="text-[11px] font-medium text-gray-400 dark:text-gray-500" x-text="`${products?.length || 0} / ${total || 0}`"></span>
                                             </div>
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 <template x-for="(product, index) in products" :key="'p-'+index">
@@ -800,11 +797,11 @@
                                 </div>
 
                                 {{-- View All Results --}}
-                                <a :href="`/search?q=${encodeURIComponent(query)}`"
-                                   x-show="total > 0"
+                                <a :href="`/search?q=${encodeURIComponent(query || '')}`"
+                                   x-show="(total || 0) > 0"
                                    class="block p-3 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-medium transition border-t border-gray-200 dark:border-gray-700">
                                     <i class="fa-solid fa-arrow-right mr-2"></i>
-                                    <span x-text="`Tüm ${total} sonucu gör`"></span>
+                                    <span x-text="`Tüm ${total || 0} sonucu gör`"></span>
                                 </a>
                             </div>
                         </div>

@@ -37,12 +37,14 @@
         {{-- ========================================== --}}
         <div class="col-span-12 lg:col-span-4 bg-white dark:bg-gray-800 p-6 flex flex-col">
             @if($featuredProduct)
-                <a href="/shop/urun/{{ is_array($featuredProduct->slug) ? $featuredProduct->slug['tr'] : $featuredProduct->slug }}"
-                   class="h-full flex flex-col group">
-                    <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-300 mb-3">
-                        <div class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-pulse"></div>
-                        <span>ÖNE ÇIKAN MODEL</span>
-                    </div>
+                <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-300 mb-3">
+                    <div class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-pulse"></div>
+                    <span>ÖNE ÇIKAN MODEL</span>
+                </div>
+
+                <a href="/shop/{{ is_array($featuredProduct->slug) ? $featuredProduct->slug['tr'] : $featuredProduct->slug }}"
+                   class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border border-gray-200 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all duration-300 flex flex-col group h-full">
+
 
                     {{-- Product Image - Conditional BG --}}
                     @if($featuredProduct->getFirstMediaUrl('product_images'))
@@ -111,7 +113,7 @@
             <div class="flex-1">
                 @if($otherProducts->isNotEmpty())
                     @foreach($otherProducts as $index => $product)
-                        <a href="/shop/urun/{{ is_array($product->slug) ? $product->slug['tr'] : $product->slug }}"
+                        <a href="/shop/{{ is_array($product->slug) ? $product->slug['tr'] : $product->slug }}"
                            class="block bg-gray-50 dark:bg-gray-700 rounded-xl p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 border border-gray-200 dark:border-gray-600 {{ $index > 0 ? 'mt-2' : '' }}">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-11 h-11 bg-gradient-to-br from-{{ ['blue', 'green', 'purple', 'orange', 'pink'][$index % 5] }}-500 to-{{ ['cyan', 'emerald', 'pink', 'red', 'rose'][$index % 5] }}-500 rounded-lg flex items-center justify-center flex-shrink-0">

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subheader Shop 5 - Hero Style with Background</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+
+        .hero-pattern {
+            background-color: #1e40af;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Subheader 5: Hero Style -->
+    <section class="hero-pattern relative overflow-hidden py-20">
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-purple-900/90 to-blue-900/90"></div>
+
+        <!-- Floating Elements -->
+        <div class="absolute top-10 right-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Breadcrumb -->
+            <nav class="mb-8">
+                <ol class="flex items-center gap-2 text-sm text-white/70">
+                    <li><a href="#" class="hover:text-white flex items-center gap-2"><i class="fa-light fa-home"></i> Ana Sayfa</a></li>
+                    <li><i class="fa-light fa-chevron-right text-xs"></i></li>
+                    <li><a href="#" class="hover:text-white">Shop</a></li>
+                    <li><i class="fa-light fa-chevron-right text-xs"></i></li>
+                    <li class="text-white font-semibold">Transpalet</li>
+                </ol>
+            </nav>
+
+            <div class="max-w-4xl">
+                <!-- Icon + Title -->
+                <div class="flex items-center gap-6 mb-6">
+                    <div class="w-24 h-24 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/30">
+                        <i class="fa-solid fa-dolly text-5xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-5xl md:text-6xl font-black text-white mb-3 tracking-tight">Transpalet</h1>
+                        <p class="text-xl text-white/90">
+                            Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">12+</div>
+                        <div class="text-sm text-white/80">Ürün Modeli</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">2.0T</div>
+                        <div class="text-sm text-white/80">Maks. Kapasite</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">Li-Ion</div>
+                        <div class="text-sm text-white/80">Akü Teknolojisi</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">CE</div>
+                        <div class="text-sm text-white/80">Sertifikalı</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter Bar (Sticky) -->
+    <section class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">
+                        <i class="fa-solid fa-grid-2 mr-1"></i> Tümü
+                    </button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-sm font-medium">
+                        <i class="fa-solid fa-bolt mr-1"></i> Elektrikli
+                    </button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-sm font-medium">
+                        <i class="fa-solid fa-person-dolly mr-1"></i> Platformlu
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <select class="px-4 py-2 bg-gray-100 rounded-lg text-sm">
+                        <option>Sıralama</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="h-96 bg-white"></div>
+
+</body>
+</html>

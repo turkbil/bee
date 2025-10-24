@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transpalet - İXTİF Endüstriyel Ekipmanlar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .filter-tag {
+            transition: all 0.3s ease;
+        }
+
+        .filter-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .spec-badge {
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .category-hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen" x-data="shopCategoryPage()">
+
+    <!-- Category Hero Section -->
+    <section class="category-hero-gradient relative overflow-hidden py-16 md:py-24">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-10 left-10 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl floating-icon"></div>
+            <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl floating-icon" style="animation-delay: 1s;"></div>
+            <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-pink-400/10 rounded-full blur-3xl floating-icon" style="animation-delay: 2s;"></div>
+        </div>
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Breadcrumb -->
+            <nav class="mb-8">
+                <ol class="flex items-center gap-2 text-sm text-white/80">
+                    <li>
+                        <a href="/shop" class="hover:text-white transition flex items-center gap-2">
+                            <i class="fa-light fa-home"></i>
+                            <span>Tüm Ürünler</span>
+                        </a>
+                    </li>
+                    <li><i class="fa-light fa-chevron-right text-xs"></i></li>
+                    <li class="text-white font-semibold">Transpalet</li>
+                </ol>
+            </nav>
+
+            <!-- Category Header -->
+            <div class="max-w-6xl">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center gap-6 lg:gap-8 mb-8">
+                    <!-- Icon -->
+                    <div class="w-24 h-24 lg:w-32 lg:h-32 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/30">
+                        <i class="fa-solid fa-dolly text-5xl lg:text-6xl text-white"></i>
+                    </div>
+
+                    <!-- Title & Description -->
+                    <div class="flex-1">
+                        <h1 class="text-4xl md:text-5xl lg:text-7xl font-black text-white mb-4 tracking-tight">
+                            Transpalet
+                        </h1>
+                        <p class="text-lg md:text-xl text-white/90 leading-relaxed max-w-3xl">
+                            Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">12+</div>
+                        <div class="text-sm text-white/80">Ürün Modeli</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">2.0T</div>
+                        <div class="text-sm text-white/80">Maks. Kapasite</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">Li-Ion</div>
+                        <div class="text-sm text-white/80">Akü Teknolojisi</div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                        <div class="text-3xl font-bold text-white mb-1">24/7</div>
+                        <div class="text-sm text-white/80">Destek</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter & Sort Bar -->
+        <section class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-md">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <!-- Filter Tags -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button @click="filterType = 'all'" :class="filterType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                class="filter-tag px-4 py-2 rounded-full text-sm font-medium">
+                            <i class="fa-solid fa-grid-2 mr-2"></i>
+                            Tümü
+                        </button>
+                        <button @click="filterType = 'electric'" :class="filterType === 'electric' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                class="filter-tag px-4 py-2 rounded-full text-sm font-medium">
+                            <i class="fa-solid fa-bolt mr-2"></i>
+                            Elektrikli
+                        </button>
+                        <button @click="filterType = 'platform'" :class="filterType === 'platform' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                class="filter-tag px-4 py-2 rounded-full text-sm font-medium">
+                            <i class="fa-solid fa-person-dolly mr-2"></i>
+                            Platformlu
+                        </button>
+                        <button @click="filterType = 'driver'" :class="filterType === 'driver' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                class="filter-tag px-4 py-2 rounded-full text-sm font-medium">
+                            <i class="fa-solid fa-person-seat mr-2"></i>
+                            Sürücülü
+                        </button>
+                    </div>
+
+                    <!-- Sort & View Options -->
+                    <div class="flex items-center gap-3">
+                        <select x-model="sortBy" class="px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium text-gray-700 border-none focus:ring-2 focus:ring-blue-500">
+                            <option value="default">Varsayılan Sıralama</option>
+                            <option value="name-asc">İsim (A-Z)</option>
+                            <option value="name-desc">İsim (Z-A)</option>
+                            <option value="capacity-asc">Kapasite (Düşük-Yüksek)</option>
+                            <option value="capacity-desc">Kapasite (Yüksek-Düşük)</option>
+                        </select>
+
+                        <div class="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                            <button @click="viewMode = 'grid'" :class="viewMode === 'grid' ? 'bg-white shadow-sm' : ''"
+                                    class="px-3 py-2 rounded-md text-gray-700 transition">
+                                <i class="fa-solid fa-grid-2"></i>
+                            </button>
+                            <button @click="viewMode = 'list'" :class="viewMode === 'list' ? 'bg-white shadow-sm' : ''"
+                                    class="px-3 py-2 rounded-md text-gray-700 transition">
+                                <i class="fa-solid fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Grid -->
+        <section class="py-12 lg:py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div :class="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-6'">
+
+                    <!-- Product 1: İXTİF KPL201H -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <!-- Image -->
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-blue-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-bolt mr-1"></i>
+                                    Li-Ion
+                                </span>
+                                <span class="spec-badge bg-purple-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-person-seat mr-1"></i>
+                                    Sürücülü
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-6 space-y-4">
+                            <!-- SKU -->
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: KPL201H
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF KPL201H - 2.0 Ton Li-Ion Sürücülü Transpalet
+                            </h3>
+
+                            <!-- Specs Grid -->
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Kapasite</div>
+                                    <div class="font-bold text-gray-900">2.0 Ton</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Tip</div>
+                                    <div class="font-bold text-gray-900">Sürücülü</div>
+                                </div>
+                            </div>
+
+                            <!-- CTA -->
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 2: İXTİF KPL201H - 1150 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1150mm
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: KPL201H-1150
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF KPL201H - 1150 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1150 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">KPL201H</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 3: İXTİF KPL201H - 1220 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1220mm
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: KPL201H-1220
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF KPL201H - 1220 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1220 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">KPL201H</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 4: İXTİF RPL201 -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-blue-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-bolt mr-1"></i>
+                                    Li-Ion
+                                </span>
+                                <span class="spec-badge bg-orange-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-person-dolly mr-1"></i>
+                                    Platformlu
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: RPL201
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF RPL201 - 2.0 Ton Li-Ion Platformlu Transpalet
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Kapasite</div>
+                                    <div class="font-bold text-gray-900">2.0 Ton</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Tip</div>
+                                    <div class="font-bold text-gray-900">Platformlu</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 5: İXTİF RPL201 - 1150 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1150mm
+                                </span>
+                                <span class="spec-badge bg-orange-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-person-dolly mr-1"></i>
+                                    Platformlu
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: RPL201-1150
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF RPL201 - 1150 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1150 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">RPL201</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 6: İXTİF RPL201 - 1220 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1220mm
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: RPL201-1220
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF RPL201 - 1220 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1220 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">RPL201</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 7: İXTİF WPL202 -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-blue-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-bolt mr-1"></i>
+                                    Li-Ion
+                                </span>
+                                <span class="spec-badge bg-red-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-star mr-1"></i>
+                                    Yeni
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: WPL202
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF WPL202 - 2.0 Ton Li-Ion Transpalet
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Kapasite</div>
+                                    <div class="font-bold text-gray-900">2.0 Ton</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Akü</div>
+                                    <div class="font-bold text-gray-900">Li-Ion</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 8: İXTİF WPL202 - 1150 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1150mm
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: WPL202-1150
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF WPL202 - 1150 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1150 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">WPL202</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 9: İXTİF WPL202 - 1220 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1220mm
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: WPL202-1220
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF WPL202 - 1220 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1220 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">WPL202</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 10: İXTİF WPL202 - 1450 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    1450mm
+                                </span>
+                                <span class="spec-badge bg-purple-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-expand mr-1"></i>
+                                    Ekstra Uzun
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: WPL202-1450
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF WPL202 - 1450 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">1450 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">WPL202</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 11: İXTİF EPL153 -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-blue-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-bolt mr-1"></i>
+                                    Li-Ion
+                                </span>
+                                <span class="spec-badge bg-yellow-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-zap mr-1"></i>
+                                    Elektrikli
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: EPL153
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF EPL153 - 1.5 Ton Li-Ion Elektrikli Transpalet
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Kapasite</div>
+                                    <div class="font-bold text-gray-900">1.5 Ton</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Tip</div>
+                                    <div class="font-bold text-gray-900">Elektrikli</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Product 12: İXTİF EPL153 - 900 mm -->
+                    <div class="product-card bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:border-blue-200">
+                        <div class="relative aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8 flex items-center justify-center">
+                            <div class="absolute top-4 left-4 flex flex-col gap-2">
+                                <span class="spec-badge bg-green-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-ruler mr-1"></i>
+                                    900mm
+                                </span>
+                                <span class="spec-badge bg-teal-600/90 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                    <i class="fa-solid fa-compress mr-1"></i>
+                                    Kompakt
+                                </span>
+                            </div>
+                            <i class="fa-solid fa-dolly text-9xl text-gray-300"></i>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                SKU: EPL153-900
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-snug">
+                                İXTİF EPL153 - 900 mm Çatal
+                            </h3>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Çatal Uzunluğu</div>
+                                    <div class="font-bold text-gray-900">900 mm</div>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <div class="text-gray-500 text-xs mb-1">Varyant</div>
+                                    <div class="font-bold text-gray-900">EPL153</div>
+                                </div>
+                            </div>
+                            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105">
+                                <i class="fa-light fa-arrow-right mr-2"></i>
+                                Detayları Gör
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Features Section -->
+        <section class="py-16 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-black mb-4">Neden İXTİF Transpalet?</h2>
+                    <p class="text-lg text-white/80 max-w-2xl mx-auto">
+                        Sektörde 20 yılı aşkın deneyimimiz ve teknoloji liderliğimiz ile en iyi çözümleri sunuyoruz.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-battery-full text-4xl text-green-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Li-Ion Akü</h3>
+                        <p class="text-white/70">Hızlı şarj, uzun ömür ve bakımsız kullanım</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-shield-check text-4xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">CE Sertifikalı</h3>
+                        <p class="text-white/70">Avrupa güvenlik standartlarına uygun</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-headset text-4xl text-purple-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">7/24 Destek</h3>
+                        <p class="text-white/70">Teknik destek ve yedek parça garantisi</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fa-solid fa-truck-fast text-4xl text-orange-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Hızlı Teslimat</h3>
+                        <p class="text-white/70">Türkiye geneli hızlı ve güvenli kargo</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-6">
+                    Size Uygun Transpalet Modelini Bulalım
+                </h2>
+                <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+                    Uzman ekibimiz ihtiyaçlarınıza en uygun çözümü bulmak için size yardımcı olacaktır.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button class="bg-white text-blue-600 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all hover:scale-105">
+                        <i class="fa-solid fa-phone mr-2"></i>
+                        Hemen Arayın
+                    </button>
+                    <button class="bg-white/10 backdrop-blur-md border-2 border-white text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all">
+                        <i class="fa-solid fa-envelope mr-2"></i>
+                        Teklif Alın
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    <script>
+        function shopCategoryPage() {
+            return {
+                filterType: 'all',
+                sortBy: 'default',
+                viewMode: 'grid',
+
+                init() {
+                    console.log('Shop Category Page Initialized');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

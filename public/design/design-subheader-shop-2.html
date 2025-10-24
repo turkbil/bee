@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subheader Shop 2 - Stats + Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Subheader 2: Stats + Search Integrated -->
+    <section class="bg-white border-b-2 border-gray-100">
+        <div class="container mx-auto px-4 py-6">
+            <!-- Breadcrumb -->
+            <nav class="mb-6">
+                <ol class="flex items-center gap-2 text-xs text-gray-600">
+                    <li><a href="#" class="hover:text-blue-600 flex items-center gap-1"><i class="fa-light fa-home"></i> Ana Sayfa</a></li>
+                    <li><i class="fa-light fa-chevron-right"></i></li>
+                    <li><a href="#" class="hover:text-blue-600">Shop</a></li>
+                    <li><i class="fa-light fa-chevron-right"></i></li>
+                    <li class="text-gray-900 font-medium">Transpalet</li>
+                </ol>
+            </nav>
+
+            <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
+                <!-- Left: Title + Stats -->
+                <div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-dolly text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-black text-gray-900">Transpalet</h1>
+                            <p class="text-gray-600 text-sm">Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın.</p>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex items-center gap-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-box text-blue-600"></i>
+                            <span class="text-gray-600">12+ Model</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-purple-600"></i>
+                            <span class="text-gray-600">2.0 Ton Kapasite</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-battery-full text-green-600"></i>
+                            <span class="text-gray-600">Li-Ion Akü</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Search -->
+                <div>
+                    <div class="relative">
+                        <input type="search" placeholder="Transpalet içinde ara..."
+                               class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="h-96 bg-white"></div>
+
+</body>
+</html>

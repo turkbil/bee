@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subheader Shop 6 - Two Row Layout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50" x-data="{ activeTab: 'all' }">
+
+    <!-- Subheader 6: Two Row (Title Row + Filter Row) -->
+
+    <!-- Row 1: Title & Breadcrumb -->
+    <section class="bg-white border-b border-gray-100">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <!-- Left: Icon + Title + Breadcrumb -->
+                <div class="flex items-start gap-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-dolly text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <nav class="mb-2">
+                            <ol class="flex items-center gap-2 text-xs text-gray-500">
+                                <li><a href="#" class="hover:text-blue-600">Ana Sayfa</a></li>
+                                <li><i class="fa-light fa-chevron-right"></i></li>
+                                <li><a href="#" class="hover:text-blue-600">Shop</a></li>
+                                <li><i class="fa-light fa-chevron-right"></i></li>
+                                <li class="text-gray-900 font-medium">Transpalet</li>
+                            </ol>
+                        </nav>
+                        <h1 class="text-3xl font-black text-gray-900 mb-1">Transpalet</h1>
+                        <p class="text-sm text-gray-600">Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın.</p>
+                    </div>
+                </div>
+
+                <!-- Right: Search -->
+                <div class="relative w-80">
+                    <input type="search" placeholder="Transpalet içinde ara..."
+                           class="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Row 2: Filters & Sort (Sticky) -->
+    <section class="bg-gray-50 border-b border-gray-200 sticky top-0 z-40">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Filter Tabs -->
+                <div class="flex items-center gap-2">
+                    <button @click="activeTab = 'all'"
+                            :class="activeTab === 'all' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:bg-white/50'"
+                            class="px-5 py-2.5 rounded-lg font-medium text-sm transition-all">
+                        <i class="fa-solid fa-grid-2 mr-2"></i>
+                        Tüm Modeller
+                    </button>
+                    <button @click="activeTab = 'electric'"
+                            :class="activeTab === 'electric' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:bg-white/50'"
+                            class="px-5 py-2.5 rounded-lg font-medium text-sm transition-all">
+                        <i class="fa-solid fa-bolt mr-2 text-yellow-500"></i>
+                        Elektrikli
+                    </button>
+                    <button @click="activeTab = 'platform'"
+                            :class="activeTab === 'platform' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:bg-white/50'"
+                            class="px-5 py-2.5 rounded-lg font-medium text-sm transition-all">
+                        <i class="fa-solid fa-person-dolly mr-2 text-orange-500"></i>
+                        Platformlu
+                    </button>
+                    <button @click="activeTab = 'driver'"
+                            :class="activeTab === 'driver' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:bg-white/50'"
+                            class="px-5 py-2.5 rounded-lg font-medium text-sm transition-all">
+                        <i class="fa-solid fa-person-seat mr-2 text-purple-500"></i>
+                        Sürücülü
+                    </button>
+                </div>
+
+                <!-- Sort & View -->
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <i class="fa-solid fa-arrow-down-wide-short"></i>
+                        <span>Sıralama:</span>
+                    </div>
+                    <select class="px-4 py-2 bg-white rounded-lg text-sm font-medium border border-gray-200">
+                        <option>Varsayılan</option>
+                        <option>İsim (A-Z)</option>
+                        <option>İsim (Z-A)</option>
+                        <option>Kapasite (Düşük-Yüksek)</option>
+                        <option>Kapasite (Yüksek-Düşük)</option>
+                    </select>
+
+                    <div class="flex items-center gap-1 bg-white rounded-lg p-1 border border-gray-200">
+                        <button class="px-3 py-2 bg-blue-100 text-blue-600 rounded-md">
+                            <i class="fa-solid fa-grid-2"></i>
+                        </button>
+                        <button class="px-3 py-2 text-gray-500">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="h-96 bg-white"></div>
+
+</body>
+</html>

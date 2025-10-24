@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subheader Shop 7 - Glassmorphism Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        * { font-family: 'Inter', sans-serif; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 min-h-screen">
+
+    <!-- Subheader 7: Glassmorphism -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <!-- Breadcrumb Glass Card -->
+            <div class="glass-card rounded-2xl px-6 py-3 inline-flex items-center gap-2 mb-8 text-sm text-white">
+                <a href="#" class="hover:text-white/80 flex items-center gap-2">
+                    <i class="fa-light fa-home"></i> Ana Sayfa
+                </a>
+                <i class="fa-light fa-chevron-right text-xs"></i>
+                <a href="#" class="hover:text-white/80">Shop</a>
+                <i class="fa-light fa-chevron-right text-xs"></i>
+                <span class="font-semibold">Transpalet</span>
+            </div>
+
+            <!-- Main Glass Card -->
+            <div class="glass-card rounded-3xl p-8">
+                <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-center">
+                    <!-- Left: Title & Description -->
+                    <div>
+                        <div class="flex items-center gap-5 mb-6">
+                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center glass-card">
+                                <i class="fa-solid fa-dolly text-4xl text-white"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-5xl font-black text-white mb-2">Transpalet</h1>
+                                <p class="text-lg text-white/90">12+ Ürün Modeli | 2.0 Ton Kapasite | Li-Ion Teknoloji</p>
+                            </div>
+                        </div>
+
+                        <p class="text-white/80 text-lg leading-relaxed mb-6">
+                            Manuel, akülü ve tartılı transpalet seçenekleri ile yük taşıma işlemlerinizi kolaylaştırın.
+                            Sektörde 20 yılı aşkın deneyimimiz ve teknoloji liderliğimiz ile en iyi çözümleri sunuyoruz.
+                        </p>
+
+                        <!-- Filter Pills -->
+                        <div class="flex flex-wrap gap-3">
+                            <button class="px-6 py-3 bg-white text-blue-600 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105">
+                                <i class="fa-solid fa-grid-2 mr-2"></i>
+                                Tümü
+                            </button>
+                            <button class="px-6 py-3 glass-card text-white rounded-full font-medium hover:bg-white/20 transition-all">
+                                <i class="fa-solid fa-bolt mr-2"></i>
+                                Elektrikli
+                            </button>
+                            <button class="px-6 py-3 glass-card text-white rounded-full font-medium hover:bg-white/20 transition-all">
+                                <i class="fa-solid fa-person-dolly mr-2"></i>
+                                Platformlu
+                            </button>
+                            <button class="px-6 py-3 glass-card text-white rounded-full font-medium hover:bg-white/20 transition-all">
+                                <i class="fa-solid fa-person-seat mr-2"></i>
+                                Sürücülü
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Search & Sort Card -->
+                    <div class="space-y-4">
+                        <!-- Search -->
+                        <div class="glass-card rounded-2xl p-1.5">
+                            <div class="relative">
+                                <input type="search" placeholder="Transpalet içinde ara..."
+                                       class="w-full pl-12 pr-4 py-3.5 bg-white/20 rounded-xl text-white placeholder-white/60 border-none focus:bg-white/30 focus:ring-2 focus:ring-white/50 transition">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
+                            </div>
+                        </div>
+
+                        <!-- Sort & View -->
+                        <div class="glass-card rounded-2xl p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-white font-medium text-sm">Sıralama & Görünüm</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <select class="flex-1 px-4 py-3 bg-white/20 rounded-xl text-white font-medium border-none focus:bg-white/30 focus:ring-2 focus:ring-white/50">
+                                    <option class="text-gray-900">Varsayılan Sıralama</option>
+                                    <option class="text-gray-900">İsim (A-Z)</option>
+                                    <option class="text-gray-900">İsim (Z-A)</option>
+                                    <option class="text-gray-900">Kapasite (Düşük-Yüksek)</option>
+                                </select>
+
+                                <div class="flex items-center gap-1 bg-white/20 rounded-xl p-1">
+                                    <button class="px-3 py-2 bg-white/30 rounded-lg text-white">
+                                        <i class="fa-solid fa-grid-2"></i>
+                                    </button>
+                                    <button class="px-3 py-2 text-white/70">
+                                        <i class="fa-solid fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="glass-card rounded-2xl p-4">
+                            <div class="grid grid-cols-2 gap-3 text-center">
+                                <div>
+                                    <div class="text-2xl font-bold text-white">12+</div>
+                                    <div class="text-xs text-white/70">Model</div>
+                                </div>
+                                <div>
+                                    <div class="text-2xl font-bold text-white">2.0T</div>
+                                    <div class="text-xs text-white/70">Kapasite</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

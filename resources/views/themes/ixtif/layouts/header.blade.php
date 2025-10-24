@@ -982,17 +982,17 @@
 
                 {{-- Ana Kategoriler (Mobile) - Accordion Style --}}
                 @foreach($mainCategories as $cat)
-                    <div x-data="{ categoryOpen: false }" class="space-y-1">
+                    <div class="space-y-1">
                         {{-- Ana Kategori Başlığı --}}
                         <div class="flex items-center gap-2">
-                            <button @click="categoryOpen = !categoryOpen"
+                            <button @click="expandedCategory = expandedCategory === '{{ $cat['slug'] }}' ? null : '{{ $cat['slug'] }}'"
                                     class="flex-1 flex items-center justify-between px-3 py-2 rounded-md text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition">
                                 <span class="flex items-center gap-2">
                                     <i class="{{ $cat['icon'] }} text-sm"></i>
                                     <span>{{ $cat['name'] }}</span>
                                 </span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
-                                   :class="{ 'rotate-180': categoryOpen }"></i>
+                                   :class="{ 'rotate-180': expandedCategory === '{{ $cat['slug'] }}' }"></i>
                             </button>
                             {{-- Hepsini Gör Linki --}}
                             <a href="{{ route('shop.index') }}?category={{ $cat['slug'] }}"
@@ -1003,7 +1003,7 @@
                         </div>
 
                         {{-- Alt Kategoriler --}}
-                        <div x-show="categoryOpen"
+                        <div x-show="expandedCategory === '{{ $cat['slug'] }}'"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 -translate-y-2"
                              x-transition:enter-end="opacity-100 translate-y-0"
@@ -1038,10 +1038,10 @@
                 {{-- Diğer Dinamik Menüler (varsa) --}}
                 @if($headerMenu && !empty($headerMenu['items']))
                     <div class="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2"></div>
-                    @foreach($headerMenu['items'] as $menuItem)
+                    @foreach($headerMenu['items'] as $menuIndex => $menuItem)
                         @if(!empty($menuItem['children']))
-                            <div x-data="{ submenuOpen: false }">
-                                <button @click="submenuOpen = !submenuOpen"
+                            <div>
+                                <button @click="expandedCategory = expandedCategory === 'menu-{{ $menuIndex }}' ? null : 'menu-{{ $menuIndex }}'"
                                         class="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium {{ $menuItem['has_active_child'] ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30' : 'text-gray-700 dark:text-gray-300' }}">
                                     <span class="flex items-center gap-2">
                                         @if($menuItem['icon'])
@@ -1049,9 +1049,9 @@
                                         @endif
                                         {{ $menuItem['title'] }}
                                     </span>
-                                    <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': submenuOpen }"></i>
+                                    <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': expandedCategory === 'menu-{{ $menuIndex }}' }"></i>
                                 </button>
-                                <div x-show="submenuOpen" x-transition class="pl-4 space-y-1">
+                                <div x-show="expandedCategory === 'menu-{{ $menuIndex }}'" x-transition class="pl-4 space-y-1">
                                     @foreach($menuItem['children'] as $child)
                                         <a href="{{ $child['url'] }}"
                                            @click="mobileMenuOpen = false"

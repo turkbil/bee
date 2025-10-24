@@ -32,14 +32,14 @@
     </a>
 
     {{-- Content Section --}}
-    <div class="p-6 md:p-8 lg:p-10 space-y-6 md:space-y-8 lg:space-y-10">
+    <div class="p-4 md:p-4 lg:p-5 space-y-2.5 md:space-y-3 lg:space-y-3.5">
         {{-- Category with Icon --}}
         @if($product->category)
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-1.5 mb-3 md:mb-3.5 lg:mb-4">
             @if($product->category->icon_class)
-                <i class="{{ $product->category->icon_class }} text-blue-600 dark:text-blue-400 text-base"></i>
+                <i class="{{ $product->category->icon_class }} text-blue-600 dark:text-blue-400 text-xs"></i>
             @endif
-            <span class="text-sm text-blue-800 dark:text-blue-300 font-semibold uppercase tracking-wide">
+            <span class="text-[10px] md:text-[11px] text-blue-800 dark:text-blue-300 font-normal uppercase tracking-wider">
                 {{ $product->category->getTranslated('title') }}
             </span>
         </div>
@@ -47,15 +47,15 @@
 
         {{-- Title --}}
         <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product) }}">
-            <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+            <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
                 {{ $product->getTranslated('title') }}
             </h3>
         </a>
 
         {{-- Price --}}
         @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
-            <div class="pt-6 md:pt-8 lg:pt-10 mt-auto border-t border-gray-200/60 dark:border-gray-700/60">
-                <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+            <div class="pt-3 md:pt-3.5 lg:pt-4 mt-auto border-t border-gray-200/60 dark:border-gray-700/60">
+                <div class="text-base md:text-lg lg:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
                     {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
                 </div>
             </div>

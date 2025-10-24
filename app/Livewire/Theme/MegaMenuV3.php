@@ -22,15 +22,17 @@ class MegaMenuV3 extends Component
             ->where('is_active', 1)
             ->first();
 
-        // Öne çıkan ürün: sort_order'a göre ilk ürün (1 numaralı)
+        // Öne çıkan ürün: sort_order'a göre ilk ürün (sadece ana ürünler, varyant değil)
         $featuredProduct = ShopProduct::where('category_id', $this->categoryId)
             ->where('is_active', 1)
+            ->whereNull('parent_product_id')
             ->orderBy('sort_order', 'asc')
             ->first();
 
-        // Diğer ürünler: sort_order'a göre sıralı, 5 ürün (featured hariç)
+        // Diğer ürünler: sort_order'a göre sıralı, 5 ürün (sadece ana ürünler, featured hariç)
         $otherProducts = ShopProduct::where('category_id', $this->categoryId)
             ->where('is_active', 1)
+            ->whereNull('parent_product_id')
             ->where('product_id', '!=', $featuredProduct ? $featuredProduct->product_id : 0)
             ->orderBy('sort_order', 'asc')
             ->take(5)
@@ -52,24 +54,32 @@ class MegaMenuV3 extends Component
         $configs = [
             1 => [ // Forklift
                 'gradient' => 'from-orange-600 via-red-600 to-pink-700',
-                'icon' => 'fa-solid fa-forklift',
                 'title_suffix' => 'Çözümleri',
                 'description' => 'Ağır yük taşıma ve depolama operasyonları için profesyonel forklift sistemleri',
             ],
             2 => [ // Transpalet
                 'gradient' => 'from-blue-600 via-indigo-600 to-purple-700',
-                'icon' => 'fa-solid fa-pallet',
                 'title_suffix' => 'Ekipmanları',
                 'description' => 'Yük taşıma ve paletleme işlemleri için ergonomik transpalet çözümleri',
             ],
             3 => [ // İstif Makinesi
                 'gradient' => 'from-green-600 via-emerald-600 to-teal-700',
-                'icon' => 'fa-solid fa-layer-group',
                 'title_suffix' => 'Sistemleri',
                 'description' => 'Yüksek raflama ve istif operasyonları için güvenli istif makineleri',
             ],
         ];
 
-        return $configs[$categoryId] ?? $configs[1];
+        $config = $configs[$categoryId] ?? $configs[1];
+
+        // Database'den kategori ikonunu al
+        $category = ShopCategory::where('category_id', $categoryId)
+            ->where('is_active', 1)
+            ->first();
+
+        $config['icon'] = $category && $category->icon_class
+            ? $category->icon_class
+            : 'fa-solid fa-box';
+
+        return $config;
     }
 }

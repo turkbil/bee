@@ -149,8 +149,8 @@ window.initGLightbox = initGLightbox;
  * 🎯 STICKY SYSTEM V4 - Header Topbar + TOC Bar + Sidebar
  *
  * 1. Topbar: Scroll > 50px → Kaybolur
- * 2. TOC: Hero'dan sonra sticky → TOC'un ALTI FAQ BAŞINA değince DURUR (kaybolmaz)
- * 3. Sidebar: TOC sticky olunca başlar (TOC altında 16px) → Sidebar'ın ALTI FAQ BAŞINA değince DURUR (kaybolmaz)
+ * 2. TOC: Hero'dan sonra sticky → TOC'un ALTI FAQ SONUNA / Trust Signals başlangıcına değince DURUR (kaybolmaz)
+ * 3. Sidebar: TOC sticky olunca başlar (TOC altında 16px) → Sidebar'ın ALTI FAQ SONUNA / Trust Signals başlangıcına değince DURUR (kaybolmaz)
  */
 (function() {
     'use strict';
@@ -177,38 +177,80 @@ window.initGLightbox = initGLightbox;
     let tocOriginalOffset = 0;
     let contactOffset = 0;
     let faqStartOffset = 0;
-    let trustSignalsOffset = 0;
+    let faqEndOffset = 0;
+    let trustSignalsOffset = null;
 
     // Sidebar width/left cache (sürekli hesaplamayı önle)
     let cachedSidebarWidth = 0;
     let cachedSidebarLeft = 0;
 
+    function getDocumentOffsetTop(element) {
+        if (!element) return 0;
+
+        let offsetTop = 0;
+        let current = element;
+
+        while (current) {
+            offsetTop += current.offsetTop || 0;
+            current = current.offsetParent;
+        }
+
+        return offsetTop;
+    }
+
+    function getElementBounds(element) {
+        if (!element) {
+            return { top: Infinity, bottom: Infinity, height: 0 };
+        }
+
+        const top = getDocumentOffsetTop(element);
+        const height = element.offsetHeight || 0;
+
+        return {
+            top,
+            height,
+            bottom: top + height
+        };
+    }
+
+    function getStickyBounds() {
+        const faqBounds = getElementBounds(elements.faqSection);
+
+        faqStartOffset = faqBounds.top;
+        faqEndOffset = faqBounds.bottom;
+
+        let stopBoundary = faqBounds.bottom;
+
+        if (elements.trustSignalsSection) {
+            const trustBounds = getElementBounds(elements.trustSignalsSection);
+
+            if (trustBounds.top !== Infinity) {
+                trustSignalsOffset = trustBounds.top;
+                stopBoundary = trustBounds.top;
+            } else {
+                trustSignalsOffset = null;
+            }
+        } else {
+            trustSignalsOffset = null;
+        }
+
+        return {
+            faqTop: faqBounds.top,
+            faqBottom: faqBounds.bottom,
+            faqHeight: faqBounds.height,
+            stopBoundary
+        };
+    }
+
     function init() {
         if (!elements.topbar) return;
 
-        // TOC bar için başlangıç offsetini hesapla
-        if (elements.tocBar && elements.heroSection) {
-            tocOriginalOffset = elements.heroSection.offsetHeight;
-        }
-
-        // Contact section offset
-        if (elements.contactSection) {
-            contactOffset = elements.contactSection.offsetTop;
-        }
-
-        // FAQ section start offset (FAQ'nın BAŞLADIĞI yer)
-        if (elements.faqSection) {
-            faqStartOffset = elements.faqSection.offsetTop;
-        }
-
-        // Trust Signals section offset (TOC ve Sidebar burada durmalı)
-        if (elements.trustSignalsSection) {
-            trustSignalsOffset = elements.trustSignalsSection.offsetTop;
-        }
+        calculateOffsets();
 
         // Scroll listener
         window.addEventListener('scroll', onScroll, { passive: true });
         window.addEventListener('resize', calculateOffsets, { passive: true });
+        window.addEventListener('load', calculateOffsets);
     }
 
     function calculateOffsets() {
@@ -216,13 +258,14 @@ window.initGLightbox = initGLightbox;
             tocOriginalOffset = elements.heroSection.offsetHeight;
         }
         if (elements.contactSection) {
-            contactOffset = elements.contactSection.offsetTop;
+            contactOffset = getDocumentOffsetTop(elements.contactSection);
         }
-        if (elements.faqSection) {
-            faqStartOffset = elements.faqSection.offsetTop;
-        }
-        if (elements.trustSignalsSection) {
-            trustSignalsOffset = elements.trustSignalsSection.offsetTop;
+        if (elements.faqSection || elements.trustSignalsSection) {
+            getStickyBounds();
+        } else {
+            faqStartOffset = 0;
+            faqEndOffset = 0;
+            trustSignalsOffset = null;
         }
 
         // Sidebar cache'i güncelle (resize'da)
@@ -238,9 +281,10 @@ window.initGLightbox = initGLightbox;
         if (!ticking) {
             window.requestAnimationFrame(() => {
                 const scrollY = window.pageYOffset;
+                const stickyBounds = getStickyBounds();
                 updateTopbar(scrollY);
-                updateTOC(scrollY);
-                updateSidebar(scrollY);
+                updateTOC(scrollY, stickyBounds);
+                updateSidebar(scrollY, stickyBounds);
                 ticking = false;
             });
             ticking = true;
@@ -267,27 +311,35 @@ window.initGLightbox = initGLightbox;
         if (!elements.tocBar) return;
 
         const shouldStick = scrollY >= tocOriginalOffset;
+        const faqOffset = elements.faqSection ? getDocumentOffsetTop(elements.faqSection) : Infinity;
 
         // TOC'un ALTININ FAQ BAŞINA değip değmediğini kontrol et
         const tocHeight = elements.tocBar.offsetHeight;
         const tocBottom = scrollY + HEADER_HEIGHT + tocHeight;
-        const shouldStop = tocBottom >= faqStartOffset;
+        const shouldStop = tocBottom >= faqOffset;
 
         // Sticky/Static/Stop pozisyon kontrolü
         if (!shouldStick) {
             // Normal mode - sticky değil
             elements.tocBar.style.position = 'static';
             elements.tocBar.style.top = 'auto';
+            elements.tocBar.style.left = 'auto';
+            elements.tocBar.style.right = 'auto';
+            elements.tocBar.style.width = 'auto';
             elements.tocBar.style.transform = 'translateY(0)';
             tocVisible = true;
             tocSticky = false;
         } else if (shouldStop) {
-            // Stop mode - FAQ BAŞINDA dur (fixed kalsın ama top sabit)
-            const stoppedTop = faqStartOffset - scrollY - tocHeight;
-            elements.tocBar.style.position = 'fixed';
-            elements.tocBar.style.top = stoppedTop + 'px';
+            // Stop mode - FAQ BAŞINDA dur (absolute position ile sabitle)
+            const offsetParent = elements.tocBar.offsetParent || document.body;
+            const offsetParentTop = getDocumentOffsetTop(offsetParent);
+            const absoluteTop = faqOffset - offsetParentTop - tocHeight;
+
+            elements.tocBar.style.position = 'absolute';
+            elements.tocBar.style.top = absoluteTop + 'px';
             elements.tocBar.style.left = '0';
             elements.tocBar.style.right = '0';
+            elements.tocBar.style.width = 'auto';
             elements.tocBar.style.transform = 'translateY(0)';
             tocVisible = true;
             tocSticky = true;
@@ -297,6 +349,7 @@ window.initGLightbox = initGLightbox;
             elements.tocBar.style.top = HEADER_HEIGHT + 'px';
             elements.tocBar.style.left = '0';
             elements.tocBar.style.right = '0';
+            elements.tocBar.style.width = 'auto';
             elements.tocBar.style.transform = 'translateY(0)';
             tocVisible = true;
             tocSticky = true;
@@ -318,7 +371,8 @@ window.initGLightbox = initGLightbox;
         // Sidebar'ın ALTININ FAQ BAŞINA değip değmediğini kontrol et
         const sidebarHeight = elements.sidebar.offsetHeight;
         const sidebarBottom = scrollY + stickyTop + sidebarHeight;
-        const shouldStop = shouldStick && (sidebarBottom >= faqStartOffset);
+        const faqOffset = elements.faqSection ? getDocumentOffsetTop(elements.faqSection) : Infinity;
+        const shouldStop = shouldStick && (sidebarBottom >= faqOffset);
 
         if (!shouldStick) {
             // Normal mode - TOC henüz sticky değil
@@ -326,6 +380,7 @@ window.initGLightbox = initGLightbox;
             elements.sidebar.style.top = 'auto';
             elements.sidebar.style.width = 'auto';
             elements.sidebar.style.left = 'auto';
+            elements.sidebar.style.right = 'auto';
             elements.sidebar.style.opacity = '1';
             elements.sidebar.style.visibility = 'visible';
             sidebarSticky = false;
@@ -343,12 +398,16 @@ window.initGLightbox = initGLightbox;
             }
 
             if (shouldStop) {
-                // Stop mode - FAQ BAŞINDA dur (fixed kalsın ama top sabit)
-                const stoppedTop = faqStartOffset - scrollY - sidebarHeight;
-                elements.sidebar.style.position = 'fixed';
-                elements.sidebar.style.top = stoppedTop + 'px';
-                elements.sidebar.style.width = cachedSidebarWidth + 'px';
-                elements.sidebar.style.left = cachedSidebarLeft + 'px';
+                // Stop mode - FAQ BAŞINDA dur (absolute position ile sabitle)
+                const sidebarParent = elements.sidebar.parentElement;
+                const parentTop = getDocumentOffsetTop(sidebarParent);
+                const absoluteTop = faqOffset - parentTop - sidebarHeight;
+
+                elements.sidebar.style.position = 'absolute';
+                elements.sidebar.style.top = absoluteTop + 'px';
+                elements.sidebar.style.width = '100%';
+                elements.sidebar.style.left = '0';
+                elements.sidebar.style.right = 'auto';
                 elements.sidebar.style.opacity = '1';
                 elements.sidebar.style.visibility = 'visible';
                 sidebarVisible = true;

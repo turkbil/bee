@@ -37,7 +37,7 @@ return [
     'password_confirmation_field' => 'Şifre Tekrarı',
     'password_confirmation_placeholder' => 'Şifrenizi tekrar girin',
     'email_field' => 'Email Adresi',
-    'email_placeholder' => 'email@domain.com',
+    'email_placeholder' => 'E-posta adresinizi girin',
     'create_account' => 'Hesap Oluştur',
     'creating_account' => 'Hesap oluşturuluyor...',
     'already_have_account' => 'Zaten hesabınız var mı?',

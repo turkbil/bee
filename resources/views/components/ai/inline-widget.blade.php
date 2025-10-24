@@ -185,21 +185,6 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             data-ai-chat-messages
             class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900"
         >
-            {{-- Placeholder Animation (V4 - Slide Up - Dynamic Product-specific) --}}
-            <div x-show="!chat?.hasConversation"
-                 x-data="{}"
-                 x-init="
-                     // Wait for placeholderV4 to be available
-                     await Alpine.nextTick();
-                     if (typeof window.placeholderV4 === 'function') {
-                         Object.assign($data, window.placeholderV4({{ $productId ? "'" . $productId . "'" : 'null' }}));
-                         await init();
-                         await start();
-                     }
-                 "
-                 class="space-y-3">
-            </div>
-
             {{-- Messages --}}
             <template x-for="(msg, index) in (chat?.messages || [])" :key="index">
                 <div

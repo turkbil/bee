@@ -138,8 +138,8 @@
                         @endif
                     </div>
                     <div class="flex items-center gap-3 sm:gap-4">
-                        {{-- Sık Sorulan Sorular --}}
-                        <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
+                        {{-- Sık Sorulan Sorular - xs/sm'de gizli, md+'da görünür --}}
+                        <a href="#" class="hidden md:inline-block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
                             <i class="fa-solid fa-circle-question mr-1"></i>
                             Sık Sorulan Sorular
                         </a>

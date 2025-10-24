@@ -1,7 +1,7 @@
 <div class="relative mb-6"
      x-data="{
-         query: @entangle('query').live,
-         open: @entangle('isOpen').live,
+         query: $wire.entangle('query').live,
+         open: $wire.entangle('isOpen').live,
          keywords: [],
          products: [],
          total: 0,

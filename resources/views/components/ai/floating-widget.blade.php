@@ -50,14 +50,14 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
         // BUT only on desktop (NOT on mobile/tablet: sm/xs/md breakpoints)
         this.autoOpenTimer = setTimeout(() => {
             const isMobile = window.innerWidth < 1024; // lg breakpoint (1024px)
-            if (!this.chat.floatingOpen && !this.chat.hasConversation && !isMobile) {
+            if (this.chat?.floatingOpen === false && !this.chat?.hasConversation && !isMobile) {
                 console.log('🤖 Auto-opening AI chat (desktop only)...');
                 this.chat.openFloating();
             }
         }, 10000);
 
         // Watch for conversation changes - auto expand if messages exist
-        this.$watch('chat.hasConversation', value => {
+        this.$watch('chat?.hasConversation', value => {
             if (value) this.expanded = true;
         });
     },
@@ -245,7 +245,7 @@ class="fixed {{ $selectedPosition }} z-50">
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
         :style="{
-            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            height: (expanded || chat?.hasConversation) ? '600px' : '420px',
             transition: 'height 0.4s ease-in-out',
             maxHeight: 'calc(100vh - 120px)'
         }"
@@ -262,7 +262,7 @@ class="fixed {{ $selectedPosition }} z-50">
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-lg" x-text="chat.assistantName"></h3>
+                    <h3 class="font-semibold text-lg" x-text="chat?.assistantName || ''"></h3>
                     <div class="flex items-center gap-1.5">
                         <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                         <p class="text-xs text-white/80">Online</p>
@@ -285,7 +285,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
         {{-- Welcome Section --}}
         <div
-            x-show="!chat.hasConversation"
+            x-show="!chat?.hasConversation"
             x-transition:enter="transition-all ease-out duration-400"
             x-transition:enter-start="opacity-0 translate-y-2"
             x-transition:enter-end="opacity-100 translate-y-0"
@@ -382,7 +382,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
         {{-- Messages Container --}}
         <div
-            x-show="chat.hasConversation"
+            x-show="chat?.hasConversation"
             x-transition:enter="transition-all ease-out duration-400"
             x-transition:enter-start="opacity-0 translate-y-4"
             x-transition:enter-end="opacity-100 translate-y-0"
@@ -394,7 +394,7 @@ class="fixed {{ $selectedPosition }} z-50">
             x-cloak
         >
             {{-- Messages --}}
-            <template x-for="(msg, index) in chat.messages" :key="index">
+            <template x-for="(msg, index) in (chat?.messages || [])" :key="index">
                 <div
                     :class="{
                         'flex justify-end': msg.role === 'user',
@@ -436,7 +436,7 @@ class="fixed {{ $selectedPosition }} z-50">
             </template>
 
             {{-- Typing indicator --}}
-            <div x-show="chat.isTyping" class="flex justify-start">
+            <div x-show="chat?.isTyping" class="flex justify-start">
                 <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
                     <div class="flex gap-1">
                         <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
@@ -450,8 +450,8 @@ class="fixed {{ $selectedPosition }} z-50">
         {{-- Input Area --}}
         <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
             {{-- Error message --}}
-            <div x-show="chat.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" x-cloak>
-                <span x-text="chat.error"></span>
+            <div x-show="chat?.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" x-cloak>
+                <span x-text="chat?.error || ''"></span>
             </div>
 
             {{-- Input form --}}
@@ -459,7 +459,7 @@ class="fixed {{ $selectedPosition }} z-50">
                 <div class="flex-1 relative">
                     {{-- Glow effect on focus --}}
                     <div
-                        x-show="inputFocused && !chat.isLoading"
+                        x-show="inputFocused && !chat?.isLoading"
                         class="absolute inset-0 bg-blue-400 rounded-full opacity-20 animate-pulse-glow pointer-events-none"
                     ></div>
 
@@ -469,20 +469,20 @@ class="fixed {{ $selectedPosition }} z-50">
                         @focus="expanded = true; inputFocused = true"
                         @blur="inputFocused = false"
                         placeholder="Mesajınızı yazın..."
-                        :disabled="chat.isLoading"
+                        :disabled="chat?.isLoading"
                         class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-all duration-300 relative z-10"
-                        :class="{ 'animate-input-invite': !expanded && !chat.hasConversation }"
+                        :class="{ 'animate-input-invite': !expanded && !chat?.hasConversation }"
                         autocomplete="off"
                     />
                 </div>
                 <button
                     type="submit"
-                    :disabled="!message.trim() || chat.isLoading"
+                    :disabled="!message.trim() || chat?.isLoading"
                     class="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors shadow-sm"
                 >
-                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path x-show="!chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        <path x-show="chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat?.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        <path x-show="chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                 </button>
             </form>

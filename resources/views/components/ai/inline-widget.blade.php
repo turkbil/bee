@@ -77,10 +77,12 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
         init() {
             // Wait for Alpine store to be ready
             if (!this.chat || typeof this.chat.registerInline !== 'function') {
-                console.warn('⏳ AI Chat store not ready yet, retrying...');
+                console.warn('⏳ AI Chat store not ready yet, retrying...', { chat: this.chat });
                 setTimeout(() => this.init(), 100);
                 return;
             }
+
+            console.log('✅ AI Chat store ready, initializing inline widget:', this.widgetId);
 
             // Register this widget
             this.chat.registerInline(this.widgetId);
@@ -97,7 +99,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             // Removed welcome message - using placeholder animation instead
 
             // Scroll to bottom after init (if open)
-            if (this.isOpen) {
+            if (this.isOpen && this.chat.scrollToBottom) {
                 setTimeout(() => {
                     this.chat.scrollToBottom();
                 }, 400);
@@ -111,7 +113,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             this.isOpen = !this.isOpen;
 
             // Scroll to bottom when opening
-            if (this.isOpen) {
+            if (this.isOpen && this.chat?.scrollToBottom) {
                 setTimeout(() => {
                     this.chat.scrollToBottom();
                 }, 200);
@@ -119,7 +121,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
         },
 
         submitMessage() {
-            if (this.message.trim()) {
+            if (this.message.trim() && this.chat?.sendMessage) {
                 const context = {};
                 @if($productId) context.product_id = {{ $productId }}; @endif
                 @if($categoryId) context.category_id = {{ $categoryId }}; @endif
@@ -144,15 +146,15 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg">{{ $title }}</h3>
-                    <p class="text-xs text-white/80" x-text="chat.assistantName"></p>
+                    <p class="text-xs text-white/80" x-text="chat?.assistantName || ''"></p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2">
                 {{-- Message count badge --}}
                 <span
-                    x-show="chat.messageCount > 0"
-                    x-text="chat.messageCount"
+                    x-show="chat?.messageCount > 0"
+                    x-text="chat?.messageCount || 0"
                     class="bg-white/20 text-white text-xs font-bold rounded-full px-2 py-1"
                     x-cloak
                 ></span>
@@ -184,7 +186,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900"
         >
             {{-- Placeholder Animation (V4 - Slide Up - Dynamic Product-specific) --}}
-            <div x-show="!chat.hasConversation"
+            <div x-show="!chat?.hasConversation"
                  x-data="{}"
                  x-init="
                      // Wait for placeholderV4 to be available
@@ -199,7 +201,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             </div>
 
             {{-- Messages --}}
-            <template x-for="(msg, index) in chat.messages" :key="index">
+            <template x-for="(msg, index) in (chat?.messages || [])" :key="index">
                 <div
                     :class="{
                         'flex justify-end': msg.role === 'user',
@@ -241,7 +243,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             </template>
 
             {{-- Typing indicator --}}
-            <div x-show="chat.isTyping" class="flex justify-start">
+            <div x-show="chat?.isTyping" class="flex justify-start">
                 <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
                     <div class="flex gap-1">
                         <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
@@ -255,8 +257,8 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
         {{-- Input Area --}}
         <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
             {{-- Error message --}}
-            <div x-show="chat.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" x-cloak>
-                <span x-text="chat.error"></span>
+            <div x-show="chat?.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" x-cloak>
+                <span x-text="chat?.error || ''"></span>
             </div>
 
             {{-- Input form --}}
@@ -265,18 +267,18 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
                     type="text"
                     x-model="message"
                     placeholder="Mesajınızı yazın..."
-                    :disabled="chat.isLoading"
+                    :disabled="chat?.isLoading"
                     class="flex-1 px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-all"
                     autocomplete="off"
                 />
                 <button
                     type="submit"
-                    :disabled="!message.trim() || chat.isLoading"
+                    :disabled="!message.trim() || chat?.isLoading"
                     class="{{ $selectedTheme['button'] }} text-white px-6 py-2.5 rounded-full disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-sm hover:shadow-md"
                 >
-                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path x-show="!chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        <path x-show="chat.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat?.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path x-show="!chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        <path x-show="chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                 </button>
             </form>

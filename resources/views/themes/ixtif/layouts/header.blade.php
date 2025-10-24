@@ -89,9 +89,9 @@
     @stack('head')
     @stack('styles')
 
-    {{-- AI Chat CSS & JS - Must load BEFORE any inline widget --}}
+    {{-- AI Chat CSS - Load in head for styling --}}
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v=<?php echo time(); ?>">
-    <script src="/assets/js/ai-chat.js?v=<?php echo time(); ?>"></script>
+    {{-- AI Chat JS moved to footer.blade.php AFTER Alpine.js/Livewire --}}
 
     {{-- Livewire Styles --}}
     @livewireStyles

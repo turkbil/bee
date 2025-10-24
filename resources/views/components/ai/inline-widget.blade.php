@@ -75,6 +75,13 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
         alwaysOpen: {{ $alwaysOpen ? 'true' : 'false' }},
 
         init() {
+            // Wait for Alpine store to be ready
+            if (!this.chat || typeof this.chat.registerInline !== 'function') {
+                console.warn('⏳ AI Chat store not ready yet, retrying...');
+                setTimeout(() => this.init(), 100);
+                return;
+            }
+
             // Register this widget
             this.chat.registerInline(this.widgetId);
 

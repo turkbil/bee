@@ -180,6 +180,11 @@ window.initGLightbox = initGLightbox;
     let faqEndOffset = 0;
     let trustSignalsOffset = null;
 
+    let tocStopLocked = false;
+    let tocStopTop = 0;
+    let sidebarStopLocked = false;
+    let sidebarStopTop = 0;
+
     // Sidebar width/left cache (sürekli hesaplamayı önle)
     let cachedSidebarWidth = 0;
     let cachedSidebarLeft = 0;
@@ -325,6 +330,7 @@ window.initGLightbox = initGLightbox;
         const tocHeight = elements.tocBar.offsetHeight;
         const tocBottom = scrollY + HEADER_HEIGHT + tocHeight;
         const shouldStop = shouldStick && stopBoundary !== Infinity && tocBottom >= stopBoundary;
+        const shouldUnlock = tocStopLocked && stopBoundary !== Infinity && tocBottom < stopBoundary - 1;
 
         if (!shouldStick) {
             elements.tocBar.style.position = 'static';
@@ -335,13 +341,20 @@ window.initGLightbox = initGLightbox;
             elements.tocBar.style.transform = 'translateY(0)';
             tocVisible = true;
             tocSticky = false;
-        } else if (shouldStop) {
+            tocStopLocked = false;
+        } else if (tocStopLocked || shouldStop) {
             const offsetParent = elements.tocBar.offsetParent || document.body;
             const offsetParentTop = getDocumentOffsetTop(offsetParent);
             const absoluteTop = Math.max(stopBoundary - offsetParentTop - tocHeight, 0);
 
+            if (!tocStopLocked || Math.abs(tocStopTop - absoluteTop) > 1) {
+                tocStopTop = absoluteTop;
+            }
+
+            tocStopLocked = true;
+
             elements.tocBar.style.position = 'absolute';
-            elements.tocBar.style.top = absoluteTop + 'px';
+            elements.tocBar.style.top = tocStopTop + 'px';
             elements.tocBar.style.left = '0';
             elements.tocBar.style.right = '0';
             elements.tocBar.style.width = 'auto';
@@ -357,6 +370,10 @@ window.initGLightbox = initGLightbox;
             elements.tocBar.style.transform = 'translateY(0)';
             tocVisible = true;
             tocSticky = true;
+        }
+
+        if (tocStopLocked && shouldUnlock) {
+            tocStopLocked = false;
         }
     }
 
@@ -374,6 +391,7 @@ window.initGLightbox = initGLightbox;
         const sidebarHeight = elements.sidebar.offsetHeight;
         const sidebarBottom = scrollY + stickyTop + sidebarHeight;
         const shouldStop = shouldStick && stopBoundary !== Infinity && sidebarBottom >= stopBoundary;
+        const shouldUnlock = sidebarStopLocked && stopBoundary !== Infinity && sidebarBottom < stopBoundary - 1;
 
         if (!shouldStick) {
             elements.sidebar.style.position = 'static';
@@ -387,6 +405,7 @@ window.initGLightbox = initGLightbox;
             sidebarVisible = true;
             cachedSidebarWidth = 0;
             cachedSidebarLeft = 0;
+            sidebarStopLocked = false;
         } else {
             if (!sidebarSticky || cachedSidebarWidth === 0) {
                 const sidebarParent = elements.sidebar.parentElement;
@@ -395,13 +414,19 @@ window.initGLightbox = initGLightbox;
                 cachedSidebarLeft = parentRect.left;
             }
 
-            if (shouldStop) {
+            if (sidebarStopLocked || shouldStop) {
                 const sidebarParent = elements.sidebar.parentElement;
                 const parentTop = getDocumentOffsetTop(sidebarParent);
                 const absoluteTop = Math.max(stopBoundary - parentTop - sidebarHeight, 0);
 
+                if (!sidebarStopLocked || Math.abs(sidebarStopTop - absoluteTop) > 1) {
+                    sidebarStopTop = absoluteTop;
+                }
+
+                sidebarStopLocked = true;
+
                 elements.sidebar.style.position = 'absolute';
-                elements.sidebar.style.top = absoluteTop + 'px';
+                elements.sidebar.style.top = sidebarStopTop + 'px';
                 elements.sidebar.style.width = '100%';
                 elements.sidebar.style.left = '0';
                 elements.sidebar.style.right = 'auto';
@@ -420,6 +445,10 @@ window.initGLightbox = initGLightbox;
             }
 
             sidebarSticky = true;
+        }
+
+        if (sidebarStopLocked && shouldUnlock) {
+            sidebarStopLocked = false;
         }
     }
 

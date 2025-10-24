@@ -1,124 +1,353 @@
-/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png:1  Failed to load resource: the server responded with a status of 403 ()
-gdlqlmda4zgwvqbemsgqjb79l4kqpqfstycg1w9f.png:1  Failed to load resource: the server responded with a status of 403 ()
-lrcd1oi6xhtj0joor2gitk3irfpwpowiaky0c4it.png:1  Failed to load resource: the server responded with a status of 403 ()
- ✅ AI Chat System JavaScript loaded
- 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
- Detected multiple instances of Livewire running
+ai-chat.js?v=1761276540:656 ✅ AI Chat System JavaScript loaded
+ai-chat.js?v=1761276540:657 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
+livewire.js?id=df3a17f2:10202 Detected multiple instances of Livewire running
 warnAboutMultipleInstancesOf @ livewire.js?id=df3a17f2:10202
- Detected multiple instances of Alpine running
+(anonymous) @ livewire.js?id=df3a17f2:10204
+(anonymous) @ livewire.js?id=df3a17f2:10218
+livewire.js?id=df3a17f2:10202 Detected multiple instances of Alpine running
 warnAboutMultipleInstancesOf @ livewire.js?id=df3a17f2:10202
-/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png:1  Failed to load resource: the server responded with a status of 403 ()
-gdlqlmda4zgwvqbemsgqjb79l4kqpqfstycg1w9f.png:1  Failed to load resource: the server responded with a status of 403 ()
- ✅ GLightbox initialized
- 🏢 Tenant mode detected: ixtif.com
- ✅ Tenant-safe frontend assets loaded
- ✅ Livewire initialized with Alpine.js
- 🤖 AI Chat Store initialized Object
- Alpine Expression Error: Cannot read properties of undefined (reading 'registerInline')
-
-Expression: "init() {
-            // Register this widget
-            this.chat.registerInline(this.widgetId);
-
-            // Set context if provided
-                        this.chat.updateContext({
-                 product_id: 241,                                             });
-            
-            // Removed welcome message - using placeholder animation instead
-
-            // Scroll to bottom after init (if open)
-            if (this.isOpen) {
-                setTimeout(() => {
-                    this.chat.scrollToBottom();
-                }, 400);
-            }
-        }"
-
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'assistantName')
+(anonymous) @ livewire.js?id=df3a17f2:10206
+(anonymous) @ livewire.js?id=df3a17f2:10218
+ixtif-theme.js?v=1761276540:123 ✅ GLightbox initialized
+ai-chat.js?v=1761276540:81 🤖 AI Chat Store initialized {floatingOpen: true, sessionId: null}
+VM5285:13 ⏳ AI Chat store not ready yet, retrying...
+init @ VM5285:13
+(anonymous) @ VM5184 livewire.js:1160
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3571
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'assistantName')
 
 Expression: "chat.assistantName"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'messageCount')
+ p.text-xs.text-white/80
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'messageCount')
 
 Expression: "chat.messageCount > 0"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'messageCount')
+ span.bg-white/20.text-white.text-xs.font-bold.rounded-full.px-2.py-1
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'messageCount')
 
 Expression: "chat.messageCount"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+ span.bg-white/20.text-white.text-xs.font-bold.rounded-full.px-2.py-1
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
 Expression: "!chat.hasConversation"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'messages')
+ div.space-y-3
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'messages')
 
 Expression: "chat.messages"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'isTyping')
+ template
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isTyping')
 
 Expression: "chat.isTyping"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+ div.flex.justify-start
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
 
 Expression: "chat.error"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+ div.mb-3.p-2.bg-red-100.dark:bg-red-900/30.text-red-700.dark:text-red-300.text-sm.rounded-lg
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
 
 Expression: "chat.error"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ span
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "chat.isLoading"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ input.flex-1.px-4.py-2.5.bg-gray-50.dark:bg-gray-900.border.border-gray-300.dark:border-gray-600.text-gray-900.dark:text-gray-100.placeholder-gray-500.dark:placeholder-gray-400.rounded-full.focus:outline-none.focus:ring-2.focus:ring-blue-500.dark:focus:ring-blue-600.focus:border-transparent.disabled:bg-gray-100.dark:disabled:bg-gray-800.disabled:cursor-not-allowed.transition-all
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "{ 'animate-spin': chat.isLoading }"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ svg.w-5.h-5
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "!chat.isLoading"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ path
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "chat.isLoading"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+ path
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
 
 Expression: "$store.aiChat.floatingOpen"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: Cannot read properties of undefined (reading 'entangle')
+ div.fixed.bottom-8.z-[60].hidden.lg:block
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getter @ VM5184 livewire.js:3006
+(anonymous) @ VM5184 livewire.js:804
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+watch @ VM5184 livewire.js:803
+(anonymous) @ VM5184 livewire.js:3009
+init @ VM5357:25
+(anonymous) @ VM5184 livewire.js:1160
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3571
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'entangle')
 
 Expression: "{
-         query: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('query').live,
-         open: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('isOpen').live,
+         query: window.Livewire.find('CDmtw71A52BDkpu1d0ai').entangle('query').live,
+         open: window.Livewire.find('CDmtw71A52BDkpu1d0ai').entangle('isOpen').live,
          keywords: [],
          products: [],
          total: 0,
@@ -164,7 +393,7 @@ Expression: "{
 
          selectKeyword(keyword) {
              if (!keyword?.text) return;
-             window.location.href = 'https://ixtif.com/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
+             window.location.href = 'https://ixtif.com.tr/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
          },
 
          selectProduct(product) {
@@ -173,166 +402,512 @@ Expression: "{
          }
      }"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: query is not defined
+ div.relative.mb-6
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3564
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: query is not defined
 
 Expression: "query"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: query is not defined
+ input.w-full.bg-white.border-0.rounded-2xl.pl-16.pr-6.py-5.text-gray-900.text-lg.focus:outline-none.focus:ring-4.focus:ring-white/30.transition-shadow
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getValue @ VM5184 livewire.js:3353
+(anonymous) @ VM5184 livewire.js:3410
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3409
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: query is not defined
 
 Expression: "!query.trim()"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
- Alpine Expression Error: query is not defined
+ button.bg-white.text-indigo-600.px-8.md:px-10.py-5.rounded-2xl.font-bold.text-lg.hover:shadow-2xl.transition-all.flex.items-center.gap-2
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: query is not defined
 
 Expression: "{'opacity-50 cursor-not-allowed': !query.trim()}"
 
- 
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+ button.bg-white.text-indigo-600.px-8.md:px-10.py-5.rounded-2xl.font-bold.text-lg.hover:shadow-2xl.transition-all.flex.items-center.gap-2
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: keywords is not defined
 
 Expression: "open && (keywords.length > 0 || products.length > 0)"
 
- <div x-show=​"open && (keywords.length > 0 || products.length > 0)​" x-transition:enter=​"transition ease-out duration-200" x-transition:enter-start=​"opacity-0 translate-y-1" x-transition:enter-end=​"opacity-100 translate-y-0" x-transition:leave=​"transition ease-in duration-150" x-transition:leave-start=​"opacity-100 translate-y-0" x-transition:leave-end=​"opacity-0 translate-y-1" class=​"absolute top-full left-0 right-0 mt-2 bg-white dark:​bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:​border-gray-700 overflow-hidden" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+ div.absolute.top-full.left-0.right-0.mt-2.bg-white.dark:bg-gray-800.shadow-2xl.rounded-xl.z-50.border.border-gray-200.dark:border-gray-700.overflow-hidden
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: keywords is not defined
 
 Expression: "keywords.length > 0"
 
- <div x-show=​"keywords.length > 0" class=​"space-y-2 border border-gray-200 dark:​border-gray-700 rounded-lg p-4 lg:​p-5 bg-gray-50 dark:​bg-gray-900/​40" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+ div.space-y-2.border.border-gray-200.dark:border-gray-700.rounded-lg.p-4.lg:p-5.bg-gray-50.dark:bg-gray-900/40
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: keywords is not defined
 
 Expression: "`${keywords.length}`"
 
- <span class=​"text-[10px]​ text-gray-400 dark:​text-gray-500" x-text=​"`${keywords.length}​`">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+ span.text-[10px].text-gray-400.dark:text-gray-500
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: keywords is not defined
 
 Expression: "keywords"
 
- <template x-for=​"(keyword, index)​ in keywords" :key=​"'k-'+index">​…​</template>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: products is not defined
+ template
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: products is not defined
 
 Expression: "products.length > 0"
 
- <div x-show=​"products.length > 0" class=​"space-y-3" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: total is not defined
+ div.space-y-3
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: total is not defined
 
 Expression: "total > 0"
 
- <span x-show=​"total > 0" class=​"text-[11px]​ font-medium text-gray-400 dark:​text-gray-500" x-text=​"`${products.length}​ /​ ${total}​`" style=​"display:​ none;​">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: products is not defined
+ span.text-[11px].font-medium.text-gray-400.dark:text-gray-500
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: products is not defined
 
 Expression: "`${products.length} / ${total}`"
 
- <span x-show=​"total > 0" class=​"text-[11px]​ font-medium text-gray-400 dark:​text-gray-500" x-text=​"`${products.length}​ /​ ${total}​`" style=​"display:​ none;​">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: products is not defined
+ span.text-[11px].font-medium.text-gray-400.dark:text-gray-500
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: products is not defined
 
 Expression: "products"
 
- <template x-for=​"(product, index)​ in products" :key=​"'p-'+index">​…​</template>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: query is not defined
+ template
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: query is not defined
 
-Expression: "`https://ixtif.com/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+Expression: "`https://ixtif.com.tr/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query))"
 
- <a :href=​"`https:​/​/​ixtif.com/​search/​_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)​)​" x-show=​"total > 0" class=​"block p-4 text-center text-indigo-600 dark:​text-indigo-400 hover:​bg-indigo-50 dark:​hover:​bg-indigo-900/​20 font-semibold transition border-t border-gray-200 dark:​border-gray-700" href style=​"display:​ none;​">​…​</a>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: total is not defined
+ a.block.p-4.text-center.text-indigo-600.dark:text-indigo-400.hover:bg-indigo-50.dark:hover:bg-indigo-900/20.font-semibold.transition.border-t.border-gray-200.dark:border-gray-700
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: total is not defined
 
 Expression: "total > 0"
 
- <a :href=​"`https:​/​/​ixtif.com/​search/​_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)​)​" x-show=​"total > 0" class=​"block p-4 text-center text-indigo-600 dark:​text-indigo-400 hover:​bg-indigo-50 dark:​hover:​bg-indigo-900/​20 font-semibold transition border-t border-gray-200 dark:​border-gray-700" href style=​"display:​ none;​">​…​</a>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: total is not defined
+ a.block.p-4.text-center.text-indigo-600.dark:text-indigo-400.hover:bg-indigo-50.dark:hover:bg-indigo-900/20.font-semibold.transition.border-t.border-gray-200.dark:border-gray-700
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: total is not defined
 
 Expression: "`Tüm ${total} sonucu gör`"
 
- <span x-text=​"`Tüm ${total}​ sonucu gör`">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+ span
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
 Expression: "chat.hasConversation"
 
- <div x-data=​"{
-    chat:​ $store.aiChat,
-    message:​ '',
-    autoOpenTimer:​ null,
-    expanded:​ false,
-
-    init()​ {
-        /​/​ Auto-open after 10 seconds if user hasn't interacted
-        /​/​ BUT only on desktop (NOT on mobile/​tablet:​ sm/​xs/​md breakpoints)​
-        this.autoOpenTimer = setTimeout(()​ => {
-            const isMobile = window.innerWidth < 1024;​ /​/​ lg breakpoint (1024px)​
-            if (!this.chat.floatingOpen && !this.chat.hasConversation && !isMobile)​ {
-                console.log('🤖 Auto-opening AI chat (desktop only)​...')​;​
-                this.chat.openFloating()​;​
-            }​
-        }​, 10000)​;​
-
-        /​/​ Watch for conversation changes - auto expand if messages exist
-        this.$watch('chat.hasConversation', value => {
-            if (value)​ this.expanded = true;​
-        }​)​;​
-    }​,
-
-    destroy()​ {
-        /​/​ Clear timer on component destroy
-        if (this.autoOpenTimer)​ {
-            clearTimeout(this.autoOpenTimer)​;​
-        }​
-    }​,
-
-    submitMessage()​ {
-        if (this.message.trim()​)​ {
-            this.chat.sendMessage(this.message)​;​
-            this.message = '';​
-            this.expanded = true;​ /​/​ Expand when sending message
-        }​
-    }​
-}​" class=​"fixed bottom-6 right-6 z-50">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+ div.fixed.bottom-6.right-6.z-50
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getter @ VM5184 livewire.js:3006
+(anonymous) @ VM5184 livewire.js:804
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+watch @ VM5184 livewire.js:803
+(anonymous) @ VM5184 livewire.js:3009
+init @ VM5370:21
+(anonymous) @ VM5184 livewire.js:1160
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3571
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
 
 Expression: "!chat.floatingOpen"
 
- <div x-show=​"!chat.floatingOpen" x-transition:enter=​"transition-opacity ease-out duration-500" x-transition:enter-start=​"opacity-0" x-transition:enter-end=​"opacity-100" style=​"transition-delay:​ 0.5s;​ display:​ none;​" class=​"absolute bottom-0 right-0">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+ div.absolute.bottom-0.right-0
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
 
 Expression: "{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
 
- <div :class=​"{ 'opacity-0 pointer-events-none':​ chat.floatingOpen || !bubbleVisible }​" class=​"absolute z-[101]​ transition-opacity duration-300 max-lg:​hidden top-[-70px]​ right-[-10px]​" style=​"filter:​ drop-shadow(0 6px 25px rgba(0,0,0,0.3)​)​;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+ div.absolute.z-[101].transition-opacity.duration-300.max-lg:hidden.top-[-70px].right-[-10px]
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
 
 Expression: "{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
 
- <div :class=​"{ 'opacity-0 pointer-events-none':​ chat.floatingOpen || !bubbleVisible }​" class=​"lg:​hidden absolute inset-0 z-[2]​ transition-opacity duration-300 w-20 h-20 rounded-full flex items-center justify-center text-center bg-white shadow-2xl" style=​"filter:​ drop-shadow(0 6px 25px rgba(0,0,0,0.3)​)​;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'unreadCount')
+ div.lg:hidden.absolute.inset-0.z-[2].transition-opacity.duration-300.w-20.h-20.rounded-full.flex.items-center.justify-center.text-center.bg-white.shadow-2xl
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'unreadCount')
 
 Expression: "chat.unreadCount > 0 && !chat.floatingOpen"
 
- <span x-show=​"chat.unreadCount > 0 && !chat.floatingOpen" x-text=​"chat.unreadCount" class=​"absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg" style=​"display:​ none;​">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'unreadCount')
+ span.absolute.top-0.right-0.bg-red-500.text-white.text-xs.font-bold.rounded-full.w-6.h-6.flex.items-center.justify-center.animate-bounce.shadow-lg
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'unreadCount')
 
 Expression: "chat.unreadCount"
 
- <span x-show=​"chat.unreadCount > 0 && !chat.floatingOpen" x-text=​"chat.unreadCount" class=​"absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg" style=​"display:​ none;​">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+ span.absolute.top-0.right-0.bg-red-500.text-white.text-xs.font-bold.rounded-full.w-6.h-6.flex.items-center.justify-center.animate-bounce.shadow-lg
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
 Expression: "{
             height: (expanded || chat.hasConversation) ? '600px' : '420px',
@@ -340,278 +915,722 @@ Expression: "{
             maxHeight: 'calc(100vh - 120px)'
         }"
 
- <div x-show=​"chat.floatingOpen" x-transition:enter=​"transition ease-out duration-500" x-transition:enter-start=​"opacity-0 translate-y-4 scale-95" x-transition:enter-end=​"opacity-100 translate-y-0 scale-100" x-transition:leave=​"transition ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0 scale-100" x-transition:leave-end=​"opacity-0 translate-y-4 scale-95" :style=​"{
-            height:​ (expanded || chat.hasConversation)​ ? '600px' :​ '420px',
-            transition:​ 'height 0.4s ease-in-out',
-            maxHeight:​ 'calc(100vh - 120px)​'
-        }​" class=​"bg-white dark:​bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:​border-gray-700" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+ div.bg-white.dark:bg-gray-800.rounded-2xl.shadow-2xl.w-96.flex.flex-col.overflow-hidden.border.border-gray-200.dark:border-gray-700
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
 
 Expression: "chat.floatingOpen"
 
- <div x-show=​"chat.floatingOpen" x-transition:enter=​"transition ease-out duration-500" x-transition:enter-start=​"opacity-0 translate-y-4 scale-95" x-transition:enter-end=​"opacity-100 translate-y-0 scale-100" x-transition:leave=​"transition ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0 scale-100" x-transition:leave-end=​"opacity-0 translate-y-4 scale-95" :style=​"{
-            height:​ (expanded || chat.hasConversation)​ ? '600px' :​ '420px',
-            transition:​ 'height 0.4s ease-in-out',
-            maxHeight:​ 'calc(100vh - 120px)​'
-        }​" class=​"bg-white dark:​bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:​border-gray-700" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'assistantName')
+ div.bg-white.dark:bg-gray-800.rounded-2xl.shadow-2xl.w-96.flex.flex-col.overflow-hidden.border.border-gray-200.dark:border-gray-700
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'assistantName')
 
 Expression: "chat.assistantName"
 
- <h3 class=​"font-semibold text-lg" x-text=​"chat.assistantName">​</h3>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+ h3.font-semibold.text-lg
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
 Expression: "!chat.hasConversation"
 
- <div x-show=​"!chat.hasConversation" x-transition:enter=​"transition-all ease-out duration-400" x-transition:enter-start=​"opacity-0 translate-y-2" x-transition:enter-end=​"opacity-100 translate-y-0" x-transition:leave=​"transition-all ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0" x-transition:leave-end=​"opacity-0 -translate-y-2" class=​"flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:​from-gray-900 dark:​to-gray-800 border-b border-gray-200 dark:​border-gray-700" x-data=​"{
-                suggestions:​ [
-                    'Ürün özellikleri',
-                    'Stok durumu',
-                    'Fiyat bilgisi',
-                    'Hızlı öneri',
-                    'Karşılaştırma',
-                    'En iyiler'
-                ]​,
-                currentSuggestion:​ 0,
-                init()​ {
-                    setInterval(()​ => {
-                        this.currentSuggestion = (this.currentSuggestion + 1)​ % this.suggestions.length;​
-                    }​, 2000)​;​
-                }​
-            }​" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+ div.flex-1.flex.items-center.justify-center.p-6.bg-gradient-to-br.from-blue-50.to-indigo-50.dark:from-gray-900.dark:to-gray-800.border-b.border-gray-200.dark:border-gray-700
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
 Expression: "chat.hasConversation"
 
- <div x-show=​"chat.hasConversation" x-transition:enter=​"transition-all ease-out duration-400" x-transition:enter-start=​"opacity-0 translate-y-4" x-transition:enter-end=​"opacity-100 translate-y-0" x-transition:leave=​"transition-all ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0" x-transition:leave-end=​"opacity-0 translate-y-4" data-ai-chat-messages class=​"flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:​bg-gray-900" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'messages')
+ div.flex-1.overflow-y-auto.px-6.py-4.space-y-4.bg-gray-50.dark:bg-gray-900
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'messages')
 
 Expression: "chat.messages"
 
- <template x-for=​"(msg, index)​ in chat.messages" :key=​"index">​…​</template>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isTyping')
+ template
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isTyping')
 
 Expression: "chat.isTyping"
 
- <div x-show=​"chat.isTyping" class=​"flex justify-start" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+ div.flex.justify-start
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
 
 Expression: "chat.error"
 
- <div x-show=​"chat.error" class=​"mb-3 p-2 bg-red-100 dark:​bg-red-900/​30 text-red-700 dark:​text-red-300 text-sm rounded-lg" style=​"display:​ none;​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+ div.mb-3.p-2.bg-red-100.dark:bg-red-900/30.text-red-700.dark:text-red-300.text-sm.rounded-lg
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
 
 Expression: "chat.error"
 
- <span x-text=​"chat.error">​</span>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ span
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "chat.isLoading"
 
- <input type=​"text" x-model=​"message" @focus=​"expanded = true;​ inputFocused = true" @blur=​"inputFocused = false" placeholder=​"Mesajınızı yazın..." :disabled=​"chat.isLoading" class=​"w-full px-4 py-2 bg-gray-50 dark:​bg-gray-900 border border-gray-300 dark:​border-gray-600 text-gray-900 dark:​text-gray-100 placeholder-gray-500 dark:​placeholder-gray-400 rounded-full focus:​outline-none focus:​ring-2 focus:​ring-blue-500 dark:​focus:​ring-blue-600 focus:​border-transparent disabled:​bg-gray-100 dark:​disabled:​bg-gray-800 disabled:​cursor-not-allowed transition-all duration-300 relative z-10" :class=​"{ 'animate-input-invite':​ !expanded && !chat.hasConversation }​" autocomplete=​"off" disabled=​"disabled">​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+ input.w-full.px-4.py-2.bg-gray-50.dark:bg-gray-900.border.border-gray-300.dark:border-gray-600.text-gray-900.dark:text-gray-100.placeholder-gray-500.dark:placeholder-gray-400.rounded-full.focus:outline-none.focus:ring-2.focus:ring-blue-500.dark:focus:ring-blue-600.focus:border-transparent.disabled:bg-gray-100.dark:disabled:bg-gray-800.disabled:cursor-not-allowed.transition-all.duration-300.relative.z-10
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
 Expression: "{ 'animate-input-invite': !expanded && !chat.hasConversation }"
 
- <input type=​"text" x-model=​"message" @focus=​"expanded = true;​ inputFocused = true" @blur=​"inputFocused = false" placeholder=​"Mesajınızı yazın..." :disabled=​"chat.isLoading" class=​"w-full px-4 py-2 bg-gray-50 dark:​bg-gray-900 border border-gray-300 dark:​border-gray-600 text-gray-900 dark:​text-gray-100 placeholder-gray-500 dark:​placeholder-gray-400 rounded-full focus:​outline-none focus:​ring-2 focus:​ring-blue-500 dark:​focus:​ring-blue-600 focus:​border-transparent disabled:​bg-gray-100 dark:​disabled:​bg-gray-800 disabled:​cursor-not-allowed transition-all duration-300 relative z-10" :class=​"{ 'animate-input-invite':​ !expanded && !chat.hasConversation }​" autocomplete=​"off" disabled=​"disabled">​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ input.w-full.px-4.py-2.bg-gray-50.dark:bg-gray-900.border.border-gray-300.dark:border-gray-600.text-gray-900.dark:text-gray-100.placeholder-gray-500.dark:placeholder-gray-400.rounded-full.focus:outline-none.focus:ring-2.focus:ring-blue-500.dark:focus:ring-blue-600.focus:border-transparent.disabled:bg-gray-100.dark:disabled:bg-gray-800.disabled:cursor-not-allowed.transition-all.duration-300.relative.z-10
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "{ 'animate-spin': chat.isLoading }"
 
- <svg class=​"w-5 h-5" :class=​"{ 'animate-spin':​ chat.isLoading }​" fill=​"none" stroke=​"currentColor" viewBox=​"0 0 24 24">​…​</svg>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ svg.w-5.h-5
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "!chat.isLoading"
 
- <path x-show=​"!chat.isLoading" stroke-linecap=​"round" stroke-linejoin=​"round" stroke-width=​"2" d=​"M12 19l9 2-9-18-9 18 9-2zm0 0v-8" style=​"display:​ none;​">​</path>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+ path
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
 
 Expression: "chat.isLoading"
 
- <path x-show=​"chat.isLoading" stroke-linecap=​"round" stroke-linejoin=​"round" stroke-width=​"2" d=​"M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" style=​"display:​ none;​">​</path>​
-handleError @ livewire.js?id=df3a17f2:1123
-ixtif-theme.js?v=1761271758:80 Top bar height: 45px
-ixtif-theme.js?v=1761271758:95 ✅ Sticky header initialized
-app.js:17 ✅ Livewire initialized with Alpine.js
-ai-chat.js?v=1761266844:81 🤖 AI Chat Store initialized Object
-dev-tools.js?v=1761271758:93 ✅ Development Tools loaded (Admin/Root only)
+ path
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+ixtif-theme.js?v=1761276540:80 Top bar height: 45px
+ixtif-theme.js?v=1761276540:95 ✅ Sticky header initialized
+ai-chat.js?v=1761276540:81 🤖 AI Chat Store initialized {floatingOpen: true, sessionId: null}
+dev-tools.js?v=1761276540:93 ✅ Development Tools loaded (Admin/Root only)
 main.js?v=1.0.1:3 Blank tema yüklendi!
-ixtif-theme.js:80 Top bar height: 45px
-ixtif-theme.js:95 ✅ Sticky header initialized
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'registerInline')
-    at Proxy.init (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:12:23)
-    at livewire.js?id=df3a17f2:1160:25
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at evaluate (livewire.js?id=df3a17f2:1140:34)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3571:29)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
-    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
-    at initTree (livewire.js?id=df3a17f2:1479:5)
-    at livewire.js?id=df3a17f2:1428:7
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'assistantName')
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'assistantName')
     at [Alpine] chat.assistantName (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messageCount')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.assistantName @ VM5288:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messageCount')
     at [Alpine] chat.messageCount > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messageCount')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.messageCount > 0 @ VM5289:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messageCount')
     at [Alpine] chat.messageCount (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-ai-chat.js?v=1761266844:374 🔍 Placeholder init started (FALLBACK ONLY)
-ai-chat.js?v=1761266844:380 ✅ Placeholder init completed (fallback) Object
-ai-chat.js?v=1761266844:402 🎬 Animated placeholder started
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.messageCount @ VM5290:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+ai-chat.js?v=1761276540:374 🔍 Placeholder init started (FALLBACK ONLY)
+ai-chat.js?v=1761276540:380 ✅ Placeholder init completed (fallback) {conversationLength: 6}
+ai-chat.js?v=1761276540:402 🎬 Animated placeholder started
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
     at [Alpine] !chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messages')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] !chat.hasConversation @ VM5295:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messages')
     at [Alpine] chat.messages (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at loop (livewire.js?id=df3a17f2:3655:5)
-    at livewire.js?id=df3a17f2:3642:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isTyping')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at loop (VM5184 livewire.js:3655:5)
+    at VM5184 livewire.js:3642:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3642:5)
+[Alpine] chat.messages @ VM5296:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isTyping')
     at [Alpine] chat.isTyping (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.isTyping @ VM5298:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
     at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.error @ VM5299:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
     at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.error @ VM5299:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.isLoading @ VM5301:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] { 'animate-spin': chat.isLoading } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:55)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] { 'animate-spin': chat.isLoading } @ VM5305:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] !chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] !chat.isLoading @ VM5306:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.isLoading @ VM5301:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
     at [Alpine] $store.aiChat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:46)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at getter (livewire.js?id=df3a17f2:3006:7)
-    at livewire.js?id=df3a17f2:804:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at watch (livewire.js?id=df3a17f2:803:27)
-    at Proxy.<anonymous> (livewire.js?id=df3a17f2:3009:19)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'entangle')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at getter (VM5184 livewire.js:3006:7)
+    at VM5184 livewire.js:804:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at watch (VM5184 livewire.js:803:27)
+    at Proxy.<anonymous> (VM5184 livewire.js:3009:19)
+[Alpine] $store.aiChat.floatingOpen @ VM5358:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getter @ VM5184 livewire.js:3006
+(anonymous) @ VM5184 livewire.js:804
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+watch @ VM5184 livewire.js:803
+(anonymous) @ VM5184 livewire.js:3009
+init @ VM5357:25
+(anonymous) @ VM5184 livewire.js:1160
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3571
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'entangle')
     at [Alpine] {
-         query: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('query').live,
-         open: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('isOpen').live,
+         query: window.Livewire.find('CDmtw71A52BDkpu1d0ai').entangle('query').live,
+         open: window.Livewire.find('CDmtw71A52BDkpu1d0ai').entangle('isOpen').live,
          keywords: [],
          products: [],
          total: 0,
@@ -657,30 +1676,98 @@ livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undef
 
          selectKeyword(keyword) {
              if (!keyword?.text) return;
-             window.location.href = 'https://ixtif.com/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
+             window.location.href = 'https://ixtif.com.tr/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
          },
 
          selectProduct(product) {
              if (!product?.url) return;
              window.location.href = product.url;
          }
-     } (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:4:61)
-    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:1196:23
-    at tryCatch (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1116:14)
-    at evaluate (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1140:34)
-    at Function.<anonymous> (https://ixtif.com/livewire/livewire.js?id=df3a17f2:3564:17)
-    at flushHandlers (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1281:48)
-    at stopDeferring (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1286:7)
-    at deferHandlingDirectives (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1289:5)
-    at initTree (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1479:5)
-    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:1428:7
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: query is not defined
+     } (eval at safeAsyncFunction (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:4:61)
+    at https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
+    at tryCatch (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
+    at evaluate (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1140:34)
+    at Function.<anonymous> (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1289:5)
+    at initTree (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1479:5)
+    at https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1428:7
+[Alpine] {
+         query: window.Livewire.find('CDmtw71A52BDkpu1d0ai').entangle('query').live,
+         open: window.Livewire.find('CDmtw71A52BDkpu1d0ai').entangle('isOpen').live,
+         keywords: [],
+         products: [],
+         total: 0,
+         loading: false,
+         debounceTimer: null,
+
+         async fetchSuggestions() {
+             const trimmed = this.query?.trim() || '';
+             if (trimmed.length < 2) {
+                 this.keywords = [];
+                 this.products = [];
+                 this.total = 0;
+                 this.open = false;
+                 return;
+             }
+
+             this.loading = true;
+             try {
+                 const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(trimmed)}`, {
+                     headers: { 'Accept': 'application/json' }
+                 });
+
+                 if (!response.ok) throw new Error('Network error');
+
+                 const data = await response.json();
+                 if (data.success) {
+                     this.keywords = data.data.keywords || [];
+                     this.products = data.data.products || [];
+                     this.total = data.data.total || 0;
+                     this.open = (this.keywords.length > 0 || this.products.length > 0);
+                 }
+             } catch (error) {
+                 console.error('Search suggestions error:', error);
+             } finally {
+                 this.loading = false;
+             }
+         },
+
+         debouncedFetch() {
+             clearTimeout(this.debounceTimer);
+             this.debounceTimer = setTimeout(() => this.fetchSuggestions(), 300);
+         },
+
+         selectKeyword(keyword) {
+             if (!keyword?.text) return;
+             window.location.href = 'https://ixtif.com.tr/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
+         },
+
+         selectProduct(product) {
+             if (!product?.url) return;
+             window.location.href = product.url;
+         }
+     } @ VM5363:4
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3564
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1123 Alpine Expression Error: query is not defined
 
 Expression: "query"
 
- <div wire:snapshot=​"{"data":​{"query":​"","isOpen":​false,"viewMode":​"footer"}​,"memo":​{"id":​"YfA26v8IKwzbgQOAFrPN","name":​"search:​:​search-bar","path":​"shop\/​ixtif-f4-201-20-ton-li-ion-transpalet","method":​"GET","children":​[]​,"scripts":​[]​,"assets":​[]​,"errors":​[]​,"locale":​"tr"}​,"checksum":​"268bc691e1b776661d1416d6d2b5d9435775c14606540c0b89ec1d9bfe4fe36e"}​" wire:effects=​"[]​" wire:id=​"YfA26v8IKwzbgQOAFrPN" class=​"relative mb-6" x-data=​"{
-         query:​ window.Livewire.find('YfA26v8IKwzbgQOAFrPN')​.entangle('query')​.live,
-         open:​ window.Livewire.find('YfA26v8IKwzbgQOAFrPN')​.entangle('isOpen')​.live,
+ <div wire:snapshot=​"{"data":​{"query":​"","isOpen":​false,"viewMode":​"footer"}​,"memo":​{"id":​"CDmtw71A52BDkpu1d0ai","name":​"search:​:​search-bar","path":​"shop\/​ixtif-f4-15-ton-li-ion-transpalet","method":​"GET","children":​[]​,"scripts":​[]​,"assets":​[]​,"errors":​[]​,"locale":​"tr"}​,"checksum":​"075e81e94c599dd6024b14fee8df2f500638eba5b5fd75bb031db08502b76f10"}​" wire:effects=​"[]​" wire:id=​"CDmtw71A52BDkpu1d0ai" class=​"relative mb-6" x-data=​"{
+         query:​ window.Livewire.find('CDmtw71A52BDkpu1d0ai')​.entangle('query')​.live,
+         open:​ window.Livewire.find('CDmtw71A52BDkpu1d0ai')​.entangle('isOpen')​.live,
          keywords:​ []​,
          products:​ []​,
          total:​ 0,
@@ -726,7 +1813,7 @@ Expression: "query"
 
          selectKeyword(keyword)​ {
              if (!keyword?.text)​ return;​
-             window.location.href = 'https:​/​/​ixtif.com/​search/​_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text)​)​;​
+             window.location.href = 'https:​/​/​ixtif.com.tr/​search/​_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text)​)​;​
          }​,
 
          selectProduct(product)​ {
@@ -734,397 +1821,1037 @@ Expression: "query"
              window.location.href = product.url;​
          }​
      }​" @click.away=​"open = false" x-init=​"$nextTick(()​ => $watch('query', ()​ => debouncedFetch()​)​)​">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+handleError @ VM5184 livewire.js:1123
+(anonymous) @ VM5184 livewire.js:1196
+Promise.catch
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getter @ VM5184 livewire.js:3006
+(anonymous) @ VM5184 livewire.js:804
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+watch @ VM5184 livewire.js:803
+(anonymous) @ VM5184 livewire.js:3009
+eval @ VM5364:3
+(anonymous) @ VM5184 livewire.js:1527
+releaseNextTicks @ VM5184 livewire.js:1535
+(anonymous) @ VM5184 livewire.js:1522
+setTimeout
+(anonymous) @ VM5184 livewire.js:1521
+VM5184 livewire.js:1127 Uncaught ReferenceError: query is not defined
     at [Alpine] query (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at getValue (livewire.js?id=df3a17f2:3353:7)
-    at livewire.js?id=df3a17f2:3410:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3409:5)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
-    at [Alpine] !query.trim() (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
-    at [Alpine] {'opacity-50 cursor-not-allowed': !query.trim()} (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:67)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
-    at [Alpine] open && (keywords.length > 0 || products.length > 0) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:41)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at getValue (VM5184 livewire.js:3353:7)
+    at VM5184 livewire.js:3410:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3409:5)
+[Alpine] query @ VM5249:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getValue @ VM5184 livewire.js:3353
+(anonymous) @ VM5184 livewire.js:3410
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3409
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] !query.trim() (eval at safeAsyncFunction (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] !query.trim() @ VM5366:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] {'opacity-50 cursor-not-allowed': !query.trim()} (eval at safeAsyncFunction (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:67)
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] {'opacity-50 cursor-not-allowed': !query.trim()} @ VM5367:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: keywords is not defined
+    at [Alpine] open && (keywords.length > 0 || products.length > 0) (eval at safeAsyncFunction (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:41)
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] open && (keywords.length > 0 || products.length > 0) @ VM5368:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: keywords is not defined
     at [Alpine] keywords.length > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] keywords.length > 0 @ VM5262:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: keywords is not defined
     at [Alpine] `${keywords.length}` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:35)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] `${keywords.length}` @ VM5263:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: keywords is not defined
     at [Alpine] keywords (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at loop (livewire.js?id=df3a17f2:3655:5)
-    at livewire.js?id=df3a17f2:3642:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: products is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at loop (VM5184 livewire.js:3655:5)
+    at VM5184 livewire.js:3642:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3642:5)
+[Alpine] keywords @ VM5264:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: products is not defined
     at [Alpine] products.length > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: total is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] products.length > 0 @ VM5266:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: total is not defined
     at [Alpine] total > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: products is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] total > 0 @ VM5267:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: products is not defined
     at [Alpine] `${products.length} / ${total}` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:35)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: products is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] `${products.length} / ${total}` @ VM5268:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: products is not defined
     at [Alpine] products (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at loop (livewire.js?id=df3a17f2:3655:5)
-    at livewire.js?id=df3a17f2:3642:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
-    at [Alpine] `https://ixtif.com/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:117)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: total is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at loop (VM5184 livewire.js:3655:5)
+    at VM5184 livewire.js:3642:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3642:5)
+[Alpine] products @ VM5269:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] `https://ixtif.com.tr/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)) (eval at safeAsyncFunction (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:120)
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] `https://ixtif.com.tr/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)) @ VM5369:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: total is not defined
     at [Alpine] total > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: total is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] total > 0 @ VM5267:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: total is not defined
     at [Alpine] `Tüm ${total} sonucu gör` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:39)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] `Tüm ${total} sonucu gör` @ VM5273:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
     at [Alpine] chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at getter (livewire.js?id=df3a17f2:3006:7)
-    at livewire.js?id=df3a17f2:804:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at watch (livewire.js?id=df3a17f2:803:27)
-    at Proxy.<anonymous> (livewire.js?id=df3a17f2:3009:19)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at getter (VM5184 livewire.js:3006:7)
+    at VM5184 livewire.js:804:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at watch (VM5184 livewire.js:803:27)
+    at Proxy.<anonymous> (VM5184 livewire.js:3009:19)
+[Alpine] chat.hasConversation @ VM5371:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getter @ VM5184 livewire.js:3006
+(anonymous) @ VM5184 livewire.js:804
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+watch @ VM5184 livewire.js:803
+(anonymous) @ VM5184 livewire.js:3009
+init @ VM5370:21
+(anonymous) @ VM5184 livewire.js:1160
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3571
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
     at [Alpine] !chat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] !chat.floatingOpen @ VM5372:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
     at [Alpine] { 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:72)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] { 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible } @ VM5375:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
     at [Alpine] { 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:72)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'unreadCount')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] { 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible } @ VM5375:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'unreadCount')
     at [Alpine] chat.unreadCount > 0 && !chat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'unreadCount')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.unreadCount > 0 && !chat.floatingOpen @ VM5377:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'unreadCount')
     at [Alpine] chat.unreadCount (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.unreadCount @ VM5378:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
     at [Alpine] {
             height: (expanded || chat.hasConversation) ? '600px' : '420px',
             transition: 'height 0.4s ease-in-out',
             maxHeight: 'calc(100vh - 120px)'
-        } (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:4:39)
-    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:1196:23
-    at tryCatch (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1116:14)
-    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (https://ixtif.com/livewire/livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (https://ixtif.com/livewire/livewire.js?id=df3a17f2:2407:7)
-    at effect (https://ixtif.com/livewire/livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (https://ixtif.com/livewire/livewire.js?id=df3a17f2:780:29)
-    at handler2 (https://ixtif.com/livewire/livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+        } (eval at safeAsyncFunction (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:4:39)
+    at https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1196:23
+    at tryCatch (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1116:14)
+    at https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:2407:7)
+    at effect (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:780:29)
+    at handler2 (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (https://ixtif.com.tr/livewire/livewire.js?id=df3a17f2:1281:48)
+[Alpine] {
+            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            transition: 'height 0.4s ease-in-out',
+            maxHeight: 'calc(100vh - 120px)'
+        } @ VM5379:4
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
     at [Alpine] chat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'assistantName')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.floatingOpen @ VM5380:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'assistantName')
     at [Alpine] chat.assistantName (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.assistantName @ VM5288:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
     at [Alpine] !chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] !chat.hasConversation @ VM5295:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
     at [Alpine] chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messages')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.hasConversation @ VM5371:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messages')
     at [Alpine] chat.messages (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at loop (livewire.js?id=df3a17f2:3655:5)
-    at livewire.js?id=df3a17f2:3642:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isTyping')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at loop (VM5184 livewire.js:3655:5)
+    at VM5184 livewire.js:3642:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3642:5)
+[Alpine] chat.messages @ VM5296:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+loop @ VM5184 livewire.js:3655
+(anonymous) @ VM5184 livewire.js:3642
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3642
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isTyping')
     at [Alpine] chat.isTyping (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.isTyping @ VM5298:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
     at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.error @ VM5299:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
     at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3496:7
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3495:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.error @ VM5299:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3496
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3495
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.isLoading @ VM5301:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
     at [Alpine] { 'animate-input-invite': !expanded && !chat.hasConversation } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:77)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] { 'animate-input-invite': !expanded && !chat.hasConversation } @ VM5388:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] { 'animate-spin': chat.isLoading } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:55)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3533:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at handler2 (VM5184 livewire.js:3533:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] { 'animate-spin': chat.isLoading } @ VM5305:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3533
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+handler2 @ VM5184 livewire.js:3533
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] !chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] !chat.isLoading @ VM5306:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
     at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at VM5184 livewire.js:3626:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at wrappedEffect (VM5184 livewire.js:780:29)
+    at Function.<anonymous> (VM5184 livewire.js:3626:5)
+    at flushHandlers (VM5184 livewire.js:1281:48)
+[Alpine] chat.isLoading @ VM5301:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+(anonymous) @ VM5184 livewire.js:3626
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+wrappedEffect @ VM5184 livewire.js:780
+(anonymous) @ VM5184 livewire.js:3626
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215
+VM5184 livewire.js:1127 Uncaught ReferenceError: query is not defined
     at [Alpine] query (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at getter (livewire.js?id=df3a17f2:3006:7)
-    at livewire.js?id=df3a17f2:804:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at watch (livewire.js?id=df3a17f2:803:27)
-    at Proxy.<anonymous> (livewire.js?id=df3a17f2:3009:19)
-/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png:1  Failed to load resource: the server responded with a status of 403 ()
-ixtif-f4-201-20-ton-li-ion-transpalet:1 Error while trying to use the following icon from the Manifest: https://ixtif.com/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png (Download error or resource isn't a valid image)
-VM1813:14 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at VM5184 livewire.js:1196:23
+    at tryCatch (VM5184 livewire.js:1116:14)
+    at getter (VM5184 livewire.js:3006:7)
+    at VM5184 livewire.js:804:19
+    at reactiveEffect (VM5184 livewire.js:2432:18)
+    at Object.effect2 [as effect] (VM5184 livewire.js:2407:7)
+    at effect (VM5184 livewire.js:764:35)
+    at watch (VM5184 livewire.js:803:27)
+    at Proxy.<anonymous> (VM5184 livewire.js:3009:19)
+[Alpine] query @ VM5249:3
+(anonymous) @ VM5184 livewire.js:1196
+tryCatch @ VM5184 livewire.js:1116
+getter @ VM5184 livewire.js:3006
+(anonymous) @ VM5184 livewire.js:804
+reactiveEffect @ VM5184 livewire.js:2432
+effect2 @ VM5184 livewire.js:2407
+effect @ VM5184 livewire.js:764
+watch @ VM5184 livewire.js:803
+(anonymous) @ VM5184 livewire.js:3009
+eval @ VM5364:3
+(anonymous) @ VM5184 livewire.js:1527
+releaseNextTicks @ VM5184 livewire.js:1535
+(anonymous) @ VM5184 livewire.js:1522
+setTimeout
+(anonymous) @ VM5184 livewire.js:1521
+ai-chat.js?v=1761276540:374 🔍 Placeholder init started (FALLBACK ONLY)
+ai-chat.js?v=1761276540:380 ✅ Placeholder init completed (fallback) {conversationLength: 6}
+VM5370:14 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
     at eval (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:14:28)
+eval @ VM5370:14
+setTimeout
+init @ VM5370:12
+(anonymous) @ VM5184 livewire.js:1160
+tryCatch @ VM5184 livewire.js:1116
+evaluate @ VM5184 livewire.js:1140
+(anonymous) @ VM5184 livewire.js:3571
+flushHandlers @ VM5184 livewire.js:1281
+stopDeferring @ VM5184 livewire.js:1286
+deferHandlingDirectives @ VM5184 livewire.js:1289
+initTree @ VM5184 livewire.js:1479
+(anonymous) @ VM5184 livewire.js:1428
+start @ VM5184 livewire.js:1427
+start2 @ VM5184 livewire.js:8851
+(anonymous) @ VM5184 livewire.js:10215

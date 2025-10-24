@@ -52,7 +52,7 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
             const isMobile = window.innerWidth < 1024; // lg breakpoint (1024px)
             if (this.chat?.floatingOpen === false && !this.chat?.hasConversation && !isMobile) {
                 console.log('🤖 Auto-opening AI chat (desktop only)...');
-                this.chat.openFloating();
+                this.chat?.openFloating?.();
             }
         }, 10000);
 
@@ -80,7 +80,7 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
 class="fixed {{ $selectedPosition }} z-50">
 
     {{-- Chat Button - V1 Classic Pulse Design --}}
-    <div x-show="!chat.floatingOpen"
+    <div x-show="!chat?.floatingOpen"
          x-transition:enter="transition-opacity ease-out duration-500"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
@@ -88,7 +88,7 @@ class="fixed {{ $selectedPosition }} z-50">
          class="absolute bottom-0 right-0"
          x-cloak>
     <button
-        @click="chat.toggleFloating(); clearTimeout(autoOpenTimer);"
+        @click="chat?.toggleFloating?.(); clearTimeout(autoOpenTimer);"
         x-data="{
             // Desktop messages (longer)
             desktopMessages: [
@@ -169,7 +169,7 @@ class="fixed {{ $selectedPosition }} z-50">
     >
         {{-- DESKTOP BUBBLE: Classic top bubble with arrow --}}
         <div
-            :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+            :class="{ 'opacity-0 pointer-events-none': chat?.floatingOpen || !bubbleVisible }"
             class="absolute z-[101] transition-opacity duration-300 max-lg:hidden
                    top-[-70px] right-[-10px]"
             style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));"
@@ -199,7 +199,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
             {{-- MOBILE CIRCLE: Overlays robot at EXACT same position, z-index on top --}}
             <div
-                :class="{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+                :class="{ 'opacity-0 pointer-events-none': chat?.floatingOpen || !bubbleVisible }"
                 class="lg:hidden absolute inset-0 z-[2] transition-opacity duration-300
                        w-20 h-20 rounded-full
                        flex items-center justify-center text-center
@@ -228,8 +228,8 @@ class="fixed {{ $selectedPosition }} z-50">
         </div>
 
         {{-- Unread badge - Only show unread AI messages --}}
-        <span x-show="chat.unreadCount > 0 && !chat.floatingOpen"
-              x-text="chat.unreadCount"
+        <span x-show="chat?.unreadCount > 0 && !chat?.floatingOpen"
+              x-text="chat?.unreadCount || 0"
               class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg"
               x-cloak></span>
     </button>
@@ -237,7 +237,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
     {{-- Chat Window --}}
     <div
-        x-show="chat.floatingOpen"
+        x-show="chat?.floatingOpen"
         x-transition:enter="transition ease-out duration-500"
         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -272,7 +272,7 @@ class="fixed {{ $selectedPosition }} z-50">
             <div class="flex items-center gap-2">
                 {{-- Close button --}}
                 <button
-                    @click="chat.closeFloating()"
+                    @click="chat?.closeFloating?.()"
                     class="p-2 hover:bg-white/10 rounded-lg transition"
                     title="Kapat"
                 >

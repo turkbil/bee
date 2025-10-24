@@ -399,6 +399,9 @@
 {{-- Livewire Scripts --}}
 @livewireScripts
 
+{{-- AI Chat JS - MUST load AFTER Livewire/Alpine.js --}}
+<script src="/assets/js/ai-chat.js?v=<?php echo time(); ?>"></script>
+
 {{-- Core System Scripts --}}
 <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 

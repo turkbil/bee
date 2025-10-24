@@ -371,70 +371,27 @@ window.placeholderV4 = function(productId = null) {
         loadError: false,
 
         init() {
-            console.log('🔍 Placeholder init started', { productId });
+            console.log('🔍 Placeholder init started (FALLBACK ONLY)');
 
-            // ⚡ PERFORMANCE: Show fallback immediately, load real data in background
+            // ⚡ Show fallback immediately (NO API call)
             this.conversation = this.getFallbackConversation();
             this.isLoading = false;
 
-            console.log('⚡ Fallback shown immediately');
-
-            // Load real placeholder in background
-            if (productId) {
-                const deferredLoad = () => {
-                    console.log('🔄 Loading real placeholder from API...');
-                    this.loadProductPlaceholder(productId);
-                };
-
-                if ('requestIdleCallback' in window) {
-                    requestIdleCallback(deferredLoad, { timeout: 2000 });
-                } else {
-                    setTimeout(deferredLoad, 100);
-                }
-            }
-
-            console.log('✅ Placeholder init completed', {
+            console.log('✅ Placeholder init completed (fallback)', {
                 conversationLength: this.conversation.length,
             });
         },
 
-        async loadProductPlaceholder(productId) {
-            try {
-                const startTime = Date.now();
-                const response = await fetch(`/api/ai/v1/product-placeholder/${productId}`);
-                const data = await response.json();
-                const loadTime = Date.now() - startTime;
-
-                if (data.success && data.data.conversation) {
-                    console.log('✅ Product placeholder loaded', {
-                        from_cache: data.data.from_cache,
-                        load_time_ms: loadTime,
-                    });
-
-                    const isSame = JSON.stringify(this.conversation) === JSON.stringify(data.data.conversation);
-
-                    if (!isSame) {
-                        this.conversation = data.data.conversation;
-                    }
-
-                    this.loadError = false;
-                }
-            } catch (error) {
-                console.error('❌ Failed to load product placeholder:', error);
-                this.loadError = true;
-            }
-        },
 
         getFallbackConversation() {
-            const assistantName = 'iXtif Yapay Zeka Asistanı';
-
+            // Rotating suggestions for animated placeholder
             return [
-                { role: 'user', text: "Bu ürün ne işe yarar?" },
-                { role: 'assistant', text: `Merhaba! Ben ${assistantName}, size bu ürün hakkında detaylı bilgi verebilirim. Sorularınızı bekliyorum!` },
-                { role: 'user', text: "Hangi özellikleri var?" },
-                { role: 'assistant', text: "Ürünün teknik özellikleri, kullanım alanları ve avantajları hakkında size yardımcı olabilirim. Merak ettiklerinizi sorun!" },
-                { role: 'user', text: "Nasıl yardımcı olabilirsiniz?" },
-                { role: 'assistant', text: "Ürün detayları, karşılaştırmalar ve size en uygun çözümü bulmak için buradan mesaj atabilirsiniz!" }
+                'Ürün özellikleri',
+                'Stok durumu',
+                'Fiyat bilgisi',
+                'Teknik detaylar',
+                'Kargo seçenekleri',
+                'Garanti koşulları'
             ];
         },
 
@@ -442,106 +399,73 @@ window.placeholderV4 = function(productId = null) {
             const container = this.$el;
             container.innerHTML = '';
 
-            console.log('🎬 Placeholder animation started');
+            console.log('🎬 Animated placeholder started');
 
-            await this.sleep(1000);
+            // Create animated placeholder HTML
+            const placeholderHTML = `
+                <div class="flex flex-col items-center justify-center py-8 px-4">
+                    <!-- Animated Icon Container -->
+                    <div class="relative mb-6">
+                        <!-- Outer ping circle (slowest) -->
+                        <div class="absolute inset-0 w-20 h-20 bg-blue-400 rounded-full opacity-20 animate-ping-slow"></div>
 
-            for (let msg of this.conversation) {
-                if (msg.role === 'assistant') {
-                    await this.showTypingIndicator(container);
-                    await this.sleep(1500);
-                    await this.hideTypingIndicator(container);
-                }
+                        <!-- Middle pulse circle -->
+                        <div class="absolute inset-2 w-16 h-16 bg-blue-500 rounded-full opacity-30 animate-pulse-slow"></div>
 
-                await this.slideUpMessage(msg.text, msg.role, container);
-                await this.sleep(1800);
-            }
+                        <!-- Inner icon container with gradient -->
+                        <div class="relative w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg animate-bounce-subtle">
+                            <svg class="w-10 h-10 text-white animate-wiggle-subtle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                        </div>
+                    </div>
 
-            await this.sleep(1000);
-            await this.showStartMessage(container);
-        },
+                    <!-- Welcome Text -->
+                    <div class="text-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+                            Merhaba! 👋
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            Size nasıl yardımcı olabilirim?
+                        </p>
+                    </div>
 
-        async showTypingIndicator(container) {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'flex justify-start mb-3 typing-indicator-placeholder';
-            typingDiv.innerHTML = `
-                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm opacity-0 translate-y-4 transition-all duration-500">
-                    <div class="flex gap-1">
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                    <!-- Rotating Suggestions -->
+                    <div class="relative h-8 w-64">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="rotating-suggestion-container">
+                                ${this.conversation.map((text, index) => `
+                                    <div class="rotating-suggestion ${index === 0 ? 'active' : ''}" data-index="${index}">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                            ${text}
+                                        </span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
 
-            container.appendChild(typingDiv);
-            await this.sleep(50);
+            container.innerHTML = placeholderHTML;
 
-            const bubble = typingDiv.querySelector('div');
-            bubble.classList.remove('opacity-0', 'translate-y-4');
-            bubble.classList.add('opacity-100', 'translate-y-0');
-
-            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            // Start rotating suggestions
+            this.startRotatingSuggestions(container);
         },
 
-        async hideTypingIndicator(container) {
-            const typingDiv = container.querySelector('.typing-indicator-placeholder');
-            if (typingDiv) {
-                typingDiv.remove();
-            }
-        },
+        startRotatingSuggestions(container) {
+            const suggestions = container.querySelectorAll('.rotating-suggestion');
+            let currentIndex = 0;
 
-        async slideUpMessage(text, role, container) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'} mb-3`;
+            // Rotate every 2.5 seconds
+            setInterval(() => {
+                // Hide current
+                suggestions[currentIndex].classList.remove('active');
 
-            const bubble = document.createElement('div');
-            bubble.className = `max-w-[85%] rounded-2xl px-4 py-2.5 translate-y-4 transition-all duration-500 ${
-                role === 'user'
-                    ? 'bg-blue-400 dark:bg-blue-500'
-                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-            }`;
-
-            const textSpan = document.createElement('span');
-            textSpan.className = role === 'user'
-                ? 'text-white opacity-50'
-                : 'text-gray-800 dark:text-white opacity-50';
-            textSpan.textContent = text;
-            bubble.appendChild(textSpan);
-
-            msgDiv.appendChild(bubble);
-            container.appendChild(msgDiv);
-
-            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-
-            await this.sleep(50);
-            bubble.classList.remove('translate-y-4');
-            bubble.classList.add('translate-y-0');
-
-            await this.sleep(100);
-            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-        },
-
-        async showStartMessage(container) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'flex justify-center mb-3 mt-6';
-
-            const bubble = document.createElement('div');
-            bubble.className = 'px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg opacity-0 scale-90 transition-all duration-500';
-            bubble.innerHTML = '💬 <strong>Yazışmak için mesajınızı yazın!</strong>';
-
-            msgDiv.appendChild(bubble);
-            container.appendChild(msgDiv);
-
-            await this.sleep(50);
-            bubble.classList.remove('opacity-0', 'scale-90');
-            bubble.classList.add('opacity-100', 'scale-100');
-
-            await this.sleep(200);
-            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-
-            await this.sleep(500);
-            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+                // Show next
+                currentIndex = (currentIndex + 1) % suggestions.length;
+                suggestions[currentIndex].classList.add('active');
+            }, 2500);
         },
 
         sleep(ms) {

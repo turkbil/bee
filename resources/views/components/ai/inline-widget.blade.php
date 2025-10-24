@@ -63,12 +63,8 @@ $themeClasses = [
 $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
 @endphp
 
-{{-- AI Chat External CSS/JS (once per page) --}}
-@once
-    <link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ now()->timestamp }}" media="all">
-    {{-- DEFER KALDIRILDI: Livewire Alpine ile senkronize çalışsın --}}
-    <script src="{{ asset('assets/js/ai-chat.js') }}?v={{ now()->timestamp }}"></script>
-@endonce
+{{-- AI Chat External CSS/JS → chat-store.blade.php tarafından yükleniyor --}}
+{{-- İkili yüklemeyi önlemek için buradan kaldırıldı --}}
 
 <div
     x-data="{
@@ -182,8 +178,16 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
         >
             {{-- Placeholder Animation (V4 - Slide Up - Dynamic Product-specific) --}}
             <div x-show="!chat.hasConversation"
-                 x-data="placeholderV4({{ $productId ? "'" . $productId . "'" : 'null' }})"
-                 x-init="await init(); await start()"
+                 x-data="{}"
+                 x-init="
+                     // Wait for placeholderV4 to be available
+                     await Alpine.nextTick();
+                     if (typeof window.placeholderV4 === 'function') {
+                         Object.assign($data, window.placeholderV4({{ $productId ? "'" . $productId . "'" : 'null' }}));
+                         await init();
+                         await start();
+                     }
+                 "
                  class="space-y-3">
             </div>
 

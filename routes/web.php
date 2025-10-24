@@ -425,6 +425,11 @@ Route::middleware([InitializeTenancy::class, 'site'])
 Route::get('/thumbmaker/{encoded}/{width?}/{height?}/{quality?}', \App\Http\Controllers\ThumbmakerLinkController::class)
     ->where(['encoded' => '[A-Za-z0-9-_]+', 'width' => '\d+', 'height' => '\d+', 'quality' => '\d+']);
 
+// V3 Mega Menu Test Page
+Route::middleware([InitializeTenancy::class])->get('/test/mega-menu-v3', function () {
+    return view('themes.ixtif.pages.mega-menu-v3-test');
+})->name('test.megamenu.v3');
+
 // 403 hata sayfası rotası
 Route::get('/403', function () {
     return response()->view('errors.403', [], 403);
@@ -434,3 +439,4 @@ Route::get('/403', function () {
 Route::get('/csrf-refresh', function () {
     return csrf_token();
 })->name('csrf.refresh')->middleware('web');
+Route::get('/test-megamenu-v3', function() { return view('themes.ixtif.pages.test-megamenu-v3'); });

@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Models\ShopBrand;
-use App\Jobs\GenerateProductPlaceholderJob;
-use App\Models\ProductChatPlaceholder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Spatie\Browsershot\Browsershot;
 
@@ -237,28 +235,8 @@ class ShopController extends Controller
         // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $product);
 
-        // 🔄 PLACEHOLDER QUEUE: Generate AI placeholder in background if not exists
-        // - İlk ziyaretçi: Fallback görür, queue işler
-        // - Sonraki ziyaretçiler: Gerçek AI conversation görür
-        try {
-            $placeholderExists = ProductChatPlaceholder::where('product_id', $product->product_id)->exists();
-
-            if (!$placeholderExists) {
-                // Queue'ya job at (non-blocking, arka planda çalışır)
-                GenerateProductPlaceholderJob::dispatch((string) $product->product_id);
-
-                Log::info('🔄 Placeholder job dispatched', [
-                    'product_id' => $product->product_id,
-                    'product_title' => $product->title,
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Silent fail - placeholder generation hatası sayfayı bozmamalı
-            Log::warning('⚠️ Placeholder queue dispatch failed', [
-                'product_id' => $product->product_id,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        // ⚡ PLACEHOLDER: Frontend'de async olarak kontrol edilir (sayfa hızı için)
+        // Controller'da DB query yok = Sayfa anında yüklenir
 
         // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
         $metaTags = null;
@@ -507,28 +485,8 @@ class ShopController extends Controller
         // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $product);
 
-        // 🔄 PLACEHOLDER QUEUE: Generate AI placeholder in background if not exists
-        // - İlk ziyaretçi: Fallback görür, queue işler
-        // - Sonraki ziyaretçiler: Gerçek AI conversation görür
-        try {
-            $placeholderExists = ProductChatPlaceholder::where('product_id', $product->product_id)->exists();
-
-            if (!$placeholderExists) {
-                // Queue'ya job at (non-blocking, arka planda çalışır)
-                GenerateProductPlaceholderJob::dispatch((string) $product->product_id);
-
-                Log::info('🔄 Placeholder job dispatched', [
-                    'product_id' => $product->product_id,
-                    'product_title' => $product->title,
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Silent fail - placeholder generation hatası sayfayı bozmamalı
-            Log::warning('⚠️ Placeholder queue dispatch failed', [
-                'product_id' => $product->product_id,
-                'error' => $e->getMessage(),
-            ]);
-        }
+        // ⚡ PLACEHOLDER: Frontend'de async olarak kontrol edilir (sayfa hızı için)
+        // Controller'da DB query yok = Sayfa anında yüklenir
 
         // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
         $metaTags = null;

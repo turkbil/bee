@@ -9,7 +9,6 @@ use Modules\Shop\app\Models\ShopCategory;
 class MegaMenuV3 extends Component
 {
     public $categoryId;
-    public $search = '';
 
     public function mount($categoryId)
     {
@@ -19,47 +18,58 @@ class MegaMenuV3 extends Component
     public function render()
     {
         // Ana kategoriyi çek
-        $category = ShopCategory::where('id', $this->categoryId)
+        $category = ShopCategory::where('category_id', $this->categoryId)
             ->where('is_active', 1)
             ->first();
 
-        // Alt kategorileri çek
-        $subCategories = collect();
-        if ($category) {
-            $subCategories = ShopCategory::where('parent_id', $category->id)
-                ->where('is_active', 1)
-                ->orderBy('order_column')
-                ->take(8)
-                ->get();
-        }
+        // Öne çıkan ürün: sort_order'a göre ilk ürün (1 numaralı)
+        $featuredProduct = ShopProduct::where('category_id', $this->categoryId)
+            ->where('is_active', 1)
+            ->orderBy('sort_order', 'asc')
+            ->first();
 
-        // Ürünleri çek (search varsa filtrele)
-        $productsQuery = ShopProduct::where('category_id', $this->categoryId)
-            ->where('is_active', 1);
+        // Diğer ürünler: sort_order'a göre sıralı, 5 ürün (featured hariç)
+        $otherProducts = ShopProduct::where('category_id', $this->categoryId)
+            ->where('is_active', 1)
+            ->where('product_id', '!=', $featuredProduct ? $featuredProduct->product_id : 0)
+            ->orderBy('sort_order', 'asc')
+            ->take(5)
+            ->get();
 
-        if (!empty($this->search)) {
-            $productsQuery->where(function($q) {
-                $q->where('title->tr', 'like', '%' . $this->search . '%')
-                  ->orWhere('title->en', 'like', '%' . $this->search . '%')
-                  ->orWhere('short_description->tr', 'like', '%' . $this->search . '%');
-            });
-        }
-
-        $products = $productsQuery->latest()->take(5)->get();
-
-        // Eğer search sonucu yoksa, en yeni 5 ürünü göster
-        if ($products->isEmpty() && empty($this->search)) {
-            $products = ShopProduct::where('category_id', $this->categoryId)
-                ->where('is_active', 1)
-                ->latest()
-                ->take(5)
-                ->get();
-        }
+        // Kategori özelleştirmeleri
+        $categoryConfig = $this->getCategoryConfig($this->categoryId);
 
         return view('livewire.theme.mega-menu-v3', [
             'category' => $category,
-            'subCategories' => $subCategories,
-            'products' => $products,
+            'featuredProduct' => $featuredProduct,
+            'otherProducts' => $otherProducts,
+            'config' => $categoryConfig,
         ]);
+    }
+
+    private function getCategoryConfig($categoryId)
+    {
+        $configs = [
+            1 => [ // Forklift
+                'gradient' => 'from-orange-600 via-red-600 to-pink-700',
+                'icon' => 'fa-solid fa-forklift',
+                'title_suffix' => 'Çözümleri',
+                'description' => 'Ağır yük taşıma ve depolama operasyonları için profesyonel forklift sistemleri',
+            ],
+            2 => [ // Transpalet
+                'gradient' => 'from-blue-600 via-indigo-600 to-purple-700',
+                'icon' => 'fa-solid fa-pallet',
+                'title_suffix' => 'Ekipmanları',
+                'description' => 'Yük taşıma ve paletleme işlemleri için ergonomik transpalet çözümleri',
+            ],
+            3 => [ // İstif Makinesi
+                'gradient' => 'from-green-600 via-emerald-600 to-teal-700',
+                'icon' => 'fa-solid fa-layer-group',
+                'title_suffix' => 'Sistemleri',
+                'description' => 'Yüksek raflama ve istif operasyonları için güvenli istif makineleri',
+            ],
+        ];
+
+        return $configs[$categoryId] ?? $configs[1];
     }
 }

@@ -324,7 +324,7 @@
         </nav>
 
         <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8">
-            <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start">
+            <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start relative">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div id="main-content-column" class="lg:col-span-2 min-h-screen">
 
@@ -946,7 +946,7 @@
             </div>
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky --}}
-            <div class="lg:col-span-1 order-first lg:order-last">
+            <div class="lg:col-span-1 order-first lg:order-last relative">
                 <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform;">
                     {{-- Product Info Card --}}
                     <div

@@ -1,208 +1,1130 @@
-# Livewire\Features\SupportMultipleRootElementDetection\MultipleRootElementsDetectedException - Internal Server Error
-Livewire only supports one HTML element per component. Multiple root elements detected for component: [theme.mega-menu-v3]
+/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png:1  Failed to load resource: the server responded with a status of 403 ()
+gdlqlmda4zgwvqbemsgqjb79l4kqpqfstycg1w9f.png:1  Failed to load resource: the server responded with a status of 403 ()
+lrcd1oi6xhtj0joor2gitk3irfpwpowiaky0c4it.png:1  Failed to load resource: the server responded with a status of 403 ()
+ ✅ AI Chat System JavaScript loaded
+ 📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions
+ Detected multiple instances of Livewire running
+warnAboutMultipleInstancesOf @ livewire.js?id=df3a17f2:10202
+ Detected multiple instances of Alpine running
+warnAboutMultipleInstancesOf @ livewire.js?id=df3a17f2:10202
+/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png:1  Failed to load resource: the server responded with a status of 403 ()
+gdlqlmda4zgwvqbemsgqjb79l4kqpqfstycg1w9f.png:1  Failed to load resource: the server responded with a status of 403 ()
+ ✅ GLightbox initialized
+ 🏢 Tenant mode detected: ixtif.com
+ ✅ Tenant-safe frontend assets loaded
+ ✅ Livewire initialized with Alpine.js
+ 🤖 AI Chat Store initialized Object
+ Alpine Expression Error: Cannot read properties of undefined (reading 'registerInline')
 
-PHP 8.3.26
-Laravel 12.32.5
-ixtif.com
+Expression: "init() {
+            // Register this widget
+            this.chat.registerInline(this.widgetId);
 
-## Stack Trace
+            // Set context if provided
+                        this.chat.updateContext({
+                 product_id: 241,                                             });
+            
+            // Removed welcome message - using placeholder animation instead
 
-0 - vendor/livewire/livewire/src/Features/SupportMultipleRootElementDetection/SupportMultipleRootElementDetection.php:27
-1 - vendor/livewire/livewire/src/Features/SupportMultipleRootElementDetection/SupportMultipleRootElementDetection.php:16
-2 - vendor/livewire/livewire/src/EventBus.php:73
-3 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:72
-4 - vendor/livewire/livewire/src/LivewireManager.php:73
-5 - vendor/livewire/volt/src/LivewireManager.php:23
-6 - resources/views/themes/ixtif/partials/mega-menu-forklift.blade.php:1
-7 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
-8 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
-9 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
-10 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
-11 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
-12 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
-13 - vendor/laravel/framework/src/Illuminate/View/View.php:208
-14 - vendor/laravel/framework/src/Illuminate/View/View.php:191
-15 - vendor/laravel/framework/src/Illuminate/View/View.php:160
-16 - resources/views/themes/ixtif/layouts/header.blade.php:830
-17 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
-18 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
-19 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
-20 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
-21 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
-22 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
-23 - vendor/laravel/framework/src/Illuminate/View/View.php:208
-24 - vendor/laravel/framework/src/Illuminate/View/View.php:191
-25 - vendor/laravel/framework/src/Illuminate/View/View.php:160
-26 - resources/views/themes/ixtif/layouts/app.blade.php:1
-27 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
-28 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
-29 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
-30 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
-31 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
-32 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
-33 - vendor/laravel/framework/src/Illuminate/View/View.php:208
-34 - vendor/laravel/framework/src/Illuminate/View/View.php:191
-35 - vendor/laravel/framework/src/Illuminate/View/View.php:160
-36 - Modules/Shop/resources/views/themes/ixtif/show.blade.php:1270
-37 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
-38 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
-39 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
-40 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
-41 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
-42 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
-43 - vendor/laravel/framework/src/Illuminate/View/View.php:208
-44 - vendor/laravel/framework/src/Illuminate/View/View.php:191
-45 - vendor/laravel/framework/src/Illuminate/View/View.php:160
-46 - vendor/laravel/framework/src/Illuminate/Http/Response.php:78
-47 - vendor/laravel/framework/src/Illuminate/Http/Response.php:34
-48 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:939
-49 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:906
-50 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-52 - app/Http/Middleware/FixResponseCacheHeaders.php:20
-53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-54 - vendor/spatie/laravel-responsecache/src/Middlewares/CacheResponse.php:46
-55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-56 - app/Http/Middleware/FrontendAutoSeoFillMiddleware.php:42
-57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-58 - Modules/LanguageManagement/app/Http/Middleware/SiteSetLocaleMiddleware.php:88
-59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-60 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-62 - app/Http/Middleware/LivewireJsonSanitizer.php:43
-63 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-64 - app/Http/Middleware/RootOnlyDebugbar.php:35
-65 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-66 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
-67 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-68 - app/Http/Middleware/DatabasePoolMiddleware.php:58
-69 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-70 - app/Http/Middleware/SecurityHeaders.php:18
-71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-72 - vendor/spatie/laravel-missing-page-redirector/src/RedirectsMissingPages.php:12
-73 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-74 - app/Http/Middleware/CheckThemeStatus.php:40
-75 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-76 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
-77 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-78 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
-79 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-80 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
-81 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-82 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
-83 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-84 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
-85 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
-86 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-87 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
-88 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-89 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
-90 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-91 - app/Http/Middleware/InitializeTenancy.php:97
-92 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-93 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-94 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-95 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
-96 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
-97 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
-98 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
-99 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-100 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
-101 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-102 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-103 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-104 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
-105 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
-106 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-107 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
-108 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
-109 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-110 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
-111 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-112 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
-113 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-114 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
-115 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-116 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
-117 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-118 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
-119 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-120 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
-121 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-122 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-123 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
-124 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
-125 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
-126 - public/index.php:17
+            // Scroll to bottom after init (if open)
+            if (this.isOpen) {
+                setTimeout(() => {
+                    this.chat.scrollToBottom();
+                }, 400);
+            }
+        }"
 
-## Request
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'assistantName')
 
-GET /shop/ixtif-cpd20tvl-li-ion-forklift
+Expression: "chat.assistantName"
 
-## Headers
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'messageCount')
 
-* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; last_activity_read=1761151797; _ym_uid=176118900044921329; _ym_d=1761189000; _ym_visorc=w; _ym_isad=1; XSRF-TOKEN=eyJpdiI6IlRHS2c2dThWV2FBdlJuRTM3ajM0OWc9PSIsInZhbHVlIjoiV1R0R0JtKzRqc0ZwVURDUVVURUV3cktHcTBYdUd4YTJXSm1CNEU1QjBtRWEzZVY5T3FaOEV2Wnl2bGFMRGJRUEo5VGF2ZXhFcG9pMFVTclo3eDlJL1gxd2hPWE9jRFdmWm82Qm5TY3B1K2UyQXFZT1g3RGFkUXZJQkovejFJdWoiLCJtYWMiOiJiNmMzYjBiMWYyMDcwODNmYmYxOGY2YWNmMDI5NzZjZGNhYzQyNmNmNTg4NGM2NGQ4MTA3NGE5OWFiZTE0MmZjIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6Ikc0ZDArZHBFdXpQcWhqNGtTSksyTXc9PSIsInZhbHVlIjoiaHZNSkJpd0pUSmdmbk56YUp0STZwdGhGNFM5bm96QjZmd2pqQ1hzZlVxR1kwbXR1cTRpcG5yMzdLWVF1Zlc3cGJ2TVhzQmNiUVRIdWdVTEhLUWlzZkpmMHJpL0VFdXg3VGlsSkN4NDY3b1NkcWRKZVMyZUMraGZxbkY4UTcyeTQiLCJtYWMiOiI2YmFlMzY0MTY1ZGUxNGEyMmZhNTIzOTFmNDYwNmM1N2UwYjljMzk0ZDk3NzkzZTJmMTYzM2ExMjdkZGJkMTdhIiwidGFnIjoiIn0%3D; _ga_5DDRPR03QM=GS2.1.s1761260203$o33$g1$t1761266743$j60$l0$h0
-* **priority**: u=0, i
-* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
-* **accept-encoding**: gzip, deflate, br, zstd
-* **referer**: https://ixtif.com/shop/ixtif-cpd20tvl-li-ion-forklift
-* **sec-fetch-dest**: document
-* **sec-fetch-user**: ?1
-* **sec-fetch-mode**: navigate
-* **sec-fetch-site**: same-origin
-* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
-* **upgrade-insecure-requests**: 1
-* **dnt**: 1
-* **sec-ch-ua-platform**: "macOS"
-* **sec-ch-ua-mobile**: ?0
-* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
-* **cache-control**: no-cache
-* **pragma**: no-cache
-* **connection**: close
-* **x-accel-internal**: /internal-nginx-static-location
-* **x-real-ip**: 92.44.119.135
-* **host**: ixtif.com
+Expression: "chat.messageCount > 0"
 
-## Route Context
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'messageCount')
 
-controller: Closure
-middleware: web, App\Http\Middleware\InitializeTenancy, site
+Expression: "chat.messageCount"
 
-## Route Parameters
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
 
-{
-    "slug1": "shop",
-    "slug2": "ixtif-cpd20tvl-li-ion-forklift"
-}
+Expression: "!chat.hasConversation"
 
-## Database Queries
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'messages')
 
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (3.92 ms)
-* mysql - select * from `sessions` where `id` = 'c9PnfPWiotSrV5rAQQa3Qvxkp2e1nvXLn2pXAD2S' limit 1 (1.32 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (1.27 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (5.15 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (2.04 ms)
-* tenant - select * from `shop_products` where `is_active` = 1 and `published_at` is not null and `published_at` <= '2025-10-24 03:48:21' and (JSON_UNQUOTE(JSON_EXTRACT(slug, '$."tr"')) = 'ixtif-cpd20tvl-li-ion-forklift') and `shop_products`.`deleted_at` is null limit 1 (4.03 ms)
-* tenant - select * from `shop_categories` where `shop_categories`.`category_id` in (1) and `shop_categories`.`deleted_at` is null (1.7 ms)
-* tenant - select * from `shop_brands` where `shop_brands`.`brand_id` in (1) and `shop_brands`.`deleted_at` is null (1.24 ms)
-* tenant - select * from `seo_settings` where `seo_settings`.`seoable_id` in (19) and `seo_settings`.`seoable_type` = 'Modules\Shop\App\Models\ShopProduct' (1.99 ms)
-* tenant - select * from `shop_products` where `shop_products`.`parent_product_id` = 19 and `shop_products`.`parent_product_id` is not null and `is_active` = 1 and `is_active` = 1 and `published_at` is not null and `published_at` <= '2025-10-24 03:48:21' and `shop_products`.`deleted_at` is null order by `variant_type` asc (2.32 ms)
-* tenant - select * from `media` where `media`.`model_id` in (19) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.64 ms)
-* mysql - select * from `settings` where `key` = 'site_name' limit 1 (1.58 ms)
-* mysql - select * from `domains` where `tenant_id` = 2 and `is_primary` = 1 limit 1 (1.91 ms)
-* mysql - select * from `settings` where `key` = 'site_name' limit 1 (1.03 ms)
-* mysql - select * from `settings` where `key` = 'contact_email' limit 1 (1.05 ms)
-* mysql - select * from `settings` where `key` = 'contact_phone' limit 1 (0.93 ms)
-* tenant - select * from `media` where `media`.`model_id` in (20) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.66 ms)
-* tenant - select * from `media` where `media`.`model_id` in (21) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.36 ms)
-* tenant - select * from `media` where `media`.`model_id` in (22) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.33 ms)
-* mysql - select * from `settings` where `key` = 'site_copyright' limit 1 (1.15 ms)
-* mysql - select * from `settings` where `key` = 'site_name' limit 1 (1.13 ms)
-* tenant - select * from `media` where `media`.`model_id` in (1) and `media`.`model_type` = 'App\Models\User' (1.65 ms)
-* tenant - select * from `shop_categories` where `category_id` = 1 and `is_active` = 1 and `shop_categories`.`deleted_at` is null limit 1 (1.83 ms)
-* tenant - select * from `shop_products` where `category_id` = 1 and `is_active` = 1 and `shop_products`.`deleted_at` is null order by `created_at` desc limit 4 (2.77 ms)
-* tenant - select * from `media` where `media`.`model_id` in (314) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.31 ms)
-* tenant - select * from `media` where `media`.`model_id` in (313) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.13 ms)
-* tenant - select * from `media` where `media`.`model_id` in (312) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.2 ms)
-* tenant - select * from `media` where `media`.`model_id` in (311) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (1.28 ms)
+Expression: "chat.messages"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'isTyping')
+
+Expression: "chat.isTyping"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+
+Expression: "chat.error"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+
+Expression: "chat.error"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "chat.isLoading"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "{ 'animate-spin': chat.isLoading }"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "!chat.isLoading"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "chat.isLoading"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+
+Expression: "$store.aiChat.floatingOpen"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: Cannot read properties of undefined (reading 'entangle')
+
+Expression: "{
+         query: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('query').live,
+         open: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('isOpen').live,
+         keywords: [],
+         products: [],
+         total: 0,
+         loading: false,
+         debounceTimer: null,
+
+         async fetchSuggestions() {
+             const trimmed = this.query?.trim() || '';
+             if (trimmed.length < 2) {
+                 this.keywords = [];
+                 this.products = [];
+                 this.total = 0;
+                 this.open = false;
+                 return;
+             }
+
+             this.loading = true;
+             try {
+                 const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(trimmed)}`, {
+                     headers: { 'Accept': 'application/json' }
+                 });
+
+                 if (!response.ok) throw new Error('Network error');
+
+                 const data = await response.json();
+                 if (data.success) {
+                     this.keywords = data.data.keywords || [];
+                     this.products = data.data.products || [];
+                     this.total = data.data.total || 0;
+                     this.open = (this.keywords.length > 0 || this.products.length > 0);
+                 }
+             } catch (error) {
+                 console.error('Search suggestions error:', error);
+             } finally {
+                 this.loading = false;
+             }
+         },
+
+         debouncedFetch() {
+             clearTimeout(this.debounceTimer);
+             this.debounceTimer = setTimeout(() => this.fetchSuggestions(), 300);
+         },
+
+         selectKeyword(keyword) {
+             if (!keyword?.text) return;
+             window.location.href = 'https://ixtif.com/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
+         },
+
+         selectProduct(product) {
+             if (!product?.url) return;
+             window.location.href = product.url;
+         }
+     }"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: query is not defined
+
+Expression: "query"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: query is not defined
+
+Expression: "!query.trim()"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+ Alpine Expression Error: query is not defined
+
+Expression: "{'opacity-50 cursor-not-allowed': !query.trim()}"
+
+ 
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+
+Expression: "open && (keywords.length > 0 || products.length > 0)"
+
+ <div x-show=​"open && (keywords.length > 0 || products.length > 0)​" x-transition:enter=​"transition ease-out duration-200" x-transition:enter-start=​"opacity-0 translate-y-1" x-transition:enter-end=​"opacity-100 translate-y-0" x-transition:leave=​"transition ease-in duration-150" x-transition:leave-start=​"opacity-100 translate-y-0" x-transition:leave-end=​"opacity-0 translate-y-1" class=​"absolute top-full left-0 right-0 mt-2 bg-white dark:​bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:​border-gray-700 overflow-hidden" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+
+Expression: "keywords.length > 0"
+
+ <div x-show=​"keywords.length > 0" class=​"space-y-2 border border-gray-200 dark:​border-gray-700 rounded-lg p-4 lg:​p-5 bg-gray-50 dark:​bg-gray-900/​40" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+
+Expression: "`${keywords.length}`"
+
+ <span class=​"text-[10px]​ text-gray-400 dark:​text-gray-500" x-text=​"`${keywords.length}​`">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: keywords is not defined
+
+Expression: "keywords"
+
+ <template x-for=​"(keyword, index)​ in keywords" :key=​"'k-'+index">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: products is not defined
+
+Expression: "products.length > 0"
+
+ <div x-show=​"products.length > 0" class=​"space-y-3" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: total is not defined
+
+Expression: "total > 0"
+
+ <span x-show=​"total > 0" class=​"text-[11px]​ font-medium text-gray-400 dark:​text-gray-500" x-text=​"`${products.length}​ /​ ${total}​`" style=​"display:​ none;​">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: products is not defined
+
+Expression: "`${products.length} / ${total}`"
+
+ <span x-show=​"total > 0" class=​"text-[11px]​ font-medium text-gray-400 dark:​text-gray-500" x-text=​"`${products.length}​ /​ ${total}​`" style=​"display:​ none;​">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: products is not defined
+
+Expression: "products"
+
+ <template x-for=​"(product, index)​ in products" :key=​"'p-'+index">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: query is not defined
+
+Expression: "`https://ixtif.com/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+
+ <a :href=​"`https:​/​/​ixtif.com/​search/​_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)​)​" x-show=​"total > 0" class=​"block p-4 text-center text-indigo-600 dark:​text-indigo-400 hover:​bg-indigo-50 dark:​hover:​bg-indigo-900/​20 font-semibold transition border-t border-gray-200 dark:​border-gray-700" href style=​"display:​ none;​">​…​</a>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: total is not defined
+
+Expression: "total > 0"
+
+ <a :href=​"`https:​/​/​ixtif.com/​search/​_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)​)​" x-show=​"total > 0" class=​"block p-4 text-center text-indigo-600 dark:​text-indigo-400 hover:​bg-indigo-50 dark:​hover:​bg-indigo-900/​20 font-semibold transition border-t border-gray-200 dark:​border-gray-700" href style=​"display:​ none;​">​…​</a>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: total is not defined
+
+Expression: "`Tüm ${total} sonucu gör`"
+
+ <span x-text=​"`Tüm ${total}​ sonucu gör`">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+
+Expression: "chat.hasConversation"
+
+ <div x-data=​"{
+    chat:​ $store.aiChat,
+    message:​ '',
+    autoOpenTimer:​ null,
+    expanded:​ false,
+
+    init()​ {
+        /​/​ Auto-open after 10 seconds if user hasn't interacted
+        /​/​ BUT only on desktop (NOT on mobile/​tablet:​ sm/​xs/​md breakpoints)​
+        this.autoOpenTimer = setTimeout(()​ => {
+            const isMobile = window.innerWidth < 1024;​ /​/​ lg breakpoint (1024px)​
+            if (!this.chat.floatingOpen && !this.chat.hasConversation && !isMobile)​ {
+                console.log('🤖 Auto-opening AI chat (desktop only)​...')​;​
+                this.chat.openFloating()​;​
+            }​
+        }​, 10000)​;​
+
+        /​/​ Watch for conversation changes - auto expand if messages exist
+        this.$watch('chat.hasConversation', value => {
+            if (value)​ this.expanded = true;​
+        }​)​;​
+    }​,
+
+    destroy()​ {
+        /​/​ Clear timer on component destroy
+        if (this.autoOpenTimer)​ {
+            clearTimeout(this.autoOpenTimer)​;​
+        }​
+    }​,
+
+    submitMessage()​ {
+        if (this.message.trim()​)​ {
+            this.chat.sendMessage(this.message)​;​
+            this.message = '';​
+            this.expanded = true;​ /​/​ Expand when sending message
+        }​
+    }​
+}​" class=​"fixed bottom-6 right-6 z-50">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+
+Expression: "!chat.floatingOpen"
+
+ <div x-show=​"!chat.floatingOpen" x-transition:enter=​"transition-opacity ease-out duration-500" x-transition:enter-start=​"opacity-0" x-transition:enter-end=​"opacity-100" style=​"transition-delay:​ 0.5s;​ display:​ none;​" class=​"absolute bottom-0 right-0">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+
+Expression: "{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+
+ <div :class=​"{ 'opacity-0 pointer-events-none':​ chat.floatingOpen || !bubbleVisible }​" class=​"absolute z-[101]​ transition-opacity duration-300 max-lg:​hidden top-[-70px]​ right-[-10px]​" style=​"filter:​ drop-shadow(0 6px 25px rgba(0,0,0,0.3)​)​;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+
+Expression: "{ 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible }"
+
+ <div :class=​"{ 'opacity-0 pointer-events-none':​ chat.floatingOpen || !bubbleVisible }​" class=​"lg:​hidden absolute inset-0 z-[2]​ transition-opacity duration-300 w-20 h-20 rounded-full flex items-center justify-center text-center bg-white shadow-2xl" style=​"filter:​ drop-shadow(0 6px 25px rgba(0,0,0,0.3)​)​;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'unreadCount')
+
+Expression: "chat.unreadCount > 0 && !chat.floatingOpen"
+
+ <span x-show=​"chat.unreadCount > 0 && !chat.floatingOpen" x-text=​"chat.unreadCount" class=​"absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg" style=​"display:​ none;​">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'unreadCount')
+
+Expression: "chat.unreadCount"
+
+ <span x-show=​"chat.unreadCount > 0 && !chat.floatingOpen" x-text=​"chat.unreadCount" class=​"absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg" style=​"display:​ none;​">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+
+Expression: "{
+            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            transition: 'height 0.4s ease-in-out',
+            maxHeight: 'calc(100vh - 120px)'
+        }"
+
+ <div x-show=​"chat.floatingOpen" x-transition:enter=​"transition ease-out duration-500" x-transition:enter-start=​"opacity-0 translate-y-4 scale-95" x-transition:enter-end=​"opacity-100 translate-y-0 scale-100" x-transition:leave=​"transition ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0 scale-100" x-transition:leave-end=​"opacity-0 translate-y-4 scale-95" :style=​"{
+            height:​ (expanded || chat.hasConversation)​ ? '600px' :​ '420px',
+            transition:​ 'height 0.4s ease-in-out',
+            maxHeight:​ 'calc(100vh - 120px)​'
+        }​" class=​"bg-white dark:​bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:​border-gray-700" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'floatingOpen')
+
+Expression: "chat.floatingOpen"
+
+ <div x-show=​"chat.floatingOpen" x-transition:enter=​"transition ease-out duration-500" x-transition:enter-start=​"opacity-0 translate-y-4 scale-95" x-transition:enter-end=​"opacity-100 translate-y-0 scale-100" x-transition:leave=​"transition ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0 scale-100" x-transition:leave-end=​"opacity-0 translate-y-4 scale-95" :style=​"{
+            height:​ (expanded || chat.hasConversation)​ ? '600px' :​ '420px',
+            transition:​ 'height 0.4s ease-in-out',
+            maxHeight:​ 'calc(100vh - 120px)​'
+        }​" class=​"bg-white dark:​bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:​border-gray-700" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'assistantName')
+
+Expression: "chat.assistantName"
+
+ <h3 class=​"font-semibold text-lg" x-text=​"chat.assistantName">​</h3>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+
+Expression: "!chat.hasConversation"
+
+ <div x-show=​"!chat.hasConversation" x-transition:enter=​"transition-all ease-out duration-400" x-transition:enter-start=​"opacity-0 translate-y-2" x-transition:enter-end=​"opacity-100 translate-y-0" x-transition:leave=​"transition-all ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0" x-transition:leave-end=​"opacity-0 -translate-y-2" class=​"flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:​from-gray-900 dark:​to-gray-800 border-b border-gray-200 dark:​border-gray-700" x-data=​"{
+                suggestions:​ [
+                    'Ürün özellikleri',
+                    'Stok durumu',
+                    'Fiyat bilgisi',
+                    'Hızlı öneri',
+                    'Karşılaştırma',
+                    'En iyiler'
+                ]​,
+                currentSuggestion:​ 0,
+                init()​ {
+                    setInterval(()​ => {
+                        this.currentSuggestion = (this.currentSuggestion + 1)​ % this.suggestions.length;​
+                    }​, 2000)​;​
+                }​
+            }​" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+
+Expression: "chat.hasConversation"
+
+ <div x-show=​"chat.hasConversation" x-transition:enter=​"transition-all ease-out duration-400" x-transition:enter-start=​"opacity-0 translate-y-4" x-transition:enter-end=​"opacity-100 translate-y-0" x-transition:leave=​"transition-all ease-in duration-300" x-transition:leave-start=​"opacity-100 translate-y-0" x-transition:leave-end=​"opacity-0 translate-y-4" data-ai-chat-messages class=​"flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:​bg-gray-900" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'messages')
+
+Expression: "chat.messages"
+
+ <template x-for=​"(msg, index)​ in chat.messages" :key=​"index">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isTyping')
+
+Expression: "chat.isTyping"
+
+ <div x-show=​"chat.isTyping" class=​"flex justify-start" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+
+Expression: "chat.error"
+
+ <div x-show=​"chat.error" class=​"mb-3 p-2 bg-red-100 dark:​bg-red-900/​30 text-red-700 dark:​text-red-300 text-sm rounded-lg" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'error')
+
+Expression: "chat.error"
+
+ <span x-text=​"chat.error">​</span>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "chat.isLoading"
+
+ <input type=​"text" x-model=​"message" @focus=​"expanded = true;​ inputFocused = true" @blur=​"inputFocused = false" placeholder=​"Mesajınızı yazın..." :disabled=​"chat.isLoading" class=​"w-full px-4 py-2 bg-gray-50 dark:​bg-gray-900 border border-gray-300 dark:​border-gray-600 text-gray-900 dark:​text-gray-100 placeholder-gray-500 dark:​placeholder-gray-400 rounded-full focus:​outline-none focus:​ring-2 focus:​ring-blue-500 dark:​focus:​ring-blue-600 focus:​border-transparent disabled:​bg-gray-100 dark:​disabled:​bg-gray-800 disabled:​cursor-not-allowed transition-all duration-300 relative z-10" :class=​"{ 'animate-input-invite':​ !expanded && !chat.hasConversation }​" autocomplete=​"off" disabled=​"disabled">​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'hasConversation')
+
+Expression: "{ 'animate-input-invite': !expanded && !chat.hasConversation }"
+
+ <input type=​"text" x-model=​"message" @focus=​"expanded = true;​ inputFocused = true" @blur=​"inputFocused = false" placeholder=​"Mesajınızı yazın..." :disabled=​"chat.isLoading" class=​"w-full px-4 py-2 bg-gray-50 dark:​bg-gray-900 border border-gray-300 dark:​border-gray-600 text-gray-900 dark:​text-gray-100 placeholder-gray-500 dark:​placeholder-gray-400 rounded-full focus:​outline-none focus:​ring-2 focus:​ring-blue-500 dark:​focus:​ring-blue-600 focus:​border-transparent disabled:​bg-gray-100 dark:​disabled:​bg-gray-800 disabled:​cursor-not-allowed transition-all duration-300 relative z-10" :class=​"{ 'animate-input-invite':​ !expanded && !chat.hasConversation }​" autocomplete=​"off" disabled=​"disabled">​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "{ 'animate-spin': chat.isLoading }"
+
+ <svg class=​"w-5 h-5" :class=​"{ 'animate-spin':​ chat.isLoading }​" fill=​"none" stroke=​"currentColor" viewBox=​"0 0 24 24">​…​</svg>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "!chat.isLoading"
+
+ <path x-show=​"!chat.isLoading" stroke-linecap=​"round" stroke-linejoin=​"round" stroke-width=​"2" d=​"M12 19l9 2-9-18-9 18 9-2zm0 0v-8" style=​"display:​ none;​">​</path>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'isLoading')
+
+Expression: "chat.isLoading"
+
+ <path x-show=​"chat.isLoading" stroke-linecap=​"round" stroke-linejoin=​"round" stroke-width=​"2" d=​"M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" style=​"display:​ none;​">​</path>​
+handleError @ livewire.js?id=df3a17f2:1123
+ixtif-theme.js?v=1761271758:80 Top bar height: 45px
+ixtif-theme.js?v=1761271758:95 ✅ Sticky header initialized
+app.js:17 ✅ Livewire initialized with Alpine.js
+ai-chat.js?v=1761266844:81 🤖 AI Chat Store initialized Object
+dev-tools.js?v=1761271758:93 ✅ Development Tools loaded (Admin/Root only)
+main.js?v=1.0.1:3 Blank tema yüklendi!
+ixtif-theme.js:80 Top bar height: 45px
+ixtif-theme.js:95 ✅ Sticky header initialized
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'registerInline')
+    at Proxy.init (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:12:23)
+    at livewire.js?id=df3a17f2:1160:25
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at evaluate (livewire.js?id=df3a17f2:1140:34)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3571:29)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
+    at initTree (livewire.js?id=df3a17f2:1479:5)
+    at livewire.js?id=df3a17f2:1428:7
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'assistantName')
+    at [Alpine] chat.assistantName (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messageCount')
+    at [Alpine] chat.messageCount > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messageCount')
+    at [Alpine] chat.messageCount (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+ai-chat.js?v=1761266844:374 🔍 Placeholder init started (FALLBACK ONLY)
+ai-chat.js?v=1761266844:380 ✅ Placeholder init completed (fallback) Object
+ai-chat.js?v=1761266844:402 🎬 Animated placeholder started
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at [Alpine] !chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messages')
+    at [Alpine] chat.messages (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isTyping')
+    at [Alpine] chat.isTyping (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] { 'animate-spin': chat.isLoading } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:55)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] !chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at [Alpine] $store.aiChat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:46)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getter (livewire.js?id=df3a17f2:3006:7)
+    at livewire.js?id=df3a17f2:804:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at watch (livewire.js?id=df3a17f2:803:27)
+    at Proxy.<anonymous> (livewire.js?id=df3a17f2:3009:19)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'entangle')
+    at [Alpine] {
+         query: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('query').live,
+         open: window.Livewire.find('YfA26v8IKwzbgQOAFrPN').entangle('isOpen').live,
+         keywords: [],
+         products: [],
+         total: 0,
+         loading: false,
+         debounceTimer: null,
+
+         async fetchSuggestions() {
+             const trimmed = this.query?.trim() || '';
+             if (trimmed.length < 2) {
+                 this.keywords = [];
+                 this.products = [];
+                 this.total = 0;
+                 this.open = false;
+                 return;
+             }
+
+             this.loading = true;
+             try {
+                 const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(trimmed)}`, {
+                     headers: { 'Accept': 'application/json' }
+                 });
+
+                 if (!response.ok) throw new Error('Network error');
+
+                 const data = await response.json();
+                 if (data.success) {
+                     this.keywords = data.data.keywords || [];
+                     this.products = data.data.products || [];
+                     this.total = data.data.total || 0;
+                     this.open = (this.keywords.length > 0 || this.products.length > 0);
+                 }
+             } catch (error) {
+                 console.error('Search suggestions error:', error);
+             } finally {
+                 this.loading = false;
+             }
+         },
+
+         debouncedFetch() {
+             clearTimeout(this.debounceTimer);
+             this.debounceTimer = setTimeout(() => this.fetchSuggestions(), 300);
+         },
+
+         selectKeyword(keyword) {
+             if (!keyword?.text) return;
+             window.location.href = 'https://ixtif.com/search/_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
+         },
+
+         selectProduct(product) {
+             if (!product?.url) return;
+             window.location.href = product.url;
+         }
+     } (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:4:61)
+    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:1196:23
+    at tryCatch (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1116:14)
+    at evaluate (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1140:34)
+    at Function.<anonymous> (https://ixtif.com/livewire/livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1289:5)
+    at initTree (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1479:5)
+    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:1428:7
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: query is not defined
+
+Expression: "query"
+
+ <div wire:snapshot=​"{"data":​{"query":​"","isOpen":​false,"viewMode":​"footer"}​,"memo":​{"id":​"YfA26v8IKwzbgQOAFrPN","name":​"search:​:​search-bar","path":​"shop\/​ixtif-f4-201-20-ton-li-ion-transpalet","method":​"GET","children":​[]​,"scripts":​[]​,"assets":​[]​,"errors":​[]​,"locale":​"tr"}​,"checksum":​"268bc691e1b776661d1416d6d2b5d9435775c14606540c0b89ec1d9bfe4fe36e"}​" wire:effects=​"[]​" wire:id=​"YfA26v8IKwzbgQOAFrPN" class=​"relative mb-6" x-data=​"{
+         query:​ window.Livewire.find('YfA26v8IKwzbgQOAFrPN')​.entangle('query')​.live,
+         open:​ window.Livewire.find('YfA26v8IKwzbgQOAFrPN')​.entangle('isOpen')​.live,
+         keywords:​ []​,
+         products:​ []​,
+         total:​ 0,
+         loading:​ false,
+         debounceTimer:​ null,
+
+         async fetchSuggestions()​ {
+             const trimmed = this.query?.trim()​ || '';​
+             if (trimmed.length < 2)​ {
+                 this.keywords = []​;​
+                 this.products = []​;​
+                 this.total = 0;​
+                 this.open = false;​
+                 return;​
+             }​
+
+             this.loading = true;​
+             try {
+                 const response = await fetch(`/​api/​search/​suggestions?q=${encodeURIComponent(trimmed)​}​`, {
+                     headers:​ { 'Accept':​ 'application/​json' }​
+                 }​)​;​
+
+                 if (!response.ok)​ throw new Error('Network error')​;​
+
+                 const data = await response.json()​;​
+                 if (data.success)​ {
+                     this.keywords = data.data.keywords || []​;​
+                     this.products = data.data.products || []​;​
+                     this.total = data.data.total || 0;​
+                     this.open = (this.keywords.length > 0 || this.products.length > 0)​;​
+                 }​
+             }​ catch (error)​ {
+                 console.error('Search suggestions error:​', error)​;​
+             }​ finally {
+                 this.loading = false;​
+             }​
+         }​,
+
+         debouncedFetch()​ {
+             clearTimeout(this.debounceTimer)​;​
+             this.debounceTimer = setTimeout(()​ => this.fetchSuggestions()​, 300)​;​
+         }​,
+
+         selectKeyword(keyword)​ {
+             if (!keyword?.text)​ return;​
+             window.location.href = 'https:​/​/​ixtif.com/​search/​_PLACEHOLDER_'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text)​)​;​
+         }​,
+
+         selectProduct(product)​ {
+             if (!product?.url)​ return;​
+             window.location.href = product.url;​
+         }​
+     }​" @click.away=​"open = false" x-init=​"$nextTick(()​ => $watch('query', ()​ => debouncedFetch()​)​)​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] query (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getValue (livewire.js?id=df3a17f2:3353:7)
+    at livewire.js?id=df3a17f2:3410:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3409:5)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] !query.trim() (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:33)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] {'opacity-50 cursor-not-allowed': !query.trim()} (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:67)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at [Alpine] open && (keywords.length > 0 || products.length > 0) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:41)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at [Alpine] keywords.length > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at [Alpine] `${keywords.length}` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:35)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: keywords is not defined
+    at [Alpine] keywords (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: products is not defined
+    at [Alpine] products.length > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: total is not defined
+    at [Alpine] total > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: products is not defined
+    at [Alpine] `${products.length} / ${total}` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:35)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: products is not defined
+    at [Alpine] products (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] `https://ixtif.com/search/_PLACEHOLDER_`.replace('_PLACEHOLDER_', encodeURIComponent(query)) (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:117)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: total is not defined
+    at [Alpine] total > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: total is not defined
+    at [Alpine] `Tüm ${total} sonucu gör` (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:39)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at [Alpine] chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getter (livewire.js?id=df3a17f2:3006:7)
+    at livewire.js?id=df3a17f2:804:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at watch (livewire.js?id=df3a17f2:803:27)
+    at Proxy.<anonymous> (livewire.js?id=df3a17f2:3009:19)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at [Alpine] !chat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at [Alpine] { 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:72)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at [Alpine] { 'opacity-0 pointer-events-none': chat.floatingOpen || !bubbleVisible } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:72)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'unreadCount')
+    at [Alpine] chat.unreadCount > 0 && !chat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'unreadCount')
+    at [Alpine] chat.unreadCount (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at [Alpine] {
+            height: (expanded || chat.hasConversation) ? '600px' : '420px',
+            transition: 'height 0.4s ease-in-out',
+            maxHeight: 'calc(100vh - 120px)'
+        } (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:4:39)
+    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:1196:23
+    at tryCatch (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1116:14)
+    at https://ixtif.com/livewire/livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (https://ixtif.com/livewire/livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (https://ixtif.com/livewire/livewire.js?id=df3a17f2:2407:7)
+    at effect (https://ixtif.com/livewire/livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (https://ixtif.com/livewire/livewire.js?id=df3a17f2:780:29)
+    at handler2 (https://ixtif.com/livewire/livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at [Alpine] chat.floatingOpen (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'assistantName')
+    at [Alpine] chat.assistantName (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at [Alpine] !chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at [Alpine] chat.hasConversation (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'messages')
+    at [Alpine] chat.messages (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3642:5)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isTyping')
+    at [Alpine] chat.isTyping (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'error')
+    at [Alpine] chat.error (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3496:7
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'hasConversation')
+    at [Alpine] { 'animate-input-invite': !expanded && !chat.hasConversation } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:77)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] { 'animate-spin': chat.isLoading } (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:55)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] !chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:38)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: Cannot read properties of undefined (reading 'isLoading')
+    at [Alpine] chat.isLoading (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:37)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: query is not defined
+    at [Alpine] query (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at getter (livewire.js?id=df3a17f2:3006:7)
+    at livewire.js?id=df3a17f2:804:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at watch (livewire.js?id=df3a17f2:803:27)
+    at Proxy.<anonymous> (livewire.js?id=df3a17f2:3009:19)
+/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png:1  Failed to load resource: the server responded with a status of 403 ()
+ixtif-f4-201-20-ton-li-ion-transpalet:1 Error while trying to use the following icon from the Manifest: https://ixtif.com/storage/tenant2/19/0ufxpkujohzrh8nahnm9valr5jg8jgxoaqlwfzaj.png (Download error or resource isn't a valid image)
+VM1813:14 Uncaught TypeError: Cannot read properties of undefined (reading 'floatingOpen')
+    at eval (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:14:28)

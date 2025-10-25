@@ -90,22 +90,63 @@
                 </div>
             </section>
         @else
-            {{-- Default Header for Shop Home / Search Results --}}
-            <section class="relative py-16 md:py-20 overflow-hidden">
-                <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                    <div class="text-center max-w-3xl mx-auto">
-                        @if(request('search'))
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                                "{{ request('search') }}" Arama Sonuçları
-                            </h1>
-                        @else
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                                Ürünlerimiz
-                            </h1>
-                            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                                Endüstriyel ekipmanlar ve çözümler
-                            </p>
-                        @endif
+            {{-- Glassmorphism Subheader for Shop Home --}}
+            <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
+                <div class="container mx-auto py-6">
+                    <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
+                        <!-- Left: Title & Breadcrumb -->
+                        <div class="flex flex-col justify-between">
+                            <div class="flex items-center gap-6">
+                                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                                    <i class="fa-solid fa-store text-5xl text-white"></i>
+                                </div>
+                                <div>
+                                    @if(request('search'))
+                                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">"{{ request('search') }}" Arama Sonuçları</h1>
+                                    @else
+                                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">Tüm Ürünler</h1>
+                                    @endif
+                                    <!-- Breadcrumb -->
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                        <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
+                                            <i class="fa-solid fa-home text-xs"></i>
+                                            <span>Ana Sayfa</span>
+                                        </a>
+                                        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                        <span class="font-semibold text-gray-900 dark:text-white">Ürünler</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Sort & View Toggle -->
+                        <div class="flex flex-col justify-end">
+                            <div class="flex items-center gap-2" x-data="{ view: 'grid' }">
+                                <!-- Sort -->
+                                <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium
+                                               border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all cursor-pointer"
+                                        onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
+                                    <option value="" {{ !request('sort') ? 'selected' : '' }}>Varsayılan Sıralama</option>
+                                    <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
+                                    <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
+                                </select>
+
+                                <!-- View Toggle -->
+                                <button @click="view = view === 'grid' ? 'list' : 'grid'"
+                                        class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
+                                               hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
+                                               active:scale-95 transition-all duration-300 group flex items-center justify-center">
+                                    <!-- Grid Icon -->
+                                    <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
+                                              transition-all duration-300 text-2xl"
+                                       :class="view === 'grid' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'"></i>
+                                    <!-- List Icon -->
+                                    <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
+                                              transition-all duration-300 text-2xl"
+                                       :class="view === 'list' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

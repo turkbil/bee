@@ -38,13 +38,13 @@
                         class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
                                hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
                                active:scale-95 transition-all duration-300 flex items-center justify-center">
-                    <!-- Grid Icon -->
+                    <!-- Grid Icon (default visible) -->
                     <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400
                               absolute transition-all duration-300 text-2xl"
                        :class="view === \'grid\' ? \'opacity-100 scale-100\' : \'opacity-0 scale-75\'"></i>
-                    <!-- List Icon -->
+                    <!-- List Icon (default hidden) -->
                     <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400
-                              absolute transition-all duration-300 text-2xl"
+                              absolute transition-all duration-300 text-2xl opacity-0 scale-75"
                        :class="view === \'list\' ? \'opacity-100 scale-100\' : \'opacity-0 scale-75\'"></i>
                 </button>
             </div>'

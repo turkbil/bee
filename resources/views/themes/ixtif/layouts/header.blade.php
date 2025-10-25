@@ -334,7 +334,7 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div id="nav-container" class="flex items-center justify-between py-5"
+                <div id="nav-container" class="flex items-center justify-between"
                      @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')"
                      @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); activeMegaMenu = null">
                     {{-- Logo - Sabit Genişlik Container --}}

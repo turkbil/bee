@@ -233,7 +233,7 @@
 
         {{-- 🎯 HERO SECTION --}}
         <section id="hero-section"
-            class="relative min-h-screen flex items-center text-gray-900 dark:text-white overflow-hidden">
+            class="relative flex items-center text-gray-900 dark:text-white overflow-hidden py-12 md:py-16">
             {{-- Animated Background Blobs - Anasayfa ile aynı --}}
             <div class="absolute inset-0 opacity-20">
                 <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-300 dark:bg-white rounded-full blur-3xl animate-pulse"></div>

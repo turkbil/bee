@@ -334,11 +334,11 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div id="nav-container" class="flex items-center justify-between"
+                <div id="nav-container" class="flex items-center justify-between pb-8"
                      @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')"
                      @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); activeMegaMenu = null">
                     {{-- Logo - Sabit Genişlik Container --}}
-                    <div class="flex items-center gap-3" style="width: 200px;">
+                    <div class="flex items-center gap-3 py-8" style="width: 200px;">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
                             @php
                                 // LogoService kullan - daha temiz ve bakımı kolay
@@ -415,7 +415,7 @@
                         {{-- İstif Makinesi (Mega Menu) - Tıklanabilir + Hover - Sadece XL ve üstünde göster --}}
                         <a href="/shop/kategori/istif-makinesi"
                            @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                           class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pb-8">
+                           class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
                             <i :class="activeMegaMenu === 'istif-makinesi' ? 'fa-solid' : 'fa-light'" class="fa-box-open-full text-sm transition-all"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"

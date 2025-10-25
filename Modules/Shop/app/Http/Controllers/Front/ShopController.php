@@ -358,34 +358,35 @@ class ShopController extends Controller
         // Get all category IDs (this category + all children recursively)
         $categoryIds = $this->getCategoryWithChildren($category);
 
+        // Get sort parameter
+        $sortParam = request('sort');
+
         // Get products from this category and all subcategories
         $yedekParcaCategoryId = 7;
 
-        if ($category->category_id === $yedekParcaCategoryId || in_array($yedekParcaCategoryId, $categoryIds)) {
-            // Yedek Parça veya alt kategorisi: Alfabetik sıralama
-            $products = ShopProduct::query()
-                ->with(['category', 'brand', 'media'])
-                ->whereNull('parent_product_id') // Sadece master productlar (varyantlar değil)
-                ->whereIn('category_id', $categoryIds)
-                ->active()
-                ->published()
-                ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
-                ->paginate(config('shop.pagination.front_per_shop', 12));
+        $productsQuery = ShopProduct::query()
+            ->with(['category', 'brand', 'media'])
+            ->whereNull('parent_product_id') // Sadece master productlar (varyantlar değil)
+            ->whereIn('category_id', $categoryIds)
+            ->active()
+            ->published();
+
+        // Apply sorting based on sort parameter or category rules
+        if ($sortParam === 'a-z') {
+            // A'dan Z'ye alfabetik sıralama
+            $productsQuery->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) ASC");
+        } elseif ($sortParam === 'z-a') {
+            // Z'den A'ya ters alfabetik sıralama
+            $productsQuery->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) DESC");
+        } elseif ($category->category_id === $yedekParcaCategoryId || in_array($yedekParcaCategoryId, $categoryIds)) {
+            // Yedek Parça veya alt kategorisi: Alfabetik sıralama (varsayılan)
+            $productsQuery->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC");
         } else {
-            // Kategori Sayfası Sıralaması (Admin ile aynı):
-            // 1. Sadece master productlar (varyantlar değil) - Admin ile tutarlılık
-            // 2. sort_order ASC
-            // 3. product_id ASC (secondary sort)
-            $products = ShopProduct::query()
-                ->with(['category', 'brand', 'media'])
-                ->whereNull('parent_product_id') // Admin panelle tutarlılık için
-                ->whereIn('category_id', $categoryIds)
-                ->active()
-                ->published()
-                ->orderBy('sort_order', 'asc')
-                ->orderBy('product_id', 'asc')
-                ->paginate(config('shop.pagination.front_per_shop', 12));
+            // Varsayılan sıralama: sort_order + product_id
+            $productsQuery->orderBy('sort_order', 'asc')->orderBy('product_id', 'asc');
         }
+
+        $products = $productsQuery->paginate(config('shop.pagination.front_per_shop', 12));
 
         // Get direct subcategories for display
         $subcategories = $category->children;

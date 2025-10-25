@@ -23,7 +23,7 @@
             'title' => $category->getTranslated('title'),
             'icon' => $category->icon_class ?? 'fa-solid fa-box',
             'breadcrumbs' => $breadcrumbs,
-            'rightSlot' => '<div class="flex items-center gap-2" x-data="{ view: \'grid\' }">
+            'rightSlot' => '<div class="flex items-center gap-2">
                 <!-- Sort -->
                 <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium
                                border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all cursor-pointer"
@@ -34,7 +34,7 @@
                 </select>
 
                 <!-- View Toggle -->
-                <button @click="view = view === \'grid\' ? \'list\' : \'grid\'"
+                <button @click="toggleView()"
                         class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
                                hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
                                active:scale-95 transition-all duration-300 group flex items-center justify-center">
@@ -86,8 +86,10 @@
         <section class="py-16">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if($products->count() > 0)
-                    {{-- Products Grid - iXtif Design --}}
-                    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" x-ref="productsGrid">
+                    {{-- Products Grid/List - iXtif Design --}}
+                    <div class="grid gap-6 transition-all duration-300"
+                         :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'"
+                         x-ref="productsGrid">
                         @foreach($products as $product)
                             @include('shop::themes.ixtif.partials.product-card', ['product' => $product])
                         @endforeach
@@ -151,12 +153,18 @@
                 loading: false,
                 hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
                 lastPage: {{ $products->lastPage() }},
+                view: localStorage.getItem('shopViewMode') || 'grid', // Persist view preference
 
                 init() {
                     this.$nextTick(() => {
                         this.loaded = true;
                         this.setupInfiniteScroll();
                     });
+                },
+
+                toggleView() {
+                    this.view = this.view === 'grid' ? 'list' : 'grid';
+                    localStorage.setItem('shopViewMode', this.view); // Save preference
                 },
 
                 setupInfiniteScroll() {

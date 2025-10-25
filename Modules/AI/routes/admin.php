@@ -81,7 +81,11 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                 Route::get('/conversations/archived', [ConversationController::class, 'archived'])
                     ->middleware('module.permission:ai,view')
                     ->name('conversations.archived');
-                
+
+                Route::get('/conversations/{id}/preview', [ConversationController::class, 'preview'])
+                    ->middleware('module.permission:ai,view')
+                    ->name('conversations.preview');
+
                 Route::get('/conversations/{id}', [ConversationController::class, 'show'])
                     ->middleware('module.permission:ai,view')
                     ->name('conversations.show');

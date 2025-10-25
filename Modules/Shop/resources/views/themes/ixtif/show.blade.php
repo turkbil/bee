@@ -407,7 +407,7 @@
                     {{-- 2. Primary Specs (4'lü Önemli Kutu) --}}
                     @if (!empty($primarySpecs))
                         <section id="primary-specs" class="scroll-mt-24 mb-20 lg:mb-24">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                 @foreach ($primarySpecs as $spec)
                                     <div class="group relative overflow-hidden">
                                         <div
@@ -453,7 +453,7 @@
                             </header>
 
                             @if ($highlightedFeatures->isNotEmpty())
-                                <div class="grid grid-cols-1 gap-6 mb-8">
+                                <div class="grid grid-cols-1 gap-8 mb-8">
                                     @foreach ($highlightedFeatures as $feature)
                                         <div
                                             class="flex gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-all">
@@ -476,7 +476,7 @@
                             @endif
 
                             @if (!empty($featuresList))
-                                <div class="grid md:grid-cols-2 gap-6">
+                                <div class="grid md:grid-cols-2 gap-8">
                                     @foreach ($featuresList as $feature)
                                         @php
                                             $featureIcon = is_array($feature)
@@ -544,7 +544,7 @@
                                 </h2>
                                 <p class="text-gray-600 dark:text-gray-400 text-lg">Ürünü farklı açılardan inceleyin</p>
                             </header>
-                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                                 @foreach ($galleryImages as $image)
                                     @php
                                         $altText = $image->getCustomProperty('alt_text')[$currentLocale] ?? $image->name ?? 'Ürün görseli';
@@ -581,7 +581,7 @@
                                 </p>
                             </header>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 @foreach ($siblingVariants as $variant)
                                     @php
                                         $variantTitle =
@@ -814,7 +814,7 @@
                             </h2>
                             <p class="text-lg text-gray-600 dark:text-gray-400">Hangi durumlarda kullanılır?</p>
                         </header>
-                        <div class="grid sm:grid-cols-2 gap-6">
+                        <div class="grid sm:grid-cols-2 gap-8">
                             @foreach ($useCases as $case)
                                 @php
                                     $caseIcon = is_array($case) ? $case['icon'] ?? 'check' : 'check';
@@ -853,7 +853,7 @@
                             </h2>
                             <p class="text-lg text-gray-600 dark:text-gray-400">Hangi iş kollarında tercih ediliyor?</p>
                         </header>
-                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             @foreach ($targetIndustries as $industry)
                                 @php
                                     $industryIcon = is_array($industry)
@@ -1082,7 +1082,7 @@
         <div class="container mx-auto px-6">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                     {{-- GARANTİLİ --}}
                     <div class="flex items-center gap-4">
                         <i class="fa-solid fa-shield-halved text-4xl md:text-5xl text-green-400"></i>
@@ -1151,7 +1151,7 @@
                             <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                             <input type="hidden" name="product_title" value="{{ $title }}">
 
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid md:grid-cols-2 gap-8">
                                 <div>
                                     <label
                                         class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">

@@ -296,7 +296,7 @@
                 <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
-                            <th style="width: 50px">
+                            <th style="width: 50px" class="d-none d-md-table-cell">
                                 <div class="d-flex align-items-center gap-2">
                                     <input type="checkbox" class="form-check-input" id="selectAll">
                                     <button class="table-sort {{ request('sort') === 'id' ? (request('direction') === 'asc' ? 'asc' : 'desc') : '' }}"
@@ -310,32 +310,32 @@
                                     Başlık
                                 </button>
                             </th>
-                            <th>
+                            <th class="d-none d-lg-table-cell">
                                 <button class="table-sort {{ request('sort') === 'type' ? (request('direction') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     onclick="window.location.href='{{ route('admin.ai.conversations.index', array_merge(request()->query(), ['sort' => 'type', 'direction' => request('sort') == 'type' && request('direction') == 'asc' ? 'desc' : 'asc'])) }}'">
                                     Tip
                                 </button>
                             </th>
-                            <th>Kullanıcı</th>
-                            <th>Kişi Bilgileri</th>
-                            <th>Tenant</th>
-                            <th>
+                            <th class="d-none d-xl-table-cell">Kullanıcı</th>
+                            <th class="d-none d-xl-table-cell">Kişi Bilgileri</th>
+                            <th class="d-none d-xl-table-cell">Tenant</th>
+                            <th class="d-none d-xl-table-cell">
                                 <button class="table-sort {{ request('sort') === 'is_demo' ? (request('direction') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     onclick="window.location.href='{{ route('admin.ai.conversations.index', array_merge(request()->query(), ['sort' => 'is_demo', 'direction' => request('sort') == 'is_demo' && request('direction') == 'asc' ? 'desc' : 'asc'])) }}'">
                                     Test Modu
                                 </button>
                             </th>
-                            <th>
+                            <th class="d-none d-xl-table-cell">
                                 <button class="table-sort {{ request('sort') === 'total_tokens_used' ? (request('direction') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     onclick="window.location.href='{{ route('admin.ai.conversations.index', array_merge(request()->query(), ['sort' => 'total_tokens_used', 'direction' => request('sort') == 'total_tokens_used' && request('direction') == 'asc' ? 'desc' : 'asc'])) }}'">
                                     Token
                                 </button>
                             </th>
-                            <th>Credit</th>
-                            <th>Model</th>
-                            <th>Mesaj</th>
-                            <th>Durum</th>
-                            <th>
+                            <th class="d-none d-xl-table-cell">Credit</th>
+                            <th class="d-none d-xl-table-cell">Model</th>
+                            <th class="d-none d-lg-table-cell">Mesaj</th>
+                            <th class="d-none d-lg-table-cell">Durum</th>
+                            <th class="d-none d-md-table-cell">
                                 <button class="table-sort {{ request('sort') === 'created_at' ? (request('direction') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     onclick="window.location.href='{{ route('admin.ai.conversations.index', array_merge(request()->query(), ['sort' => 'created_at', 'direction' => request('sort') == 'created_at' && request('direction') == 'asc' ? 'desc' : 'asc'])) }}'">
                                     Tarih
@@ -494,7 +494,13 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col">
-                                            <a href="{{ route('admin.ai.conversations.show', $conversation->id) }}" 
+                                            <a href="javascript:void(0)" onclick="showPreview({{ $conversation->id }})"
+                                               data-bs-toggle="tooltip" data-bs-placement="top" title="Önizleme">
+                                                <i class="fa-solid fa-search link-info fa-lg"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            <a href="{{ route('admin.ai.conversations.show', $conversation->id) }}"
                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Detaylar">
                                                 <i class="fa-solid fa-eye link-secondary fa-lg"></i>
                                             </a>
@@ -586,6 +592,32 @@
             </div>
         </div>
         @endif
+    </div>
+
+    <!-- Önizleme Modal -->
+    <div class="modal modal-blur fade" id="previewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konuşma Önizleme</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="previewContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Mesajlar yükleniyor...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <a href="#" id="previewDetailLink" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt me-2"></i>Detaylı Görünüm
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -715,5 +747,120 @@
             document.getElementById('loadingIndicator').style.display = 'block';
         });
     });
+
+    // Önizleme fonksiyonu
+    function showPreview(conversationId) {
+        // Modal'ı aç
+        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+        modal.show();
+
+        // Loading durumu
+        const previewContent = document.getElementById('previewContent');
+        previewContent.innerHTML = `
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <p class="mt-3 text-muted">Mesajlar yükleniyor...</p>
+            </div>
+        `;
+
+        // Detay linkini güncelle
+        document.getElementById('previewDetailLink').href = '/admin/ai/conversations/' + conversationId;
+
+        // AJAX ile mesajları getir
+        fetch('/admin/ai/conversations/' + conversationId + '/preview', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Conversation bilgileri
+                let html = `
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">${data.conversation.title || 'Başlıksız Konuşma'}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <strong>Tip:</strong>
+                                        <span class="badge bg-blue-lt">${data.conversation.type}</span>
+                                    </div>
+                                    ${data.conversation.feature_name ? `<div class="mb-2"><strong>Özellik:</strong> ${data.conversation.feature_name}</div>` : ''}
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <strong>Mesaj Sayısı:</strong> ${data.messages.length}
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Tarih:</strong> ${new Date(data.conversation.created_at).toLocaleString('tr-TR')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Mesajlar
+                if (data.messages.length > 0) {
+                    html += '<div class="card"><div class="card-header"><h3 class="card-title">Mesajlar</h3></div><div class="card-body">';
+
+                    data.messages.forEach((message, index) => {
+                        const isUser = message.role === 'user';
+                        const bgClass = isUser ? 'bg-blue-lt' : 'bg-gray-lt';
+                        const icon = isUser ? 'fa-user' : 'fa-robot';
+                        const title = isUser ? 'Kullanıcı' : 'AI Asistan';
+
+                        html += `
+                            <div class="mb-3 ${index > 0 ? 'border-top pt-3' : ''}">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas ${icon} ${bgClass} p-2 rounded me-2"></i>
+                                    <strong>${title}</strong>
+                                    <span class="text-muted ms-auto small">${new Date(message.created_at).toLocaleString('tr-TR')}</span>
+                                </div>
+                                <div class="ps-4" style="white-space: pre-wrap;">${escapeHtml(message.content)}</div>
+                                ${message.token_count ? `<div class="ps-4 mt-1"><small class="text-muted">Token: ${message.token_count}</small></div>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    html += '</div></div>';
+                } else {
+                    html += '<div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>Bu konuşmada henüz mesaj bulunmuyor.</div>';
+                }
+
+                previewContent.innerHTML = html;
+            } else {
+                previewContent.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ${data.message || 'Mesajlar yüklenirken hata oluştu.'}
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Preview error:', error);
+            previewContent.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Mesajlar yüklenirken bir hata oluştu.
+                </div>
+            `;
+        });
+    }
+
+    // HTML escape fonksiyonu
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 </script>
 @endpush

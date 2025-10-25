@@ -32,7 +32,7 @@
                 <div class="h-1 w-20 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-8 lg:gap-10">
                 {{-- Ana Görsel - Sol Taraf --}}
                 @if($featuredImage)
                     <div class="lg:col-span-1 order-2 lg:order-1">
@@ -99,7 +99,7 @@
                         </h2>
                         <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
                     </header>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-8">
                         @foreach($galleryImages as $image)
                             <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
                                 <a href="{{ $image->getUrl() }}"

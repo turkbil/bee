@@ -69,8 +69,7 @@
                                         </select>
 
                                         <!-- View Toggle - TEK BUTON ANIMASYONLU -->
-                                        <button @click="view = view === 'grid' ? 'list' : 'grid'"
-                                                x-data="{ view: 'grid' }"
+                                        <button @click="toggleView()"
                                                 class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
                                                        hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
                                             <!-- Grid Icon -->
@@ -121,9 +120,9 @@
 
                         <!-- Right: View Toggle Only (No Sort - Default sorting) -->
                         <div class="flex flex-col justify-end">
-                            <div class="flex items-center justify-end" x-data="{ view: 'grid' }">
+                            <div class="flex items-center justify-end">
                                 <!-- View Toggle -->
-                                <button @click="view = view === 'grid' ? 'list' : 'grid'"
+                                <button @click="toggleView()"
                                         class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
                                                hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
                                                active:scale-95 transition-all duration-300 group flex items-center justify-center">
@@ -236,10 +235,20 @@
         <section class="py-12">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if($products->count() > 0)
-                    {{-- Products Grid - iXtif Design --}}
-                    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" x-ref="productsGrid">
+                    {{-- Products Grid/List - iXtif Design --}}
+                    {{-- Grid: 2 → 3 → 4 sütun (responsive) | List: 1 → 2 sütun (responsive) --}}
+                    <div class="grid gap-6 transition-all duration-300"
+                         :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-2'"
+                         x-ref="productsGrid">
                         @foreach($products as $product)
-                            @include('shop::themes.ixtif.partials.product-card', ['product' => $product])
+                            {{-- Grid Mode Card --}}
+                            <div x-show="view === 'grid'" x-cloak>
+                                @include('shop::themes.ixtif.partials.product-card', ['product' => $product, 'viewMode' => 'grid'])
+                            </div>
+                            {{-- List Mode Card --}}
+                            <div x-show="view === 'list'" x-cloak>
+                                @include('shop::themes.ixtif.partials.product-card', ['product' => $product, 'viewMode' => 'list'])
+                            </div>
                         @endforeach
                     </div>
 
@@ -380,12 +389,18 @@
                 loading: false,
                 hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
                 lastPage: {{ $products->lastPage() }},
+                view: localStorage.getItem('shopViewMode') || 'grid', // Persist view preference
 
                 init() {
                     this.$nextTick(() => {
                         this.loaded = true;
                         this.setupInfiniteScroll();
                     });
+                },
+
+                toggleView() {
+                    this.view = this.view === 'grid' ? 'list' : 'grid';
+                    localStorage.setItem('shopViewMode', this.view); // Save preference
                 },
 
                 setupInfiniteScroll() {

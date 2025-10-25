@@ -10,44 +10,106 @@
         {{-- Gradient Background --}}
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
 
-        {{-- Header Section --}}
-        <section class="relative py-16 md:py-20 overflow-hidden">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div class="text-center max-w-3xl mx-auto">
-                    @if($selectedCategory)
-                        {{-- Kategori seçili --}}
-                        <div class="flex items-center justify-center gap-4 mb-6">
-                            @if($selectedCategory->icon_class)
-                                <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                                    <i class="{{ $selectedCategory->icon_class }} text-3xl md:text-4xl text-white"></i>
+        {{-- Header Section - Glassmorphism Subheader --}}
+        @if($selectedCategory)
+            {{-- Category Header with Glassmorphism Design --}}
+            <section class="relative py-12 overflow-hidden">
+                <div class="w-full">
+                    <div class="container mx-auto px-4 max-w-7xl">
+                        <div class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)]">
+                            <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
+                                {{-- Left: Icon, Title & Breadcrumb --}}
+                                <div class="flex flex-col justify-between">
+                                    <div class="flex items-center gap-6">
+                                        @if($selectedCategory->icon_class)
+                                            <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl flex-shrink-0">
+                                                <i class="{{ $selectedCategory->icon_class }} text-5xl text-white"></i>
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
+                                                {{ $selectedCategory->getTranslated('title') }}
+                                            </h1>
+                                            {{-- Breadcrumb --}}
+                                            <div class="flex items-center gap-2 text-sm text-white/90 flex-wrap">
+                                                <a href="{{ route('shop.index') }}" class="hover:text-white transition flex items-center gap-1.5">
+                                                    <i class="fa-solid fa-home text-xs"></i>
+                                                    <span>Ana Sayfa</span>
+                                                </a>
+                                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                                <a href="{{ route('shop.index') }}" class="hover:text-white transition">Ürünler</a>
+                                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                                <span class="font-semibold">{{ $selectedCategory->getTranslated('title') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            @endif
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
-                                {{ $selectedCategory->getTranslated('title') }}
-                            </h1>
-                        </div>
-                        @if($selectedCategory->getTranslated('description'))
-                            <div class="prose dark:prose-invert mx-auto text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                                {!! Str::limit(strip_tags($selectedCategory->getTranslated('description')), 300) !!}
+
+                                {{-- Right: Search & Sort --}}
+                                <div class="flex flex-col justify-center space-y-3">
+                                    {{-- Search --}}
+                                    <div class="relative">
+                                        <form action="{{ url()->current() }}" method="GET">
+                                            <input type="search"
+                                                   name="search"
+                                                   value="{{ request('search') }}"
+                                                   placeholder="Ara..."
+                                                   class="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white placeholder-white/60 text-sm
+                                                          border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all">
+                                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/60"></i>
+                                        </form>
+                                    </div>
+
+                                    {{-- Sort + View --}}
+                                    <div class="flex items-center gap-2">
+                                        {{-- Sort --}}
+                                        <select class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white text-sm font-medium
+                                                       border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all cursor-pointer"
+                                                onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
+                                            <option class="text-gray-900 bg-white" value="" {{ !request('sort') ? 'selected' : '' }}>Editörün Seçimi</option>
+                                            <option class="text-gray-900 bg-white" value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
+                                            <option class="text-gray-900 bg-white" value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
+                                        </select>
+
+                                        {{-- View Toggle - Single Button with Animation --}}
+                                        <button x-data="{ view: 'grid' }"
+                                                @click="view = view === 'grid' ? 'list' : 'grid'"
+                                                class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
+                                                       hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
+                                            <i class="fa-solid fa-grip text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                               :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
+                                            <i class="fa-solid fa-list text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                               :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
+                                            <i class="fa-solid fa-grip opacity-0"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
-                    @elseif(request('search'))
-                        {{-- Arama yapıldı --}}
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                            "{{ request('search') }}" {{ __('shop::front.search_results') }}
-                        </h1>
-                    @else
-                        {{-- Ana sayfa --}}
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                            {{ __('shop::front.hero_title') }}
-                        </h1>
-                        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                            {{ __('shop::front.hero_subtitle') }}
-                        </p>
-                    @endif
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        @else
+            {{-- Default Header for Shop Home / Search Results --}}
+            <section class="relative py-16 md:py-20 overflow-hidden">
+                <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                    <div class="text-center max-w-3xl mx-auto">
+                        @if(request('search'))
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                                "{{ request('search') }}" Arama Sonuçları
+                            </h1>
+                        @else
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+                                Ürünlerimiz
+                            </h1>
+                            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                                Endüstriyel ekipmanlar ve çözümler
+                            </p>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        @endif
 
         {{-- Search Bar with Autocomplete --}}
         <section class="py-12 border-b border-gray-200 dark:border-white/10">

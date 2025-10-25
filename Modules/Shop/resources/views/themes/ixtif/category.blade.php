@@ -10,41 +10,39 @@
         {{-- Gradient Background --}}
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
 
-        {{-- Glassmorphism Subheader (Design 7 - Exact Copy) --}}
-        <section class="py-12">
-            <!-- FULL WIDTH Container -->
-            <div class="w-full">
-                <!-- Inner Container max-w-7xl -->
-                <div class="container mx-auto px-4 max-w-7xl">
-                    <!-- Main Card with Bottom Shadow -->
-                    <div class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)]">
+        {{-- Glassmorphism Subheader (Glass Effect) --}}
+        <section class="py-8">
+            <!-- Container matching header width -->
+            <div class="container mx-auto px-4">
+                <!-- Glass Effect Background -->
+                <div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)]">
                         <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
                             <!-- Left: Title & Breadcrumb -->
                             <div class="flex flex-col justify-between">
                                 <div class="flex items-center gap-6 mb-6">
                                     @if($category->icon_class)
-                                        <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl">
+                                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
                                             <i class="{{ $category->icon_class }} text-5xl text-white"></i>
                                         </div>
                                     @endif
                                     <div>
-                                        <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">{{ $category->getTranslated('title') }}</h1>
+                                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">{{ $category->getTranslated('title') }}</h1>
                                         <!-- Breadcrumb -->
-                                        <div class="flex items-center gap-2 text-sm text-white/90">
-                                            <a href="{{ route('shop.index') }}" class="hover:text-white transition flex items-center gap-1.5">
+                                        <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                            <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
                                                 <i class="fa-solid fa-home text-xs"></i>
                                                 <span>Ana Sayfa</span>
                                             </a>
                                             <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                            <a href="{{ route('shop.index') }}" class="hover:text-white transition">Ürünler</a>
+                                            <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Ürünler</a>
                                             @if($category->parent)
                                                 <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                                <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}" class="hover:text-white transition">
+                                                <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
                                                     {{ $category->parent->getTranslated('title') }}
                                                 </a>
                                             @endif
                                             <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                            <span class="font-semibold">{{ $category->getTranslated('title') }}</span>
+                                            <span class="font-semibold text-gray-900 dark:text-white">{{ $category->getTranslated('title') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -121,16 +119,16 @@
                                                @input.debounce.300ms="search()"
                                                @focus="if(query.trim().length >= 2) isOpen = hasResults"
                                                placeholder="Ara..."
-                                               class="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white placeholder-white/60 text-sm
-                                                      border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all"
+                                               class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 text-sm
+                                                      border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all"
                                                autocomplete="off">
-                                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/60"></i>
+                                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
                                     </form>
 
-                                    {{-- Autocomplete Dropdown --}}
+                                    {{-- Autocomplete Dropdown - Extra Wide --}}
                                     <div x-show="isOpen"
                                          x-transition
-                                         class="absolute top-full left-[-150px] right-[-150px] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
+                                         class="absolute top-full left-1/2 -translate-x-1/2 w-[800px] max-w-[95vw] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
                                          style="display: none;">
                                         <div class="max-h-[28rem] overflow-y-auto">
                                             <div class="grid gap-4 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -206,27 +204,26 @@
                                 <!-- Sort + View - ALTTA -->
                                 <div class="flex items-center gap-2">
                                     <!-- Sort -->
-                                    <select class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white text-sm font-medium
-                                                   border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all cursor-pointer"
+                                    <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium
+                                                   border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all cursor-pointer"
                                             onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
-                                        <option class="text-gray-900 bg-white" value="" {{ !request('sort') ? 'selected' : '' }}>Editörün Seçimi</option>
-                                        <option class="text-gray-900 bg-white" value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
-                                        <option class="text-gray-900 bg-white" value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
+                                        <option value="" {{ !request('sort') ? 'selected' : '' }}>Varsayılan Sıralama</option>
+                                        <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
+                                        <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
                                     </select>
 
-                                    <!-- View Toggle - TEK BUTON ANIMASYONLU -->
+                                    <!-- View Toggle - Improved Design -->
                                     <button @click="view = view === 'grid' ? 'list' : 'grid'"
                                             x-data="{ view: 'grid' }"
-                                            class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
-                                                   hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
+                                            class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
+                                                   hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
+                                                   active:scale-95 transition-all duration-300 overflow-hidden flex items-center justify-center group">
                                         <!-- Grid Icon -->
-                                        <i class="fa-solid fa-grip text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                        <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 absolute inset-0 flex items-center justify-center transition-all duration-500 text-lg"
                                            :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
                                         <!-- List Icon -->
-                                        <i class="fa-solid fa-list text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                        <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 absolute inset-0 flex items-center justify-center transition-all duration-500 text-lg"
                                            :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
-                                        <!-- Placeholder for size -->
-                                        <i class="fa-solid fa-grip opacity-0"></i>
                                     </button>
                                 </div>
                             </div>

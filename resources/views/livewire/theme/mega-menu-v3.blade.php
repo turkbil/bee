@@ -2,9 +2,9 @@
     <div class="grid grid-cols-12 lg:grid-cols-12 gap-0 min-h-[480px]">
 
         {{-- ========================================== --}}
-        {{-- SOL: VISUAL HERO (4/12) - Küçük ekranda gizli --}}
+        {{-- SOL: VISUAL HERO (4/12) - Sadece XL ekranda görünür --}}
         {{-- ========================================== --}}
-        <div class="hidden lg:block lg:col-span-4 relative overflow-hidden bg-gradient-to-br {{ $config['gradient'] }}">
+        <div class="hidden xl:block xl:col-span-4 relative overflow-hidden bg-gradient-to-br {{ $config['gradient'] }}">
             {{-- Animated Pattern Background - V2.4 Style --}}
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0iI2ZmZiIgY3g9IjIwIiBjeT0iMjAiIHI9IjMiLz48L2c+PC9zdmc+')] animate-pulse"></div>

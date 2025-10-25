@@ -384,7 +384,7 @@
                     </div>
 
                     {{-- Main Navigation (Desktop) --}}
-                    <div class="hidden lg:flex items-center gap-6" @mouseleave="activeMegaMenu = null">
+                    <div class="hidden lg:flex items-center gap-6">
                         {{-- Forklift (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"

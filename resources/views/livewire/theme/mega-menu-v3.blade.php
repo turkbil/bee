@@ -37,11 +37,6 @@
         {{-- ========================================== --}}
         <div class="col-span-12 lg:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 p-6 flex flex-col">
             @if($featuredProduct)
-                <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-300 mb-3">
-                    <div class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-pulse"></div>
-                    <span>ÖNE ÇIKAN MODEL</span>
-                </div>
-
                 <a href="/shop/{{ is_array($featuredProduct->slug) ? $featuredProduct->slug['tr'] : $featuredProduct->slug }}"
                    class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border border-gray-200 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all duration-300 flex flex-col group h-full">
 

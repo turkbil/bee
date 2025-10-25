@@ -40,6 +40,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
         'compare_at_price' => null,
         'currency' => 'TRY',
         'sort_order' => 0,
+        'show_on_homepage' => false,
     ];
 
     // Custom JSON Fields (Tenant-defined categories)

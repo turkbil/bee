@@ -10,11 +10,7 @@
             <!-- Header Bölümü -->
             <div class="row mx-2 my-3">
                 <div class="col-md-8">
-                    <div class="alert alert-info mb-0">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Bilgi:</strong> Sadece "Anasayfada Gösterilsin" işaretli ürünler bu listede görünür.
-                        <strong>Sürükle-bırak</strong> yaparak sıralayın. Yukarıda olanlar önce gösterilir.
-                    </div>
+                    <!-- Removed unnecessary description text -->
                 </div>
 
                 <!-- Ortadaki Loading Indicator -->
@@ -53,7 +49,7 @@
                             Ürün listesinden "Anasayfada Gösterilsin" seçeneğini aktif edin.
                         </p>
                         <div class="empty-action">
-                            <a href="{{ route('admin.shop.products.index') }}" class="btn btn-primary">
+                            <a href="{{ route('admin.shop.index') }}" class="btn btn-primary">
                                 <i class="fas fa-box me-2"></i>
                                 Ürünlere Git
                             </a>

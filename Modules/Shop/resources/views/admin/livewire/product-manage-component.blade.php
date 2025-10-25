@@ -205,10 +205,14 @@
 
                                         <div class="col-12 col-md-4">
                                             <div class="form-floating">
-                                                <input type="text" wire:model="inputs.currency"
+                                                <select wire:model="inputs.currency"
                                                     class="form-control @error('inputs.currency') is-invalid @enderror"
-                                                    id="currency_input" maxlength="3" placeholder="TRY">
-                                                <label for="currency_input">
+                                                    id="currency_select">
+                                                    <option value="TRY">TRY - Türk Lirası</option>
+                                                    <option value="USD">USD - Dolar</option>
+                                                    <option value="EUR">EUR - Euro</option>
+                                                </select>
+                                                <label for="currency_select">
                                                     {{ __('shop::admin.currency') }}
                                                 </label>
                                                 @error('inputs.currency')
@@ -218,17 +222,33 @@
                                         </div>
                                     </div>
 
-                                    <!-- Price on Request Checkbox -->
-                                    <div class="mb-3">
-                                        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                            <input type="checkbox" id="price_on_request" name="price_on_request"
-                                                wire:model="inputs.price_on_request" value="1" />
+                                    <!-- Price on Request & Show on Homepage -->
+                                    <div class="row mb-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                                <input type="checkbox" id="price_on_request" name="price_on_request"
+                                                    wire:model="inputs.price_on_request" value="1" />
 
-                                            <div class="state p-success p-on ms-2">
-                                                <label>{{ __('shop::admin.price_on_request') }}</label>
+                                                <div class="state p-success p-on ms-2">
+                                                    <label>{{ __('shop::admin.price_on_request') }}</label>
+                                                </div>
+                                                <div class="state p-danger p-off ms-2">
+                                                    <label>{{ __('shop::admin.price_show') }}</label>
+                                                </div>
                                             </div>
-                                            <div class="state p-danger p-off ms-2">
-                                                <label>{{ __('shop::admin.price_show') }}</label>
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+                                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                                <input type="checkbox" id="show_on_homepage" name="show_on_homepage"
+                                                    wire:model="inputs.show_on_homepage" value="1" />
+
+                                                <div class="state p-success p-on ms-2">
+                                                    <label>Anasayfada Göster</label>
+                                                </div>
+                                                <div class="state p-danger p-off ms-2">
+                                                    <label>Anasayfada Gösterme</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

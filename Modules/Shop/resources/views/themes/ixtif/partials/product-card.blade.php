@@ -56,7 +56,7 @@
 
         {{-- Title --}}
         <a href="{{ $productUrl }}">
-            <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+            <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 min-h-[2.8em] group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
                 {{ $product->getTranslated('title') }}
             </h3>
         </a>
@@ -127,7 +127,7 @@
 
                 {{-- Title --}}
                 <a href="{{ $productUrl }}">
-                    <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+                    <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 min-h-[2.8em] group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
                         {{ $product->getTranslated('title') }}
                     </h3>
                 </a>

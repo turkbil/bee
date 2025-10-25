@@ -48,10 +48,6 @@
                         @endif
 
                         <span>{{ $tag->query }}</span>
-
-                        <span class="text-xs px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-                            {{ $tag->search_count }}
-                        </span>
                     </a>
                     @endif
                 @empty
@@ -65,44 +61,6 @@
             </div>
         </div>
 
-        {{-- Stats Cards - Simple --}}
-        @if(isset($searchTags) && $searchTags->count() > 0)
-            <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-                @php
-                    $totalSearches = $searchTags->sum('search_count');
-                    $avgSearches = $searchTags->count() > 0 ? round($totalSearches / $searchTags->count(), 1) : 0;
-                    $mostSearched = $searchTags->sortByDesc('search_count')->first();
-                @endphp
-
-                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center">
-                    <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                        {{ number_format($totalSearches) }}
-                    </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Toplam Arama</div>
-                </div>
-
-                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center">
-                    <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                        {{ number_format($searchTags->count()) }}
-                    </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Farklı Kelime</div>
-                </div>
-
-                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center">
-                    <div class="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                        {{ $avgSearches }}
-                    </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">Ortalama</div>
-                </div>
-
-                <div class="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 text-center">
-                    <div class="text-2xl mb-1">🔥</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400 font-medium truncate">
-                        {{ $mostSearched->query ?? 'N/A' }}
-                    </div>
-                </div>
-            </div>
-        @endif
 
         {{-- Sidebar Sections - Horizontal on Mobile --}}
         <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">

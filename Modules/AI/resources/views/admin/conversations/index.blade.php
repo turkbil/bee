@@ -347,10 +347,10 @@
                     <tbody class="table-tbody">
                         @forelse($conversations as $conversation)
                         <tr class="hover-trigger">
-                            <td class="sort-id small">
+                            <td class="sort-id small d-none d-md-table-cell">
                                 <div class="hover-toggle">
                                     <span class="hover-hide">{{ $conversation->id }}</span>
-                                    <input type="checkbox" class="form-check-input conversation-checkbox hover-show" 
+                                    <input type="checkbox" class="form-check-input conversation-checkbox hover-show"
                                            name="conversations[]" value="{{ $conversation->id }}">
                                 </div>
                             </td>
@@ -363,8 +363,12 @@
                                 @if($conversation->feature_name)
                                     <div class="text-muted small">{{ $conversation->feature_name }}</div>
                                 @endif
+                                {{-- Mobilde göster --}}
+                                <div class="d-md-none mt-1">
+                                    <small class="text-muted">{{ $conversation->created_at->format('d.m.Y H:i') }}</small>
+                                </div>
                             </td>
-                            <td>
+                            <td class="d-none d-lg-table-cell">
                                 @if($conversation->type == 'feature_test')
                                     <span class="badge bg-blue-lt">Test</span>
                                 @elseif($conversation->type == 'chat')
@@ -373,7 +377,7 @@
                                     <span class="badge bg-gray-lt">{{ ucfirst($conversation->type) }}</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 @if($conversation->user)
                                     <div>{{ $conversation->user->name }}</div>
                                     @if($conversation->user->email)
@@ -383,7 +387,7 @@
                                     <span class="text-secondary">Sistem</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 @php
                                     $contextData = $conversation->context_data ?? [];
                                     $device = $contextData['device_type'] ?? null;
@@ -420,7 +424,7 @@
                                     <span class="text-muted small">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 @if($conversation->tenant)
                                     <a href="{{ route('admin.ai.credits.show', $conversation->tenant) }}" class="text-reset">
                                         {{ $conversation->tenant->title ?: 'Tenant #' . $conversation->tenant->id }}
@@ -429,7 +433,7 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 @if($conversation->is_demo)
                                     <span class="badge bg-blue-lt text-muted small">Demo</span>
                                 @elseif($conversation->type == 'feature_test')
@@ -438,10 +442,10 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 <span class="badge bg-gray-lt">{{ ai_format_token_count($conversation->total_tokens_used) }}</span>
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 @php
                                     $creditsUsed = $conversation->getTotalCreditsUsed();
                                 @endphp
@@ -451,7 +455,7 @@
                                     <span class="text-muted small">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-xl-table-cell">
                                 @php
                                     $usedModel = $conversation->getUsedModel();
                                     $modelDisplay = $usedModel !== 'unknown' ? $usedModel : 'N/A';
@@ -476,8 +480,8 @@
                                     <span class="text-muted small">N/A</span>
                                 @endif
                             </td>
-                            <td>{{ $conversation->messages()->count() }}</td>
-                            <td>
+                            <td class="d-none d-lg-table-cell">{{ $conversation->messages()->count() }}</td>
+                            <td class="d-none d-lg-table-cell">
                                 @if($conversation->status === 'active')
                                     <span class="badge bg-green-lt">Aktif</span>
                                 @elseif($conversation->status === 'archived')
@@ -486,12 +490,13 @@
                                     <span class="badge bg-gray-lt">{{ ucfirst($conversation->status) }}</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="d-none d-md-table-cell">
                                 <div>{{ $conversation->created_at->format('d.m.Y') }}</div>
                                 <div class="text-muted small">{{ $conversation->created_at->format('H:i:s') }}</div>
                             </td>
                             <td class="text-center align-middle">
-                                <div class="container">
+                                {{-- Desktop görünüm --}}
+                                <div class="d-none d-md-flex container">
                                     <div class="row">
                                         <div class="col">
                                             <a href="javascript:void(0)" onclick="showPreview({{ $conversation->id }})"
@@ -542,6 +547,49 @@
                                                     </form>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Mobil görünüm - Sadece dropdown menü --}}
+                                <div class="d-md-none">
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm btn-ghost-secondary" href="#" data-bs-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <a href="javascript:void(0)" onclick="showPreview({{ $conversation->id }})" class="dropdown-item">
+                                                <i class="fas fa-search me-2"></i>Önizleme
+                                            </a>
+                                            <a href="{{ route('admin.ai.conversations.show', $conversation->id) }}" class="dropdown-item">
+                                                <i class="fas fa-eye me-2"></i>Detaylar
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            @if($conversation->status === 'active')
+                                                <form method="POST" action="{{ route('admin.ai.conversations.archive', $conversation->id) }}" style="display: inline;">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-archive me-2"></i>Arşivle
+                                                    </button>
+                                                </form>
+                                            @elseif($conversation->status === 'archived')
+                                                <form method="POST" action="{{ route('admin.ai.conversations.unarchive', $conversation->id) }}" style="display: inline;">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="fas fa-undo me-2"></i>Arşivden Çıkar
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <div class="dropdown-divider"></div>
+                                            <form method="POST" action="{{ route('admin.ai.conversations.delete', $conversation->id) }}"
+                                                  onsubmit="return confirm('Bu konuşmayı kalıcı olarak silmek istediğinizden emin misiniz?')" style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item link-danger">
+                                                    <i class="fas fa-trash me-2"></i>Sil
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

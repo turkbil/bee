@@ -13,6 +13,34 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+
+        @keyframes gradient-slide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes counter-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        .bg-gradient-to-br, .bg-gradient-to-r {
+            background-size: 200% 200%;
+            animation: gradient-slide 8s ease infinite;
+        }
+
+        .text-7xl, .text-6xl, .text-5xl {
+            animation: counter-pulse 4s ease-in-out infinite;
+        }
+
+        .group {
+            transition: opacity 0.3s ease;
+        }
+
+        a {
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">

@@ -13,6 +13,44 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+
+        /* Gradient Slide Animation */
+        @keyframes gradient-slide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Subtle opacity pulse */
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.92; }
+        }
+
+        /* Apply to gradient backgrounds */
+        .bg-gradient-to-br, .bg-gradient-to-r {
+            background-size: 200% 200%;
+            animation: gradient-slide 8s ease infinite;
+        }
+
+        /* Hover transitions - no scale, no shadow */
+        img, .group {
+            transition: opacity 0.4s ease;
+        }
+
+        img:hover, .group:hover img {
+            opacity: 0.9;
+        }
+
+        /* Link hover effects */
+        a {
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
+
+        /* Stat numbers subtle pulse */
+        .text-4xl.font-black, .text-5xl.font-black {
+            animation: subtle-pulse 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">

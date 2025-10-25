@@ -13,6 +13,33 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+
+        @keyframes gradient-slide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .bg-gradient-to-br, .bg-gradient-to-r {
+            background-size: 200% 200%;
+            animation: gradient-slide 8s ease infinite;
+        }
+
+        .group, .border-l-4 {
+            transition: opacity 0.3s ease;
+        }
+
+        .group:hover, .border-l-4:hover {
+            opacity: 0.95;
+        }
+
+        button {
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+
+        a {
+            transition: opacity 0.3s ease, color 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">

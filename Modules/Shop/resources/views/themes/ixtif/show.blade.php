@@ -275,16 +275,58 @@
                     </div>
 
                     {{-- Right Column: AI Chat Widget + Featured Image --}}
-                    <div class="hidden lg:block space-y-6 -mr-4 sm:-mr-6 lg:-mr-8">
-                        {{-- AI Chat Widget - Always Open --}}
-                        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 overflow-hidden">
+                    <div class="hidden lg:block space-y-6 -mr-4 sm:-mr-6 lg:-mr-8"
+                         x-data="{
+                             // Fotoğraf yoksa açık başla, varsa kapalı
+                             isChatOpen: {{ $featuredImage ? 'false' : 'true' }},
+                             toggleChat() {
+                                 this.isChatOpen = !this.isChatOpen;
+                             }
+                         }">
+
+                        {{-- AI Chat Widget - Toggle edilebilir --}}
+                        <div x-show="isChatOpen"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-xl border border-white/30 dark:border-white/10 overflow-hidden">
                             <x-ai.inline-widget title="Ürün Hakkında Soru Sor" :product-id="$item->product_id" :initially-open="true"
                                 height="500px" theme="blue" />
                         </div>
 
+                        {{-- Featured Image - Dark mode fix + Toggle butonu --}}
                         @if ($featuredImage)
-                            <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
-                                alt="{{ $title }}" class="w-full rounded-xl border border-white/30 dark:border-white/10">
+                            <div x-show="!isChatOpen"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="relative rounded-xl overflow-hidden">
+                                {{-- Dark mode için backdrop (PNG transparanlık fix) --}}
+                                <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 -z-10"></div>
+
+                                {{-- Fotoğraf (border yok) --}}
+                                <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
+                                     alt="{{ $title }}"
+                                     class="w-full rounded-xl object-contain">
+
+                                {{-- "Ürün Hakkında Soru Sor" butonu fotoğraf üzerinde --}}
+                                <button @click="toggleChat()"
+                                        class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-3 backdrop-blur-sm">
+                                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-comments text-lg"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="text-sm font-semibold">Ürün Hakkında Soru Sor</div>
+                                        <div class="text-xs opacity-90">iXtif Yapay Zeka Asistanı</div>
+                                    </div>
+                                </button>
+                            </div>
                         @endif
                     </div>
                 </div>

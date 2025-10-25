@@ -48,6 +48,46 @@
             </div>'
         ])
 
+        {{-- Categories Filter - Only Root Categories --}}
+        @php
+            $allCategories = \Modules\Shop\App\Models\ShopCategory::query()
+                ->whereNull('parent_id')
+                ->active()
+                ->orderBy('sort_order', 'asc')
+                ->get();
+        @endphp
+        @if($allCategories->count() > 0)
+        <section class="py-8 border-b border-gray-200 dark:border-white/10">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    {{-- All Products Link --}}
+                    <a href="{{ route('shop.index') }}"
+                       class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                        <i class="fa-light fa-grid-2 mr-2"></i>
+                        Tüm Ürünler
+                    </a>
+
+                    {{-- Root Categories --}}
+                    @foreach($allCategories as $cat)
+                        @php
+                            $catSlug = $cat->getTranslated('slug');
+                            $isActive = $category->category_id === $cat->category_id ||
+                                       ($category->parent && $category->parent->category_id === $cat->category_id);
+                        @endphp
+
+                        <a href="/shop/kategori/{{ $catSlug }}"
+                           class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                            @if($cat->icon_class)
+                                <i class="{{ $cat->icon_class }} mr-2"></i>
+                            @endif
+                            {{ $cat->getTranslated('title') }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
         {{-- Subcategories Section --}}
         @if($subcategories->count() > 0)
         <section class="py-12">

@@ -329,7 +329,7 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div id="nav-container" class="flex items-center justify-between py-5" @mouseleave="activeMegaMenu = null">
+                <div id="nav-container" class="flex items-center justify-between py-5 pb-8" @mouseleave="activeMegaMenu = null">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3" style="width: 200px;">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
@@ -877,7 +877,7 @@
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-10" style="z-index:10;">
-                    <div class="container mx-auto -mt-5 pt-10">
+                    <div class="container mx-auto -mt-8 pt-12">
                             {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                             <div style="display: grid;">
                                 {{-- Forklift Mega Menu --}}

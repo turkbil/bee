@@ -166,6 +166,7 @@
         activeMegaMenu: null,
         searchOpen: false,
         activeCategory: 'first',
+        closeTimeout: null,
         init() {
             this.$watch('activeMegaMenu', value => {
                 console.log('🔵 activeMegaMenu changed:', value);
@@ -335,8 +336,8 @@
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div id="nav-container" class="flex items-center justify-between py-5 pb-8"
-                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')"
-                     @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); activeMegaMenu = null">
+                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter'); if (closeTimeout) { clearTimeout(closeTimeout); closeTimeout = null; console.log('⏹️ Timeout cancelled'); }"
+                     @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); closeTimeout = setTimeout(() => { console.log('⏱️ Timeout fired, closing menu'); activeMegaMenu = null; }, 200)">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3" style="width: 200px;">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
@@ -404,7 +405,7 @@
 
                         {{-- Transpalet (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/transpalet"
-                           @mouseenter="activeMegaMenu = 'transpalet'"
+                           @mouseenter="console.log('⭐ TRANSPALET LINK: mouseenter'); activeMegaMenu = 'transpalet'"
                            class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group">
                             <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
                             <span>Transpalet</span>
@@ -876,7 +877,8 @@
                 </div>
                 {{-- Mega Menu Dropdown - Always below search if both open --}}
                 <div x-show="activeMegaMenu !== null"
-                     @mouseleave="activeMegaMenu = null"
+                     @mouseenter="console.log('🟡 MEGA-MENU WRAPPER: mouseenter'); if (closeTimeout) { clearTimeout(closeTimeout); closeTimeout = null; console.log('⏹️ Timeout cancelled (mega menu)'); }"
+                     @mouseleave="console.log('🟠 MEGA-MENU WRAPPER: mouseleave'); activeMegaMenu = null"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 -translate-y-3"
                      x-transition:enter-end="opacity-100 translate-y-0"

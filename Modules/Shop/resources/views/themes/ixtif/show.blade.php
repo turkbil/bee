@@ -240,7 +240,7 @@
                 <div class="absolute bottom-20 -right-20 w-96 h-96 bg-blue-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
             </div>
 
-            <div class="container mx-auto px-4 sm:px-4 md:px-0 py-16 md:py-20 relative z-10">
+            <div class="container mx-auto px-6 relative z-10">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full mb-6">
@@ -318,8 +318,8 @@
                                      x-transition:leave-start="opacity-100"
                                      x-transition:leave-end="opacity-0"
                                      class="absolute inset-0 rounded-xl overflow-hidden group">
-                                    {{-- Dark mode için backdrop (PNG transparanlık fix) --}}
-                                    <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900"></div>
+                                    {{-- Dark mode için backdrop (PNG transparanlık fix) - Anasayfa ürün kartı ile aynı --}}
+                                    <div class="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100"></div>
 
                                     {{-- Fotoğraf (border yok, sabit yükseklik) --}}
                                     <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
@@ -342,7 +342,7 @@
 
         {{-- 📋 TOC BAR - Header ile beraber hareket edecek --}}
         <nav id="toc-bar" class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 shadow-sm z-40">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-6">
                 <div class="flex items-center gap-2 overflow-x-auto py-1.5 scrollbar-hide">
                     <a href="#description"
                        class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
@@ -372,7 +372,7 @@
             </div>
         </nav>
 
-        <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8">
+        <div class="container mx-auto px-6 py-8">
             <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start relative">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div id="main-content-column" class="lg:col-span-2 min-h-screen">
@@ -1061,7 +1061,7 @@
 
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
     <section id="trust-signals" class="relative mt-16 scroll-mt-24">
-        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+        <div class="container mx-auto px-6">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
@@ -1113,7 +1113,7 @@
             <div class="absolute bottom-20 -right-20 w-96 h-96 bg-orange-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
         </div>
 
-        <div class="relative container mx-auto px-4 sm:px-4 md:px-0 py-16 md:py-20">
+        <div class="relative container mx-auto px-6 py-20">
             <div class="flex flex-col md:flex-row gap-8 items-start">
                 {{-- SOL: FORM (7/12) --}}
                 <div class="w-full md:w-7/12">

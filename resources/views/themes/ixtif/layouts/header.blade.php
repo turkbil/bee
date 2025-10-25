@@ -387,7 +387,7 @@
                     {{-- Main Navigation (Desktop) --}}
                     <div class="hidden lg:flex items-center gap-6">
                         {{-- Forklift (Mega Menu) --}}
-                        <div class="relative mega-menu-item pb-6"
+                        <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'forklift'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/forklift"
@@ -401,7 +401,7 @@
                         </div>
 
                         {{-- Transpalet (Mega Menu) --}}
-                        <div class="relative mega-menu-item pb-6"
+                        <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'transpalet'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/transpalet"
@@ -415,7 +415,7 @@
                         </div>
 
                         {{-- İstif Makinesi (Mega Menu) --}}
-                        <div class="relative mega-menu-item hidden xl:block pb-6"
+                        <div class="relative mega-menu-item hidden xl:block py-2"
                              @mouseenter="activeMegaMenu = 'istif-makinesi'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/istif-makinesi"
@@ -429,7 +429,7 @@
                         </div>
 
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
-                        <div class="relative mega-menu-item pb-6"
+                        <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'all-categories'"
                              @mouseleave="activeMegaMenu = null">
                             <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
@@ -890,7 +890,7 @@
                 <div x-show="activeMegaMenu === 'forklift'"
                      @mouseenter="activeMegaMenu = 'forklift'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50"
+                     class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"
@@ -908,7 +908,7 @@
                 <div x-show="activeMegaMenu === 'transpalet'"
                      @mouseenter="activeMegaMenu = 'transpalet'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50"
+                     class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"
@@ -926,7 +926,7 @@
                 <div x-show="activeMegaMenu === 'istif-makinesi'"
                      @mouseenter="activeMegaMenu = 'istif-makinesi'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50"
+                     class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"
@@ -944,7 +944,7 @@
                 <div x-show="activeMegaMenu === 'all-categories'"
                      @mouseenter="activeMegaMenu = 'all-categories'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50"
+                     class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"

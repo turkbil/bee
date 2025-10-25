@@ -2,9 +2,9 @@
     <div class="grid grid-cols-12 lg:grid-cols-12 gap-0 min-h-[480px]">
 
         {{-- ========================================== --}}
-        {{-- SOL: VISUAL HERO (4/12) --}}
+        {{-- SOL: VISUAL HERO (4/12) - Küçük ekranda gizli --}}
         {{-- ========================================== --}}
-        <div class="col-span-12 lg:col-span-4 relative overflow-hidden bg-gradient-to-br {{ $config['gradient'] }}">
+        <div class="hidden lg:block lg:col-span-4 relative overflow-hidden bg-gradient-to-br {{ $config['gradient'] }}">
             {{-- Animated Pattern Background - V2.4 Style --}}
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgZmlsbD0iI2ZmZiIgY3g9IjIwIiBjeT0iMjAiIHI9IjMiLz48L2c+PC9zdmc+')] animate-pulse"></div>
@@ -33,9 +33,9 @@
         </div>
 
         {{-- ========================================== --}}
-        {{-- ORTA: FEATURED PRODUCT (4/12) --}}
+        {{-- ORTA: FEATURED PRODUCT (4/12 → 6/12 küçük ekranda) --}}
         {{-- ========================================== --}}
-        <div class="col-span-12 lg:col-span-4 bg-white dark:bg-gray-800 p-6 flex flex-col">
+        <div class="col-span-12 lg:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 p-6 flex flex-col">
             @if($featuredProduct)
                 <div class="flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-300 mb-3">
                     <div class="w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full animate-pulse"></div>
@@ -107,9 +107,9 @@
         </div>
 
         {{-- ========================================== --}}
-        {{-- SAĞ: PRODUCT LIST (4/12) --}}
+        {{-- SAĞ: PRODUCT LIST (4/12 → 6/12 küçük ekranda) --}}
         {{-- ========================================== --}}
-        <div class="col-span-12 lg:col-span-4 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-5 flex flex-col justify-between">
+        <div class="col-span-12 lg:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-5 flex flex-col justify-between">
             <div class="flex-1">
                 @if($otherProducts->isNotEmpty())
                     @foreach($otherProducts as $index => $product)

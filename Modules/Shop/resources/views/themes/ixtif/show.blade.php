@@ -259,32 +259,37 @@
                         @endif
 
                         <div class="flex flex-col gap-4">
-                            {{-- Teklif Al & Telefon (Yan Yana) --}}
+                            {{-- Teklif Al & İletişim (Yan Yana) --}}
                             <div class="flex flex-col sm:flex-row gap-4">
                                 <a href="#contact"
                                     class="inline-flex items-center justify-center gap-3 bg-white text-purple-600 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
                                     <i class="fa-solid fa-envelope"></i>
                                     <span>Teklif Al</span>
                                 </a>
-                                @if($contactPhone)
-                                    <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                                        class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
-                                        <i class="fa-solid fa-phone"></i>
-                                        <span>{{ $contactPhone }}</span>
-                                    </a>
+                                @if($contactPhone || $contactWhatsapp)
+                                    <div class="flex gap-2">
+                                        @if($contactPhone)
+                                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                                class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
+                                                <i class="fa-solid fa-phone"></i>
+                                                <span>Ara</span>
+                                            </a>
+                                        @endif
+                                        @if($contactWhatsapp)
+                                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                                                class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white border-2 border-green-500 hover:border-green-600 px-4 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-2xl transition-all">
+                                                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                                            </a>
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
 
-                            {{-- Yapay Zeka ile Soru Sor (Full Width) --}}
+                            {{-- Yapay Zeka ile Soru Sor --}}
                             <button @click="$store.aiChat.openFloating()"
-                                class="inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
-                                <div class="flex items-center gap-2">
-                                    <i class="fa-solid fa-robot text-xl"></i>
-                                    <div class="flex flex-col items-start">
-                                        <span class="text-base leading-tight">Yapay Zeka ile Soru Sor</span>
-                                        <span class="text-xs opacity-90 font-normal">iXtif AI Asistanı</span>
-                                    </div>
-                                </div>
+                                class="inline-flex items-center justify-center gap-2 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all">
+                                <i class="fa-solid fa-robot text-lg"></i>
+                                <span>Yapay Zeka ile Soru Sor</span>
                             </button>
                         </div>
                     </div>

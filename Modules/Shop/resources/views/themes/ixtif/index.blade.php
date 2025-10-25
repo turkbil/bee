@@ -10,28 +10,28 @@
         {{-- Gradient Background --}}
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
 
-        {{-- Header Section - Glassmorphism Subheader --}}
+        {{-- Header Section - Glassmorphism Subheader (Design 7 - Exact Copy) --}}
         @if($selectedCategory)
-            {{-- Category Header with Glassmorphism Design --}}
-            <section class="relative py-12 overflow-hidden">
+            <section class="py-12">
+                <!-- FULL WIDTH Container -->
                 <div class="w-full">
+                    <!-- Inner Container max-w-7xl -->
                     <div class="container mx-auto px-4 max-w-7xl">
+                        <!-- Main Card with Bottom Shadow -->
                         <div class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)]">
                             <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
-                                {{-- Left: Icon, Title & Breadcrumb --}}
+                                <!-- Left: Title & Breadcrumb -->
                                 <div class="flex flex-col justify-between">
-                                    <div class="flex items-center gap-6">
+                                    <div class="flex items-center gap-6 mb-6">
                                         @if($selectedCategory->icon_class)
-                                            <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl flex-shrink-0">
+                                            <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl">
                                                 <i class="{{ $selectedCategory->icon_class }} text-5xl text-white"></i>
                                             </div>
                                         @endif
                                         <div>
-                                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">
-                                                {{ $selectedCategory->getTranslated('title') }}
-                                            </h1>
-                                            {{-- Breadcrumb --}}
-                                            <div class="flex items-center gap-2 text-sm text-white/90 flex-wrap">
+                                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">{{ $selectedCategory->getTranslated('title') }}</h1>
+                                            <!-- Breadcrumb -->
+                                            <div class="flex items-center gap-2 text-sm text-white/90">
                                                 <a href="{{ route('shop.index') }}" class="hover:text-white transition flex items-center gap-1.5">
                                                     <i class="fa-solid fa-home text-xs"></i>
                                                     <span>Ana Sayfa</span>
@@ -45,9 +45,9 @@
                                     </div>
                                 </div>
 
-                                {{-- Right: Search & Sort --}}
+                                <!-- Right: Search & Sort - No Card -->
                                 <div class="flex flex-col justify-center space-y-3">
-                                    {{-- Search --}}
+                                    <!-- Search - ÜSTTE -->
                                     <div class="relative">
                                         <form action="{{ url()->current() }}" method="GET">
                                             <input type="search"
@@ -60,9 +60,9 @@
                                         </form>
                                     </div>
 
-                                    {{-- Sort + View --}}
+                                    <!-- Sort + View - ALTTA -->
                                     <div class="flex items-center gap-2">
-                                        {{-- Sort --}}
+                                        <!-- Sort -->
                                         <select class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white text-sm font-medium
                                                        border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all cursor-pointer"
                                                 onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
@@ -71,15 +71,18 @@
                                             <option class="text-gray-900 bg-white" value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
                                         </select>
 
-                                        {{-- View Toggle - Single Button with Animation --}}
-                                        <button x-data="{ view: 'grid' }"
-                                                @click="view = view === 'grid' ? 'list' : 'grid'"
+                                        <!-- View Toggle - TEK BUTON ANIMASYONLU -->
+                                        <button @click="view = view === 'grid' ? 'list' : 'grid'"
+                                                x-data="{ view: 'grid' }"
                                                 class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
                                                        hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
+                                            <!-- Grid Icon -->
                                             <i class="fa-solid fa-grip text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
                                                :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
+                                            <!-- List Icon -->
                                             <i class="fa-solid fa-list text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
                                                :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
+                                            <!-- Placeholder for size -->
                                             <i class="fa-solid fa-grip opacity-0"></i>
                                         </button>
                                     </div>

@@ -88,62 +88,6 @@
 
 </section>
 
-<!-- Categories Section -->
-<section class="w-full py-20 relative overflow-hidden">
-    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-        <!-- Category Cards Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            <!-- Forklift -->
-            <a href="/shop/kategori/forklift" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
-                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-warehouse text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Forklift</h3>
-                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
-                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Transpalet -->
-            <a href="/shop/kategori/transpalet" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
-                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-dolly text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Transpalet</h3>
-                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
-                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
-                    </div>
-                </div>
-            </a>
-
-            <!-- İstif Makinesi -->
-            <a href="/shop/kategori/istif-makinesi" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
-                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-boxes-stacked text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">İstif Makinesi</h3>
-                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
-                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Reach Truck -->
-            <a href="/shop/kategori/reach-truck" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
-                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-truck-ramp-box text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Reach Truck</h3>
-                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
-                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-</section>
-
 <!-- Featured Products Section -->
 <section class="w-full py-8 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
@@ -219,6 +163,62 @@
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="w-full py-20 relative overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+        <!-- Category Cards Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+            <!-- Forklift -->
+            <a href="/shop/kategori/forklift" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-warehouse text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Forklift</h3>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Transpalet -->
+            <a href="/shop/kategori/transpalet" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-dolly text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Transpalet</h3>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- İstif Makinesi -->
+            <a href="/shop/kategori/istif-makinesi" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-boxes-stacked text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">İstif Makinesi</h3>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Reach Truck -->
+            <a href="/shop/kategori/reach-truck" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-truck-ramp-box text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Reach Truck</h3>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 </section>

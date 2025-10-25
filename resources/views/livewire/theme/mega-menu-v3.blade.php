@@ -47,14 +47,14 @@
 
 
                     {{-- Product Image - Conditional BG --}}
-                    @if($featuredProduct->getFirstMediaUrl('product_images'))
+                    @if($featuredProduct->hasMedia('product_images'))
                         <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-48 group-hover:scale-105 transition-transform duration-300">
                             <img src="{{ thumb($featuredProduct->getFirstMedia('product_images'), 300, 300, ['quality' => 85, 'scale' => 0]) }}"
                                  alt="{{ is_array($featuredProduct->title) ? $featuredProduct->title['tr'] : $featuredProduct->title }}"
                                  class="w-full h-full object-contain"
                                  loading="lazy">
                         </div>
-                    @elseif($category && $category->getFirstMediaUrl('category_icon'))
+                    @elseif($category && $category->hasMedia('category_icon'))
                         <div class="flex items-center justify-center mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-6 h-48 group-hover:scale-105 transition-transform duration-300">
                             <img src="{{ thumb($category->getFirstMedia('category_icon'), 180, 180, ['quality' => 85, 'scale' => 0]) }}"
                                  alt="{{ is_array($category->title) ? $category->title['tr'] : $category->title }}"

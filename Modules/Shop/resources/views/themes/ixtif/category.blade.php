@@ -152,16 +152,6 @@
                             <p class="text-gray-600 dark:text-gray-400 font-medium">Daha fazla ürün yükleniyor...</p>
                         </div>
                     </div>
-
-                    {{-- End Message --}}
-                    <div x-show="!hasMore && loaded" class="flex justify-center items-center py-12" x-cloak>
-                        <div class="bg-white/50 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
-                            <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
-                                <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
-                                Tüm ürünler yüklendi
-                            </p>
-                        </div>
-                    </div>
                 @else
                     {{-- Empty State --}}
                     <div class="text-center py-20">
@@ -220,7 +210,7 @@
                 setupInfiniteScroll() {
                     const options = {
                         root: null,
-                        rootMargin: '200px',
+                        rootMargin: '800px', // Sayfa sonundan 800px önce tetiklenir
                         threshold: 0.1
                     };
 
@@ -241,7 +231,7 @@
                     // Scroll event fallback
                     window.addEventListener('scroll', () => {
                         const scrollPosition = window.innerHeight + window.scrollY;
-                        const threshold = document.documentElement.scrollHeight - 400;
+                        const threshold = document.documentElement.scrollHeight - 1200; // Sayfa sonundan 1200px önce tetiklenir
 
                         if (scrollPosition >= threshold && this.hasMore && !this.loading) {
                             this.loadMore();

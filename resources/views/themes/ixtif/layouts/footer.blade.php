@@ -18,13 +18,30 @@
 
                 {{-- Popüler Aramalar (SADECE LG+ EKRANLARDA) --}}
                 @if($popularSearches->count() > 0)
-                    <div class="space-y-4 hidden lg:!block group"
+                    <div class="space-y-4 hidden lg:!block"
                          x-data="{
+                             scrollInterval: null,
                              scrollLeft() {
                                  this.$refs.scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
                              },
                              scrollRight() {
                                  this.$refs.scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+                             },
+                             startAutoScroll(direction) {
+                                 this.stopAutoScroll();
+                                 this.scrollInterval = setInterval(() => {
+                                     if (direction === 'left') {
+                                         this.$refs.scrollContainer.scrollBy({ left: -5, behavior: 'auto' });
+                                     } else {
+                                         this.$refs.scrollContainer.scrollBy({ left: 5, behavior: 'auto' });
+                                     }
+                                 }, 20);
+                             },
+                             stopAutoScroll() {
+                                 if (this.scrollInterval) {
+                                     clearInterval(this.scrollInterval);
+                                     this.scrollInterval = null;
+                                 }
                              }
                          }">
                         <div class="flex items-center justify-center gap-3 relative">
@@ -45,13 +62,17 @@
                                 @endforeach
                             </div>
 
-                            {{-- İleri-Geri Butonları (Yanyana - Sağda) --}}
-                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {{-- İleri-Geri Butonları (Yanyana - Sağda - Her Zaman Görünür) --}}
+                            <div class="flex items-center gap-2">
                                 <button @click="scrollLeft()"
+                                        @mouseenter="startAutoScroll('left')"
+                                        @mouseleave="stopAutoScroll()"
                                         class="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white flex items-center justify-center transition-all hover:shadow-lg">
                                     <i class="fa-solid fa-chevron-left text-xs"></i>
                                 </button>
                                 <button @click="scrollRight()"
+                                        @mouseenter="startAutoScroll('right')"
+                                        @mouseleave="stopAutoScroll()"
                                         class="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white flex items-center justify-center transition-all hover:shadow-lg">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>
                                 </button>

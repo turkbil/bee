@@ -167,10 +167,10 @@
     </div>
 </section>
 
-<!-- Categories Section -->
+<!-- Service Categories Section -->
 <section class="w-full py-20 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-        <!-- Category Cards Grid -->
+        <!-- Service Cards Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             <!-- Forklift -->
             <a href="/shop/kategori/forklift" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">

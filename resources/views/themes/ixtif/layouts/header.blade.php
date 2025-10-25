@@ -400,7 +400,7 @@
 
                             {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'forklift'"
-                                 class="absolute top-full left-0 right-0 h-96 z-40"
+                                 class="absolute top-full left-0 right-0 h-96 z-40 pointer-events-none"
                                  x-cloak></div>
                         </div>
 
@@ -418,7 +418,7 @@
 
                             {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'transpalet'"
-                                 class="absolute top-full left-0 right-0 h-96 z-40"
+                                 class="absolute top-full left-0 right-0 h-96 z-40 pointer-events-none"
                                  x-cloak></div>
                         </div>
 
@@ -436,7 +436,7 @@
 
                             {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'istif-makinesi'"
-                                 class="absolute top-full left-0 right-0 h-96 z-40"
+                                 class="absolute top-full left-0 right-0 h-96 z-40 pointer-events-none"
                                  x-cloak></div>
                         </div>
 
@@ -453,7 +453,7 @@
 
                             {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'all-categories'"
-                                 class="absolute top-full left-0 right-0 h-96 z-40"
+                                 class="absolute top-full left-0 right-0 h-96 z-40 pointer-events-none"
                                  x-cloak></div>
                         </div>
 

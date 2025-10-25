@@ -93,7 +93,7 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-8 lg:gap-10">
             {{-- Sol Sidebar --}}
             <aside class="order-2 lg:order-1">
                 <div class="space-y-6 lg:sticky lg:top-8">
@@ -166,7 +166,7 @@
                             </h2>
                             <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
                         </header>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-8">
                             @foreach($galleryImages as $image)
                                 <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
                                     <a href="{{ $image->getUrl() }}"
@@ -207,7 +207,7 @@
                             </h2>
                             <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
                         </header>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             @foreach($relatedBlogs as $relatedBlog)
                                 <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
                                     <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
@@ -275,7 +275,7 @@
 
                 {{-- Önceki/Sonraki --}}
                 @if($prevPost || $nextPost)
-                    <nav class="mt-12 grid gap-6 md:grid-cols-2">
+                    <nav class="mt-12 grid gap-8 md:grid-cols-2">
                         @if($prevPost)
                             <a href="{{ $prevPost->getUrl($currentLocale) }}"
                                class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500">

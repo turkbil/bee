@@ -22,7 +22,7 @@
     <!-- V3 Features -->
     <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl p-8 mb-12">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">✨ V3 Özellikleri</h2>
-        <div class="grid md:grid-cols-3 gap-6">
+        <div class="grid md:grid-cols-3 gap-8">
             <div class="flex items-start gap-3">
                 <i class="fa-solid fa-magnifying-glass text-indigo-600 text-2xl mt-1"></i>
                 <div>

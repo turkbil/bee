@@ -18,7 +18,7 @@
         </div>
 
         <!-- Contact Grid -->
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid grid-cols-2 gap-8">
 
             <!-- İletişim Bilgileri -->
             <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 space-y-4">

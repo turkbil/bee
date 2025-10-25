@@ -300,6 +300,44 @@ class ConversationController extends Controller
     }
 
     /**
+     * Önizleme - AJAX ile mesajları getir
+     */
+    public function preview($id)
+    {
+        $query = Conversation::with(['messages' => function($q) {
+            $q->orderBy('created_at', 'asc');
+        }]);
+
+        // Root admin değilse sadece kendi konuşmalarını görebilir
+        if (!auth()->user()->hasRole('root')) {
+            $query->where('user_id', Auth::id());
+        }
+
+        $conversation = $query->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'conversation' => [
+                'id' => $conversation->id,
+                'title' => $conversation->title,
+                'type' => $conversation->type,
+                'feature_name' => $conversation->feature_name,
+                'created_at' => $conversation->created_at,
+                'message_count' => $conversation->messages->count()
+            ],
+            'messages' => $conversation->messages->map(function($message) {
+                return [
+                    'id' => $message->id,
+                    'role' => $message->role,
+                    'content' => $message->content,
+                    'token_count' => $message->tokens,
+                    'created_at' => $message->created_at
+                ];
+            })
+        ]);
+    }
+
+    /**
      * Bulk actions (toplu işlemler)
      */
     public function bulkAction(Request $request)

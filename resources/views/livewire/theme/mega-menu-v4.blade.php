@@ -1,6 +1,6 @@
 <div class="w-full rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg">
     <div class="bg-white dark:bg-gray-800 rounded-xl p-6">
-        <div class="grid grid-cols-12 gap-6">
+        <div class="grid grid-cols-12 gap-8">
 
             {{-- ========================================== --}}
             {{-- SOL: DİĞER 6 KATEGORİ + HİZMETLER (col-span-7) --}}

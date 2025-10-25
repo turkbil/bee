@@ -786,7 +786,7 @@
                                 </template>
 
                                 <div class="max-h-[28rem] overflow-y-auto">
-                                    <div class="grid gap-6 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                                    <div class="grid gap-8 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                                         {{-- Keywords Section --}}
                                         <div x-show="(keywords?.length || 0) > 0" class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40">
                                             <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">

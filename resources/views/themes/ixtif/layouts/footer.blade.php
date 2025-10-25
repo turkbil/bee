@@ -18,7 +18,7 @@
 
                 {{-- Popüler Aramalar (SADECE LG+ EKRANLARDA) --}}
                 @if($popularSearches->count() > 0)
-                    <div class="space-y-4 hidden lg:!block"
+                    <div class="space-y-4 hidden lg:!block group"
                          x-data="{
                              scrollLeft() {
                                  this.$refs.scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
@@ -27,13 +27,7 @@
                                  this.$refs.scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
                              }
                          }">
-                        <div class="flex items-center justify-center gap-2 relative">
-                            {{-- Sol Buton --}}
-                            <button @click="scrollLeft()"
-                                    class="w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all hover:scale-110">
-                                <i class="fa-solid fa-chevron-left text-sm"></i>
-                            </button>
-
+                        <div class="flex items-center justify-center gap-3 relative">
                             {{-- Scroll Container --}}
                             <div x-ref="scrollContainer"
                                  class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide flex-1">
@@ -51,11 +45,17 @@
                                 @endforeach
                             </div>
 
-                            {{-- Sağ Buton --}}
-                            <button @click="scrollRight()"
-                                    class="w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all hover:scale-110">
-                                <i class="fa-solid fa-chevron-right text-sm"></i>
-                            </button>
+                            {{-- İleri-Geri Butonları (Yanyana - Sağda) --}}
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <button @click="scrollLeft()"
+                                        class="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white flex items-center justify-center transition-all hover:shadow-lg">
+                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </button>
+                                <button @click="scrollRight()"
+                                        class="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white flex items-center justify-center transition-all hover:shadow-lg">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 @endif

@@ -178,7 +178,7 @@
                         <p class="text-gray-600 dark:text-gray-400">Ürünü farklı açılardan inceleyin</p>
                     </header>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                         @foreach ($galleryImages as $index => $image)
                             @php
                                 $spanClass = match ($index % 6) {
@@ -286,7 +286,7 @@
                         <p class="text-gray-600 dark:text-gray-400">Bu varyantın öne çıktığı spesifik senaryolar</p>
                     </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-8">
                         @foreach ($useCases as $case)
                             <div
                                 class="flex items-start gap-4 bg-blue-50 dark:bg-gray-800 p-6 rounded-lg border border-blue-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-700 hover:shadow-lg transition-all group">
@@ -311,7 +311,7 @@
                         <p class="text-gray-600 dark:text-gray-400">İhtiyacınıza en uygun modeli keşfedin</p>
                     </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach ($siblingVariants as $variant)
                             @php
                                 $variantTitle = $variant->getTranslated('title', $currentLocale) ?? $variant->sku;
@@ -401,7 +401,7 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6 shadow-xl">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-8">
                     {{-- GARANTİLİ --}}
                     <div class="flex items-center gap-4">
                         <i class="fa-solid fa-shield-halved text-4xl md:text-5xl text-green-400"></i>
@@ -473,7 +473,7 @@
                             <input type="hidden" name="product_id" value="{{ $item->product_id }}">
                             <input type="hidden" name="product_title" value="{{ $title }}">
 
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid md:grid-cols-2 gap-8">
                                 <div>
                                     <label
                                         class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">

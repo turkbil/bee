@@ -153,7 +153,7 @@
 
                 <!-- Right Content - Floating Cards -->
                 <div class="relative animate-float">
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-8">
                         <div class="bg-white dark:bg-white/20 backdrop-blur-lg rounded-3xl p-8 border border-gray-200 dark:border-white/30 hover:shadow-xl dark:hover:bg-white/30 transition-all duration-300">
                             <i class="fa-solid fa-warehouse text-6xl text-purple-600 dark:text-white mb-4"></i>
                             <h3 class="font-bold text-gray-900 dark:text-white text-xl">Forklift</h3>

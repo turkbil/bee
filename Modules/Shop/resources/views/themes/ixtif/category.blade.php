@@ -99,7 +99,7 @@
                     {{ __('shop::front.browse_subcategories') }}
                 </h2>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                     @foreach($subcategories as $subcategory)
                         @php
                             $subcategorySlug = $subcategory->getTranslated('slug');
@@ -130,7 +130,7 @@
                 @if($products->count() > 0)
                     {{-- Products Grid/List - iXtif Design --}}
                     {{-- Grid: 2 → 3 → 4 sütun (responsive) | List: 1 → 2 sütun (responsive) --}}
-                    <div class="grid gap-6 transition-all duration-300"
+                    <div class="grid gap-8 transition-all duration-300"
                          :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-2'"
                          x-ref="productsGrid">
                         @foreach($products as $product)

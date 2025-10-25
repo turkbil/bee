@@ -177,7 +177,7 @@
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
                     <i class="fa-light fa-shopping-cart text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Satın Alma</h3>
-                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Sıfır & ikinci el forklift, transpalet, istif makinesi</p>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Sıfır ve ikinci el forklift, transpalet ve istif makineleri. Geniş ürün çeşitliliği, esnek ödeme imkanı.</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                         <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
@@ -190,7 +190,7 @@
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
                     <i class="fa-light fa-calendar-days text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Kiralama</h3>
-                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Günlük & uzun dönem esnek kiralama seçenekleri</p>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Günlük veya uzun dönem kiralama seçenekleri. Hızlı teslimat ve ihtiyaca özel çözümler.</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                         <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
@@ -203,7 +203,7 @@
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
                     <i class="fa-light fa-gears text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-90 transition-all"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Yedek Parça</h3>
-                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Orijinal parçalar, hızlı tedarik & teknik destek</p>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Orijinal yedek parça tedariki ve stok garantisi. 7/24 teknik destek ve hızlı servis.</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                         <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
@@ -216,7 +216,7 @@
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
                     <i class="fa-light fa-wrench text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-12 group-hover:scale-110 transition-all"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Teknik Servis</h3>
-                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Bakım, onarım & profesyonel bakım anlaşmaları</p>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Periyodik bakım, onarım ve profesyonel servis. Uzman ekip ile kesintisiz çalışma garantisi.</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
                         <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>

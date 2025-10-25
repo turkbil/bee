@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardless Gallery #1 - Masonry Grid | iXtif Design System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex gap-3">
+        <a href="design-cardless-contact-1.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left text-white"></i>
+        </a>
+        <a href="/design" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-cardless-tech-1.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="container mx-auto px-4 pt-24 pb-16">
+        <div class="max-w-6xl mx-auto">
+            <span class="text-sm uppercase tracking-widest text-gray-500 font-bold">Galeri & Projeler</span>
+            <h1 class="text-6xl md:text-9xl font-black mt-4 mb-8">
+                Referans<br/>
+                <span class="text-gray-300">Projelerimiz</span>
+            </h1>
+            <div class="flex flex-wrap gap-4">
+                <button class="px-6 py-2 bg-gray-900 text-white font-bold">Tümü</button>
+                <button class="px-6 py-2 hover:bg-gray-100 font-bold transition">Depolama</button>
+                <button class="px-6 py-2 hover:bg-gray-100 font-bold transition">Lojistik</button>
+                <button class="px-6 py-2 hover:bg-gray-100 font-bold transition">Üretim</button>
+                <button class="px-6 py-2 hover:bg-gray-100 font-bold transition">İnşaat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Project -->
+    <div class="container mx-auto px-4 pb-32">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-gradient-to-br from-blue-500 to-cyan-500 aspect-[21/9] mb-8 flex items-center justify-center group cursor-pointer">
+                <i class="fa-solid fa-warehouse text-white text-9xl opacity-20 group-hover:opacity-30 transition"></i>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-5xl font-black mb-6">ABC Lojistik Depo Otomasyonu</h2>
+                    <p class="text-xl text-gray-600 leading-relaxed">
+                        50.000 m² depo alanı için 25 adet elektrikli forklift ve 40 adet transpalet ile tam otomasyon çözümü. Proje 2024 yılında tamamlandı.
+                    </p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-8">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <div class="text-4xl font-black text-blue-500 mb-2">25</div>
+                            <div class="text-gray-600">Elektrikli Forklift</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-black text-cyan-500 mb-2">40</div>
+                            <div class="text-gray-600">Transpalet</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-black text-blue-500 mb-2">50K m²</div>
+                            <div class="text-gray-600">Depo Alanı</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-black text-cyan-500 mb-2">2024</div>
+                            <div class="text-gray-600">Tamamlanma</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="container mx-auto px-4 pb-32">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-12 gap-6">
+
+                <!-- Large Item 1 -->
+                <div class="md:col-span-8 md:row-span-2 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-purple-500 to-pink-500 aspect-[4/3] flex items-center justify-center mb-6 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-industry text-white text-9xl opacity-20"></i>
+                    </div>
+                    <h3 class="text-3xl font-black mb-3">XYZ Fabrika Üretim Hattı</h3>
+                    <p class="text-gray-600">15 adet dizel forklift ile yüksek kapasiteli üretim hattı desteği</p>
+                </div>
+
+                <!-- Small Item 1 -->
+                <div class="md:col-span-4 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-orange-500 to-red-500 aspect-video flex items-center justify-center mb-4 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-boxes-stacked text-white text-6xl opacity-30"></i>
+                    </div>
+                    <h3 class="text-xl font-black mb-2">DEF Market Zinciri</h3>
+                    <p class="text-sm text-gray-600">50+ istif makinesi</p>
+                </div>
+
+                <!-- Small Item 2 -->
+                <div class="md:col-span-4 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-green-500 to-emerald-500 aspect-video flex items-center justify-center mb-4 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-building text-white text-6xl opacity-30"></i>
+                    </div>
+                    <h3 class="text-xl font-black mb-2">GHI İnşaat</h3>
+                    <p class="text-sm text-gray-600">Arazi forkliftleri</p>
+                </div>
+
+                <!-- Small Item 3 -->
+                <div class="md:col-span-4 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-500 aspect-video flex items-center justify-center mb-4 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-ship text-white text-6xl opacity-30"></i>
+                    </div>
+                    <h3 class="text-xl font-black mb-2">JKL Liman</h3>
+                    <p class="text-sm text-gray-600">Yüksek tonajlı ekipman</p>
+                </div>
+
+                <!-- Medium Item 1 -->
+                <div class="md:col-span-8 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-cyan-500 to-blue-500 aspect-[3/2] flex items-center justify-center mb-6 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-truck-fast text-white text-8xl opacity-20"></i>
+                    </div>
+                    <h3 class="text-3xl font-black mb-3">MNO Kargo Dağıtım Merkezi</h3>
+                    <p class="text-gray-600">30 adet elektrikli transpalet ile hızlı yükleme sistemi</p>
+                </div>
+
+                <!-- Small Item 4 -->
+                <div class="md:col-span-4 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-yellow-500 to-orange-500 aspect-square flex items-center justify-center mb-4 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-wheat text-white text-6xl opacity-30"></i>
+                    </div>
+                    <h3 class="text-xl font-black mb-2">PQR Tarım</h3>
+                    <p class="text-sm text-gray-600">Özel arazi ekipmanları</p>
+                </div>
+
+                <!-- Medium Item 2 -->
+                <div class="md:col-span-6 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-pink-500 to-rose-500 aspect-[4/3] flex items-center justify-center mb-6 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-hospital text-white text-7xl opacity-20"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3">STU Hastane Lojistiği</h3>
+                    <p class="text-gray-600">Sessiz elektrikli istif makineleri</p>
+                </div>
+
+                <!-- Medium Item 3 -->
+                <div class="md:col-span-6 group cursor-pointer">
+                    <div class="bg-gradient-to-br from-teal-500 to-green-500 aspect-[4/3] flex items-center justify-center mb-6 group-hover:opacity-90 transition">
+                        <i class="fa-solid fa-recycle text-white text-7xl opacity-20"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3">VWX Geri Dönüşüm</h3>
+                    <p class="text-gray-600">Ağır yük kapasiteli forkliftler</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="bg-gray-900 text-white py-32">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-5xl font-black mb-16 text-center">Projelerimiz Rakamlarla</h2>
+                <div class="grid md:grid-cols-4 gap-12 text-center">
+                    <div>
+                        <div class="text-6xl font-black mb-4">500+</div>
+                        <div class="text-xl text-gray-400">Tamamlanan Proje</div>
+                    </div>
+                    <div>
+                        <div class="text-6xl font-black mb-4">200K+</div>
+                        <div class="text-xl text-gray-400">m² Depo Alanı</div>
+                    </div>
+                    <div>
+                        <div class="text-6xl font-black mb-4">1000+</div>
+                        <div class="text-xl text-gray-400">Aktif Ekipman</div>
+                    </div>
+                    <div>
+                        <div class="text-6xl font-black mb-4">%98</div>
+                        <div class="text-xl text-gray-400">Müşteri Memnuniyeti</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-5xl font-black mb-6">Bir Sonraki Proje Sizin Olsun</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    İhtiyaçlarınızı dinlemek ve size özel çözümler sunmak için buradayız.
+                </p>
+                <a href="/contact" class="inline-block px-10 py-4 bg-gray-900 text-white font-bold hover:bg-gray-800 transition">
+                    Proje Başlat →
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

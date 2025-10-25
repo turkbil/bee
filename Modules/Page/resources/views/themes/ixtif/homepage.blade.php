@@ -107,7 +107,7 @@
         @endphp
 
         <!-- Product Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @foreach($featuredProducts as $index => $product)
             @php
                 $productTitle = $product->getTranslated('title', app()->getLocale());
@@ -171,7 +171,7 @@
 <section class="w-full py-20 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <!-- Service Cards Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- 1. Satın Alma -->
             <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">

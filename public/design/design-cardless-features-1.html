@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardless Features #1 - Split Sections | iXtif Design System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex gap-3">
+        <a href="design-cardless-blog-1.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left text-white"></i>
+        </a>
+        <a href="/design" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-cardless-faq-1.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Header -->
+    <div class="container mx-auto px-4 pt-24 pb-16">
+        <div class="max-w-6xl mx-auto text-center">
+            <span class="text-sm uppercase tracking-widest text-gray-500 font-bold">Özellikler</span>
+            <h1 class="text-6xl md:text-8xl font-black mt-4 mb-8">
+                Neden<br/>
+                <span class="text-gray-300">İXtif?</span>
+            </h1>
+            <p class="text-2xl text-gray-600 max-w-3xl mx-auto">
+                Sektörün lider firması olarak sunduğumuz eşsiz hizmetler ve avantajlar.
+            </p>
+        </div>
+    </div>
+
+    <!-- Feature 1: Geniş Ürün Yelpazesi -->
+    <div class="container mx-auto px-4 pb-32">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div class="bg-gradient-to-br from-blue-500 to-cyan-500 aspect-square flex items-center justify-center">
+                <i class="fa-solid fa-forklift text-white text-9xl opacity-20"></i>
+            </div>
+            <div>
+                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-8">
+                    <i class="fa-solid fa-forklift text-white text-3xl"></i>
+                </div>
+                <h2 class="text-6xl font-black mb-6">Geniş Ürün Yelpazesi</h2>
+                <p class="text-xl text-gray-600 leading-relaxed mb-8">
+                    Elektrikli, dizel, LPG'li forkliftler, transpalet, istif makineleri ve daha fazlası. Her ihtiyaca uygun çözümler sunuyoruz.
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-4">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-lg">200+ Farklı Model</div>
+                            <div class="text-gray-600">Tüm kapasite ve özelliklerde</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-lg">Dünya Markaları</div>
+                            <div class="text-gray-600">Güvenilir üreticilerden</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <div class="font-bold text-lg">Özel Çözümler</div>
+                            <div class="text-gray-600">İhtiyaca özel konfigürasyon</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature 2: Hızlı Teslimat -->
+    <div class="bg-gray-50 py-32">
+        <div class="container mx-auto px-4">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                <div class="order-2 md:order-1">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-8">
+                        <i class="fa-solid fa-truck-fast text-white text-3xl"></i>
+                    </div>
+                    <h2 class="text-6xl font-black mb-6">Hızlı Teslimat</h2>
+                    <p class="text-xl text-gray-600 leading-relaxed mb-8">
+                        Türkiye'nin her yerine 24-48 saat içinde teslimat. Acil ihtiyaçlarınız için express hizmet.
+                    </p>
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <div class="text-5xl font-black text-purple-500 mb-2">24h</div>
+                            <div class="text-gray-600">Büyük şehirler</div>
+                        </div>
+                        <div>
+                            <div class="text-5xl font-black text-pink-500 mb-2">48h</div>
+                            <div class="text-gray-600">Türkiye geneli</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-pink-500 aspect-square flex items-center justify-center order-1 md:order-2">
+                    <i class="fa-solid fa-truck-fast text-white text-9xl opacity-20"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature 3: 7/24 Teknik Destek -->
+    <div class="container mx-auto px-4 py-32">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div class="bg-gradient-to-br from-orange-500 to-red-500 aspect-square flex items-center justify-center">
+                <i class="fa-solid fa-headset text-white text-9xl opacity-20"></i>
+            </div>
+            <div>
+                <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-8">
+                    <i class="fa-solid fa-headset text-white text-3xl"></i>
+                </div>
+                <h2 class="text-6xl font-black mb-6">7/24 Teknik Destek</h2>
+                <p class="text-xl text-gray-600 leading-relaxed mb-8">
+                    Günün her saati, haftanın her günü ulaşabileceğiniz teknik destek ekibimiz. Anında çözüm, minimum kesinti.
+                </p>
+                <div class="border-l-4 border-orange-500 pl-6 space-y-6">
+                    <div>
+                        <div class="text-2xl font-black mb-2">Telefon Desteği</div>
+                        <div class="text-gray-600">0850 XXX XX XX - Her zaman ulaşın</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black mb-2">Saha Servisi</div>
+                        <div class="text-gray-600">200+ yetkili servis noktası</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-black mb-2">Uzaktan Destek</div>
+                        <div class="text-gray-600">Online teşhis ve çözüm</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="bg-gray-900 text-white py-32">
+        <div class="container mx-auto px-4">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-6xl font-black mb-20 text-center">Diğer Avantajlarımız</h2>
+
+                <div class="grid md:grid-cols-3 gap-12">
+
+                    <!-- Advantage 1 -->
+                    <div class="border-l-4 border-white pl-8">
+                        <div class="w-16 h-16 bg-white bg-opacity-10 flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-shield-check text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-black mb-4">Garanti ve Sigorta</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Tüm ürünlerimizde kapsamlı garanti ve sigorta seçenekleri. Risksiz kullanım.
+                        </p>
+                    </div>
+
+                    <!-- Advantage 2 -->
+                    <div class="border-l-4 border-white pl-8">
+                        <div class="w-16 h-16 bg-white bg-opacity-10 flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-black mb-4">Ücretsiz Eğitim</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Operatör eğitimi, güvenlik eğitimi ve sertifikasyon programları tamamen ücretsiz.
+                        </p>
+                    </div>
+
+                    <!-- Advantage 3 -->
+                    <div class="border-l-4 border-white pl-8">
+                        <div class="w-16 h-16 bg-white bg-opacity-10 flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-tags text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-black mb-4">Esnek Fiyatlandırma</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Kiralama, satın alma, leasing. Size uygun ödeme planları ve özel kampanyalar.
+                        </p>
+                    </div>
+
+                    <!-- Advantage 4 -->
+                    <div class="border-l-4 border-white pl-8">
+                        <div class="w-16 h-16 bg-white bg-opacity-10 flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-wrench text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-black mb-4">Periyodik Bakım</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Düzenli bakım ve kontrol hizmetleri. Ekipmanınız her zaman en iyi performansta.
+                        </p>
+                    </div>
+
+                    <!-- Advantage 5 -->
+                    <div class="border-l-4 border-white pl-8">
+                        <div class="w-16 h-16 bg-white bg-opacity-10 flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-repeat text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-black mb-4">Yedek Ekipman</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Arıza veya bakım durumlarında ücretsiz yedek ekipman garantisi.
+                        </p>
+                    </div>
+
+                    <!-- Advantage 6 -->
+                    <div class="border-l-4 border-white pl-8">
+                        <div class="w-16 h-16 bg-white bg-opacity-10 flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-mobile text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-black mb-4">Mobil Uygulama</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Ekipman takibi, servis talebi, fatura görüntüleme tek bir uygulamada.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-5xl font-black mb-6">Tüm Avantajları Keşfedin</h2>
+                <p class="text-xl text-gray-600 mb-8">
+                    Detaylı bilgi ve özel teklifler için hemen iletişime geçin.
+                </p>
+                <a href="/contact" class="inline-block px-10 py-4 bg-gray-900 text-white font-bold hover:bg-gray-800 transition">
+                    Teklif İsteyin →
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

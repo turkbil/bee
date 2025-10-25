@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design 7 - Glassmorphism Style | Shop Subheader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 min-h-screen" x-data="{ activeFilter: 'all' }">
+
+    <!-- Navigation Buttons -->
+    <div class="fixed top-1/2 -translate-y-1/2 left-4 z-50 space-y-2">
+        <a href="design-subheader-shop-index.html"
+           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all border border-white/30"
+           title="Ana Sayfa">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-subheader-shop-6.html"
+           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all border border-white/30"
+           title="Önceki">
+            <i class="fa-solid fa-chevron-left text-white"></i>
+        </a>
+    </div>
+    <div class="fixed top-1/2 -translate-y-1/2 right-4 z-50">
+        <a href="design-subheader-shop-8.html"
+           class="block w-12 h-12 bg-white/20 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center hover:bg-white/30 transition-all border border-white/30"
+           title="Sonraki">
+            <i class="fa-solid fa-chevron-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Design Label -->
+    <div class="fixed top-4 right-4 z-40 glass-card rounded-full px-4 py-2 shadow-lg">
+        <span class="text-xs font-bold text-white">Design 7/8 - Glassmorphism</span>
+    </div>
+
+    <!-- Subheader: Glassmorphism Style -->
+    <section class="py-12">
+        <!-- FULL WIDTH Container -->
+        <div class="w-full">
+            <!-- Inner Container max-w-7xl -->
+            <div class="container mx-auto px-4 max-w-7xl">
+                <!-- Main Card with Bottom Shadow -->
+                <div class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)]">
+                    <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
+                        <!-- Left: Title & Description -->
+                        <div class="flex flex-col justify-between">
+                            <div class="flex items-center gap-6 mb-6">
+                                <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl">
+                                    <i class="fa-solid fa-dolly text-5xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">Transpalet</h1>
+                                    <!-- Breadcrumb buraya taşındı -->
+                                    <div class="flex items-center gap-2 text-sm text-white/90">
+                                        <a href="#" class="hover:text-white transition flex items-center gap-1.5">
+                                            <i class="fa-solid fa-home text-xs"></i>
+                                            <span>Ana Sayfa</span>
+                                        </a>
+                                        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                        <a href="#" class="hover:text-white transition">Ürünler</a>
+                                        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                        <span class="font-semibold">Transpalet</span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+
+                    <!-- Right: Search & Sort - No Card -->
+                    <div class="flex flex-col justify-center space-y-3">
+                        <!-- Search - ÜSTTE -->
+                        <div class="relative">
+                            <input type="search"
+                                   placeholder="Ara..."
+                                   class="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white placeholder-white/60 text-sm
+                                          border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/60"></i>
+                        </div>
+
+                        <!-- Sort + View - ALTTA -->
+                        <div class="flex items-center gap-2">
+                            <!-- Sort -->
+                            <select class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white text-sm font-medium
+                                           border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all cursor-pointer">
+                                <option class="text-gray-900 bg-white">Editörün Seçimi</option>
+                                <option class="text-gray-900 bg-white">A'dan Z'ye</option>
+                                <option class="text-gray-900 bg-white">Z'den A'ya</option>
+                            </select>
+
+                            <!-- View Toggle - TEK BUTON ANIMASYONLU -->
+                            <button @click="view = view === 'grid' ? 'list' : 'grid'"
+                                    x-data="{ view: 'grid' }"
+                                    class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
+                                           hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
+                                <!-- Grid Icon -->
+                                <i class="fa-solid fa-grip text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                   :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
+                                <!-- List Icon -->
+                                <i class="fa-solid fa-list text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                   :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
+                                <!-- Placeholder for size -->
+                                <i class="fa-solid fa-grip opacity-0"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Content -->
+    <div class="w-full">
+        <div class="container mx-auto px-4 max-w-7xl pb-12">
+            <div class="glass-card rounded-3xl p-12 text-center shadow-2xl">
+                <i class="fa-solid fa-box-open text-6xl mb-4 text-white/40"></i>
+                <p class="text-xl font-semibold text-white">Ürün listesi buraya gelecek</p>
+                <p class="text-sm mt-2 text-white/70">Design 7: Glassmorphism Style - Updated</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

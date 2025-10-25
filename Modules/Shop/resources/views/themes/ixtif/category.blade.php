@@ -47,7 +47,7 @@
                     </div>
 
                     <!-- Right: Search & Sort - No Card -->
-                    <div class="flex flex-col justify-center space-y-3" x-data="{
+                    <div class="relative z-50 flex flex-col justify-center space-y-3" x-data="{
                                 query: '{{ request('search') }}',
                                 selectedCategory: '{{ $category->slug[app()->getLocale()] ?? $category->slug['tr'] ?? '' }}',
                                 keywords: [],

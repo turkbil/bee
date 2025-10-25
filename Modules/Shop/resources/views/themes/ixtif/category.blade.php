@@ -7,73 +7,46 @@
 
 @section('module_content')
     <div class="relative" x-data="shopCategoryPage()" x-init="init()">
-        {{-- Glassmorphism Subheader (Glass Effect) --}}
-        <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
-            <!-- Container matching header width -->
-            <div class="container mx-auto py-6">
-                <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
-                    <!-- Left: Title & Breadcrumb -->
-                    <div class="flex flex-col justify-between">
-                        <div class="flex items-center gap-6">
-                            @if($category->icon_class)
-                                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                                    <i class="{{ $category->icon_class }} text-5xl text-white"></i>
-                                </div>
-                            @endif
-                            <div>
-                                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">{{ $category->getTranslated('title') }}</h1>
-                                <!-- Breadcrumb -->
-                                <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                    <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
-                                        <i class="fa-solid fa-home text-xs"></i>
-                                        <span>Ana Sayfa</span>
-                                    </a>
-                                    <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                    <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Ürünler</a>
-                                    @if($category->parent)
-                                        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                        <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                            {{ $category->parent->getTranslated('title') }}
-                                        </a>
-                                    @endif
-                                    <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                    <span class="font-semibold text-gray-900 dark:text-white">{{ $category->getTranslated('title') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        {{-- Glass Subheader Component --}}
+        @php
+            $breadcrumbs = [
+                ['label' => 'Ana Sayfa', 'url' => route('shop.index'), 'icon' => 'fa-home'],
+                ['label' => 'Ürünler', 'url' => route('shop.index')]
+            ];
+            if($category->parent) {
+                $breadcrumbs[] = ['label' => $category->parent->getTranslated('title'), 'url' => url('/shop/kategori/' . $category->parent->getTranslated('slug'))];
+            }
+            $breadcrumbs[] = ['label' => $category->getTranslated('title')];
+        @endphp
 
-                    <!-- Right: Sort & View Toggle -->
-                    <div class="flex flex-col justify-end">
-                                <div class="flex items-center gap-2" x-data="{ view: 'grid' }">
-                                    <!-- Sort -->
-                                    <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium
-                                                   border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all cursor-pointer"
-                                            onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
-                                        <option value="" {{ !request('sort') ? 'selected' : '' }}>Varsayılan Sıralama</option>
-                                        <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
-                                        <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
-                                    </select>
+        @include('themes.ixtif.layouts.partials.glass-subheader', [
+            'title' => $category->getTranslated('title'),
+            'icon' => $category->icon_class ?? 'fa-solid fa-box',
+            'breadcrumbs' => $breadcrumbs,
+            'rightSlot' => '<div class="flex items-center gap-2" x-data="{ view: \'grid\' }">
+                <!-- Sort -->
+                <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium
+                               border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all cursor-pointer"
+                        onchange="window.location.href = \'' . url()->current() . '?sort=\' + this.value + \'' . (request('search') ? '&search=' . request('search') : '') . '\'">
+                    <option value="" ' . (!request('sort') ? 'selected' : '') . '>Varsayılan Sıralama</option>
+                    <option value="a-z" ' . (request('sort') == 'a-z' ? 'selected' : '') . '>A\'dan Z\'ye</option>
+                    <option value="z-a" ' . (request('sort') == 'z-a' ? 'selected' : '') . '>Z\'den A\'ya</option>
+                </select>
 
-                                    <!-- View Toggle - Improved Design -->
-                                    <button @click="view = view === 'grid' ? 'list' : 'grid'"
-                                            class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
-                                                   hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
-                                                   active:scale-95 transition-all duration-300 group flex items-center justify-center">
-                                        <!-- Grid Icon -->
-                                        <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
-                                                  transition-all duration-300 text-2xl"
-                                           :class="view === 'grid' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'"></i>
-                                        <!-- List Icon -->
-                                        <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
-                                                  transition-all duration-300 text-2xl"
-                                           :class="view === 'list' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'"></i>
-                                    </button>
-                                </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <!-- View Toggle -->
+                <button @click="view = view === \'grid\' ? \'list\' : \'grid\'"
+                        class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
+                               hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
+                               active:scale-95 transition-all duration-300 group flex items-center justify-center">
+                    <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
+                              transition-all duration-300 text-2xl"
+                       :class="view === \'grid\' ? \'opacity-100 scale-100\' : \'opacity-0 scale-0 absolute\'"></i>
+                    <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
+                              transition-all duration-300 text-2xl"
+                       :class="view === \'list\' ? \'opacity-100 scale-100\' : \'opacity-0 scale-0 absolute\'"></i>
+                </button>
+            </div>'
+        ])
 
         {{-- Subcategories Section --}}
         @if($subcategories->count() > 0)

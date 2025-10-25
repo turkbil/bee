@@ -876,9 +876,8 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl" style="z-index:10;">
-                    <div class="py-6 md:py-8">
-                        <div class="container mx-auto">
+                     class="relative z-10" style="z-index:10;">
+                    <div class="container mx-auto py-6 md:py-8">
                             {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                             <div style="display: grid;">
                                 {{-- Forklift Mega Menu --}}
@@ -933,7 +932,6 @@
                                     @include('themes.ixtif.partials.mega-menu-content')
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>

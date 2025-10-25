@@ -18,11 +18,12 @@
 
                 {{-- Popüler Aramalar (SADECE LG+ EKRANLARDA) --}}
                 @if($popularSearches->count() > 0)
-                    <div class="space-y-4 hidden lg:block">
+                    <div class="space-y-4 hidden lg:!block">
                         <div class="flex flex-wrap justify-center gap-3">
                             @foreach($popularSearches as $search)
-                                <a href="{{ route('search.tags') }}"
-                                   class="bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
+                                <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
+                                   class="bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
                                     {{ $search->query }}
                                 </a>
                             @endforeach

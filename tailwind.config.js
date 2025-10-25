@@ -159,6 +159,10 @@ module.exports = {
                     900: '#0c4a6e',
                 }
             },
+            // iXtif Theme Container (Standard Widths)
+            spacing: {
+                'ixtif-container-padding': 'clamp(1rem, 2vw, 0px)', // Responsive padding: mobile 1rem, tablet+ 0
+            },
             typography: {
                 DEFAULT: {
                     css: {

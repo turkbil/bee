@@ -23,7 +23,7 @@
 @endphp
 
 <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
-    <div class="container mx-auto py-6">
+    <div class="ixtif-subheader-container">
         <div class="grid {{ $rightSlot ? 'lg:grid-cols-[1fr_400px]' : 'lg:grid-cols-1' }} gap-8 items-stretch">
             <!-- Left: Title & Breadcrumb -->
             <div class="flex flex-col justify-between">

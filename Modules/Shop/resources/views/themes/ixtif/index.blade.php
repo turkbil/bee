@@ -7,9 +7,6 @@
 
 @section('module_content')
     <div class="relative" x-data="shopIndexPage()" x-init="init()">
-        {{-- Gradient Background --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
-
         {{-- Header Section - Glassmorphism Subheader (Design 7 - Exact Copy) --}}
         @if($selectedCategory)
             <section class="py-12">
@@ -321,7 +318,7 @@
                 <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
                     {{-- All Categories (Modal Trigger) --}}
                     <button @click="$refs.categoryModal.classList.remove('hidden')"
-                       class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all {{ !$selectedCategory ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                       class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all {{ !$selectedCategory ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                         <i class="fa-light fa-grid-2 mr-2"></i>
                         Tüm Kategoriler
                     </button>
@@ -339,7 +336,7 @@
 
                         {{-- Root Category --}}
                         <a href="/shop/kategori/{{ $categorySlug }}"
-                           class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/70 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                           class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                             @if($category->icon_class)
                                 <i class="{{ $category->icon_class }} mr-2"></i>
                             @endif
@@ -384,7 +381,7 @@
                             $subcategorySlug = $subcategory->getTranslated('slug');
                         @endphp
                         <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
-                           class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
+                           class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
                             <div class="flex flex-col items-center text-center">
                                 @if($subcategory->icon_class)
                                     <i class="{{ $subcategory->icon_class }} text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
@@ -423,7 +420,7 @@
 
                     {{-- End Message --}}
                     <div x-show="!hasMore && loaded" class="flex justify-center items-center py-12" x-cloak>
-                        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
+                        <div class="bg-white/50 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
                             <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
                                 <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
                                 Tüm ürünler yüklendi

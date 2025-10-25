@@ -7,6 +7,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* iXtif Theme Container Classes */
+@layer components {
+    /* Standard iXtif Container - Header, Shop, All Modules */
+    .ixtif-container {
+        @apply container mx-auto px-4 sm:px-4 md:px-0;
+    }
+
+    /* Glass Subheader Container (No horizontal padding) */
+    .ixtif-subheader-container {
+        @apply container mx-auto py-6;
+    }
+
+    /* Section Container (With padding) */
+    .ixtif-section-container {
+        @apply container mx-auto px-4 sm:px-4 md:px-0;
+    }
+
+    /* Narrow Content Container (e.g., Blog posts, articles) */
+    .ixtif-content-container {
+        @apply container mx-auto px-4 sm:px-4 md:px-0 max-w-4xl;
+    }
+}
+
 /**
  * Custom tenant-safe utilities
  */

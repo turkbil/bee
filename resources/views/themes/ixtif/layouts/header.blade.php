@@ -386,12 +386,12 @@
 
                     {{-- Main Navigation (Desktop) --}}
                     <div class="hidden lg:flex items-center gap-6">
-                        {{-- Forklift (Mega Menu) - Link + Görünmez Köprü --}}
+                        {{-- Forklift (Mega Menu) --}}
                         <div class="relative mega-menu-item"
                              @mouseenter="activeMegaMenu = 'forklift'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/forklift"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4 pb-6">
                                 <i :class="activeMegaMenu === 'forklift' ? 'fa-solid' : 'fa-light'" class="fa-forklift text-sm transition-all"></i>
                                 <span>Forklift</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -400,12 +400,12 @@
 
                         </div>
 
-                        {{-- Transpalet (Mega Menu) - Link + Görünmez Köprü --}}
+                        {{-- Transpalet (Mega Menu) --}}
                         <div class="relative mega-menu-item"
                              @mouseenter="activeMegaMenu = 'transpalet'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/transpalet"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4 pb-6">
                                 <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
                                 <span>Transpalet</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -414,12 +414,12 @@
 
                         </div>
 
-                        {{-- İstif Makinesi (Mega Menu) - Link + Görünmez Köprü --}}
+                        {{-- İstif Makinesi (Mega Menu) --}}
                         <div class="relative mega-menu-item hidden xl:block"
                              @mouseenter="activeMegaMenu = 'istif-makinesi'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/istif-makinesi"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4 pb-6">
                                 <i :class="activeMegaMenu === 'istif-makinesi' ? 'fa-solid' : 'fa-light'" class="fa-box-open-full text-sm transition-all"></i>
                                 <span>İstif Makinesi</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -428,11 +428,11 @@
 
                         </div>
 
-                        {{-- Tüm Kategoriler (Mega Menu + Tabs) - Link + Görünmez Köprü --}}
+                        {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <div class="relative mega-menu-item"
                              @mouseenter="activeMegaMenu = 'all-categories'"
                              @mouseleave="activeMegaMenu = null">
-                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4 pb-6">
                                 <i :class="activeMegaMenu === 'all-categories' ? 'fa-solid' : 'fa-light'" class="fa-grid-2 transition-all duration-300"></i>
                                 <span>Tüm Kategoriler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -890,7 +890,7 @@
                 <div x-show="activeMegaMenu === 'forklift'"
                      @mouseenter="activeMegaMenu = 'forklift'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-6"
+                     class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"
@@ -908,7 +908,7 @@
                 <div x-show="activeMegaMenu === 'transpalet'"
                      @mouseenter="activeMegaMenu = 'transpalet'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-6"
+                     class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"
@@ -926,7 +926,7 @@
                 <div x-show="activeMegaMenu === 'istif-makinesi'"
                      @mouseenter="activeMegaMenu = 'istif-makinesi'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-6"
+                     class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"
@@ -944,7 +944,7 @@
                 <div x-show="activeMegaMenu === 'all-categories'"
                      @mouseenter="activeMegaMenu = 'all-categories'"
                      @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-6"
+                     class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
                          x-transition:enter-start="opacity-0 -translate-y-3"

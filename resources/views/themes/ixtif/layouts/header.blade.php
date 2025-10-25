@@ -395,7 +395,7 @@
                         {{-- Forklift (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"
-                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-8">
+                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
                             <i :class="activeMegaMenu === 'forklift' ? 'fa-solid' : 'fa-light'" class="fa-forklift text-sm transition-all"></i>
                             <span>Forklift</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -405,7 +405,7 @@
                         {{-- Transpalet (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/transpalet"
                            @mouseenter="console.log('⭐ TRANSPALET LINK: mouseenter'); activeMegaMenu = 'transpalet'"
-                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-8">
+                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
                             <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
                             <span>Transpalet</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -424,7 +424,7 @@
 
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <button @mouseenter="activeMegaMenu = 'all-categories'"
-                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-8">
+                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
                             <i :class="activeMegaMenu === 'all-categories' ? 'fa-solid' : 'fa-light'" class="fa-grid-2 transition-all duration-300"></i>
                             <span>Tüm Kategoriler</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"

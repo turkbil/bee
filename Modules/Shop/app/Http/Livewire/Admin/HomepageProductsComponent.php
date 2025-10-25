@@ -11,63 +11,49 @@ use Modules\Shop\App\Models\ShopProduct;
 #[Layout('admin.layout')]
 class HomepageProductsComponent extends Component
 {
-    public array $products = [];
-    public array $sortOrders = [];
+    public $products;
+    public string $currentSiteLocale;
 
     public function mount(): void
     {
+        $this->currentSiteLocale = app()->getLocale();
         $this->loadProducts();
     }
 
     public function loadProducts(): void
     {
-        $locale = app()->getLocale();
-
         $this->products = ShopProduct::query()
             ->where('show_on_homepage', true)
             ->with(['category', 'brand'])
-            ->orderBy('homepage_sort_order', 'asc')
+            ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
             ->orderBy('product_id', 'desc')
-            ->get()
-            ->map(function ($product) use ($locale) {
-                return [
-                    'product_id' => $product->product_id,
-                    'title' => $product->getTranslated('title', $locale) ?? ($product->title[$locale] ?? 'Başlık yok'),
-                    'sku' => $product->sku,
-                    'category_name' => $product->category
-                        ? ($product->category->getTranslated('title', $locale) ?? ($product->category->title[$locale] ?? '-'))
-                        : '-',
-                    'homepage_sort_order' => $product->homepage_sort_order,
-                ];
-            })
-            ->toArray();
-
-        // Initialize sort orders
-        foreach ($this->products as $product) {
-            $this->sortOrders[$product['product_id']] = $product['homepage_sort_order'] ?? '';
-        }
+            ->get();
     }
 
-    public function saveSortOrders(): void
+    /**
+     * Drag-drop sıralama güncelleme
+     */
+    public function updateSortOrder(array $orderedIds): void
     {
         try {
-            foreach ($this->sortOrders as $productId => $sortOrder) {
-                ShopProduct::where('product_id', $productId)
-                    ->update([
-                        'homepage_sort_order' => $sortOrder === '' ? null : (int) $sortOrder,
-                    ]);
+            foreach ($orderedIds as $index => $productId) {
+                ShopProduct::where('product_id', $productId)->update([
+                    'homepage_sort_order' => $index + 1
+                ]);
             }
 
-            $this->dispatch('notification', [
+            $this->dispatch('toast', [
+                'title' => 'Başarılı',
+                'message' => 'Anasayfa sıralaması güncellendi!',
                 'type' => 'success',
-                'message' => 'Sıralama başarıyla kaydedildi!',
             ]);
 
             $this->loadProducts();
         } catch (\Exception $e) {
-            $this->dispatch('notification', [
+            $this->dispatch('toast', [
+                'title' => 'Hata',
+                'message' => 'Sıralama güncellenemedi: ' . $e->getMessage(),
                 'type' => 'error',
-                'message' => 'Hata: ' . $e->getMessage(),
             ]);
         }
     }

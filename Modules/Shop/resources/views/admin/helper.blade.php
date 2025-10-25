@@ -35,6 +35,13 @@
                 @endhasmoduleaccess
 
                 @hasmoduleaccess('shop', 'update')
+                    <a href="{{ route('admin.shop.homepage-products') }}" class="dropdown-module-item btn btn-ghost-secondary">
+                        <i class="fas fa-home me-2"></i>
+                        Anasayfa Ürünleri
+                    </a>
+                @endhasmoduleaccess
+
+                @hasmoduleaccess('shop', 'update')
                     <a href="{{ route('admin.shop.products.manage') }}" class="dropdown-module-item btn btn-primary">
                         {{ __('shop::admin.new_product') }}
                     </a>

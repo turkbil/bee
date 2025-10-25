@@ -175,7 +175,7 @@
             <!-- 1. Satın Alma -->
             <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-shopping-cart text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:-translate-y-2 transition-all duration-500"></i>
+                    <i class="fa-light fa-shopping-cart text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 transition-all duration-500"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Satın Alma</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Akülü forklift, dizel forklift, transpalet, reach truck ve ikinci el forklift satışı</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
@@ -188,7 +188,7 @@
             <!-- 2. Kiralama -->
             <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-calendar-days text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:brightness-110 transition-all duration-300"></i>
+                    <i class="fa-light fa-calendar-days text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 transition-all duration-300"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Kiralama</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Kiralık forklift, transpalet ve otonom istif makinesi günlük-uzun dönem kiralaması</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
@@ -201,7 +201,7 @@
             <!-- 3. Yedek Parça -->
             <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-gears text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:animate-spin transition-all"></i>
+                    <i class="fa-light fa-gear text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:animate-spin transition-all"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Yedek Parça</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Forklift yedek parça, akülü forklift ve reach truck parçaları 7/24 stok garantili</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">

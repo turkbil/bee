@@ -93,7 +93,7 @@
             {{-- Glassmorphism Subheader for Shop Home --}}
             <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
                 <div class="container mx-auto py-6">
-                    <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
+                    <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
                         <!-- Left: Title & Breadcrumb -->
                         <div class="flex flex-col justify-between">
                             <div class="flex items-center gap-6">
@@ -119,18 +119,9 @@
                             </div>
                         </div>
 
-                        <!-- Right: Sort & View Toggle -->
+                        <!-- Right: View Toggle Only (No Sort - Default sorting) -->
                         <div class="flex flex-col justify-end">
-                            <div class="flex items-center gap-2" x-data="{ view: 'grid' }">
-                                <!-- Sort -->
-                                <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium
-                                               border border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all cursor-pointer"
-                                        onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
-                                    <option value="" {{ !request('sort') ? 'selected' : '' }}>Varsayılan Sıralama</option>
-                                    <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
-                                    <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
-                                </select>
-
+                            <div class="flex items-center justify-end" x-data="{ view: 'grid' }">
                                 <!-- View Toggle -->
                                 <button @click="view = view === 'grid' ? 'list' : 'grid'"
                                         class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700

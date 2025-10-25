@@ -384,7 +384,7 @@
                     </div>
 
                     {{-- Main Navigation (Desktop) --}}
-                    <div class="hidden lg:flex items-center gap-6">
+                    <div class="hidden lg:flex items-center gap-6" @mouseleave="activeMegaMenu = null">
                         {{-- Forklift (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"
@@ -876,8 +876,8 @@
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="relative z-10" style="z-index:10;">
-                    <div class="container mx-auto py-6 md:py-8">
+                     class="absolute left-0 right-0 top-full z-10 pt-4" style="z-index:10;">
+                    <div class="container mx-auto">
                             {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                             <div style="display: grid;">
                                 {{-- Forklift Mega Menu --}}

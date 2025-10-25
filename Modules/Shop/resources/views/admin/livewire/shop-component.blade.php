@@ -13,7 +13,7 @@
                     </div>
                     <h3 class="card-title">{{ __('shop::admin.products') }}</h3>
                     <p class="text-muted">{{ __('shop::admin.products_description') }}</p>
-                    <a href="{{ route('admin.shop.products.index') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.shop.index') }}" class="btn btn-primary">
                         <i class="fa-solid fa-arrow-right me-2"></i>
                         {{ __('admin.manage') }}
                     </a>
@@ -60,7 +60,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <div class="mb-3">
-                        <i class="ti ti-template fa-3x text-purple"></i>
+                        <i class="fas fa-th-list fa-3x text-purple"></i>
                     </div>
                     <h3 class="card-title">{{ __('shop::admin.field_templates') }}</h3>
                     <p class="text-muted">{{ __('shop::admin.field_templates_description') }}</p>

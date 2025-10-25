@@ -297,7 +297,7 @@
                                 <td class="text-center align-middle">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
                                         <!-- Edit Product -->
-                                        <a href="{{ route('admin.shop.products.manage', ['id' => $product->product_id]) }}"
+                                        <a href="{{ route('admin.shop.manage', ['id' => $product->product_id]) }}"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ __('admin.edit') }}"
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
@@ -413,7 +413,7 @@
                                         <td class="text-center align-middle">
                                             <div class="d-flex align-items-center gap-3 justify-content-center">
                                                 <!-- Edit Variant -->
-                                                <a href="{{ route('admin.shop.products.manage', ['id' => $variant->product_id]) }}"
+                                                <a href="{{ route('admin.shop.manage', ['id' => $variant->product_id]) }}"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="{{ __('admin.edit') }}"
                                                     style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">

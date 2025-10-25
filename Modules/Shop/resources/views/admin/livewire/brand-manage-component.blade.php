@@ -13,7 +13,7 @@
                 {{ __('admin.back') }}
             </a>
             <button class="btn btn-primary" wire:click="save">
-                <i class="ti ti-device-floppy"></i> {{ __('admin.save') }}
+                <i class="fas fa-save"></i> {{ __('admin.save') }}
             </button>
         </div>
     </div>

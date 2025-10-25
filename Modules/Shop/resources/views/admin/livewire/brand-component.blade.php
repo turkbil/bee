@@ -15,10 +15,10 @@
             <button class="btn btn-outline-danger"
                     wire:click="bulkDeleteSelected"
                     @disabled(empty($selectedItems))>
-                <i class="ti ti-trash"></i> {{ __('shop::admin.delete_selected') }}
+                <i class="fas fa-trash"></i> {{ __('shop::admin.delete_selected') }}
             </button>
             <a href="{{ route('admin.shop.brands.manage') }}" class="btn btn-primary">
-                <i class="ti ti-plus"></i> {{ __('shop::admin.new_brand') }}
+                <i class="fas fa-plus"></i> {{ __('shop::admin.new_brand') }}
             </a>
         </div>
     </div>
@@ -59,11 +59,11 @@
                             <div class="btn-list justify-content-end">
                                 <button class="btn btn-outline-secondary btn-icon"
                                         wire:click="toggleActive({{ $brand->brand_id }})">
-                                    <i class="ti ti-refresh"></i>
+                                    <i class="fas fa-sync"></i>
                                 </button>
                                 <a href="{{ route('admin.shop.brands.manage', $brand->brand_id) }}"
                                    class="btn btn-outline-primary btn-icon">
-                                    <i class="ti ti-edit"></i>
+                                    <i class="fas fa-edit"></i>
                                 </a>
                             </div>
                         </td>

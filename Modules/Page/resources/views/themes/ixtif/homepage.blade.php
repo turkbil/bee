@@ -242,23 +242,23 @@
 
             {{-- Sağ: İçerik --}}
             <div>
-                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Profesyonel İş Ortağınız</h2>
+                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Her Adımda Yanınızdayız</h2>
                 <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                    Kurumsal altyapı, eğitimli kadro ve profesyonel hizmet anlayışıyla sektörde fark yaratıyoruz.
+                    İstif makineleri ve endüstriyel ekipman alanında deneyimli ekibimizle, işletmenizin güvenilir çözüm ortağıyız.
                 </p>
                 <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                    İstif makineleri ve endüstriyel ekipman alanında uzman ekibimiz, modern tesislerimiz ve kalite standartlarımızla işletmenizin güvenilir çözüm ortağıyız. Satış öncesi danışmanlıktan satış sonrası teknik desteğe kadar her aşamada yanınızdayız.
+                    Modern tesislerimiz, kalite standartlarımız ve müşteri odaklı yaklaşımımızla fark yaratıyoruz. Satış öncesi danışmanlıktan satış sonrası teknik desteğe kadar her aşamada yanınızdayız.
                 </p>
 
                 {{-- Özellikler --}}
                 <div class="grid grid-cols-3 gap-6 mb-8">
                     <div class="text-center">
-                        <div class="text-4xl font-black text-blue-600 mb-2">6+ Yıl</div>
-                        <div class="text-gray-600 dark:text-gray-400">Tecrübe</div>
+                        <div class="text-4xl font-black text-blue-600 mb-2">2018</div>
+                        <div class="text-gray-600 dark:text-gray-400">Kuruluş</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl font-black text-green-600 mb-2">%100</div>
-                        <div class="text-gray-600 dark:text-gray-400">Profesyonel</div>
+                        <div class="text-4xl font-black text-green-600 mb-2"><i class="fa-light fa-check-circle"></i></div>
+                        <div class="text-gray-600 dark:text-gray-400">Güvenilir</div>
                     </div>
                     <div class="text-center">
                         <div class="text-4xl font-black text-purple-600 mb-2">7/24</div>

@@ -240,7 +240,11 @@
                 <div class="absolute bottom-20 -right-20 w-96 h-96 bg-blue-300 dark:bg-yellow-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
             </div>
 
-            <div class="container mx-auto px-6 relative z-10">
+            <div class="container mx-auto px-6 relative z-10"
+                 x-data="{
+                     // Fotoğraf yoksa açık başla, varsa kapalı
+                     isChatOpen: {{ $featuredImage ? 'false' : 'true' }}
+                 }">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
                         <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full mb-6">
@@ -259,22 +263,20 @@
                         @endif
 
                         <div class="flex flex-col gap-4">
-                            {{-- Teklif Al & İletişim (Yan Yana) --}}
+                            {{-- Teklif Al & Telefon + WhatsApp (Yan Yana) --}}
                             <div class="flex flex-col sm:flex-row gap-4">
                                 <a href="#contact"
                                     class="inline-flex items-center justify-center gap-3 bg-white text-purple-600 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
                                     <i class="fa-solid fa-envelope"></i>
                                     <span>Teklif Al</span>
                                 </a>
-                                @if($contactPhone || $contactWhatsapp)
+                                @if($contactPhone)
                                     <div class="flex gap-2">
-                                        @if($contactPhone)
-                                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                                                class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
-                                                <i class="fa-solid fa-phone"></i>
-                                                <span>Ara</span>
-                                            </a>
-                                        @endif
+                                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                            class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
+                                            <i class="fa-solid fa-phone"></i>
+                                            <span>{{ $contactPhone }}</span>
+                                        </a>
                                         @if($contactWhatsapp)
                                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
                                                 class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white border-2 border-green-500 hover:border-green-600 px-4 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-2xl transition-all">
@@ -285,21 +287,17 @@
                                 @endif
                             </div>
 
-                            {{-- Yapay Zeka ile Soru Sor --}}
-                            <button @click="$store.aiChat.openFloating()"
-                                class="inline-flex items-center justify-center gap-2 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-2xl hover:scale-105 transition-all">
-                                <i class="fa-solid fa-robot text-lg"></i>
+                            {{-- Yapay Zeka ile Soru Sor - Hero sağdaki inline chat'i aç --}}
+                            <button @click="isChatOpen = true"
+                                class="inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                                <i class="fa-solid fa-robot"></i>
                                 <span>Yapay Zeka ile Soru Sor</span>
                             </button>
                         </div>
                     </div>
 
                     {{-- Right Column: AI Chat Widget + Featured Image --}}
-                    <div class="hidden lg:block -mr-4 sm:-mr-6 lg:-mr-8"
-                         x-data="{
-                             // Fotoğraf yoksa açık başla, varsa kapalı
-                             isChatOpen: {{ $featuredImage ? 'false' : 'true' }}
-                         }">
+                    <div class="hidden lg:block -mr-4 sm:-mr-6 lg:-mr-8">
 
                         {{-- Sabit yükseklik container (hero değişmesin) --}}
                         <div class="relative h-[564px]">

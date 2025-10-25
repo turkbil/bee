@@ -13,11 +13,11 @@
         {{-- Glassmorphism Subheader (Glass Effect) --}}
         <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
             <!-- Container matching header width -->
-            <div class="container mx-auto px-4 py-8">
+            <div class="container mx-auto px-4 py-6">
                 <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
                     <!-- Left: Title & Breadcrumb -->
                     <div class="flex flex-col justify-between">
-                        <div class="flex items-center gap-6 mb-6">
+                        <div class="flex items-center gap-6">
                             @if($category->icon_class)
                                 <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
                                     <i class="{{ $category->icon_class }} text-5xl text-white"></i>
@@ -47,7 +47,7 @@
                     </div>
 
                     <!-- Right: Sort & View Toggle -->
-                    <div class="flex flex-col justify-center">
+                    <div class="flex flex-col justify-end">
                                 <div class="flex items-center gap-2" x-data="{ view: 'grid' }">
                                     <!-- Sort -->
                                     <select class="flex-1 px-4 py-3 bg-white dark:bg-gray-800 rounded-xl text-gray-900 dark:text-white text-sm font-medium

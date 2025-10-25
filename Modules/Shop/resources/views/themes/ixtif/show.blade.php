@@ -372,8 +372,8 @@
             </div>
         </nav>
 
-        <div class="container mx-auto px-6 py-8">
-            <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start relative">
+        <div class="container mx-auto px-6">
+            <div id="product-content-grid" class="grid lg:grid-cols-3 gap-8 items-start relative py-8">
                 {{-- LEFT: Main Content (2/3) --}}
                 <div id="main-content-column" class="lg:col-span-2 min-h-screen">
 
@@ -1060,7 +1060,7 @@
 
 
     {{-- Trust Signals - Modern 4 Column (Before Contact Form) --}}
-    <section id="trust-signals" class="relative mt-16 scroll-mt-24">
+    <section id="trust-signals" class="relative scroll-mt-24">
         <div class="container mx-auto px-6">
             <div
                 class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 text-white rounded-xl py-12 px-6">
@@ -1106,7 +1106,7 @@
     </section>
 
     {{-- 📬 MODERN CONTACT FORM --}}
-    <section id="contact" class="relative mt-32 overflow-hidden bg-gray-50 dark:bg-slate-900">
+    <section id="contact" class="relative mt-12 overflow-hidden bg-gray-50 dark:bg-slate-900">
         {{-- Animated Background Blobs --}}
         <div class="absolute inset-0 opacity-20">
             <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-300 dark:bg-white rounded-full blur-3xl animate-pulse"></div>

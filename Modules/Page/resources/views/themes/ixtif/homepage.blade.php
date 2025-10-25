@@ -172,181 +172,153 @@
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <!-- Service Cards Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            <!-- Forklift -->
-            <a href="/shop/kategori/forklift" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <!-- 1. Satın Alma -->
+            <a href="{{ route('shop.index') }}" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl bg-white dark:bg-gray-800">
                 <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-warehouse text-4xl lg:text-5xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Forklift</h3>
+                    <i class="fa-light fa-shopping-cart text-4xl lg:text-5xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Satın Alma</h3>
 
-                    <!-- Services -->
+                    <!-- Products -->
                     <div class="space-y-2 mb-4">
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Satın Alma</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Sıfır & İkinci El</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Sıfır Ürünler</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Garantili & Yeni</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Kiralama</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Günlük & Uzun Dönem</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">İkinci El</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Test Edilmiş</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Yedek Parça</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Orijinal Parçalar</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Teknik Servis</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Profesyonel Bakım & Anlaşma</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Tüm Kategoriler</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Forklift, Transpalet vb.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <span class="text-sm lg:text-base">İncele</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
-            <!-- Transpalet -->
-            <a href="/shop/kategori/transpalet" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <!-- 2. Kiralama -->
+            <a href="#" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-yellow-400 dark:hover:border-yellow-400/20 hover:shadow-xl bg-white dark:bg-gray-800">
                 <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-dolly text-4xl lg:text-5xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Transpalet</h3>
+                    <i class="fa-light fa-calendar-days text-4xl lg:text-5xl text-yellow-400 dark:text-yellow-300 mb-3 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Kiralama</h3>
 
-                    <!-- Services -->
+                    <!-- Rental Options -->
                     <div class="space-y-2 mb-4">
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-yellow-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Satın Alma</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Sıfır & İkinci El</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Günlük Kiralama</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Esnek Süreler</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-yellow-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Kiralama</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Günlük & Uzun Dönem</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Uzun Dönem</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Uygun Fiyatlar</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-yellow-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Yedek Parça</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Orijinal Parçalar</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Teknik Servis</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Profesyonel Bakım & Anlaşma</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Operatör Desteği</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Opsiyonel</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <span class="text-sm lg:text-base">Teklif Al</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
-            <!-- İstif Makinesi -->
-            <a href="/shop/kategori/istif-makinesi" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <!-- 3. Yedek Parça -->
+            <a href="#" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-orange-400 dark:hover:border-orange-400/20 hover:shadow-xl bg-white dark:bg-gray-800">
                 <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-boxes-stacked text-4xl lg:text-5xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4 whitespace-nowrap">İstif Makinesi</h3>
+                    <i class="fa-light fa-gears text-4xl lg:text-5xl text-orange-400 dark:text-orange-300 mb-3 group-hover:rotate-90 transition-all"></i>
+                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Yedek Parça</h3>
 
-                    <!-- Services -->
+                    <!-- Parts -->
                     <div class="space-y-2 mb-4">
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-orange-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Satın Alma</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Sıfır & İkinci El</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Orijinal Parçalar</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Garantili</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-orange-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Kiralama</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Günlük & Uzun Dönem</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Hızlı Tedarik</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Geniş Stok</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-orange-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Yedek Parça</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Orijinal Parçalar</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Teknik Servis</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Profesyonel Bakım & Anlaşma</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Teknik Destek</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">7/24 Danışma</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <span class="text-sm lg:text-base">Ara</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
-            <!-- Reach Truck -->
-            <a href="/shop/kategori/reach-truck" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <!-- 4. Teknik Servis -->
+            <a href="#" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-purple-400 dark:hover:border-purple-400/20 hover:shadow-xl bg-white dark:bg-gray-800">
                 <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-truck-ramp-box text-4xl lg:text-5xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4 whitespace-nowrap">Reach Truck</h3>
+                    <i class="fa-light fa-wrench text-4xl lg:text-5xl text-purple-400 dark:text-purple-300 mb-3 group-hover:rotate-12 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Teknik Servis</h3>
 
                     <!-- Services -->
                     <div class="space-y-2 mb-4">
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-purple-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Satın Alma</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Sıfır & İkinci El</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Bakım & Onarım</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Uzman Ekip</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-purple-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Kiralama</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Günlük & Uzun Dönem</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Bakım Anlaşması</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Profesyonel Plan</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
+                            <i class="fa-solid fa-circle text-[4px] text-purple-400"></i>
                             <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Yedek Parça</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Orijinal Parçalar</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Teknik Servis</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Profesyonel Bakım & Anlaşma</p>
+                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Acil Müdahale</p>
+                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Hızlı Çözüm</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Keşfet</span>
+                        <span class="text-sm lg:text-base">Randevu</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>

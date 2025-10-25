@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardless Design #8 - Overlay Hover | iXtif Design System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-950 text-white">
+
+    <!-- Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex gap-3">
+        <a href="design-cardless-7.html" class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 hover:bg-white/20 transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left text-white"></i>
+        </a>
+        <a href="/design" class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 hover:bg-white/20 transition flex items-center justify-center">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-cardless-9.html" class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-lg border border-white/20 hover:bg-white/20 transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Page Counter -->
+    <div class="fixed top-6 left-6 z-50">
+        <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-full px-6 py-3">
+            <span class="text-white font-bold">8</span>
+            <span class="text-gray-400 mx-2">/</span>
+            <span class="text-gray-400">10</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="container mx-auto px-4 pt-24 pb-16 text-center">
+        <span class="inline-block px-6 py-2 bg-white/10 border border-white/20 rounded-full text-sm font-bold mb-6">
+            Cardless Design #8
+        </span>
+        <h1 class="text-7xl md:text-9xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+            Overlay<br/>Hover
+        </h1>
+        <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+            Görsel önde, hover ile bilgi overlay. Card yok, sadece görsellerüzerine hover efekti.
+        </p>
+    </div>
+
+    <!-- Grid -->
+    <div class="container mx-auto px-4 pb-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Item 1 -->
+            <div class="relative group cursor-pointer overflow-hidden aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1586864387634-40f157b671c4?w=700&h=500&fit=crop"
+                     alt="Elektrikli Forklift"
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+
+                <!-- Always Visible Label -->
+                <div class="absolute top-6 left-6 bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm z-20">
+                    Forklift
+                </div>
+
+                <!-- Hover Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 z-10">
+                    <h3 class="text-3xl font-black mb-3">Elektrikli Forklift 2 Ton</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Yüksek performanslı elektrikli forklift. Sessiz çalışma, düşük işletme maliyeti ve çevre dostu teknoloji.
+                    </p>
+
+                    <div class="flex items-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-blue-400"></i>
+                            <span>2000 kg</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-up-down text-blue-400"></i>
+                            <span>4.5 m</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-battery-full text-blue-400"></i>
+                            <span>8 saat</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-3xl font-black">₺850,000</div>
+                        <button class="px-6 py-3 bg-white text-black font-bold hover:scale-110 transition">
+                            İncele
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.8/5</span>
+                        <span><i class="fa-solid fa-box mr-1"></i>12 stokta</span>
+                        <span><i class="fa-solid fa-truck mr-1"></i>Ücretsiz kargo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="relative group cursor-pointer overflow-hidden aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=700&h=500&fit=crop"
+                     alt="Manuel Transpalet"
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+
+                <div class="absolute top-6 left-6 bg-purple-500 text-white px-4 py-2 rounded-full font-bold text-sm z-20">
+                    Transpalet
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 z-10">
+                    <h3 class="text-3xl font-black mb-3">Manuel Transpalet 2.5 Ton</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Sağlam yapısı ve ergonomik tasarımıyla ağır yükleri kolayca taşıyın. Uzun ömürlü hidrolik sistem.
+                    </p>
+
+                    <div class="flex items-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-purple-400"></i>
+                            <span>2500 kg</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-up-down text-purple-400"></i>
+                            <span>200 mm</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-check text-purple-400"></i>
+                            <span>1 yıl</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-3xl font-black">₺12,500</div>
+                        <button class="px-6 py-3 bg-white text-black font-bold hover:scale-110 transition">
+                            İncele
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.9/5</span>
+                        <span><i class="fa-solid fa-fire text-orange-400 mr-1"></i>Çok satan</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="relative group cursor-pointer overflow-hidden aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=700&h=500&fit=crop"
+                     alt="İstif Makinesi"
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+
+                <div class="absolute top-6 left-6 bg-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm z-20">
+                    İstif Makinesi
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 z-10">
+                    <h3 class="text-3xl font-black mb-3">Akülü İstif Makinesi 1.5T</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Kompakt tasarımıyla dar alanlarda mükemmel performans. Güçlü akü sistemi ile uzun çalışma süresi.
+                    </p>
+
+                    <div class="flex items-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-orange-400"></i>
+                            <span>1500 kg</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-up-down text-orange-400"></i>
+                            <span>3.0 m</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-orange-400"></i>
+                            <span>Elektrikli</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-3xl font-black">₺185,000</div>
+                        <button class="px-6 py-3 bg-white text-black font-bold hover:scale-110 transition">
+                            İncele
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.7/5</span>
+                        <span><i class="fa-solid fa-box mr-1"></i>8 stokta</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="relative group cursor-pointer overflow-hidden aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=700&h=500&fit=crop"
+                     alt="LPG Forklift"
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+
+                <div class="absolute top-6 left-6 bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm z-20">
+                    Forklift
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 z-10">
+                    <h3 class="text-3xl font-black mb-3">LPG'li Forklift 3 Ton</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Güçlü motor yapısı ve yüksek performansla açık ve kapalı alanlarda kullanım.
+                    </p>
+
+                    <div class="flex items-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-green-400"></i>
+                            <span>3000 kg</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-up-down text-green-400"></i>
+                            <span>5.0 m</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-green-400"></i>
+                            <span>LPG</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-3xl font-black">₺920,000</div>
+                        <button class="px-6 py-3 bg-white text-black font-bold hover:scale-110 transition">
+                            İncele
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.6/5</span>
+                        <span><i class="fa-solid fa-crown text-yellow-400 mr-1"></i>Premium</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="relative group cursor-pointer overflow-hidden aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1562184552-1431fe24c0c6?w=700&h=500&fit=crop"
+                     alt="Akülü Transpalet"
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+
+                <div class="absolute top-6 left-6 bg-cyan-500 text-white px-4 py-2 rounded-full font-bold text-sm z-20">
+                    Transpalet
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 z-10">
+                    <h3 class="text-3xl font-black mb-3">Akülü Transpalet 2 Ton</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Elektrikli tahrik sistemiyle uzun mesafe taşımalarında maksimum verimlilik.
+                    </p>
+
+                    <div class="flex items-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-cyan-400"></i>
+                            <span>2000 kg</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-battery-full text-cyan-400"></i>
+                            <span>8 saat</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-cyan-400"></i>
+                            <span>Elektrikli</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-3xl font-black">₺95,000</div>
+                        <button class="px-6 py-3 bg-white text-black font-bold hover:scale-110 transition">
+                            İncele
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.8/5</span>
+                        <span><i class="fa-solid fa-box mr-1"></i>18 stokta</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="relative group cursor-pointer overflow-hidden aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=700&h=500&fit=crop"
+                     alt="Reach Truck"
+                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+
+                <div class="absolute top-6 left-6 bg-indigo-500 text-white px-4 py-2 rounded-full font-bold text-sm z-20">
+                    İstif Makinesi
+                </div>
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 z-10">
+                    <h3 class="text-3xl font-black mb-3">Reach Truck 2 Ton</h3>
+                    <p class="text-gray-300 mb-4 leading-relaxed">
+                        Dar koridor çalışması için optimize edilmiş. 6 metreye kadar kaldırma kapasitesi.
+                    </p>
+
+                    <div class="flex items-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-weight-hanging text-indigo-400"></i>
+                            <span>2000 kg</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-up-down text-indigo-400"></i>
+                            <span>6.0 m</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-arrows-left-right text-indigo-400"></i>
+                            <span>Dar koridor</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-3xl font-black">₺650,000</div>
+                        <button class="px-6 py-3 bg-white text-black font-bold hover:scale-110 transition">
+                            İncele
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-4 mt-4 text-xs text-gray-400">
+                        <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.9/5</span>
+                        <span><i class="fa-solid fa-box mr-1"></i>5 stokta</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-white/5 backdrop-blur-lg py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h3 class="text-4xl font-black mb-6">Overlay Hover Layout</h3>
+                <p class="text-xl text-gray-400 mb-8">
+                    Görsel önde, hover ile bilgi overlay. Card kullanmadan, sadece görseller üzerine hover efekti ile interaktif deneyim.
+                </p>
+                <div class="flex items-center justify-center gap-8 text-sm text-gray-500">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-400"></i>
+                        <span>No Cards</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-image text-blue-400"></i>
+                        <span>Image First</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-hand-pointer text-purple-400"></i>
+                        <span>Hover Interaction</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

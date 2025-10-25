@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardless Design #10 - Modern Table | iXtif Design System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex gap-3">
+        <a href="design-cardless-9.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left text-white"></i>
+        </a>
+        <a href="/design" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-cardless-1.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Page Counter -->
+    <div class="fixed top-6 left-6 z-50">
+        <div class="bg-gray-900 text-white rounded-full px-6 py-3 shadow-xl">
+            <span class="font-bold">10</span>
+            <span class="mx-2 opacity-50">/</span>
+            <span class="opacity-50">10</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="container mx-auto px-4 pt-24 pb-12">
+        <div class="max-w-6xl mx-auto text-center">
+            <span class="inline-block px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-bold mb-6">
+                Cardless Design #10
+            </span>
+            <h1 class="text-7xl md:text-9xl font-black mb-6 leading-none">
+                Modern<br/>Table
+            </h1>
+            <p class="text-2xl text-gray-600 leading-relaxed">
+                Tablo görünümü ama şık. Card yok, sadece satırlar ve sütunlar ile düzenli data gösterimi.
+            </p>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="container mx-auto px-4 mb-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm">
+                <div class="flex items-center gap-4 flex-wrap">
+                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                        <i class="fa-solid fa-grid-2 mr-2"></i>Tümü
+                    </button>
+                    <button class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-full hover:bg-gray-200 transition">
+                        <i class="fa-solid fa-forklift mr-2"></i>Forklift
+                    </button>
+                    <button class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-full hover:bg-gray-200 transition">
+                        <i class="fa-solid fa-dolly mr-2"></i>Transpalet
+                    </button>
+                    <button class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-full hover:bg-gray-200 transition">
+                        <i class="fa-solid fa-box-open-full mr-2"></i>İstif Makinesi
+                    </button>
+                </div>
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="Ara..." class="pl-12 pr-6 py-3 bg-gray-100 rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-gray-900">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="container mx-auto px-4 pb-20">
+        <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-900 text-white">
+                            <th class="text-left py-6 px-6 font-black uppercase tracking-wider text-sm">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-image"></i>
+                                    <span>Ürün</span>
+                                </div>
+                            </th>
+                            <th class="text-left py-6 px-6 font-black uppercase tracking-wider text-sm">Kategori</th>
+                            <th class="text-left py-6 px-6 font-black uppercase tracking-wider text-sm">Özellikler</th>
+                            <th class="text-left py-6 px-6 font-black uppercase tracking-wider text-sm">Durum</th>
+                            <th class="text-left py-6 px-6 font-black uppercase tracking-wider text-sm">Fiyat</th>
+                            <th class="text-right py-6 px-6 font-black uppercase tracking-wider text-sm">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+
+                        <!-- Row 1 -->
+                        <tr class="hover:bg-gray-50 transition group">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://images.unsplash.com/photo-1586864387634-40f157b671c4?w=100&h=75&fit=crop"
+                                         alt="Elektrikli Forklift"
+                                         class="w-24 h-18 object-cover rounded-lg group-hover:scale-110 transition">
+                                    <div>
+                                        <div class="font-black text-lg mb-1">Elektrikli Forklift</div>
+                                        <div class="text-sm text-gray-500">2 Ton Kapasite</div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                                            <span class="text-xs text-gray-600">4.8/5 (124)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <span class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-forklift mr-1"></i>Forklift
+                                </span>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-weight-hanging text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">2000 kg</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-up-down text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">4.5 m</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-battery-full text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">8 saat</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex flex-col gap-2">
+                                    <span class="inline-flex items-center gap-2 text-green-700 text-sm font-bold">
+                                        <i class="fa-solid fa-check-circle"></i>12 Stokta
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 text-blue-700 text-sm">
+                                        <i class="fa-solid fa-shield-check"></i>2 Yıl Garanti
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="font-black text-2xl">₺850,000</div>
+                                <div class="text-xs text-gray-500">KDV Dahil</div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-900 hover:text-white rounded-full flex items-center justify-center transition">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                                        İncele
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 2 -->
+                        <tr class="hover:bg-gray-50 transition group">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=100&h=75&fit=crop"
+                                         alt="Manuel Transpalet"
+                                         class="w-24 h-18 object-cover rounded-lg group-hover:scale-110 transition">
+                                    <div>
+                                        <div class="font-black text-lg mb-1">Manuel Transpalet</div>
+                                        <div class="text-sm text-gray-500">2.5 Ton Taşıma</div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                                            <span class="text-xs text-gray-600">4.9/5 (89)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <span class="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-dolly mr-1"></i>Transpalet
+                                </span>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-weight-hanging text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">2500 kg</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-up-down text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">200 mm</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-ruler text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">1150 mm</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex flex-col gap-2">
+                                    <span class="inline-flex items-center gap-2 text-green-700 text-sm font-bold">
+                                        <i class="fa-solid fa-check-circle"></i>45 Stokta
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 text-orange-700 text-sm">
+                                        <i class="fa-solid fa-fire"></i>En Çok Satan
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="font-black text-2xl">₺12,500</div>
+                                <div class="text-xs text-gray-500">KDV Dahil</div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-900 hover:text-white rounded-full flex items-center justify-center transition">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                                        İncele
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 3 -->
+                        <tr class="hover:bg-gray-50 transition group">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=100&h=75&fit=crop"
+                                         alt="İstif Makinesi"
+                                         class="w-24 h-18 object-cover rounded-lg group-hover:scale-110 transition">
+                                    <div>
+                                        <div class="font-black text-lg mb-1">Akülü İstif Makinesi</div>
+                                        <div class="text-sm text-gray-500">1.5 Ton - 3m Yükseklik</div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                                            <span class="text-xs text-gray-600">4.7/5 (56)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <span class="inline-block px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-box-open-full mr-1"></i>İstif Makinesi
+                                </span>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-weight-hanging text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">1500 kg</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-up-down text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">3.0 m</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-battery-full text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">24V</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex flex-col gap-2">
+                                    <span class="inline-flex items-center gap-2 text-green-700 text-sm font-bold">
+                                        <i class="fa-solid fa-check-circle"></i>8 Stokta
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 text-blue-700 text-sm">
+                                        <i class="fa-solid fa-shield-check"></i>2 Yıl Garanti
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="font-black text-2xl">₺185,000</div>
+                                <div class="text-xs text-gray-500">KDV Dahil</div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-900 hover:text-white rounded-full flex items-center justify-center transition">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                                        İncele
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 4 -->
+                        <tr class="hover:bg-gray-50 transition group">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=100&h=75&fit=crop"
+                                         alt="LPG Forklift"
+                                         class="w-24 h-18 object-cover rounded-lg group-hover:scale-110 transition">
+                                    <div>
+                                        <div class="font-black text-lg mb-1">LPG'li Forklift</div>
+                                        <div class="text-sm text-gray-500">3 Ton Güç</div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                                            <span class="text-xs text-gray-600">4.6/5 (42)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <span class="inline-block px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-forklift mr-1"></i>Forklift
+                                </span>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-weight-hanging text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">3000 kg</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-up-down text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">5.0 m</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-fire text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">LPG</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex flex-col gap-2">
+                                    <span class="inline-flex items-center gap-2 text-yellow-700 text-sm font-bold">
+                                        <i class="fa-solid fa-clock"></i>6 Stokta
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 text-purple-700 text-sm">
+                                        <i class="fa-solid fa-crown"></i>Premium
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="font-black text-2xl">₺920,000</div>
+                                <div class="text-xs text-gray-500">KDV Dahil</div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-900 hover:text-white rounded-full flex items-center justify-center transition">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                                        İncele
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 5 -->
+                        <tr class="hover:bg-gray-50 transition group">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://images.unsplash.com/photo-1562184552-1431fe24c0c6?w=100&h=75&fit=crop"
+                                         alt="Akülü Transpalet"
+                                         class="w-24 h-18 object-cover rounded-lg group-hover:scale-110 transition">
+                                    <div>
+                                        <div class="font-black text-lg mb-1">Akülü Transpalet</div>
+                                        <div class="text-sm text-gray-500">2 Ton Kapasite</div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                                            <span class="text-xs text-gray-600">4.8/5 (73)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <span class="inline-block px-4 py-2 bg-cyan-100 text-cyan-700 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-dolly mr-1"></i>Transpalet
+                                </span>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-weight-hanging text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">2000 kg</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-bolt text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">Elektrikli</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-battery-full text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">8 saat</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex flex-col gap-2">
+                                    <span class="inline-flex items-center gap-2 text-green-700 text-sm font-bold">
+                                        <i class="fa-solid fa-check-circle"></i>18 Stokta
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 text-cyan-700 text-sm">
+                                        <i class="fa-solid fa-bolt"></i>Elektrikli
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="font-black text-2xl">₺95,000</div>
+                                <div class="text-xs text-gray-500">KDV Dahil</div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-900 hover:text-white rounded-full flex items-center justify-center transition">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                                        İncele
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Row 6 -->
+                        <tr class="hover:bg-gray-50 transition group">
+                            <td class="py-6 px-6">
+                                <div class="flex items-center gap-4">
+                                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=100&h=75&fit=crop"
+                                         alt="Reach Truck"
+                                         class="w-24 h-18 object-cover rounded-lg group-hover:scale-110 transition">
+                                    <div>
+                                        <div class="font-black text-lg mb-1">Reach Truck</div>
+                                        <div class="text-sm text-gray-500">2 Ton - 6m Yükseklik</div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
+                                            <span class="text-xs text-gray-600">4.9/5 (38)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold">
+                                    <i class="fa-solid fa-box-open-full mr-1"></i>İstif Makinesi
+                                </span>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-weight-hanging text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">2000 kg</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-up-down text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">6.0 m</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-arrows-left-right text-gray-400 text-xs"></i>
+                                        <span class="text-gray-700">Dar koridor</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex flex-col gap-2">
+                                    <span class="inline-flex items-center gap-2 text-yellow-700 text-sm font-bold">
+                                        <i class="fa-solid fa-clock"></i>5 Stokta
+                                    </span>
+                                    <span class="inline-flex items-center gap-2 text-indigo-700 text-sm">
+                                        <i class="fa-solid fa-crown"></i>Premium
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="font-black text-2xl">₺650,000</div>
+                                <div class="text-xs text-gray-500">KDV Dahil</div>
+                            </td>
+                            <td class="py-6 px-6">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-900 hover:text-white rounded-full flex items-center justify-center transition">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+                                    <button class="px-6 py-3 bg-gray-900 text-white font-bold rounded-full hover:scale-105 transition">
+                                        İncele
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between p-6 border-t border-gray-200">
+                <div class="text-sm text-gray-600">
+                    <span class="font-bold">1-6</span> / 86 ürün gösteriliyor
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition flex items-center justify-center">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-gray-900 text-white font-bold">1</button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition font-bold">2</button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition font-bold">3</button>
+                    <span class="px-3">...</span>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition font-bold">15</button>
+                    <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-900 hover:text-white transition flex items-center justify-center">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-900 text-white py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h3 class="text-4xl font-black mb-6">Modern Table Layout</h3>
+                <p class="text-xl text-gray-400 mb-8">
+                    Tablo görünümü ama şık. Card kullanmadan, sadece satırlar ve sütunlar ile düzenli, filtrelenebilir ve organize data gösterimi.
+                </p>
+                <div class="flex items-center justify-center gap-8 text-sm text-gray-500">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-400"></i>
+                        <span>No Cards</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-table text-blue-400"></i>
+                        <span>Table View</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-filter text-purple-400"></i>
+                        <span>Filterable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

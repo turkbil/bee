@@ -81,7 +81,8 @@
             { id: 28, name: 'Mega Menu V2 - Modern CSS', file: 'mega-menu-v2.html', category: 'navigation', icon: 'fa-sparkles', count: 5, color: 'from-purple-500 to-pink-500' },
             { id: 29, name: 'Mega Menu V3 - Comparison Layout (3-Column)', file: 'mega-menu-v3.html', category: 'navigation', icon: 'fa-rocket', count: 1, color: 'from-indigo-500 to-purple-500' },
             { id: 30, name: 'Mega Menu V4 - Tüm Kategoriler (3 Alternatif)', file: 'mega-menu-v4-all-categories.html', category: 'navigation', icon: 'fa-layer-group', count: 3, color: 'from-orange-500 to-red-500' },
-            { id: 31, name: 'Mega Menu V4 - Premium Tabsız (3 Tasarım)', file: 'mega-menu-v4-premium.html', category: 'navigation', icon: 'fa-crown', count: 3, color: 'from-yellow-500 to-amber-500' }
+            { id: 31, name: 'Mega Menu V4 - Premium Tabsız (3 Tasarım)', file: 'mega-menu-v4-premium.html', category: 'navigation', icon: 'fa-crown', count: 3, color: 'from-yellow-500 to-amber-500' },
+            { id: 32, name: 'Cardsız Tasarımlar (10 Alternatif)', file: 'design-cardless-1.html', category: 'experimental', icon: 'fa-wand-magic-sparkles', count: 10, color: 'from-pink-500 to-purple-500' }
         ],
         categories: [
             { id: 'all', name: 'Tümü', icon: 'fa-grid-2', color: 'bg-gradient-to-r from-blue-500 to-purple-500' },
@@ -92,7 +93,8 @@
             { id: 'social', name: 'Sosyal', icon: 'fa-users', color: 'bg-gradient-to-r from-teal-500 to-cyan-500' },
             { id: 'pricing', name: 'Fiyat', icon: 'fa-dollar-sign', color: 'bg-gradient-to-r from-yellow-500 to-orange-500' },
             { id: 'contact', name: 'İletişim', icon: 'fa-phone', color: 'bg-gradient-to-r from-indigo-500 to-purple-500' },
-            { id: 'support', name: 'Destek', icon: 'fa-life-ring', color: 'bg-gradient-to-r from-pink-500 to-rose-500' }
+            { id: 'support', name: 'Destek', icon: 'fa-life-ring', color: 'bg-gradient-to-r from-pink-500 to-rose-500' },
+            { id: 'experimental', name: 'Deneysel', icon: 'fa-flask', color: 'bg-gradient-to-r from-fuchsia-500 to-pink-500' }
         ],
         get filteredSections() {
             return this.sections.filter(section => {
@@ -114,20 +116,20 @@
                 </p>
             </div>
             <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                223+ Benzersiz Section Tasarımı | Modern, Yaratıcı ve Tamamen Özelleştirilebilir
+                233+ Benzersiz Section Tasarımı | Modern, Yaratıcı ve Tamamen Özelleştirilebilir
             </p>
 
             <!-- Stats -->
             <div class="flex flex-wrap justify-center gap-8 mt-10">
                 <div class="text-center">
                     <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
-                        29
+                        32
                     </div>
                     <div class="text-gray-400 mt-2">Section Türü</div>
                 </div>
                 <div class="text-center">
                     <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400">
-                        223+
+                        233+
                     </div>
                     <div class="text-gray-400 mt-2">Tasarım</div>
                 </div>
@@ -147,7 +149,7 @@
                 <input
                     type="text"
                     x-model="searchQuery"
-                    placeholder="Tasarım ara... (örn: menu, hero, footer)"
+                    placeholder="Tasarım ara... (örn: menu, hero, footer, card'sız)"
                     class="w-full bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-2xl px-16 py-5 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all duration-300 text-lg"
                 >
                 <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardless Design #3 - Magazine Grid | iXtif Design System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex gap-3">
+        <a href="design-cardless-2.html"
+           class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 transition flex items-center justify-center group shadow-lg">
+            <i class="fa-solid fa-arrow-left text-white group-hover:scale-110 transition"></i>
+        </a>
+        <a href="/design"
+           class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 transition flex items-center justify-center group shadow-lg">
+            <i class="fa-solid fa-grid-2 text-white group-hover:scale-110 transition"></i>
+        </a>
+        <a href="design-cardless-4.html"
+           class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 transition flex items-center justify-center group shadow-lg">
+            <i class="fa-solid fa-arrow-right text-white group-hover:scale-110 transition"></i>
+        </a>
+    </div>
+
+    <!-- Page Counter -->
+    <div class="fixed top-6 left-6 z-50">
+        <div class="bg-gray-900 text-white rounded-full px-6 py-3 shadow-lg">
+            <span class="font-bold">3</span>
+            <span class="mx-2 opacity-50">/</span>
+            <span class="opacity-50">10</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="container mx-auto px-4 pt-24 pb-16">
+        <div class="text-center mb-4">
+            <span class="inline-block px-4 py-2 bg-gray-900 text-white rounded-full text-sm font-semibold">
+                Cardless Design #3
+            </span>
+        </div>
+        <h1 class="text-6xl md:text-8xl font-black text-center mb-6">
+            Magazine Grid
+        </h1>
+        <p class="text-xl text-gray-600 text-center max-w-2xl mx-auto">
+            Dergi tarzı grid layout. Border yok, shadow yok, sadece temiz boşluklar ve tipografi.
+        </p>
+    </div>
+
+    <!-- Magazine Grid -->
+    <div class="container mx-auto px-4 pb-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+                <!-- Large Feature Item -->
+                <div class="md:col-span-2 md:row-span-2">
+                    <img src="https://images.unsplash.com/photo-1586864387634-40f157b671c4?w=1000&h=700&fit=crop"
+                         alt="Elektrikli Forklift"
+                         class="w-full aspect-[16/10] object-cover mb-6 hover:opacity-90 transition">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Forklift</span>
+                        <span class="text-xs text-gray-400">•</span>
+                        <span class="text-xs text-gray-500">Featured Product</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-4 leading-tight">
+                        Elektrikli Forklift 2 Ton Kapasite
+                    </h2>
+                    <p class="text-lg text-gray-600 leading-relaxed mb-6">
+                        Yüksek performanslı elektrikli forklift. Sessiz çalışma, düşük işletme maliyeti ve çevre dostu teknoloji. Kapalı alanlarda ideal kullanım için tasarlandı. 8 saatlik şarjla kesintisiz çalışma imkanı sunuyor.
+                    </p>
+                    <div class="flex items-center justify-between border-t border-gray-200 pt-6">
+                        <div>
+                            <div class="text-sm text-gray-500 mb-1">Fiyat</div>
+                            <div class="text-3xl font-black">₺850,000</div>
+                        </div>
+                        <button class="px-8 py-4 bg-gray-900 text-white font-bold hover:bg-gray-800 transition">
+                            İncele →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Small Item 1 -->
+                <div class="md:col-span-1">
+                    <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=500&h=350&fit=crop"
+                         alt="Manuel Transpalet"
+                         class="w-full aspect-[4/3] object-cover mb-4 hover:opacity-90 transition">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-purple-600">Transpalet</span>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3 leading-tight">
+                        Manuel Transpalet 2.5 Ton
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        Sağlam yapısı ve ergonomik tasarımıyla ağır yükleri kolayca taşıyın.
+                    </p>
+                    <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                        <div class="text-xl font-black">₺12,500</div>
+                        <a href="#" class="text-sm font-bold underline hover:no-underline">İncele →</a>
+                    </div>
+                </div>
+
+                <!-- Small Item 2 -->
+                <div class="md:col-span-1">
+                    <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=500&h=350&fit=crop"
+                         alt="İstif Makinesi"
+                         class="w-full aspect-[4/3] object-cover mb-4 hover:opacity-90 transition">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-orange-600">İstif Makinesi</span>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3 leading-tight">
+                        Akülü İstif Makinesi 1.5T
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        Kompakt tasarımıyla dar alanlarda mükemmel performans.
+                    </p>
+                    <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                        <div class="text-xl font-black">₺185,000</div>
+                        <a href="#" class="text-sm font-bold underline hover:no-underline">İncele →</a>
+                    </div>
+                </div>
+
+                <!-- Medium Item 1 -->
+                <div class="md:col-span-2">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <img src="https://images.unsplash.com/photo-1615461066841-6116e61058f4?w=500&h=350&fit=crop"
+                             alt="LPG Forklift"
+                             class="w-full aspect-[4/3] object-cover hover:opacity-90 transition">
+                        <div class="flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-green-600">Forklift</span>
+                                    <span class="text-xs text-gray-400">•</span>
+                                    <span class="text-xs text-gray-500">LPG Model</span>
+                                </div>
+                                <h3 class="text-3xl font-black mb-4 leading-tight">
+                                    LPG'li Forklift 3 Ton
+                                </h3>
+                                <p class="text-gray-600 mb-6">
+                                    Güçlü motor yapısı ve yüksek performansla açık ve kapalı alanlarda kullanım. Ekonomik yakıt sistemi.
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                                <div class="text-2xl font-black">₺920,000</div>
+                                <button class="px-6 py-3 bg-gray-900 text-white font-bold hover:bg-gray-800 transition">
+                                    İncele →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Small Item 3 -->
+                <div class="md:col-span-1">
+                    <img src="https://images.unsplash.com/photo-1562184552-1431fe24c0c6?w=500&h=350&fit=crop"
+                         alt="Akülü Transpalet"
+                         class="w-full aspect-[4/3] object-cover mb-4 hover:opacity-90 transition">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-cyan-600">Transpalet</span>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3 leading-tight">
+                        Akülü Transpalet 2 Ton
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        Elektrikli tahrik sistemiyle uzun mesafe taşımalarında maksimum verimlilik.
+                    </p>
+                    <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                        <div class="text-xl font-black">₺95,000</div>
+                        <a href="#" class="text-sm font-bold underline hover:no-underline">İncele →</a>
+                    </div>
+                </div>
+
+                <!-- Full Width Quote/Feature -->
+                <div class="md:col-span-3 border-y border-gray-900 py-12 my-8">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <i class="fa-solid fa-quote-left text-6xl text-gray-300 mb-6"></i>
+                        <p class="text-3xl md:text-4xl font-black mb-6 leading-tight">
+                            "Türkiye'nin en geniş forklift ve istif makinesi yelpazes. 2000+ mutlu müşteri."
+                        </p>
+                        <div class="text-gray-600 font-semibold">
+                            — iXtif Ekibi
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Small Item 4 -->
+                <div class="md:col-span-1">
+                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&h=350&fit=crop"
+                         alt="Reach Truck"
+                         class="w-full aspect-[4/3] object-cover mb-4 hover:opacity-90 transition">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">İstif</span>
+                    </div>
+                    <h3 class="text-2xl font-black mb-3 leading-tight">
+                        Reach Truck 2 Ton
+                    </h3>
+                    <p class="text-gray-600 mb-4">
+                        Dar koridor çalışması için optimize edilmiş reach truck.
+                    </p>
+                    <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                        <div class="text-xl font-black">₺650,000</div>
+                        <a href="#" class="text-sm font-bold underline hover:no-underline">İncele →</a>
+                    </div>
+                </div>
+
+                <!-- Medium Item 2 -->
+                <div class="md:col-span-2">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <img src="https://images.unsplash.com/photo-1604077198748-0d8d0b928fcc?w=500&h=350&fit=crop"
+                             alt="Dizel Forklift"
+                             class="w-full aspect-[4/3] object-cover hover:opacity-90 transition">
+                        <div class="flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-red-600">Forklift</span>
+                                    <span class="text-xs text-gray-400">•</span>
+                                    <span class="text-xs text-gray-500">Diesel Model</span>
+                                </div>
+                                <h3 class="text-3xl font-black mb-4 leading-tight">
+                                    Dizel Forklift 5 Ton
+                                </h3>
+                                <p class="text-gray-600 mb-6">
+                                    Ağır yük taşıma için ideal. Güçlü motor, yüksek dayanıklılık ve uzun ömürlü tasarım.
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+                                <div class="text-2xl font-black">₺1,250,000</div>
+                                <button class="px-6 py-3 bg-gray-900 text-white font-bold hover:bg-gray-800 transition">
+                                    İncele →
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="bg-gray-50 py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h3 class="text-3xl font-black mb-4">Magazine Grid Layout</h3>
+                <p class="text-gray-600 text-lg mb-6">
+                    Dergi ve gazete tarzı grid layout. Card, border ve shadow kullanmadan, sadece temiz boşluklar ve güçlü tipografi ile modern bir deneyim.
+                </p>
+                <div class="flex items-center justify-center gap-8 text-sm text-gray-500">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-600"></i>
+                        <span>No Cards/Borders</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-text text-gray-900"></i>
+                        <span>Typography First</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-grid text-blue-600"></i>
+                        <span>Magazine Grid</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

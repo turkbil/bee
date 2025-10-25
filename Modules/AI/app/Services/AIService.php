@@ -825,7 +825,7 @@ class AIService
 
             // Conversation oluştur
             $conversation = \Modules\AI\App\Models\Conversation::create([
-                'tenant_id' => $effectiveTenant?->id ?? 1,
+                'tenant_id' => $tenant->id ?? 1,
                 'user_id' => auth()->id(),
                 'title' => 'AI ' . ucfirst($type) . ': ' . substr($userMessage, 0, 50) . '...',
                 'type' => $type,

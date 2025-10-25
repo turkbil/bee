@@ -10,9 +10,17 @@
     {{-- Product Image --}}
     <a href="{{ $productUrl }}"
        class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-        @if($product->hasMedia('featured_image'))
+        @php
+            $productMedia = $product->hasMedia('featured_image')
+                ? $product->getFirstMedia('featured_image')
+                : ($product->hasMedia('gallery')
+                    ? $product->getFirstMedia('gallery')
+                    : null);
+        @endphp
+
+        @if($productMedia)
             <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
-                <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                <img src="{{ thumb($productMedia, 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                      alt="{{ $product->getTranslated('title') }}"
                      class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                      loading="lazy"
@@ -83,9 +91,17 @@
         <div class="md:col-span-4">
             <a href="{{ $productUrl }}"
                class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
-                @if($product->hasMedia('featured_image'))
+                @php
+                    $listProductMedia = $product->hasMedia('featured_image')
+                        ? $product->getFirstMedia('featured_image')
+                        : ($product->hasMedia('gallery')
+                            ? $product->getFirstMedia('gallery')
+                            : null);
+                @endphp
+
+                @if($listProductMedia)
                     <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
-                        <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                        <img src="{{ thumb($listProductMedia, 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                              alt="{{ $product->getTranslated('title') }}"
                              class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                              loading="lazy"

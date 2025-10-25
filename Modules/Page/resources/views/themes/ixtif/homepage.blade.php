@@ -455,6 +455,75 @@
     </div>
 </section>
 
+<!-- Contact Section - Service Categories Style (Alternative) -->
+<section class="py-20 bg-gray-50/50 dark:bg-gray-900/20">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0">
+        <div class="flex flex-wrap lg:flex-nowrap">
+            <!-- 1. Telefon -->
+            <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
+                <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
+                <a href="tel:02167553555" class="group block">
+                    <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
+                            <i class="fa-light fa-phone text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                        </div>
+                        <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">Telefon</h3>
+                        <p class="text-sm md:text-base text-blue-600 dark:text-blue-400 font-semibold">0216 755 3 555</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 2. WhatsApp -->
+            <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
+                <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent"></div>
+                <a href="https://wa.me/905010056758" target="_blank" class="group block">
+                    <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
+                            <i class="fa-brands fa-whatsapp text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                        </div>
+                        <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">WhatsApp</h3>
+                        <p class="text-sm md:text-base text-green-600 dark:text-green-400 font-semibold">0501 005 67 58</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 3. E-posta -->
+            <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
+                <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-purple-500 dark:via-purple-400 to-transparent"></div>
+                <a href="mailto:info@ixtif.com" class="group block">
+                    <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
+                            <i class="fa-light fa-envelope text-2xl md:text-4xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                        </div>
+                        <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">E-posta</h3>
+                        <p class="text-sm md:text-base text-purple-600 dark:text-purple-400 font-semibold">info@ixtif.com</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- 4. Canlı Destek -->
+            <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
+                <button @click="if(window.Alpine?.store('aiChat')?.openFloating) { window.Alpine.store('aiChat').openFloating(); } else { console.warn('AI Chat store not ready'); }" class="group block w-full">
+                    <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center relative">
+                        <!-- AI Badge -->
+                        <div class="absolute top-2 right-2 md:top-4 md:right-4">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 md:px-2 md:py-1 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 backdrop-blur-sm text-gray-900 dark:text-white text-[10px] font-bold rounded-full italic border border-cyan-300 dark:border-cyan-600">
+                                <i class="fa-light fa-sparkles text-yellow-600 dark:text-yellow-400"></i>
+                                AI
+                            </span>
+                        </div>
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
+                            <i class="fa-light fa-robot text-2xl md:text-4xl text-white group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"></i>
+                        </div>
+                        <h3 class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">Canlı Destek</h3>
+                        <p class="text-sm md:text-base text-orange-600 dark:text-orange-400 font-semibold">Sohbete Başla</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
 {{-- Alpine.js Component --}}
 <script>
     function homepage() {

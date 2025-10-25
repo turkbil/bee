@@ -107,11 +107,11 @@
                         @endphp
                         <a href="{{ url('/shop/kategori/' . $subcategorySlug) }}"
                            class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
-                            <div class="flex flex-col items-center text-center">
+                            <div class="flex flex-col items-center justify-center text-center h-full min-h-[120px]">
                                 @if($subcategory->icon_class)
-                                    <i class="{{ $subcategory->icon_class }} text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                                    <i class="{{ $subcategory->icon_class }} text-5xl text-blue-500 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
                                 @else
-                                    <i class="fa-light fa-folder text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                                    <i class="fa-light fa-folder text-5xl text-blue-500 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
                                 @endif
                                 <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                     {{ $subcategory->getTranslated('title') }}

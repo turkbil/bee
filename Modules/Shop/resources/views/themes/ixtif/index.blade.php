@@ -21,9 +21,7 @@
                                 <div class="flex flex-col justify-between">
                                     <div class="flex items-center gap-6 mb-6">
                                         @if($selectedCategory->icon_class)
-                                            <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl">
-                                                <i class="{{ $selectedCategory->icon_class }} text-5xl text-white"></i>
-                                            </div>
+                                            <i class="{{ $selectedCategory->icon_class }} text-6xl text-white drop-shadow-lg"></i>
                                         @endif
                                         <div>
                                             <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">{{ $selectedCategory->getTranslated('title') }}</h1>
@@ -96,9 +94,7 @@
                         <!-- Left: Title & Breadcrumb -->
                         <div class="flex flex-col justify-between">
                             <div class="flex items-center gap-6">
-                                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                                    <i class="fa-solid fa-store text-5xl text-white"></i>
-                                </div>
+                                <i class="fa-solid fa-store text-6xl text-blue-600 dark:text-blue-400 drop-shadow-lg"></i>
                                 <div>
                                     @if(request('search'))
                                         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">"{{ request('search') }}" Arama Sonuçları</h1>
@@ -193,11 +189,11 @@
                         @endphp
                         <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
                            class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
-                            <div class="flex flex-col items-center text-center">
+                            <div class="flex flex-col items-center justify-center text-center h-full min-h-[120px]">
                                 @if($subcategory->icon_class)
-                                    <i class="{{ $subcategory->icon_class }} text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                                    <i class="{{ $subcategory->icon_class }} text-5xl text-blue-500 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
                                 @else
-                                    <i class="fa-light fa-folder text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                                    <i class="fa-light fa-folder text-5xl text-blue-500 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
                                 @endif
                                 <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                     {{ $subcategory->getTranslated('title') }}
@@ -292,9 +288,7 @@
                                     <a href="/shop/kategori/{{ $rootCategory->getTranslated('slug') }}"
                                        class="group flex items-center gap-3 mb-4 hover:bg-white dark:hover:bg-slate-700 rounded-xl p-3 -m-3 transition-all">
                                         @if($rootCategory->icon_class)
-                                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                                <i class="{{ $rootCategory->icon_class }} text-white text-xl"></i>
-                                            </div>
+                                            <i class="{{ $rootCategory->icon_class }} text-3xl text-blue-500 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
                                         @endif
                                         <div class="flex-1">
                                             <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">

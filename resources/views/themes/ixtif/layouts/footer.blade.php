@@ -62,19 +62,19 @@
                                 @endforeach
                             </div>
 
-                            {{-- İleri-Geri Butonları (Yanyana - Sağda - Her Zaman Görünür) --}}
-                            <div class="flex items-center gap-2">
+                            {{-- İleri-Geri Butonları (Yanyana - Sağda - Sadece İkon) --}}
+                            <div class="flex items-start gap-3 pb-4">
                                 <button @click="scrollLeft()"
                                         @mouseenter="startAutoScroll('left')"
                                         @mouseleave="stopAutoScroll()"
-                                        class="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white flex items-center justify-center transition-all hover:shadow-lg">
-                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                        class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    <i class="fa-solid fa-chevron-left text-lg"></i>
                                 </button>
                                 <button @click="scrollRight()"
                                         @mouseenter="startAutoScroll('right')"
                                         @mouseleave="stopAutoScroll()"
-                                        class="px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 text-white flex items-center justify-center transition-all hover:shadow-lg">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                        class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-lg"></i>
                                 </button>
                             </div>
                         </div>

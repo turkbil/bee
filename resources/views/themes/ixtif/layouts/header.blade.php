@@ -165,7 +165,12 @@
         expandedCategory: null,
         activeMegaMenu: null,
         searchOpen: false,
-        activeCategory: 'first'
+        activeCategory: 'first',
+        init() {
+            this.$watch('activeMegaMenu', value => {
+                console.log('🔵 activeMegaMenu changed:', value);
+            });
+        }
     }"
     class="sticky top-0 left-0 right-0 z-50"
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
@@ -329,7 +334,9 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div id="nav-container" class="flex items-center justify-between py-5 pb-8" @mouseleave="activeMegaMenu = null">
+                <div id="nav-container" class="flex items-center justify-between py-5 pb-8"
+                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')"
+                     @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); activeMegaMenu = null">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3" style="width: 200px;">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">

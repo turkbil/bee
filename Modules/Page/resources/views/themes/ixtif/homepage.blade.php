@@ -227,45 +227,42 @@
     </div>
 </section>
 
-<!-- ABOUT-001 Section -->
-<section id="about-001" class="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900">
-    <div class="container mx-auto px-6 py-20">
-        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
-            <i class="fa-solid fa-hashtag mr-1"></i>ABOUT-001
-        </span>
-
+<!-- About Section -->
+<section class="w-full py-20 relative overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             {{-- Sol: Görsel --}}
-            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl h-[600px] flex items-center justify-center">
-                <div class="text-center text-white">
-                    <i class="fa-solid fa-building text-9xl mb-6 opacity-50"></i>
-                    <p class="text-2xl font-bold">İxtif.com Ofis</p>
+            <div class="relative rounded-3xl h-[600px] flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5"></div>
+                <div class="text-center relative z-10">
+                    <i class="fa-light fa-building text-9xl mb-6 text-blue-600 dark:text-blue-400"></i>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">İxtif.com</p>
                 </div>
             </div>
 
             {{-- Sağ: İçerik --}}
             <div>
-                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">iXtif - Türkiye'nin İstif Pazarı</h2>
+                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Profesyonel İş Ortağınız</h2>
                 <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                    İxtif.com olarak 2018 yılından beri fabrika fazlası, stok ürünleri uygun fiyatlarla müşterilerimize sunuyoruz.
+                    Kurumsal altyapı, eğitimli kadro ve profesyonel hizmet anlayışıyla sektörde fark yaratıyoruz.
                 </p>
                 <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                    Forklift, mobilya, tekstil ve alet & ekipman kategorilerinde 450+ ürünle Türkiye'nin en büyük istif ürünler pazarıyız. Kaliteli ürünleri uygun fiyata ulaştırma misyonuyla yola çıktık ve bugün 24.000+ mutlu müşteriye hizmet veriyoruz.
+                    İstif makineleri ve endüstriyel ekipman alanında uzman ekibimiz, modern tesislerimiz ve kalite standartlarımızla işletmenizin güvenilir çözüm ortağıyız. Satış öncesi danışmanlıktan satış sonrası teknik desteğe kadar her aşamada yanınızdayız.
                 </p>
 
-                {{-- İstatistikler --}}
+                {{-- Özellikler --}}
                 <div class="grid grid-cols-3 gap-6 mb-8">
                     <div class="text-center">
-                        <div class="text-4xl font-black text-blue-600 mb-2">450+</div>
-                        <div class="text-gray-600 dark:text-gray-400">Ürün</div>
+                        <div class="text-4xl font-black text-blue-600 mb-2">6+ Yıl</div>
+                        <div class="text-gray-600 dark:text-gray-400">Tecrübe</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl font-black text-green-600 mb-2">24K+</div>
-                        <div class="text-gray-600 dark:text-gray-400">Müşteri</div>
+                        <div class="text-4xl font-black text-green-600 mb-2">%100</div>
+                        <div class="text-gray-600 dark:text-gray-400">Profesyonel</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl font-black text-purple-600 mb-2">%70</div>
-                        <div class="text-gray-600 dark:text-gray-400">İndirim</div>
+                        <div class="text-4xl font-black text-purple-600 mb-2">7/24</div>
+                        <div class="text-gray-600 dark:text-gray-400">Destek</div>
                     </div>
                 </div>
 

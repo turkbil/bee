@@ -335,11 +335,11 @@
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div id="nav-container" class="flex items-center justify-between pb-8"
-                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')"
-                     @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); activeMegaMenu = null">
+                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3 py-8" style="width: 200px;">
-                        <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
+                        <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full"
+                           @mouseenter="console.log('🔷 LOGO: mouseenter'); activeMegaMenu = null">
                             @php
                                 // LogoService kullan - daha temiz ve bakımı kolay
                                 $logoService = app(\App\Services\LogoService::class);
@@ -471,6 +471,7 @@
                                 @else
                                     <a href="{{ $menuItem['url'] }}"
                                        {{ $menuItem['target'] === '_blank' ? 'target="_blank"' : '' }}
+                                       @mouseenter="activeMegaMenu = null"
                                        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition {{ $menuItem['is_active'] ? 'text-blue-600 dark:text-blue-400' : '' }}">
                                         @if($menuItem['icon'])
                                             <i class="{{ $menuItem['icon'] }} mr-2"></i>
@@ -483,7 +484,8 @@
                     </div>
 
                     {{-- Right Actions --}}
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2"
+                         @mouseenter="console.log('🔶 RIGHT ACTIONS: mouseenter'); activeMegaMenu = null">
                         {{-- Search Button with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
                             <button @click="searchOpen = !searchOpen; activeMegaMenu = null"

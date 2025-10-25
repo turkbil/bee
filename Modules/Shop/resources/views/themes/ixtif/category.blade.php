@@ -11,45 +11,43 @@
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
 
         {{-- Glassmorphism Subheader (Glass Effect) --}}
-        <section class="py-8">
+        <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
             <!-- Container matching header width -->
-            <div class="container mx-auto px-4">
-                <!-- Glass Effect Background -->
-                <div class="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-gray-200/50 dark:border-white/10 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)]">
-                        <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
-                            <!-- Left: Title & Breadcrumb -->
-                            <div class="flex flex-col justify-between">
-                                <div class="flex items-center gap-6 mb-6">
-                                    @if($category->icon_class)
-                                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                                            <i class="{{ $category->icon_class }} text-5xl text-white"></i>
-                                        </div>
+            <div class="container mx-auto px-4 py-8">
+                <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
+                    <!-- Left: Title & Breadcrumb -->
+                    <div class="flex flex-col justify-between">
+                        <div class="flex items-center gap-6 mb-6">
+                            @if($category->icon_class)
+                                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
+                                    <i class="{{ $category->icon_class }} text-5xl text-white"></i>
+                                </div>
+                            @endif
+                            <div>
+                                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">{{ $category->getTranslated('title') }}</h1>
+                                <!-- Breadcrumb -->
+                                <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-home text-xs"></i>
+                                        <span>Ana Sayfa</span>
+                                    </a>
+                                    <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                    <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Ürünler</a>
+                                    @if($category->parent)
+                                        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                        <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                            {{ $category->parent->getTranslated('title') }}
+                                        </a>
                                     @endif
-                                    <div>
-                                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">{{ $category->getTranslated('title') }}</h1>
-                                        <!-- Breadcrumb -->
-                                        <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                            <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
-                                                <i class="fa-solid fa-home text-xs"></i>
-                                                <span>Ana Sayfa</span>
-                                            </a>
-                                            <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                            <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Ürünler</a>
-                                            @if($category->parent)
-                                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                                <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                                    {{ $category->parent->getTranslated('title') }}
-                                                </a>
-                                            @endif
-                                            <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                            <span class="font-semibold text-gray-900 dark:text-white">{{ $category->getTranslated('title') }}</span>
-                                        </div>
-                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                    <span class="font-semibold text-gray-900 dark:text-white">{{ $category->getTranslated('title') }}</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Right: Search & Sort - No Card -->
-                            <div class="flex flex-col justify-center space-y-3" x-data="{
+                    <!-- Right: Search & Sort - No Card -->
+                    <div class="flex flex-col justify-center space-y-3" x-data="{
                                 query: '{{ request('search') }}',
                                 selectedCategory: '{{ $category->slug[app()->getLocale()] ?? $category->slug['tr'] ?? '' }}',
                                 keywords: [],
@@ -226,8 +224,6 @@
                                            :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
                                     </button>
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -227,6 +227,58 @@
     </div>
 </section>
 
+<!-- ABOUT-001 Section -->
+<section id="about-001" class="min-h-screen flex items-center justify-center bg-white dark:bg-slate-900">
+    <div class="container mx-auto px-6 py-20">
+        <span class="inline-block bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-6">
+            <i class="fa-solid fa-hashtag mr-1"></i>ABOUT-001
+        </span>
+
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            {{-- Sol: Görsel --}}
+            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl h-[600px] flex items-center justify-center">
+                <div class="text-center text-white">
+                    <i class="fa-solid fa-building text-9xl mb-6 opacity-50"></i>
+                    <p class="text-2xl font-bold">İxtif.com Ofis</p>
+                </div>
+            </div>
+
+            {{-- Sağ: İçerik --}}
+            <div>
+                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">iXtif - Türkiye'nin İstif Pazarı</h2>
+                <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                    İxtif.com olarak 2018 yılından beri fabrika fazlası, stok ürünleri uygun fiyatlarla müşterilerimize sunuyoruz.
+                </p>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                    Forklift, mobilya, tekstil ve alet & ekipman kategorilerinde 450+ ürünle Türkiye'nin en büyük istif ürünler pazarıyız. Kaliteli ürünleri uygun fiyata ulaştırma misyonuyla yola çıktık ve bugün 24.000+ mutlu müşteriye hizmet veriyoruz.
+                </p>
+
+                {{-- İstatistikler --}}
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="text-center">
+                        <div class="text-4xl font-black text-blue-600 mb-2">450+</div>
+                        <div class="text-gray-600 dark:text-gray-400">Ürün</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-black text-green-600 mb-2">24K+</div>
+                        <div class="text-gray-600 dark:text-gray-400">Müşteri</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-black text-purple-600 mb-2">%70</div>
+                        <div class="text-gray-600 dark:text-gray-400">İndirim</div>
+                    </div>
+                </div>
+
+                {{-- CTA Butonu --}}
+                <a href="/hakkimizda" class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all">
+                    <span>Hakkımızda Daha Fazla</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Quick View Modal -->
 <div x-show="showModal"
      x-transition:enter="transition ease-out duration-300"

@@ -7,9 +7,6 @@
 
 @section('module_content')
     <div class="relative" x-data="shopCategoryPage()" x-init="init()">
-        {{-- Gradient Background --}}
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
-
         {{-- Glassmorphism Subheader (Glass Effect) --}}
         <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
             <!-- Container matching header width -->
@@ -80,7 +77,7 @@
 
         {{-- Subcategories Section --}}
         @if($subcategories->count() > 0)
-        <section class="py-12 border-y border-gray-200 dark:border-white/10 bg-white/50 dark:bg-white/5">
+        <section class="py-12">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                     <i class="fa-light fa-folder-tree text-blue-600 dark:text-blue-400"></i>
@@ -94,7 +91,7 @@
                             $subcategoryProductCount = $subcategory->products()->active()->published()->count();
                         @endphp
                         <a href="{{ url('/shop/kategori/' . $subcategorySlug) }}"
-                           class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
+                           class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
                             <div class="flex flex-col items-center text-center">
                                 @if($subcategory->icon_class)
                                     <i class="{{ $subcategory->icon_class }} text-4xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-transform"></i>
@@ -141,7 +138,7 @@
 
                     {{-- End Message --}}
                     <div x-show="!hasMore && loaded" class="flex justify-center items-center py-12" x-cloak>
-                        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
+                        <div class="bg-white/50 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-white/10 px-8 py-6">
                             <p class="text-gray-600 dark:text-gray-400 font-medium text-center">
                                 <i class="fa-light fa-check-circle text-green-600 dark:text-green-400 mr-2"></i>
                                 Tüm ürünler yüklendi

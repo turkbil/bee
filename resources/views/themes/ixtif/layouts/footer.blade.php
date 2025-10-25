@@ -18,20 +18,44 @@
 
                 {{-- Popüler Aramalar (SADECE LG+ EKRANLARDA) --}}
                 @if($popularSearches->count() > 0)
-                    <div class="space-y-4 hidden lg:!block">
-                        <div class="flex flex-wrap justify-center gap-3">
-                            {{-- Popüler Aramalar Linki (İlk Sırada) --}}
-                            <a href="{{ route('search.tags') }}"
-                               class="bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
-                                Popüler Aramalar
-                            </a>
+                    <div class="space-y-4 hidden lg:!block"
+                         x-data="{
+                             scrollLeft() {
+                                 this.$refs.scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
+                             },
+                             scrollRight() {
+                                 this.$refs.scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+                             }
+                         }">
+                        <div class="flex items-center justify-center gap-2 relative">
+                            {{-- Sol Buton --}}
+                            <button @click="scrollLeft()"
+                                    class="w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all hover:scale-110">
+                                <i class="fa-solid fa-chevron-left text-sm"></i>
+                            </button>
 
-                            @foreach($popularSearches as $search)
-                                <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
-                                   class="bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
-                                    {{ $search->query }}
+                            {{-- Scroll Container --}}
+                            <div x-ref="scrollContainer"
+                                 class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide flex-1">
+                                {{-- Popüler Aramalar Linki (İlk Sırada) --}}
+                                <a href="{{ route('search.tags') }}"
+                                   class="flex-shrink-0 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
+                                    Popüler Aramalar
                                 </a>
-                            @endforeach
+
+                                @foreach($popularSearches as $search)
+                                    <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
+                                       class="flex-shrink-0 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
+                                        {{ $search->query }}
+                                    </a>
+                                @endforeach
+                            </div>
+
+                            {{-- Sağ Buton --}}
+                            <button @click="scrollRight()"
+                                    class="w-8 h-8 rounded-full bg-white/50 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 transition-all hover:scale-110">
+                                <i class="fa-solid fa-chevron-right text-sm"></i>
+                            </button>
                         </div>
                     </div>
                 @endif

@@ -130,7 +130,7 @@
                                     {{-- Autocomplete Dropdown --}}
                                     <div x-show="isOpen"
                                          x-transition
-                                         class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
+                                         class="absolute top-full left-[-150px] right-[-150px] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
                                          style="display: none;">
                                         <div class="max-h-[28rem] overflow-y-auto">
                                             <div class="grid gap-4 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">

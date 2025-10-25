@@ -258,19 +258,34 @@
                             </p>
                         @endif
 
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="#contact"
-                                class="inline-flex items-center justify-center gap-3 bg-white text-purple-600 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
-                                <i class="fa-solid fa-envelope"></i>
-                                <span>Teklif Al</span>
-                            </a>
-                            @if($contactPhone)
-                                <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                                    class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
-                                    <i class="fa-solid fa-phone"></i>
-                                    <span>{{ $contactPhone }}</span>
+                        <div class="flex flex-col gap-4">
+                            {{-- Teklif Al & Telefon (Yan Yana) --}}
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <a href="#contact"
+                                    class="inline-flex items-center justify-center gap-3 bg-white text-purple-600 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all">
+                                    <i class="fa-solid fa-envelope"></i>
+                                    <span>Teklif Al</span>
                                 </a>
-                            @endif
+                                @if($contactPhone)
+                                    <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                        class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
+                                        <i class="fa-solid fa-phone"></i>
+                                        <span>{{ $contactPhone }}</span>
+                                    </a>
+                                @endif
+                            </div>
+
+                            {{-- Yapay Zeka ile Soru Sor (Full Width) --}}
+                            <button @click="$store.aiChat.openFloating()"
+                                class="inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-robot text-xl"></i>
+                                    <div class="flex flex-col items-start">
+                                        <span class="text-base leading-tight">Yapay Zeka ile Soru Sor</span>
+                                        <span class="text-xs opacity-90 font-normal">iXtif AI Asistanı</span>
+                                    </div>
+                                </div>
+                            </button>
                         </div>
                     </div>
 

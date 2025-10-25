@@ -8,6 +8,7 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
+use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
 use Modules\Shop\App\Http\Controllers\Admin\ShopFieldTemplateController;
 
 // Admin rotaları
@@ -19,6 +20,11 @@ Route::middleware(['admin', 'tenant'])
         Route::get('/shop', ShopComponent::class)
             ->middleware('module.permission:shop,view')
             ->name('shop.index');
+
+        // Anasayfa Ürünleri Sıralama
+        Route::get('/shop/homepage-products', HomepageProductsComponent::class)
+            ->middleware('module.permission:shop,update')
+            ->name('shop.homepage-products');
 
         Route::prefix('shop/products')
             ->name('shop.products.')

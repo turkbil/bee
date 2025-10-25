@@ -289,7 +289,7 @@
 
                             {{-- Yapay Zeka ile Soru Sor - Hero sağdaki inline chat'i aç --}}
                             <button @click="isChatOpen = true"
-                                class="inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">
+                                class="inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all self-start">
                                 <i class="fa-solid fa-robot"></i>
                                 <span>Yapay Zeka ile Soru Sor</span>
                             </button>

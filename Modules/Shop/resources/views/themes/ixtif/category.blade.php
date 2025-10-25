@@ -123,32 +123,30 @@
                                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
                                     </form>
 
-                                    {{-- Autocomplete Dropdown - Extra Wide --}}
+                                    {{-- Autocomplete Dropdown - Ultra Wide --}}
                                     <div x-show="isOpen"
                                          x-transition
-                                         class="absolute top-full left-1/2 -translate-x-1/2 w-[800px] max-w-[95vw] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
+                                         class="absolute top-full left-1/2 -translate-x-1/2 w-[1200px] max-w-[98vw] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden"
                                          style="display: none;">
-                                        <div class="max-h-[28rem] overflow-y-auto">
-                                            <div class="grid gap-4 px-4 py-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                                        <div class="max-h-[32rem] overflow-y-auto">
+                                            <div class="grid gap-6 px-6 py-6 lg:grid-cols-2">
                                                 {{-- Keywords --}}
                                                 <div x-show="keywords.length > 0"
-                                                     class="space-y-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 lg:p-5 bg-gray-50 dark:bg-gray-900/40"
+                                                     class="space-y-3 border border-gray-200 dark:border-gray-700 rounded-lg p-5 bg-gray-50 dark:bg-gray-900/40"
                                                      style="display: none;">
-                                                    <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                                                        <span><i class="fa-solid fa-fire text-orange-500 mr-1"></i> Popüler Aramalar</span>
-                                                        <span class="text-[10px] text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
+                                                    <div class="flex items-center justify-between text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                                        <span><i class="fa-solid fa-fire text-orange-500 mr-2"></i> Popüler Aramalar</span>
+                                                        <span class="text-xs text-gray-400 dark:text-gray-500" x-text="`${keywords.length}`"></span>
                                                     </div>
-                                                    <div class="space-y-1">
+                                                    <div class="space-y-2">
                                                         <template x-for="(keyword, index) in keywords" :key="'k-'+index">
                                                             <a href="#"
                                                                @click.prevent="selectKeyword(keyword)"
-                                                               class="flex items-center justify-between gap-3 px-3 py-2 rounded-md transition group hover:bg-white dark:hover:bg-gray-800">
-                                                                <div class="flex items-center gap-3">
-                                                                    <span class="w-7 h-7 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
-                                                                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                                                                    </span>
-                                                                    <span class="font-medium text-sm text-gray-900 dark:text-white" x-text="keyword.text"></span>
-                                                                </div>
+                                                               class="flex items-center gap-3 px-4 py-3 rounded-md transition group hover:bg-white dark:hover:bg-gray-800">
+                                                                <span class="w-8 h-8 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                                                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                                                </span>
+                                                                <span class="font-medium text-base text-gray-900 dark:text-white" x-text="keyword.text"></span>
                                                             </a>
                                                         </template>
                                                     </div>
@@ -156,26 +154,26 @@
 
                                                 {{-- Products --}}
                                                 <div x-show="products.length > 0" class="space-y-3" style="display: none;">
-                                                    <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                                                        <span><i class="fa-solid fa-box text-blue-500 mr-1"></i> Ürünler</span>
+                                                    <div class="flex items-center justify-between text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                                                        <span><i class="fa-solid fa-box text-blue-500 mr-2"></i> Ürünler</span>
                                                     </div>
-                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    <div class="grid grid-cols-1 gap-3">
                                                         <template x-for="(product, index) in products" :key="'p-'+index">
                                                             <a href="#"
                                                                @click.prevent="selectProduct(product)"
-                                                               class="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition group hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md">
-                                                                <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                                               class="flex gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition group hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md">
+                                                                <div class="w-20 h-20 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                                                                     <template x-if="product.image">
                                                                         <img :src="product.image" :alt="product.title" class="w-full h-full object-cover">
                                                                     </template>
                                                                     <template x-if="!product.image">
-                                                                        <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 text-xl"></i>
+                                                                        <i class="fa-solid fa-cube text-gray-400 dark:text-gray-500 text-2xl"></i>
                                                                     </template>
                                                                 </div>
                                                                 <div class="flex-1 min-w-0">
-                                                                    <div class="font-medium text-sm text-gray-900 dark:text-white leading-snug line-clamp-2" x-html="product.highlighted_title || product.title"></div>
+                                                                    <div class="font-semibold text-base text-gray-900 dark:text-white leading-snug line-clamp-2 mb-1" x-html="product.highlighted_title || product.title"></div>
                                                                     <p x-show="product.highlighted_description"
-                                                                       class="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2"
+                                                                       class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2"
                                                                        x-html="product.highlighted_description"></p>
                                                                     <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
                                                                         <span x-text="product.type_label"></span>
@@ -191,9 +189,9 @@
                                         {{-- View All Results --}}
                                         <a :href="`/search?q=${encodeURIComponent(query)}`"
                                            x-show="total > 0"
-                                           class="block p-4 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold transition border-t border-gray-200 dark:border-gray-700"
+                                           class="block p-5 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-bold text-base transition border-t border-gray-200 dark:border-gray-700"
                                            style="display: none;">
-                                            <i class="fa-solid fa-arrow-right mr-2"></i>
+                                            <i class="fa-solid fa-arrow-right mr-2 text-lg"></i>
                                             <span x-text="`Tüm ${total} sonucu gör`"></span>
                                         </a>
                                     </div>
@@ -215,12 +213,14 @@
                                             x-data="{ view: 'grid' }"
                                             class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
                                                    hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
-                                                   active:scale-95 transition-all duration-300 overflow-hidden flex items-center justify-center group">
+                                                   active:scale-95 transition-all duration-300 overflow-hidden group">
                                         <!-- Grid Icon -->
-                                        <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 absolute inset-0 flex items-center justify-center transition-all duration-500 text-lg"
+                                        <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
+                                                  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 text-2xl"
                                            :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
                                         <!-- List Icon -->
-                                        <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 absolute inset-0 flex items-center justify-center transition-all duration-500 text-lg"
+                                        <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
+                                                  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 text-2xl"
                                            :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
                                     </button>
                                 </div>

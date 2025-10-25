@@ -47,17 +47,9 @@
 
 
                     {{-- Product Image - Conditional BG --}}
-                    @php
-                        $productMedia = $featuredProduct->hasMedia('featured_image')
-                            ? $featuredProduct->getFirstMedia('featured_image')
-                            : ($featuredProduct->hasMedia('gallery')
-                                ? $featuredProduct->getFirstMedia('gallery')
-                                : null);
-                    @endphp
-
-                    @if($productMedia)
+                    @if($featuredProduct->hasMedia('featured_image'))
                         <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-48 group-hover:scale-105 transition-transform duration-300">
-                            <img src="{{ thumb($productMedia, 300, 300, ['quality' => 85, 'scale' => 0]) }}"
+                            <img src="{{ thumb($featuredProduct->getFirstMedia('featured_image'), 300, 300, ['quality' => 85, 'scale' => 0]) }}"
                                  alt="{{ is_array($featuredProduct->title) ? $featuredProduct->title['tr'] : $featuredProduct->title }}"
                                  class="w-full h-full object-contain"
                                  loading="lazy">
@@ -124,18 +116,10 @@
                         <a href="/shop/{{ is_array($product->slug) ? $product->slug['tr'] : $product->slug }}"
                            class="block bg-gray-50 dark:bg-gray-700 rounded-xl p-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 border border-gray-200 dark:border-gray-600 {{ $index > 0 ? 'mt-2' : '' }}">
                             <div class="flex items-center gap-2.5">
-                                @php
-                                    $listProductMedia = $product->hasMedia('featured_image')
-                                        ? $product->getFirstMedia('featured_image')
-                                        : ($product->hasMedia('gallery')
-                                            ? $product->getFirstMedia('gallery')
-                                            : null);
-                                @endphp
-
-                                @if($listProductMedia)
+                                @if($product->hasMedia('featured_image'))
                                     {{-- Fotoğraf varsa: Beyaz/Gri arka plan --}}
                                     <div class="w-11 h-11 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 p-1 border border-gray-200 dark:border-gray-600">
-                                        <img src="{{ thumb($listProductMedia, 44, 44, ['quality' => 85, 'scale' => 0]) }}"
+                                        <img src="{{ thumb($product->getFirstMedia('featured_image'), 44, 44, ['quality' => 85, 'scale' => 0]) }}"
                                              alt="{{ is_array($product->title) ? $product->title['tr'] : $product->title }}"
                                              class="w-full h-full object-contain"
                                              loading="lazy">

@@ -1,4 +1,4 @@
-<div class="w-full rounded-2xl overflow-hidden relative">
+<div class="w-full rounded-2xl overflow-hidden relative border border-gray-300 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
     <div class="grid grid-cols-12 lg:grid-cols-12 gap-0 min-h-[480px]">
 
         {{-- ========================================== --}}

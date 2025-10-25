@@ -208,30 +208,14 @@
                         </h3>
                     </a>
 
-                    <!-- Price & CTA -->
-                    <div class="pt-3 md:pt-4 lg:pt-5 border-t border-gray-300 dark:border-gray-500 flex items-center justify-between">
+                    <!-- Price -->
+                    @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
+                    <div class="pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500">
                         <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                            Fiyat Sorunuz
+                            {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
                         </div>
-                        <button
-                            @click="openProductModal({
-                                id: {{ $product->id }},
-                                title: '{{ addslashes($productTitle) }}',
-                                slug: '{{ $productSlug }}',
-                                url: '{{ $productUrl }}',
-                                image: '{{ $productImage }}',
-                                category: '{{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}',
-                                brand: '{{ $product->brand?->getTranslated('title', app()->getLocale()) ?? '' }}',
-                                shortDescription: '{{ addslashes($product->getTranslated('short_description', app()->getLocale()) ?? '') }}',
-                                sku: '{{ $product->sku ?? '' }}',
-                                primarySpecs: {{ json_encode(array_values(array_filter($product->primary_specs ?? [], fn($spec) => is_array($spec) && ($spec['label'] ?? false) && ($spec['value'] ?? false)))) }},
-                                images: {{ json_encode(array_merge($product->getMedia('featured_image')->map(fn($media) => $media->getUrl())->toArray(), $product->getMedia('gallery')->map(fn($media) => $media->getUrl())->toArray())) }}
-                            })"
-                            class="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold text-blue-800 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-200 hover:gap-2 md:hover:gap-3 transition-all">
-                            <span>Özet</span>
-                            <i class="fa-solid fa-arrow-right text-xs md:text-sm group-hover:translate-x-1 transition-transform"></i>
-                        </button>
                     </div>
+                    @endif
                 </div>
             </div>
             @endforeach

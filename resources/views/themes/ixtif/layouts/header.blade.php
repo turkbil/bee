@@ -166,7 +166,6 @@
         activeMegaMenu: null,
         searchOpen: false,
         activeCategory: 'first',
-        closeTimeout: null,
         init() {
             this.$watch('activeMegaMenu', value => {
                 console.log('🔵 activeMegaMenu changed:', value);
@@ -335,9 +334,9 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div id="nav-container" class="flex items-center justify-between py-5 pb-8"
-                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter'); if (closeTimeout) { clearTimeout(closeTimeout); closeTimeout = null; console.log('⏹️ Timeout cancelled'); }"
-                     @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); closeTimeout = setTimeout(() => { console.log('⏱️ Timeout fired, closing menu'); activeMegaMenu = null; }, 200)">
+                <div id="nav-container" class="flex items-center justify-between py-5"
+                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')"
+                     @mouseleave="console.log('🔴 NAV-CONTAINER: mouseleave'); activeMegaMenu = null">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3" style="width: 200px;">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
@@ -392,7 +391,7 @@
                     </div>
 
                     {{-- Main Navigation (Desktop) --}}
-                    <div class="hidden lg:flex items-center gap-6">
+                    <div class="hidden lg:flex items-center gap-6 pb-8">
                         {{-- Forklift (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"
@@ -877,7 +876,7 @@
                 </div>
                 {{-- Mega Menu Dropdown - Always below search if both open --}}
                 <div x-show="activeMegaMenu !== null"
-                     @mouseenter="console.log('🟡 MEGA-MENU WRAPPER: mouseenter'); if (closeTimeout) { clearTimeout(closeTimeout); closeTimeout = null; console.log('⏹️ Timeout cancelled (mega menu)'); }"
+                     @mouseenter="console.log('🟡 MEGA-MENU WRAPPER: mouseenter')"
                      @mouseleave="console.log('🟠 MEGA-MENU WRAPPER: mouseleave'); activeMegaMenu = null"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 -translate-y-3"
@@ -886,7 +885,7 @@
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-10" style="z-index:10;">
-                    <div class="container mx-auto -mt-8 pt-12">
+                    <div class="container mx-auto -mt-8">
                             {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                             <div style="display: grid;">
                                 {{-- Forklift Mega Menu --}}

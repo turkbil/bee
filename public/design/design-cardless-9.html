@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardless Design #9 - Flowing Text | iXtif Design System</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; }
+        .drop-cap::first-letter {
+            float: left;
+            font-size: 4rem;
+            line-height: 0.8;
+            margin: 0.1em 0.1em 0 0;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+    <!-- Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex gap-3">
+        <a href="design-cardless-8.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left text-white"></i>
+        </a>
+        <a href="/design" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-grid-2 text-white"></i>
+        </a>
+        <a href="design-cardless-10.html" class="w-12 h-12 rounded-full bg-gray-900 hover:bg-gray-800 shadow-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- Page Counter -->
+    <div class="fixed top-6 left-6 z-50">
+        <div class="bg-gray-900 text-white rounded-full px-6 py-3 shadow-xl">
+            <span class="font-bold">9</span>
+            <span class="mx-2 opacity-50">/</span>
+            <span class="opacity-50">10</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="container mx-auto px-4 pt-24 pb-12">
+        <div class="max-w-4xl mx-auto">
+            <span class="inline-block px-6 py-2 bg-gray-900 text-white rounded-full text-sm font-bold mb-6">
+                Cardless Design #9
+            </span>
+            <h1 class="text-7xl md:text-9xl font-black mb-6 leading-none">
+                Flowing<br/>Text
+            </h1>
+            <p class="text-2xl text-gray-600 leading-relaxed">
+                Metin akışında entegre görseller. Gazete/dergi tarzı. Card yok, sadece metin ve görsel uyumu.
+            </p>
+        </div>
+    </div>
+
+    <!-- Article Style Content -->
+    <div class="container mx-auto px-4 pb-20">
+        <div class="max-w-4xl mx-auto">
+
+            <!-- Article 1 -->
+            <article class="mb-20 pb-20 border-b-2 border-gray-200">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-forklift text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-blue-600 font-bold">Forklift / Elektrikli Model</div>
+                        <div class="text-xs text-gray-500">25 Ekim 2025 • 5 dakika okuma</div>
+                    </div>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-8 leading-tight">
+                    Elektrikli Forklift ile İşletme Maliyetlerinizi %40 Azaltın
+                </h2>
+
+                <!-- Image Right Floated -->
+                <img src="https://images.unsplash.com/photo-1586864387634-40f157b671c4?w=600&h=450&fit=crop"
+                     alt="Elektrikli Forklift"
+                     class="md:float-right md:ml-8 mb-6 md:w-1/2 w-full rounded-2xl">
+
+                <p class="text-xl text-gray-700 leading-relaxed mb-6 drop-cap">
+                    Yüksek performanslı elektrikli forklift, modern işletmelerin tercihi haline geldi. 2000 kg taşıma kapasitesi ile orta ve büyük ölçekli depolarda mükemmel performans sunuyor. Sessiz çalışma özelliği sayesinde kapalı alanlarda ideal bir çözüm.
+                </p>
+
+                <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                    8 saatlik şarjla kesintisiz çalışma imkanı sunan elektrikli modelimiz, işletme maliyetlerinizi önemli ölçüde düşürüyor. Dizel veya LPG'li modellere göre %40'a varan yakıt tasarrufu sağlayabilirsiniz.
+                </p>
+
+                <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                    Çevre dostu teknoloji ile sıfır emisyon elde ederken, düşük gürültü seviyesi ile çalışanlarınızın konforunu artırıyorsunuz. Hidrolik sistemi sayesinde 4.5 metreye kadar sorunsuz kaldırma yapabilirsiniz.
+                </p>
+
+                <!-- Technical Specs Grid -->
+                <div class="grid md:grid-cols-3 gap-6 mb-8 p-6 bg-blue-50 rounded-2xl">
+                    <div>
+                        <div class="text-3xl font-black mb-1">2000 kg</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Taşıma Kapasitesi</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black mb-1">4.5 m</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Maksimum Kaldırma</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black mb-1">8 saat</div>
+                        <div class="text-sm text-gray-600 uppercase tracking-wider">Şarj Ömrü</div>
+                    </div>
+                </div>
+
+                <!-- Price & CTA -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-8 bg-gray-900 text-white rounded-2xl">
+                    <div>
+                        <div class="text-sm opacity-70 mb-2">Başlangıç Fiyatı</div>
+                        <div class="text-5xl font-black mb-2">₺850,000</div>
+                        <div class="flex items-center gap-4 text-sm">
+                            <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.8/5 (124 değerlendirme)</span>
+                            <span><i class="fa-solid fa-box mr-1"></i>12 stokta</span>
+                        </div>
+                    </div>
+                    <button class="mt-6 md:mt-0 px-10 py-4 bg-white text-black font-black text-lg hover:scale-105 transition">
+                        Detaylı İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="mb-20 pb-20 border-b-2 border-gray-200">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-dolly text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-purple-600 font-bold">Transpalet / Manuel Model</div>
+                        <div class="text-xs text-gray-500">24 Ekim 2025 • 3 dakika okuma</div>
+                    </div>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-8 leading-tight">
+                    Manuel Transpalet: Basit Ama Vazgeçilmez
+                </h2>
+
+                <!-- Image Left Floated -->
+                <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=600&h=450&fit=crop"
+                     alt="Manuel Transpalet"
+                     class="md:float-left md:mr-8 mb-6 md:w-1/2 w-full rounded-2xl">
+
+                <p class="text-xl text-gray-700 leading-relaxed mb-6 drop-cap">
+                    Sağlam yapısı ve ergonomik tasarımıyla ağır yükleri kolayca taşıyın. 2500 kg taşıma kapasitesi ile küçük ve orta ölçekli depolarda ideal çözüm. Uzun ömürlü hidrolik sistem sayesinde yıllarca sorunsuz kullanım.
+                </p>
+
+                <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                    Yüksek kaliteli çelik konstrüksiyon, ağır yük taşıma işlemlerinde maksimum dayanıklılık sağlıyor. Bakım gerektirmeyen tasarım sayesinde işletme maliyetlerinizi minimumda tutabilirsiniz.
+                </p>
+
+                <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                    1150 mm çatal uzunluğu ve 540 mm çatal genişliği ile standart paletlere mükemmel uyum. 200 mm kaldırma mesafesi, yükleri kolayca hareket ettirmenizi sağlıyor.
+                </p>
+
+                <!-- Specs -->
+                <div class="grid md:grid-cols-4 gap-4 mb-8">
+                    <div class="p-4 bg-gray-50 rounded-xl">
+                        <div class="text-2xl font-black mb-1">2500 kg</div>
+                        <div class="text-xs text-gray-600">Kapasite</div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl">
+                        <div class="text-2xl font-black mb-1">200 mm</div>
+                        <div class="text-xs text-gray-600">Kaldırma</div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl">
+                        <div class="text-2xl font-black mb-1">1150 mm</div>
+                        <div class="text-xs text-gray-600">Çatal Uzun.</div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl">
+                        <div class="text-2xl font-black mb-1">540 mm</div>
+                        <div class="text-xs text-gray-600">Çatal Gen.</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-8 bg-gray-900 text-white rounded-2xl">
+                    <div>
+                        <div class="text-sm opacity-70 mb-2">Özel Kampanya Fiyatı</div>
+                        <div class="text-5xl font-black mb-2">₺12,500</div>
+                        <div class="flex items-center gap-4 text-sm">
+                            <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.9/5 (89 değerlendirme)</span>
+                            <span><i class="fa-solid fa-fire text-orange-400 mr-1"></i>En çok satan</span>
+                        </div>
+                    </div>
+                    <button class="mt-6 md:mt-0 px-10 py-4 bg-white text-black font-black text-lg hover:scale-105 transition">
+                        Hemen Al <i class="fa-solid fa-shopping-cart ml-2"></i>
+                    </button>
+                </div>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="mb-20">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-box-open-full text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs uppercase tracking-widest text-orange-600 font-bold">İstif Makinesi / Akülü Model</div>
+                        <div class="text-xs text-gray-500">23 Ekim 2025 • 4 dakika okuma</div>
+                    </div>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-8 leading-tight">
+                    Dar Koridorlarda Yüksek Performans
+                </h2>
+
+                <!-- Full Width Image -->
+                <img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=1200&h=600&fit=crop"
+                     alt="İstif Makinesi"
+                     class="w-full rounded-2xl mb-8">
+
+                <p class="text-xl text-gray-700 leading-relaxed mb-6 drop-cap">
+                    Akülü istif makinesi, dar alanlarda yüksek performans arayanlar için ideal çözüm. 1500 kg taşıma kapasitesi ve 3 metreye kadar kaldırma yeteneği ile depo verimliliğinizi artırın.
+                </p>
+
+                <p class="text-lg text-gray-700 leading-relaxed mb-6">
+                    Kompakt tasarım sayesinde dar koridorlarda rahatça manevra yapabilirsiniz. Güçlü 24V akü sistemi ile 6 saate kadar kesintisiz çalışma imkanı sunuyor.
+                </p>
+
+                <p class="text-lg text-gray-700 leading-relaxed mb-8">
+                    AC motor teknolojisi ve elektronik kontrol sistemi sayesinde hassas kontrol ve yumuşak kaldırma elde edebilirsiniz. Ergonomik kumanda paneli ile operatör konforu maksimum seviyede.
+                </p>
+
+                <!-- Feature Boxes -->
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="p-6 border-l-4 border-orange-500 bg-orange-50">
+                        <h3 class="font-black text-xl mb-3">Teknik Özellikler</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fa-solid fa-check-circle text-orange-500 mr-2"></i>1500 kg taşıma kapasitesi</li>
+                            <li><i class="fa-solid fa-check-circle text-orange-500 mr-2"></i>3.0 m kaldırma yüksekliği</li>
+                            <li><i class="fa-solid fa-check-circle text-orange-500 mr-2"></i>24V güçlü akü sistemi</li>
+                            <li><i class="fa-solid fa-check-circle text-orange-500 mr-2"></i>6 saat çalışma süresi</li>
+                        </ul>
+                    </div>
+                    <div class="p-6 border-l-4 border-green-500 bg-green-50">
+                        <h3 class="font-black text-xl mb-3">Paket İçeriği</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li><i class="fa-solid fa-box text-green-500 mr-2"></i>Akülü istif makinesi</li>
+                            <li><i class="fa-solid fa-box text-green-500 mr-2"></i>2 adet 24V akü</li>
+                            <li><i class="fa-solid fa-box text-green-500 mr-2"></i>Şarj cihazı</li>
+                            <li><i class="fa-solid fa-box text-green-500 mr-2"></i>2 yıl garanti</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between p-8 bg-gray-900 text-white rounded-2xl">
+                    <div>
+                        <div class="text-sm opacity-70 mb-2">Yatırım Fiyatı</div>
+                        <div class="text-5xl font-black mb-2">₺185,000</div>
+                        <div class="flex items-center gap-4 text-sm">
+                            <span><i class="fa-solid fa-star text-yellow-400 mr-1"></i>4.7/5</span>
+                            <span><i class="fa-solid fa-box mr-1"></i>8 stokta</span>
+                            <span><i class="fa-solid fa-shield-check mr-1"></i>2 yıl garanti</span>
+                        </div>
+                    </div>
+                    <button class="mt-6 md:mt-0 px-10 py-4 bg-white text-black font-black text-lg hover:scale-105 transition">
+                        Teklif Al <i class="fa-solid fa-envelope ml-2"></i>
+                    </button>
+                </div>
+            </article>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-900 text-white py-20">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h3 class="text-4xl font-black mb-6">Flowing Text / Newspaper Layout</h3>
+                <p class="text-xl text-gray-400 mb-8">
+                    Metin akışında entegre görseller. Gazete/dergi tarzı içerik sunumu. Card kullanmadan, sadece metin ve görsel uyumu ile okuma odaklı deneyim.
+                </p>
+                <div class="flex items-center justify-center gap-8 text-sm text-gray-500">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-green-400"></i>
+                        <span>No Cards</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-newspaper text-blue-400"></i>
+                        <span>Editorial Style</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-text text-purple-400"></i>
+                        <span>Reading Focused</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

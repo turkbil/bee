@@ -1,1 +1,229 @@
+<html lang="tr" class="scroll-smooth"><head><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ixtif.com - Tasarım Kütüphanesi | iXtif - Türkiye'nin İstif Pazarı</title>
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #2563eb, #7c3aed);
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width: 640px){.container{max-width:640px}}@media (min-width: 768px){.container{max-width:768px}}@media (min-width: 1024px){.container{max-width:1024px}}@media (min-width: 1280px){.container{max-width:1280px}}@media (min-width: 1536px){.container{max-width:1536px}}.absolute{position:absolute}.relative{position:relative}.left-6{left:1.5rem}.right-4{right:1rem}.top-1\/2{top:50%}.mx-auto{margin-left:auto;margin-right:auto}.mb-12{margin-bottom:3rem}.mb-16{margin-bottom:4rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mr-2{margin-right:0.5rem}.mt-10{margin-top:2.5rem}.mt-2{margin-top:0.5rem}.mt-20{margin-top:5rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-wrap{flex-wrap:wrap}.justify-center{justify-content:center}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.scroll-smooth{scroll-behavior:smooth}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.border{border-width:1px}.border-2{border-width:2px}.border-white\/10{border-color:rgb(255 255 255 / 0.1)}.border-white\/20{border-color:rgb(255 255 255 / 0.2)}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/5{background-color:rgb(255 255 255 / 0.05)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-blue-400{--tw-gradient-from:#60a5fa var(--tw-gradient-from-position);--tw-gradient-to:rgb(96 165 250 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-cyan-400{--tw-gradient-from:#22d3ee var(--tw-gradient-from-position);--tw-gradient-to:rgb(34 211 238 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-green-400{--tw-gradient-from:#4ade80 var(--tw-gradient-from-position);--tw-gradient-to:rgb(74 222 128 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-purple-400{--tw-gradient-from:#c084fc var(--tw-gradient-from-position);--tw-gradient-to:rgb(192 132 252 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-slate-900{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-purple-400{--tw-gradient-to:rgb(192 132 252 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #c084fc var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-purple-900{--tw-gradient-to:rgb(88 28 135 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #581c87 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-blue-400{--tw-gradient-to:#60a5fa var(--tw-gradient-to-position)}.to-emerald-400{--tw-gradient-to:#34d399 var(--tw-gradient-to-position)}.to-pink-400{--tw-gradient-to:#f472b6 var(--tw-gradient-to-position)}.to-slate-900{--tw-gradient-to:#0f172a var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.px-12{padding-left:3rem;padding-right:3rem}.px-16{padding-left:4rem;padding-right:4rem}.px-4{padding-left:1rem;padding-right:1rem}.py-12{padding-top:3rem;padding-bottom:3rem}.py-20{padding-top:5rem;padding-bottom:5rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.py-8{padding-top:2rem;padding-bottom:2rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-5xl{font-size:3rem;line-height:1}.text-6xl{font-size:3.75rem;line-height:1}.text-8xl{font-size:6rem;line-height:1}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-300{--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-purple-300{--tw-text-opacity:1;color:rgb(216 180 254 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21 / var(--tw-text-opacity, 1))}.placeholder-gray-400::placeholder{--tw-placeholder-opacity:1;color:rgb(156 163 175 / var(--tw-placeholder-opacity, 1))}.backdrop-blur-lg{--tw-backdrop-blur:blur(16px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.focus\:border-purple-400:focus{--tw-border-opacity:1;border-color:rgb(192 132 252 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-4:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-purple-400\/20:focus{--tw-ring-color:rgb(192 132 252 / 0.2)}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-8xl{font-size:6rem;line-height:1}}@media (min-width: 1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media (min-width: 1280px){.xl\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Main Container -->
+    <div x-data="{
+        searchQuery: '',
+        activeCategory: 'all',
+        sections: [
+            { id: 1, name: 'Menu Tasarımları', file: 'design-menu.html', category: 'navigation', icon: 'fa-bars', count: 10, color: 'from-blue-500 to-cyan-500' },
+            { id: 2, name: 'Header Tasarımları', file: 'design-header.html', category: 'navigation', icon: 'fa-rectangle-wide', count: 10, color: 'from-purple-500 to-pink-500' },
+            { id: 3, name: 'Hero Sections', file: 'design-hero.html', category: 'landing', icon: 'fa-rocket-launch', count: 10, color: 'from-orange-500 to-red-500' },
+            { id: 4, name: 'CTA Sections', file: 'design-cta.html', category: 'landing', icon: 'fa-bullhorn', count: 10, color: 'from-green-500 to-emerald-500' },
+            { id: 5, name: 'Ürünler', file: 'design-products.html', category: 'ecommerce', icon: 'fa-box-open', count: 10, color: 'from-yellow-500 to-orange-500' },
+            { id: 6, name: 'Kategoriler', file: 'design-categories.html', category: 'ecommerce', icon: 'fa-grid-2', count: 10, color: 'from-teal-500 to-cyan-500' },
+            { id: 7, name: 'Hizmetler', file: 'design-services.html', category: 'ecommerce', icon: 'fa-briefcase', count: 10, color: 'from-indigo-500 to-purple-500' },
+            { id: 8, name: 'Hakkımızda', file: 'design-about.html', category: 'content', icon: 'fa-building', count: 10, color: 'from-pink-500 to-rose-500' },
+            { id: 9, name: 'Özellikler', file: 'design-features.html', category: 'content', icon: 'fa-sparkles', count: 10, color: 'from-violet-500 to-purple-500' },
+            { id: 10, name: 'İstatistikler', file: 'design-stats.html', category: 'content', icon: 'fa-chart-line', count: 10, color: 'from-blue-500 to-indigo-500' },
+            { id: 11, name: 'Testimonials', file: 'design-testimonials.html', category: 'social', icon: 'fa-quote-left', count: 10, color: 'from-cyan-500 to-blue-500' },
+            { id: 12, name: 'Partners', file: 'design-partners.html', category: 'social', icon: 'fa-handshake', count: 10, color: 'from-emerald-500 to-teal-500' },
+            { id: 13, name: 'Galeri', file: 'design-gallery.html', category: 'social', icon: 'fa-images', count: 10, color: 'from-fuchsia-500 to-pink-500' },
+            { id: 14, name: 'Fiyatlandırma', file: 'design-pricing.html', category: 'pricing', icon: 'fa-tag', count: 10, color: 'from-lime-500 to-green-500' },
+            { id: 15, name: 'Kampanyalar', file: 'design-promotions.html', category: 'pricing', icon: 'fa-badge-percent', count: 10, color: 'from-red-500 to-orange-500' },
+            { id: 16, name: 'İletişim', file: 'design-contact.html', category: 'contact', icon: 'fa-envelope', count: 10, color: 'from-sky-500 to-blue-500' },
+            { id: 17, name: 'Newsletter', file: 'design-newsletter.html', category: 'contact', icon: 'fa-paper-plane', count: 10, color: 'from-purple-500 to-violet-500' },
+            { id: 18, name: 'Blog/Haberler', file: 'design-blog.html', category: 'content', icon: 'fa-newspaper', count: 10, color: 'from-amber-500 to-yellow-500' },
+            { id: 19, name: 'SSS / FAQ', file: 'design-faq.html', category: 'support', icon: 'fa-circle-question', count: 10, color: 'from-rose-500 to-pink-500' },
+            { id: 20, name: 'Footer Tasarımları', file: 'design-footer.html', category: 'navigation', icon: 'fa-rectangle-wide', count: 10, color: 'from-slate-500 to-gray-500' },
+            { id: 21, name: 'Chatbot Inline', file: 'design-chatbot-inline.html', category: 'support', icon: 'fa-comment-dots', count: 6, color: 'from-blue-500 to-cyan-500' },
+            { id: 22, name: 'Chatbot Popup', file: 'design-chatbot-popup.html', category: 'support', icon: 'fa-messages', count: 5, color: 'from-purple-500 to-pink-500' },
+            { id: 23, name: 'Shop Index (V1-V10)', file: 'design-shop-index-1.html', category: 'ecommerce', icon: 'fa-store', count: 10, color: 'from-violet-500 to-purple-500' },
+            { id: 24, name: 'Category Pages (C1-C10)', file: 'design-category-1.html', category: 'ecommerce', icon: 'fa-tags', count: 10, color: 'from-amber-500 to-orange-500' },
+            { id: 25, name: 'Product Details (P1-P10)', file: 'design-product-1.html', category: 'ecommerce', icon: 'fa-box', count: 10, color: 'from-emerald-500 to-teal-500' },
+            { id: 26, name: 'Mega Menu - Style 7 (Kategorili)', file: 'mega-menu-alternatives.html', category: 'navigation', icon: 'fa-grid-2-plus', count: 7, color: 'from-cyan-500 to-blue-500' },
+            { id: 27, name: 'Mega Menu - Kategorisiz', file: 'mega-menu-categoryless.html', category: 'navigation', icon: 'fa-list-dropdown', count: 6, color: 'from-indigo-500 to-purple-500' },
+            { id: 28, name: 'Mega Menu V2 - Modern CSS', file: 'mega-menu-v2.html', category: 'navigation', icon: 'fa-sparkles', count: 5, color: 'from-purple-500 to-pink-500' },
+            { id: 29, name: 'Mega Menu V3 - Comparison Layout (3-Column)', file: 'mega-menu-v3.html', category: 'navigation', icon: 'fa-rocket', count: 1, color: 'from-indigo-500 to-purple-500' },
+            { id: 30, name: 'Mega Menu V4 - Tüm Kategoriler (3 Alternatif)', file: 'mega-menu-v4-all-categories.html', category: 'navigation', icon: 'fa-layer-group', count: 3, color: 'from-orange-500 to-red-500' },
+            { id: 31, name: 'Mega Menu V4 - Premium Tabsız (3 Tasarım)', file: 'mega-menu-v4-premium.html', category: 'navigation', icon: 'fa-crown', count: 3, color: 'from-yellow-500 to-amber-500' },
+            { id: 32, name: 'Card\\'sız Tasarımlar (10 Alternatif)', file: 'design-cardless-1.html', category: 'experimental', icon: 'fa-wand-magic-sparkles', count: 10, color: 'from-pink-500 to-purple-500' }
+        ],
+        categories: [
+            { id: 'all', name: 'Tümü', icon: 'fa-grid-2', color: 'bg-gradient-to-r from-blue-500 to-purple-500' },
+            { id: 'navigation', name: 'Navigasyon', icon: 'fa-compass', color: 'bg-gradient-to-r from-cyan-500 to-blue-500' },
+            { id: 'landing', name: 'Landing', icon: 'fa-rocket', color: 'bg-gradient-to-r from-orange-500 to-red-500' },
+            { id: 'ecommerce', name: 'E-Ticaret', icon: 'fa-cart-shopping', color: 'bg-gradient-to-r from-green-500 to-emerald-500' },
+            { id: 'content', name: 'İçerik', icon: 'fa-file-lines', color: 'bg-gradient-to-r from-purple-500 to-pink-500' },
+            { id: 'social', name: 'Sosyal', icon: 'fa-users', color: 'bg-gradient-to-r from-teal-500 to-cyan-500' },
+            { id: 'pricing', name: 'Fiyat', icon: 'fa-dollar-sign', color: 'bg-gradient-to-r from-yellow-500 to-orange-500' },
+            { id: 'contact', name: 'İletişim', icon: 'fa-phone', color: 'bg-gradient-to-r from-indigo-500 to-purple-500' },
+            { id: 'support', name: 'Destek', icon: 'fa-life-ring', color: 'bg-gradient-to-r from-pink-500 to-rose-500' },
+            { id: 'experimental', name: 'Deneysel', icon: 'fa-flask', color: 'bg-gradient-to-r from-fuchsia-500 to-pink-500' }
+        ],
+        get filteredSections() {
+            return this.sections.filter(section =&gt; {
+                const matchesCategory = this.activeCategory === 'all' || section.category === this.activeCategory;
+                const matchesSearch = section.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return matchesCategory &amp;&amp; matchesSearch;
+            });
+        }
+    }" class="container mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-block mb-6">
+                <h1 class="text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">
+                    ixtif.com
+                </h1>
+                <p class="text-2xl md:text-3xl text-purple-300 font-semibold">
+                    iXtif - Türkiye'nin İstif Pazarı
+                </p>
+            </div>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                233+ Benzersiz Section Tasarımı | Modern, Yaratıcı ve Tamamen Özelleştirilebilir
+            </p>
+
+            <!-- Stats -->
+            <div class="flex flex-wrap justify-center gap-8 mt-10">
+                <div class="text-center">
+                    <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
+                        32
+                    </div>
+                    <div class="text-gray-400 mt-2">Section Türü</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400">
+                        233+
+                    </div>
+                    <div class="text-gray-400 mt-2">Tasarım</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                        100%
+                    </div>
+                    <div class="text-gray-400 mt-2">Responsive</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto mb-12">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                <input type="text" x-model="searchQuery" placeholder="Tasarım ara... (örn: menu, hero, footer, card'sız)" class="w-full bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-2xl px-16 py-5 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all duration-300 text-lg">
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                    <span x-text="filteredSections.length"></span> sonuç
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap justify-center gap-4 mb-16">
+            <template x-for="category in categories" :key="category.id">
+                <button @click="activeCategory = category.id" :class="activeCategory === category.id ? category.color + ' text-white shadow-2xl scale-110' : 'bg-white/10 text-gray-300 hover:bg-white/20'" class="px-6 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 backdrop-blur-lg border border-white/10">
+                    <i :class="'fa-solid ' + category.icon"></i>
+                    <span x-text="category.name"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Section Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <template x-for="section in filteredSections" :key="section.id">
+                <a :href="section.file" class="group relative bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden">
+                    <!-- Animated Background Gradient -->
+                    <div :class="'absolute inset-0 bg-gradient-to-br ' + section.color + ' opacity-0 group-hover:opacity-20 transition-opacity duration-500'"></div>
+
+                    <!-- Content -->
+                    <div class="relative z-10">
+                        <!-- Icon -->
+                        <div :class="'w-20 h-20 rounded-2xl bg-gradient-to-br ' + section.color + ' flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500'">
+                            <i :class="'fa-solid ' + section.icon + ' text-3xl text-white'"></i>
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="text-2xl font-bold mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300" x-text="section.name">
+                        </h3>
+
+                        <!-- Badge -->
+                        <div class="flex items-center gap-2 text-sm text-gray-400">
+                            <div :class="'px-4 py-2 rounded-full bg-gradient-to-r ' + section.color + ' bg-opacity-20'">
+                                <span class="font-semibold" x-text="section.count"></span> Tasarım
+                            </div>
+                        </div>
+
+                        <!-- Arrow Icon -->
+                        <div class="mt-6 flex items-center gap-2 text-gray-400 group-hover:text-white group-hover:gap-4 transition-all duration-300">
+                            <span class="font-semibold">Görüntüle</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Hover Effect Particles -->
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-purple-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                </a>
+            </template>
+        </div>
+
+        <!-- No Results Message -->
+        <div x-show="filteredSections.length === 0" x-transition="" class="text-center py-20" style="display: none;">
+            <i class="fa-solid fa-magnifying-glass text-8xl text-gray-600 mb-6"></i>
+            <h3 class="text-3xl font-bold text-gray-400 mb-2">Sonuç Bulunamadı</h3>
+            <p class="text-gray-500">Arama kriterlerinizi değiştirerek tekrar deneyin.</p>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="mt-20 text-center">
+            <div class="inline-block bg-white/5 backdrop-blur-lg rounded-3xl px-12 py-8 border border-white/10">
+                <p class="text-gray-400 mb-4">
+                    <i class="fa-solid fa-lightbulb text-yellow-400 mr-2"></i>
+                    <strong class="text-white">İpucu:</strong> Her kategori birden fazla tasarım içerir. Sonraki/Önceki butonları ile gezinebilirsiniz.
+                </p>
+                <p class="text-gray-500 text-sm">
+                    Tailwind CSS + Alpine.js + FontAwesome Pro ile hazırlandı
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</body></html>

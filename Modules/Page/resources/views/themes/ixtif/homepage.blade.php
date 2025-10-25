@@ -228,7 +228,7 @@
 </section>
 
 <!-- About Section -->
-<section class="w-full py-20 relative overflow-hidden">
+<section class="w-full py-8 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             {{-- Sol: Görsel --}}

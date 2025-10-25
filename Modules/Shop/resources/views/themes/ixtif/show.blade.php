@@ -298,6 +298,14 @@
                                     :always-open="true"
                                     height="500px"
                                     theme="blue" />
+
+                                {{-- Kapatma butonu (sadece fotoğraf varsa göster) --}}
+                                @if ($featuredImage)
+                                    <button @click="isChatOpen = false"
+                                            class="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:scale-110 transition-all shadow-lg z-50 group">
+                                        <i class="fa-solid fa-times text-xl group-hover:rotate-90 transition-transform"></i>
+                                    </button>
+                                @endif
                             </div>
 
                             {{-- Featured Image - Dark mode fix + Toggle butonu --}}
@@ -309,7 +317,7 @@
                                      x-transition:leave="transition ease-in duration-200"
                                      x-transition:leave-start="opacity-100"
                                      x-transition:leave-end="opacity-0"
-                                     class="absolute inset-0 rounded-xl overflow-hidden">
+                                     class="absolute inset-0 rounded-xl overflow-hidden group">
                                     {{-- Dark mode için backdrop (PNG transparanlık fix) --}}
                                     <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900"></div>
 
@@ -318,16 +326,11 @@
                                          alt="{{ $title }}"
                                          class="relative w-full h-full rounded-xl object-contain">
 
-                                    {{-- "Ürün Hakkında Soru Sor" butonu fotoğraf üzerinde --}}
+                                    {{-- "Ürün Hakkında Soru Sor" butonu - Sağ alt köşe, küçük, hover'da büyür --}}
                                     <button @click="isChatOpen = true"
-                                            class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-3 backdrop-blur-sm z-10">
-                                        <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                                            <i class="fa-solid fa-comments text-lg"></i>
-                                        </div>
-                                        <div class="text-left">
-                                            <div class="text-sm font-semibold">Ürün Hakkında Soru Sor</div>
-                                            <div class="text-xs opacity-90">iXtif Yapay Zeka Asistanı</div>
-                                        </div>
+                                            class="absolute bottom-4 right-4 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold shadow-lg hover:shadow-2xl hover:scale-110 hover:px-6 transition-all flex items-center gap-2 backdrop-blur-sm z-10 opacity-90 hover:opacity-100 group-hover:bottom-6 group-hover:right-6">
+                                        <i class="fa-solid fa-comments text-base"></i>
+                                        <span class="text-xs whitespace-nowrap">Soru Sor</span>
                                     </button>
                                 </div>
                             @endif

@@ -10,66 +10,90 @@
         {{-- Gradient Background --}}
         <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 -z-10"></div>
 
-        {{-- Category Header Section --}}
-        <section class="relative py-16 md:py-24 overflow-hidden">
-            {{-- Background Decorations --}}
-            <div class="absolute inset-0">
-                <div class="absolute top-0 left-0 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
-            </div>
-
-            <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-                {{-- Breadcrumb --}}
-                <nav class="mb-8">
-                    <ol class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <li>
-                            <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                <i class="fa-light fa-home mr-1"></i>
-                                {{ __('shop::front.all_products') }}
-                            </a>
-                        </li>
-                        @if($category->parent)
-                            <li><i class="fa-light fa-chevron-right text-xs"></i></li>
-                            <li>
-                                <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}"
-                                   class="hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                    {{ $category->parent->getTranslated('title') }}
-                                </a>
-                            </li>
-                        @endif
-                        <li><i class="fa-light fa-chevron-right text-xs"></i></li>
-                        <li class="text-gray-900 dark:text-white font-semibold">
-                            {{ $category->getTranslated('title') }}
-                        </li>
-                    </ol>
-                </nav>
-
-                {{-- Category Hero --}}
-                <div class="max-w-4xl">
-                    <div class="flex items-center gap-4 mb-6">
-                        @if($category->icon_class)
-                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                                <i class="{{ $category->icon_class }} text-3xl text-white"></i>
+        {{-- Glassmorphism Subheader (Design 7 - Exact Copy) --}}
+        <section class="py-12">
+            <!-- FULL WIDTH Container -->
+            <div class="w-full">
+                <!-- Inner Container max-w-7xl -->
+                <div class="container mx-auto px-4 max-w-7xl">
+                    <!-- Main Card with Bottom Shadow -->
+                    <div class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)]">
+                        <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
+                            <!-- Left: Title & Breadcrumb -->
+                            <div class="flex flex-col justify-between">
+                                <div class="flex items-center gap-6 mb-6">
+                                    @if($category->icon_class)
+                                        <div class="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-xl">
+                                            <i class="{{ $category->icon_class }} text-5xl text-white"></i>
+                                        </div>
+                                    @endif
+                                    <div>
+                                        <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">{{ $category->getTranslated('title') }}</h1>
+                                        <!-- Breadcrumb -->
+                                        <div class="flex items-center gap-2 text-sm text-white/90">
+                                            <a href="{{ route('shop.index') }}" class="hover:text-white transition flex items-center gap-1.5">
+                                                <i class="fa-solid fa-home text-xs"></i>
+                                                <span>Ana Sayfa</span>
+                                            </a>
+                                            <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                            <a href="{{ route('shop.index') }}" class="hover:text-white transition">Ürünler</a>
+                                            @if($category->parent)
+                                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                                <a href="{{ url('/shop/kategori/' . $category->parent->getTranslated('slug')) }}" class="hover:text-white transition">
+                                                    {{ $category->parent->getTranslated('title') }}
+                                                </a>
+                                            @endif
+                                            <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                            <span class="font-semibold">{{ $category->getTranslated('title') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
-                        <div>
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
-                                {{ $category->getTranslated('title') }}
-                                @if($subcategories->count() === 0 && $products->total() > 0)
-                                    <span class="text-3xl md:text-4xl lg:text-5xl font-normal text-gray-600 dark:text-gray-400">
-                                        - {{ __('shop::front.products') }}
-                                    </span>
-                                @endif
-                            </h1>
+
+                            <!-- Right: Search & Sort - No Card -->
+                            <div class="flex flex-col justify-center space-y-3">
+                                <!-- Search - ÜSTTE -->
+                                <div class="relative">
+                                    <form action="{{ url()->current() }}" method="GET">
+                                        <input type="search"
+                                               name="search"
+                                               value="{{ request('search') }}"
+                                               placeholder="Ara..."
+                                               class="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white placeholder-white/60 text-sm
+                                                      border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all">
+                                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/60"></i>
+                                    </form>
+                                </div>
+
+                                <!-- Sort + View - ALTTA -->
+                                <div class="flex items-center gap-2">
+                                    <!-- Sort -->
+                                    <select class="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm rounded-xl text-white text-sm font-medium
+                                                   border border-white/20 focus:bg-white/20 focus:border-white/40 transition-all cursor-pointer"
+                                            onchange="window.location.href = '{{ url()->current() }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}'">
+                                        <option class="text-gray-900 bg-white" value="" {{ !request('sort') ? 'selected' : '' }}>Editörün Seçimi</option>
+                                        <option class="text-gray-900 bg-white" value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>A'dan Z'ye</option>
+                                        <option class="text-gray-900 bg-white" value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
+                                    </select>
+
+                                    <!-- View Toggle - TEK BUTON ANIMASYONLU -->
+                                    <button @click="view = view === 'grid' ? 'list' : 'grid'"
+                                            x-data="{ view: 'grid' }"
+                                            class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
+                                                   hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
+                                        <!-- Grid Icon -->
+                                        <i class="fa-solid fa-grip text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                           :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
+                                        <!-- List Icon -->
+                                        <i class="fa-solid fa-list text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                           :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
+                                        <!-- Placeholder for size -->
+                                        <i class="fa-solid fa-grip opacity-0"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    @if($category->getTranslated('description'))
-                        <div class="prose dark:prose-invert max-w-none text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                            {!! $category->getTranslated('description') !!}
-                        </div>
-                    @endif
-
                 </div>
             </div>
         </section>

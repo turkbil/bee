@@ -318,8 +318,8 @@
                                      x-transition:leave-start="opacity-100"
                                      x-transition:leave-end="opacity-0"
                                      class="absolute inset-0 rounded-xl overflow-hidden group">
-                                    {{-- Dark mode için backdrop (PNG transparanlık fix) - Anasayfa ürün kartı ile aynı --}}
-                                    <div class="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100"></div>
+                                    {{-- Backdrop (PNG transparanlık fix) - Anasayfa ürün kartı ile aynı --}}
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600"></div>
 
                                     {{-- Fotoğraf (border yok, sabit yükseklik) --}}
                                     <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"

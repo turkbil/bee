@@ -126,7 +126,7 @@
                                     {{-- Autocomplete Dropdown - Ultra Wide (Right Aligned) --}}
                                     <div x-show="isOpen"
                                          x-transition
-                                         class="absolute top-full right-0 w-[1200px] max-w-[98vw] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-[9999] border border-gray-200 dark:border-gray-700 overflow-hidden"
+                                         class="absolute top-full right-0 w-[1200px] max-w-[98vw] mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-[99999] border border-gray-200 dark:border-gray-700 overflow-hidden"
                                          style="display: none;">
                                         <div class="max-h-[32rem] overflow-y-auto">
                                             <div class="grid gap-6 px-6 py-6 lg:grid-cols-2">

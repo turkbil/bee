@@ -175,7 +175,7 @@
             <!-- 1. Satın Alma -->
             <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-shopping-cart text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <i class="fa-light fa-shopping-cart text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:-translate-y-2 transition-all duration-500"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Satın Alma</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Akülü forklift, dizel forklift, transpalet, reach truck ve ikinci el forklift satışı</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
@@ -188,7 +188,7 @@
             <!-- 2. Kiralama -->
             <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-calendar-days text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <i class="fa-light fa-calendar-days text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:brightness-110 transition-all duration-300"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Kiralama</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Kiralık forklift, transpalet ve otonom istif makinesi günlük-uzun dönem kiralaması</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
@@ -201,7 +201,7 @@
             <!-- 3. Yedek Parça -->
             <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-gears text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-90 transition-all"></i>
+                    <i class="fa-light fa-gears text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:animate-spin transition-all"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Yedek Parça</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Forklift yedek parça, akülü forklift ve reach truck parçaları 7/24 stok garantili</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
@@ -214,7 +214,7 @@
             <!-- 4. Teknik Servis -->
             <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-wrench text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-12 group-hover:scale-110 transition-all"></i>
+                    <i class="fa-light fa-wrench text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-45 transition-all duration-500"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Teknik Servis</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Forklift bakım, periyodik bakım, profesyonel servis ve bakım anlaşmaları</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
@@ -347,8 +347,8 @@
                 <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
                 <a href="tel:02167553555" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
-                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                            <i class="fa-light fa-phone text-5xl lg:text-6xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">
+                            <i class="fa-light fa-phone text-5xl lg:text-6xl text-white transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">Telefon</h3>
                         <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Hemen arayın</p>
@@ -362,8 +362,8 @@
                 <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-green-500 dark:via-green-400 to-transparent"></div>
                 <a href="https://wa.me/905010056758" target="_blank" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
-                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                            <i class="fa-brands fa-whatsapp text-5xl lg:text-6xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">
+                            <i class="fa-brands fa-whatsapp text-5xl lg:text-6xl text-white transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">WhatsApp</h3>
                         <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Anında mesajlaşın</p>
@@ -377,8 +377,8 @@
                 <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-purple-500 dark:via-purple-400 to-transparent"></div>
                 <a href="mailto:info@ixtif.com" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
-                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                            <i class="fa-light fa-envelope text-5xl lg:text-6xl text-white group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">
+                            <i class="fa-light fa-envelope text-5xl lg:text-6xl text-white transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">E-posta</h3>
                         <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Mail gönderin</p>
@@ -398,8 +398,8 @@
                                 Yapay Zeka
                             </span>
                         </div>
-                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500">
-                            <i class="fa-light fa-robot text-5xl lg:text-6xl text-white group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"></i>
+                        <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-45">
+                            <i class="fa-light fa-robot text-5xl lg:text-6xl text-white transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">Canlı Destek</h3>
                         <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Yapay Zeka Destekli</p>

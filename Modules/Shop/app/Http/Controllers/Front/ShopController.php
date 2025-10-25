@@ -78,13 +78,15 @@ class ShopController extends Controller
         } else {
             // Shop Index Sıralaması:
             // 1. show_on_homepage (vitrin ürünleri önce)
-            // 2. category.sort_order (kategori sıralaması)
-            // 3. product.sort_order (ürün sıralaması)
+            // 2. homepage_sort_order (anasayfa özel sıralama, null'lar en sonda)
+            // 3. category.sort_order (kategori sıralaması)
+            // 4. product.sort_order (ürün sıralaması)
             $products = $productsQuery
                 ->with(['category', 'brand', 'media'])
                 ->leftJoin('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id')
                 ->select('shop_products.*')
                 ->orderByDesc('shop_products.show_on_homepage')
+                ->orderBy('shop_products.homepage_sort_order', 'asc')
                 ->orderBy('shop_categories.sort_order', 'asc')
                 ->orderBy('shop_products.sort_order', 'asc')
                 ->paginate(config('shop.pagination.front_per_shop', 12));

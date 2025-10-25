@@ -1,1 +1,125 @@
+<section class="py-8 border-b border-gray-200 dark:border-white/10">
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    
+                    <button @click="$refs.categoryModal.classList.remove('hidden')" class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg">
+                        <i class="fa-light fa-grid-2 mr-2"></i>
+                        Tüm Kategoriler
+                    </button>
 
+                    
+                                            
+                        
+                        <a href="/shop/kategori/forklift" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-forklift mr-2"></i>
+                                                        Forklift
+                        </a>
+
+                        
+                                                                    
+                        
+                        <a href="/shop/kategori/transpalet" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-dolly mr-2"></i>
+                                                        Transpalet
+                        </a>
+
+                        
+                                                                    
+                        
+                        <a href="/shop/kategori/istif-makinesi" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-layer-group mr-2"></i>
+                                                        İstif Makinesi
+                        </a>
+
+                        
+                                                                    
+                        
+                        <a href="/shop/kategori/siparis-toplama-makinesi" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-boxes-stacked mr-2"></i>
+                                                        Order Picker
+                        </a>
+
+                        
+                                                                    
+                        
+                        <a href="/shop/kategori/otonom-sistemler" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-robot mr-2"></i>
+                                                        Otonom Sistemler
+                        </a>
+
+                        
+                                                                    
+                        
+                        <a href="/shop/kategori/reach-truck" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-truck mr-2"></i>
+                                                        Reach Truck
+                        </a>
+
+                        
+                                                                    
+                        
+                        <a href="/shop/kategori/yedek-parca" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-wrench mr-2"></i>
+                                                        Yedek Parça
+                        </a>
+
+                        
+                                                                                                                    <a href="https://ixtif.com/shop/kategori/lastik-jant-teker" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-tire mr-1 text-xs"></i>
+                                                                        Lastik Jant Teker
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/motor-grubu" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-engine mr-1 text-xs"></i>
+                                                                        Motor Grubu
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/catal-atasman" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-grip-lines-vertical mr-1 text-xs"></i>
+                                                                        Çatal / Ataşman
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/sanziman-parcalari" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-gears mr-1 text-xs"></i>
+                                                                        Şanzıman Parçaları
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/keceler" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-ring mr-1 text-xs"></i>
+                                                                        Keçeler
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/direksiyon-grubu" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-steering-wheel mr-1 text-xs"></i>
+                                                                        Direksiyon Grubu
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/asansor-grubu" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-elevator mr-1 text-xs"></i>
+                                                                        Asansör Grubu
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/rulman-grubu" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-circle-notch mr-1 text-xs"></i>
+                                                                        Rulman Grubu
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/elektrik-elektronik-aku" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-battery-full mr-1 text-xs"></i>
+                                                                        Elektrik / Elektronik / Akü
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/forklift-dingil-parcalari" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-grip-lines mr-1 text-xs"></i>
+                                                                        Forklift Dingil Parçaları
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/forklift-aksesuarlari" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-toolbox mr-1 text-xs"></i>
+                                                                        Forklift Aksesuarları
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/pompalar" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-pump mr-1 text-xs"></i>
+                                                                        Pompalar
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/fren-grubu" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-brake-warning mr-1 text-xs"></i>
+                                                                        Fren Grubu
+                                </a>
+                                                                                            <a href="https://ixtif.com/shop/kategori/filtreler" class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400">
+                                                                            <i class="fa-solid fa-filter mr-1 text-xs"></i>
+                                                                        Filtreler
+                                </a>
+                                                                                        </div>
+            </div>
+        </section>

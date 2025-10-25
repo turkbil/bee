@@ -155,15 +155,13 @@
                         Tüm Kategoriler
                     </button>
 
-                    {{-- Root Categories + Subcategories --}}
+                    {{-- Root Categories Only --}}
                     @foreach($categories as $category)
                         @php
                             $categorySlug = $category->getTranslated('slug');
-                            $isActive = $selectedCategory && $selectedCategory->category_id === $category->category_id;
-                            $subcategories = \Modules\Shop\App\Models\ShopCategory::where('parent_id', $category->category_id)
-                                ->active()
-                                ->orderBy('sort_order')
-                                ->get();
+                            $isActive = $selectedCategory &&
+                                       ($selectedCategory->category_id === $category->category_id ||
+                                        ($selectedCategory->parent && $selectedCategory->parent->category_id === $category->category_id));
                         @endphp
 
                         {{-- Root Category --}}
@@ -174,25 +172,6 @@
                             @endif
                             {{ $category->getTranslated('title') }}
                         </a>
-
-                        {{-- Subcategories (inline after parent) --}}
-                        @if($subcategories->count() > 0)
-                            @foreach($subcategories as $subcategory)
-                                @php
-                                    $subcategorySlug = $subcategory->getTranslated('slug');
-                                    $isSubActive = $selectedCategory && $selectedCategory->category_id === $subcategory->category_id;
-                                @endphp
-                                <a href="{{ url('/shop/kategori/' . $subcategorySlug) }}"
-                                   class="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-all {{ $isSubActive ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-600' : 'bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:border-blue-200 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400' }}">
-                                    @if($subcategory->icon_class)
-                                        <i class="{{ $subcategory->icon_class }} mr-1 text-xs"></i>
-                                    @else
-                                        <i class="fa-light fa-angle-right mr-1 text-xs opacity-50"></i>
-                                    @endif
-                                    {{ $subcategory->getTranslated('title') }}
-                                </a>
-                            @endforeach
-                        @endif
                     @endforeach
                 </div>
             </div>

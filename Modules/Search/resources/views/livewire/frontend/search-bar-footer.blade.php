@@ -65,13 +65,13 @@
                    x-model="query"
                    @keydown.enter.prevent="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
                    placeholder="Ürün, kategori veya marka arayın..."
-                   class="w-full bg-white border-0 rounded-2xl pl-16 pr-6 py-5 text-gray-900 text-lg focus:outline-none focus:ring-4 focus:ring-white/30 transition-shadow">
+                   class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl pl-16 pr-6 py-5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 text-lg focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 dark:focus:border-blue-400 transition-all">
         </div>
         <button
             @click="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
             :disabled="!query?.trim()"
             :class="{'opacity-50 cursor-not-allowed': !query?.trim()}"
-            class="bg-white text-indigo-600 px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all flex items-center gap-2">
+            class="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2">
             <i class="fa-solid fa-search"></i>
             <span class="hidden md:inline">Ara</span>
         </button>

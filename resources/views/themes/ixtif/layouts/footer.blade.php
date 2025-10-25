@@ -6,10 +6,10 @@
 
 <section class="w-full py-12">
     <div class="container mx-auto px-4 sm:px-4 md:px-0">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-12 px-6 rounded-3xl shadow-2xl">
+        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-12 px-6 rounded-3xl shadow-2xl">
             <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl md:text-4xl font-black mb-3">Aradığınızı Bulamadınız Mı?</h2>
-                <p class="text-lg md:text-xl text-indigo-100 mb-8">Binlerce ürün için hemen arayın!</p>
+                <h2 class="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Binlerce ürün için hemen arayın!</p>
 
                 {{-- Livewire Search Bar with Custom Footer Styling --}}
                 <div class="mb-6">
@@ -21,9 +21,9 @@
                     <div class="space-y-4">
                         {{-- Header: Title + Link (before tags) --}}
                         <div class="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
-                            <div class="text-sm text-indigo-200 font-semibold">Popüler Aramalar</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Popüler Aramalar</div>
                             <a href="{{ route('search.tags') }}"
-                               class="inline-flex items-center gap-1.5 text-xs text-indigo-100 hover:text-white font-medium transition-all border border-indigo-300/30 hover:border-indigo-200 px-3 py-1.5 rounded-full hover:bg-white/10">
+                               class="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium transition-all border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-400 px-3 py-1.5 rounded-full hover:bg-white/10 dark:hover:bg-white/5">
                                 <i class="fa-solid fa-tags text-xs"></i>
                                 Tümünü Gör
                                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
@@ -33,7 +33,7 @@
                         <div class="flex flex-wrap justify-center gap-3">
                             @foreach($popularSearches as $search)
                                 <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
-                                   class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105">
+                                   class="bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
                                     {{ $search->query }}
                                 </a>
                             @endforeach

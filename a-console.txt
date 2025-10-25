@@ -1,1 +1,174 @@
+multi-modal-manager.js?v=1761432837:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761432837:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761432837:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761432837:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761432837:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761432837:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761432837:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761432837:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761432837:13 ⏰ Load Time: 2025-10-25T22:53:58.838Z
+ai-seo-integration.js?v=1761432837:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761432837:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761432837:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761432837:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761432837:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1761432837:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761432837:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761432837:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761432837:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+homepage-products:2820 ✅ Alpine.js Global Store initialized (Livewire bundled)
+simple-translation-modal.js?v=1761432837:839 ⚡ Livewire initialized
+ai-content-system.js?v=1761432837:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761432837:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761432837:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761432837:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761432837:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761432837:558 🔒 attachButtonListeners SKIP - already attached
+homepage-products:2920 Homepage sortable initialized
+homepage-products:2954 🚀 Enterprise Streaming Translation System Ready!
+homepage-products:2967 📝 Streaming translation not available - Using standard translation mode
+homepage-products:2920 Homepage sortable initialized
+ai-seo-integration.js?v=1761432837:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761432837:558 🔒 attachButtonListeners SKIP - already attached
+homepage-products:2857 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+homepage-products:2913 Homepage Sortable onEnd - Product IDs: Array(8)
+/livewire/update:1  Failed to load resource: the server responded with a status of 500 ()
+# Livewire\Exceptions\ComponentNotFoundException - Internal Server Error
+Unable to find component: [modules.shop.app.http.livewire.admin.homepage-products-component]
+
+PHP 8.3.26
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - vendor/livewire/livewire/src/Mechanisms/ComponentRegistry.php:116
+1 - vendor/livewire/livewire/src/Mechanisms/ComponentRegistry.php:25
+2 - vendor/livewire/livewire/src/LivewireManager.php:58
+3 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:132
+4 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:92
+5 - vendor/livewire/livewire/src/LivewireManager.php:102
+6 - vendor/livewire/volt/src/LivewireManager.php:35
+7 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
+8 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
+9 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
+10 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
+11 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
+12 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+13 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+14 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+15 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+16 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+17 - app/Http/Middleware/RootOnlyDebugbar.php:35
+18 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+19 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+21 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+23 - app/Http/Middleware/SecurityHeaders.php:18
+24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+25 - vendor/spatie/laravel-missing-page-redirector/src/RedirectsMissingPages.php:12
+26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+27 - app/Http/Middleware/CheckThemeStatus.php:40
+28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+29 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+31 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+33 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+35 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+37 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+38 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+40 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+44 - app/Http/Middleware/InitializeTenancy.php:97
+45 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+46 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+47 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+48 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+49 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+50 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+51 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+52 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+53 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+55 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+57 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
+58 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+59 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
+60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+61 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+63 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+65 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+67 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+69 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+71 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+73 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+74 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+75 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+76 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+77 - public/index.php:17
+
+## Request
+
+POST /livewire/update
+
+## Headers
+
+* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; _ym_uid=176118900044921329; _ym_d=1761189000; _ym_isad=1; last_activity_read=1761418855; _ym_visorc=w; _ga_5DDRPR03QM=GS2.1.s1761430511$o43$g1$t1761432624$j45$l0$h0; XSRF-TOKEN=eyJpdiI6InlyYW9FOCswbDVFbUYwZTZhNG5mV2c9PSIsInZhbHVlIjoiUXhObmkzbCtISmhIRWtydithVlpGS0ZyMEYvOVgwT25QVFg3cFgvaVJqWWJPNktSM3d0bk9yZVM4UFdDd2NHSjJoa0hXSnR0TlJtcEsxdTFzZDUzNFUrd3dtRDJKQ2l5bVlIRlNwdzRxZXdVTW8wZHp3NFByRDB5ejlzbG0wUTgiLCJtYWMiOiIzYTIxYmU2ZDBkYzEwMDllMWQ4ZDAxZGI3YTY3MDgyNzA5N2I1MTJhNzNiMGEzYjZmNGM5NjQzYzc1MjFmYzMxIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6Ijg4Z2xtZUk1bzVaaFcwTnRJS3FHM2c9PSIsInZhbHVlIjoiS1U5dm9CQ1l2dnZQMDJxbGt3T3M0THRYYjdSZjlzVkFROFlxMUN2MUpId0RCRDNQbW9POVZrRHdQbnlMeVdqb2ZMaVpxb01UQTN5ajdpRGpmUGR0L3hZM2FEVFJNYTFYQXZFam9PelQrdzZDYUZXVk9zOHRGN2syZ2hhWC9TSlUiLCJtYWMiOiIzMmZiNzJlMjQ4NTA3NzQ1YjYwZDA5YzQzOGM1MjM1YjM1ZGJmMDBlYmQxMzZiM2U2NzA0ZTBiNWRiNTg2YjNmIiwidGFnIjoiIn0%3D
+* **priority**: u=1, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://ixtif.com/admin/shop/homepage-products
+* **sec-fetch-dest**: empty
+* **sec-fetch-mode**: cors
+* **sec-fetch-site**: same-origin
+* **origin**: https://ixtif.com
+* **accept**: */*
+* **sec-ch-ua-mobile**: ?0
+* **x-livewire**: 
+* **content-type**: application/json
+* **dnt**: 1
+* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+* **sec-ch-ua-platform**: "macOS"
+* **content-length**: 786
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 31.143.14.94
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
+route name: livewire.update
+middleware: web
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (1.87 ms)
+* mysql - select * from `sessions` where `id` = 'GSMzNIoQRCwksWANZ5WOJwcyI1VX5XagbZT7cMRL' limit 1 (0.49 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.56 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.26 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.55 ms)
 

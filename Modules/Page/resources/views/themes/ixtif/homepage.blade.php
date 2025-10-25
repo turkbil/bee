@@ -7,13 +7,13 @@
 
 @section('module_content')
 <div x-data="homepage()" x-init="init()">
-    <section class="py-8 md:py-12 lg:py-16 flex items-center relative overflow-hidden">
+    <section class="py-4 md:py-6 lg:py-8 flex items-center relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             <!-- Left Content -->
             <div class="text-gray-900 dark:text-white">
                 <!-- Main Title with Animation -->
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-12 leading-[1.2] overflow-visible" style="font-weight: 900;">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible" style="font-weight: 900;">
                     <span class="gradient-animate block py-2">
                         TÜRKİYE'NİN
                     </span>

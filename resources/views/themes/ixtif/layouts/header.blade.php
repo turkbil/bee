@@ -166,18 +166,7 @@
         activeMegaMenu: null,
         searchOpen: false,
         activeCategory: 'first',
-        init() {
-            this.updateNavPosition();
-            window.addEventListener('resize', () => this.updateNavPosition());
-            window.addEventListener('scroll', () => this.updateNavPosition());
-        },
-        updateNavPosition() {
-            const nav = document.getElementById('main-nav');
-            if (nav) {
-                const rect = nav.getBoundingClientRect();
-                document.documentElement.style.setProperty('--nav-bottom', rect.bottom + 'px');
-            }
-        }
+        init() {}
     }"
     class="sticky top-0 left-0 right-0 z-50"
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
@@ -339,7 +328,7 @@
         </div>
 
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
-        <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
+        <nav id="main-nav" class="relative bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div id="nav-container" class="flex items-center justify-between">
                     {{-- Logo - Sabit Genişlik Container --}}
@@ -397,7 +386,7 @@
 
                     {{-- Main Navigation (Desktop) --}}
                     <div class="hidden lg:flex items-center gap-6">
-                        {{-- Forklift (Mega Menu) - Wrapper: Link + Mega Menu birlikte --}}
+                        {{-- Forklift (Mega Menu) - Link + Görünmez Köprü --}}
                         <div class="relative mega-menu-item"
                              @mouseenter="activeMegaMenu = 'forklift'"
                              @mouseleave="activeMegaMenu = null">
@@ -409,30 +398,13 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'forklift' }"></i>
                             </a>
 
-                            {{-- Görünmez Köprü (Link ile Mega Menu arası boşluğu kaplar) --}}
+                            {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'forklift'"
                                  class="absolute top-full left-0 right-0 h-96 z-40"
                                  x-cloak></div>
-
-                            {{-- Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'forklift'"
-                                 class="fixed left-0 right-0 z-50"
-                                 style="top: var(--nav-bottom, 0);"
-                                 x-cloak>
-                                <div x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0 -translate-y-3"
-                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                     x-transition:leave="transition ease-in duration-200"
-                                     x-transition:leave-start="opacity-100 translate-y-0"
-                                     x-transition:leave-end="opacity-0 -translate-y-3">
-                                    <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                                        @include('themes.ixtif.partials.mega-menu-forklift')
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        {{-- Transpalet (Mega Menu) - Wrapper: Link + Mega Menu birlikte --}}
+                        {{-- Transpalet (Mega Menu) - Link + Görünmez Köprü --}}
                         <div class="relative mega-menu-item"
                              @mouseenter="activeMegaMenu = 'transpalet'"
                              @mouseleave="activeMegaMenu = null">
@@ -444,30 +416,13 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
                             </a>
 
-                            {{-- Görünmez Köprü (Link ile Mega Menu arası boşluğu kaplar) --}}
+                            {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'transpalet'"
                                  class="absolute top-full left-0 right-0 h-96 z-40"
                                  x-cloak></div>
-
-                            {{-- Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'transpalet'"
-                                 class="fixed left-0 right-0 z-50"
-                                 style="top: var(--nav-bottom, 0);"
-                                 x-cloak>
-                                <div x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0 -translate-y-3"
-                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                     x-transition:leave="transition ease-in duration-200"
-                                     x-transition:leave-start="opacity-100 translate-y-0"
-                                     x-transition:leave-end="opacity-0 -translate-y-3">
-                                    <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                                        @include('themes.ixtif.partials.mega-menu-transpalet')
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        {{-- İstif Makinesi (Mega Menu) - Wrapper: Link + Mega Menu birlikte --}}
+                        {{-- İstif Makinesi (Mega Menu) - Link + Görünmez Köprü --}}
                         <div class="relative mega-menu-item hidden xl:block"
                              @mouseenter="activeMegaMenu = 'istif-makinesi'"
                              @mouseleave="activeMegaMenu = null">
@@ -479,30 +434,13 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'istif-makinesi' }"></i>
                             </a>
 
-                            {{-- Görünmez Köprü (Link ile Mega Menu arası boşluğu kaplar) --}}
+                            {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'istif-makinesi'"
                                  class="absolute top-full left-0 right-0 h-96 z-40"
                                  x-cloak></div>
-
-                            {{-- Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'istif-makinesi'"
-                                 class="fixed left-0 right-0 z-50"
-                                 style="top: var(--nav-bottom, 0);"
-                                 x-cloak>
-                                <div x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0 -translate-y-3"
-                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                     x-transition:leave="transition ease-in duration-200"
-                                     x-transition:leave-start="opacity-100 translate-y-0"
-                                     x-transition:leave-end="opacity-0 -translate-y-3">
-                                    <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                                        @include('themes.ixtif.partials.mega-menu-istif')
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
-                        {{-- Tüm Kategoriler (Mega Menu + Tabs) - Wrapper: Link + Mega Menu birlikte --}}
+                        {{-- Tüm Kategoriler (Mega Menu + Tabs) - Link + Görünmez Köprü --}}
                         <div class="relative mega-menu-item"
                              @mouseenter="activeMegaMenu = 'all-categories'"
                              @mouseleave="activeMegaMenu = null">
@@ -513,27 +451,10 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'all-categories' }"></i>
                             </button>
 
-                            {{-- Görünmez Köprü (Link ile Mega Menu arası boşluğu kaplar) --}}
+                            {{-- Görünmez Köprü (Link altında, wrapper içinde tut) --}}
                             <div x-show="activeMegaMenu === 'all-categories'"
                                  class="absolute top-full left-0 right-0 h-96 z-40"
                                  x-cloak></div>
-
-                            {{-- Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'all-categories'"
-                                 class="fixed left-0 right-0 z-50"
-                                 style="top: var(--nav-bottom, 0);"
-                                 x-cloak>
-                                <div x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0 -translate-y-3"
-                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                     x-transition:leave="transition ease-in duration-200"
-                                     x-transition:leave-start="opacity-100 translate-y-0"
-                                     x-transition:leave-end="opacity-0 -translate-y-3">
-                                    <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                                        @include('themes.ixtif.partials.mega-menu-content')
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         @php
@@ -976,6 +897,79 @@
                                     <span x-text="`Tüm ${total || 0} sonucu gör`"></span>
                                 </a>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Mega Menu'ler (Container Seviyesinde, Navbar'a Hizalı) --}}
+                {{-- Forklift Mega Menu --}}
+                <div x-show="activeMegaMenu === 'forklift'"
+                     @mouseenter="activeMegaMenu = 'forklift'"
+                     @mouseleave="activeMegaMenu = null"
+                     class="absolute left-0 right-0 top-full z-50"
+                     x-cloak>
+                    <div x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-3"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-3">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                            @include('themes.ixtif.partials.mega-menu-forklift')
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Transpalet Mega Menu --}}
+                <div x-show="activeMegaMenu === 'transpalet'"
+                     @mouseenter="activeMegaMenu = 'transpalet'"
+                     @mouseleave="activeMegaMenu = null"
+                     class="absolute left-0 right-0 top-full z-50"
+                     x-cloak>
+                    <div x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-3"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-3">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                            @include('themes.ixtif.partials.mega-menu-transpalet')
+                        </div>
+                    </div>
+                </div>
+
+                {{-- İstif Makinesi Mega Menu --}}
+                <div x-show="activeMegaMenu === 'istif-makinesi'"
+                     @mouseenter="activeMegaMenu = 'istif-makinesi'"
+                     @mouseleave="activeMegaMenu = null"
+                     class="absolute left-0 right-0 top-full z-50"
+                     x-cloak>
+                    <div x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-3"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-3">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                            @include('themes.ixtif.partials.mega-menu-istif')
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Tüm Kategoriler Mega Menu --}}
+                <div x-show="activeMegaMenu === 'all-categories'"
+                     @mouseenter="activeMegaMenu = 'all-categories'"
+                     @mouseleave="activeMegaMenu = null"
+                     class="absolute left-0 right-0 top-full z-50"
+                     x-cloak>
+                    <div x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-3"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-3">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                            @include('themes.ixtif.partials.mega-menu-content')
                         </div>
                     </div>
                 </div>

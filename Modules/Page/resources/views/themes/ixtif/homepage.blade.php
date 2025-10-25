@@ -37,36 +37,36 @@
 
                 <!-- Features -->
                 <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div class="flex items-center gap-4 group cursor-pointer">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
-                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
                             <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 group cursor-pointer">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
-                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
                             <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 group cursor-pointer">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
-                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
                             <div class="text-sm text-gray-600 dark:text-gray-400">Uzman danışmanlık</div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 xl:hidden group cursor-pointer">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0 transition-all group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50">
-                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl transition-all"></i>
+                    <div class="flex items-center gap-4 xl:hidden">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>

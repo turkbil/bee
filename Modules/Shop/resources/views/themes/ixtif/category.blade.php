@@ -37,17 +37,15 @@
                 <button @click="toggleView()"
                         class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
                                hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
-                               active:scale-95 transition-all duration-300 overflow-hidden">
+                               active:scale-95 transition-all duration-300 flex items-center justify-center">
                     <!-- Grid Icon -->
                     <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400
-                              absolute inset-0 flex items-center justify-center transition-all duration-500 text-2xl"
-                       :class="view === \'grid\' ? \'opacity-100 rotate-0 scale-100\' : \'opacity-0 -rotate-180 scale-50\'"></i>
+                              absolute transition-all duration-300 text-2xl"
+                       :class="view === \'grid\' ? \'opacity-100 scale-100\' : \'opacity-0 scale-75\'"></i>
                     <!-- List Icon -->
                     <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400
-                              absolute inset-0 flex items-center justify-center transition-all duration-500 text-2xl"
-                       :class="view === \'list\' ? \'opacity-100 rotate-0 scale-100\' : \'opacity-0 rotate-180 scale-50\'"></i>
-                    <!-- Placeholder for size -->
-                    <i class="fa-solid fa-grip opacity-0 text-2xl"></i>
+                              absolute transition-all duration-300 text-2xl"
+                       :class="view === \'list\' ? \'opacity-100 scale-100\' : \'opacity-0 scale-75\'"></i>
                 </button>
             </div>'
         ])

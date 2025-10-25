@@ -9,17 +9,19 @@
 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
     {{-- Product Image --}}
     <a href="{{ $productUrl }}"
-       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 p-4 md:p-6">
+       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
         @if($product->hasMedia('featured_image'))
-            <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
-                 alt="{{ $product->getTranslated('title') }}"
-                 class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
-                 loading="lazy"
-                 width="400"
-                 height="400">
+            <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
+                <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                     alt="{{ $product->getTranslated('title') }}"
+                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
+                     loading="lazy"
+                     width="400"
+                     height="400">
+            </div>
         @else
             {{-- Fallback: Kategori ikonu --}}
-            <div class="w-full h-full flex flex-col items-center justify-center gap-4 p-8 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
+            <div class="w-full h-full flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
                 @if($product->category && $product->category->icon_class)
                     {{-- Kategori ikonu büyük fallback --}}
                     <div class="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl transition-all duration-500">
@@ -78,17 +80,19 @@
         {{-- Product Image - col-4 (md:col-span-4) --}}
         <div class="md:col-span-4">
             <a href="{{ $productUrl }}"
-               class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none p-4 md:p-6">
+               class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
                 @if($product->hasMedia('featured_image'))
-                    <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
-                         alt="{{ $product->getTranslated('title') }}"
-                         class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
-                         loading="lazy"
-                         width="400"
-                         height="400">
+                    <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
+                        <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                             alt="{{ $product->getTranslated('title') }}"
+                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
+                             loading="lazy"
+                             width="400"
+                             height="400">
+                    </div>
                 @else
                     {{-- Fallback: Kategori ikonu --}}
-                    <div class="w-full h-full flex flex-col items-center justify-center gap-3 p-6 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
+                    <div class="w-full h-full flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
                         @if($product->category && $product->category->icon_class)
                             <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 rounded-2xl flex items-center justify-center shadow-2xl">
                                 <i class="{{ $product->category->icon_class }} text-5xl text-white"></i>

@@ -1,4 +1,4 @@
-                    <div class="hidden lg:flex items-center gap-6" @mouseleave="activeMegaMenu = null">
+                    <div class="hidden lg:flex items-center gap-6">
                         
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"

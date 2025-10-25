@@ -9,9 +9,9 @@
 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
     {{-- Product Image --}}
     <a href="{{ $productUrl }}"
-       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 p-4 md:p-6">
         @if($product->hasMedia('featured_image'))
-            <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 1, 'format' => 'webp']) }}"
+            <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                  alt="{{ $product->getTranslated('title') }}"
                  class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                  loading="lazy"
@@ -78,14 +78,14 @@
         {{-- Product Image - col-4 (md:col-span-4) --}}
         <div class="md:col-span-4">
             <a href="{{ $productUrl }}"
-               class="block aspect-square md:aspect-[4/5] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
+               class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none p-4 md:p-6">
                 @if($product->hasMedia('featured_image'))
-                    <img src="{{ thumb($product->getFirstMedia('featured_image'), 500, 600, ['quality' => 85, 'scale' => 1, 'format' => 'webp']) }}"
+                    <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                          alt="{{ $product->getTranslated('title') }}"
                          class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                          loading="lazy"
-                         width="500"
-                         height="600">
+                         width="400"
+                         height="400">
                 @else
                     {{-- Fallback: Kategori ikonu --}}
                     <div class="w-full h-full flex flex-col items-center justify-center gap-3 p-6 bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20">
@@ -123,7 +123,7 @@
 
                 {{-- Title --}}
                 <a href="{{ $productUrl }}">
-                    <h3 class="text-lg md:text-xl lg:text-2xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+                    <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
                         {{ $product->getTranslated('title') }}
                     </h3>
                 </a>
@@ -136,25 +136,14 @@
                 @endif
             </div>
 
-            {{-- Price & CTA --}}
-            <div class="mt-4 md:mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-gray-200/60 dark:border-gray-700/60">
-                @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
+            {{-- Price --}}
+            @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
+                <div class="mt-4 md:mt-6 pt-4 border-t border-gray-200/60 dark:border-gray-700/60">
                     <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
                         {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
                     </div>
-                @else
-                    <div class="text-sm md:text-base font-semibold text-gray-600 dark:text-gray-400">
-                        Fiyat bilgisi için iletişime geçin
-                    </div>
-                @endif
-
-                {{-- CTA Button --}}
-                <a href="{{ $productUrl }}"
-                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-semibold text-sm hover:shadow-lg hover:scale-105 transition-all whitespace-nowrap">
-                    <span>Detayları Gör</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                </a>
-            </div>
+                </div>
+            @endif
         </div>
     </div>
 </div>

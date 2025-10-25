@@ -240,7 +240,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('is_active', true);
+        return $query->where('shop_products.is_active', true);
     }
 
     public function scopeFeatured(Builder $query): Builder

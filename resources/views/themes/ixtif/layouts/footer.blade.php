@@ -11,28 +11,12 @@
                 <h2 class="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>
                 <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Binlerce ürün için hemen arayın!</p>
 
-                {{-- Livewire Search Bar with Custom Footer Styling --}}
-                <div class="mb-6">
-                    @livewire('search::search-bar', ['viewMode' => 'footer'])
-                </div>
-
-                {{-- Popüler Aramalar --}}
+                {{-- Popüler Aramalar (MOBILE'DA GİZLE) --}}
                 @if($popularSearches->count() > 0)
-                    <div class="space-y-4">
-                        {{-- Header: Title + Link (before tags) --}}
-                        <div class="flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4">
-                            <div class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Popüler Aramalar</div>
-                            <a href="{{ route('search.tags') }}"
-                               class="inline-flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium transition-all border border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-400 px-3 py-1.5 rounded-full hover:bg-white/10 dark:hover:bg-white/5">
-                                <i class="fa-solid fa-tags text-xs"></i>
-                                Tümünü Gör
-                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                            </a>
-                        </div>
-                        {{-- Tags --}}
+                    <div class="space-y-4 mb-6 hidden sm:block">
                         <div class="flex flex-wrap justify-center gap-3">
                             @foreach($popularSearches as $search)
-                                <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
+                                <a href="{{ route('search.tags') }}"
                                    class="bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
                                     {{ $search->query }}
                                 </a>
@@ -40,6 +24,11 @@
                         </div>
                     </div>
                 @endif
+
+                {{-- Livewire Search Bar with Custom Footer Styling --}}
+                <div class="mb-6">
+                    @livewire('search::search-bar', ['viewMode' => 'footer'])
+                </div>
             </div>
         </div>
     </div>

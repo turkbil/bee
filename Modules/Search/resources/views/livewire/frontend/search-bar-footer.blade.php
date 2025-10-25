@@ -64,8 +64,8 @@
             <input type="search"
                    x-model="query"
                    @keydown.enter.prevent="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
-                   placeholder="Ürün, kategori veya marka arayın..."
-                   class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl pl-16 pr-6 py-5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 text-lg focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 dark:focus:border-blue-400 transition-all">
+                   placeholder="Ürün ara..."
+                   class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl pl-16 pr-6 py-5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-lg focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 dark:focus:border-blue-400 transition-all">
         </div>
         <button
             @click="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"

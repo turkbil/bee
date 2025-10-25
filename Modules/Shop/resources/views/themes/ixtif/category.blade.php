@@ -113,14 +113,6 @@
         <section class="py-16">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if($products->count() > 0)
-                    {{-- Section Header --}}
-                    <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-                            <i class="fa-light fa-grid-2 mr-2 text-blue-600 dark:text-blue-400"></i>
-                            {{ __('shop::front.products_in_category') }}
-                        </h2>
-                    </div>
-
                     {{-- Products Grid - iXtif Design --}}
                     <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" x-ref="productsGrid">
                         @foreach($products as $product)

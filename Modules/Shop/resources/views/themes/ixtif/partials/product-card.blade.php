@@ -16,6 +16,8 @@
                      alt="{{ $product->getTranslated('title') }}"
                      class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                      loading="lazy"
+                     decoding="async"
+                     fetchpriority="low"
                      width="400"
                      height="400">
             </div>
@@ -87,6 +89,8 @@
                              alt="{{ $product->getTranslated('title') }}"
                              class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
                              loading="lazy"
+                             decoding="async"
+                             fetchpriority="low"
                              width="400"
                              height="400">
                     </div>

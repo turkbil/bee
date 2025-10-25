@@ -87,11 +87,19 @@
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if($products->count() > 0)
                     {{-- Products Grid/List - iXtif Design --}}
+                    {{-- Grid: 2 → 3 → 4 sütun (responsive) | List: 1 → 2 sütun (responsive) --}}
                     <div class="grid gap-6 transition-all duration-300"
-                         :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'"
+                         :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-2'"
                          x-ref="productsGrid">
                         @foreach($products as $product)
-                            @include('shop::themes.ixtif.partials.product-card', ['product' => $product])
+                            {{-- Grid Mode Card --}}
+                            <div x-show="view === 'grid'" x-cloak>
+                                @include('shop::themes.ixtif.partials.product-card', ['product' => $product, 'viewMode' => 'grid'])
+                            </div>
+                            {{-- List Mode Card --}}
+                            <div x-show="view === 'list'" x-cloak>
+                                @include('shop::themes.ixtif.partials.product-card', ['product' => $product, 'viewMode' => 'list'])
+                            </div>
                         @endforeach
                     </div>
 

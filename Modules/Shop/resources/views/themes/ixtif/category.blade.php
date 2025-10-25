@@ -62,15 +62,15 @@
                                     <button @click="view = view === 'grid' ? 'list' : 'grid'"
                                             class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
                                                    hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
-                                                   active:scale-95 transition-all duration-300 overflow-hidden group">
+                                                   active:scale-95 transition-all duration-300 group flex items-center justify-center">
                                         <!-- Grid Icon -->
                                         <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
-                                                  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 text-2xl"
-                                           :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
+                                                  transition-all duration-300 text-2xl"
+                                           :class="view === 'grid' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'"></i>
                                         <!-- List Icon -->
                                         <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400
-                                                  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 text-2xl"
-                                           :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
+                                                  transition-all duration-300 text-2xl"
+                                           :class="view === 'list' ? 'opacity-100 scale-100' : 'opacity-0 scale-0 absolute'"></i>
                                     </button>
                                 </div>
                     </div>

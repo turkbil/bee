@@ -14,32 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {{-- Theme Flash Fix: Apply dark mode IMMEDIATELY before any render --}}
-    <script>
-        (function() {
-            const theme = localStorage.getItem('darkMode') || 'light';
-            if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        })();
-    </script>
-
-    {{-- Body Background Styles - CSS based, no Alpine.js dependency --}}
-    <style>
-        /* Light mode - gradient background */
-        body {
-            background: linear-gradient(to bottom right, rgb(255, 255, 255), rgb(248, 250, 252), rgb(243, 244, 246));
-            color: rgb(17, 24, 39);
-        }
-
-        /* Dark mode - no gradient, just dark color */
-        .dark body {
-            background: transparent;
-            color: rgb(243, 244, 246);
-        }
-    </style>
+    {{-- Theme Flash Fix: Minimal inline script (1 line) - Prevents flash before Alpine.js loads --}}
+    <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
 
     {{-- Alpine.js is included in Livewire - DO NOT load separately --}}
 

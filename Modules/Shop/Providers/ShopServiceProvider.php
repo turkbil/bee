@@ -10,6 +10,7 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
+use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -57,6 +58,7 @@ class ShopServiceProvider extends ServiceProvider
         Livewire::component('shop-category-manage-component', ShopCategoryManageComponent::class);
         Livewire::component('shop-brand-component', ShopBrandComponent::class);
         Livewire::component('shop-brand-manage-component', ShopBrandManageComponent::class);
+        Livewire::component('homepage-products-component', HomepageProductsComponent::class);
     }
 
     /**

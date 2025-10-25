@@ -173,152 +173,52 @@
         <!-- Service Cards Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             <!-- 1. Satın Alma -->
-            <a href="{{ route('shop.index') }}" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl bg-white dark:bg-gray-800">
-                <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-shopping-cart text-4xl lg:text-5xl text-blue-400 dark:text-blue-300 mb-3 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Satın Alma</h3>
-
-                    <!-- Products -->
-                    <div class="space-y-2 mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Sıfır Ürünler</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Garantili & Yeni</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">İkinci El</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Test Edilmiş</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-blue-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Tüm Kategoriler</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Forklift, Transpalet vb.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">İncele</span>
+            <a href="{{ route('shop.index') }}" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-shopping-cart text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Satın Alma</h3>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Sıfır & ikinci el forklift, transpalet, istif makinesi</p>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
             <!-- 2. Kiralama -->
-            <a href="#" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-yellow-400 dark:hover:border-yellow-400/20 hover:shadow-xl bg-white dark:bg-gray-800">
-                <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-calendar-days text-4xl lg:text-5xl text-yellow-400 dark:text-yellow-300 mb-3 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Kiralama</h3>
-
-                    <!-- Rental Options -->
-                    <div class="space-y-2 mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-yellow-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Günlük Kiralama</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Esnek Süreler</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-yellow-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Uzun Dönem</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Uygun Fiyatlar</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-yellow-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Operatör Desteği</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Opsiyonel</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Teklif Al</span>
+            <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-calendar-days text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Kiralama</h3>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Günlük & uzun dönem esnek kiralama seçenekleri</p>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
             <!-- 3. Yedek Parça -->
-            <a href="#" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-orange-400 dark:hover:border-orange-400/20 hover:shadow-xl bg-white dark:bg-gray-800">
-                <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-gears text-4xl lg:text-5xl text-orange-400 dark:text-orange-300 mb-3 group-hover:rotate-90 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Yedek Parça</h3>
-
-                    <!-- Parts -->
-                    <div class="space-y-2 mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-orange-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Orijinal Parçalar</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Garantili</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-orange-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Hızlı Tedarik</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Geniş Stok</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-orange-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Teknik Destek</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">7/24 Danışma</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Ara</span>
+            <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-gears text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-90 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Yedek Parça</h3>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Orijinal parçalar, hızlı tedarik & teknik destek</p>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
             <!-- 4. Teknik Servis -->
-            <a href="#" class="group relative rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-purple-400 dark:hover:border-purple-400/20 hover:shadow-xl bg-white dark:bg-gray-800">
-                <div class="relative h-full flex flex-col p-6 lg:p-8">
-                    <i class="fa-light fa-wrench text-4xl lg:text-5xl text-purple-400 dark:text-purple-300 mb-3 group-hover:rotate-12 group-hover:scale-110 transition-all"></i>
-                    <h3 class="text-lg lg:text-2xl font-bold text-gray-800 dark:text-white mb-4">Teknik Servis</h3>
-
-                    <!-- Services -->
-                    <div class="space-y-2 mb-4">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-purple-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Bakım & Onarım</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Uzman Ekip</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-purple-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Bakım Anlaşması</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Profesyonel Plan</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle text-[4px] text-purple-400"></i>
-                            <div>
-                                <p class="text-xs lg:text-sm font-semibold text-gray-700 dark:text-gray-300">Acil Müdahale</p>
-                                <p class="text-[10px] lg:text-xs font-thin text-gray-500 dark:text-gray-400">Hızlı Çözüm</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto flex items-center text-gray-700 dark:text-gray-200 font-semibold">
-                        <span class="text-sm lg:text-base">Randevu</span>
+            <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+                <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
+                    <i class="fa-light fa-wrench text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-12 group-hover:scale-110 transition-all"></i>
+                    <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Teknik Servis</h3>
+                    <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Bakım, onarım & profesyonel bakım anlaşmaları</p>
+                    <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">
+                        <span class="text-sm lg:text-base">Keşfet</span>
                         <i class="fa-light fa-arrow-right ml-2 text-sm lg:text-base group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>

@@ -11,9 +11,14 @@
                 <h2 class="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>
                 <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Binlerce ürün için hemen arayın!</p>
 
-                {{-- Popüler Aramalar (MOBILE'DA GİZLE) --}}
+                {{-- Livewire Search Bar with Custom Footer Styling --}}
+                <div class="mb-6">
+                    @livewire('search::search-bar', ['viewMode' => 'footer'])
+                </div>
+
+                {{-- Popüler Aramalar (SADECE LG+ EKRANLARDA) --}}
                 @if($popularSearches->count() > 0)
-                    <div class="space-y-4 mb-6 hidden sm:block">
+                    <div class="space-y-4 hidden lg:block">
                         <div class="flex flex-wrap justify-center gap-3">
                             @foreach($popularSearches as $search)
                                 <a href="{{ route('search.tags') }}"
@@ -24,11 +29,6 @@
                         </div>
                     </div>
                 @endif
-
-                {{-- Livewire Search Bar with Custom Footer Styling --}}
-                <div class="mb-6">
-                    @livewire('search::search-bar', ['viewMode' => 'footer'])
-                </div>
             </div>
         </div>
     </div>

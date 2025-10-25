@@ -877,59 +877,61 @@
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="relative z-10 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-xl" style="z-index:10;">
-                    <div class="container mx-auto px-4 sm:px-4 md:px-0 py-6 md:py-8">
-                        {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
-                        <div style="display: grid;">
-                            {{-- Forklift Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'forklift'"
-                                 x-transition:enter="transition-opacity ease-out duration-200"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 x-transition:leave="transition-opacity ease-in duration-150"
-                                 x-transition:leave-start="opacity-100"
-                                 x-transition:leave-end="opacity-0"
-                                 style="grid-area: 1/1;"
-                                 x-cloak>
-                                @include('themes.ixtif.partials.mega-menu-forklift')
-                            </div>
+                    <div class="py-6 md:py-8">
+                        <div class="container mx-auto">
+                            {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
+                            <div style="display: grid;">
+                                {{-- Forklift Mega Menu --}}
+                                <div x-show="activeMegaMenu === 'forklift'"
+                                     x-transition:enter="transition-opacity ease-out duration-200"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     x-transition:leave="transition-opacity ease-in duration-150"
+                                     x-transition:leave-start="opacity-100"
+                                     x-transition:leave-end="opacity-0"
+                                     style="grid-area: 1/1;"
+                                     x-cloak>
+                                    @include('themes.ixtif.partials.mega-menu-forklift')
+                                </div>
 
-                            {{-- Transpalet Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'transpalet'"
-                                 x-transition:enter="transition-opacity ease-out duration-200"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 x-transition:leave="transition-opacity ease-in duration-150"
-                                 x-transition:leave-start="opacity-100"
-                                 x-transition:leave-end="opacity-0"
-                                 style="grid-area: 1/1;"
-                                 x-cloak>
-                                @include('themes.ixtif.partials.mega-menu-transpalet')
-                            </div>
+                                {{-- Transpalet Mega Menu --}}
+                                <div x-show="activeMegaMenu === 'transpalet'"
+                                     x-transition:enter="transition-opacity ease-out duration-200"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     x-transition:leave="transition-opacity ease-in duration-150"
+                                     x-transition:leave-start="opacity-100"
+                                     x-transition:leave-end="opacity-0"
+                                     style="grid-area: 1/1;"
+                                     x-cloak>
+                                    @include('themes.ixtif.partials.mega-menu-transpalet')
+                                </div>
 
-                            {{-- İstif Makinesi Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'istif-makinesi'"
-                                 x-transition:enter="transition-opacity ease-out duration-200"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 x-transition:leave="transition-opacity ease-in duration-150"
-                                 x-transition:leave-start="opacity-100"
-                                 x-transition:leave-end="opacity-0"
-                                 style="grid-area: 1/1;"
-                                 x-cloak>
-                                @include('themes.ixtif.partials.mega-menu-istif')
-                            </div>
+                                {{-- İstif Makinesi Mega Menu --}}
+                                <div x-show="activeMegaMenu === 'istif-makinesi'"
+                                     x-transition:enter="transition-opacity ease-out duration-200"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     x-transition:leave="transition-opacity ease-in duration-150"
+                                     x-transition:leave-start="opacity-100"
+                                     x-transition:leave-end="opacity-0"
+                                     style="grid-area: 1/1;"
+                                     x-cloak>
+                                    @include('themes.ixtif.partials.mega-menu-istif')
+                                </div>
 
-                            {{-- Tüm Kategoriler Mega Menu --}}
-                            <div x-show="activeMegaMenu === 'all-categories'"
-                                 x-transition:enter="transition-opacity ease-out duration-200"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 x-transition:leave="transition-opacity ease-in duration-150"
-                                 x-transition:leave-start="opacity-100"
-                                 x-transition:leave-end="opacity-0"
-                                 style="grid-area: 1/1;"
-                                 x-cloak>
-                                @include('themes.ixtif.partials.mega-menu-content')
+                                {{-- Tüm Kategoriler Mega Menu --}}
+                                <div x-show="activeMegaMenu === 'all-categories'"
+                                     x-transition:enter="transition-opacity ease-out duration-200"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     x-transition:leave="transition-opacity ease-in duration-150"
+                                     x-transition:leave-start="opacity-100"
+                                     x-transition:leave-end="opacity-0"
+                                     style="grid-area: 1/1;"
+                                     x-cloak>
+                                    @include('themes.ixtif.partials.mega-menu-content')
+                                </div>
                             </div>
                         </div>
                     </div>

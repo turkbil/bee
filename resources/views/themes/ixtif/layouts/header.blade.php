@@ -166,11 +166,7 @@
         activeMegaMenu: null,
         searchOpen: false,
         activeCategory: 'first',
-        init() {
-            this.$watch('activeMegaMenu', value => {
-                console.log('🔵 activeMegaMenu changed:', value);
-            });
-        }
+        init() {}
     }"
     class="sticky top-0 left-0 right-0 z-50"
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
@@ -334,12 +330,11 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div id="nav-container" class="flex items-center justify-between pb-8"
-                     @mouseenter="console.log('🟢 NAV-CONTAINER: mouseenter')">
+                <div id="nav-container" class="flex items-center justify-between">
                     {{-- Logo - Sabit Genişlik Container --}}
-                    <div class="flex items-center gap-3 py-8" style="width: 200px;">
+                    <div class="flex items-center gap-3 py-4" style="width: 200px;">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full"
-                           @mouseenter="console.log('🔷 LOGO: mouseenter'); activeMegaMenu = null">
+                           @mouseenter="activeMegaMenu = null">
                             @php
                                 // LogoService kullan - daha temiz ve bakımı kolay
                                 $logoService = app(\App\Services\LogoService::class);
@@ -395,7 +390,7 @@
                         {{-- Forklift (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/forklift"
                            @mouseenter="activeMegaMenu = 'forklift'"
-                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
+                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                             <i :class="activeMegaMenu === 'forklift' ? 'fa-solid' : 'fa-light'" class="fa-forklift text-sm transition-all"></i>
                             <span>Forklift</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -404,8 +399,8 @@
 
                         {{-- Transpalet (Mega Menu) - Tıklanabilir + Hover --}}
                         <a href="/shop/kategori/transpalet"
-                           @mouseenter="console.log('⭐ TRANSPALET LINK: mouseenter'); activeMegaMenu = 'transpalet'"
-                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
+                           @mouseenter="activeMegaMenu = 'transpalet'"
+                           class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                             <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
                             <span>Transpalet</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -415,7 +410,7 @@
                         {{-- İstif Makinesi (Mega Menu) - Tıklanabilir + Hover - Sadece XL ve üstünde göster --}}
                         <a href="/shop/kategori/istif-makinesi"
                            @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                           class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
+                           class="hidden xl:flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                             <i :class="activeMegaMenu === 'istif-makinesi' ? 'fa-solid' : 'fa-light'" class="fa-box-open-full text-sm transition-all"></i>
                             <span>İstif Makinesi</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -424,7 +419,7 @@
 
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <button @mouseenter="activeMegaMenu = 'all-categories'"
-                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group pt-8 pb-16 -mb-8">
+                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                             <i :class="activeMegaMenu === 'all-categories' ? 'fa-solid' : 'fa-light'" class="fa-grid-2 transition-all duration-300"></i>
                             <span>Tüm Kategoriler</span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -485,7 +480,7 @@
 
                     {{-- Right Actions --}}
                     <div class="flex items-center gap-2"
-                         @mouseenter="console.log('🔶 RIGHT ACTIONS: mouseenter'); activeMegaMenu = null">
+                         @mouseenter="activeMegaMenu = null">
                         {{-- Search Button with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
                             <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
@@ -878,8 +873,7 @@
                 </div>
                 {{-- Mega Menu Dropdown - Always below search if both open --}}
                 <div x-show="activeMegaMenu !== null"
-                     @mouseenter="console.log('🟡 MEGA-MENU WRAPPER: mouseenter')"
-                     @mouseleave="console.log('🟠 MEGA-MENU WRAPPER: mouseleave'); activeMegaMenu = null"
+                     @mouseleave="activeMegaMenu = null"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 -translate-y-3"
                      x-transition:enter-end="opacity-100 translate-y-0"
@@ -887,7 +881,7 @@
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-10" style="z-index:10;">
-                    <div class="container mx-auto -mt-8">
+                    <div class="container mx-auto">
                             {{-- Grid overlay system: all menus in same position, auto height based on visible menu --}}
                             <div style="display: grid;">
                                 {{-- Forklift Mega Menu --}}

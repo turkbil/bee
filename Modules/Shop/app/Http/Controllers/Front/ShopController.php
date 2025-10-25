@@ -86,7 +86,7 @@ class ShopController extends Controller
                 ->leftJoin('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id')
                 ->select('shop_products.*')
                 ->orderByDesc('shop_products.show_on_homepage')
-                ->orderBy('shop_products.homepage_sort_order', 'asc')
+                ->orderByRaw('COALESCE(shop_products.homepage_sort_order, 999999) ASC')
                 ->orderBy('shop_categories.sort_order', 'asc')
                 ->orderBy('shop_products.sort_order', 'asc')
                 ->paginate(config('shop.pagination.front_per_shop', 12));

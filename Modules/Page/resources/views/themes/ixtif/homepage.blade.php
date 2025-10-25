@@ -472,7 +472,8 @@
                             <i class="fa-light fa-phone text-5xl lg:text-6xl text-white group-hover:scale-110 transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">Telefon</h3>
-                        <p class="text-xs lg:text-sm text-blue-600 dark:text-blue-400 font-semibold">0216 755 3 555</p>
+                        <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Hemen arayın</p>
+                        <p class="text-sm lg:text-base text-blue-600 dark:text-blue-400 font-semibold">0216 755 3 555</p>
                     </div>
                 </a>
             </div>
@@ -486,7 +487,8 @@
                             <i class="fa-brands fa-whatsapp text-5xl lg:text-6xl text-white group-hover:scale-110 transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">WhatsApp</h3>
-                        <p class="text-xs lg:text-sm text-green-600 dark:text-green-400 font-semibold">0501 005 67 58</p>
+                        <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Anında mesajlaşın</p>
+                        <p class="text-sm lg:text-base text-green-600 dark:text-green-400 font-semibold">0501 005 67 58</p>
                     </div>
                 </a>
             </div>
@@ -500,7 +502,8 @@
                             <i class="fa-light fa-envelope text-5xl lg:text-6xl text-white group-hover:scale-110 transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">E-posta</h3>
-                        <p class="text-xs lg:text-sm text-purple-600 dark:text-purple-400 font-semibold">info@ixtif.com</p>
+                        <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Mail gönderin</p>
+                        <p class="text-sm lg:text-base text-purple-600 dark:text-purple-400 font-semibold">info@ixtif.com</p>
                     </div>
                 </a>
             </div>
@@ -520,7 +523,8 @@
                             <i class="fa-light fa-robot text-5xl lg:text-6xl text-white group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"></i>
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">Canlı Destek</h3>
-                        <p class="text-xs lg:text-sm text-orange-600 dark:text-orange-400 font-semibold">Sohbete Başla</p>
+                        <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Yapay Zeka Destekli</p>
+                        <p class="text-sm lg:text-base text-orange-600 dark:text-orange-400 font-semibold">Sohbete Başla</p>
                     </div>
                 </button>
             </div>

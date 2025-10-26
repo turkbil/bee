@@ -18,10 +18,10 @@
     <div class="fixed top-8 right-8 z-40 bg-black text-white px-4 py-2 rounded-full text-sm font-medium">1 / 12</div>
     
     <div class="max-w-7xl mx-auto">
-        <div class="mb-12"><h1 class="text-4xl font-bold mb-2">Large Grid 3 Column</h1><p class="text-gray-600">Big cards with detailed information</p></div>
-        
-        <!-- 3 COLUMN LARGE CARDS -->
-        <div class="grid grid-cols-3 gap-8">
+        <div class="mb-12"><h1 class="text-4xl font-bold mb-2">Large Grid 4 Column</h1><p class="text-gray-600">Big cards with detailed information</p></div>
+
+        <!-- 4 COLUMN LARGE CARDS -->
+        <div class="grid grid-cols-4 gap-6">
             <div class="group" x-data="{ loved: false }">
                 <div class="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-black transition-colors duration-300">
                     <div class="relative bg-gray-50 aspect-square flex items-center justify-center p-12">
@@ -105,6 +105,36 @@
                             <div class="flex items-baseline gap-3 mb-6">
                                 <span class="text-4xl font-black">₺485.000</span>
                                 <span class="text-xl text-gray-400 line-through">₺1.380.000</span>
+                            </div>
+                            <button class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-colors">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group" x-data="{ loved: false }">
+                <div class="border-2 border-gray-200 rounded-2xl overflow-hidden hover:border-black transition-colors duration-300">
+                    <div class="relative bg-gray-50 aspect-square flex items-center justify-center p-12">
+                        <i class="fa-solid fa-dolly text-8xl text-black group-hover:scale-110 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-6 right-6 w-12 h-12 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'"></i>
+                        </button>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Manual Stacker</span>
+                            <span class="bg-red-600 text-white px-3 py-1 rounded text-xs font-bold">Sale</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Manual Stacker 1.0T</h3>
+                        <p class="text-gray-600 mb-6 text-sm leading-relaxed">Manual hydraulic stacker for lifting and stacking pallets up to 3 meters high.</p>
+                        <div class="flex items-center gap-2 mb-6">
+                            <div class="flex text-yellow-400"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></div>
+                            <span class="text-sm text-gray-500">(4.6) 267 reviews</span>
+                        </div>
+                        <div class="border-t pt-6">
+                            <div class="flex items-baseline gap-3 mb-6">
+                                <span class="text-4xl font-black">₺18.500</span>
+                                <span class="text-xl text-gray-400 line-through">₺45.000</span>
                             </div>
                             <button class="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-colors">Add to Cart</button>
                         </div>

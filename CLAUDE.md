@@ -28,8 +28,90 @@
 
 ---
 
-**UNUTMA:** Eğer bir işlem "veritabanındaki mevcut verileri etkileyecekse" → **ÖNCE KULLANICIYA SOR!** 
+**UNUTMA:** Eğer bir işlem "veritabanındaki mevcut verileri etkileyecekse" → **ÖNCE KULLANICIYA SOR!**
 
+---
+
+### 🎨 RENK KONTRAST KURALLARI
+
+**⚠️ KRİTİK: WCAG AA STANDARDI ZORUNLU**
+
+Her renk seçiminde **kontrast oranı minimum 4.5:1** olmalı!
+
+#### ❌ ASLA YAPMA:
+- **Mavi üstüne mavi text** (bg-blue-600 + text-blue-700)
+- **Koyu üstüne koyu** (bg-gray-800 + text-gray-700)
+- **Açık üstüne açık** (bg-white + text-gray-100)
+- **Transparan üstüne aynı renk** (bg-blue-500/50 + text-blue-600)
+
+#### ✅ DOĞRU KONTRAST ÖRNEKLERİ:
+
+**Light Mode:**
+- `bg-white` → `text-gray-900` (koyu siyah)
+- `bg-gray-50` → `text-gray-900` (koyu siyah)
+- `bg-blue-600` → `text-white` (beyaz)
+- `bg-blue-500` → `text-white` (beyaz)
+- `bg-gray-100` → `text-gray-900` (koyu siyah)
+
+**Dark Mode:**
+- `dark:bg-gray-900` → `dark:text-white` (beyaz)
+- `dark:bg-gray-800` → `dark:text-white` (beyaz)
+- `dark:bg-blue-600` → `dark:text-white` (beyaz)
+- `dark:bg-gray-700` → `dark:text-gray-100` (açık gri)
+
+#### 📋 KONTRAST KONTROL ADIMLARI:
+
+**Her UI elementi oluştururken:**
+1. **Arka plan rengini belirle** (bg-* class)
+2. **Kontrast text rengi seç:**
+   - Koyu bg → Açık text (white, gray-100)
+   - Açık bg → Koyu text (gray-900, gray-800)
+3. **Hem light hem dark mode kontrol et**
+4. **Ekran görüntüsü iste veya canlı test yap**
+
+#### 🚨 ÖZEL DURUMLAR:
+
+**Mavi/Renkli Butonlar/Kartlar:**
+```html
+<!-- ✅ DOĞRU -->
+<a href="#" class="bg-blue-600 text-white">
+  <h3 class="text-white">Başlık</h3>
+  <p class="text-white/90">Açıklama</p>
+  <i class="text-white"></i>
+</a>
+
+<!-- ❌ YANLIŞ -->
+<a href="#" class="bg-blue-600">
+  <h3>Başlık</h3> <!-- text-gray-900 inherit olur, okunmaz! -->
+  <p class="text-blue-100">Açıklama</p> <!-- Kontrast düşük! -->
+</a>
+```
+
+**Glassmorphism/Transparan:**
+```html
+<!-- ✅ DOĞRU: Belirgin arka plan -->
+<section class="bg-gray-50/95 dark:bg-gray-800/95">
+  <h1 class="text-gray-900 dark:text-white">Başlık</h1>
+</section>
+
+<!-- ❌ YANLIŞ: Çok transparan -->
+<section class="bg-white/20 dark:bg-white/5">
+  <h1 class="text-gray-900">Başlık</h1> <!-- Arka plan görünmez! -->
+</section>
+```
+
+#### 🔍 TEST ZORUNLULUĞU:
+
+**Kod yazdıktan sonra MUTLAKA:**
+1. Light mode screenshot iste → Kontrast kontrol et
+2. Dark mode screenshot iste → Kontrast kontrol et
+3. Okunmuyorsa → Hemen düzelt
+4. Cache clear + Build yap
+5. Tekrar test et
+
+**UNUTMA:** Eğer kullanıcı "okunmuyor" derse → **SEN HATA YAPTIN!** Özür dile ve hemen düzelt.
+
+---
 
 # 🤖 CLAUDE ÇALIŞMA TALİMATLARI
 

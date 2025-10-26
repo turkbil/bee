@@ -88,7 +88,7 @@
             </section>
         @else
             {{-- Glassmorphism Subheader for Shop Home --}}
-            <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
+            <section class="bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-md border-y border-gray-200 dark:border-gray-700">
                 <div class="container mx-auto py-6">
                     <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
                         <!-- Left: Title & Breadcrumb -->

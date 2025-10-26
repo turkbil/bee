@@ -149,3 +149,17 @@
     animation: swing 2s ease-in-out infinite;
     transform-origin: top center;
 }
+
+/* Hover Versions - Only animate on hover */
+.group:hover .group-hover\:animate-slide-x {
+    animation: slide-x 1.5s ease-in-out infinite;
+}
+
+.group:hover .group-hover\:animate-swing {
+    animation: swing 2s ease-in-out infinite;
+    transform-origin: top center;
+}
+
+.group:hover .group-hover\:animate-bounce-y {
+    animation: bounce-y 2s ease-in-out infinite;
+}

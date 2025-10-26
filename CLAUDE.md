@@ -391,6 +391,77 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 
 ---
 
+## 🚨 ACİL DURUM ÇÖZÜMLER (EMERGENCY FIXES)
+
+### BLADE @ DİRECTİVE ÇAKIŞMASI (JSON-LD)
+
+**Sorun:** JSON-LD içinde `"@context"` ve `"@type"` Blade directive olarak parse ediliyor
+**Belirti:** ParseError - "unexpected end of file, expecting endif"
+**Compiled PHP:** Binlerce kapanmamış `if` bloğu oluşuyor
+
+**Çözüm:**
+```blade
+# ❌ HATALI:
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product"
+}
+</script>
+
+# ✅ DOĞRU:
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",  # @@ ile escape
+    "@@type": "Product"
+}
+</script>
+```
+
+### ARRAY → STRING HATASI (getTranslated)
+
+**Sorun:** `getTranslated()` çoklu dil array'i döndürüyor, `{{ }}` htmlspecialchars() hatası veriyor
+**Belirti:** `htmlspecialchars(): Argument #1 must be of type string, array given`
+**Örnek Data:** `category->title = {"en":"Pallet Truck","tr":"Transpalet"}`
+
+**Çözüm:**
+```blade
+# ❌ HATALI:
+<script>
+    trackProductView(
+        '{{ $item->id }}',
+        '{{ $item->getTranslated('title', app()->getLocale()) }}',
+        '{{ $item->category->title }}'
+    );
+</script>
+
+# ✅ DOĞRU:
+<script>
+    trackProductView(
+        {{ $item->id }},                                        # String quote'suz
+        @json($item->getTranslated('title', app()->getLocale())), # @json() kullan
+        @json($item->category->title ?? 'Uncategorized')         # @json() kullan
+    );
+</script>
+```
+
+**@json() vs {{ }} Farkı:**
+- `{{ $var }}`: String beklenir, htmlspecialchars() uygular
+- `@json($var)`: Array/Object'i JSON'a çevirir, safe encode
+
+**Kullanım Kuralı:**
+- ✅ **JavaScript değişken**: `@json($array)` kullan
+- ✅ **JSON-LD içinde**: `@json($value)` kullan
+- ✅ **HTML içinde**: `{{ $string }}` kullan
+
+**Debug Adımları:**
+1. `php -l compiled_file.php` → Syntax kontrol
+2. PHP tokenizer ile if/endif say
+3. Geçici olarak blade kısmını yorum yap, test et
+4. Array değişken bulunca `@json()` ile düzelt
+
+---
+
 ## 💾 SİSTEM HAFIZASI
 
 ### DİL SİSTEMİ

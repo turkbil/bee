@@ -13,17 +13,17 @@
 {
     "@@context": "https://schema.org",
     "@@type": "Product",
-    "name": "{{ $item->getTranslated('title', app()->getLocale()) }}",
-    "description": "{{ strip_tags($item->getTranslated('short_description', app()->getLocale())) }}",
-    "image": "{{ $item->getFirstMedia('featured_image') ? $item->getFirstMedia('featured_image')->getUrl() : '' }}",
+    "name": @json($item->getTranslated('title', app()->getLocale())),
+    "description": @json(strip_tags($item->getTranslated('short_description', app()->getLocale()))),
+    "image": @json($item->getFirstMedia('featured_image') ? $item->getFirstMedia('featured_image')->getUrl() : ''),
     "brand": {
         "@@type": "Brand",
-        "name": "{{ $item->brand->title ?? setting('site_title') }}"
+        "name": @json($item->brand->title ?? setting('site_title'))
     },
-    "sku": "{{ $item->sku ?? 'N/A' }}",
+    "sku": @json($item->sku ?? 'N/A'),
     "offers": {
         "@@type": "Offer",
-        "url": "{{ url()->current() }}",
+        "url": @json(url()->current()),
         "priceCurrency": "TRY",
         "availability": "https://schema.org/InStock"
     }
@@ -34,9 +34,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof window.trackProductView === 'function') {
             window.trackProductView(
-                '{{ $item->id }}',
-                '{{ $item->getTranslated('title', app()->getLocale()) }}',
-                '{{ $item->category->title ?? 'Uncategorized' }}',
+                {{ $item->id }},
+                @json($item->getTranslated('title', app()->getLocale())),
+                @json($item->category->title ?? 'Uncategorized'),
                 null
             );
         }

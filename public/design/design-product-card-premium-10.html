@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Overlay Cards - Premium Cards</title>
+    <title>Bordered Cards 4 Column - Premium Cards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-gray-100 min-h-screen py-16 px-6">
+<body class="bg-white min-h-screen py-16 px-6">
     <div class="fixed bottom-8 right-8 z-50 flex gap-3">
         <a href="design-product-card-premium-9.html" class="w-11 h-11 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800"><i class="fa-solid fa-arrow-left text-sm"></i></a>
         <a href="design-product-card-premium-11.html" class="w-11 h-11 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800"><i class="fa-solid fa-arrow-right text-sm"></i></a>
@@ -18,163 +18,183 @@
     <div class="fixed top-8 right-8 z-40 bg-black text-white px-4 py-2 rounded-full text-sm font-medium">10 / 12</div>
     
     <div class="max-w-7xl mx-auto">
-        <div class="mb-12"><h1 class="text-4xl font-bold mb-2">Image Overlay Design</h1><p class="text-gray-600">Information layered on visuals</p></div>
+        <div class="mb-12"><h1 class="text-4xl font-bold mb-2">Bordered Cards 4 Column</h1><p class="text-gray-600">Clean borders with elegant spacing</p></div>
         
-        <!-- IMAGE OVERLAY LAYOUT -->
-        <div class="grid grid-cols-2 gap-8">
-            <div class="group relative overflow-hidden rounded-3xl aspect-[4/5] cursor-pointer" x-data="{ loved: false }">
-                <div class="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                    <i class="fa-solid fa-forklift text-9xl text-white/20 group-hover:scale-110 transition-transform duration-500"></i>
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div class="absolute top-6 left-6 right-6 flex items-start justify-between">
-                    <div class="flex flex-col gap-2">
-                        <span class="inline-block bg-white text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">ELECTRIC FORKLIFT</span>
-                        <span class="inline-block bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-bold w-fit">-65% OFF</span>
-                    </div>
-                    <button @click.stop="loved = !loved" class="w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20">
-                        <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-white'"></i>
+        <!-- 4 COLUMN BORDERED GRID -->
+        <div class="grid grid-cols-4 gap-6">
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-gray-900 text-white px-2 py-1 rounded text-xs font-bold">ELECTRIC</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
                     </button>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                    <div class="mb-4">
-                        <h3 class="text-4xl font-bold mb-3">Toyota 8FBE35 Electric Forklift</h3>
-                        <p class="text-white/80 leading-relaxed">Professional grade 3.5-ton electric forklift with advanced safety systems and zero-emission technology for indoor warehouse operations.</p>
-                    </div>
-                    <div class="flex items-center gap-6 mb-6 text-sm">
-                        <div><span class="text-white/60">Capacity</span> <span class="font-semibold ml-2">3.5 Ton</span></div>
-                        <div><span class="text-white/60">Power</span> <span class="font-semibold ml-2">Electric 48V</span></div>
-                        <div><span class="text-white/60">Lift</span> <span class="font-semibold ml-2">4.7m</span></div>
-                    </div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="flex text-yellow-400"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></div>
-                        <span class="font-semibold">4.8</span>
-                        <span class="text-white/60">(124 reviews)</span>
-                    </div>
-                    <div class="flex items-center justify-between pt-6 border-t border-white/20">
-                        <div class="flex items-baseline gap-3">
-                            <span class="text-5xl font-black">₺395.000</span>
-                            <span class="text-xl text-white/40 line-through">₺1.130.000</span>
-                        </div>
-                        <button class="bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-colors" @click.stop>Add to Cart</button>
-                    </div>
+                <div class="w-full aspect-square bg-gray-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-forklift text-6xl text-gray-800"></i>
                 </div>
+                <h3 class="text-lg font-bold mb-2">Toyota 8FBE35</h3>
+                <p class="text-sm text-gray-600 mb-3">Professional electric forklift 3.5 ton capacity.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺395.000</span>
+                    <span class="text-xs text-gray-400 line-through">₺1.130.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
             </div>
 
-            <div class="group relative overflow-hidden rounded-3xl aspect-[4/5] cursor-pointer" x-data="{ loved: false }">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                    <i class="fa-solid fa-boxes-stacked text-9xl text-white/20 group-hover:scale-110 transition-transform duration-500"></i>
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div class="absolute top-6 left-6 right-6 flex items-start justify-between">
-                    <div class="flex flex-col gap-2">
-                        <span class="inline-block bg-white text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">MANUAL PALLET</span>
-                        <span class="inline-block bg-yellow-400 text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">BEST SELLER</span>
-                    </div>
-                    <button @click.stop="loved = !loved" class="w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20">
-                        <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-white'"></i>
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold">MANUAL</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
                     </button>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                    <div class="mb-4">
-                        <h3 class="text-4xl font-bold mb-3">Hydraulic Pallet Jack 2.5 Ton</h3>
-                        <p class="text-white/80 leading-relaxed">Heavy duty manual pallet jack with smooth hydraulic pump system. Perfect for warehouses, retail stores, and loading docks.</p>
-                    </div>
-                    <div class="flex items-center gap-6 mb-6 text-sm">
-                        <div><span class="text-white/60">Capacity</span> <span class="font-semibold ml-2">2.5 Ton</span></div>
-                        <div><span class="text-white/60">Type</span> <span class="font-semibold ml-2">Manual</span></div>
-                        <div><span class="text-white/60">Fork</span> <span class="font-semibold ml-2">1150mm</span></div>
-                    </div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="flex text-yellow-400"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-                        <span class="font-semibold">5.0</span>
-                        <span class="text-white/60">(342 reviews)</span>
-                    </div>
-                    <div class="flex items-center justify-between pt-6 border-t border-white/20">
-                        <div class="flex items-baseline gap-3">
-                            <span class="text-5xl font-black">₺8.500</span>
-                            <span class="text-xl text-white/40 line-through">₺21.500</span>
-                        </div>
-                        <button class="bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-colors" @click.stop>Add to Cart</button>
-                    </div>
+                <div class="w-full aspect-square bg-blue-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-boxes-stacked text-6xl text-blue-600"></i>
                 </div>
+                <h3 class="text-lg font-bold mb-2">Pallet Jack 2.5T</h3>
+                <p class="text-sm text-gray-600 mb-3">Heavy duty manual pallet jack hydraulic.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺8.500</span>
+                    <span class="text-xs text-gray-400 line-through">₺21.500</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
             </div>
 
-            <div class="group relative overflow-hidden rounded-3xl aspect-[4/5] cursor-pointer" x-data="{ loved: false }">
-                <div class="absolute inset-0 bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center">
-                    <i class="fa-solid fa-warehouse text-9xl text-white/20 group-hover:scale-110 transition-transform duration-500"></i>
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div class="absolute top-6 left-6 right-6 flex items-start justify-between">
-                    <div class="flex flex-col gap-2">
-                        <span class="inline-block bg-white text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">REACH TRUCK</span>
-                        <span class="inline-block bg-emerald-400 text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">TOP RATED</span>
-                    </div>
-                    <button @click.stop="loved = !loved" class="w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20">
-                        <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-white'"></i>
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold">REACH</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
                     </button>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                    <div class="mb-4">
-                        <h3 class="text-4xl font-bold mb-3">VNA Reach Truck 2.0 Ton</h3>
-                        <p class="text-white/80 leading-relaxed">Very narrow aisle reach truck designed for maximum storage density. Perfect for high-level picking in tight warehouse spaces.</p>
-                    </div>
-                    <div class="flex items-center gap-6 mb-6 text-sm">
-                        <div><span class="text-white/60">Capacity</span> <span class="font-semibold ml-2">2.0 Ton</span></div>
-                        <div><span class="text-white/60">Max Lift</span> <span class="font-semibold ml-2">12m</span></div>
-                        <div><span class="text-white/60">Aisle</span> <span class="font-semibold ml-2">1.8m</span></div>
-                    </div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="flex text-yellow-400"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></div>
-                        <span class="font-semibold">4.7</span>
-                        <span class="text-white/60">(218 reviews)</span>
-                    </div>
-                    <div class="flex items-center justify-between pt-6 border-t border-white/20">
-                        <div class="flex items-baseline gap-3">
-                            <span class="text-5xl font-black">₺485.000</span>
-                            <span class="text-xl text-white/40 line-through">₺1.380.000</span>
-                        </div>
-                        <button class="bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-colors" @click.stop>Add to Cart</button>
-                    </div>
+                <div class="w-full aspect-square bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-warehouse text-6xl text-emerald-600"></i>
                 </div>
+                <h3 class="text-lg font-bold mb-2">VNA Reach Truck</h3>
+                <p class="text-sm text-gray-600 mb-3">Narrow aisle reach truck 2.0 ton capacity.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺485.000</span>
+                    <span class="text-xs text-gray-400 line-through">₺1.380.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
             </div>
 
-            <div class="group relative overflow-hidden rounded-3xl aspect-[4/5] cursor-pointer" x-data="{ loved: false }">
-                <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center">
-                    <i class="fa-solid fa-truck-ramp-box text-9xl text-white/20 group-hover:scale-110 transition-transform duration-500"></i>
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div class="absolute top-6 left-6 right-6 flex items-start justify-between">
-                    <div class="flex flex-col gap-2">
-                        <span class="inline-block bg-white text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">ORDER PICKER</span>
-                        <span class="inline-block bg-purple-400 text-black px-3 py-1.5 rounded-full text-xs font-bold w-fit">NEW MODEL</span>
-                    </div>
-                    <button @click.stop="loved = !loved" class="w-11 h-11 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20">
-                        <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-white'"></i>
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-amber-600 text-white px-2 py-1 rounded text-xs font-bold">TOWING</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
                     </button>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                    <div class="mb-4">
-                        <h3 class="text-4xl font-bold mb-3">Order Picker 1.5T Platform</h3>
-                        <p class="text-white/80 leading-relaxed">Vertical order picker with operator platform for efficient warehouse picking operations at various heights.</p>
-                    </div>
-                    <div class="flex items-center gap-6 mb-6 text-sm">
-                        <div><span class="text-white/60">Capacity</span> <span class="font-semibold ml-2">1.5 Ton</span></div>
-                        <div><span class="text-white/60">Platform</span> <span class="font-semibold ml-2">8m</span></div>
-                        <div><span class="text-white/60">Type</span> <span class="font-semibold ml-2">Electric</span></div>
-                    </div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="flex text-yellow-400"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
-                        <span class="font-semibold">4.2</span>
-                        <span class="text-white/60">(89 reviews)</span>
-                    </div>
-                    <div class="flex items-center justify-between pt-6 border-t border-white/20">
-                        <div class="flex items-baseline gap-3">
-                            <span class="text-5xl font-black">₺285.000</span>
-                        </div>
-                        <button class="bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-colors" @click.stop>Add to Cart</button>
-                    </div>
+                <div class="w-full aspect-square bg-amber-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-truck-container text-6xl text-amber-600"></i>
                 </div>
+                <h3 class="text-lg font-bold mb-2">Electric Tow Tractor</h3>
+                <p class="text-sm text-gray-600 mb-3">Heavy duty tow tractor 6 ton capacity.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺325.000</span>
+                    <span class="text-xs text-gray-400 line-through">₺675.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
+            </div>
+
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-purple-600 text-white px-2 py-1 rounded text-xs font-bold">PICKER</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
+                    </button>
+                </div>
+                <div class="w-full aspect-square bg-purple-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-truck-ramp-box text-6xl text-purple-600"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Order Picker 1.5T</h3>
+                <p class="text-sm text-gray-600 mb-3">Vertical order picker with platform.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺285.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
+            </div>
+
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">STACKER</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
+                    </button>
+                </div>
+                <div class="w-full aspect-square bg-red-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-dolly text-6xl text-red-600"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Manual Stacker 1T</h3>
+                <p class="text-sm text-gray-600 mb-3">Manual stacker for lifting pallets 3m.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺18.500</span>
+                    <span class="text-xs text-gray-400 line-through">₺45.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
+            </div>
+
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-indigo-600 text-white px-2 py-1 rounded text-xs font-bold">PLATFORM</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
+                    </button>
+                </div>
+                <div class="w-full aspect-square bg-indigo-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-lift text-6xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Scissor Lift 2.5T</h3>
+                <p class="text-sm text-gray-600 mb-3">Electric scissor lift elevated platform.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺195.000</span>
+                    <span class="text-xs text-gray-400 line-through">₺385.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
+            </div>
+
+            <div class="border-2 border-gray-200 rounded-2xl p-6 hover:border-black transition-colors" x-data="{ loved: false }">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="inline-block bg-teal-600 text-white px-2 py-1 rounded text-xs font-bold">CONVEYOR</span>
+                    <button @click="loved = !loved" class="w-9 h-9 border border-gray-200 rounded-full flex items-center justify-center hover:border-black">
+                        <i :class="loved ? 'fa-solid fa-heart text-red-500 text-sm' : 'fa-regular fa-heart text-gray-400 text-sm'"></i>
+                    </button>
+                </div>
+                <div class="w-full aspect-square bg-teal-50 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-truck-loading text-6xl text-teal-600"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">Loading Conveyor</h3>
+                <p class="text-sm text-gray-600 mb-3">Portable loading conveyor system.</p>
+                <div class="flex text-yellow-400 text-xs mb-3">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                </div>
+                <div class="flex items-baseline gap-2 mb-3">
+                    <span class="text-xl font-black">₺125.000</span>
+                    <span class="text-xs text-gray-400 line-through">₺245.000</span>
+                </div>
+                <button class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-bold hover:bg-gray-800">Add to Cart</button>
             </div>
         </div>
     </div>

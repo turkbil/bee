@@ -17,7 +17,6 @@ module.exports = {
         // Gradient base
         'bg-gradient-to-r',
         'bg-gradient-to-br',
-        'bg-gradient-to-b',
 
         // Light mode gradients (existing)
         'from-violet-600',
@@ -42,70 +41,6 @@ module.exports = {
         'hover:bg-violet-50',
         'dark:hover:bg-violet-900/20',
         'dark:hover:bg-violet-900/30',
-
-        // ⭐ Navy + Gold Gradient (YENİ!)
-        'bg-navy-950',
-        'bg-navy-900',
-        'bg-navy-800',
-        'bg-navy-700',
-        'dark:bg-navy-950',
-        'dark:bg-navy-900',
-        'dark:bg-navy-800',
-        'from-navy-950',
-        'from-navy-900',
-        'from-navy-800',
-        'to-navy-950',
-        'to-navy-900',
-        'to-navy-800',
-        'via-navy-900',
-        'via-navy-800',
-        'dark:from-navy-950',
-        'dark:from-navy-900',
-        'dark:to-navy-950',
-        'dark:to-navy-800',
-        'dark:via-navy-900',
-
-        // Gold gradient classes
-        'bg-gold-gradient',
-        'bg-gold-gradient-r',
-        'gold-gradient',
-        'animate-gold-shimmer',
-
-        // Gold/Yellow colors
-        'bg-gold-600',
-        'bg-gold-500',
-        'text-gold-600',
-        'text-gold-500',
-        'border-gold-600',
-
-        // Yellow accent
-        'bg-yellow-600',
-        'bg-yellow-500',
-        'text-yellow-600',
-        'text-yellow-500',
-        'border-yellow-600',
-        'border-yellow-600/50',
-        'bg-yellow-600/20',
-        'bg-yellow-600/10',
-        'hover:bg-yellow-600',
-        'hover:bg-yellow-500',
-        'hover:border-yellow-600',
-        'hover:border-yellow-600/50',
-        'hover:text-yellow-600',
-        'dark:hover:text-yellow-500',
-
-        // Gold shadow glow
-        'shadow-gold-sm',
-        'shadow-gold',
-        'shadow-gold-lg',
-        'shadow-gold-xl',
-        'shadow-yellow-sm',
-        'shadow-yellow',
-        'shadow-yellow-lg',
-        'hover:shadow-gold',
-        'hover:shadow-gold-lg',
-        'hover:shadow-yellow',
-        'hover:shadow-yellow-lg',
 
         // Mega Menu Colors - Blue
         'from-blue-50', 'to-blue-50', 'from-blue-100', 'to-blue-100',
@@ -222,79 +157,7 @@ module.exports = {
                     700: '#0369a1',
                     800: '#075985',
                     900: '#0c4a6e',
-                },
-                // ⭐ Navy - En koyu lacivert (siyah yerine!)
-                navy: {
-                    950: '#0a0e27', // En koyu (body background) - BLACK YERİNE!
-                    900: '#0f1629', // Section background
-                    800: '#1a1f3a', // Card background
-                    700: '#252b4a', // Hover state
-                    600: '#303654', // Light state
-                },
-                // ⭐ Gold - Gradient için custom renk paleti
-                gold: {
-                    50: '#fefce8',
-                    100: '#fef9c3',
-                    200: '#fef08a',
-                    300: '#fde047',
-                    400: '#facc15',
-                    500: '#f4e5a1', // Light gold (gradient)
-                    600: '#d4af37', // Main gold (gradient)
-                    700: '#b8941f',
-                    800: '#92740f',
-                    900: '#78600a',
-                    950: '#5c4808',
-                },
-            },
-            backgroundImage: {
-                // ⭐ Premium gold gradient
-                'gold-gradient': 'linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1)',
-                'gold-gradient-r': 'linear-gradient(to right, #ca8a04, #eab308)',
-                'gold-radial': 'radial-gradient(circle, #f4e5a1, #d4af37)',
-
-                // ⭐ Section gradient'leri (Navy ile!)
-                'gradient-dark': 'linear-gradient(to bottom, #0a0e27, #0f1629, #1a1f3a)',
-                'gradient-light': 'linear-gradient(to bottom, #ffffff, #f9fafb, #f3f4f6)',
-            },
-            animation: {
-                // ⭐ Gold shimmer animation
-                'gold-shimmer': 'gold-shimmer 3s ease infinite',
-                'glow': 'glow 2s ease-in-out infinite',
-                'gradient': 'gradient 3s ease infinite',
-            },
-            keyframes: {
-                // ⭐ Gold shimmer keyframe
-                'gold-shimmer': {
-                    '0%': { backgroundPosition: '0% 50%' },
-                    '50%': { backgroundPosition: '100% 50%' },
-                    '100%': { backgroundPosition: '0% 50%' },
-                },
-                'glow': {
-                    '0%, 100%': { opacity: '1' },
-                    '50%': { opacity: '0.7' },
-                },
-                'gradient': {
-                    '0%, 100%': { backgroundPosition: '0% 50%' },
-                    '50%': { backgroundPosition: '100% 50%' },
-                },
-            },
-            boxShadow: {
-                // ⭐ Gold glow shadows
-                'gold-sm': '0 0 20px rgba(212, 175, 55, 0.3)',
-                'gold': '0 0 20px rgba(212, 175, 55, 0.5)',
-                'gold-lg': '0 0 40px rgba(212, 175, 55, 0.5)',
-                'gold-xl': '0 0 60px rgba(212, 175, 55, 0.6)',
-
-                // ⭐ Yellow glow shadows
-                'yellow-sm': '0 0 20px rgba(234, 179, 8, 0.3)',
-                'yellow': '0 0 20px rgba(234, 179, 8, 0.5)',
-                'yellow-lg': '0 0 40px rgba(234, 179, 8, 0.5)',
-            },
-            backdropBlur: {
-                xs: '2px',
-            },
-            backgroundSize: {
-                '200': '200% auto',
+                }
             },
             // iXtif Theme Container (Standard Widths)
             spacing: {

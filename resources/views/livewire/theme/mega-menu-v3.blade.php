@@ -1,8 +1,4 @@
-<div class="w-full rounded-3xl overflow-hidden relative
-         bg-white dark:bg-navy-900/95
-         backdrop-blur-2xl
-         border border-gray-200 dark:border-gold-dark/20
-         shadow-lg dark:shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+<div class="w-full rounded-2xl overflow-hidden relative border border-gray-300 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800">
     <div class="grid grid-cols-12 lg:grid-cols-12 gap-0 min-h-[480px]">
 
         {{-- ========================================== --}}
@@ -39,15 +35,10 @@
         {{-- ========================================== --}}
         {{-- ORTA: FEATURED PRODUCT (4/12 → 6/12 küçük ekranda) --}}
         {{-- ========================================== --}}
-        <div class="col-span-12 lg:col-span-6 xl:col-span-4 bg-transparent p-6 flex flex-col">
+        <div class="col-span-12 lg:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 p-6 flex flex-col">
             @if($featuredProduct)
                 <a href="/shop/{{ is_array($featuredProduct->slug) ? $featuredProduct->slug['tr'] : $featuredProduct->slug }}"
-                   class="bg-gray-50 dark:bg-gradient-to-br dark:from-navy-800/50 dark:to-navy-900/50
-                          rounded-xl p-5
-                          border border-gray-200 dark:border-gold-dark/10
-                          hover:border-blue-400 dark:hover:border-gold-dark/30
-                          dark:hover:shadow-[0_0_30px_rgba(212,175,55,0.2)]
-                          transition-all duration-500 flex flex-col group h-full">
+                   class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border border-gray-200 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all duration-300 flex flex-col group h-full">
 
 
                     {{-- Product Image - Conditional BG --}}

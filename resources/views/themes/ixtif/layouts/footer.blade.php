@@ -4,32 +4,12 @@
     $popularSearches = SearchQuery::getMarkedPopular(10);
 @endphp
 
-{{-- ULTRA PREMIUM SEARCH SECTION --}}
-<section class="w-full py-20 relative overflow-hidden">
-    {{-- Background --}}
-    <div class="absolute inset-0 bg-gradient-to-r from-gray-50 via-white to-gray-50 dark:from-navy-950 dark:via-navy-900 dark:to-navy-950"></div>
-    <div class="absolute inset-0 bg-[url('/grid.svg')] opacity-5"></div>
-
-    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-        <div class="max-w-4xl mx-auto">
-            {{-- Glass Card --}}
-            <div class="
-                bg-white/80 dark:bg-white/5 backdrop-blur-2xl
-                border border-gray-200 dark:border-gold-dark/20
-                rounded-[2rem]
-                p-12
-                shadow-xl dark:shadow-[0_0_60px_rgba(212,175,55,0.1)]
-            ">
-                {{-- Header --}}
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl font-black mb-4">
-                        <span class="text-gray-900 dark:text-white">Aradığınızı </span>
-                        <span class="gold-gradient bg-clip-text text-transparent">Hemen Bulun</span>
-                    </h2>
-                    <p class="text-lg text-gray-600 dark:text-gray-300">
-                        20.000+ ürün arasından kolayca arama yapın
-                    </p>
-                </div>
+<section class="w-full py-12">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0">
+        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-12 px-6 rounded-3xl shadow-2xl">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>
+                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Binlerce ürün için hemen arayın!</p>
 
                 {{-- Livewire Search Bar with Custom Footer Styling --}}
                 <div class="mb-6">
@@ -70,30 +50,13 @@
                                  class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide flex-1">
                                 {{-- Popüler Aramalar Linki (İlk Sırada) --}}
                                 <a href="{{ route('search.tags') }}"
-                                   class="flex-shrink-0
-                                          px-4 py-2 rounded-full
-                                          bg-gray-100 dark:bg-white/5 backdrop-blur
-                                          border border-gray-200 dark:border-gold-dark/20
-                                          text-sm font-semibold text-gray-900 dark:text-gold-dark
-                                          hover:bg-gray-200 dark:hover:bg-white/10
-                                          hover:border-gray-300 dark:hover:border-gold-dark/40
-                                          dark:hover:shadow-[0_0_15px_rgba(212,175,55,0.2)]
-                                          transition-all duration-300">
+                                   class="flex-shrink-0 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
                                     Popüler Aramalar
                                 </a>
 
                                 @foreach($popularSearches as $search)
                                     <a href="{{ href('Search', 'search') }}?q={{ urlencode($search->query) }}"
-                                       class="flex-shrink-0
-                                              px-4 py-2 rounded-full
-                                              bg-gray-100 dark:bg-white/5 backdrop-blur
-                                              border border-gray-200 dark:border-gold-dark/20
-                                              text-sm text-gray-700 dark:text-gray-200
-                                              hover:bg-gray-200 dark:hover:bg-white/10
-                                              hover:border-gray-300 dark:hover:border-gold-dark/40
-                                              hover:text-gray-900 dark:hover:text-white
-                                              dark:hover:shadow-[0_0_15px_rgba(212,175,55,0.2)]
-                                              transition-all duration-300">
+                                       class="flex-shrink-0 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 border border-gray-200 dark:border-gray-600 px-4 py-2 rounded-full text-sm font-semibold text-gray-900 dark:text-white transition-all hover:scale-105 hover:shadow-md">
                                         {{ $search->query }}
                                     </a>
                                 @endforeach
@@ -122,13 +85,15 @@
     </div>
 </section>
 
-{{-- ULTRA PREMIUM FOOTER --}}
-<footer class="relative pt-20 pb-10 overflow-hidden">
-    {{-- Background --}}
-    <div class="absolute inset-0 bg-gradient-to-b from-white to-gray-50 dark:from-navy-900 dark:to-navy-950"></div>
-
-    {{-- Gold Accent Line --}}
-    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gold-dark to-transparent"></div>
+{{-- FOOTER-002 Design --}}
+<footer class="w-full relative
+    bg-white dark:bg-transparent
+    backdrop-blur-xl
+    text-gray-900 dark:text-white"
+    style="z-index: 10;
+    rounded-3xl
+    border border-gray-200 dark:border-white/10
+    overflow-hidden">
 
     <div class="container mx-auto px-4 sm:px-4 md:px-0 py-12 md:py-16">
 
@@ -192,9 +157,12 @@
                          class="block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
                          title="{{ $siteTitle }}">
                 @else
-                    {{-- Logo yok - ULTRA PREMIUM Gold Gradient Title --}}
+                    {{-- Logo yok - Site title text göster --}}
                     <div class="flex flex-col items-center gap-3">
-                        <h2 class="text-5xl sm:text-6xl md:text-7xl font-black gold-gradient bg-clip-text text-transparent">
+                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-3xl flex items-center justify-center">
+                            <i class="fa-solid fa-forklift text-white text-5xl"></i>
+                        </div>
+                        <h2 class="text-4xl sm:text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
                             {{ $siteTitle }}
                         </h2>
                     </div>
@@ -300,22 +268,14 @@
             ];
         @endphp
 
-        {{-- ULTRA PREMIUM Social Links --}}
-        <div class="flex justify-center gap-3 mb-12">
+        <div class="flex justify-center gap-4 mb-12">
             @foreach($socialMedia as $social)
             <a href="{{ $social['url'] }}"
-               class="group w-12 h-12 rounded-full
-                      bg-gray-100 dark:bg-white/5 backdrop-blur
-                      border border-gray-200 dark:border-gold-dark/20
-                      flex items-center justify-center
-                      hover:bg-gray-200 dark:hover:bg-gold-dark/20
-                      hover:border-gray-300 dark:hover:border-gold-dark/40
-                      dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]
-                      transition-all duration-300"
+               class="group w-14 h-14 bg-gradient-to-br {{ $social['gradient'] }}
+                      rounded-2xl flex items-center justify-center"
                aria-label="{{ $social['icon'] }}">
-                <i class="fa-brands fa-{{ $social['icon'] }} text-gray-700 dark:text-gray-300
-                          group-hover:text-gray-900 dark:group-hover:text-gold-light
-                          group-hover:scale-110 transition-all"></i>
+                <i class="fa-brands fa-{{ $social['icon'] }} text-xl text-white
+                          group-hover:scale-125 transition-transform duration-300"></i>
             </a>
             @endforeach
         </div>
@@ -327,24 +287,19 @@
             $contactEmail = setting('contact_email_1', 'info@ixtif.com');
         @endphp
 
-        {{-- ULTRA PREMIUM Contact Info --}}
         <div class="flex flex-wrap justify-center items-center gap-6 mb-8 text-sm text-gray-600 dark:text-gray-400">
-            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-               class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-gold-light transition-colors">
-                <i class="fa-solid fa-phone text-blue-600 dark:text-gold-dark"></i>
+            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400"></i>
                 {{ $contactPhone }}
             </a>
-            <span class="text-gray-400 dark:text-gold-dark/30">•</span>
-            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}"
-               target="_blank"
-               class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-gold-light transition-colors">
-                <i class="fa-brands fa-whatsapp text-green-600 dark:text-gold-dark"></i>
+            <span class="text-gray-400 dark:text-gray-600">•</span>
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank" class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400"></i>
                 {{ $contactWhatsapp }}
             </a>
-            <span class="text-gray-400 dark:text-gold-dark/30">•</span>
-            <a href="mailto:{{ $contactEmail }}"
-               class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-gold-light transition-colors">
-                <i class="fa-solid fa-envelope text-purple-600 dark:text-gold-dark"></i>
+            <span class="text-gray-400 dark:text-gray-600">•</span>
+            <a href="mailto:{{ $contactEmail }}" class="flex items-center gap-2 hover:text-gray-900 dark:hover:text-white transition-colors">
+                <i class="fa-solid fa-envelope text-purple-600 dark:text-purple-400"></i>
                 {{ $contactEmail }}
             </a>
         </div>
@@ -475,9 +430,6 @@
         </div>
     </div>
 
-    {{-- Floating Gradient Orbs for ULTRA PREMIUM Effect --}}
-    <div class="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-gold-dark/10 dark:to-gold-light/10 rounded-full blur-[100px] pointer-events-none"></div>
-    <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-gold-light/10 dark:to-gold-dark/10 rounded-full blur-[100px] pointer-events-none"></div>
 </footer>
 
 {{-- Widget Integration --}}

@@ -370,19 +370,21 @@
                                         <div class="d-flex align-items-center justify-content-center gap-2">
                                             @if ($product->stock_tracking)
                                                 @php
+                                                    $hasNoStockData = $product->current_stock == 0;
                                                     $isLowStock = $product->current_stock > 0 && $product->current_stock <= $product->low_stock_threshold;
-                                                    $isOutOfStock = $product->current_stock <= 0;
                                                 @endphp
-                                                <div class="d-flex flex-column align-items-center">
-                                                    <span class="fw-semibold editable-stock {{ $isOutOfStock ? 'text-danger' : ($isLowStock ? 'text-warning' : '') }}">
-                                                        {{ $product->current_stock }}
-                                                    </span>
-                                                    @if ($isLowStock && !$isOutOfStock)
-                                                        <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
-                                                    @elseif ($isOutOfStock)
-                                                        <small class="badge bg-danger-lt" style="font-size: 0.65rem;">Tükendi</small>
-                                                    @endif
-                                                </div>
+                                                @if ($hasNoStockData)
+                                                    <span class="text-muted small editable-stock">—</span>
+                                                @else
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <span class="fw-semibold editable-stock {{ $isLowStock ? 'text-warning' : '' }}">
+                                                            {{ $product->current_stock }}
+                                                        </span>
+                                                        @if ($isLowStock)
+                                                            <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                        @endif
+                                                    </div>
+                                                @endif
                                             @else
                                                 <span class="text-muted small editable-stock">—</span>
                                             @endif
@@ -666,19 +668,21 @@
                                                 <div class="d-flex align-items-center justify-content-center gap-2">
                                                     @if ($variant->stock_tracking)
                                                         @php
+                                                            $hasNoStockData = $variant->current_stock == 0;
                                                             $isLowStock = $variant->current_stock > 0 && $variant->current_stock <= $variant->low_stock_threshold;
-                                                            $isOutOfStock = $variant->current_stock <= 0;
                                                         @endphp
-                                                        <div class="d-flex flex-column align-items-center">
-                                                            <span class="fw-semibold editable-stock {{ $isOutOfStock ? 'text-danger' : ($isLowStock ? 'text-warning' : '') }}">
-                                                                {{ $variant->current_stock }}
-                                                            </span>
-                                                            @if ($isLowStock && !$isOutOfStock)
-                                                                <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
-                                                            @elseif ($isOutOfStock)
-                                                                <small class="badge bg-danger-lt" style="font-size: 0.65rem;">Tükendi</small>
-                                                            @endif
-                                                        </div>
+                                                        @if ($hasNoStockData)
+                                                            <span class="text-muted small editable-stock">—</span>
+                                                        @else
+                                                            <div class="d-flex flex-column align-items-center">
+                                                                <span class="fw-semibold editable-stock {{ $isLowStock ? 'text-warning' : '' }}">
+                                                                    {{ $variant->current_stock }}
+                                                                </span>
+                                                                @if ($isLowStock)
+                                                                    <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                                @endif
+                                                            </div>
+                                                        @endif
                                                     @else
                                                         <span class="text-muted small editable-stock">—</span>
                                                     @endif

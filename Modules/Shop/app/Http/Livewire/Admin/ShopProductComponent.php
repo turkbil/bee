@@ -41,6 +41,11 @@ class ShopProductComponent extends Component
 
     public array $categories = [];
 
+    // Inline price editing
+    public ?int $editingPriceId = null;
+    public ?string $newPrice = null;
+    public ?string $newCurrency = null;
+
     protected ShopProductService $productService;
 
     protected $listeners = [
@@ -202,6 +207,63 @@ class ShopProductComponent extends Component
                 'type' => 'error',
             ]);
         }
+    }
+
+    public function startEditingPrice(int $productId, ?string $currentPrice, ?string $currentCurrency): void
+    {
+        $this->editingPriceId = $productId;
+        $this->newPrice = $currentPrice;
+        $this->newCurrency = $currentCurrency ?? 'TRY';
+    }
+
+    public function updatePriceInline(): void
+    {
+        if (! $this->editingPriceId) {
+            return;
+        }
+
+        try {
+            $product = ShopProduct::findOrFail($this->editingPriceId);
+
+            // Validate price
+            $price = $this->newPrice ? (float) str_replace(',', '.', $this->newPrice) : null;
+
+            if ($price !== null && $price < 0) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('shop::admin.invalid_price'),
+                    'type' => 'error',
+                ]);
+                return;
+            }
+
+            $product->base_price = $price;
+            $product->currency = $this->newCurrency ?? 'TRY';
+            $product->save();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('shop::admin.price_updated'),
+                'type' => 'success',
+            ]);
+
+            $this->editingPriceId = null;
+            $this->newPrice = null;
+            $this->newCurrency = null;
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
+    public function cancelPriceEdit(): void
+    {
+        $this->editingPriceId = null;
+        $this->newPrice = null;
+        $this->newCurrency = null;
     }
 
     public function bulkDeleteSelected(): void

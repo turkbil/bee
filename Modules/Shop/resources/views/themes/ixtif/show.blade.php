@@ -11,18 +11,18 @@
 {{-- Schema.org Product (JSON-LD) --}}
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "Product",
+    "@@context": "https://schema.org",
+    "@@type": "Product",
     "name": "{{ $item->getTranslated('title', app()->getLocale()) }}",
     "description": "{{ strip_tags($item->getTranslated('short_description', app()->getLocale())) }}",
     "image": "{{ $item->getFirstMedia('featured_image') ? $item->getFirstMedia('featured_image')->getUrl() : '' }}",
     "brand": {
-        "@type": "Brand",
+        "@@type": "Brand",
         "name": "{{ $item->brand->title ?? setting('site_title') }}"
     },
     "sku": "{{ $item->sku ?? 'N/A' }}",
     "offers": {
-        "@type": "Offer",
+        "@@type": "Offer",
         "url": "{{ url()->current() }}",
         "priceCurrency": "TRY",
         "availability": "https://schema.org/InStock"

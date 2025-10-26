@@ -9,12 +9,27 @@
 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
     {{-- Product Image --}}
     <a href="{{ $productUrl }}"
-       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 relative"
+       x-data="{ loaded: false }"
+       x-init="$nextTick(() => { if ($refs.img && $refs.img.complete) { loaded = true; } })">
         @if($product->hasMedia('featured_image'))
+            {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
+            <img src="{{ thumb($product->getFirstMedia('featured_image'), 40, 40, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
+                 alt="{{ $product->getTranslated('title') }}"
+                 x-show="!loaded"
+                 class="absolute inset-0 w-full h-full object-contain blur-2xl scale-110 p-4 md:p-6">
+
+            {{-- Actual Image - Net 400x400 --}}
             <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
-                <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                <img x-ref="img"
+                     x-show="loaded"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                      alt="{{ $product->getTranslated('title') }}"
-                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
+                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark relative z-10"
+                     @load="loaded = true"
                      loading="lazy"
                      decoding="async"
                      fetchpriority="low"
@@ -82,12 +97,27 @@
         {{-- Product Image - col-4 (md:col-span-4) --}}
         <div class="md:col-span-4">
             <a href="{{ $productUrl }}"
-               class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none">
+               class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none relative"
+               x-data="{ loaded: false }"
+               x-init="$nextTick(() => { if ($refs.imgList && $refs.imgList.complete) { loaded = true; } })">
                 @if($product->hasMedia('featured_image'))
+                    {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
+                    <img src="{{ thumb($product->getFirstMedia('featured_image'), 40, 40, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
+                         alt="{{ $product->getTranslated('title') }}"
+                         x-show="!loaded"
+                         class="absolute inset-0 w-full h-full object-contain blur-2xl scale-110 p-4 md:p-6">
+
+                    {{-- Actual Image - Net 400x400 --}}
                     <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
-                        <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                        <img x-ref="imgList"
+                             x-show="loaded"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                              alt="{{ $product->getTranslated('title') }}"
-                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark transition-transform duration-700"
+                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark relative z-10"
+                             @load="loaded = true"
                              loading="lazy"
                              decoding="async"
                              fetchpriority="low"

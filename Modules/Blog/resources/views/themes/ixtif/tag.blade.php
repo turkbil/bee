@@ -81,10 +81,23 @@
                         <div class="md:flex">
                             @if($featuredImage)
                                 <div class="md:w-1/3 lg:w-2/5">
-                                    <div class="aspect-[16/10] md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden">
+                                    <div class="aspect-[16/10] md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden relative" x-data="{ loaded: false }">
+                                        {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
+                                        <img src="{{ thumb($featuredImage, 40, 40, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
+                                             alt="{{ $postTitle }}"
+                                             x-show="!loaded"
+                                             class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+
+                                        {{-- Actual Image --}}
                                         <img src="{{ $featuredImage->getUrl() }}"
                                              alt="{{ $postTitle }}"
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                             x-show="loaded"
+                                             x-transition:enter="transition ease-out duration-300"
+                                             x-transition:enter-start="opacity-0"
+                                             x-transition:enter-end="opacity-100"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-10"
+                                             @load="loaded = true"
+                                             loading="lazy">
                                     </div>
                                 </div>
                             @endif

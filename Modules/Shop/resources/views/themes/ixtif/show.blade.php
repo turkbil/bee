@@ -335,14 +335,29 @@
                                      x-transition:leave="transition ease-in duration-200"
                                      x-transition:leave-start="opacity-100"
                                      x-transition:leave-end="opacity-0"
-                                     class="absolute inset-0 rounded-xl overflow-hidden group">
+                                     class="absolute inset-0 rounded-xl overflow-hidden group"
+                                     x-data="{ imgLoaded: false }"
+                                     x-init="$nextTick(() => { if ($refs.featImg && $refs.featImg.complete) { imgLoaded = true; } })">
                                     {{-- Backdrop (PNG transparanlık fix) - Anasayfa ürün kartı ile aynı --}}
                                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600"></div>
 
-                                    {{-- Fotoğraf (border yok, sabit yükseklik) --}}
-                                    <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
+                                    {{-- Blur Placeholder (LQIP) - Mini 50x50 ~3KB --}}
+                                    <img src="{{ thumb($featuredImage, 50, 50, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
                                          alt="{{ $title }}"
-                                         class="relative w-full h-full rounded-xl object-contain">
+                                         x-show="!imgLoaded"
+                                         class="absolute w-full h-full rounded-xl object-contain blur-2xl scale-110">
+
+                                    {{-- Fotoğraf (border yok, sabit yükseklik) --}}
+                                    <img x-ref="featImg"
+                                         src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
+                                         alt="{{ $title }}"
+                                         x-show="imgLoaded"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         class="relative w-full h-full rounded-xl object-contain z-10"
+                                         @load="imgLoaded = true"
+                                         loading="lazy">
 
                                     {{-- "Ürün Hakkında Soru Sor" butonu - Sağ alt köşe, küçük, hover'da büyür --}}
                                     <button @click="isChatOpen = true"
@@ -552,14 +567,27 @@
                                         $description = $image->getCustomProperty('description')[$currentLocale] ?? '';
                                     @endphp
                                     <a href="{{ thumb($image, 1920, 1920, ['quality' => 90, 'scale' => 0]) }}"
-                                        class="glightbox block rounded-xl overflow-hidden hover:ring-2 ring-blue-500 dark:ring-blue-400 transition-all hover:scale-105"
+                                        class="glightbox block rounded-xl overflow-hidden hover:ring-2 ring-blue-500 dark:ring-blue-400 transition-all hover:scale-105 relative"
                                         data-gallery="prod"
                                         @if($title) data-title="{{ $title }}" @endif
-                                        @if($description) data-description="{{ $description }}" @endif>
+                                        @if($description) data-description="{{ $description }}" @endif
+                                        x-data="{ loaded: false }">
+                                        {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
+                                        <img src="{{ thumb($image, 40, 40, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
+                                             alt="{{ $altText }}"
+                                             x-show="!loaded"
+                                             class="absolute inset-0 w-full h-48 object-cover blur-2xl scale-110">
+
+                                        {{-- Actual Image --}}
                                         <img src="{{ thumb($image, 400, 400, ['quality' => 85, 'scale' => 1, 'alignment' => 'c']) }}"
-                                            alt="{{ $altText }}"
-                                            class="w-full h-48 object-cover"
-                                            loading="lazy">
+                                             alt="{{ $altText }}"
+                                             x-show="loaded"
+                                             x-transition:enter="transition ease-out duration-300"
+                                             x-transition:enter-start="opacity-0"
+                                             x-transition:enter-end="opacity-100"
+                                             class="w-full h-48 object-cover relative z-10"
+                                             @load="loaded = true"
+                                             loading="lazy">
                                     </a>
                                 @endforeach
                             </div>
@@ -605,9 +633,23 @@
                                         class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl overflow-hidden hover:bg-white/80 dark:hover:bg-white/10 hover:-translate-y-1 transition-all duration-300">
 
                                         @if ($variantImageUrl)
-                                            <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
-                                                <img src="{{ $variantImageUrl }}" alt="{{ $variantTitle }}"
-                                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                            <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700 relative" x-data="{ loaded: false }">
+                                                {{-- Blur Placeholder (LQIP) - Mini 30x30 ~2KB --}}
+                                                <img src="{{ thumb($variantImage, 30, 30, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
+                                                     alt="{{ $variantTitle }}"
+                                                     x-show="!loaded"
+                                                     class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+
+                                                {{-- Actual Image --}}
+                                                <img src="{{ $variantImageUrl }}"
+                                                     alt="{{ $variantTitle }}"
+                                                     x-show="loaded"
+                                                     x-transition:enter="transition ease-out duration-300"
+                                                     x-transition:enter-start="opacity-0"
+                                                     x-transition:enter-end="opacity-100"
+                                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 relative z-10"
+                                                     @load="loaded = true"
+                                                     loading="lazy">
                                             </div>
                                         @endif
 

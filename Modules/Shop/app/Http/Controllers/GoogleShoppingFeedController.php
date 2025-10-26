@@ -17,26 +17,49 @@ class GoogleShoppingFeedController extends Controller
      */
     public function index(): Response
     {
-        // SIMPLE TEST - BYPASS ALL LOGIC
-        return response('<?xml version="1.0"?><test>CONTROLLER WORKS!</test>', 200)
+        // SIMPLE TEST - No DB, no settings
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml .= '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">';
+        $xml .= '<channel>';
+        $xml .= '<title>Test Feed</title>';
+        $xml .= '<link>https://ixtif.com</link>';
+        $xml .= '<description>Google Shopping Feed</description>';
+        $xml .= '</channel>';
+        $xml .= '</rss>';
+
+        return response($xml, 200)
             ->header('Content-Type', 'application/xml; charset=utf-8');
 
+        /*
         try {
-            $products = ShopProduct::where('is_active', 1)
-                ->whereNotNull('slug') // Only products with slug
-                ->where('slug', '!=', '')
-                ->whereNotNull('title')
-                ->with(['brand', 'category', 'media'])
-                ->get();
+            // Build XML header
+            $companyName = setting('company_name') ?? setting('site_name') ?? config('app.name');
 
-            // Debug log
-            \Log::info('Google Shopping Feed: ' . $products->count() . ' products found');
-            if ($products->count() > 0) {
-                $first = $products->first();
-                \Log::info('First product: ID=' . $first->product_id . ' | Slug=' . json_encode($first->slug) . ' | Title=' . json_encode($first->title));
+            $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+            $xml .= '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">';
+            $xml .= '<channel>';
+            $xml .= '<title>' . $this->xmlEscape($companyName) . ' Products</title>';
+            $xml .= '<link>' . $this->xmlEscape(url('/')) . '</link>';
+            $xml .= '<description>Google Shopping Feed</description>';
+
+            // Get product IDs only (avoid model issues)
+            $productIds = ShopProduct::where('is_active', 1)->pluck('product_id')->take(100);
+
+            // Generate items manually
+            foreach ($productIds as $productId) {
+                $xml .= '<item>';
+                $xml .= '<g:id>' . $this->xmlEscape($productId) . '</g:id>';
+                $xml .= '<g:title>Product ' . $this->xmlEscape($productId) . '</g:title>';
+                $xml .= '<g:link>' . url('/shop/product/' . $productId) . '</g:link>';
+                $xml .= '<g:description>Product description</g:description>';
+                $xml .= '<g:price>1000.00 TRY</g:price>';
+                $xml .= '<g:availability>in stock</g:availability>';
+                $xml .= '<g:condition>new</g:condition>';
+                $xml .= '</item>';
             }
 
-            $xml = $this->generateXml($products);
+            $xml .= '</channel>';
+            $xml .= '</rss>';
 
             return response($xml, 200)
                 ->header('Content-Type', 'application/xml; charset=utf-8');
@@ -71,9 +94,9 @@ class GoogleShoppingFeedController extends Controller
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">';
         $xml .= '<channel>';
-        $xml .= '<title>' . $this->xmlEscape(config('app.name')) . '</title>';
+        $xml .= '<title>' . $this->xmlEscape(setting('site_name') ?? config('app.name')) . '</title>';
         $xml .= '<link>' . $this->xmlEscape(url('/')) . '</link>';
-        $xml .= '<description>' . $this->xmlEscape(setting('site_description') ?? 'iXtif Forklift ve İstif Makineleri') . '</description>';
+        $xml .= '<description>' . $this->xmlEscape(setting('site_description') ?? setting('site_name') ?? 'Products') . '</description>';
 
         foreach ($products as $product) {
             $xml .= $this->generateProductItem($product);
@@ -94,20 +117,23 @@ class GoogleShoppingFeedController extends Controller
     private function generateProductItem(ShopProduct $product): string
     {
         try {
-            // Get slug for current locale (slug is JSON/array)
-            $slug = $product->getTranslation('slug', app()->getLocale()) ?? $product->slug;
+            // SIMPLE VERSION - Just ID for now
+            $productId = $product->product_id ?? $product->id;
 
-            // If slug is still array (no translation), use Turkish
-            if (is_array($slug)) {
-                $slug = $slug['tr'] ?? $slug['en'] ?? null;
-            }
+            $xml = '<item>';
+            $xml .= '<g:id>' . $this->xmlEscape($productId) . '</g:id>';
+            $xml .= '<g:title>Product ' . $this->xmlEscape($productId) . '</g:title>';
+            $xml .= '<g:link>' . url('/shop/product/' . $productId) . '</g:link>';
+            $xml .= '<g:description>Product description</g:description>';
+            $xml .= '<g:price>1000.00 TRY</g:price>';
+            $xml .= '<g:availability>in stock</g:availability>';
+            $xml .= '<g:condition>new</g:condition>';
+            $xml .= '</item>';
 
-            // Skip product if no valid slug
-            if (!$slug || !is_string($slug)) {
-                \Log::warning('Product skipped - invalid slug: ' . $product->product_id);
-                return '';
-            }
+            return $xml;
 
+            // OLD CODE (PROBLEMATIC) - Keeping for reference
+            /*
             $productUrl = url('/shop/' . $slug);
 
         // Get title (also JSON/array)
@@ -154,8 +180,8 @@ class GoogleShoppingFeedController extends Controller
         // Condition
         $condition = $product->condition ?? 'new';
 
-        // Brand (null-safe)
-        $brand = optional($product->brand)->name ?? setting('company_name') ?? 'iXtif';
+        // Brand (null-safe, tenant-aware)
+        $brand = optional($product->brand)->name ?? setting('company_name') ?? setting('site_name') ?? 'Products';
 
         // Category (null-safe)
         $categoryName = null;
@@ -166,7 +192,7 @@ class GoogleShoppingFeedController extends Controller
                 $categoryName = $categoryName['tr'] ?? $categoryName['en'] ?? null;
             }
         }
-        $category = $categoryName ?? 'Forklift';
+        $category = $categoryName ?? 'Products';
 
         $xml = '<item>';
         $xml .= '<g:id>' . $this->xmlEscape($product->product_id) . '</g:id>';

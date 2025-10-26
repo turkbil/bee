@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Cyber Cards - ixtif.com Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Rajdhani', sans-serif; background: #000; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Orbitron', sans-serif; }
+
+        @keyframes neon-pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff, 0 0 40px #0ff;
+                box-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+            }
+            50% {
+                text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff, 0 0 20px #0ff;
+                box-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
+            }
+        }
+
+        .neon-cyan { animation: neon-pulse 2s ease-in-out infinite; }
+
+        @keyframes neon-border {
+            0%, 100% { border-color: #0ff; box-shadow: 0 0 20px #0ff; }
+            25% { border-color: #f0f; box-shadow: 0 0 20px #f0f; }
+            50% { border-color: #ff0; box-shadow: 0 0 20px #ff0; }
+            75% { border-color: #0f0; box-shadow: 0 0 20px #0f0; }
+        }
+
+        .neon-border-animated { animation: neon-border 4s linear infinite; }
+
+        .scanline {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(transparent, #0ff);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            animation: glitch-1 2.5s infinite;
+            color: #0ff;
+            z-index: -1;
+        }
+
+        .glitch::after {
+            animation: glitch-2 2s infinite;
+            color: #f0f;
+            z-index: -2;
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(-2px, 2px); }
+        }
+    </style>
+</head>
+<body class="bg-black min-h-screen overflow-x-hidden">
+
+    <!-- Cyber Grid Background -->
+    <div class="fixed inset-0 opacity-20 pointer-events-none" style="background-image: linear-gradient(#0ff 1px, transparent 1px), linear-gradient(90deg, #0ff 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+    <!-- Fixed Navigation -->
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="design-product-card-premium-4.html" class="w-14 h-14 bg-black border-2 border-cyan-500 text-cyan-500 rounded-lg flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all shadow-lg shadow-cyan-500/50">
+            <i class="fa-solid fa-arrow-left text-lg"></i>
+        </a>
+        <a href="design-product-card-premium-6.html" class="w-14 h-14 bg-black border-2 border-pink-500 text-pink-500 rounded-lg flex items-center justify-center hover:bg-pink-500 hover:text-black transition-all shadow-lg shadow-pink-500/50 neon-border-animated">
+            <i class="fa-solid fa-arrow-right text-lg"></i>
+        </a>
+    </div>
+
+    <!-- Page Counter -->
+    <div class="fixed top-8 right-8 z-40 bg-black border-2 border-cyan-500 px-6 py-3 rounded-lg shadow-lg shadow-cyan-500/50">
+        <span class="text-cyan-500 font-bold text-sm" style="font-family: 'Orbitron', sans-serif;">5 / 12</span>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 container mx-auto px-6 py-20">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-block mb-4">
+                <span class="bg-black border-2 border-cyan-500 text-cyan-500 px-6 py-2 rounded-lg text-xs font-bold tracking-widest uppercase shadow-lg shadow-cyan-500/50">
+                    <i class="fa-solid fa-bolt mr-2"></i>NEON CYBER COLLECTION
+                </span>
+            </div>
+            <h1 class="text-6xl md:text-7xl font-black mb-4 tracking-tight glitch" data-text="CYBERPUNK 2085" style="color: #0ff; text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;">
+                CYBERPUNK 2085
+            </h1>
+            <p class="text-xl text-pink-500 max-w-2xl mx-auto" style="text-shadow: 0 0 10px #f0f;">
+                Future tech meets industrial power
+            </p>
+        </div>
+
+        <!-- Product Grid: 3 Columns -->
+        <div class="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+
+            <!-- Product 1: Cyber Forklift -->
+            <div class="group relative" x-data="{ loved: false }">
+                <div class="scanline"></div>
+                <div class="bg-black border-2 border-cyan-500 rounded-lg overflow-hidden hover:border-pink-500 transition-all duration-500 relative shadow-lg hover:shadow-cyan-500/50">
+                    <!-- Image -->
+                    <div class="relative bg-gradient-to-b from-cyan-500/20 to-black aspect-[3/4] flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 opacity-10" style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, #0ff 2px, #0ff 4px);"></div>
+                        <i class="fa-solid fa-forklift text-8xl text-cyan-500 group-hover:scale-110 group-hover:text-pink-500 transition-all duration-500" style="filter: drop-shadow(0 0 20px currentColor);"></i>
+
+                        <!-- Badges -->
+                        <div class="absolute top-4 left-4 bg-black border border-cyan-500 text-cyan-500 px-3 py-1 rounded text-xs font-bold" style="text-shadow: 0 0 10px #0ff;">
+                            CYBER
+                        </div>
+                        <button @click="loved = !loved" class="absolute top-4 right-4 w-10 h-10 bg-black border border-cyan-500 rounded flex items-center justify-center hover:border-pink-500 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-pink-500' : 'fa-regular fa-heart text-cyan-500'"></i>
+                        </button>
+
+                        <!-- Discount -->
+                        <div class="absolute bottom-4 right-4 bg-pink-500 text-black px-4 py-2 rounded font-black text-sm shadow-lg shadow-pink-500/50">
+                            -75%
+                        </div>
+
+                        <!-- Scan Effect -->
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-5 border-t-2 border-cyan-500">
+                        <div class="text-xs text-cyan-500 uppercase mb-2 tracking-widest font-bold" style="font-family: 'Orbitron', sans-serif;">ELECTRIC/FORKLIFT</div>
+                        <h3 class="text-lg font-bold text-white mb-3 line-clamp-2" style="font-family: 'Orbitron', sans-serif;">
+                            Neo Tokyo Cyber Forklift 3.5T
+                        </h3>
+
+                        <!-- Rating -->
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half"></i>
+                            </div>
+                            <span class="text-xs text-pink-500">(4.9)</span>
+                        </div>
+
+                        <!-- Specs -->
+                        <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
+                            <div class="flex items-center gap-2 text-cyan-500">
+                                <i class="fa-solid fa-microchip"></i>
+                                <span>AI POWERED</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-pink-500">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>100V PLASMA</span>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mb-4 pb-4 border-b border-cyan-500/30">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-black text-cyan-500" style="text-shadow: 0 0 10px #0ff;">₺395.000</span>
+                                <span class="text-sm text-gray-600 line-through">₺1.580.000</span>
+                            </div>
+                        </div>
+
+                        <!-- CTA -->
+                        <button class="w-full bg-gradient-to-r from-cyan-500 to-pink-500 text-black py-3 rounded font-black hover:from-pink-500 hover:to-cyan-500 transition-all shadow-lg">
+                            <i class="fa-solid fa-cart-shopping mr-2"></i>
+                            ADD TO CART
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 2: Neon Stacker -->
+            <div class="group relative" x-data="{ loved: false }">
+                <div class="scanline" style="animation-delay: 1.5s;"></div>
+                <div class="bg-black border-2 border-pink-500 rounded-lg overflow-hidden hover:border-cyan-500 transition-all duration-500 relative shadow-lg hover:shadow-pink-500/50">
+                    <div class="relative bg-gradient-to-b from-pink-500/20 to-black aspect-[3/4] flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 opacity-10" style="background: repeating-linear-gradient(90deg, transparent, transparent 2px, #f0f 2px, #f0f 4px);"></div>
+                        <i class="fa-solid fa-layer-group text-8xl text-pink-500 group-hover:scale-110 group-hover:text-cyan-500 transition-all duration-500" style="filter: drop-shadow(0 0 20px currentColor);"></i>
+
+                        <div class="absolute top-4 left-4 bg-black border border-pink-500 text-pink-500 px-3 py-1 rounded text-xs font-bold" style="text-shadow: 0 0 10px #f0f;">
+                            NEON
+                        </div>
+                        <button @click="loved = !loved" class="absolute top-4 right-4 w-10 h-10 bg-black border border-pink-500 rounded flex items-center justify-center hover:border-cyan-500 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-cyan-500' : 'fa-regular fa-heart text-pink-500'"></i>
+                        </button>
+
+                        <div class="absolute bottom-4 right-4 bg-cyan-500 text-black px-4 py-2 rounded font-black text-sm shadow-lg shadow-cyan-500/50">
+                            -82%
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+
+                    <div class="p-5 border-t-2 border-pink-500">
+                        <div class="text-xs text-pink-500 uppercase mb-2 tracking-widest font-bold" style="font-family: 'Orbitron', sans-serif;">QUANTUM/STACKER</div>
+                        <h3 class="text-lg font-bold text-white mb-3 line-clamp-2" style="font-family: 'Orbitron', sans-serif;">
+                            Quantum Lift Neon Stacker 2.0T
+                        </h3>
+
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <span class="text-xs text-cyan-500">(5.0)</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
+                            <div class="flex items-center gap-2 text-pink-500">
+                                <i class="fa-solid fa-brain"></i>
+                                <span>NEURAL NET</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-cyan-500">
+                                <i class="fa-solid fa-rocket"></i>
+                                <span>TURBO MODE</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 pb-4 border-b border-pink-500/30">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-black text-pink-500" style="text-shadow: 0 0 10px #f0f;">₺125.000</span>
+                                <span class="text-sm text-gray-600 line-through">₺695.000</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-black py-3 rounded font-black hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg">
+                            <i class="fa-solid fa-cart-shopping mr-2"></i>
+                            ADD TO CART
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product 3: Electric Reach -->
+            <div class="group relative" x-data="{ loved: false }">
+                <div class="scanline" style="animation-delay: 3s;"></div>
+                <div class="bg-black border-2 border-yellow-400 rounded-lg overflow-hidden hover:border-green-500 transition-all duration-500 relative shadow-lg hover:shadow-yellow-400/50">
+                    <div class="relative bg-gradient-to-b from-yellow-400/20 to-black aspect-[3/4] flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 opacity-10" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, #ff0 10px, #ff0 12px);"></div>
+                        <i class="fa-solid fa-truck-ramp-box text-8xl text-yellow-400 group-hover:scale-110 group-hover:text-green-500 transition-all duration-500" style="filter: drop-shadow(0 0 20px currentColor);"></i>
+
+                        <div class="absolute top-4 left-4 bg-black border border-yellow-400 text-yellow-400 px-3 py-1 rounded text-xs font-bold" style="text-shadow: 0 0 10px #ff0;">
+                            ULTRA
+                        </div>
+                        <button @click="loved = !loved" class="absolute top-4 right-4 w-10 h-10 bg-black border border-yellow-400 rounded flex items-center justify-center hover:border-green-500 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-green-500' : 'fa-regular fa-heart text-yellow-400'"></i>
+                        </button>
+
+                        <div class="absolute bottom-4 right-4 bg-green-500 text-black px-4 py-2 rounded font-black text-sm shadow-lg shadow-green-500/50">
+                            -68%
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-yellow-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+
+                    <div class="p-5 border-t-2 border-yellow-400">
+                        <div class="text-xs text-yellow-400 uppercase mb-2 tracking-widest font-bold" style="font-family: 'Orbitron', sans-serif;">HYPER/REACH</div>
+                        <h3 class="text-lg font-bold text-white mb-3 line-clamp-2" style="font-family: 'Orbitron', sans-serif;">
+                            HyperDrive Reach Truck 1.8T
+                        </h3>
+
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="flex text-yellow-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+                            <span class="text-xs text-green-500">(4.3)</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 mb-4 text-xs">
+                            <div class="flex items-center gap-2 text-yellow-400">
+                                <i class="fa-solid fa-satellite-dish"></i>
+                                <span>5G SYNC</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-green-500">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>ARMOR PLATED</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 pb-4 border-b border-yellow-400/30">
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-black text-yellow-400" style="text-shadow: 0 0 10px #ff0;">₺425.000</span>
+                                <span class="text-sm text-gray-600 line-through">₺1.330.000</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-gradient-to-r from-yellow-400 to-green-500 text-black py-3 rounded font-black hover:from-green-500 hover:to-yellow-400 transition-all shadow-lg">
+                            <i class="fa-solid fa-cart-shopping mr-2"></i>
+                            ADD TO CART
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Terminal -->
+        <div class="mt-16 max-w-4xl mx-auto">
+            <div class="bg-black border-2 border-cyan-500 rounded-lg p-6 font-mono text-sm shadow-lg shadow-cyan-500/30">
+                <div class="flex items-center gap-2 mb-4 text-cyan-500">
+                    <div class="w-3 h-3 rounded-full bg-cyan-500 animate-pulse"></div>
+                    <span class="text-xs">SYSTEM.TERMINAL v2085.4</span>
+                </div>
+                <div class="space-y-1 text-green-400">
+                    <div><span class="text-cyan-500">$</span> STATUS: <span class="text-pink-500">ALL SYSTEMS OPERATIONAL</span></div>
+                    <div><span class="text-cyan-500">$</span> SHIPPING: <span class="text-yellow-400">FREE QUANTUM TRANSPORT</span></div>
+                    <div><span class="text-cyan-500">$</span> WARRANTY: <span class="text-green-500">LIFETIME NEURAL PROTECTION</span></div>
+                    <div><span class="text-cyan-500">$</span> SUPPORT: <span class="text-pink-500">24/7 HOLOGRAM ASSISTANCE</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

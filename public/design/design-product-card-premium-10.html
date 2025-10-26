@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra Modern Minimal - ixtif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <style>body { font-family: system-ui, -apple-system, sans-serif; }</style>
+</head>
+<body class="bg-white">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="design-product-card-premium-9.html" class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center hover:scale-110 transition-all"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="design-product-card-premium-11.html" class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center hover:scale-110 transition-all"><i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="fixed top-8 right-8 z-40 bg-black text-white px-6 py-3 rounded-full"><span class="font-bold text-sm">10 / 12</span></div>
+    
+    <div class="container mx-auto px-6 py-20">
+        <div class="mb-20"><h1 class="text-8xl font-black text-black">Modern</h1></div>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 max-w-7xl mx-auto">
+            <div class="md:col-span-7 bg-black text-white p-12 flex flex-col justify-between min-h-[600px]" x-data="{ loved: false }">
+                <div class="flex justify-between items-start">
+                    <div><div class="text-sm mb-2">FORKLIFT</div><h2 class="text-5xl font-black mb-4">Minimal Pro</h2></div>
+                    <button @click="loved = !loved" class="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i></button>
+                </div>
+                <div class="flex items-center justify-center flex-1"><i class="fa-solid fa-forklift text-9xl"></i></div>
+                <div>
+                    <div class="flex items-baseline gap-3 mb-6"><span class="text-6xl font-black">₺395K</span><span class="text-2xl line-through opacity-50">₺985K</span></div>
+                    <button class="w-full bg-white text-black py-5 text-lg font-black hover:bg-gray-100 transition-all">BUY</button>
+                </div>
+            </div>
+            <div class="md:col-span-5 space-y-6">
+                <div class="bg-gray-100 p-8 hover:bg-gray-200 transition-all" x-data="{ loved: false }">
+                    <div class="flex justify-between items-start mb-6">
+                        <div><div class="text-xs mb-1">PALLET</div><h3 class="text-2xl font-black">Jack</h3></div>
+                        <button @click="loved = !loved" class="w-10 h-10 bg-white rounded-full flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i></button>
+                    </div>
+                    <div class="flex items-center justify-center mb-6"><i class="fa-solid fa-boxes-stacked text-6xl"></i></div>
+                    <div class="flex items-baseline gap-2 mb-4"><span class="text-3xl font-black">₺9K</span><span class="text-sm line-through opacity-50">₺23K</span></div>
+                    <button class="w-full bg-black text-white py-3 font-bold hover:bg-gray-900 transition-all">BUY</button>
+                </div>
+                <div class="bg-gray-100 p-8 hover:bg-gray-200 transition-all" x-data="{ loved: false }">
+                    <div class="flex justify-between items-start mb-6">
+                        <div><div class="text-xs mb-1">STACKER</div><h3 class="text-2xl font-black">Elite</h3></div>
+                        <button @click="loved = !loved" class="w-10 h-10 bg-white rounded-full flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"></i></button>
+                    </div>
+                    <div class="flex items-center justify-center mb-6"><i class="fa-solid fa-layer-group text-6xl"></i></div>
+                    <div class="flex items-baseline gap-2 mb-4"><span class="text-3xl font-black">₺48K</span><span class="text-sm line-through opacity-50">₺145K</span></div>
+                    <button class="w-full bg-black text-white py-3 font-bold hover:bg-gray-900 transition-all">BUY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

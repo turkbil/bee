@@ -12,12 +12,12 @@
         <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             <!-- Left Content -->
             <div class="text-gray-900 dark:text-white">
-                <!-- Main Title with Animation -->
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible" style="font-weight: 900;">
-                    <span class="gradient-animate block py-2">
+                <!-- Main Title with Gold Gradient -->
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible bg-clip-text text-transparent" style="font-weight: 900; background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1); background-size: 200% auto; animation: gold-shimmer 3s ease infinite;">
+                    <span class="block py-2">
                         TÜRKİYE'NİN
                     </span>
-                    <span class="gradient-animate block py-2">
+                    <span class="block py-2">
                         İSTİF PAZARI
                     </span>
                 </h1>
@@ -27,11 +27,13 @@
                     Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
                 </p>
 
-                <!-- CTA Button -->
-                <div class="mb-16">
-                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
-                        <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
-                        Ürünleri İncele
+                <!-- Dual CTA Buttons with Gold Gradient -->
+                <div class="mb-16 flex flex-wrap gap-4 md:gap-6">
+                    <a href="#iletisim" class="px-8 md:px-10 py-4 md:py-5 gold-gradient rounded-full text-gray-950 font-black hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all text-base md:text-lg">
+                        ÖZEL TEKLİF ALIN
+                    </a>
+                    <a href="tel:02167553555" class="px-8 md:px-10 py-4 md:py-5 border-2 border-yellow-600 rounded-full text-yellow-500 dark:text-yellow-500 font-bold hover:bg-yellow-600/10 transition-all text-base md:text-lg">
+                        <i class="fa-light fa-phone mr-2"></i>İletişim
                     </a>
                 </div>
 
@@ -147,7 +149,7 @@
                             $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
                         @endphp
                         <i class="{{ $categoryIcon }} text-blue-600 dark:text-yellow-500 text-sm"></i>
-                        <span class="text-xs text-blue-800 dark:text-yellow-500 font-thin uppercase tracking-wider">
+                        <span class="text-xs text-blue-800 dark:text-yellow-500 font-extralight uppercase tracking-wider">
                             {{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}
                         </span>
                     </div>
@@ -160,22 +162,16 @@
                     </a>
 
                     {{-- Price Section --}}
-                    @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
                     <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                        @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
                         <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-yellow-500 dark:via-yellow-400 dark:to-yellow-500">
                             {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
                         </div>
-                        <a href="{{ $productUrl }}" class="text-yellow-500 font-bold group-hover:translate-x-2 inline-block transition-transform text-sm">
+                        @endif
+                        <a href="{{ $productUrl }}" class="text-yellow-500 font-bold group-hover:translate-x-2 inline-block transition-transform text-sm ml-auto">
                             Detay <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
-                    @else
-                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <a href="{{ $productUrl }}" class="text-yellow-500 font-bold group-hover:translate-x-2 inline-block transition-transform">
-                            Detaylar <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                    @endif
                 </div>
             </div>
             @endforeach

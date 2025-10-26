@@ -1,1 +1,233 @@
 
+Topluluk Şablon Galerisi'nde diğer etiket türlerini keşfedin
+Öne çıkanlar
+	Google Analytics	
+	Google Ads	
+	Floodlight	
+	
+Google etiketi
+Google
+	
+Dönüşüm Bağlayıcı
+Google
+Seçilen Topluluk CMP Şablonları
+GTM'nin kullanıcı rızası yapılandırması ile etkili bir şekilde entegre olan, seçili CMP şablonlarını keşfedin
+Özel
+	
+Özel HTML
+Özel HTML Etiketi
+	
+Özel Resim
+Özel Resim Etiketi
+	
+Microsoft Clarity - Official
+microsoft
+Galeri
+Daha fazla
+	
+AB TASTY Generic Tag
+AB TASTY
+	
+Adometry
+Adometry
+	
+AdRoll Akıllı Piksel
+AdRoll
+	
+Audience Center 360
+Audience Center 360
+	
+AWIN Dönüşümü
+AWIN
+	
+AWIN Yolculuğu
+AWIN
+	
+Bizrate Insights Buyer Survey Solution
+Bizrate Insights
+	
+Bizrate Insights Site Abandonment Survey Solution
+Bizrate Insights
+	
+ClickTale Standard Tracking (OBSOLETE)
+ClickTale
+	
+comScore Unified Digital Measurement
+comScore
+	
+Crazy Egg
+Crazy Egg
+	
+Criteo OneTag
+Criteo
+Eski
+	
+DistroScale Etiketi
+DistroScale
+	
+Dstillery Evrensel Pikseli
+Dstillery
+	
+Euler Analizi
+Euler Analizi
+	
+FoxMetrics
+FoxMetrics
+	
+Cloud Perakende
+Google Cloud
+	
+Recommendations AI
+Google Cloud
+Eski
+	
+Google Anketler Web Sitesi Memnuniyeti
+Google Marketing Platform
+Eski
+	
+Google Trusted Stores
+Google Trusted Stores
+	
+Google Uçuş Arama Dönüşüm İzleme
+Google Uçuş Arama
+	
+Google Uçuş Arama Fiyat Doğruluğu
+Google Uçuş Arama
+	
+Google Envanter Toplayıcı
+Google Yerel Envanter Reklamları
+	
+Hotjar Tracking Code
+Hotjar
+	
+Infinity Call Tracking Tag
+Infinity Tracking
+	
+K50 tracking tag
+K50
+	
+LeadLab
+LeadLab by wiredminds
+	
+LinkedIn Insight
+LinkedIn
+	
+Lytics JS Tag
+Lytics, Inc.
+	
+Marin Software
+Marin Software
+	
+Mediaplex - IFRAME MCT Etiketi
+Mediaplex
+	
+Mediaplex - Standart IMG YG Etiketi
+Mediaplex
+	
+Microsoft Advertising Universal Event Tracking
+Microsoft Advertising
+	
+Mouseflow
+Mouseflow
+	
+AdAdvisor
+Neustar
+	
+DCR Static
+Nielsen
+	
+Nudge Content Analytics
+Nudge Content Analytics
+	
+Oktopost Tracking Code
+Oktopost
+	
+Optimise Conversion Tag
+Optimise Media
+	
+Message Mate
+OwnerListens
+	
+Perfect Audience Pikseli
+Perfect Audience
+	
+Personali Canvas
+Personali
+	
+Pinterest Tag
+Pinterest
+	
+Placed
+Placed Inc.
+	
+Pulse Insights Müşterinin Sesi Platformu
+Pulse Insights
+	
+Quantcast Advertise
+Quantcast
+	
+Quantcast Ölçümü
+Quantcast
+	
+Quora Pixel
+Quora
+	
+SaleCycle JavaScript Etiketi
+SaleCycle
+	
+SaleCycle Piksel Etiketi
+SaleCycle
+	
+Açılış Sayfası için SearchForce JavaScript İzleme
+SearchForce
+	
+Dönüşüm Sayfası için SearchForce JavaScript İzleme
+SearchForce
+	
+SearchForce Yönlendirme İzleme
+SearchForce
+	
+Shareaholic
+Shareaholic
+	
+Survicate Widget'ı
+Survicate
+	
+Tapad Conversion Pixel
+Tapad
+	
+Tradedoubler Potansiyel Müşteri Dönüşümü
+Tradedoubler
+	
+Tradedoubler Satış Dönüşümü
+Tradedoubler
+T
+Turn Dönüşüm İzleme
+Turn
+T
+Turn Veri Toplama
+Turn
+	
+Twitter Evrensel Web Sitesi Etiketi
+Twitter
+Eski
+	
+Upsellit Confirmation Tag
+Upsellit.com
+	
+Upsellit Global Footer Tag
+Upsellit.com
+	
+Ve Interactive JavaScript
+Ve Interactive
+	
+Ve Interactive Pixel
+Ve Interactive
+	
+VisualDNA Dönüşüm Etiketi
+VisualDNA
+	
+Xtremepush - Web Push & Onsite Engagement
+Xtremepush
+	
+Yieldify

@@ -90,8 +90,8 @@ class StorageLink extends Command
             return;
         }
 
-        // Find all tenant* symlinks
-        $tenantSymlinks = glob($publicStoragePath . '/tenant*', GLOB_ONLYDIR);
+        // Find all tenant* symlinks (without GLOB_ONLYDIR to include symlinks)
+        $tenantSymlinks = glob($publicStoragePath . '/tenant*');
 
         if (empty($tenantSymlinks)) {
             return;

@@ -200,6 +200,12 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             'compare_at_price' => (float) ($this->compare_at_price ?? 0),
             'price_on_request' => (bool) ($this->price_on_request ?? false),
             'currency' => $this->currency ?? 'TRY',
+            // Stock fields - ⚠️ KRİTİK: AI için stok bilgisi gerekli!
+            'stock_tracking' => (bool) ($this->stock_tracking ?? false),
+            'current_stock' => (int) ($this->current_stock ?? 0),
+            'low_stock_threshold' => (int) ($this->low_stock_threshold ?? 5),
+            'allow_backorder' => (bool) ($this->allow_backorder ?? false),
+            'lead_time_days' => $this->lead_time_days ?? null,
             // Status & Features
             'is_active' => (bool) $this->is_active,
             'is_featured' => (bool) $this->is_featured,

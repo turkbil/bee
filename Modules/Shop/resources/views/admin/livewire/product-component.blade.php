@@ -65,9 +65,18 @@
                     </div>
                 </div>
 
-                <!-- Sağ Taraf (Sayfa Adeti Seçimi) -->
+                <!-- Sağ Taraf (Hızlı Düzenle + Sayfa Adeti) -->
                 <div class="col-md-2">
                     <div class="d-flex align-items-center justify-content-end gap-3">
+                        <!-- Hızlı Düzenle Toggle -->
+                        <button wire:click="toggleQuickEditMode"
+                            class="btn btn-sm {{ $quickEditMode ? 'btn-primary' : 'btn-outline-secondary' }}"
+                            data-bs-toggle="tooltip"
+                            title="Hızlı düzenleme modu: Tüm fiyat ve stokları aynı anda düzenle">
+                            <i class="fas fa-{{ $quickEditMode ? 'check-circle' : 'edit' }} me-1"></i>
+                            {{ $quickEditMode ? 'Düzenleme ON' : 'Hızlı Düzenle' }}
+                        </button>
+
                         <div style="width: 80px; min-width: 80px">
                             <select wire:model.live="perPage" class="form-control listing-filter-select" data-choices
                                 data-choices-search="false" data-choices-filter="true">
@@ -227,7 +236,28 @@
                                     @endif
                                 </td>
                                 <td class="text-end" wire:key="price-{{ $product->product_id }}">
-                                    @if ($editingPriceId === $product->product_id)
+                                    @if ($quickEditMode)
+                                        {{-- Quick Edit Mode: Always editable inputs --}}
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <input type="number" step="0.01"
+                                                value="{{ $product->base_price }}"
+                                                wire:blur="updateProductField({{ $product->product_id }}, 'base_price', $event.target.value)"
+                                                wire:keydown.enter="updateProductField({{ $product->product_id }}, 'base_price', $event.target.value)"
+                                                class="form-control form-control-sm text-end quick-edit-input"
+                                                style="width: 90px;"
+                                                placeholder="0.00"
+                                                @if($product->price_on_request) disabled @endif>
+                                            <select
+                                                wire:change="updateProductField({{ $product->product_id }}, 'currency', $event.target.value)"
+                                                class="form-select form-select-sm quick-edit-select"
+                                                style="width: 75px;"
+                                                @if($product->price_on_request) disabled @endif>
+                                                <option value="TRY" {{ ($product->currency ?? 'TRY') === 'TRY' ? 'selected' : '' }}>TRY</option>
+                                                <option value="USD" {{ $product->currency === 'USD' ? 'selected' : '' }}>USD</option>
+                                                <option value="EUR" {{ $product->currency === 'EUR' ? 'selected' : '' }}>EUR</option>
+                                            </select>
+                                        </div>
+                                    @elseif ($editingPriceId === $product->product_id)
                                         <div class="d-flex flex-column gap-2 align-items-end" x-data
                                             @click.outside="$wire.updatePriceInline()">
                                             <div class="d-flex align-items-center gap-2">
@@ -292,7 +322,17 @@
                                     @endif
                                 </td>
                                 <td class="text-center" wire:key="stock-{{ $product->product_id }}">
-                                    @if ($editingStockId === $product->product_id)
+                                    @if ($quickEditMode)
+                                        {{-- Quick Edit Mode: Always editable input --}}
+                                        <input type="number" step="1" min="0"
+                                            value="{{ $product->current_stock }}"
+                                            wire:blur="updateProductField({{ $product->product_id }}, 'current_stock', $event.target.value)"
+                                            wire:keydown.enter="updateProductField({{ $product->product_id }}, 'current_stock', $event.target.value)"
+                                            class="form-control form-control-sm text-center quick-edit-input"
+                                            style="width: 70px;"
+                                            placeholder="0"
+                                            @if(!$product->stock_tracking) disabled @endif>
+                                    @elseif ($editingStockId === $product->product_id)
                                         <div class="d-flex flex-column gap-2 align-items-center" x-data
                                             @click.outside="$wire.updateStockInline()">
                                             <div class="form-check form-switch mb-0">
@@ -490,7 +530,28 @@
                                             @endif
                                         </td>
                                         <td class="text-end" wire:key="price-variant-{{ $variant->product_id }}">
-                                            @if ($editingPriceId === $variant->product_id)
+                                            @if ($quickEditMode)
+                                                {{-- Quick Edit Mode: Always editable inputs --}}
+                                                <div class="d-flex align-items-center justify-content-end gap-2">
+                                                    <input type="number" step="0.01"
+                                                        value="{{ $variant->base_price }}"
+                                                        wire:blur="updateProductField({{ $variant->product_id }}, 'base_price', $event.target.value)"
+                                                        wire:keydown.enter="updateProductField({{ $variant->product_id }}, 'base_price', $event.target.value)"
+                                                        class="form-control form-control-sm text-end quick-edit-input"
+                                                        style="width: 90px;"
+                                                        placeholder="0.00"
+                                                        @if($variant->price_on_request) disabled @endif>
+                                                    <select
+                                                        wire:change="updateProductField({{ $variant->product_id }}, 'currency', $event.target.value)"
+                                                        class="form-select form-select-sm quick-edit-select"
+                                                        style="width: 75px;"
+                                                        @if($variant->price_on_request) disabled @endif>
+                                                        <option value="TRY" {{ ($variant->currency ?? 'TRY') === 'TRY' ? 'selected' : '' }}>TRY</option>
+                                                        <option value="USD" {{ $variant->currency === 'USD' ? 'selected' : '' }}>USD</option>
+                                                        <option value="EUR" {{ $variant->currency === 'EUR' ? 'selected' : '' }}>EUR</option>
+                                                    </select>
+                                                </div>
+                                            @elseif ($editingPriceId === $variant->product_id)
                                                 <div class="d-flex flex-column gap-2 align-items-end" x-data
                                                     @click.outside="$wire.updatePriceInline()">
                                                     <div class="d-flex align-items-center gap-2">
@@ -555,7 +616,17 @@
                                             @endif
                                         </td>
                                         <td class="text-center" wire:key="stock-variant-{{ $variant->product_id }}">
-                                            @if ($editingStockId === $variant->product_id)
+                                            @if ($quickEditMode)
+                                                {{-- Quick Edit Mode: Always editable input --}}
+                                                <input type="number" step="1" min="0"
+                                                    value="{{ $variant->current_stock }}"
+                                                    wire:blur="updateProductField({{ $variant->product_id }}, 'current_stock', $event.target.value)"
+                                                    wire:keydown.enter="updateProductField({{ $variant->product_id }}, 'current_stock', $event.target.value)"
+                                                    class="form-control form-control-sm text-center quick-edit-input"
+                                                    style="width: 70px;"
+                                                    placeholder="0"
+                                                    @if(!$variant->stock_tracking) disabled @endif>
+                                            @elseif ($editingStockId === $variant->product_id)
                                                 <div class="d-flex flex-column gap-2 align-items-center" x-data
                                                     @click.outside="$wire.updateStockInline()">
                                                     <div class="form-check form-switch mb-0">

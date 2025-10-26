@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Badge Luxury - ixtif VIP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Lato', sans-serif; }
+        h1, h2, h3 { font-family: 'Libre Baskerville', serif; }
+        .badge-shine { position: relative; overflow: hidden; }
+        .badge-shine::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); animation: shine 3s infinite; }
+        @keyframes shine { 0% { left: -100%; } 100% { left: 200%; } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-neutral-900 via-gray-900 to-neutral-900 min-h-screen">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="design-product-card-luxe-11.html" class="w-14 h-14 bg-gradient-to-r from-amber-600 to-yellow-600 text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-2xl shadow-amber-600/50"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="design-product-card-luxe-1.html" class="w-14 h-14 bg-gradient-to-r from-amber-600 to-yellow-600 text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-2xl shadow-amber-600/50"><i class="fa-solid fa-home"></i></a>
+    </div>
+    <div class="fixed top-8 right-8 z-40 bg-gradient-to-r from-amber-600 to-yellow-600 px-6 py-3 rounded-full shadow-2xl shadow-amber-600/50"><span class="text-white font-bold text-sm">12 / 12</span></div>
+    
+    <div class="container mx-auto px-6 py-20">
+        <div class="text-center mb-16">
+            <div class="inline-block mb-4 badge-shine bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 px-8 py-3 rounded-full shadow-2xl shadow-amber-600/50">
+                <span class="text-white font-black text-sm uppercase tracking-widest"><i class="fa-solid fa-crown mr-2"></i>VIP Collection</span>
+            </div>
+            <h1 class="text-7xl font-black text-white mb-4" style="text-shadow: 0 0 30px rgba(217,119,6,0.5);">Supreme Luxury</h1>
+            <p class="text-xl text-amber-500">The ultimate premium experience</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-8">
+            <div class="group relative" x-data="{ loved: false }">
+                <div class="absolute -inset-1 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition-all"></div>
+                <div class="relative bg-gradient-to-br from-neutral-900 to-black rounded-3xl p-8 border border-amber-600/50">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="space-y-2">
+                            <div class="badge-shine inline-block bg-gradient-to-r from-amber-600 to-yellow-600 px-4 py-1 rounded-full text-white text-xs font-bold">IMPERIAL</div>
+                            <div class="inline-block bg-gradient-to-r from-red-600 to-rose-600 px-4 py-1 rounded-full text-white text-xs font-bold ml-2">-70%</div>
+                        </div>
+                        <button @click="loved = !loved" class="w-14 h-14 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-full shadow-xl shadow-amber-600/50 flex items-center justify-center hover:scale-110 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-white text-xl' : 'fa-regular fa-heart text-white text-xl'"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-center py-12 mb-6">
+                        <i class="fa-solid fa-forklift text-9xl text-amber-500 group-hover:scale-110 transition-transform duration-500" style="filter: drop-shadow(0 0 40px rgba(217,119,6,0.8));"></i>
+                    </div>
+                    <div class="border-t border-amber-600/30 pt-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-gem text-amber-500"></i>
+                            <span class="text-xs text-amber-500 uppercase tracking-widest font-bold">Premium Forklift</span>
+                        </div>
+                        <h2 class="text-4xl font-bold text-white mb-4">Imperial Forklift 3.5T</h2>
+                        <p class="text-gray-400 mb-6 leading-relaxed">The pinnacle of industrial excellence. Handcrafted precision meets raw power in this ultimate material handling solution.</p>
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="bg-amber-600/10 border border-amber-600/30 rounded-xl p-3 text-center">
+                                <div class="text-2xl font-black text-amber-500">3.5T</div>
+                                <div class="text-xs text-gray-500">Capacity</div>
+                            </div>
+                            <div class="bg-amber-600/10 border border-amber-600/30 rounded-xl p-3 text-center">
+                                <div class="text-2xl font-black text-amber-500">4.7m</div>
+                                <div class="text-xs text-gray-500">Max Lift</div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-amber-600/20 to-yellow-600/20 border border-amber-600/50 rounded-2xl p-4 mb-6">
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="text-5xl font-black text-white">₺485.000</span>
+                                <span class="text-xl text-gray-500 line-through">₺1.620.000</span>
+                            </div>
+                            <div class="text-emerald-400 text-sm font-bold"><i class="fa-solid fa-piggy-bank mr-2"></i>Save ₺1.135.000</div>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-white py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:shadow-amber-600/50 transition-all hover:scale-105 badge-shine">
+                            <i class="fa-solid fa-crown mr-2"></i>Purchase VIP
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group relative" x-data="{ loved: false }">
+                <div class="absolute -inset-1 bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 rounded-3xl blur opacity-75 group-hover:opacity-100 transition-all"></div>
+                <div class="relative bg-gradient-to-br from-neutral-900 to-black rounded-3xl p-8 border border-amber-600/50">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="space-y-2">
+                            <div class="badge-shine inline-block bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-1 rounded-full text-white text-xs font-bold">EXCLUSIVE</div>
+                            <div class="inline-block bg-gradient-to-r from-red-600 to-rose-600 px-4 py-1 rounded-full text-white text-xs font-bold ml-2">-75%</div>
+                        </div>
+                        <button @click="loved = !loved" class="w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-xl shadow-purple-600/50 flex items-center justify-center hover:scale-110 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-white text-xl' : 'fa-regular fa-heart text-white text-xl'"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-center py-12 mb-6">
+                        <i class="fa-solid fa-truck-ramp-box text-9xl text-purple-500 group-hover:scale-110 transition-transform duration-500" style="filter: drop-shadow(0 0 40px rgba(147,51,234,0.8));"></i>
+                    </div>
+                    <div class="border-t border-purple-600/30 pt-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fa-solid fa-star text-purple-500"></i>
+                            <span class="text-xs text-purple-500 uppercase tracking-widest font-bold">VNA Reach Truck</span>
+                        </div>
+                        <h2 class="text-4xl font-bold text-white mb-4">Elite Reach Truck 2.0T</h2>
+                        <p class="text-gray-400 mb-6 leading-relaxed">Uncompromising performance in the tightest spaces. The crown jewel of narrow aisle solutions with cutting-edge technology.</p>
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="bg-purple-600/10 border border-purple-600/30 rounded-xl p-3 text-center">
+                                <div class="text-2xl font-black text-purple-500">2.0T</div>
+                                <div class="text-xs text-gray-500">Capacity</div>
+                            </div>
+                            <div class="bg-purple-600/10 border border-purple-600/30 rounded-xl p-3 text-center">
+                                <div class="text-2xl font-black text-purple-500">14m</div>
+                                <div class="text-xs text-gray-500">Max Lift</div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-600/50 rounded-2xl p-4 mb-6">
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="text-5xl font-black text-white">₺565.000</span>
+                                <span class="text-xl text-gray-500 line-through">₺2.260.000</span>
+                            </div>
+                            <div class="text-emerald-400 text-sm font-bold"><i class="fa-solid fa-piggy-bank mr-2"></i>Save ₺1.695.000</div>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-white py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:shadow-purple-600/50 transition-all hover:scale-105 badge-shine">
+                            <i class="fa-solid fa-star mr-2"></i>Purchase VIP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-gradient-to-r from-neutral-900 via-gray-900 to-neutral-900 border border-amber-600/30 rounded-3xl p-8 text-center">
+                <div class="flex items-center justify-center gap-12 flex-wrap">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-full flex items-center justify-center shadow-xl shadow-amber-600/50">
+                            <i class="fa-solid fa-helicopter text-white text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-white font-bold text-lg">Private Jet Delivery</div>
+                            <div class="text-gray-400 text-sm">Worldwide express</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-xl shadow-purple-600/50">
+                            <i class="fa-solid fa-infinity text-white text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-white font-bold text-lg">Lifetime Warranty</div>
+                            <div class="text-gray-400 text-sm">Forever protected</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full flex items-center justify-center shadow-xl shadow-emerald-600/50">
+                            <i class="fa-solid fa-user-tie text-white text-2xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-white font-bold text-lg">Personal Concierge</div>
+                            <div class="text-gray-400 text-sm">24/7 dedicated</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

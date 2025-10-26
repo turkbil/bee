@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating Shadow - ixtif Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <style>
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .float-anim { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="design-product-card-luxe-6.html" class="w-14 h-14 bg-white shadow-2xl rounded-2xl flex items-center justify-center hover:scale-110 transition-all"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="design-product-card-luxe-8.html" class="w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-2xl rounded-2xl flex items-center justify-center hover:scale-110 transition-all"><i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="fixed top-8 right-8 z-40 bg-white px-6 py-3 rounded-2xl shadow-xl"><span class="font-bold">7 / 12</span></div>
+    
+    <div class="container mx-auto px-6 py-20">
+        <div class="text-center mb-16">
+            <h1 class="text-7xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 mb-4">Floating Shadows</h1>
+            <p class="text-xl text-gray-600">Elevated product experience</p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            <div class="float-anim" x-data="{ loved: false }">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-blue-500/50 transition-all duration-500">
+                    <div class="relative mb-6">
+                        <i class="fa-solid fa-forklift text-8xl text-blue-600"></i>
+                        <button @click="loved = !loved" class="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-r from-red-400 to-pink-400 rounded-full shadow-lg flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Electric Forklift</h3>
+                    <p class="text-gray-600 text-sm mb-4">3.5 Ton capacity</p>
+                    <div class="flex items-baseline gap-2 mb-4">
+                        <span class="text-3xl font-black text-blue-600">₺395K</span>
+                        <span class="text-sm text-gray-400 line-through">₺985K</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="float-anim" style="animation-delay: 0.5s" x-data="{ loved: false }">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-purple-500/50 transition-all duration-500">
+                    <div class="relative mb-6">
+                        <i class="fa-solid fa-boxes-stacked text-8xl text-purple-600"></i>
+                        <button @click="loved = !loved" class="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-r from-red-400 to-pink-400 rounded-full shadow-lg flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Pallet Jack</h3>
+                    <p class="text-gray-600 text-sm mb-4">2.5 Ton manual</p>
+                    <div class="flex items-baseline gap-2 mb-4">
+                        <span class="text-3xl font-black text-purple-600">₺9K</span>
+                        <span class="text-sm text-gray-400 line-through">₺23K</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="float-anim" style="animation-delay: 1s" x-data="{ loved: false }">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-emerald-500/50 transition-all duration-500">
+                    <div class="relative mb-6">
+                        <i class="fa-solid fa-layer-group text-8xl text-emerald-600"></i>
+                        <button @click="loved = !loved" class="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-r from-red-400 to-pink-400 rounded-full shadow-lg flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Stacker Pro</h3>
+                    <p class="text-gray-600 text-sm mb-4">Electric 1.6T</p>
+                    <div class="flex items-baseline gap-2 mb-4">
+                        <span class="text-3xl font-black text-emerald-600">₺48K</span>
+                        <span class="text-sm text-gray-400 line-through">₺145K</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all">Buy Now</button>
+                </div>
+            </div>
+
+            <div class="float-anim" style="animation-delay: 1.5s" x-data="{ loved: false }">
+                <div class="bg-white rounded-3xl p-8 shadow-2xl hover:shadow-orange-500/50 transition-all duration-500">
+                    <div class="relative mb-6">
+                        <i class="fa-solid fa-warehouse text-8xl text-orange-600"></i>
+                        <button @click="loved = !loved" class="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-r from-red-400 to-pink-400 rounded-full shadow-lg flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i></button>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Reach Truck</h3>
+                    <p class="text-gray-600 text-sm mb-4">VNA 2.0 Ton</p>
+                    <div class="flex items-baseline gap-2 mb-4">
+                        <span class="text-3xl font-black text-orange-600">₺425K</span>
+                        <span class="text-sm text-gray-400 line-through">₺1.2M</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -88,7 +88,7 @@
             </section>
         @else
             {{-- Glassmorphism Subheader for Shop Home --}}
-            <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border-y border-white/20 dark:border-white/10">
+            <section class="bg-white dark:bg-gray-800 border-y border-gray-200 dark:border-gray-700">
                 <div class="container mx-auto py-6">
                     <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
                         <!-- Left: Title & Breadcrumb -->
@@ -102,12 +102,12 @@
                                         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">Tüm Ürünler</h1>
                                     @endif
                                     <!-- Breadcrumb -->
-                                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                                         <a href="{{ route('shop.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
                                             <i class="fa-solid fa-home text-xs"></i>
                                             <span>Ana Sayfa</span>
                                         </a>
-                                        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                        <i class="fa-solid fa-chevron-right text-xs opacity-50"></i>
                                         <span class="font-semibold text-gray-900 dark:text-white">Ürünler</span>
                                     </div>
                                 </div>

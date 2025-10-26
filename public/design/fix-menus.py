@@ -92,7 +92,7 @@ def fix_menu_file(file_path):
     return []
 
 def main():
-    work_dir = Path('/Users/nurullah/Desktop/cms/laravel/public/ixtif-designs')
+    work_dir = Path('/Users/nurullah/Desktop/cms/laravel/public/design')
     menu_files = sorted(work_dir.glob('design-menu-*.html'))
 
     print(f"\n🔧 {len(menu_files)} menu dosyası düzeltiliyor...\n")

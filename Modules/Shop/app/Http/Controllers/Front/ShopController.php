@@ -630,13 +630,26 @@ class ShopController extends Controller
             // Get current date in Turkish
             $catalogDate = now()->locale('tr')->isoFormat('D MMMM YYYY');
 
-            // Logo URL - Use tenant storage or public fallback
-            $logoPath = storage_path('app/public/settings/ixtif-logo-white.png');
-            if (file_exists($logoPath)) {
-                $logoUrl = url('/storage/settings/ixtif-logo-white.png');
-            } else {
-                $logoUrl = url('/ixtif-designs/assets/logos/ixtif-logo-white.png');
+            // Logo fallback chain:
+            // 1. Tenant storage logo (white version for dark backgrounds)
+            // 2. Tenant storage logo (default version)
+            // 3. null → View will use site title instead
+            $logoUrl = null;
+            $logoWhitePath = storage_path('app/public/settings/logo-white.png');
+            $logoDefaultPath = storage_path('app/public/settings/logo.png');
+
+            if (file_exists($logoWhitePath)) {
+                $logoUrl = url('/storage/settings/logo-white.png');
+            } elseif (file_exists($logoDefaultPath)) {
+                $logoUrl = url('/storage/settings/logo.png');
             }
+
+            // Tenant info fallback (settings tablosundan)
+            $siteTitle = get_setting('site_title') ?? config('app.name', 'Platform');
+            $siteDomain = parse_url(url('/'), PHP_URL_HOST) ?? 'www.example.com';
+            $sitePhone = get_setting('contact_phone') ?? '';
+            $siteEmail = get_setting('contact_email') ?? 'info@' . $siteDomain;
+            $siteWhatsapp = get_setting('whatsapp_number') ?? $sitePhone;
 
             // Product image URL
             $productImage = null;
@@ -648,6 +661,10 @@ class ShopController extends Controller
             $firstPageBodyHtml = view('shop::themes.ixtif.pdf.first-page', [
                 'productTitle' => $title,
                 'logoUrl' => $logoUrl,
+                'siteTitle' => $siteTitle,
+                'siteDomain' => $siteDomain,
+                'sitePhone' => $sitePhone,
+                'siteEmail' => $siteEmail,
                 'catalogDate' => $catalogDate,
                 'productImage' => $productImage,
             ])->render();
@@ -659,6 +676,11 @@ class ShopController extends Controller
             // Render last page body content
             $lastPageBodyHtml = view('shop::themes.ixtif.pdf.last-page', [
                 'logoUrl' => $logoUrl,
+                'siteTitle' => $siteTitle,
+                'siteDomain' => $siteDomain,
+                'sitePhone' => $sitePhone,
+                'siteEmail' => $siteEmail,
+                'siteWhatsapp' => $siteWhatsapp,
                 'catalogDate' => $catalogDate,
             ])->render();
 

@@ -85,6 +85,6 @@ background-analysis.txt
 unique-gradients.txt
 
 # Design test files
-public/ixtif-designs/composer.json
-public/ixtif-designs/composer.lock
-public/ixtif-designs/vendor/
+public/design/composer.json
+public/design/composer.lock
+public/design/vendor/

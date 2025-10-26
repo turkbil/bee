@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $productTitle }} - İXTİF Ürün Kataloğu</title>
+    <title>{{ $productTitle }} - {{ $siteTitle }} Ürün Kataloğu</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white flex" style="width: 210mm; height: 297mm; margin: 0; padding: 0; overflow: hidden;">
@@ -11,32 +11,40 @@
     <!-- Left Side - Orange -->
     <div class="w-1/3 bg-gradient-to-br from-orange-500 to-orange-700 text-white p-12 flex flex-col justify-between">
         <div>
-            <img src="{{ $logoUrl }}" alt="İXTİF Logo" class="h-24 mb-12">
+            @if($logoUrl)
+                <img src="{{ $logoUrl }}" alt="{{ $siteTitle }} Logo" class="h-24 mb-12">
+            @else
+                <div class="h-24 mb-12 flex items-center">
+                    <h1 class="text-4xl font-black">{{ $siteTitle }}</h1>
+                </div>
+            @endif
 
             <div class="space-y-6">
                 <h2 class="text-3xl font-bold">
-                    Türkiye'nin<br>İstif Pazarı
+                    {{ get_setting('site_tagline') ?? $siteTitle }}
                 </h2>
                 <div class="h-1 w-20 bg-white/50"></div>
                 <p class="text-xl font-mono text-orange-100">
-                    ixtif.com
+                    {{ $siteDomain }}
                 </p>
             </div>
         </div>
 
         <div class="space-y-4">
+            @if($sitePhone)
             <div class="flex items-center gap-3 text-sm">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
                 </svg>
-                <span>0216 755 3 555</span>
+                <span>{{ $sitePhone }}</span>
             </div>
+            @endif
             <div class="flex items-center gap-3 text-sm">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                 </svg>
-                <span>info@ixtif.com</span>
+                <span>{{ $siteEmail }}</span>
             </div>
             <div class="text-xs text-orange-200 mt-6">
                 Katalog Tarihi: {{ $catalogDate }}

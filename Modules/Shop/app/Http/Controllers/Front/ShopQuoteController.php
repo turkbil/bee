@@ -77,7 +77,10 @@ class ShopQuoteController extends Controller
             return;
         }
 
-        $adminEmail = config('shop.quote.admin_email', 'info@ixtif.com');
+        // Admin email fallback chain: config → settings → domain-based
+        $adminEmail = config('shop.quote.admin_email')
+            ?? get_setting('contact_email')
+            ?? 'info@' . parse_url(url('/'), PHP_URL_HOST);
 
         // Notification gönder (Mail + Telegram)
         // Laravel'in route() metodu ile anonymous notifiable kullanımı

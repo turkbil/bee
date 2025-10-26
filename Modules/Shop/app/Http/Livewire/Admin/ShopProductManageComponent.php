@@ -35,7 +35,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
         'sku' => null,
         'product_type' => 'physical',
         'condition' => 'new',
-        'price_on_request' => false,
+        'price_display_mode' => 'show',
         'base_price' => null,
         'compare_at_price' => null,
         'currency' => 'TRY',

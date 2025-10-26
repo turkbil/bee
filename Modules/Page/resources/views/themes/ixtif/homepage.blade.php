@@ -242,7 +242,7 @@
 
             {{-- Sağ: İçerik --}}
             <div>
-                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Her Adımda Yanınızdayız</h2>
+                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Depoda, Üretimde, Dağıtımda</h2>
                 <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
                     İstif makineleri ve endüstriyel ekipman alanında deneyimli ekibimizle, işletmenizin güvenilir çözüm ortağıyız.
                 </p>

@@ -510,7 +510,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center gap-2">
-                                                @if($variant->sku)
+                                                @if(!$quickEditMode && $variant->sku)
                                                     <span class="badge bg-secondary-lt" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">{{ $variant->sku }}</span>
                                                 @endif
                                                 <span style="font-size: 0.875rem;">{{ $variant->getTranslated('title', $currentSiteLocale) ?? $variant->getTranslated('title', 'tr') }}</span>
@@ -519,20 +519,22 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>
-                                            @if($variant->category)
-                                                {{ $variant->category->getTranslated('title', $currentSiteLocale) ?? '—' }}
-                                            @else
-                                                <span class="text-muted">—</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($variant->brand)
-                                                {{ $variant->brand->getTranslated('title', $currentSiteLocale) ?? '—' }}
-                                            @else
-                                                <span class="text-muted">—</span>
-                                            @endif
-                                        </td>
+                                        @if(!$quickEditMode)
+                                            <td>
+                                                @if($variant->category)
+                                                    {{ $variant->category->getTranslated('title', $currentSiteLocale) ?? '—' }}
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if($variant->brand)
+                                                    {{ $variant->brand->getTranslated('title', $currentSiteLocale) ?? '—' }}
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
+                                            </td>
+                                        @endif
                                         <td class="text-end" wire:key="price-variant-{{ $variant->product_id }}">
                                             @if ($quickEditMode)
                                                 {{-- Quick Edit Mode: Always editable inputs --}}

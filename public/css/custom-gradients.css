@@ -104,128 +104,48 @@
 }
 
 /* ========================================
-   🌑 NAVY GRADIENT BACKGROUND - DARK MODE
-   Design-10 Style with Navy Colors
+   🎬 ICON ANIMATIONS - SERVICE CATEGORIES
    ======================================== */
 
-/* Body - Navy-950 solid background */
-.dark body,
-.dark-mode-active body {
-    background-color: #080811 !important;
-    background-image: none !important;
-    color: #ffffff;
-}
-
-/* First section - gradient from navy-950 via navy-900 to navy-950 */
-.dark section:nth-of-type(1) {
-    background: linear-gradient(to bottom, #080811, #152238, #080811) !important;
-}
-
-/* Second section - solid navy-950 */
-.dark section:nth-of-type(2) {
-    background: #080811 !important;
-}
-
-/* Third section - gradient navy-950 via navy-900 to navy-950 */
-.dark section:nth-of-type(3) {
-    background: linear-gradient(to bottom, #080811, #152238, #080811) !important;
-}
-
-/* Fourth section - solid navy-950 */
-.dark section:nth-of-type(4) {
-    background: #080811 !important;
-}
-
-/* Fifth section and beyond - solid navy-950 */
-.dark section:nth-of-type(n+5) {
-    background: #080811 !important;
-}
-
-/* Footer - solid navy-950 */
-.dark footer {
-    background: #080811 !important;
-}
-
-/* Footer search section - solid navy-950 */
-.dark footer ~ section,
-.dark section:has(h2:contains("Aradığınızı")),
-.dark section .bg-white\/70.dark\:bg-white\/5 {
-    background: #080811 !important;
-}
-
-.dark section .bg-white\/70.dark\:bg-white\/5.backdrop-blur-md {
-    background: rgba(8, 8, 17, 0.95) !important;
-    border-color: #152238 !important;
-}
-
-/* Header - solid navy-950 with transparency */
-.dark header,
-.dark #main-header {
-    background: rgba(8, 8, 17, 0.9) !important;
-}
-
-/* Search bar area - solid navy-950 */
-.dark header > div[x-show="searchOpen"],
-.dark #main-header > div > div[x-show="searchOpen"],
-.dark .bg-white.dark\:bg-slate-900,
-.dark .bg-white.border-t {
-    background: #080811 !important;
-}
-
-/* Search dropdown/autocomplete - solid navy-950 */
-.dark header .dropdown-content,
-.dark header [class*="bg-white"],
-.dark .bg-white.dark\:bg-gray-800,
-.dark [class*="bg-gray-800"] {
-    background: #080811 !important;
-}
-
-.dark header [class*="border-gray"],
-.dark .border-gray-200.dark\:border-gray-700 {
-    border-color: #152238 !important;
-}
-
-/* ========================================
-   ✨ GOLD GRADIENT ANIMATION - PREMIUM
-   Design-10 Style Gold Shimmer Effect
-   ======================================== */
-
-/* Gold shimmer animation */
-@keyframes gold-shimmer {
-    0% {
-        background-position: 0% 50%;
+/* Bounce Up-Down Animation - Teknik Servis */
+@keyframes bounce-y {
+    0%, 100% {
+        transform: translateY(0);
     }
     50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
+        transform: translateY(-10px);
     }
 }
 
-/* Gold gradient class for buttons */
-.gold-gradient {
-    background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1);
-    background-size: 200% auto;
-    animation: gold-shimmer 3s ease infinite;
+.animate-bounce-y {
+    animation: bounce-y 2s ease-in-out infinite;
 }
 
-/* Gold text gradient for hero title - Light mode (darker gold tones, no white) */
-.gold-text-gradient {
-    background: linear-gradient(90deg, #b8860b, #d4af37, #ca8a04, #d4af37, #b8860b);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gold-shimmer 3s ease infinite;
+/* Slide Left-Right Animation - Satın Alma Sepeti */
+@keyframes slide-x {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(8px);
+    }
 }
 
-/* Gold text gradient for hero title - Dark mode (white + gold mix) */
-.dark .gold-text-gradient {
-    background: linear-gradient(90deg, #ffffff, #d4af37, #f4e5a1, #d4af37, #ffffff);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gold-shimmer 3s ease infinite;
+.animate-slide-x {
+    animation: slide-x 1.5s ease-in-out infinite;
+}
+
+/* Swing Animation - Kiralama */
+@keyframes swing {
+    0%, 100% {
+        transform: rotate(-5deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.animate-swing {
+    animation: swing 2s ease-in-out infinite;
+    transform-origin: top center;
 }

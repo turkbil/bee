@@ -7,26 +7,34 @@
 
 @section('module_content')
 <div class="relative" x-data="pagesList()" x-init="init()">
-    
-    <!-- Gradient Background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
-    
-    <!-- Header -->
-    <div class="relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20"></div>
-        <div class="relative py-20">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
-                <div class="max-w-3xl">
-                <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
-                    {{ $moduleTitle ?? __('page::front.general.pages') }}
-                </h1>
-                <p class="text-lg text-gray-600 dark:text-gray-400">
-                    Bilgi sayfalarımızı keşfedin
-                </p>
+
+    {{-- Glassmorphism Subheader - Shop Standardı --}}
+    <section class="bg-gray-50/95 dark:bg-white/5 backdrop-blur-md border-y border-gray-200 dark:border-white/10">
+        <div class="container mx-auto py-6">
+            <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
+                <!-- Left: Title & Breadcrumb -->
+                <div class="flex flex-col justify-between">
+                    <div class="flex items-center gap-6">
+                        <i class="fa-solid fa-file-lines text-6xl text-blue-600 dark:text-blue-400 drop-shadow-lg"></i>
+                        <div>
+                            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
+                                {{ $moduleTitle ?? __('page::front.general.pages') }}
+                            </h1>
+                            <!-- Breadcrumb -->
+                            <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-home text-xs"></i>
+                                    <span>Ana Sayfa</span>
+                                </a>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+                                <span class="font-semibold text-gray-900 dark:text-white">{{ $moduleTitle ?? __('page::front.general.pages') }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <div class="py-20">
         <div class="container mx-auto px-4 sm:px-4 md:px-0">

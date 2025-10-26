@@ -253,16 +253,16 @@
                 {{-- Özellikler --}}
                 <div class="grid grid-cols-3 gap-6 mb-8">
                     <div class="text-center">
-                        <div class="text-4xl font-black text-blue-600 mb-2">2018</div>
-                        <div class="text-gray-600 dark:text-gray-400">Kuruluş</div>
+                        <div class="text-4xl font-black text-blue-600 mb-2"><i class="fa-light fa-truck-fast"></i></div>
+                        <div class="text-gray-600 dark:text-gray-400">Hızlı Teslimat</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl font-black text-green-600 mb-2"><i class="fa-light fa-check-circle"></i></div>
-                        <div class="text-gray-600 dark:text-gray-400">Güvenilir</div>
+                        <div class="text-4xl font-black text-green-600 mb-2"><i class="fa-light fa-shield-check"></i></div>
+                        <div class="text-gray-600 dark:text-gray-400">Garanti Güvencesi</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-4xl font-black text-purple-600 mb-2">7/24</div>
-                        <div class="text-gray-600 dark:text-gray-400">Destek</div>
+                        <div class="text-4xl font-black text-purple-600 mb-2"><i class="fa-light fa-screwdriver-wrench"></i></div>
+                        <div class="text-gray-600 dark:text-gray-400">Teknik Servis</div>
                     </div>
                 </div>
 

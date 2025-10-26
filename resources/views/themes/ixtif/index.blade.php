@@ -211,14 +211,16 @@
                                  x-data="{ imageLoaded: false }">
                                 <template x-if="product.image">
                                     <div class="relative w-full h-full">
-                                        {{-- Skeleton Loader --}}
-                                        <div x-show="!imageLoaded"
-                                             class="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse"></div>
+                                        {{-- Blur Placeholder - Initial blurred version --}}
+                                        <img :src="product.image"
+                                             :alt="product.title"
+                                             x-show="!imageLoaded"
+                                             class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
 
                                         {{-- Actual Image --}}
                                         <img :src="product.image"
                                              :alt="product.title"
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 relative z-10"
                                              :class="imageLoaded ? 'opacity-100' : 'opacity-0'"
                                              @load="imageLoaded = true"
                                              loading="lazy">

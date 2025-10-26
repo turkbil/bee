@@ -222,24 +222,28 @@
                                         </div>
                                     </div>
 
-                                    <!-- Price on Request & Show on Homepage -->
-                                    <div class="row mb-3">
+                                    <!-- Price Display & Show on Homepage -->
+                                    <div class="row mb-4">
                                         <div class="col-12 col-md-6">
-                                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                                <input type="checkbox" id="price_on_request" name="price_on_request"
-                                                    wire:model="inputs.price_on_request" value="1" />
-
-                                                <div class="state p-success p-on ms-2">
-                                                    <label>{{ __('shop::admin.price_on_request') }}</label>
-                                                </div>
-                                                <div class="state p-danger p-off ms-2">
-                                                    <label>{{ __('shop::admin.price_show') }}</label>
-                                                </div>
+                                            <div class="form-floating">
+                                                <select wire:model="inputs.price_display_mode"
+                                                    class="form-control @error('inputs.price_display_mode') is-invalid @enderror"
+                                                    id="price_display_mode_select">
+                                                    <option value="show">Fiyatı Göster</option>
+                                                    <option value="hide">Fiyatı Gizle</option>
+                                                    <option value="request">Fiyat Sorunuz</option>
+                                                </select>
+                                                <label for="price_display_mode_select">
+                                                    Fiyat Gösterimi
+                                                </label>
+                                                @error('inputs.price_display_mode')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
 
                                         <div class="col-12 col-md-6">
-                                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1" style="margin-top: 12px;">
                                                 <input type="checkbox" id="show_on_homepage" name="show_on_homepage"
                                                     wire:model="inputs.show_on_homepage" value="1" />
 

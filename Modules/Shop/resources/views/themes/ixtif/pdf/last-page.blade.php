@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İXTİF - İletişim Bilgileri</title>
+    <title>{{ $siteTitle }} - İletişim Bilgileri</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white flex items-center justify-center p-8" style="width: 210mm; height: 297mm; margin: 0; padding: 2rem; overflow: hidden; background: linear-gradient(to bottom right, #0f172a, #1e3a8a, #0f172a) !important;">
@@ -12,8 +12,14 @@
 
         <!-- Header -->
         <div class="text-center space-y-3">
-            <img src="{{ $logoUrl }}" alt="İXTİF Logo" class="h-20 mx-auto">
-            <p class="text-xl text-blue-300 font-semibold">Türkiye'nin İstif Pazarı</p>
+            @if($logoUrl)
+                <img src="{{ $logoUrl }}" alt="{{ $siteTitle }} Logo" class="h-20 mx-auto">
+            @else
+                <div class="h-20 flex items-center justify-center">
+                    <h1 class="text-5xl font-black">{{ $siteTitle }}</h1>
+                </div>
+            @endif
+            <p class="text-xl text-blue-300 font-semibold">{{ get_setting('site_tagline') ?? $siteTitle }}</p>
             <div class="h-1 w-48 bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-auto"></div>
         </div>
 
@@ -30,16 +36,19 @@
                 </h2>
 
                 <div class="space-y-3">
+                    @if($sitePhone)
                     <div class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-blue-400 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
                         </svg>
                         <div>
                             <div class="text-blue-200 text-xs">Telefon</div>
-                            <div class="text-lg font-bold">0216 755 3 555</div>
+                            <div class="text-lg font-bold">{{ $sitePhone }}</div>
                         </div>
                     </div>
+                    @endif
 
+                    @if($siteWhatsapp)
                     <div class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-green-400 mt-1" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
@@ -47,9 +56,10 @@
                         </svg>
                         <div>
                             <div class="text-blue-200 text-xs">WhatsApp</div>
-                            <div class="text-lg font-bold">0501 005 67 58</div>
+                            <div class="text-lg font-bold">{{ $siteWhatsapp }}</div>
                         </div>
                     </div>
+                    @endif
 
                     <div class="flex items-start gap-3">
                         <svg class="w-5 h-5 text-purple-400 mt-1" fill="currentColor" viewBox="0 0 20 20">
@@ -58,7 +68,7 @@
                         </svg>
                         <div>
                             <div class="text-blue-200 text-xs">E-posta</div>
-                            <div class="text-lg font-bold">info@ixtif.com</div>
+                            <div class="text-lg font-bold">{{ $siteEmail }}</div>
                         </div>
                     </div>
 
@@ -68,7 +78,7 @@
                         </svg>
                         <div>
                             <div class="text-blue-200 text-xs">Web</div>
-                            <div class="text-lg font-bold">ixtif.com</div>
+                            <div class="text-lg font-bold">{{ $siteDomain }}</div>
                         </div>
                     </div>
                 </div>
@@ -123,7 +133,7 @@
                 Güncel fiyatlar ve detaylı bilgi için lütfen bizimle iletişime geçiniz.
             </p>
             <p class="text-xs text-slate-400">
-                © 2025 İXTİF - Türkiye'nin İstif Pazarı | Tüm hakları saklıdır.
+                © {{ date('Y') }} {{ $siteTitle }} | Tüm hakları saklıdır.
             </p>
         </div>
 

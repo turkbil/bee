@@ -43,13 +43,13 @@ Bu koleksiyon, WhatsApp ve telefon iletişim butonları için **20 farklı** mob
 ### 1. Tüm Tasarımları Görüntüleme
 
 ```
-http://tuufi.com/ixtif-designs/mobile-bottom-bars/index.html
+http://tuufi.com/design/mobile-bottom-bars/index.html
 ```
 
 ### 2. Tek Bir Tasarımı Görüntüleme
 
 ```
-http://tuufi.com/ixtif-designs/mobile-bottom-bars/design-01-classic-duo.html
+http://tuufi.com/design/mobile-bottom-bars/design-01-classic-duo.html
 ```
 
 ### 3. Projeye Entegrasyon

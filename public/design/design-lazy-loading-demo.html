@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Loading Demo - 4 Yaklaşım</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        /* Skeleton Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        /* Blur Placeholder */
+        .blur-up {
+            filter: blur(20px);
+            transition: filter 0.3s ease-in-out;
+        }
+
+        .blur-up.loaded {
+            filter: blur(0);
+        }
+
+        /* Fade In */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .fade-in.loaded {
+            opacity: 1;
+        }
+
+        /* Spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white p-8">
+
+    <div class="container mx-auto max-w-7xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Lazy Loading Demo
+            </h1>
+            <p class="text-gray-300 text-lg mb-4">
+                4 Farklı Lazy Loading Yaklaşımı - Her biri için "Yeniden Yükle" butonu ile efekti görebilirsiniz
+            </p>
+
+            <!-- Real World Test Banner -->
+            <div class="inline-block bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-400/30 rounded-xl px-6 py-4 max-w-3xl">
+                <div class="flex items-center gap-3 justify-center">
+                    <svg class="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/>
+                    </svg>
+                    <div class="text-left">
+                        <p class="text-white font-semibold">Gerçek iXtif Görseli ile Test (997KB)</p>
+                        <p class="text-gray-300 text-sm">2 saniye yapay gecikme - Yavaş internet simülasyonu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <!-- 1. SKELETON LOADER -->
+            <div x-data="lazyLoader('https://ixtif.com/thumb?src=tenant2/13/hero.png&w=600&h=400&q=85&f=webp', null, 2000)" class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-blue-400">1. Skeleton Loader</h2>
+                    <button @click="reload()"
+                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition text-sm font-semibold">
+                        Yeniden Yükle
+                    </button>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">Modern animasyonlu placeholder - 2 saniye gri kutu gösterir</p>
+
+                <div class="relative aspect-[3/2] rounded-xl overflow-hidden bg-gray-800">
+                    <!-- Skeleton Placeholder -->
+                    <div x-show="!loaded" class="absolute inset-0 skeleton"></div>
+
+                    <!-- Actual Image -->
+                    <img x-show="loaded"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         :src="imageSrc"
+                         @load="loaded = true"
+                         class="w-full h-full object-cover"
+                         alt="Skeleton Demo">
+                </div>
+            </div>
+
+            <!-- 2. BLUR PLACEHOLDER (LQIP) -->
+            <div x-data="lazyLoader('https://ixtif.com/thumb?src=tenant2/13/hero.png&w=600&h=400&q=85&f=webp', 'https://ixtif.com/thumb?src=tenant2/13/hero.png&w=60&h=40&q=50&f=webp', 2000)" class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-purple-400">2. Blur Placeholder</h2>
+                    <button @click="reload()"
+                            class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition text-sm font-semibold">
+                        Yeniden Yükle
+                    </button>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">🚀 ANINDA mini görsel (2KB), 2 saniye sonra net! En şık geçiş</p>
+
+                <div class="relative aspect-[3/2] rounded-xl overflow-hidden bg-gray-800">
+                    <!-- Blur Placeholder (Low Quality) -->
+                    <img x-show="true"
+                         :src="placeholder"
+                         :class="loaded ? 'loaded' : ''"
+                         class="absolute inset-0 w-full h-full object-cover blur-up"
+                         alt="Blur Placeholder">
+
+                    <!-- Actual Image -->
+                    <img x-show="loaded"
+                         :src="imageSrc"
+                         @load="loaded = true"
+                         class="absolute inset-0 w-full h-full object-cover"
+                         alt="Blur Demo">
+                </div>
+            </div>
+
+            <!-- 3. SPINNER LOADER -->
+            <div x-data="lazyLoader('https://ixtif.com/thumb?src=tenant2/13/hero.png&w=600&h=400&q=85&f=webp', null, 2000)" class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-green-400">3. Spinner Loader</h2>
+                    <button @click="reload()"
+                            class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition text-sm font-semibold">
+                        Yeniden Yükle
+                    </button>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">Klasik loading spinner - En basit yaklaşım</p>
+
+                <div class="relative aspect-[3/2] rounded-xl overflow-hidden bg-gray-800">
+                    <!-- Spinner -->
+                    <div x-show="!loaded" class="absolute inset-0 flex items-center justify-center">
+                        <div class="spinner"></div>
+                    </div>
+
+                    <!-- Actual Image -->
+                    <img x-show="loaded"
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         :src="imageSrc"
+                         @load="loaded = true"
+                         class="w-full h-full object-cover"
+                         alt="Spinner Demo">
+                </div>
+            </div>
+
+            <!-- 4. FADE IN (ASPECT RATIO KORUMALI) -->
+            <div x-data="lazyLoader('https://ixtif.com/thumb?src=tenant2/13/hero.png&w=600&h=400&q=85&f=webp', null, 2000)" class="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-orange-400">4. Fade In + Aspect Ratio</h2>
+                    <button @click="reload()"
+                            class="px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg transition text-sm font-semibold">
+                        Yeniden Yükle
+                    </button>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">Opacity ile fade-in - En performanslı, CLS önler</p>
+
+                <div class="relative aspect-[3/2] rounded-xl overflow-hidden bg-gray-800">
+                    <!-- Background Placeholder -->
+                    <div x-show="!loaded" class="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800"></div>
+
+                    <!-- Actual Image -->
+                    <img :src="imageSrc"
+                         @load="loaded = true"
+                         :class="loaded ? 'loaded' : ''"
+                         class="w-full h-full object-cover fade-in"
+                         alt="Fade Demo">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Info Section -->
+        <div class="mt-12 bg-white/5 backdrop-blur-sm rounded-2xl p-8">
+            <h3 class="text-2xl font-bold mb-4 text-cyan-400">Karşılaştırma & Öneriler</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300">
+                <div>
+                    <h4 class="font-bold text-blue-400 mb-2">✅ Skeleton Loader</h4>
+                    <ul class="text-sm space-y-1 ml-4">
+                        <li>• Modern, kullanıcı dostu</li>
+                        <li>• Facebook, LinkedIn kullanır</li>
+                        <li>• Grid layout'lar için ideal</li>
+                        <li>• Tailwind animate-pulse kullanılabilir</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-purple-400 mb-2">✅ Blur Placeholder (LQIP) ⚡ EN HIZLI</h4>
+                    <ul class="text-sm space-y-1 ml-4">
+                        <li>• 🚀 ANINDA görsel gösterir (mini 2KB)</li>
+                        <li>• En şık görsel geçiş</li>
+                        <li>• Medium, Unsplash kullanır</li>
+                        <li>• Thumbmaker ile mini görsel oluşturulabilir</li>
+                        <li>• thumb($media, 60, 40) + thumb($media, 600, 400)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-green-400 mb-2">✅ Spinner Loader</h4>
+                    <ul class="text-sm space-y-1 ml-4">
+                        <li>• En basit implementasyon</li>
+                        <li>• Tek görsel için ideal</li>
+                        <li>• Küçük alanlarda kullanışlı</li>
+                        <li>• Loading state açık gösterir</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-orange-400 mb-2">✅ Fade In + Aspect Ratio</h4>
+                    <ul class="text-sm space-y-1 ml-4">
+                        <li>• En performanslı</li>
+                        <li>• CLS (layout shift) önler</li>
+                        <li>• SEO için en iyi</li>
+                        <li>• Minimal kod, maksimum etki</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-blue-600/20 rounded-lg border border-blue-400/30">
+                <h4 class="font-bold text-blue-400 mb-2">🎯 iXtif için Öneri:</h4>
+                <p class="text-sm text-gray-300">
+                    <strong>Portfolio/Shop için:</strong> <span class="text-blue-400">Skeleton Loader</span> (grid layout'ta tutarlı görünüm)<br>
+                    <strong>Hero/Banner görseller için:</strong> <span class="text-purple-400">Blur Placeholder</span> (büyük görsellerde şık geçiş)<br>
+                    <strong>Küçük thumbnaillar için:</strong> <span class="text-orange-400">Fade In</span> (performans + basitlik)
+                </p>
+            </div>
+        </div>
+
+        <!-- Implementation Notes -->
+        <div class="mt-8 bg-white/5 backdrop-blur-sm rounded-2xl p-8">
+            <h3 class="text-2xl font-bold mb-4 text-yellow-400">💡 Teknik Notlar</h3>
+            <div class="text-gray-300 text-sm space-y-2">
+                <p><strong>Loading="lazy":</strong> Tüm görsellere eklenmeli (browser native lazy loading)</p>
+                <p><strong>Aspect Ratio:</strong> CLS (Cumulative Layout Shift) önlemek için aspect-[3/2] gibi class'lar kullan</p>
+                <p><strong>Thumbmaker:</strong> Blur placeholder için thumb($media, 60, 40) ile mini görsel oluşturulabilir</p>
+                <p><strong>Alpine.js:</strong> Mevcut yapıda zaten var, kolay entegrasyon</p>
+                <p><strong>Intersection Observer:</strong> Daha gelişmiş lazy loading için kullanılabilir</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function lazyLoader(imageSrc, placeholder = null, delay = 0) {
+            return {
+                imageSrc: '',
+                placeholder: placeholder,
+                loaded: false,
+                loadingStartTime: null,
+                loadingDuration: 0,
+
+                init() {
+                    // Simulate network delay for demo (gerçek dünya yavaş internet simülasyonu)
+                    this.loadingStartTime = Date.now();
+                    setTimeout(() => {
+                        this.imageSrc = imageSrc + '&t=' + Date.now();
+                    }, delay);
+                },
+
+                reload() {
+                    this.loaded = false;
+                    this.imageSrc = '';
+                    this.loadingDuration = 0;
+
+                    // Reload with new timestamp to bypass cache
+                    this.loadingStartTime = Date.now();
+                    setTimeout(() => {
+                        this.imageSrc = imageSrc + '&t=' + Date.now();
+                    }, delay);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

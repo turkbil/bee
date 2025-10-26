@@ -117,7 +117,7 @@ def main():
     """Ana fonksiyon"""
 
     # Çalışma dizini
-    work_dir = '/Users/nurullah/Desktop/cms/laravel/public/ixtif-designs'
+    work_dir = '/Users/nurullah/Desktop/cms/laravel/public/design'
     os.chdir(work_dir)
 
     # Tüm design-*.html dosyalarını bul (numaralı dosyaları hariç tut)

@@ -1,6 +1,6 @@
 # 🎨 ixtif.com Tasarım Kütüphanesi
 
-**Erişim:** `http://laravel.test/ixtif-designs/index.html`
+**Erişim:** `http://laravel.test/design/index.html`
 
 ## 📁 Dosyalar
 

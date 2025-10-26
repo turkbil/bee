@@ -41,6 +41,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'product_type',
         'condition',
         'price_on_request',
+        'price_display_mode',
         'base_price',
         'compare_at_price',
         'cost_price',

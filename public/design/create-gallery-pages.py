@@ -243,7 +243,7 @@ def create_gallery_page(category_key, count):
 def main():
     """Ana fonksiyon"""
 
-    work_dir = '/Users/nurullah/Desktop/cms/laravel/public/ixtif-designs'
+    work_dir = '/Users/nurullah/Desktop/cms/laravel/public/design'
     os.chdir(work_dir)
 
     print(f"\n🎨 Gallery sayfaları oluşturuluyor...\n")

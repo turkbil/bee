@@ -184,3 +184,28 @@
 .dark .border-gray-200.dark\:border-gray-700 {
     border-color: #152238 !important;
 }
+
+/* ========================================
+   ✨ GOLD GRADIENT ANIMATION - PREMIUM
+   Design-10 Style Gold Shimmer Effect
+   ======================================== */
+
+/* Gold shimmer animation */
+@keyframes gold-shimmer {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Gold gradient class for buttons and text */
+.gold-gradient {
+    background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1);
+    background-size: 200% auto;
+    animation: gold-shimmer 3s ease infinite;
+}

@@ -200,18 +200,18 @@
 
             $stats = [
                 ['count' => $totalProducts * 10, 'label' => 'Toplam Ürün', 'gradient' => 'from-blue-400 to-cyan-400'],
-                ['count' => $totalCategories, 'label' => 'Kategori', 'gradient' => 'from-green-400 to-emerald-400'],
+                ['count' => $totalCategories, 'label' => 'Kategori', 'gradient' => 'from-blue-400 to-cyan-400'],
             ];
 
             foreach($topCategories as $index => $category) {
                 $gradients = [
-                    'from-purple-400 to-pink-400',
-                    'from-orange-400 to-red-400',
+                    'from-blue-400 to-cyan-400',
+                    'from-blue-400 to-cyan-400',
                 ];
                 $stats[] = [
                     'count' => $category->products_count * 10,
                     'label' => $category->getTranslated('title', app()->getLocale()) ?? 'Kategori',
-                    'gradient' => $gradients[$index] ?? 'from-gray-400 to-gray-500'
+                    'gradient' => $gradients[$index] ?? 'from-blue-400 to-cyan-400'
                 ];
             }
         @endphp

@@ -45,6 +45,7 @@ class ShopProductComponent extends Component
     public ?int $editingPriceId = null;
     public ?string $newPrice = null;
     public ?string $newCurrency = null;
+    public bool $newPriceOnRequest = false;
 
     protected ShopProductService $productService;
 
@@ -209,11 +210,12 @@ class ShopProductComponent extends Component
         }
     }
 
-    public function startEditingPrice(int $productId, ?string $currentPrice, ?string $currentCurrency): void
+    public function startEditingPrice(int $productId, ?string $currentPrice, ?string $currentCurrency, bool $priceOnRequest = false): void
     {
         $this->editingPriceId = $productId;
         $this->newPrice = $currentPrice;
         $this->newCurrency = $currentCurrency ?? 'TRY';
+        $this->newPriceOnRequest = $priceOnRequest;
     }
 
     public function updatePriceInline(): void
@@ -225,20 +227,29 @@ class ShopProductComponent extends Component
         try {
             $product = ShopProduct::findOrFail($this->editingPriceId);
 
-            // Validate price
-            $price = $this->newPrice ? (float) str_replace(',', '.', $this->newPrice) : null;
+            // Update price_on_request
+            $product->price_on_request = $this->newPriceOnRequest;
 
-            if ($price !== null && $price < 0) {
-                $this->dispatch('toast', [
-                    'title' => __('admin.error'),
-                    'message' => __('shop::admin.invalid_price'),
-                    'type' => 'error',
-                ]);
-                return;
+            if (! $this->newPriceOnRequest) {
+                // Validate price only if not price_on_request
+                $price = $this->newPrice ? (float) str_replace(',', '.', $this->newPrice) : null;
+
+                if ($price !== null && $price < 0) {
+                    $this->dispatch('toast', [
+                        'title' => __('admin.error'),
+                        'message' => __('shop::admin.invalid_price'),
+                        'type' => 'error',
+                    ]);
+                    return;
+                }
+
+                $product->base_price = $price;
+                $product->currency = $this->newCurrency ?? 'TRY';
+            } else {
+                // If price_on_request, clear price
+                $product->base_price = null;
             }
 
-            $product->base_price = $price;
-            $product->currency = $this->newCurrency ?? 'TRY';
             $product->save();
 
             $this->dispatch('toast', [
@@ -250,6 +261,7 @@ class ShopProductComponent extends Component
             $this->editingPriceId = null;
             $this->newPrice = null;
             $this->newCurrency = null;
+            $this->newPriceOnRequest = false;
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
@@ -264,6 +276,7 @@ class ShopProductComponent extends Component
         $this->editingPriceId = null;
         $this->newPrice = null;
         $this->newCurrency = null;
+        $this->newPriceOnRequest = false;
     }
 
     public function bulkDeleteSelected(): void

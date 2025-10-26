@@ -1,0 +1,59 @@
+/* ⭐ Gold Gradient Animation - resources/css/app.css dosyasına EKLENECEK */
+
+/* Gold gradient keyframe animation */
+@keyframes gold-shimmer {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Gold gradient class - Animasyonlu altın gradient */
+.gold-gradient {
+    background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1);
+    background-size: 200% auto;
+    animation: gold-shimmer 3s ease infinite;
+}
+
+/* Smooth dark mode transition (OPSIYONEL) */
+html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Background gradient utility (Tailwind'da tanımlı ama CSS'de de kullanılabilir) */
+.bg-gold-gradient {
+    background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1);
+    background-size: 200% auto;
+}
+
+/* Text gradient için utility */
+.text-gold-gradient {
+    background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ⚠️ KULLANIM:
+ *
+ * 1. Logo (text gradient):
+ * <div class="gold-gradient bg-clip-text text-transparent">iXtif</div>
+ *
+ * 2. Button (background):
+ * <button class="gold-gradient text-gray-950">SATIN AL</button>
+ *
+ * 3. Hero başlık (text gradient + animation):
+ * <h1 class="text-6xl font-black gold-gradient bg-clip-text text-transparent">
+ *     PREMIUM
+ * </h1>
+ */

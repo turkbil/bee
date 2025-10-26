@@ -121,43 +121,59 @@
                     $productUrl = route('shop.show.by-id', $product->id);
                 }
             @endphp
-            <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $index === 8 ? 'hidden lg:block xl:hidden' : '' }}">
-                <!-- Product Image -->
-                <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+            {{-- Premium Product Card - Design-10 Style --}}
+            <div class="group bg-white/70 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 rounded-2xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:bg-white/90 dark:hover:border-yellow-600 transition-all {{ $index === 8 ? 'hidden lg:block xl:hidden' : '' }}">
+
+                {{-- Product Image --}}
+                <a href="{{ $productUrl }}" class="block aspect-square rounded-t-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 p-4">
                     @if($productImage)
                         <img src="{{ $productImage }}"
                              alt="{{ $productTitle }}"
-                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark group-hover:scale-110 transition-transform duration-700">
+                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark">
                     @else
                         @php
                             $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
                         @endphp
-                        <i class="{{ $categoryIcon }} text-6xl text-blue-400 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
+                        <i class="{{ $categoryIcon }} text-6xl text-blue-400 dark:text-yellow-500"></i>
                     @endif
                 </a>
 
-                <!-- Content Section -->
-                <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
-                    <!-- Category -->
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-wider">
+                {{-- Content Section --}}
+                <div class="p-6">
+
+                    {{-- Category Badge with Icon --}}
+                    <div class="flex items-center gap-2 mb-4">
+                        @php
+                            $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
+                        @endphp
+                        <i class="{{ $categoryIcon }} text-blue-600 dark:text-yellow-500 text-sm"></i>
+                        <span class="text-xs text-blue-800 dark:text-yellow-500 font-thin uppercase tracking-wider">
                             {{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}
                         </span>
                     </div>
 
-                    <!-- Title -->
+                    {{-- Title --}}
                     <a href="{{ $productUrl }}">
-                        <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+                        <h3 class="text-xl font-bold text-gray-950 dark:text-white leading-relaxed line-clamp-2 mb-4 group-hover:text-blue-800 dark:group-hover:text-yellow-500 transition-colors" style="line-height: 1.6;">
                             {{ $productTitle }}
                         </h3>
                     </a>
 
-                    <!-- Price -->
+                    {{-- Price Section --}}
                     @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
-                    <div class="pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500">
-                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-yellow-500 dark:via-yellow-400 dark:to-yellow-500">
                             {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
                         </div>
+                        <a href="{{ $productUrl }}" class="text-yellow-500 font-bold group-hover:translate-x-2 inline-block transition-transform text-sm">
+                            Detay <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    @else
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <a href="{{ $productUrl }}" class="text-yellow-500 font-bold group-hover:translate-x-2 inline-block transition-transform">
+                            Detaylar <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
                     </div>
                     @endif
                 </div>

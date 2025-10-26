@@ -68,13 +68,13 @@
                 <!-- Sağ Taraf (Hızlı Düzenle + Sayfa Adeti) -->
                 <div class="col-md-2">
                     <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Hızlı Düzenle Toggle -->
+                        <!-- Mod Toggle: Düzenleme (default) / Detay -->
                         <button wire:click="toggleQuickEditMode"
                             class="btn btn-sm {{ $quickEditMode ? 'btn-primary' : 'btn-outline-secondary' }}"
                             data-bs-toggle="tooltip"
-                            title="Hızlı düzenleme modu: Tüm fiyat ve stokları aynı anda düzenle">
-                            <i class="fas fa-{{ $quickEditMode ? 'check-circle' : 'edit' }} me-1"></i>
-                            {{ $quickEditMode ? 'Düzenleme ON' : 'Hızlı Düzenle' }}
+                            title="{{ $quickEditMode ? 'Detay moduna geç: Kategori, marka ve SKU bilgilerini görüntüle' : 'Düzenleme moduna geç: Hızlı fiyat/stok düzenleme' }}">
+                            <i class="fas fa-{{ $quickEditMode ? 'list' : 'edit' }} me-1"></i>
+                            {{ $quickEditMode ? 'Detay Modu' : 'Düzenleme Modu' }}
                         </button>
 
                         <div style="width: 80px; min-width: 80px">

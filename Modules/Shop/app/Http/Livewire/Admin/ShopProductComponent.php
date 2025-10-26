@@ -52,8 +52,8 @@ class ShopProductComponent extends Component
     public ?int $newStock = null;
     public bool $newStockTracking = true;
 
-    // Quick Edit Mode (Bulk inline editing)
-    public bool $quickEditMode = false;
+    // Quick Edit Mode (Bulk inline editing) - Default ON
+    public bool $quickEditMode = true;
 
     protected ShopProductService $productService;
 

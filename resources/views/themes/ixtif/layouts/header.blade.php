@@ -343,8 +343,12 @@
             </div>
         </div>
 
-        {{-- Main Menu Bar - Sticky olarak kalacak --}}
-        <nav id="main-nav" class="relative bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
+        {{-- Main Menu Bar - ULTRA PREMIUM DARK MODE --}}
+        <nav id="main-nav" class="relative
+            bg-white/95 dark:bg-navy-950/80
+            backdrop-blur-2xl
+            border-b border-gray-200 dark:border-gold-dark/20
+            dark:shadow-[0_0_40px_rgba(212,175,55,0.1)]">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div id="nav-container" class="flex items-center justify-between">
                     {{-- Logo - Sabit Genişlik Container --}}
@@ -384,17 +388,13 @@
                                      class="block object-contain h-10 w-auto"
                                      title="{{ $siteTitle }}">
                             @else
-                                {{-- Logo yok - Site title text göster --}}
-                                <div class="flex items-center gap-2">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
-                                        <i class="fa-solid fa-forklift text-white text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <span class="text-xl font-black text-gray-900 dark:text-white relative inline-block">
-                                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">{{ $siteTitle }}</span>
-                                        </span>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">{{ $siteSlogan }}</p>
-                                    </div>
+                                {{-- Logo yok - ULTRA PREMIUM Gold Gradient Title --}}
+                                <div class="flex items-center group">
+                                    <span class="text-3xl font-black
+                                        gold-gradient bg-clip-text text-transparent
+                                        hover:scale-105 transition-transform">
+                                        {{ $siteTitle }}
+                                    </span>
                                 </div>
                             @endif
                         </a>
@@ -407,7 +407,12 @@
                              @mouseenter="activeMegaMenu = 'forklift'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/forklift"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                               class="flex items-center gap-2 px-6 py-3 rounded-xl
+                                      text-gray-700 dark:text-gray-200 hover:text-blue-600
+                                      dark:hover:text-white dark:hover:bg-white/5
+                                      dark:hover:border dark:hover:border-gold-dark/30
+                                      font-semibold transition-all duration-300 group
+                                      dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]">
                                 <i :class="activeMegaMenu === 'forklift' ? 'fa-solid' : 'fa-light'" class="fa-forklift text-sm transition-all"></i>
                                 <span>Forklift</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -421,7 +426,12 @@
                              @mouseenter="activeMegaMenu = 'transpalet'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/transpalet"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                               class="flex items-center gap-2 px-6 py-3 rounded-xl
+                                      text-gray-700 dark:text-gray-200 hover:text-blue-600
+                                      dark:hover:text-white dark:hover:bg-white/5
+                                      dark:hover:border dark:hover:border-gold-dark/30
+                                      font-semibold transition-all duration-300 group
+                                      dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]">
                                 <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
                                 <span>Transpalet</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -435,7 +445,12 @@
                              @mouseenter="activeMegaMenu = 'istif-makinesi'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/shop/kategori/istif-makinesi"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                               class="flex items-center gap-2 px-6 py-3 rounded-xl
+                                      text-gray-700 dark:text-gray-200 hover:text-blue-600
+                                      dark:hover:text-white dark:hover:bg-white/5
+                                      dark:hover:border dark:hover:border-gold-dark/30
+                                      font-semibold transition-all duration-300 group
+                                      dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]">
                                 <i :class="activeMegaMenu === 'istif-makinesi' ? 'fa-solid' : 'fa-light'" class="fa-box-open-full text-sm transition-all"></i>
                                 <span>İstif Makinesi</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -448,7 +463,12 @@
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'all-categories'"
                              @mouseleave="activeMegaMenu = null">
-                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                            <button class="flex items-center gap-2 px-6 py-3 rounded-xl
+                                        text-gray-700 dark:text-gray-200 hover:text-blue-600
+                                        dark:hover:text-white dark:hover:bg-white/5
+                                        dark:hover:border dark:hover:border-gold-dark/30
+                                        font-semibold transition-all duration-300 group
+                                        dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]">
                                 <i :class="activeMegaMenu === 'all-categories' ? 'fa-solid' : 'fa-light'" class="fa-grid-2 transition-all duration-300"></i>
                                 <span>Tüm Kategoriler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -545,7 +565,15 @@
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
                                     :aria-label="darkMode === 'dark' ? 'Aydınlık moda geç' : 'Karanlık moda geç'"
-                                    class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+                                    class="w-12 h-12 rounded-full
+                                           bg-gray-100 dark:bg-white/5 backdrop-blur-xl
+                                           border border-gray-200 dark:border-gold-dark/20
+                                           flex items-center justify-center
+                                           text-gray-700 dark:text-gold-dark
+                                           hover:bg-gray-200 dark:hover:bg-white/10
+                                           hover:border-gray-300 dark:hover:border-gold-dark/40
+                                           dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]
+                                           transition-all duration-300">
                                 <template x-if="darkMode === 'dark'">
                                     <i class="fa-regular fa-sun-bright text-lg"></i>
                                 </template>

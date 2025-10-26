@@ -845,6 +845,7 @@
                                             <div
                                                 class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6 hover:bg-white/80 dark:hover:bg-white/10 transition-all">
                                     @endif
+
                                     <div class="flex items-start justify-between mb-4">
                                         <div
                                             class="w-14 h-14 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">

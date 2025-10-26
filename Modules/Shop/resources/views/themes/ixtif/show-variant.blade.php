@@ -117,9 +117,23 @@
                     </div>
 
                     @if ($featuredImage)
-                        <div class="hidden lg:block">
+                        <div class="hidden lg:block relative" x-data="{ loaded: false }">
+                            {{-- Blur Placeholder (LQIP) - Mini 50x50 ~3KB --}}
+                            <img src="{{ thumb($featuredImage, 50, 50, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
+                                 alt="{{ $title }}"
+                                 x-show="!loaded"
+                                 class="absolute inset-0 w-full h-full object-cover rounded-lg blur-2xl scale-110">
+
+                            {{-- Actual Image - Net görsel --}}
                             <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
-                                alt="{{ $title }}" class="w-full rounded-lg ">
+                                 alt="{{ $title }}"
+                                 x-show="loaded"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 class="w-full rounded-lg relative z-10"
+                                 @load="loaded = true"
+                                 loading="lazy">
                         </div>
                     @endif
                 </div>
@@ -189,12 +203,26 @@
                             @endphp
                             <a href="{{ $image->getUrl() }}"
                                 class="glightbox block relative overflow-hidden rounded-lg group {{ $spanClass }}"
-                                data-gallery="shop-gallery">
+                                data-gallery="shop-gallery"
+                                x-data="{ loaded: false }">
+                                {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
+                                <img src="{{ thumb($image, 40, 40, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
+                                     alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
+                                     x-show="!loaded"
+                                     class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+
+                                {{-- Actual Image --}}
                                 <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
-                                    alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                     alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
+                                     x-show="loaded"
+                                     x-transition:enter="transition ease-out duration-300"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 relative z-10"
+                                     @load="loaded = true"
+                                     loading="lazy">
                                 <div
-                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center z-20">
                                     <i
                                         class="fa-solid fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
                                 </div>
@@ -333,9 +361,23 @@
                                 class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
 
                                 @if ($variantImageUrl)
-                                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
-                                        <img src="{{ $variantImageUrl }}" alt="{{ $variantTitle }}"
-                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700 relative" x-data="{ loaded: false }">
+                                        {{-- Blur Placeholder (LQIP) - Mini 30x30 ~2KB --}}
+                                        <img src="{{ thumb($variant->getFirstMedia('featured_image'), 30, 30, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
+                                             alt="{{ $variantTitle }}"
+                                             x-show="!loaded"
+                                             class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+
+                                        {{-- Actual Image --}}
+                                        <img src="{{ $variantImageUrl }}"
+                                             alt="{{ $variantTitle }}"
+                                             x-show="loaded"
+                                             x-transition:enter="transition ease-out duration-300"
+                                             x-transition:enter-start="opacity-0"
+                                             x-transition:enter-end="opacity-100"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 relative z-10"
+                                             @load="loaded = true"
+                                             loading="lazy">
                                     </div>
                                 @endif
 

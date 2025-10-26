@@ -38,13 +38,27 @@
                     <div class="lg:col-span-1 order-2 lg:order-1">
                         <figure class="sticky top-8">
                             <a href="{{ $featuredImage->getUrl() }}"
-                               class="glightbox"
+                               class="glightbox block relative"
                                data-gallery="announcement-gallery"
                                data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                               data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                               data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}"
+                               x-data="{ loaded: false }">
+                                {{-- Blur Placeholder (LQIP) - Mini 50x50 ~3KB --}}
+                                <img src="{{ thumb($featuredImage, 50, 50, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
+                                     alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                                     x-show="!loaded"
+                                     class="absolute inset-0 w-full rounded-xl blur-2xl scale-110">
+
+                                {{-- Actual Image --}}
                                 <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
                                      alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                     class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                                     x-show="loaded"
+                                     x-transition:enter="transition ease-out duration-300"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] relative z-10"
+                                     @load="loaded = true"
+                                     loading="lazy">
                             </a>
                             @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
                                 <figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-400">
@@ -103,14 +117,27 @@
                         @foreach($galleryImages as $image)
                             <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
                                 <a href="{{ $image->getUrl() }}"
-                                   class="glightbox"
+                                   class="glightbox block relative"
                                    data-gallery="announcement-gallery"
                                    data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}"
+                                   x-data="{ loaded: false }">
+                                    {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
+                                    <img src="{{ thumb($image, 40, 40, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
+                                         alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? $image->getCustomProperty('title')[$currentLocale] ?? 'Galeri görseli' }}"
+                                         x-show="!loaded"
+                                         class="absolute inset-0 w-full h-48 md:h-56 bg-gray-100 dark:bg-gray-800 object-cover blur-2xl scale-110">
+
+                                    {{-- Actual Image --}}
                                     <img src="{{ $image->hasGeneratedConversion('thumb') ? $image->getUrl('thumb') : $image->getUrl() }}"
                                          alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? $image->getCustomProperty('title')[$currentLocale] ?? 'Galeri görseli' }}"
-                                         loading="lazy"
-                                         class="w-full h-48 md:h-56 bg-gray-100 dark:bg-gray-800 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110">
+                                         x-show="loaded"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0"
+                                         x-transition:enter-end="opacity-100"
+                                         class="w-full h-48 md:h-56 bg-gray-100 dark:bg-gray-800 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110 relative z-10"
+                                         @load="loaded = true"
+                                         loading="lazy">
                                 </a>
                                 @if($image->getCustomProperty('title')[$currentLocale] ?? false)
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 pointer-events-none">

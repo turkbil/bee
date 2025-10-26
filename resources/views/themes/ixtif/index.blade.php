@@ -211,17 +211,20 @@
                                  x-data="{ imageLoaded: false }">
                                 <template x-if="product.image">
                                     <div class="relative w-full h-full">
-                                        {{-- Blur Placeholder - Initial blurred version --}}
+                                        {{-- Blur Placeholder - Mini görsel ANINDA --}}
                                         <img :src="product.image"
                                              :alt="product.title"
                                              x-show="!imageLoaded"
                                              class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
 
-                                        {{-- Actual Image --}}
+                                        {{-- Actual Image - Net görsel --}}
                                         <img :src="product.image"
                                              :alt="product.title"
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 relative z-10"
-                                             :class="imageLoaded ? 'opacity-100' : 'opacity-0'"
+                                             x-show="imageLoaded"
+                                             x-transition:enter="transition ease-out duration-300"
+                                             x-transition:enter-start="opacity-0"
+                                             x-transition:enter-end="opacity-100"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 relative z-10"
                                              @load="imageLoaded = true"
                                              loading="lazy">
                                     </div>

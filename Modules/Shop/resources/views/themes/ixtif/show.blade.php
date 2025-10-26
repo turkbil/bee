@@ -299,6 +299,27 @@
                             </p>
                         @endif
 
+                        {{-- Fiyat Gösterimi --}}
+                        <div class="mb-8">
+                            @if($item->price_on_request)
+                                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-2xl">
+                                    <i class="fa-solid fa-tag text-2xl"></i>
+                                    <span class="text-2xl font-bold">Fiyat Sorunuz</span>
+                                </div>
+                            @elseif($item->base_price)
+                                <div class="inline-flex flex-col gap-2">
+                                    <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400">
+                                        {{ formatPrice($item->base_price, $item->currency ?? 'TRY') }}
+                                    </div>
+                                    @if($item->compare_at_price && $item->compare_at_price > $item->base_price)
+                                        <div class="text-xl text-gray-500 dark:text-gray-400 line-through">
+                                            {{ formatPrice($item->compare_at_price, $item->currency ?? 'TRY') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+
                         <div class="flex flex-col gap-4">
                             {{-- Teklif Al & Telefon + WhatsApp (Yan Yana) --}}
                             <div class="flex flex-col sm:flex-row gap-4">

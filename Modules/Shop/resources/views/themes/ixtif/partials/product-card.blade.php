@@ -89,10 +89,10 @@
 @if($viewMode === 'list')
 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
-        {{-- Product Image - col-4 (md:col-span-4) --}}
-        <div class="md:col-span-4">
+        {{-- Product Image - col-4 (md:col-span-4) with aspect-square constraint --}}
+        <div class="md:col-span-4 flex items-stretch">
             <a href="{{ $productUrl }}"
-               class="block aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none relative"
+               class="block w-full aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none relative"
                x-data="{ loaded: false }">
                 @if($product->hasMedia('featured_image'))
                     {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}

@@ -23,8 +23,7 @@ trait InlineEditTitle
         }
 
         $modelClass = $this->getModelClass();
-        $model = $modelClass::where('shop_id', $this->editingTitleId)
-            ->first();
+        $model = $modelClass::find($this->editingTitleId);
 
         if ($model) {
             $validator = Validator::make(

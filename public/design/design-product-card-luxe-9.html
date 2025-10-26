@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Deco Premium - ixtif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Raleway', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Abril Fatface', serif; }
+        .deco-pattern { background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(139,92,246,0.1) 10px, rgba(139,92,246,0.1) 20px); }
+    </style>
+</head>
+<body class="bg-purple-50">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="design-product-card-luxe-8.html" class="w-14 h-14 bg-purple-900 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all shadow-xl"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="design-product-card-luxe-10.html" class="w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all shadow-xl"><i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="fixed top-8 right-8 z-40 bg-white border-4 border-purple-900 px-6 py-3 rounded-lg shadow-xl"><span class="text-purple-900 font-bold text-sm">9 / 12</span></div>
+    
+    <div class="container mx-auto px-6 py-20">
+        <div class="text-center mb-16">
+            <h1 class="text-8xl text-purple-900 mb-4">Art Deco</h1>
+            <div class="w-32 h-1 bg-gradient-to-r from-transparent via-purple-900 to-transparent mx-auto mb-4"></div>
+            <p class="text-2xl text-purple-700">Timeless Geometric Beauty</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div class="bg-white border-8 border-purple-900 overflow-hidden hover:scale-105 transition-all shadow-2xl" x-data="{ loved: false }">
+                <div class="deco-pattern relative bg-gradient-to-b from-purple-100 to-white p-12 flex items-center justify-center">
+                    <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
+                        <div class="bg-purple-900 text-white px-4 py-2 font-bold text-xs uppercase tracking-widest">Premium</div>
+                        <button @click="loved = !loved" class="w-10 h-10 bg-white border-4 border-purple-900 flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-purple-900' : 'fa-regular fa-heart text-purple-900'"></i></button>
+                    </div>
+                    <i class="fa-solid fa-forklift text-8xl text-purple-900"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <div class="text-xs uppercase tracking-widest text-purple-700 mb-2 font-bold">Forklift Collection</div>
+                    <h3 class="text-3xl text-purple-900 mb-3">Gatsby Forklift</h3>
+                    <div class="w-16 h-0.5 bg-purple-900 mx-auto mb-4"></div>
+                    <div class="flex items-baseline justify-center gap-3 mb-5">
+                        <span class="text-4xl font-black text-purple-900">₺395K</span>
+                        <span class="text-lg text-gray-400 line-through">₺1.1M</span>
+                    </div>
+                    <button class="w-full bg-purple-900 text-white py-4 font-black text-sm uppercase tracking-widest hover:bg-purple-800 transition-all">Purchase</button>
+                </div>
+            </div>
+
+            <div class="bg-white border-8 border-purple-900 overflow-hidden hover:scale-105 transition-all shadow-2xl" x-data="{ loved: false }">
+                <div class="deco-pattern relative bg-gradient-to-b from-pink-100 to-white p-12 flex items-center justify-center">
+                    <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
+                        <div class="bg-purple-900 text-white px-4 py-2 font-bold text-xs uppercase tracking-widest">Elite</div>
+                        <button @click="loved = !loved" class="w-10 h-10 bg-white border-4 border-purple-900 flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-purple-900' : 'fa-regular fa-heart text-purple-900'"></i></button>
+                    </div>
+                    <i class="fa-solid fa-boxes-stacked text-8xl text-purple-900"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <div class="text-xs uppercase tracking-widest text-purple-700 mb-2 font-bold">Stacker Collection</div>
+                    <h3 class="text-3xl text-purple-900 mb-3">Deco Stacker</h3>
+                    <div class="w-16 h-0.5 bg-purple-900 mx-auto mb-4"></div>
+                    <div class="flex items-baseline justify-center gap-3 mb-5">
+                        <span class="text-4xl font-black text-purple-900">₺48K</span>
+                        <span class="text-lg text-gray-400 line-through">₺155K</span>
+                    </div>
+                    <button class="w-full bg-purple-900 text-white py-4 font-black text-sm uppercase tracking-widest hover:bg-purple-800 transition-all">Purchase</button>
+                </div>
+            </div>
+
+            <div class="bg-white border-8 border-purple-900 overflow-hidden hover:scale-105 transition-all shadow-2xl" x-data="{ loved: false }">
+                <div class="deco-pattern relative bg-gradient-to-b from-amber-100 to-white p-12 flex items-center justify-center">
+                    <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
+                        <div class="bg-purple-900 text-white px-4 py-2 font-bold text-xs uppercase tracking-widest">Luxury</div>
+                        <button @click="loved = !loved" class="w-10 h-10 bg-white border-4 border-purple-900 flex items-center justify-center"><i :class="loved ? 'fa-solid fa-heart text-purple-900' : 'fa-regular fa-heart text-purple-900'"></i></button>
+                    </div>
+                    <i class="fa-solid fa-warehouse text-8xl text-purple-900"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <div class="text-xs uppercase tracking-widest text-purple-700 mb-2 font-bold">Reach Collection</div>
+                    <h3 class="text-3xl text-purple-900 mb-3">Metropolis</h3>
+                    <div class="w-16 h-0.5 bg-purple-900 mx-auto mb-4"></div>
+                    <div class="flex items-baseline justify-center gap-3 mb-5">
+                        <span class="text-4xl font-black text-purple-900">₺425K</span>
+                        <span class="text-lg text-gray-400 line-through">₺1.3M</span>
+                    </div>
+                    <button class="w-full bg-purple-900 text-white py-4 font-black text-sm uppercase tracking-widest hover:bg-purple-800 transition-all">Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Hover - ixtif Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <style>
+        @keyframes tilt { 0%, 100% { transform: perspective(1000px) rotateX(0) rotateY(0); } 50% { transform: perspective(1000px) rotateX(5deg) rotateY(5deg); } }
+        .hover-tilt:hover { animation: tilt 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rose-100 via-purple-100 to-cyan-100 min-h-screen">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="design-product-card-luxe-10.html" class="w-14 h-14 bg-gradient-to-r from-rose-500 to-purple-500 text-white rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-2xl"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="design-product-card-luxe-12.html" class="w-14 h-14 bg-gradient-to-r from-purple-500 to-cyan-500 text-white rounded-2xl flex items-center justify-center hover:scale-110 transition-all shadow-2xl"><i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="fixed top-8 right-8 z-40 bg-white/90 backdrop-blur-lg px-6 py-3 rounded-2xl shadow-xl"><span class="font-bold">11 / 12</span></div>
+    
+    <div class="container mx-auto px-6 py-20">
+        <div class="text-center mb-16">
+            <h1 class="text-7xl font-black bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-purple-600 to-cyan-600 mb-4">Interactive Magic</h1>
+            <p class="text-xl text-gray-700">Hover to experience the magic</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            <div class="hover-tilt group" x-data="{ loved: false, hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-rose-500/50 transition-all duration-500 relative overflow-hidden">
+                    <div :class="hovered ? 'scale-110 rotate-12' : 'scale-100 rotate-0'" class="transition-all duration-500 mb-6 text-center">
+                        <i class="fa-solid fa-forklift text-8xl text-rose-500"></i>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <button @click="loved = !loved" class="w-12 h-12 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i>
+                        </button>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-rose-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <h3 class="text-2xl font-black mb-2 text-center" :class="hovered ? 'text-rose-600' : 'text-gray-900'" class="transition-colors">Interactive Forklift</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">Hover for animation</p>
+                    <div class="flex items-baseline justify-center gap-2 mb-6">
+                        <span class="text-4xl font-black text-rose-600">₺395K</span>
+                        <span class="text-lg text-gray-400 line-through">₺985K</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl transition-all transform hover:scale-105">
+                        <i class="fa-solid fa-cart-shopping mr-2"></i>Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <div class="hover-tilt group" x-data="{ loved: false, hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-purple-500/50 transition-all duration-500 relative overflow-hidden">
+                    <div :class="hovered ? 'scale-110 -rotate-12' : 'scale-100 rotate-0'" class="transition-all duration-500 mb-6 text-center">
+                        <i class="fa-solid fa-boxes-stacked text-8xl text-purple-500"></i>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <button @click="loved = !loved" class="w-12 h-12 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i>
+                        </button>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-purple-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <h3 class="text-2xl font-black mb-2 text-center" :class="hovered ? 'text-purple-600' : 'text-gray-900'" class="transition-colors">Animated Pallet</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">Watch it spin</p>
+                    <div class="flex items-baseline justify-center gap-2 mb-6">
+                        <span class="text-4xl font-black text-purple-600">₺9K</span>
+                        <span class="text-lg text-gray-400 line-through">₺23K</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl transition-all transform hover:scale-105">
+                        <i class="fa-solid fa-cart-shopping mr-2"></i>Add to Cart
+                    </button>
+                </div>
+            </div>
+
+            <div class="hover-tilt group" x-data="{ loved: false, hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false">
+                <div class="bg-white rounded-3xl p-8 shadow-xl hover:shadow-cyan-500/50 transition-all duration-500 relative overflow-hidden">
+                    <div :class="hovered ? 'scale-110 rotate-6' : 'scale-100 rotate-0'" class="transition-all duration-500 mb-6 text-center">
+                        <i class="fa-solid fa-layer-group text-8xl text-cyan-500"></i>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <button @click="loved = !loved" class="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all">
+                            <i :class="loved ? 'fa-solid fa-heart text-white' : 'fa-regular fa-heart text-white'"></i>
+                        </button>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <h3 class="text-2xl font-black mb-2 text-center" :class="hovered ? 'text-cyan-600' : 'text-gray-900'" class="transition-colors">Dynamic Stacker</h3>
+                    <p class="text-gray-600 text-sm mb-4 text-center">Feel the motion</p>
+                    <div class="flex items-baseline justify-center gap-2 mb-6">
+                        <span class="text-4xl font-black text-cyan-600">₺48K</span>
+                        <span class="text-lg text-gray-400 line-through">₺145K</span>
+                    </div>
+                    <button class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-4 rounded-2xl font-bold hover:shadow-xl transition-all transform hover:scale-105">
+                        <i class="fa-solid fa-cart-shopping mr-2"></i>Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

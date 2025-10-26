@@ -46,6 +46,7 @@ try {
             'b.title as brand_title'
         )
         ->where('p.is_active', 1)
+        ->whereNull('p.deleted_at')
         ->limit(500)
         ->get();
 

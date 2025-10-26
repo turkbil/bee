@@ -77,7 +77,7 @@
         @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
             <div class="pt-3 md:pt-3.5 lg:pt-4 mt-auto border-t border-gray-200/60 dark:border-gray-700/60">
                 <div class="text-base md:text-lg lg:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                    {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
+                    {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
                 </div>
             </div>
         @endif
@@ -168,7 +168,7 @@
             @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
                 <div class="mt-4 md:mt-6 pt-4 border-t border-gray-200/60 dark:border-gray-700/60">
                     <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                        {{ number_format($product->base_price, 2, ',', '.') }} {{ $product->currency ?? 'TRY' }}
+                        {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
                     </div>
                 </div>
             @endif

@@ -195,7 +195,12 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             'body' => strip_tags($this->getTranslated('body', $locale) ?? ($this->body[$locale] ?? '')),
             'category_id' => $this->category_id,
             'brand_id' => $this->brand_id,
+            // Price fields - ⚠️ KRİTİK: AI için price_on_request ve currency gerekli!
             'base_price' => (float) ($this->base_price ?? 0),
+            'compare_at_price' => (float) ($this->compare_at_price ?? 0),
+            'price_on_request' => (bool) ($this->price_on_request ?? false),
+            'currency' => $this->currency ?? 'TRY',
+            // Status & Features
             'is_active' => (bool) $this->is_active,
             'is_featured' => (bool) $this->is_featured,
             'tags' => $this->tags ?? [],

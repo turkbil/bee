@@ -273,10 +273,10 @@
                                             @else
                                                 <div class="d-flex flex-column align-items-end">
                                                     @if ($product->base_price)
-                                                        <span class="fw-semibold editable-price">{{ number_format((float) $product->base_price, 2) }} {{ $product->currency ?? 'TRY' }}</span>
+                                                        <span class="fw-semibold editable-price">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
                                                         @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
                                                             <small class="text-muted text-decoration-line-through">
-                                                                {{ number_format((float) $product->compare_at_price, 2) }} {{ $product->currency ?? 'TRY' }}
+                                                                {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
                                                             </small>
                                                         @endif
                                                     @else
@@ -536,10 +536,10 @@
                                                     @else
                                                         <div class="d-flex flex-column align-items-end">
                                                             @if ($variant->base_price)
-                                                                <span class="fw-semibold editable-price">{{ number_format((float) $variant->base_price, 2) }} {{ $variant->currency ?? 'TRY' }}</span>
+                                                                <span class="fw-semibold editable-price">{{ formatPrice($variant->base_price, $variant->currency ?? 'TRY') }}</span>
                                                                 @if ($variant->compare_at_price && $variant->compare_at_price > $variant->base_price)
                                                                     <small class="text-muted text-decoration-line-through">
-                                                                        {{ number_format((float) $variant->compare_at_price, 2) }} {{ $variant->currency ?? 'TRY' }}
+                                                                        {{ formatPrice($variant->compare_at_price, $variant->currency ?? 'TRY') }}
                                                                     </small>
                                                                 @endif
                                                             @else

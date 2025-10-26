@@ -207,12 +207,22 @@
                     <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
                         <a :href="product.url" class="block">
                             <!-- Image Section -->
-                            <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100"
+                                 x-data="{ imageLoaded: false }">
                                 <template x-if="product.image">
-                                    <img :src="product.image"
-                                         :alt="product.title"
-                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                         loading="lazy">
+                                    <div class="relative w-full h-full">
+                                        {{-- Skeleton Loader --}}
+                                        <div x-show="!imageLoaded"
+                                             class="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse"></div>
+
+                                        {{-- Actual Image --}}
+                                        <img :src="product.image"
+                                             :alt="product.title"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
+                                             :class="imageLoaded ? 'opacity-100' : 'opacity-0'"
+                                             @load="imageLoaded = true"
+                                             loading="lazy">
+                                    </div>
                                 </template>
                                 <template x-if="!product.image">
                                     <!-- Category Icon Fallback -->

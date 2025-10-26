@@ -244,10 +244,10 @@
             <div>
                 <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Depoda, Üretimde, Dağıtımda</h2>
                 <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                    İstif makineleri ve endüstriyel ekipman alanında deneyimli ekibimizle, işletmenizin güvenilir çözüm ortağıyız.
+                    Depoda, üretimde, dağıtımda işletmelerin yükünü hafifletmek için çalışan İXTİF İÇ VE DIŞ TİCARET ANONİM ŞİRKETİ, satışın yanında kiralama, ikinci el, teknik servis ve bakım anlaşmalarıyla tam çözüm sunar.
                 </p>
                 <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                    Modern tesislerimiz, kalite standartlarımız ve müşteri odaklı yaklaşımımızla fark yaratıyoruz. Satış öncesi danışmanlıktan satış sonrası teknik desteğe kadar her aşamada yanınızdayız.
+                    Garanti kapsamlı ürünler, hızlı yedek parça temini ve 7/24 saha desteğiyle operasyonlarınızı güvenle sürdürmenizi sağlar.
                 </p>
 
                 {{-- Özellikler --}}

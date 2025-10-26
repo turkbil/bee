@@ -112,10 +112,10 @@
                                             <span class="badge bg-secondary">Fiyat Talep Edilir</span>
                                         @elseif ($product->base_price)
                                             <div class="d-flex flex-column align-items-end">
-                                                <span class="fw-semibold">{{ number_format((float) $product->base_price, 2) }} {{ $product->currency ?? 'TRY' }}</span>
+                                                <span class="fw-semibold">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
                                                 @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
                                                     <small class="text-muted text-decoration-line-through">
-                                                        {{ number_format((float) $product->compare_at_price, 2) }} {{ $product->currency ?? 'TRY' }}
+                                                        {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
                                                     </small>
                                                 @endif
                                             </div>

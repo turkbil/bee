@@ -959,6 +959,47 @@
 :root[data-bs-theme="dark"] .sortable-chosen {
     background-color: rgba(var(--tblr-primary-rgb), 0.2) !important;
 }
+
+/* Quick Edit Mode Styles */
+.quick-edit-input,
+.quick-edit-select {
+    border: 1px solid var(--tblr-border-color) !important;
+    background-color: var(--tblr-bg-forms) !important;
+    transition: all 0.2s ease;
+}
+
+.quick-edit-input:focus,
+.quick-edit-select:focus {
+    border-color: var(--tblr-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.15) !important;
+    background-color: var(--tblr-bg-surface) !important;
+}
+
+.quick-edit-input:disabled,
+.quick-edit-select:disabled {
+    background-color: var(--tblr-gray-100) !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+:root[data-bs-theme="dark"] .quick-edit-input,
+:root[data-bs-theme="dark"] .quick-edit-select {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--tblr-body-color) !important;
+}
+
+:root[data-bs-theme="dark"] .quick-edit-input:focus,
+:root[data-bs-theme="dark"] .quick-edit-select:focus {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--tblr-primary) !important;
+}
+
+:root[data-bs-theme="dark"] .quick-edit-input:disabled,
+:root[data-bs-theme="dark"] .quick-edit-select:disabled {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+    opacity: 0.5;
+}
 </style>
 @endpush
 

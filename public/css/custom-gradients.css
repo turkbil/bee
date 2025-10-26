@@ -102,3 +102,85 @@
     background-size: 400% 400%;
     animation: gradient-xy 40s ease infinite;
 }
+
+/* ========================================
+   🌑 NAVY GRADIENT BACKGROUND - DARK MODE
+   Design-10 Style with Navy Colors
+   ======================================== */
+
+/* Body - Navy-950 solid background */
+.dark body,
+.dark-mode-active body {
+    background-color: #080811 !important;
+    background-image: none !important;
+    color: #ffffff;
+}
+
+/* First section - gradient from navy-950 via navy-900 to navy-950 */
+.dark section:nth-of-type(1) {
+    background: linear-gradient(to bottom, #080811, #152238, #080811) !important;
+}
+
+/* Second section - solid navy-950 */
+.dark section:nth-of-type(2) {
+    background: #080811 !important;
+}
+
+/* Third section - gradient navy-950 via navy-900 to navy-950 */
+.dark section:nth-of-type(3) {
+    background: linear-gradient(to bottom, #080811, #152238, #080811) !important;
+}
+
+/* Fourth section - solid navy-950 */
+.dark section:nth-of-type(4) {
+    background: #080811 !important;
+}
+
+/* Fifth section and beyond - solid navy-950 */
+.dark section:nth-of-type(n+5) {
+    background: #080811 !important;
+}
+
+/* Footer - solid navy-950 */
+.dark footer {
+    background: #080811 !important;
+}
+
+/* Footer search section - solid navy-950 */
+.dark footer ~ section,
+.dark section:has(h2:contains("Aradığınızı")),
+.dark section .bg-white\/70.dark\:bg-white\/5 {
+    background: #080811 !important;
+}
+
+.dark section .bg-white\/70.dark\:bg-white\/5.backdrop-blur-md {
+    background: rgba(8, 8, 17, 0.95) !important;
+    border-color: #152238 !important;
+}
+
+/* Header - solid navy-950 with transparency */
+.dark header,
+.dark #main-header {
+    background: rgba(8, 8, 17, 0.9) !important;
+}
+
+/* Search bar area - solid navy-950 */
+.dark header > div[x-show="searchOpen"],
+.dark #main-header > div > div[x-show="searchOpen"],
+.dark .bg-white.dark\:bg-slate-900,
+.dark .bg-white.border-t {
+    background: #080811 !important;
+}
+
+/* Search dropdown/autocomplete - solid navy-950 */
+.dark header .dropdown-content,
+.dark header [class*="bg-white"],
+.dark .bg-white.dark\:bg-gray-800,
+.dark [class*="bg-gray-800"] {
+    background: #080811 !important;
+}
+
+.dark header [class*="border-gray"],
+.dark .border-gray-200.dark\:border-gray-700 {
+    border-color: #152238 !important;
+}

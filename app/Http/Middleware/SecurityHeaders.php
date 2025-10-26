@@ -35,16 +35,16 @@ class SecurityHeaders
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
         $response->headers->set('Cross-Origin-Resource-Policy', 'cross-origin');
 
-        // Content Security Policy - Strict but CDN-compatible
+        // Content Security Policy - Marketing & Analytics Platforms
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://www.googletagmanager.com https://www.google-analytics.com https://mc.yandex.ru https://mc.yandex.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://www.facebook.com https://snap.licdn.com https://www.linkedin.com https://www.clarity.ms https://scripts.clarity.ms https://analytics.tiktok.com https://mc.yandex.ru https://mc.yandex.com",
             "worker-src 'self' blob:",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.re https://rsms.me https://fonts.googleapis.com",
-            "img-src 'self' data: https: blob:",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.re https://rsms.me https://fonts.googleapis.com https://www.googletagmanager.com",
+            "img-src 'self' data: https: blob: https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com https://px.ads.linkedin.com https://www.clarity.ms https://analytics.tiktok.com https://mc.yandex.ru",
             "font-src 'self' data: https: https://fonts.gstatic.com https://rsms.me https://rsms.re",
-            "connect-src 'self' https://cdn.jsdelivr.net https://www.google-analytics.com https://stats.g.doubleclick.net https://mc.yandex.ru https://mc.yandex.com wss://mc.yandex.com",
-            "frame-src 'self' https://mc.yandex.ru https://mc.yandex.com",
+            "connect-src 'self' https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://stats.g.doubleclick.net https://www.googleadservices.com https://www.google.com https://googleads.g.doubleclick.net https://pagead2.googlesyndication.com https://www.facebook.com https://connect.facebook.net https://graph.facebook.com https://www.linkedin.com https://px.ads.linkedin.com https://www.clarity.ms https://scripts.clarity.ms https://b.clarity.ms https://analytics.tiktok.com https://mc.yandex.ru https://mc.yandex.com wss://mc.yandex.com",
+            "frame-src 'self' https://www.googletagmanager.com https://www.facebook.com https://www.linkedin.com https://mc.yandex.ru https://mc.yandex.com",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'"

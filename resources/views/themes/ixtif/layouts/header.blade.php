@@ -78,15 +78,7 @@
     </script>
     @endif
 
-    {{-- Yandex Metrica --}}
-    @php
-        $yandexMetricaCode = setting('seo_site_yandex_metrica');
-    @endphp
-    @if($yandexMetricaCode)
-    <!-- Yandex.Metrica counter -->
-    {!! $yandexMetricaCode !!}
-    <!-- /Yandex.Metrica counter -->
-    @endif
+    {{-- Yandex Metrica - Moved to GTM --}}
 
     {{-- Console Error Filter - Ad Blocker Suppress --}}
     <script>
@@ -155,11 +147,33 @@
     {{-- AI Chat CSS - Load in head for styling --}}
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v=<?php echo time(); ?>">
     {{-- AI Chat JS moved to footer.blade.php AFTER Alpine.js/Livewire --}}
+
+    {{-- Google Tag Manager --}}
+    @php
+        $gtmId = setting('seo_google_tag_manager_id');
+    @endphp
+    @if($gtmId)
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
+    @endif
+    {{-- End Google Tag Manager --}}
 </head>
 
 <body class="font-sans antialiased min-h-screen transition-all duration-500 flex flex-col"
       :class="{ 'dark-mode-active': darkMode === 'dark' }">
 
+    {{-- Google Tag Manager (noscript) --}}
+    @php
+        $gtmId = setting('seo_google_tag_manager_id');
+    @endphp
+    @if($gtmId)
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
+    {{-- End Google Tag Manager (noscript) --}}
 
     <header id="main-header" x-data="{
         sidebarOpen: false,

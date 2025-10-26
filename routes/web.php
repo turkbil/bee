@@ -49,6 +49,11 @@ Route::middleware([InitializeTenancy::class])
     ->get('/favicon.ico', [FaviconController::class, 'show'])
     ->name('favicon');
 
+// GOOGLE SHOPPING FEED - Tenant-aware XML feed (high priority, before dynamic routes)
+Route::middleware([InitializeTenancy::class])
+    ->get('/feed/google-shopping', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index'])
+    ->name('feed.google-shopping');
+
 // SEARCH ROUTES - Must be before catch-all routes
 Route::middleware(['tenant'])->group(function () {
     // Search with query parameter (?q=keyword)

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blur Placeholder Test</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        .image-wrapper { position: relative; width: 300px; height: 300px; margin: 20px auto; background: #e0e0e0; border-radius: 10px; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blur Placeholder Test</h1>
+
+        <h2>TEST 1: Basit (x-show ile)</h2>
+        <div class="image-wrapper" x-data="{ loaded: false }">
+            <!-- Blur -->
+            <img src="https://ixtif.com/storage/tenant2/39/conversions/tnlf-thumb.webp"
+                 x-show="!loaded"
+                 style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: blur(20px); transform: scale(1.1);">
+
+            <!-- Actual -->
+            <img src="https://ixtif.com/storage/tenant2/39/conversions/tnlf-medium.webp"
+                 x-show="loaded"
+                 @load="loaded = true"
+                 style="position: relative; width: 100%; height: 100%; object-fit: contain; z-index: 10;">
+        </div>
+
+        <h2>TEST 2: x-init ile</h2>
+        <div class="image-wrapper"
+             x-data="{ loaded2: false }"
+             x-init="setTimeout(() => { if ($refs.img2 && $refs.img2.complete) { loaded2 = true; } }, 100)">
+            <!-- Blur -->
+            <img src="https://ixtif.com/storage/tenant2/39/conversions/tnlf-thumb.webp"
+                 x-show="!loaded2"
+                 style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: blur(20px); transform: scale(1.1);">
+
+            <!-- Actual -->
+            <img x-ref="img2"
+                 src="https://ixtif.com/storage/tenant2/39/conversions/tnlf-medium.webp"
+                 x-show="loaded2"
+                 @load="loaded2 = true"
+                 style="position: relative; width: 100%; height: 100%; object-fit: contain; z-index: 10;">
+        </div>
+
+        <h2>TEST 3: Basit - transition ile</h2>
+        <div class="image-wrapper" x-data="{ loaded3: false }">
+            <!-- Blur -->
+            <img src="https://ixtif.com/storage/tenant2/39/conversions/tnlf-thumb.webp"
+                 x-show="!loaded3"
+                 style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: blur(20px); transform: scale(1.1);">
+
+            <!-- Actual -->
+            <img src="https://ixtif.com/storage/tenant2/39/conversions/tnlf-medium.webp"
+                 x-show="loaded3"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 @load="loaded3 = true"
+                 loading="lazy"
+                 style="position: relative; width: 100%; height: 100%; object-fit: contain; z-index: 10; opacity: 0;">
+        </div>
+    </div>
+</body>
+</html>

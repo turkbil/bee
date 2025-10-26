@@ -403,12 +403,27 @@ if (!function_exists('settings_id')) {
                 config(['database.connections.tenant.driver' => 'mysql']);
                 \Illuminate\Support\Facades\DB::purge('tenant');
             }
-            
+
             return app('settings')->getById($id, $default);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error("Settings ID helper error: " . $e->getMessage());
             return $default;
         }
+    }
+}
+
+// Alias: setting() -> settings() (tenant-aware)
+if (!function_exists('setting')) {
+    /**
+     * Tenant-aware settings helper (alias for settings())
+     *
+     * @param string|null $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function setting($key = null, $default = null)
+    {
+        return settings($key, $default);
     }
 }
 

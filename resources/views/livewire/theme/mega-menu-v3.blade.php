@@ -44,22 +44,17 @@
                     {{-- Product Image - Conditional BG --}}
                     @if($featuredProduct->hasMedia('featured_image'))
                         <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-48 group-hover:scale-105 transition-transform duration-300 relative overflow-hidden"
-                             x-data="{ loaded: false }"
-                             x-init="$nextTick(() => { if ($refs.mainImg && $refs.mainImg.complete) { loaded = true; } })">
+                             x-data="{ loaded: false }">
                             {{-- Blur Placeholder (LQIP) - Mini 30x30 ~2KB --}}
                             <img src="{{ thumb($featuredProduct->getFirstMedia('featured_image'), 30, 30, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
                                  alt="{{ is_array($featuredProduct->title) ? $featuredProduct->title['tr'] : $featuredProduct->title }}"
-                                 x-show="!loaded"
+                                 :style="'opacity: ' + (loaded ? '0' : '1') + '; transition: opacity 0.3s;'"
                                  class="absolute inset-0 w-full h-full object-contain blur-2xl scale-110">
 
                             {{-- Actual Image - Net 300x300 --}}
-                            <img x-ref="mainImg"
-                                 x-show="loaded"
-                                 x-transition:enter="transition ease-out duration-300"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 src="{{ thumb($featuredProduct->getFirstMedia('featured_image'), 300, 300, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                            <img src="{{ thumb($featuredProduct->getFirstMedia('featured_image'), 300, 300, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                  alt="{{ is_array($featuredProduct->title) ? $featuredProduct->title['tr'] : $featuredProduct->title }}"
+                                 :style="'opacity: ' + (loaded ? '1' : '0') + '; transition: opacity 0.3s;'"
                                  class="w-full h-full object-contain relative z-10"
                                  @load="loaded = true"
                                  loading="lazy">
@@ -129,22 +124,17 @@
                                 @if($product->hasMedia('featured_image'))
                                     {{-- Fotoğraf varsa: Beyaz/Gri arka plan --}}
                                     <div class="w-11 h-11 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 p-1 border border-gray-200 dark:border-gray-600 relative overflow-hidden"
-                                         x-data="{ loaded: false }"
-                                         x-init="$nextTick(() => { if ($refs.thumbImg && $refs.thumbImg.complete) { loaded = true; } })">
+                                         x-data="{ loaded: false }">
                                         {{-- Blur Placeholder - Mini 10x10 --}}
                                         <img src="{{ thumb($product->getFirstMedia('featured_image'), 10, 10, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
                                              alt="{{ is_array($product->title) ? $product->title['tr'] : $product->title }}"
-                                             x-show="!loaded"
+                                             :style="'opacity: ' + (loaded ? '0' : '1') + '; transition: opacity 0.3s;'"
                                              class="absolute inset-0 w-full h-full object-contain blur-sm scale-110">
 
                                         {{-- Actual Image --}}
-                                        <img x-ref="thumbImg"
-                                             x-show="loaded"
-                                             x-transition:enter="transition ease-out duration-300"
-                                             x-transition:enter-start="opacity-0"
-                                             x-transition:enter-end="opacity-100"
-                                             src="{{ thumb($product->getFirstMedia('featured_image'), 44, 44, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                                        <img src="{{ thumb($product->getFirstMedia('featured_image'), 44, 44, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                              alt="{{ is_array($product->title) ? $product->title['tr'] : $product->title }}"
+                                             :style="'opacity: ' + (loaded ? '1' : '0') + '; transition: opacity 0.3s;'"
                                              class="w-full h-full object-contain relative z-10"
                                              @load="loaded = true"
                                              loading="lazy">

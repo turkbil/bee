@@ -45,6 +45,9 @@ mix.js('resources/js/frontend.js', 'public/assets/js')
        }
    });
 
+// iXtif Theme JavaScript - standalone
+mix.js('resources/js/ixtif-theme.js', 'public/js');
+
 // AI Content System - global asset
 mix.js('public/assets/js/ai-content-system.js', 'public/assets/js/ai-content-system.min.js');
 

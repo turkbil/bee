@@ -168,6 +168,26 @@ class OptimizedPromptService
         $prompts[] = "❌ Konu dışı konular (siyaset, din, genel bilgi)";
         $prompts[] = "❌ Rakip firma ürünlerini önermek";
         $prompts[] = "";
+        $prompts[] = "## 💰 FİYAT GÖSTERME KURALLARI (KRİTİK!)";
+        $prompts[] = "";
+        $prompts[] = "**⚠️ SADECE VERİLEN BİLGİYİ GÖSTER!**";
+        $prompts[] = "";
+        $prompts[] = "**ZORUNLU KONTROL SİSTEMİ:**";
+        $prompts[] = "```";
+        $prompts[] = "Ürün datası:";
+        $prompts[] = "  - Fiyat: ⚠️ Talep üzerine (ASLA fiyat uydurma! İletişim bilgisi ver!)";
+        $prompts[] = "  ";
+        $prompts[] = "→ BU GÖRÜYORSAN: Kullanıcıya 'Fiyat talep üzerine' de, iletişim bilgisi ver";
+        $prompts[] = "→ ASLA: Kendi başına fiyat rakamı ekleme, tahmin etme, hatırlama!";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**KURALLAR:**";
+        $prompts[] = "1. ✅ Ürün datası: 'Fiyat: 15.000 TL' → Aynen göster";
+        $prompts[] = "2. ✅ Ürün datası: 'Fiyat: ⚠️ Talep üzerine' → 'Fiyat talep üzerine, iletişim bilgisi'";
+        $prompts[] = "3. ❌ Ürün datası: Fiyat yok → ASLA fiyat uydurma, 'Bilgi için iletişime geçin'";
+        $prompts[] = "4. ❌ ASLA hafızandan/training datandan fiyat kullanma!";
+        $prompts[] = "5. ❌ ASLA tahmin yapma: 'Genelde X-Y TL arasıdır' YASAK!";
+        $prompts[] = "";
 
         return implode("\n", $prompts);
     }
@@ -558,7 +578,11 @@ class OptimizedPromptService
         }
 
         // Price info - ⚠️ KRİTİK: base_price > 0 kontrolü (0 veya null ise gösterme!)
-        if (isset($product['base_price']) && $product['base_price'] > 0) {
+        // ⚠️ EKSTRA KORUMA: AI'ın fiyat uydurmamasi için "price_on_request" bilgisini açıkça belirt
+        if (!empty($product['price_on_request'])) {
+            // Önce "price_on_request" kontrol et - Bu durumda ASLA rakam gösterme!
+            $lines[] = "  - Fiyat: ⚠️ Talep üzerine (ASLA fiyat uydurma! İletişim bilgisi ver!)";
+        } elseif (isset($product['base_price']) && $product['base_price'] > 0) {
             $priceText = number_format($product['base_price'], 0, ',', '.') . " TL";
 
             // İndirim varsa göster
@@ -583,8 +607,9 @@ class OptimizedPromptService
                     $lines[] = "  - Depozito: %{$product['deposit_percentage']} ön ödeme gereklidir";
                 }
             }
-        } elseif (!empty($product['price_on_request'])) {
-            $lines[] = "  - Fiyat: Talep üzerine";
+        } else {
+            // base_price yok veya 0 - ASLA fiyat gösterme!
+            $lines[] = "  - Fiyat: ⚠️ Bilgi için iletişime geçin (ASLA fiyat uydurma!)";
         }
 
         // Stok durumu - ⚠️ ÖNEMLİ: Müşteri stok bilgisi görmek ister!

@@ -47,6 +47,11 @@ class ShopProductComponent extends Component
     public ?string $newCurrency = null;
     public bool $newPriceOnRequest = false;
 
+    // Inline stock editing
+    public ?int $editingStockId = null;
+    public ?int $newStock = null;
+    public bool $newStockTracking = true;
+
     protected ShopProductService $productService;
 
     protected $listeners = [
@@ -277,6 +282,71 @@ class ShopProductComponent extends Component
         $this->newPrice = null;
         $this->newCurrency = null;
         $this->newPriceOnRequest = false;
+    }
+
+    public function startEditingStock(int $productId, ?int $currentStock, bool $stockTracking = true): void
+    {
+        $this->editingStockId = $productId;
+        $this->newStock = $currentStock;
+        $this->newStockTracking = $stockTracking;
+    }
+
+    public function updateStockInline(): void
+    {
+        if (! $this->editingStockId) {
+            return;
+        }
+
+        try {
+            $product = ShopProduct::findOrFail($this->editingStockId);
+
+            // Update stock tracking
+            $product->stock_tracking = $this->newStockTracking;
+
+            if ($this->newStockTracking) {
+                // Validate stock only if tracking is enabled
+                $stock = $this->newStock !== null ? (int) $this->newStock : 0;
+
+                if ($stock < 0) {
+                    $this->dispatch('toast', [
+                        'title' => __('admin.error'),
+                        'message' => __('shop::admin.invalid_stock'),
+                        'type' => 'error',
+                    ]);
+                    return;
+                }
+
+                $product->current_stock = $stock;
+            } else {
+                // If stock tracking disabled, set to 0
+                $product->current_stock = 0;
+            }
+
+            $product->save();
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('shop::admin.stock_updated'),
+                'type' => 'success',
+            ]);
+
+            $this->editingStockId = null;
+            $this->newStock = null;
+            $this->newStockTracking = true;
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
+    public function cancelStockEdit(): void
+    {
+        $this->editingStockId = null;
+        $this->newStock = null;
+        $this->newStockTracking = true;
     }
 
     public function bulkDeleteSelected(): void

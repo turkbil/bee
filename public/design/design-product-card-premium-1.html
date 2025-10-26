@@ -1,352 +1,201 @@
 <!DOCTYPE html>
-<html lang="tr" class="scroll-smooth">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxe Minimal Product Cards - ixtif.com Premium Design</title>
+    <title>Clean White Minimal - Premium Cards</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slideUp { animation: slideUp 0.6s ease-out; }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 200%; }
-        }
-        .shine-effect::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: 0.5s;
-        }
-        .shine-effect:hover::after {
-            animation: shine 1.5s infinite;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
 </head>
-<body class="bg-gradient-to-br from-zinc-100 via-stone-50 to-neutral-100 min-h-screen">
-
-    <!-- Fixed Navigation -->
-    <div class="fixed bottom-8 right-8 z-50 flex gap-3" x-data="{ showTooltip: false }">
-        <a href="#" class="w-14 h-14 bg-zinc-400 text-white rounded-full flex items-center justify-center opacity-40 cursor-not-allowed shadow-lg">
-            <i class="fa-solid fa-arrow-left text-lg"></i>
-        </a>
-        <a href="design-product-card-premium-2.html"
-           class="w-14 h-14 bg-gradient-to-br from-zinc-800 to-zinc-900 text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-xl hover:shadow-2xl"
-           @mouseenter="showTooltip = true"
-           @mouseleave="showTooltip = false">
-            <i class="fa-solid fa-arrow-right text-lg"></i>
-        </a>
-        <div x-show="showTooltip"
-             x-transition
-             class="absolute bottom-16 right-0 bg-zinc-900 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap">
-            Sonraki Tasarım →
-        </div>
+<body class="bg-gray-50 min-h-screen py-16 px-6">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="#" class="w-11 h-11 bg-white shadow-lg rounded-full flex items-center justify-center text-gray-400 cursor-not-allowed"><i class="fa-solid fa-arrow-left text-sm"></i></a>
+        <a href="design-product-card-premium-2.html" class="w-11 h-11 bg-gray-900 text-white shadow-lg rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors"><i class="fa-solid fa-arrow-right text-sm"></i></a>
     </div>
-
-    <!-- Page Counter -->
-    <div class="fixed top-8 right-8 z-40 bg-white/80 backdrop-blur-xl px-6 py-3 rounded-full border border-zinc-200 shadow-lg">
-        <span class="text-zinc-800 font-bold text-sm">1 / 12</span>
-    </div>
-
-    <!-- Main Content -->
-    <div class="container mx-auto px-6 py-20">
-        <!-- Header -->
-        <div class="text-center mb-16 animate-slideUp">
-            <div class="inline-block mb-4">
-                <span class="bg-zinc-900 text-white px-6 py-2 rounded-full text-xs font-bold tracking-wider uppercase">
-                    <i class="fa-solid fa-gem mr-2"></i>Luxe Minimal Collection
-                </span>
+    <div class="fixed top-8 right-8 z-40 bg-white shadow px-4 py-2 rounded-full"><span class="text-sm font-medium text-gray-600">1 / 12</span></div>
+    
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-12"><h1 class="text-3xl font-light text-gray-900 mb-2">Clean White Minimal</h1><p class="text-gray-500">Simple and elegant product cards</p></div>
+        
+        <div class="grid grid-cols-4 gap-6">
+            <div class="group" x-data="{ loved: false }">
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-forklift text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
+                        </button>
+                        <div class="absolute top-3 left-3 bg-gray-900 text-white px-2.5 py-1 rounded-full text-xs font-medium">New</div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Electric Forklift</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Toyota 8FBE35 3.5 Ton</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></div>
+                            <span class="text-xs text-gray-400">(4.8)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺395K</span><span class="text-sm text-gray-400 line-through">₺985K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
+                    </div>
+                </div>
             </div>
-            <h1 class="text-6xl md:text-7xl font-black text-zinc-900 mb-4 tracking-tight">
-                Refined Elegance
-            </h1>
-            <p class="text-xl text-zinc-600 max-w-2xl mx-auto">
-                Minimalist design meets luxury aesthetics
-            </p>
+
+            <div class="group" x-data="{ loved: false }">
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-boxes-stacked text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
+                        </button>
+                        <div class="absolute top-3 left-3 bg-blue-600 text-white px-2.5 py-1 rounded-full text-xs font-medium">Popular</div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Manual Pallet</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Hydraulic Pallet Jack 2.5T</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs text-gray-400">(5.0)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺8.5K</span><span class="text-sm text-gray-400 line-through">₺21K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group" x-data="{ loved: false }">
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-layer-group text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
+                        </button>
+                        <div class="absolute top-3 left-3 bg-emerald-600 text-white px-2.5 py-1 rounded-full text-xs font-medium">Sale</div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Electric Stacker</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Electric Stacker 1.6T - 3.5m</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                            <span class="text-xs text-gray-400">(4.2)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺42K</span><span class="text-sm text-gray-400 line-through">₺125K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group" x-data="{ loved: false }">
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-warehouse text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Reach Truck</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">VNA Reach Truck 2.0T</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></div>
+                            <span class="text-xs text-gray-400">(4.7)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺485K</span><span class="text-sm text-gray-400 line-through">₺1.3M</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Product Grid: 3 columns -->
-        <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-
-            <!-- Product 1: Premium Forklift -->
+        <div class="grid grid-cols-4 gap-6 mt-6">
             <div class="group" x-data="{ loved: false }">
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 relative">
-                    <!-- Image Area -->
-                    <div class="relative bg-gradient-to-br from-zinc-50 to-zinc-100 aspect-[3/4] flex items-center justify-center overflow-hidden shine-effect">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <i class="fa-solid fa-warehouse text-9xl text-zinc-800 group-hover:scale-110 transition-transform duration-700"></i>
-
-                        <!-- Badges -->
-                        <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
-                            <span class="bg-amber-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                                PREMIUM
-                            </span>
-                            <button @click="loved = !loved"
-                                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                                <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-zinc-400'"></i>
-                            </button>
-                        </div>
-
-                        <!-- Discount Badge -->
-                        <div class="absolute bottom-4 right-4 bg-zinc-900 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl">
-                            -65%
-                        </div>
-
-                        <!-- Quick View Overlay -->
-                        <div class="absolute inset-0 bg-zinc-900/90 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                            <button class="bg-white text-zinc-900 px-8 py-3 rounded-full font-bold hover:scale-110 transition-transform">
-                                Quick View
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xs text-zinc-500 uppercase tracking-wider">Forklift</span>
-                            <span class="text-zinc-300">•</span>
-                            <span class="text-xs text-zinc-500">Elektrikli</span>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-zinc-900 mb-3 line-clamp-2 group-hover:text-zinc-700 transition-colors">
-                            Toyota 8FBE25 Elektrikli Forklift
-                        </h3>
-
-                        <!-- Rating -->
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="flex text-amber-400 text-sm">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star-half"></i>
-                            </div>
-                            <span class="text-xs text-zinc-400">(4.8)</span>
-                            <span class="text-xs text-zinc-400">• 124 reviews</span>
-                        </div>
-
-                        <!-- Specs -->
-                        <div class="grid grid-cols-2 gap-2 mb-4 pb-4 border-b border-zinc-100">
-                            <div class="flex items-center gap-2 text-xs text-zinc-600">
-                                <i class="fa-solid fa-weight-hanging text-zinc-400"></i>
-                                <span>2.5 Ton</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs text-zinc-600">
-                                <i class="fa-solid fa-battery-full text-zinc-400"></i>
-                                <span>48V Battery</span>
-                            </div>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="mb-4">
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-3xl font-black text-zinc-900">₺285.000</span>
-                                <span class="text-sm text-zinc-400 line-through">₺814.000</span>
-                            </div>
-                            <span class="text-xs text-emerald-600 font-semibold">₺529.000 tasarruf</span>
-                        </div>
-
-                        <!-- CTA Button -->
-                        <button class="w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all hover:shadow-xl">
-                            <i class="fa-solid fa-cart-shopping mr-2"></i>
-                            Sepete Ekle
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-dolly text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
                         </button>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Hand Truck</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Professional Hand Truck 300kg</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs text-gray-400">(4.9)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺2.1K</span><span class="text-sm text-gray-400 line-through">₺5.2K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 2: Premium Pallet Jack -->
             <div class="group" x-data="{ loved: false }">
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 relative">
-                    <div class="relative bg-gradient-to-br from-blue-50 to-indigo-50 aspect-[3/4] flex items-center justify-center overflow-hidden shine-effect">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <i class="fa-solid fa-boxes-stacked text-9xl text-blue-600 group-hover:scale-110 transition-transform duration-700"></i>
-
-                        <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
-                            <span class="bg-blue-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                                BEST SELLER
-                            </span>
-                            <button @click="loved = !loved"
-                                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                                <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-zinc-400'"></i>
-                            </button>
-                        </div>
-
-                        <div class="absolute bottom-4 right-4 bg-zinc-900 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl">
-                            -58%
-                        </div>
-
-                        <div class="absolute inset-0 bg-zinc-900/90 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                            <button class="bg-white text-zinc-900 px-8 py-3 rounded-full font-bold hover:scale-110 transition-transform">
-                                Quick View
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xs text-zinc-500 uppercase tracking-wider">Transpalet</span>
-                            <span class="text-zinc-300">•</span>
-                            <span class="text-xs text-zinc-500">Manuel</span>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-zinc-900 mb-3 line-clamp-2 group-hover:text-zinc-700 transition-colors">
-                            Profesyonel Manuel Transpalet 2.5T
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="flex text-amber-400 text-sm">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                            <span class="text-xs text-zinc-400">(5.0)</span>
-                            <span class="text-xs text-zinc-400">• 342 reviews</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2 mb-4 pb-4 border-b border-zinc-100">
-                            <div class="flex items-center gap-2 text-xs text-zinc-600">
-                                <i class="fa-solid fa-arrows-left-right text-zinc-400"></i>
-                                <span>1150mm</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs text-zinc-600">
-                                <i class="fa-solid fa-gear text-zinc-400"></i>
-                                <span>Çelik Konstrüksiyon</span>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-3xl font-black text-zinc-900">₺8.500</span>
-                                <span class="text-sm text-zinc-400 line-through">₺20.500</span>
-                            </div>
-                            <span class="text-xs text-emerald-600 font-semibold">₺12.000 tasarruf</span>
-                        </div>
-
-                        <button class="w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all hover:shadow-xl">
-                            <i class="fa-solid fa-cart-shopping mr-2"></i>
-                            Sepete Ekle
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-pallet text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
                         </button>
+                        <div class="absolute top-3 left-3 bg-red-600 text-white px-2.5 py-1 rounded-full text-xs font-medium">-60%</div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Platform Cart</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Platform Cart 500kg</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+                            <span class="text-xs text-gray-400">(4.1)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺3.8K</span><span class="text-sm text-gray-400 line-through">₺9.6K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Product 3: Premium Stacker -->
             <div class="group" x-data="{ loved: false }">
-                <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 relative">
-                    <div class="relative bg-gradient-to-br from-emerald-50 to-teal-50 aspect-[3/4] flex items-center justify-center overflow-hidden shine-effect">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <i class="fa-solid fa-layer-group text-9xl text-emerald-600 group-hover:scale-110 transition-transform duration-700"></i>
-
-                        <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
-                            <span class="bg-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                                NEW ARRIVAL
-                            </span>
-                            <button @click="loved = !loved"
-                                    class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                                <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-zinc-400'"></i>
-                            </button>
-                        </div>
-
-                        <div class="absolute bottom-4 right-4 bg-zinc-900 text-white px-4 py-2 rounded-full text-sm font-bold shadow-xl">
-                            -72%
-                        </div>
-
-                        <div class="absolute inset-0 bg-zinc-900/90 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                            <button class="bg-white text-zinc-900 px-8 py-3 rounded-full font-bold hover:scale-110 transition-transform">
-                                Quick View
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xs text-zinc-500 uppercase tracking-wider">İstif Makinesi</span>
-                            <span class="text-zinc-300">•</span>
-                            <span class="text-xs text-zinc-500">Elektrikli</span>
-                        </div>
-
-                        <h3 class="text-xl font-bold text-zinc-900 mb-3 line-clamp-2 group-hover:text-zinc-700 transition-colors">
-                            Elektrikli İstif Makinesi 1.6T - 3.5m
-                        </h3>
-
-                        <div class="flex items-center gap-2 mb-4">
-                            <div class="flex text-amber-400 text-sm">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-regular fa-star"></i>
-                            </div>
-                            <span class="text-xs text-zinc-400">(4.2)</span>
-                            <span class="text-xs text-zinc-400">• 87 reviews</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2 mb-4 pb-4 border-b border-zinc-100">
-                            <div class="flex items-center gap-2 text-xs text-zinc-600">
-                                <i class="fa-solid fa-up-long text-zinc-400"></i>
-                                <span>3.5m Lift</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-xs text-zinc-600">
-                                <i class="fa-solid fa-bolt text-zinc-400"></i>
-                                <span>24V Elektrik</span>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-3xl font-black text-zinc-900">₺42.000</span>
-                                <span class="text-sm text-zinc-400 line-through">₺150.000</span>
-                            </div>
-                            <span class="text-xs text-emerald-600 font-semibold">₺108.000 tasarruf</span>
-                        </div>
-
-                        <button class="w-full bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all hover:shadow-xl">
-                            <i class="fa-solid fa-cart-shopping mr-2"></i>
-                            Sepete Ekle
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-truck-ramp-box text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
                         </button>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Order Picker</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Order Picker 1.4T Platform</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half"></i></div>
+                            <span class="text-xs text-gray-400">(4.6)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺185K</span><span class="text-sm text-gray-400 line-through">₺520K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-        <!-- Bottom Info -->
-        <div class="mt-16 text-center">
-            <div class="inline-flex items-center gap-6 bg-white px-8 py-4 rounded-full shadow-lg">
-                <div class="flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-truck text-emerald-600"></i>
-                    <span class="text-zinc-700">Ücretsiz Kargo</span>
-                </div>
-                <div class="w-px h-6 bg-zinc-200"></div>
-                <div class="flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-shield-check text-blue-600"></i>
-                    <span class="text-zinc-700">2 Yıl Garanti</span>
-                </div>
-                <div class="w-px h-6 bg-zinc-200"></div>
-                <div class="flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-headset text-purple-600"></i>
-                    <span class="text-zinc-700">7/24 Destek</span>
+            <div class="group" x-data="{ loved: false }">
+                <div class="bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="relative bg-gray-100 aspect-[3/4] flex items-center justify-center p-8">
+                        <i class="fa-solid fa-box-archive text-6xl text-gray-800 group-hover:scale-105 transition-transform"></i>
+                        <button @click="loved = !loved" class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center hover:scale-110 transition-transform">
+                            <i :class="loved ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400'" class="text-xs"></i>
+                        </button>
+                        <div class="absolute top-3 left-3 bg-purple-600 text-white px-2.5 py-1 rounded-full text-xs font-medium">Best</div>
+                    </div>
+                    <div class="p-5">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide mb-2">Scissor Lift</p>
+                        <h3 class="text-base font-medium text-gray-900 mb-3 line-clamp-2">Electric Scissor Lift 7.8m</h3>
+                        <div class="flex items-center gap-1 mb-3">
+                            <div class="flex text-yellow-400 text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            <span class="text-xs text-gray-400">(5.0)</span>
+                        </div>
+                        <div class="mb-4"><div class="flex items-baseline gap-2"><span class="text-xl font-semibold text-gray-900">₺285K</span><span class="text-sm text-gray-400 line-through">₺685K</span></div></div>
+                        <button class="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors">Add to Cart</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 </html>

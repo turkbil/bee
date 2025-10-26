@@ -203,9 +203,29 @@
     }
 }
 
-/* Gold gradient class for buttons and text */
+/* Gold gradient class for buttons */
 .gold-gradient {
     background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1);
     background-size: 200% auto;
+    animation: gold-shimmer 3s ease infinite;
+}
+
+/* Gold text gradient for hero title - Light mode (darker gold tones, no white) */
+.gold-text-gradient {
+    background: linear-gradient(90deg, #b8860b, #d4af37, #ca8a04, #d4af37, #b8860b);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gold-shimmer 3s ease infinite;
+}
+
+/* Gold text gradient for hero title - Dark mode (white + gold mix) */
+.dark .gold-text-gradient {
+    background: linear-gradient(90deg, #ffffff, #d4af37, #f4e5a1, #d4af37, #ffffff);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     animation: gold-shimmer 3s ease infinite;
 }

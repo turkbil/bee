@@ -13,7 +13,7 @@
             <!-- Left Content -->
             <div class="text-gray-900 dark:text-white">
                 <!-- Main Title with Gold Gradient -->
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible bg-clip-text text-transparent" style="font-weight: 900; background: linear-gradient(90deg, #d4af37, #f4e5a1, #d4af37, #f4e5a1); background-size: 200% auto; animation: gold-shimmer 3s ease infinite;">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible gold-text-gradient" style="font-weight: 900;">
                     <span class="block py-2">
                         TÜRKİYE'NİN
                     </span>
@@ -28,11 +28,11 @@
                 </p>
 
                 <!-- Dual CTA Buttons with Gold Gradient -->
-                <div class="mb-16 flex flex-wrap gap-4 md:gap-6">
-                    <a href="#iletisim" class="px-8 md:px-10 py-4 md:py-5 gold-gradient rounded-full text-gray-950 font-black hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all text-base md:text-lg">
-                        ÖZEL TEKLİF ALIN
+                <div class="mb-16 flex flex-wrap gap-4">
+                    <a href="{{ route('shop.index') }}" class="px-8 py-3 gold-gradient rounded-full text-gray-950 font-black hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-all text-base">
+                        Ürünler
                     </a>
-                    <a href="tel:02167553555" class="px-8 md:px-10 py-4 md:py-5 border-2 border-yellow-600 rounded-full text-yellow-500 dark:text-yellow-500 font-bold hover:bg-yellow-600/10 transition-all text-base md:text-lg">
+                    <a href="tel:02167553555" class="px-8 py-3 border-2 border-yellow-600 rounded-full text-yellow-500 dark:text-yellow-500 font-bold hover:bg-yellow-600/10 transition-all text-base">
                         <i class="fa-light fa-phone mr-2"></i>İletişim
                     </a>
                 </div>
@@ -40,8 +40,8 @@
                 <!-- Features -->
                 <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="w-12 h-12 bg-yellow-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-boxes-stacked text-yellow-600 dark:text-yellow-500 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
@@ -49,8 +49,8 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="w-12 h-12 bg-yellow-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-certificate text-yellow-600 dark:text-yellow-500 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
@@ -58,8 +58,8 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="w-12 h-12 bg-yellow-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-award text-yellow-600 dark:text-yellow-500 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
@@ -67,8 +67,8 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-4 xl:hidden">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                        <div class="w-12 h-12 bg-yellow-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-truck-fast text-yellow-600 dark:text-yellow-500 text-xl"></i>
                         </div>
                         <div>
                             <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>

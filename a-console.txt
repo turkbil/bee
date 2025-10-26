@@ -1,1 +1,160 @@
+# ParseError - Internal Server Error
+syntax error, unexpected end of file, expecting "elseif" or "else" or "endif"
 
+PHP 8.3.26
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - Modules/Shop/resources/views/themes/ixtif/show.blade.php:1416
+1 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+2 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+3 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
+4 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+5 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
+6 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+7 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+8 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+9 - vendor/laravel/framework/src/Illuminate/Http/Response.php:78
+10 - vendor/laravel/framework/src/Illuminate/Http/Response.php:34
+11 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:939
+12 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:906
+13 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+14 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+15 - app/Http/Middleware/FixResponseCacheHeaders.php:20
+16 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+17 - vendor/spatie/laravel-responsecache/src/Middlewares/CacheResponse.php:46
+18 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+19 - app/Http/Middleware/FrontendAutoSeoFillMiddleware.php:42
+20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+21 - Modules/LanguageManagement/app/Http/Middleware/SiteSetLocaleMiddleware.php:88
+22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+23 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+25 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+27 - app/Http/Middleware/RootOnlyDebugbar.php:35
+28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+29 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+31 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+33 - app/Http/Middleware/SecurityHeaders.php:18
+34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+35 - vendor/spatie/laravel-missing-page-redirector/src/RedirectsMissingPages.php:12
+36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+37 - app/Http/Middleware/CheckThemeStatus.php:40
+38 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+39 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+40 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+41 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+42 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+43 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+45 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+46 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+47 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+48 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+50 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+52 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+54 - app/Http/Middleware/InitializeTenancy.php:97
+55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+57 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+58 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+59 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+60 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+61 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+63 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+65 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+67 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+68 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+69 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+70 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+71 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+73 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+75 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+76 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+77 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+78 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+79 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+80 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+81 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+82 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+83 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+84 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+85 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+86 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+87 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+88 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+89 - public/index.php:17
+
+## Request
+
+GET /shop/ixtif-f4-15-ton-li-ion-transpalet
+
+## Headers
+
+* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; _ym_uid=176118900044921329; _ym_d=1761189000; _ym_isad=1; last_activity_read=1761445892; _gcl_au=1.1.612840818.1761453196; _clck=1ok4nj5%5E2%5Eg0h%5E0%5E2125; _fbp=fb.1.1761456765935.67835112351166348; _ga_5DDRPR03QM=GS2.1.s1761485364$o46$g0$t1761485364$j60$l0$h0; _clsk=1o5syd7%5E1761485365030%5E1%5E1%5Eb.clarity.ms%2Fcollect; _ym_visorc=w; XSRF-TOKEN=eyJpdiI6ImRVUVVxVkJuSFpWZ0xWRFBMeHQwQ3c9PSIsInZhbHVlIjoieFpYemJyMEJYS0lGTzBzQVZ3TjRTRHEwZThnKzR1RVp5Um5kb2tJTm4zZ2tZaHo5cnVWbG41U1g3bGEwMzhhakhCUXNZQkNRdDV0aktpNGNremZPdVNGeUd3UFBmTGlKblZRdlg3Y0Q0a3lhNzIwSU9Ya1FTRk94aXFkbm56Q2oiLCJtYWMiOiIzM2ZhZWIzMjMwOThlNzY1OGQ5MjEwZTUxOGY4YmJhYTBlYzNhZjIzMzJjODU1Y2M5YmRjMGNhMWZhMjA0ZTcwIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6InhUMDB5UU1qUXVwNmRlYkRTbXJpMmc9PSIsInZhbHVlIjoiSzdhNVVyUWxnSW1SZGFuU0p6ZWhvenpQUVk2Wm1FQjY3c0NmR3ZnQ0lsdHZ4ME5YQnhKbE9Vc1M5TnFSak9kMHFvQXFNbFBFL21wUVpDUzRhMUY1NkswNWxNMTV3RlYzTjg3VWhhVEI4WHBSNzN4SFpDM2tKNGNJMjRLWGR6M2IiLCJtYWMiOiI0NDU2NjA5ZDRiM2E5MWMyZWIwNjQ1ZDUzOTNiMGQyNWFkZGZlYzlmMTQ2ZGJmOGRkMDNmZDJkYjgzNmE3OGJhIiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://ixtif.com/
+* **sec-fetch-dest**: document
+* **sec-fetch-user**: ?1
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **sec-ch-ua-platform**: "macOS"
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+* **cache-control**: no-cache
+* **pragma**: no-cache
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 92.44.119.135
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Closure
+middleware: web, App\Http\Middleware\InitializeTenancy, site
+
+## Route Parameters
+
+{
+    "slug1": "shop",
+    "slug2": "ixtif-f4-15-ton-li-ion-transpalet"
+}
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (1.8 ms)
+* mysql - select * from `sessions` where `id` = 'UvACH6GXWpxIpaYjozGVwIq4rFZacaO9Zta8GfZF' limit 1 (0.64 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.46 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.24 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.82 ms)
+* tenant - select * from `shop_products` where `shop_products`.`is_active` = 1 and `published_at` is not null and `published_at` <= '2025-10-26 16:30:27' and (JSON_UNQUOTE(JSON_EXTRACT(slug, '$."tr"')) = 'ixtif-f4-15-ton-li-ion-transpalet') and `shop_products`.`deleted_at` is null limit 1 (5.84 ms)
+* tenant - select * from `shop_categories` where `shop_categories`.`category_id` in (2) and `shop_categories`.`deleted_at` is null (0.84 ms)
+* tenant - select * from `shop_brands` where `shop_brands`.`brand_id` in (1) and `shop_brands`.`deleted_at` is null (0.73 ms)
+* tenant - select * from `seo_settings` where `seo_settings`.`seoable_id` in (245) and `seo_settings`.`seoable_type` = 'Modules\Shop\App\Models\ShopProduct' (0.86 ms)
+* tenant - select * from `shop_products` where `shop_products`.`parent_product_id` = 245 and `shop_products`.`parent_product_id` is not null and `is_active` = 1 and `shop_products`.`is_active` = 1 and `published_at` is not null and `published_at` <= '2025-10-26 16:30:27' and `shop_products`.`deleted_at` is null order by `variant_type` asc (1.16 ms)
+* tenant - select * from `media` where `media`.`model_id` in (245) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct' (0.7 ms)
+* mysql - select * from `settings` where `key` = 'site_title' and `is_active` = 1 limit 1 (0.79 ms)
+* tenant - select * from `settings_values` where `setting_id` = 1 limit 1 (1.39 ms)
+* mysql - select * from `settings` where `key` = 'site_title' and `is_active` = 1 limit 1 (0.6 ms)
+* tenant - select * from `settings_values` where `setting_id` = 1 limit 1 (1.07 ms)
+* mysql - select * from `settings` where `key` = 'site_title' and `is_active` = 1 limit 1 (0.51 ms)
+* tenant - select * from `settings_values` where `setting_id` = 1 limit 1 (1.1 ms)

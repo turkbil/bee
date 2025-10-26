@@ -52,6 +52,9 @@ class ShopProductComponent extends Component
     public ?int $newStock = null;
     public bool $newStockTracking = true;
 
+    // Quick Edit Mode (Bulk inline editing)
+    public bool $quickEditMode = false;
+
     protected ShopProductService $productService;
 
     protected $listeners = [
@@ -347,6 +350,87 @@ class ShopProductComponent extends Component
         $this->editingStockId = null;
         $this->newStock = null;
         $this->newStockTracking = true;
+    }
+
+    public function toggleQuickEditMode(): void
+    {
+        $this->quickEditMode = !$this->quickEditMode;
+
+        // Quick edit mode açılınca mevcut inline editing'leri kapat
+        if ($this->quickEditMode) {
+            $this->editingPriceId = null;
+            $this->editingStockId = null;
+            $this->editingTitleId = null;
+        }
+    }
+
+    public function updateProductField(int $productId, string $field, mixed $value): void
+    {
+        try {
+            $product = ShopProduct::findOrFail($productId);
+
+            // Field validation and update
+            switch ($field) {
+                case 'base_price':
+                    $price = $value ? (float) str_replace(',', '.', $value) : null;
+                    if ($price !== null && $price < 0) {
+                        $this->dispatch('toast', [
+                            'title' => __('admin.error'),
+                            'message' => __('shop::admin.invalid_price'),
+                            'type' => 'error',
+                        ]);
+                        return;
+                    }
+                    $product->base_price = $price;
+                    break;
+
+                case 'currency':
+                    $product->currency = in_array($value, ['TRY', 'USD', 'EUR']) ? $value : 'TRY';
+                    break;
+
+                case 'current_stock':
+                    $stock = $value !== null ? (int) $value : 0;
+                    if ($stock < 0) {
+                        $this->dispatch('toast', [
+                            'title' => __('admin.error'),
+                            'message' => __('shop::admin.invalid_stock'),
+                            'type' => 'error',
+                        ]);
+                        return;
+                    }
+                    $product->current_stock = $stock;
+                    break;
+
+                case 'stock_tracking':
+                    $product->stock_tracking = (bool) $value;
+                    if (!$product->stock_tracking) {
+                        $product->current_stock = 0;
+                    }
+                    break;
+
+                case 'price_on_request':
+                    $product->price_on_request = (bool) $value;
+                    if ($product->price_on_request) {
+                        $product->base_price = null;
+                    }
+                    break;
+
+                default:
+                    return;
+            }
+
+            $product->save();
+
+            // Silent update - no toast
+            $this->dispatch('productUpdated', ['id' => $productId, 'field' => $field]);
+
+        } catch (\Exception $e) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
     }
 
     public function bulkDeleteSelected(): void

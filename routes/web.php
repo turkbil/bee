@@ -14,8 +14,10 @@ use Modules\Search\App\Http\Controllers\SearchPageController;
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
 Route::get('design/{file}', [App\Http\Controllers\DesignLibraryController::class, 'show'])->where('file', '.*')->name('designs.show');
 
-// GOOGLE SHOPPING FEED - Controller test
-Route::get('productfeed', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index']);
+// GOOGLE SHOPPING FEED - Needs tenant middleware
+Route::middleware(['web', 'tenant'])->group(function () {
+    Route::get('productfeed', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index']);
+});
 
 // Admin routes
 require __DIR__.'/admin/web.php';

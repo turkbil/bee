@@ -374,6 +374,7 @@
                                         x-show="openVariants[{{ $product->product_id }}]"
                                         x-cloak
                                         wire:key="variant-{{ $variant->product_id }}">
+                                        <td></td>
                                         <td class="sort-id small">
                                             <div class="hover-toggle ps-2">
                                                 <i class="fas fa-level-up-alt fa-rotate-90 text-muted me-1" style="font-size: 0.65rem;"></i>

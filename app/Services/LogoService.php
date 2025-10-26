@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
+use Modules\SettingManagement\App\Models\Setting;
 
 /**
  * Logo Service - Responsive Logo Management
@@ -36,26 +37,23 @@ class LogoService
         $cacheKey = $this->getCacheKey('logos');
 
         return Cache::remember($cacheKey, 3600, function () {
-            // Settings'ten logo bilgilerini al (artık media library URL'leri)
-            $siteLogo = setting('site_logo');
-            $siteKontrastLogo = setting('site_logo_2'); // Kontrast logo (Dark mode için)
             $siteTitle = setting('site_title', config('app.name'));
 
-            // Logo varlık kontrolleri
-            $hasLight = $this->isValidLogo($siteLogo);
-            $hasDark = $this->isValidLogo($siteKontrastLogo);
-            $hasBoth = $hasLight && $hasDark;
+            // Settings'den logo bilgilerini Spatie Media ile al
+            $lightLogoUrl = $this->getLogoUrlFromMedia('site_logo');
+            $darkLogoUrl = $this->getLogoUrlFromMedia('site_logo_2');
 
-            // URL'ler (media library zaten optimize URL döndürüyor, direkt kullan)
-            $lightLogoUrl = $hasLight ? $siteLogo : null;
-            $darkLogoUrl = $hasDark ? $siteKontrastLogo : null;
+            // Logo varlık kontrolleri
+            $hasLight = !empty($lightLogoUrl);
+            $hasDark = !empty($darkLogoUrl);
+            $hasBoth = $hasLight && $hasDark;
 
             // Fallback mode belirleme
             $fallbackMode = $this->determineFallbackMode($hasLight, $hasDark);
 
             return [
-                'light_logo' => $siteLogo,
-                'dark_logo' => $siteKontrastLogo,
+                'light_logo' => $lightLogoUrl,
+                'dark_logo' => $darkLogoUrl,
                 'light_logo_url' => $lightLogoUrl,
                 'dark_logo_url' => $darkLogoUrl,
                 'has_light' => $hasLight,
@@ -65,6 +63,40 @@ class LogoService
                 'fallback_mode' => $fallbackMode,
             ];
         });
+    }
+
+    /**
+     * Setting'den Spatie Media logo URL'ini al
+     *
+     * @param string $settingKey 'site_logo' veya 'site_logo_2'
+     * @return string|null
+     */
+    private function getLogoUrlFromMedia(string $settingKey): ?string
+    {
+        try {
+            // Setting modelini al
+            $setting = Setting::where('key', $settingKey)
+                ->where('is_active', true)
+                ->first();
+
+            if (!$setting) {
+                return null;
+            }
+
+            // Spatie Media'dan logo al
+            $media = $setting->getFirstMedia($settingKey);
+
+            if (!$media) {
+                return null;
+            }
+
+            // URL döndür
+            return $media->getUrl();
+
+        } catch (\Exception $e) {
+            \Log::error("Logo URL error for {$settingKey}: " . $e->getMessage());
+            return null;
+        }
     }
 
     /**

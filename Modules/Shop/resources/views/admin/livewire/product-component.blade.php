@@ -128,8 +128,10 @@
                                     {{ __('shop::admin.product_title') }}
                                 </button>
                             </th>
-                            <th>{{ __('shop::admin.category') }}</th>
-                            <th>{{ __('shop::admin.brand') }}</th>
+                            @if(!$quickEditMode)
+                                <th>{{ __('shop::admin.category') }}</th>
+                                <th>{{ __('shop::admin.brand') }}</th>
+                            @endif
                             <th class="text-end">{{ __('shop::admin.price') }}</th>
                             <th class="text-center" style="width: 100px">Stok</th>
                             <th class="text-center" style="width: 80px">{{ __('shop::admin.status') }}</th>
@@ -215,26 +217,28 @@
                                                     <i class="fas fa-pen"></i>
                                                 </button>
                                             </div>
-                                            @if($product->sku)
+                                            @if(!$quickEditMode && $product->sku)
                                                 <span class="badge bg-secondary-lt ms-2">{{ $product->sku }}</span>
                                             @endif
                                         </div>
                                     @endif
                                 </td>
-                                <td>
-                                    @if($product->category)
-                                        {{ $product->category->getTranslated('title', $currentSiteLocale) ?? '—' }}
-                                    @else
-                                        <span class="text-muted">—</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($product->brand)
-                                        {{ $product->brand->getTranslated('title', $currentSiteLocale) ?? '—' }}
-                                    @else
-                                        <span class="text-muted">—</span>
-                                    @endif
-                                </td>
+                                @if(!$quickEditMode)
+                                    <td>
+                                        @if($product->category)
+                                            {{ $product->category->getTranslated('title', $currentSiteLocale) ?? '—' }}
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($product->brand)
+                                            {{ $product->brand->getTranslated('title', $currentSiteLocale) ?? '—' }}
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+                                @endif
                                 <td class="text-end" wire:key="price-{{ $product->product_id }}">
                                     @if ($quickEditMode)
                                         {{-- Quick Edit Mode: Always editable inputs --}}

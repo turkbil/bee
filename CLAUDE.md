@@ -70,24 +70,65 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 
 **⚠️ ANA DİZİN TEMİZ KALMALI!**
 
+#### 🚨 MUTLAK KURAL: ANA DİZİNE KAFANA GÖRE DOSYA AÇMA!
+
+**Claude, sen dosya açmadan ÖNCE DUR ve düşün:**
+1. ❓ Bu dosya gerçekten ana dizinde mi olmalı?
+2. ❓ readme/ veya başka klasörde durabilir mi?
+3. ❓ Bu geçici bir script/test mi? → O zaman ana dizine değil!
+
 #### ✅ DOĞRU KONUM:
 - **Plan/Güncelleme Dökümanları**: `readme/claude-docs/claudeguncel-YYYY-MM-DD-HH-MM-description.md`
-- **Teknik Dokümantasyon**: `readme/` klasörü altında
-- **Test Dosyaları**: İlgili modül/klasör içinde
+- **Teknik Dokümantasyon**: `readme/` klasörü altında (alt klasör oluştur!)
+- **Setup Script'leri**: `readme/[özellik-adı]-setup/` klasörü içinde
+- **Test Dosyaları**: İlgili modül/klasör içinde veya `tests/` altında
 - **Log/Debug**: Geçici ise `/tmp/` altında
+- **Tinker Komutları**: `readme/tinker-commands/` veya ilgili dokümantasyon klasöründe
 
-#### ❌ ANA DİZİNE DOSYA OLUŞTURMA:
+#### ❌ ANA DİZİNE ASLA EKLEME:
 - **claudeguncel-*.md** → readme/claude-docs/ içinde olmalı
 - **test-*.php** → tests/ veya ilgili modül içinde
 - **debug-*.txt** → /tmp/ veya geçici klasör
 - **random-*.log** → storage/logs/ içinde
+- **setup-*.php** → readme/[feature]-setup/ klasöründe
+- **update-*.php** → readme/[feature]-setup/ klasöründe
+- **fix-*.php** → readme/[feature]-setup/ klasöründe
+- **GUIDE-*.md** → readme/ altında ilgili klasörde
+- **TINKER-*.md** → readme/tinker-commands/ veya ilgili klasörde
 
-#### 🎯 İSTİSNALAR (Ana dizine eklenebilir):
-- Core config dosyaları (tailwind.config.js, webpack.mix.js vb.)
-- Deployment scriptleri (deploy.sh vb.) - ama önce sor!
-- Kritik dokümantasyon (README.md, SECURITY.md vb.)
+#### 🎯 İSTİSNALAR (Sadece bunlar ana dizine eklenebilir):
+- **Core Laravel config**: tailwind.config.js, webpack.mix.js, vite.config.js
+- **Framework dosyaları**: .env.example, .gitignore, composer.json, package.json
+- **Ana dokümantasyon**: README.md, CLAUDE.md, SECURITY.md
+- **Deployment**: deploy.sh - ama ÖNCE SOR!
 
-**KURAL:** Eğer dosya %100 gerekli değilse, ana dizine koyma!
+#### 🛡️ BUFFER DOSYALARI (DOKUNMA!):
+- `a-console.txt` - Console/Debugbar buffer (ana dizinde kalmalı)
+- `a-html.txt` - HTML output buffer (ana dizinde kalmalı)
+
+#### 📋 ÖRNEK YOL GÖSTERİCİ:
+
+**YANLIŞ:**
+```bash
+# ❌ Ana dizine setup script açma!
+/var/www/vhosts/tuufi.com/httpdocs/update-seo-layout.php
+/var/www/vhosts/tuufi.com/httpdocs/MARKETING-PLATFORMS-TINKER.md
+```
+
+**DOĞRU:**
+```bash
+# ✅ İlgili klasörde oluştur!
+/var/www/vhosts/tuufi.com/httpdocs/readme/marketing-setup/update-seo-layout.php
+/var/www/vhosts/tuufi.com/httpdocs/readme/marketing-setup/MARKETING-PLATFORMS-TINKER.md
+```
+
+**KURALLAR:**
+1. **Varsayılan**: Ana dizin değil, alt klasör!
+2. **Geçici script**: readme/ altında özel klasör oluştur
+3. **Dokümantasyon**: readme/ altında kategorize et
+4. **Şüphen varsa**: Kullanıcıya sor: "readme/[klasör]/ altına mı oluşturayım?"
+
+**UNUTMA:** Eğer dosya **core framework dosyası** değilse → **Ana dizine koyma!**
 
 ## 📋 ÇALIŞMA YÖNTEMİ
 

@@ -583,12 +583,14 @@ class OptimizedPromptService
             // Önce "price_on_request" kontrol et - Bu durumda ASLA rakam gösterme!
             $lines[] = "  - Fiyat: ⚠️ Talep üzerine (ASLA fiyat uydurma! İletişim bilgisi ver!)";
         } elseif (isset($product['base_price']) && $product['base_price'] > 0) {
-            $priceText = number_format($product['base_price'], 0, ',', '.') . " TL";
+            // ⚠️ KRİTİK: Currency field'ını kullan (USD, TRY, EUR)
+            $currency = $product['currency'] ?? 'TRY';
+            $priceText = number_format($product['base_price'], 0, ',', '.') . " {$currency}";
 
             // İndirim varsa göster
             if (isset($product['compare_at_price']) && $product['compare_at_price'] > $product['base_price']) {
                 $discount = round((($product['compare_at_price'] - $product['base_price']) / $product['compare_at_price']) * 100);
-                $priceText .= " (İndirimli! Eski fiyat: " . number_format($product['compare_at_price'], 0, ',', '.') . " TL - %{$discount} indirim)";
+                $priceText .= " (İndirimli! Eski fiyat: " . number_format($product['compare_at_price'], 0, ',', '.') . " {$currency} - %{$discount} indirim)";
             }
 
             $lines[] = "  - Fiyat: {$priceText}";
@@ -596,13 +598,13 @@ class OptimizedPromptService
             // Taksit bilgisi
             if (!empty($product['installment_available']) && !empty($product['max_installments'])) {
                 $installmentAmount = $product['base_price'] / $product['max_installments'];
-                $lines[] = "  - Taksit: {$product['max_installments']}x " . number_format($installmentAmount, 0, ',', '.') . " TL";
+                $lines[] = "  - Taksit: {$product['max_installments']}x " . number_format($installmentAmount, 0, ',', '.') . " {$currency}";
             }
 
             // Depozito bilgisi
             if (!empty($product['deposit_required'])) {
                 if (!empty($product['deposit_amount'])) {
-                    $lines[] = "  - Depozito: " . number_format($product['deposit_amount'], 0, ',', '.') . " TL gereklidir";
+                    $lines[] = "  - Depozito: " . number_format($product['deposit_amount'], 0, ',', '.') . " {$currency} gereklidir";
                 } elseif (!empty($product['deposit_percentage'])) {
                     $lines[] = "  - Depozito: %{$product['deposit_percentage']} ön ödeme gereklidir";
                 }

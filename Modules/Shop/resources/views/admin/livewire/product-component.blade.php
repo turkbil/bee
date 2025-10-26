@@ -122,6 +122,7 @@
                             <th>{{ __('shop::admin.category') }}</th>
                             <th>{{ __('shop::admin.brand') }}</th>
                             <th class="text-end">{{ __('shop::admin.price') }}</th>
+                            <th class="text-center" style="width: 100px">Stok</th>
                             <th class="text-center" style="width: 80px">{{ __('shop::admin.status') }}</th>
                             <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
                         </tr>
@@ -285,6 +286,64 @@
                                             @endif
                                             <button class="btn btn-sm px-2 py-1 edit-icon"
                                                 wire:click="startEditingPrice({{ $product->product_id }}, '{{ $product->base_price }}', '{{ $product->currency ?? 'TRY' }}', {{ $product->price_on_request ? 'true' : 'false' }})">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="text-center" wire:key="stock-{{ $product->product_id }}">
+                                    @if ($editingStockId === $product->product_id)
+                                        <div class="d-flex flex-column gap-2 align-items-center" x-data
+                                            @click.outside="$wire.updateStockInline()">
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox"
+                                                    wire:model.live="newStockTracking"
+                                                    id="stockTracking-{{ $product->product_id }}">
+                                                <label class="form-check-label small text-nowrap" for="stockTracking-{{ $product->product_id }}">
+                                                    Takip
+                                                </label>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input type="number" step="1" min="0" wire:model.defer="newStock"
+                                                    class="form-control form-control-sm text-center"
+                                                    style="width: 70px;"
+                                                    placeholder="0"
+                                                    wire:keydown.enter="updateStockInline"
+                                                    wire:keydown.escape="cancelStockEdit"
+                                                    :disabled="!$wire.newStockTracking"
+                                                    x-init="$wire.newStockTracking && $nextTick(() => $el.focus())">
+                                                <button class="btn px-2 py-1 btn-outline-success btn-sm"
+                                                    wire:click="updateStockInline">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <button class="btn px-2 py-1 btn-outline-danger btn-sm"
+                                                    wire:click="cancelStockEdit">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                            @if ($product->stock_tracking)
+                                                @php
+                                                    $isLowStock = $product->current_stock > 0 && $product->current_stock <= $product->low_stock_threshold;
+                                                    $isOutOfStock = $product->current_stock <= 0;
+                                                @endphp
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <span class="fw-semibold editable-stock {{ $isOutOfStock ? 'text-danger' : ($isLowStock ? 'text-warning' : '') }}">
+                                                        {{ $product->current_stock }}
+                                                    </span>
+                                                    @if ($isLowStock && !$isOutOfStock)
+                                                        <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                    @elseif ($isOutOfStock)
+                                                        <small class="badge bg-danger-lt" style="font-size: 0.65rem;">Tükendi</small>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <span class="text-muted small editable-stock">—</span>
+                                            @endif
+                                            <button class="btn btn-sm px-2 py-1 edit-icon"
+                                                wire:click="startEditingStock({{ $product->product_id }}, {{ $product->current_stock }}, {{ $product->stock_tracking ? 'true' : 'false' }})">
                                                 <i class="fas fa-pen"></i>
                                             </button>
                                         </div>
@@ -495,6 +554,64 @@
                                                 </div>
                                             @endif
                                         </td>
+                                        <td class="text-center" wire:key="stock-variant-{{ $variant->product_id }}">
+                                            @if ($editingStockId === $variant->product_id)
+                                                <div class="d-flex flex-column gap-2 align-items-center" x-data
+                                                    @click.outside="$wire.updateStockInline()">
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            wire:model.live="newStockTracking"
+                                                            id="stockTracking-{{ $variant->product_id }}">
+                                                        <label class="form-check-label small text-nowrap" for="stockTracking-{{ $variant->product_id }}">
+                                                            Takip
+                                                        </label>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="number" step="1" min="0" wire:model.defer="newStock"
+                                                            class="form-control form-control-sm text-center"
+                                                            style="width: 70px;"
+                                                            placeholder="0"
+                                                            wire:keydown.enter="updateStockInline"
+                                                            wire:keydown.escape="cancelStockEdit"
+                                                            :disabled="!$wire.newStockTracking"
+                                                            x-init="$wire.newStockTracking && $nextTick(() => $el.focus())">
+                                                        <button class="btn px-2 py-1 btn-outline-success btn-sm"
+                                                            wire:click="updateStockInline">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                        <button class="btn px-2 py-1 btn-outline-danger btn-sm"
+                                                            wire:click="cancelStockEdit">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                                    @if ($variant->stock_tracking)
+                                                        @php
+                                                            $isLowStock = $variant->current_stock > 0 && $variant->current_stock <= $variant->low_stock_threshold;
+                                                            $isOutOfStock = $variant->current_stock <= 0;
+                                                        @endphp
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <span class="fw-semibold editable-stock {{ $isOutOfStock ? 'text-danger' : ($isLowStock ? 'text-warning' : '') }}">
+                                                                {{ $variant->current_stock }}
+                                                            </span>
+                                                            @if ($isLowStock && !$isOutOfStock)
+                                                                <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                            @elseif ($isOutOfStock)
+                                                                <small class="badge bg-danger-lt" style="font-size: 0.65rem;">Tükendi</small>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted small editable-stock">—</span>
+                                                    @endif
+                                                    <button class="btn btn-sm px-2 py-1 edit-icon"
+                                                        wire:click="startEditingStock({{ $variant->product_id }}, {{ $variant->current_stock }}, {{ $variant->stock_tracking ? 'true' : 'false' }})">
+                                                        <i class="fas fa-pen"></i>
+                                                    </button>
+                                                </div>
+                                            @endif
+                                        </td>
                                         <td class="text-center align-middle">
                                             <button wire:click="toggleActive({{ $variant->product_id }})"
                                                 class="btn btn-icon btn-sm {{ $variant->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
@@ -668,6 +785,16 @@
 }
 
 .hover-trigger:hover .editable-price {
+    color: var(--tblr-primary, #206bc4);
+}
+
+/* Editable Stock Hover */
+.editable-stock {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.hover-trigger:hover .editable-stock {
     color: var(--tblr-primary, #206bc4);
 }
 

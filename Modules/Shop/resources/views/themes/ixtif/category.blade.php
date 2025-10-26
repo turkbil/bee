@@ -131,15 +131,8 @@
                     {{-- Loading Spinner (Initial Page Load) --}}
                     <div x-show="!loaded" class="flex justify-center items-center py-32">
                         <div class="flex flex-col items-center gap-4">
-                            <div class="relative">
-                                {{-- Outer rotating ring --}}
-                                <div class="loading-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600"></div>
-                                {{-- Inner pulse --}}
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <div class="h-8 w-8 bg-blue-600/20 rounded-full loading-ping"></div>
-                                </div>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-400 font-medium text-lg">Ürünler yükleniyor...</p>
+                            <i class="fa-solid fa-spinner loading-spin text-5xl text-blue-600"></i>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium">Yükleniyor...</p>
                         </div>
                     </div>
 

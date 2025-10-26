@@ -7,80 +7,148 @@
 
 @section('module_content')
 <div x-data="homepage()" x-init="init()">
-    <section class="py-4 md:py-6 lg:py-8 flex items-center relative overflow-hidden">
+    {{-- ULTRA PREMIUM HERO SECTION --}}
+    <section class="min-h-screen flex items-center relative overflow-hidden
+                    bg-gradient-to-br from-white via-gray-50 to-white
+                    dark:from-navy-950 dark:via-navy-900 dark:to-navy-950">
+        {{-- Animated Gold Particles Background --}}
+        <div class="absolute inset-0 dark:block hidden">
+            <div class="gold-particles"></div>
+        </div>
+
+        {{-- Glass Overlay Pattern --}}
+        <div class="absolute inset-0 bg-[url('/pattern.svg')] opacity-5"></div>
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             <!-- Left Content -->
             <div class="text-gray-900 dark:text-white">
-                <!-- Main Title with Animation -->
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible" style="font-weight: 900;">
-                    <span class="gradient-animate block py-2">
+                <!-- ULTRA PREMIUM Title with Gold Gradient -->
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight">
+                    <span class="block text-gray-900 dark:text-white mb-4">
                         TÜRKİYE'NİN
                     </span>
-                    <span class="gradient-animate block py-2">
+                    <span class="block gold-gradient bg-clip-text text-transparent">
                         İSTİF PAZARI
                     </span>
                 </h1>
 
                 <!-- Description -->
-                <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium">
-                    Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
+                <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-12 leading-relaxed">
+                    Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile
+                    <span class="text-gray-900 dark:text-gold-light font-semibold">işletmenizin güvenilir ortağı</span>
                 </p>
 
-                <!-- CTA Button -->
-                <div class="mb-16">
-                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
-                        <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
-                        Ürünleri İncele
+                <!-- ULTRA PREMIUM CTA Buttons -->
+                <div class="flex flex-wrap gap-4 mb-16">
+                    <a href="{{ route('shop.index') }}" class="
+                        group px-8 py-4 rounded-full
+                        bg-blue-600 dark:bg-gradient-to-r dark:from-gold-dark dark:to-gold-light
+                        text-white dark:text-navy-950
+                        font-bold text-lg
+                        shadow-lg dark:shadow-none
+                        hover:bg-blue-700 dark:hover:shadow-[0_0_50px_rgba(212,175,55,0.6)]
+                        hover:scale-105
+                        transition-all duration-500
+                        relative overflow-hidden
+                    ">
+                        <span class="relative z-10">
+                            <i class="fa-light fa-shopping-cart mr-2"></i>
+                            Ürünleri İncele
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                            transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%]
+                            transition-transform duration-1000"></div>
+                    </a>
+
+                    <a href="#video" class="
+                        px-8 py-4 rounded-full
+                        bg-gray-100 dark:bg-white/5 backdrop-blur-xl
+                        border-2 border-gray-200 dark:border-gold-dark/30
+                        text-gray-900 dark:text-white font-bold text-lg
+                        hover:bg-gray-200 dark:hover:bg-white/10
+                        hover:border-gray-300 dark:hover:border-gold-dark/50
+                        dark:hover:shadow-[0_0_30px_rgba(212,175,55,0.3)]
+                        transition-all duration-500
+                    ">
+                        <i class="fa-light fa-play-circle mr-2"></i>
+                        Tanıtım Videosu
                     </a>
                 </div>
 
-                <!-- Features -->
-                <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
+                <!-- ULTRA PREMIUM Features -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="
+                        bg-gray-50 dark:bg-white/5 backdrop-blur-xl
+                        border border-gray-200 dark:border-gold-dark/20
+                        rounded-2xl p-4
+                        hover:bg-gray-100 dark:hover:bg-white/10
+                        hover:border-gray-300 dark:hover:border-gold-dark/40
+                        dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]
+                        transition-all duration-500
+                        group
+                    ">
+                        <i class="fa-light fa-check-circle text-blue-600 dark:text-gold-dark text-xl mb-2"></i>
+                        <div class="text-sm font-semibold text-gray-900 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                            Güçlü Stok
                         </div>
                     </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Uzman danışmanlık</div>
+                    <div class="
+                        bg-gray-50 dark:bg-white/5 backdrop-blur-xl
+                        border border-gray-200 dark:border-gold-dark/20
+                        rounded-2xl p-4
+                        hover:bg-gray-100 dark:hover:bg-white/10
+                        hover:border-gray-300 dark:hover:border-gold-dark/40
+                        dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]
+                        transition-all duration-500
+                        group
+                    ">
+                        <i class="fa-light fa-check-circle text-blue-600 dark:text-gold-dark text-xl mb-2"></i>
+                        <div class="text-sm font-semibold text-gray-900 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                            Garantili
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 xl:hidden">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                    <div class="
+                        bg-gray-50 dark:bg-white/5 backdrop-blur-xl
+                        border border-gray-200 dark:border-gold-dark/20
+                        rounded-2xl p-4
+                        hover:bg-gray-100 dark:hover:bg-white/10
+                        hover:border-gray-300 dark:hover:border-gold-dark/40
+                        dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]
+                        transition-all duration-500
+                        group
+                    ">
+                        <i class="fa-light fa-check-circle text-blue-600 dark:text-gold-dark text-xl mb-2"></i>
+                        <div class="text-sm font-semibold text-gray-900 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                            Hızlı Teslimat
                         </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Aynı gün kargo</div>
+                    </div>
+                    <div class="
+                        bg-gray-50 dark:bg-white/5 backdrop-blur-xl
+                        border border-gray-200 dark:border-gold-dark/20
+                        rounded-2xl p-4
+                        hover:bg-gray-100 dark:hover:bg-white/10
+                        hover:border-gray-300 dark:hover:border-gold-dark/40
+                        dark:hover:shadow-[0_0_20px_rgba(212,175,55,0.2)]
+                        transition-all duration-500
+                        group
+                    ">
+                        <i class="fa-light fa-check-circle text-blue-600 dark:text-gold-dark text-xl mb-2"></i>
+                        <div class="text-sm font-semibold text-gray-900 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                            Teknik Destek
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Content - Hero Image -->
-            <div class="flex items-center justify-center">
+            <!-- Right Content - Hero Image with GLOW -->
+            <div class="relative flex items-center justify-center">
+                {{-- Glow Effect for Dark Mode --}}
+                <div class="absolute inset-0 bg-gradient-to-r from-gold-dark/20 to-gold-light/20
+                    blur-[100px] animate-pulse dark:block hidden"></div>
                 <img src="https://ixtif.com/storage/tenant2/13/hero.png"
                      alt="iXtif İstif Makinesi - Forklift"
-                     class="w-full h-auto object-contain"
+                     class="relative z-10 w-full h-auto object-contain
+                            dark:drop-shadow-[0_0_50px_rgba(212,175,55,0.3)]"
                      loading="lazy">
             </div>
         </div>

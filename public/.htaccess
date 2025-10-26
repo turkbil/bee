@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Google Shopping Feed - Direct PHP file
+    RewriteRule ^productfeed$ productfeed.php [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

@@ -46,37 +46,24 @@ class FaviconController extends Controller
     private function getFaviconPath(): ?string
     {
         try {
-            // setting() helper ile tenant-aware favicon path'i al
-            // SettingValue tablosunda string olarak tutuluyor: "storage/tenant2/settings/3/favicon_xxx.ico"
-            $faviconPath = setting('site_favicon');
+            // Settings'den site_favicon key'ini çek
+            $setting = Setting::where('key', 'site_favicon')
+                ->where('is_active', true)
+                ->first();
 
-            if (!$faviconPath) {
+            if (!$setting) {
                 return null;
             }
 
-            // Relative path'i absolute path'e çevir
-            // storage/tenant2/settings/3/... -> /storage/tenant2/app/public/settings/3/...
-            // storage_path('app/public') zaten tenant prefix'li olduğu için tenant{id} kısmını strip et
-            $tenantId = tenant() ? tenant('id') : null;
-            $strippedPath = $faviconPath;
+            // Spatie Media Library - Direkt path al (URL parse gereksiz)
+            $media = $setting->getFirstMedia('site_favicon');
 
-            if ($tenantId) {
-                // "storage/tenant{id}/" kısmını çıkar
-                $strippedPath = preg_replace('#^storage/tenant' . $tenantId . '/#', '', $faviconPath);
-            } else {
-                // Central context: "storage/" kısmını çıkar
-                $strippedPath = preg_replace('#^storage/#', '', $faviconPath);
-            }
-
-            $absolutePath = storage_path('app/public/' . $strippedPath);
-
-            // Dosya var mı kontrol et
-            if (!file_exists($absolutePath)) {
-                \Log::warning('Favicon file not found: ' . $absolutePath . ' (original: ' . $faviconPath . ')');
+            if (!$media) {
                 return null;
             }
 
-            return $absolutePath;
+            // Absolute path döndür
+            return $media->getPath();
 
         } catch (\Exception $e) {
             \Log::error('Favicon path error: ' . $e->getMessage());

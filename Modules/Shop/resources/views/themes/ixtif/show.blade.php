@@ -7,6 +7,43 @@
 
 {{-- V6: HYBRID - V4/V1 Content + V2 Sticky Sidebar --}}
 
+@push('head')
+{{-- Schema.org Product (JSON-LD) --}}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ $item->getTranslated('title', app()->getLocale()) }}",
+    "description": "{{ strip_tags($item->getTranslated('short_description', app()->getLocale())) }}",
+    "image": "{{ $item->getFirstMedia('featured_image') ? $item->getFirstMedia('featured_image')->getUrl() : '' }}",
+    "brand": {
+        "@type": "Brand",
+        "name": "{{ $item->brand->title ?? setting('site_title') }}"
+    },
+    "sku": "{{ $item->sku ?? 'N/A' }}",
+    "offers": {
+        "@type": "Offer",
+        "url": "{{ url()->current() }}",
+        "priceCurrency": "TRY",
+        "availability": "https://schema.org/InStock"
+    }
+}
+</script>
+{{-- Product View Event --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.trackProductView === 'function') {
+            window.trackProductView(
+                '{{ $item->id }}',
+                '{{ $item->getTranslated('title', app()->getLocale()) }}',
+                '{{ $item->category->title ?? 'Uncategorized' }}',
+                null
+            );
+        }
+    });
+</script>
+@endpush
+
 @section('module_content')
     <div class="min-h-screen bg-gray-50 dark:bg-slate-900">
         @php

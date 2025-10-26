@@ -442,6 +442,9 @@
 {{-- AI Chat JS - MUST load AFTER Livewire/Alpine.js --}}
 <script src="/assets/js/ai-chat.js?v=<?php echo time(); ?>"></script>
 
+{{-- Google Tag Manager Event Tracking --}}
+<script defer src="{{ asset('js/ga-events.js') }}?v=1.0.0"></script>
+
 {{-- Core System Scripts --}}
 <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 

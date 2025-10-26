@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Shop\App\Http\Controllers\Front\ShopController;
 use Modules\Shop\App\Http\Controllers\Front\ShopQuoteController;
+use Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController;
+
+// GOOGLE SHOPPING FEED - Moved to routes/web.php for higher priority
 
 // DESIGN VERSION ROUTES (Test için farklı tasarımlar - Wildcard'dan önce tanımlanmalı!)
 Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])

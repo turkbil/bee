@@ -62,6 +62,9 @@ function clearSystemCache(button) {
     });
 }
 
+// Global olarak erişilebilir yap
+window.clearSystemCache = clearSystemCache;
+
 /**
  * Sticky Header Scroll Handler
  * Sayfa scroll edildiğinde header'ı yukarı taşır

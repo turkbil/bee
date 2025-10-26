@@ -17,6 +17,10 @@ class GoogleShoppingFeedController extends Controller
      */
     public function index(): Response
     {
+        // SIMPLE TEST - BYPASS ALL LOGIC
+        return response('<?xml version="1.0"?><test>CONTROLLER WORKS!</test>', 200)
+            ->header('Content-Type', 'application/xml; charset=utf-8');
+
         try {
             $products = ShopProduct::where('is_active', 1)
                 ->whereNotNull('slug') // Only products with slug
@@ -29,7 +33,7 @@ class GoogleShoppingFeedController extends Controller
             \Log::info('Google Shopping Feed: ' . $products->count() . ' products found');
             if ($products->count() > 0) {
                 $first = $products->first();
-                \Log::info('First product: ID=' . $first->product_id . ' | Slug=' . ($first->slug ?? 'NULL') . ' | Title=' . $first->title);
+                \Log::info('First product: ID=' . $first->product_id . ' | Slug=' . json_encode($first->slug) . ' | Title=' . json_encode($first->title));
             }
 
             $xml = $this->generateXml($products);
@@ -37,8 +41,9 @@ class GoogleShoppingFeedController extends Controller
             return response($xml, 200)
                 ->header('Content-Type', 'application/xml; charset=utf-8');
         } catch (\Exception $e) {
-            // Log error for debugging
+            // Log error for debugging with full trace
             \Log::error('Google Shopping Feed Error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
 
             // Return minimal valid XML
             $xml = '<?xml version="1.0" encoding="UTF-8"?>';
@@ -46,7 +51,7 @@ class GoogleShoppingFeedController extends Controller
             $xml .= '<channel>';
             $xml .= '<title>Error</title>';
             $xml .= '<link>' . url('/') . '</link>';
-            $xml .= '<description>Feed temporarily unavailable: ' . htmlspecialchars($e->getMessage()) . '</description>';
+            $xml .= '<description>Feed temporarily unavailable: ' . htmlspecialchars($e->getMessage()) . ' | File: ' . basename($e->getFile()) . ' | Line: ' . $e->getLine() . '</description>';
             $xml .= '</channel>';
             $xml .= '</rss>';
 
@@ -88,20 +93,22 @@ class GoogleShoppingFeedController extends Controller
      */
     private function generateProductItem(ShopProduct $product): string
     {
-        // Get slug for current locale (slug is JSON/array)
-        $slug = $product->getTranslation('slug', app()->getLocale()) ?? $product->slug;
+        try {
+            // Get slug for current locale (slug is JSON/array)
+            $slug = $product->getTranslation('slug', app()->getLocale()) ?? $product->slug;
 
-        // If slug is still array (no translation), use Turkish
-        if (is_array($slug)) {
-            $slug = $slug['tr'] ?? $slug['en'] ?? null;
-        }
+            // If slug is still array (no translation), use Turkish
+            if (is_array($slug)) {
+                $slug = $slug['tr'] ?? $slug['en'] ?? null;
+            }
 
-        // Skip product if no valid slug
-        if (!$slug) {
-            return '';
-        }
+            // Skip product if no valid slug
+            if (!$slug || !is_string($slug)) {
+                \Log::warning('Product skipped - invalid slug: ' . $product->product_id);
+                return '';
+            }
 
-        $productUrl = url('/shop/' . $slug);
+            $productUrl = url('/shop/' . $slug);
 
         // Get title (also JSON/array)
         $title = $product->getTranslation('title', app()->getLocale()) ?? $product->title;
@@ -191,6 +198,16 @@ class GoogleShoppingFeedController extends Controller
         $xml .= '</item>';
 
         return $xml;
+
+        } catch (\Exception $e) {
+            \Log::error('Error generating product item: ' . $product->product_id . ' - ' . $e->getMessage());
+            \Log::error('Product data: ' . json_encode([
+                'id' => $product->product_id,
+                'slug' => $product->slug,
+                'title' => $product->title,
+            ]));
+            return ''; // Skip this product
+        }
     }
 
     /**

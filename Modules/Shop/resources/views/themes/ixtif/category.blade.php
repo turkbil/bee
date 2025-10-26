@@ -128,9 +128,28 @@
         <section class="py-16">
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 @if($products->count() > 0)
+                    {{-- Loading Spinner (Initial Page Load) --}}
+                    <div x-show="!loaded" class="flex justify-center items-center py-32">
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="relative">
+                                {{-- Outer rotating ring --}}
+                                <div class="loading-spin rounded-full h-16 w-16 border-4 border-gray-200 dark:border-gray-700 border-t-blue-600"></div>
+                                {{-- Inner pulse --}}
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="h-8 w-8 bg-blue-600/20 rounded-full loading-ping"></div>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400 font-medium text-lg">Ürünler yükleniyor...</p>
+                        </div>
+                    </div>
+
                     {{-- Products Grid/List - iXtif Design --}}
                     {{-- Grid: 2 → 3 → 4 sütun (responsive) | List: 1 → 2 sütun (responsive) --}}
-                    <div class="grid gap-8 transition-all duration-300"
+                    <div x-show="loaded"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 scale-95"
+                         x-transition:enter-end="opacity-100 scale-100"
+                         class="grid gap-8 transition-all duration-300"
                          :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-2'"
                          x-ref="productsGrid">
                         @foreach($products as $product)
@@ -196,10 +215,11 @@
                 view: localStorage.getItem('shopViewMode') || 'grid', // Persist view preference
 
                 init() {
-                    this.$nextTick(() => {
+                    // Minimum 500ms göster (çok hızlı yüklense bile skeleton görünsün)
+                    setTimeout(() => {
                         this.loaded = true;
                         this.setupInfiniteScroll();
-                    });
+                    }, 500);
                 },
 
                 toggleView() {

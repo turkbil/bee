@@ -14,6 +14,10 @@ use Modules\Search\App\Http\Controllers\SearchPageController;
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
 Route::get('design/{file}', [App\Http\Controllers\DesignLibraryController::class, 'show'])->where('file', '.*')->name('designs.show');
 
+// GOOGLE SHOPPING FEED - TESTING WITHOUT MIDDLEWARE
+Route::get('productfeed', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index'])
+    ->name('feed.google-shopping');
+
 // Admin routes
 require __DIR__.'/admin/web.php';
 
@@ -48,11 +52,6 @@ Route::get('/metrics', function () {
 Route::middleware([InitializeTenancy::class])
     ->get('/favicon.ico', [FaviconController::class, 'show'])
     ->name('favicon');
-
-// GOOGLE SHOPPING FEED - Tenant-aware XML feed (high priority, before dynamic routes)
-Route::middleware([InitializeTenancy::class])
-    ->get('/feed/google-shopping', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index'])
-    ->name('feed.google-shopping');
 
 // SEARCH ROUTES - Must be before catch-all routes
 Route::middleware(['tenant'])->group(function () {
@@ -411,16 +410,16 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$')
          ->where('slug2', '^(?!pdf)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$')
          ->where('slug2', '^(?!pdf)[^/]+$')
          ->where('slug3', '[^/]+');
     });

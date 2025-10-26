@@ -5863,6 +5863,7 @@ return array(
     'Modules\\Shop\\App\\Http\\Controllers\\Api\\ShopApiController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Api/ShopApiController.php',
     'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Front/ShopController.php',
     'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopPreviewController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Front/ShopPreviewController.php',
+    'Modules\\Shop\\App\\Http\\Controllers\\GoogleShoppingFeedController' => $baseDir . '/Modules/Shop/app/Http/Controllers/GoogleShoppingFeedController.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Admin\\HomepageProductsComponent' => $baseDir . '/Modules/Shop/app/Http/Livewire/Admin/HomepageProductsComponent.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopBrandComponent' => $baseDir . '/Modules/Shop/app/Http/Livewire/Admin/ShopBrandComponent.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopBrandManageComponent' => $baseDir . '/Modules/Shop/app/Http/Livewire/Admin/ShopBrandManageComponent.php',

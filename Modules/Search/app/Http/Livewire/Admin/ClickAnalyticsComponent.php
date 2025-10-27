@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Search\App\Http\Livewire\Admin;
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Search\App\Models\SearchClick;
@@ -13,6 +14,7 @@ use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Models\ShopBrand;
 use Carbon\Carbon;
 
+#[Layout('admin.layout')]
 class ClickAnalyticsComponent extends Component
 {
     use WithPagination;
@@ -84,13 +86,6 @@ class ClickAnalyticsComponent extends Component
         return view('search::admin.livewire.click-analytics', [
             'results' => $results,
             'stats' => $stats,
-        ])->layout('admin.layouts.app', [
-            'title' => 'Tıklama İstatistikleri',
-            'breadcrumbs' => [
-                ['name' => 'Admin', 'url' => route('admin.dashboard')],
-                ['name' => 'Arama', 'url' => route('admin.search.index')],
-                ['name' => 'Tıklama İstatistikleri', 'url' => null],
-            ],
         ]);
     }
 

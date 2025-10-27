@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Son Aramalar');
+@endphp
+@include('search::admin.helper')
 <div>
     {{-- Statistics Cards --}}
     <div class="row mb-4">
@@ -81,15 +85,24 @@
                         <option value="brands">Markalar</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label class="form-label">Arama Terimi</label>
                     <input type="text" wire:model.live.debounce.500ms="searchTerm" class="form-control" placeholder="Ara...">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
+                    <label class="form-label">IP Adresi</label>
+                    <input type="text" wire:model.live.debounce.500ms="ipFilter" class="form-control" placeholder="IP Filtrele...">
+                    @if($ipFilter)
+                        <button type="button" wire:click="$set('ipFilter', '')" class="btn btn-sm btn-ghost-secondary mt-1">
+                            <i class="ti ti-x"></i> Temizle
+                        </button>
+                    @endif
+                </div>
+                <div class="col-md-2">
                     <label class="form-label d-block">&nbsp;</label>
                     <div class="form-check form-switch">
                         <input type="checkbox" wire:model.live="showZeroResults" class="form-check-input" id="zeroResults">
-                        <label class="form-check-label" for="zeroResults">Sadece Sonuçsuz Aramalar</label>
+                        <label class="form-check-label" for="zeroResults">Sadece Sonuçsuz</label>
                     </div>
                 </div>
             </div>
@@ -179,7 +192,12 @@
                             <span class="badge">{{ strtoupper($search->locale ?? 'tr') }}</span>
                         </td>
                         <td>
-                            <span class="text-muted small">{{ $search->ip_address }}</span>
+                            <button type="button"
+                                    wire:click="filterByIp('{{ $search->ip_address }}')"
+                                    class="btn btn-sm btn-ghost-secondary text-muted"
+                                    title="Bu IP'ye göre filtrele">
+                                {{ $search->ip_address }}
+                            </button>
                         </td>
                         <td class="text-end">
                             <div class="btn-group" role="group">

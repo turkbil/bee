@@ -1,46 +1,61 @@
-{{-- Modules/Search/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @section('pretitle')
-    Arama Sistemi
+Arama Sistemi
 @endsection
 
+@push('pretitle')
+Arama Sistemi
+@endpush
+
 {{-- Başlık --}}
-@section('title')
-    Arama Yönetimi
-@endsection
+@push('title')
+Arama Yönetimi
+@endpush
 
 {{-- Modül Menüsü --}}
 @push('module-menu')
-    <div class="dropdown d-grid d-md-flex module-menu">
-        <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">
-            <i class="fa-solid fa-magnifying-glass me-2"></i>Arama Menüsü
-        </a>
-        <div class="dropdown-menu dropdown-module-menu">
-            <div class="module-menu-revert">
-                @hasmoduleaccess('search', 'view')
-                    <a href="{{ route('admin.search.index') }}" class="dropdown-module-item btn btn-ghost-primary">
-                        <i class="fa-solid fa-list me-2"></i>Arama Sorguları
+<div class="dropdown d-grid d-md-flex module-menu">
+    <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none" data-bs-toggle="dropdown">
+        <i class="fa-solid fa-magnifying-glass me-2"></i>Arama Menüsü
+    </a>
+    <div class="dropdown-menu dropdown-module-menu">
+        <div class="module-menu-revert">
+            <div class="dropdown">
+                <button type="button" class="dropdown-module-item dropdown-toggle btn btn-ghost-secondary"
+                    data-bs-toggle="dropdown">
+                    <i class="fa-solid fa-magnifying-glass me-2"></i>Arama Yönetimi
+                </button>
+                <div class="dropdown-menu">
+                    @hasmoduleaccess('search', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.search.index') }}">
+                        <i class="icon-menu fa-solid fa-list"></i>Arama Sorguları
                     </a>
-                @endhasmoduleaccess
+                    @endhasmoduleaccess
 
-                @hasmoduleaccess('search', 'view')
-                    <a href="{{ route('admin.search.recent') }}" class="dropdown-module-item btn btn-ghost-primary">
-                        <i class="fa-solid fa-clock me-2"></i>Son Aramalar
+                    @hasmoduleaccess('search', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.search.recent') }}">
+                        <i class="icon-menu fa-solid fa-clock"></i>Son Aramalar
                     </a>
-                @endhasmoduleaccess
+                    @endhasmoduleaccess
 
-                @hasmoduleaccess('search', 'view')
-                    <a href="{{ route('admin.search.clicks') }}" class="dropdown-module-item btn btn-ghost-primary">
-                        <i class="fa-solid fa-hand-pointer me-2"></i>Tıklama İstatistikleri
-                    </a>
-                @endhasmoduleaccess
+                    <h6 class="dropdown-menu-header card-header-light">
+                        <span class="dropdown-header">İstatistikler</span>
+                    </h6>
 
-                @hasmoduleaccess('search', 'view')
-                    <a href="{{ route('admin.search.analytics') }}" class="dropdown-module-item btn btn-ghost-primary">
-                        <i class="fa-solid fa-chart-bar me-2"></i>Analytics
+                    @hasmoduleaccess('search', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.search.clicks') }}">
+                        <i class="icon-menu fa-solid fa-hand-pointer"></i>Tıklama İstatistikleri
                     </a>
-                @endhasmoduleaccess
+                    @endhasmoduleaccess
+
+                    @hasmoduleaccess('search', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.search.analytics') }}">
+                        <i class="icon-menu fa-solid fa-chart-bar"></i>Genel Analytics
+                    </a>
+                    @endhasmoduleaccess
+                </div>
             </div>
         </div>
     </div>
+</div>
 @endpush

@@ -1,34 +1,35 @@
-{{-- Cookie Consent Component - GDPR Uyumlu --}}
-<div x-data="cookieConsentApp()">
+{{-- Cookie Consent Component - Design 4 (Minimal Card) --}}
+<div x-data="cookieConsentApp()" x-cloak>
 
-    {{-- Cookie Consent Banner --}}
+    {{-- Cookie Consent Banner - Design 4 --}}
     <div x-show="showCookieConsent"
          x-transition:enter="transition ease-out duration-500"
          x-transition:enter-start="opacity-0 translate-y-8"
          x-transition:enter-end="opacity-100 translate-y-0"
-         class="fixed bottom-6 left-6 max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-5 border border-gray-200 dark:border-gray-700 z-50">
+         class="fixed bottom-6 left-6 max-w-xs bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 border-l-4 border-blue-500 dark:border-blue-400 z-50">
 
-        <div class="flex items-start gap-3">
-            <div class="text-3xl">🍪</div>
-            <div class="flex-1">
-                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Çerezler</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Bu site, hizmet kalitesini artırmak amacıyla çerez kullanmaktadır.</p>
+        <div>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="text-xl">🍪</span>
+                <h3 class="font-semibold text-gray-900 dark:text-white">Gizlilik Bildirimi</h3>
+            </div>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-2">Sitemizde gezinmeye devam ederek çerez kullanımını kabul etmiş sayılırsınız.</p>
 
-                {{-- Timer + Buttons - Tek Satır --}}
-                <div class="flex items-center gap-2">
-                    <button @click="openModal()"
-                            class="text-xs px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors whitespace-nowrap">
-                        Ayarlar
-                    </button>
-                    <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-2 rounded-lg whitespace-nowrap">
-                        <i class="fa-solid fa-clock"></i>
-                        <span x-text="timeRemaining + 's'"></span>
-                    </div>
-                    <button @click="acceptAll()"
-                            class="text-xs px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap">
-                        Kabul Et
-                    </button>
-                </div>
+            {{-- Timer --}}
+            <div class="mb-3 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded inline-flex items-center gap-1">
+                <i class="fa-solid fa-clock"></i>
+                <span x-text="timeRemaining + 's'"></span>
+            </div>
+
+            <div class="flex gap-2">
+                <button @click="acceptAll()"
+                        class="flex-1 text-sm py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
+                    Kabul Et
+                </button>
+                <button @click="openModal()"
+                        class="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
             </div>
         </div>
     </div>

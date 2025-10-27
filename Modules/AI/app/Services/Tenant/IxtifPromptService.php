@@ -131,7 +131,9 @@ class IxtifPromptService
         // 5️⃣ MARKDOWN VE FORMATLAMA
         // ====================================
         $prompts[] = "**📝 MESAJ FORMATI:**";
-        $prompts[] = "- Ürün linklerini markdown formatında gönder: `[Ürün Adı](URL)`";
+        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI (ÇOK KRİTİK!):** `**Ürün Adı** [LINK:shop:{{slug}}]`";
+        $prompts[] = "- ❌ ASLA standart markdown kullanma: `[Ürün](URL)` YASAK!";
+        $prompts[] = "- ✅ SADECE özel format: `**İXTİF EPT20** [LINK:shop:ixtif-ept20]` ← DOĞRU!";
         $prompts[] = "- Listelerde `*` veya `-` kullan";
         $prompts[] = "- Önemli kelimeleri **bold** yap";
         $prompts[] = "- Emojiler kullan ama abartma (max 2-3 per mesaj)";
@@ -202,20 +204,23 @@ class IxtifPromptService
         $prompts[] = "";
         $prompts[] = "AI: 'Merhaba! Transpalet seçeneklerimizi göstereyim: 😊";
         $prompts[] = "";
-        $prompts[] = "⭐ **[Litef EPT20 Elektrikli Transpalet](https://ixtif.com/shop/ixtif/litef-ept20)**";
-        $prompts[] = "   - 2000 kg taşıma kapasitesi";
-        $prompts[] = "   - Lityum batarya, 8 saat çalışma";
-        $prompts[] = "   - Orta/yoğun kullanım için";
+        $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Elektrikli Transpalet** [LINK:shop:{{slug}}]";
+        $prompts[] = "   - {{kapasite}} kg taşıma kapasitesi";
+        $prompts[] = "   - {{özellik-1}}";
+        $prompts[] = "   - {{kullanım-alanı}}";
         $prompts[] = "";
-        $prompts[] = "⭐ **[Litef EPT15 Manuel Transpalet](https://ixtif.com/shop/ixtif/litef-ept15)**";
-        $prompts[] = "   - 1500 kg kapasite";
-        $prompts[] = "   - Elektrik gerektirmez, bakım maliyeti düşük";
-        $prompts[] = "   - Hafif işler için ekonomik";
+        $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Manuel Transpalet** [LINK:shop:{{slug}}]";
+        $prompts[] = "   - {{kapasite}} kg kapasite";
+        $prompts[] = "   - {{özellik-1}}";
+        $prompts[] = "   - {{kullanım-alanı}}";
         $prompts[] = "";
-        $prompts[] = "🔍 **Karşılaştırma:** EPT20 elektrikli ve hızlı, EPT15 ise ekonomik. Hangi yoğunlukta kullanacaksınız?'";
+        $prompts[] = "🔍 **Karşılaştırma:** {{Ürün-1}} {{avantajı}}, {{Ürün-2}} ise {{avantajı}}. Hangi yoğunlukta kullanacaksınız?'";
+        $prompts[] = "";
+        $prompts[] = "**NOT:** Yukarıdaki {{placeholder}} değerlerini Meilisearch'ten gelen GERÇEK ürün bilgileriyle değiştir!";
+        $prompts[] = "**ASLA hardcode ürün adı kullanma!** Sadece Meilisearch sonuçlarını göster!";
         $prompts[] = "";
         $prompts[] = "Müşteri: 'Günde 50+ palet taşıyacağız'";
-        $prompts[] = "AI: 'O zaman EPT20 size daha uygun! Detaylı teklif için telefon numaranızı alabilir miyim? 📞'";
+        $prompts[] = "AI: 'O zaman {{elektrikli-model}} size daha uygun! Detaylı teklif için telefon numaranızı alabilir miyim? 📞'";
         $prompts[] = "";
         $prompts[] = "Müşteri: '0555 123 4567'";
         $prompts[] = "AI: 'Teşekkürler! Ekibimiz en kısa sürede sizi arayacak. İyi günler! 🙏'";

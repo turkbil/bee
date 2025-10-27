@@ -175,11 +175,14 @@
         $previewableMedia = $mediaItems->filter(function($media) {
             return $this->isPreviewable($media);
         })->map(function($media) {
+            $isVideo = $this->isVideo($media);
             return [
-                'url' => thumb($media, 1920, 1920, ['quality' => 90]),
-                'thumb' => thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]),
+                'url' => $isVideo ? $media->getUrl() : thumb($media, 1920, 1920, ['quality' => 90]),
+                'thumb' => $isVideo ? $media->getUrl() : thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]),
                 'name' => $media->name,
-                'id' => $media->id
+                'id' => $media->id,
+                'isVideo' => $isVideo,
+                'mimeType' => $media->mime_type
             ];
         })->values()->toArray();
         @endphp
@@ -323,17 +326,34 @@
                         </svg>
                     </button>
 
-                    <!-- Image Container -->
+                    <!-- Media Container -->
                     <div class="d-flex flex-column align-items-center justify-content-center" style="max-width: 90%; max-height: 90vh;" @click.stop>
-                        <img :src="currentMedia.url"
-                             :alt="currentMedia.name"
-                             class="img-fluid"
-                             style="max-width: 100%; max-height: 85vh; object-fit: contain; cursor: default;">
+                        <!-- Image -->
+                        <template x-if="!currentMedia.isVideo">
+                            <img :src="currentMedia.url"
+                                 :alt="currentMedia.name"
+                                 class="img-fluid"
+                                 style="max-width: 100%; max-height: 85vh; object-fit: contain; cursor: default;">
+                        </template>
 
-                        <!-- Image Info -->
+                        <!-- Video -->
+                        <template x-if="currentMedia.isVideo">
+                            <video controls
+                                   class="img-fluid"
+                                   style="max-width: 100%; max-height: 85vh; object-fit: contain; cursor: default;"
+                                   preload="metadata">
+                                <source :src="currentMedia.url" :type="currentMedia.mimeType">
+                                Tarayıcınız video oynatmayı desteklemiyor.
+                            </video>
+                        </template>
+
+                        <!-- Media Info -->
                         <div class="text-white mt-3 text-center">
                             <div class="fw-bold" x-text="currentMedia.name"></div>
-                            <div class="text-muted small" x-text="`${currentIndex + 1} / ${mediaList.length}`"></div>
+                            <div class="text-muted small">
+                                <span x-text="`${currentIndex + 1} / ${mediaList.length}`"></span>
+                                <span x-show="currentMedia.isVideo" class="ms-2 badge bg-primary">Video</span>
+                            </div>
                         </div>
                     </div>
                 </div>

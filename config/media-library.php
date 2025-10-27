@@ -11,9 +11,9 @@ return [
     /*
      * The maximum file size of an item in bytes.
      * Adding a larger file will result in an exception.
-     * SET TO 1GB - Root user bypass in CustomMedia model
+     * Root user (ID:1): 1GB, Others: 20MB
      */
-    'max_file_size' => 1024 * 1024 * 1024, // 1GB
+    'max_file_size' => 1024 * 1024 * 20, // 20MB default (root user override in AppServiceProvider)
 
     /*
      * This queue connection will be used to generate derived and responsive images.

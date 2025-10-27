@@ -2331,3 +2331,4 @@ class PublicAIController extends Controller
             'X-Accel-Buffering' => 'no',
         ]);
     }
+}

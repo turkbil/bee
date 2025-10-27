@@ -276,7 +276,7 @@
 
                 {{-- CTA Butonu --}}
                 <a href="/page/hakkimizda" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
-                    <i class="fa-light fa-info-circle mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                    <i class="fa-regular fa-circle-info mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                     Hakkımızda Daha Fazla
                 </a>
             </div>

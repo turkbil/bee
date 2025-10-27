@@ -50,12 +50,11 @@
             $currentLocale = app()->getLocale();
             $title = $item->getTranslated('title', $currentLocale);
 
-            // Fallback: Eğer title slug veya "basliksiz-" ile başlıyorsa, boş bırak (başlık gösterme)
-            if (str_starts_with($title, 'basliksiz-') || str_contains($title, '-')) {
-                // Slug formatında ise başlık gösterme, sadece açıklama göster
-                if (strlen($title) < 50 && !str_contains($title, ' ')) {
-                    $title = null; // Başlık gösterilmeyecek
-                }
+            // Fallback: Eğer title slug formatında ise gösterme (örn: "basliksiz-16", "product-slug")
+            if (str_starts_with($title, 'basliksiz-')) {
+                $title = null; // "basliksiz-X" formatı = slug, başlık gösterilmeyecek
+            } elseif (strlen($title) < 50 && !str_contains($title, ' ') && str_contains($title, '-')) {
+                $title = null; // Kısa, boşluksuz, tire içeren = slug formatı
             }
 
             $shortDescription = $item->getTranslated('short_description', $currentLocale);

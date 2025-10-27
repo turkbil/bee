@@ -9,6 +9,7 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Modules\Search\App\Http\Livewire\Frontend\SearchBarComponent;
+use Modules\Search\App\Http\Livewire\Frontend\SearchBarFooterComponent;
 use Modules\Search\App\Http\Livewire\Admin\SearchQueriesManagementComponent;
 use Modules\Search\App\Http\Livewire\Admin\SearchAnalyticsComponent;
 use Modules\Search\App\Http\Livewire\Admin\RecentSearchesComponent;
@@ -43,6 +44,7 @@ class SearchServiceProvider extends ServiceProvider
     {
         // Frontend components
         Livewire::component('search::search-bar', SearchBarComponent::class);
+        Livewire::component('search::search-bar-footer', SearchBarFooterComponent::class);
 
         // Admin components
         Livewire::component('search::admin.search-queries-management', SearchQueriesManagementComponent::class);

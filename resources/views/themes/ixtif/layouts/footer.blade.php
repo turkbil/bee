@@ -13,7 +13,7 @@
 
                 {{-- Livewire Search Bar with Custom Footer Styling --}}
                 <div class="mb-6">
-                    @livewire('search::search-bar', ['viewMode' => 'footer'])
+                    @livewire('search::search-bar-footer')
                 </div>
 
                 {{-- Popüler Aramalar (SADECE LG+ EKRANLARDA) --}}

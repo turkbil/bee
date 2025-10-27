@@ -243,7 +243,7 @@
                             </div>
                         </div>
                         <div class="lg:col-span-1">
-                            <div class="sticky top-24 space-y-6">
+                            <div class="lg:sticky lg:top-24 space-y-6">
                                 {{-- Quick Contact --}}
                                 <div class="bg-gradient-to-br from-blue-600 to-blue-700 dark:from-gray-800 dark:to-gray-900 rounded-lg p-6 text-white">
                                     <h3 class="text-xl font-bold mb-4">Hızlı İletişim</h3>

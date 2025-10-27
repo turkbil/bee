@@ -37,8 +37,8 @@
     }
 }">
 
-    <!-- Left Side: Info & Contact Details & Form -->
-    <div class="lg:w-1/2 lg:min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 animate-slide-in-left overflow-y-auto">
+    <!-- Left Side: Info & Contact Details & Form (Full Width on Mobile) -->
+    <div class="w-full lg:w-1/2 lg:min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 animate-slide-in-left overflow-y-auto">
 
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-20 pointer-events-none">
@@ -273,8 +273,8 @@
         </div>
     </div>
 
-    <!-- Right Side: AI Chat Assistant (Sticky on Desktop Only) -->
-    <div class="lg:w-1/2 lg:min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 animate-slide-in-right">
+    <!-- Right Side: AI Chat Assistant (Desktop Only - Hidden on Mobile) -->
+    <div class="hidden lg:block lg:w-1/2 lg:min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 animate-slide-in-right">
 
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-10 pointer-events-none">
@@ -283,8 +283,8 @@
 
         <!-- Sticky Container (Desktop Only) -->
         <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-xl mx-auto">
-            <!-- Responsive Height Wrapper: 400px mobile, 700px desktop -->
-            <div class="h-[400px] lg:h-[700px]">
+            <!-- Responsive Height Wrapper: 550px mobile, 700px desktop -->
+            <div class="h-[550px] lg:h-[700px]">
                 <x-ai.inline-widget
                     title="iXtif Destek Asistanı"
                     page-slug="iletisim"

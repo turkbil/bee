@@ -1,53 +1,39 @@
-# Symfony\Component\ErrorHandler\Error\FatalError - Internal Server Error
-Cannot make static method Livewire\Features\SupportFileUploads\FileUploadConfiguration::rules() non static in class App\Livewire\CustomFileUploadConfiguration
+multi-modal-manager.js?v=1761533666:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761533666:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761533666:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761533666:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761533666:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761533666:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761533666:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761533666:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761533666:13 ⏰ Load Time: 2025-10-27T02:54:26.369Z
+ai-seo-integration.js?v=1761533666:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761533666:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761533666:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761533666:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761533666:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1761533666:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761533666:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761533666:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761533666:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+mediamanagement:4116 ✅ Alpine.js Global Store initialized (Livewire bundled)
+simple-translation-modal.js?v=1761533666:839 ⚡ Livewire initialized
+ai-content-system.js?v=1761533666:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761533666:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761533666:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761533666:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761533666:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761533666:558 🔒 attachButtonListeners SKIP - already attached
+mediamanagement:4275 🚀 Enterprise Streaming Translation System Ready!
+mediamanagement:4288 📝 Streaming translation not available - Using standard translation mode
+ai-seo-integration.js?v=1761533666:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761533666:558 🔒 attachButtonListeners SKIP - already attached
+mediamanagement:4153 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
 
-PHP 8.3.26
-Laravel 12.32.5
-ixtif.com
-
-## Stack Trace
-
-0 - app/Livewire/CustomFileUploadConfiguration.php:12
-
-## Request
-
-GET /test-upload-config
-
-## Headers
-
-* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; _ym_uid=176118900044921329; _ym_d=1761189000; last_activity_read=1761445892; _gcl_au=1.1.612840818.1761453196; _fbp=fb.1.1761456765935.67835112351166348; _ym_isad=2; _ym_visorc=w; _clck=1ok4nj5%5E2%5Eg0i%5E0%5E2125; _ga_5DDRPR03QM=GS2.1.s1761508971$o48$g1$t1761532231$j60$l0$h0; _clsk=14dn83g%5E1761532232880%5E174%5E1%5Eb.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6Ikloc2s3TUZwYWdZU1pmSFE1MTJ2cFE9PSIsInZhbHVlIjoiT1FxN0NDK0V1RndkZE5CbHQzY2FVS2QzcURRYUQ1NzZCNi9vcVNHZzFyTGloZWlpekZJS0dJbyt1Qmh2T05Jdms1WGkyditHVjBVQ3Z2cURENXVMSkxSTmhMTkhKUHFlQml0aE1iOStmQnl3eHBoWWh3d3JOcnc3MU5RVFFFMWQiLCJtYWMiOiIxMjY2ZWE5NWEyYmYwNTE1MTNiZjQ0ODhhNGYwNmMxYjdlOWYzOWJjMzM1Mjg2N2JkODllOWI0NzJkNmU5ODY5IiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IjJzVXBZdzlGckpuaHlPd1M0RTBlaGc9PSIsInZhbHVlIjoiYXNjd2ZWVGQ0aUY2bi92Z3NvTk9JQXN1Z2lVdEI2blZvNUVWOXdaV09VcXBBTEJneGh0ekhJRjJVN29pSmFuMGpvR044R01wZGNXR2dwTjYwaWJCaTVTelNxVFZpazZVQmNIcFlNNHdoV3dFUDdrbGgwQWFVSzBtWVl0NGZZY0EiLCJtYWMiOiJlMjllODgyNjllMjIyNjdlZGZiYWY1ODcyNmRjMjgxMzE4NWE3NDdmZTU4MmU4YzkzMTkxNzJjMDlmYTkwOGE3IiwidGFnIjoiIn0%3D
-* **priority**: u=0, i
-* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
-* **accept-encoding**: gzip, deflate, br, zstd
-* **sec-fetch-dest**: document
-* **sec-fetch-user**: ?1
-* **sec-fetch-mode**: navigate
-* **sec-fetch-site**: none
-* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
-* **upgrade-insecure-requests**: 1
-* **dnt**: 1
-* **sec-ch-ua-platform**: "macOS"
-* **sec-ch-ua-mobile**: ?0
-* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
-* **connection**: close
-* **x-accel-internal**: /internal-nginx-static-location
-* **x-real-ip**: 92.44.119.135
-* **host**: ixtif.com
-
-## Route Context
-
-controller: Closure
-middleware: web, auth
-
-## Route Parameters
-
-No route parameter data available.
-
-## Database Queries
-
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (2.26 ms)
-* mysql - select * from `sessions` where `id` = 'UvACH6GXWpxIpaYjozGVwIq4rFZacaO9Zta8GfZF' limit 1 (0.54 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.06 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.43 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.58 ms)
+  tail -100 storage/logs/laravel.log | grep -E
+  "MANUAL_UPLOAD|DEBUG UPLOAD"
+VM6736:2 Uncaught SyntaxError: Unexpected identifier 'storage'

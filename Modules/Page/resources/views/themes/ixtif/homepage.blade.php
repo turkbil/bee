@@ -78,7 +78,7 @@
 
             <!-- Right Content - Hero Image -->
             <div class="flex items-center justify-center">
-                <img src="https://ixtif.com/storage/tenant2/79/hero.jpg"
+                <img src="https://ixtif.com/storage/tenant2/80/hero.png"
                      alt="iXtif İstif Makinesi - Forklift"
                      class="w-full h-auto object-contain"
                      loading="lazy">
@@ -231,12 +231,13 @@
 <section class="w-full py-8 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
-            {{-- Sol: Görsel --}}
-            <div class="relative rounded-3xl h-[600px] overflow-hidden">
+            {{-- Sol: Görsel (Ken Burns + Parallax Efekt) --}}
+            <div class="relative rounded-3xl h-[600px] overflow-hidden" id="aboutPhotoContainer">
                 <img src="https://ixtif.com/storage/tenant2/78/super-hero.jpg"
                      alt="İxtif - Depoda, Üretimde, Dağıtımda"
-                     class="w-full h-full object-cover"
-                     loading="lazy">
+                     class="w-full h-full object-cover about-hero-photo"
+                     loading="lazy"
+                     id="aboutHeroPhoto">
             </div>
 
             {{-- Sağ: İçerik --}}
@@ -251,22 +252,28 @@
 
                 {{-- Özellikler --}}
                 <div class="grid grid-cols-3 gap-6 mb-8">
-                    <div class="text-center">
-                        <div class="text-4xl font-black text-blue-600 mb-2"><i class="fa-light fa-truck-fast"></i></div>
+                    <div class="text-center group cursor-pointer">
+                        <div class="text-4xl font-black text-blue-600 mb-2">
+                            <i class="fa-light fa-truck-fast inline-block group-hover:animate-slide-x-infinite"></i>
+                        </div>
                         <div class="text-gray-600 dark:text-gray-400">Hızlı Teslimat</div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-4xl font-black text-blue-600 mb-2"><i class="fa-light fa-shield-check"></i></div>
+                    <div class="text-center group cursor-pointer">
+                        <div class="text-4xl font-black text-blue-600 mb-2">
+                            <i class="fa-light fa-shield-check inline-block group-hover:animate-pulse-scale"></i>
+                        </div>
                         <div class="text-gray-600 dark:text-gray-400">Garanti Güvencesi</div>
                     </div>
-                    <div class="text-center">
-                        <div class="text-4xl font-black text-blue-600 mb-2"><i class="fa-light fa-screwdriver-wrench"></i></div>
+                    <div class="text-center group cursor-pointer">
+                        <div class="text-4xl font-black text-blue-600 mb-2">
+                            <i class="fa-light fa-screwdriver-wrench inline-block group-hover:animate-rotate-wiggle-infinite"></i>
+                        </div>
                         <div class="text-gray-600 dark:text-gray-400">Teknik Servis</div>
                     </div>
                 </div>
 
                 {{-- CTA Butonu --}}
-                <a href="/hakkimizda" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                <a href="/page/hakkimizda" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
                     <i class="fa-light fa-info-circle mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                     Hakkımızda Daha Fazla
                 </a>
@@ -460,6 +467,78 @@
 </section>
 
 {{-- Alpine.js Component --}}
+<style>
+    /* Ken Burns + Parallax Hybrid Effect */
+    @keyframes kenBurnsParallax {
+        0% {
+            transform: scale(1) translate(0, var(--parallax-y, 0));
+        }
+        25% {
+            transform: scale(1.08) translate(-15px, calc(var(--parallax-y, 0) - 10px));
+        }
+        50% {
+            transform: scale(1.12) translate(12px, calc(var(--parallax-y, 0) - 8px));
+        }
+        75% {
+            transform: scale(1.08) translate(-8px, calc(var(--parallax-y, 0) + 8px));
+        }
+        100% {
+            transform: scale(1) translate(0, var(--parallax-y, 0));
+        }
+    }
+
+    .about-hero-photo {
+        animation: kenBurnsParallax 25s ease-in-out infinite;
+        --parallax-y: 0px;
+    }
+
+    /* Icon Hover Animations */
+    @keyframes slideXInfinite {
+        0%, 100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(8px);
+        }
+        75% {
+            transform: translateX(-8px);
+        }
+    }
+
+    @keyframes pulseScale {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.15);
+        }
+    }
+
+    @keyframes rotateWiggleInfinite {
+        0%, 100% {
+            transform: rotate(0deg);
+        }
+        25% {
+            transform: rotate(15deg);
+        }
+        75% {
+            transform: rotate(-15deg);
+        }
+    }
+
+    .animate-slide-x-infinite {
+        animation: slideXInfinite 1.5s ease-in-out infinite;
+    }
+
+    .animate-pulse-scale {
+        animation: pulseScale 1.2s ease-in-out infinite;
+    }
+
+    .animate-rotate-wiggle-infinite {
+        animation: rotateWiggleInfinite 1.5s ease-in-out infinite;
+    }
+</style>
+
 <script>
     function homepage() {
         return {
@@ -477,6 +556,36 @@
                 setInterval(() => {
                     this.showX = !this.showX;
                 }, 2000);
+
+                // Ken Burns + Parallax Hybrid Effect
+                this.initAboutPhotoEffect();
+            },
+
+            initAboutPhotoEffect() {
+                const photo = document.getElementById('aboutHeroPhoto');
+                const container = document.getElementById('aboutPhotoContainer');
+
+                if (!photo || !container) return;
+
+                const handleScroll = () => {
+                    const rect = container.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+
+                    // Parallax hesaplama (container ekranda görünürken)
+                    if (rect.top < windowHeight && rect.bottom > 0) {
+                        const scrollPercent = (windowHeight - rect.top) / (windowHeight + rect.height);
+                        const parallaxY = (scrollPercent - 0.5) * 40; // -20px to +20px
+
+                        // CSS variable güncelle (Ken Burns animasyonu bunu kullanacak)
+                        photo.style.setProperty('--parallax-y', `${parallaxY}px`);
+                    }
+                };
+
+                // Scroll event listener
+                window.addEventListener('scroll', handleScroll, { passive: true });
+
+                // Initial call
+                handleScroll();
             },
 
             openProductModal(productData) {

@@ -13,10 +13,10 @@
                 @endphp
 
                 <a href="/shop/kategori/{{ $categorySlug }}"
-                   class="flex items-center gap-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl p-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200">
+                   class="flex items-center gap-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl p-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200">
 
                     {{-- Icon --}}
-                    <div class="w-12 h-12 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center flex-shrink-0 border border-white/30 dark:border-white/20">
+                    <div class="w-12 h-12 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                         @if($category->icon_class)
                             <i class="{{ $category->icon_class }} text-gray-700 dark:text-white text-lg"></i>
                         @else
@@ -44,19 +44,19 @@
                     Hizmetler
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <i class="fa-solid fa-badge-check text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Sıfır Ürün</p>
                     </div>
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <i class="fa-solid fa-recycle text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">İkinci El</p>
                     </div>
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <i class="fa-solid fa-calendar-days text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Kiralama</p>
                     </div>
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <i class="fa-solid fa-screwdriver-wrench text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Teknik Servis</p>
                     </div>
@@ -84,12 +84,12 @@
                             @endphp
 
                             <a href="/shop/kategori/{{ $categorySlug }}"
-                               class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl p-6 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 overflow-hidden">
+                               class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-6 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 overflow-hidden">
 
                                 <div class="relative z-10 flex items-center gap-4">
                                     {{-- Icon Container --}}
                                     <div class="relative">
-                                        <div class="w-20 h-20 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 dark:border-white/20">
+                                        <div class="w-20 h-20 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-gray-200 dark:border-white/20">
                                             @if($category->icon_class)
                                                 <i class="{{ $category->icon_class }} text-gray-700 dark:text-white text-3xl"></i>
                                             @else
@@ -118,9 +118,9 @@
                 {{-- Hizmetler - Horizontal Badges --}}
                 <div class="flex flex-wrap gap-3">
                     {{-- Sıfır Ürün --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30 dark:border-white/20">
+                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-badge-check text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Sıfır Ürün</p>
@@ -128,9 +128,9 @@
                     </div>
 
                     {{-- İkinci El --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30 dark:border-white/20">
+                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-recycle text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">İkinci El</p>
@@ -138,9 +138,9 @@
                     </div>
 
                     {{-- Kiralama --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30 dark:border-white/20">
+                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-calendar-days text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Kiralama</p>
@@ -148,9 +148,9 @@
                     </div>
 
                     {{-- Teknik Servis --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-white/30 dark:border-white/20">
+                            <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-screwdriver-wrench text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Teknik Servis</p>

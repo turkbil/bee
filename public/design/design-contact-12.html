@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Map Hero - iXtif İletişim</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+
+        @keyframes marker-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        .marker-bounce { animation: marker-bounce 2s ease-in-out infinite; }
+
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="/design/" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        12 / 20
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">İletişim Tasarımları</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="design-contact-11.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-contact-13.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section with Map Background -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden" x-data="{
+        formData: { name: '', email: '', phone: '', message: '' },
+        activeTab: 'form',
+        isSubmitting: false,
+        showSuccess: false,
+        mapInteraction: false,
+        submitForm() {
+            this.isSubmitting = true;
+            setTimeout(() => {
+                this.isSubmitting = false;
+                this.showSuccess = true;
+                setTimeout(() => { this.showSuccess = false; this.activeTab = 'info'; }, 3000);
+                this.formData = { name: '', email: '', phone: '', message: '' };
+            }, 1500);
+        }
+    }">
+
+        <!-- Animated Map Background -->
+        <div class="absolute inset-0 opacity-20">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-transparent to-purple-500/30"></div>
+            <svg class="w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+                <!-- Grid lines -->
+                <defs>
+                    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(59, 130, 246, 0.3)" stroke-width="0.5"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+
+                <!-- Map Roads -->
+                <path d="M 100 200 Q 300 250 500 200 T 900 300" stroke="rgba(59, 130, 246, 0.5)" stroke-width="3" fill="none" />
+                <path d="M 200 100 Q 300 400 600 500 T 800 700" stroke="rgba(139, 92, 246, 0.5)" stroke-width="3" fill="none" />
+                <circle cx="500" cy="500" r="10" fill="#3b82f6" class="marker-bounce" />
+            </svg>
+        </div>
+
+        <div class="container mx-auto px-4 py-24 relative z-10">
+            <div class="max-w-7xl mx-auto">
+
+                <!-- Header -->
+                <div class="text-center mb-12">
+                    <h1 class="text-6xl md:text-8xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        Bizi Bulun
+                    </h1>
+                    <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                        İstanbul'un kalbinde, sizin için hazırız. Ofisimizi ziyaret edin veya online iletişime geçin.
+                    </p>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid lg:grid-cols-2 gap-8">
+
+                    <!-- Left: Map & Info -->
+                    <div class="space-y-6">
+
+                        <!-- Interactive Map Embed -->
+                        <div @mouseenter="mapInteraction = true" @mouseleave="mapInteraction = false"
+                             class="glass rounded-3xl overflow-hidden shadow-2xl border-2 transition-all duration-500"
+                             :class="mapInteraction ? 'border-blue-400 scale-105 shadow-blue-500/30' : 'border-white/10'">
+
+                            <div class="relative h-96">
+                                <!-- Placeholder Map (Replace with real Google Maps iframe) -->
+                                <div class="w-full h-full bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center relative overflow-hidden">
+
+                                    <!-- Map Overlay -->
+                                    <div class="absolute inset-0 opacity-30">
+                                        <div class="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
+                                        <div class="absolute bottom-1/4 right-1/4 w-40 h-40 bg-purple-500 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+                                    </div>
+
+                                    <!-- Location Marker -->
+                                    <div class="relative z-10 text-center">
+                                        <div class="marker-bounce">
+                                            <i class="fa-solid fa-location-dot text-8xl text-red-500 drop-shadow-2xl"></i>
+                                        </div>
+                                        <div class="mt-6 bg-white/10 backdrop-blur-lg px-6 py-3 rounded-full border border-white/20">
+                                            <p class="text-white font-semibold">İmes Sanayi Sitesi, Beylikdüzü</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Real Google Maps Integration (Optional) -->
+                                    <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.9753!2d28.6434!3d41.0034!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDAwJzEyLjIiTiAyOMKwMzgnMzYuMiJF!5e0!3m2!1str!2str!4v1234567890" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe> -->
+
+                                </div>
+
+                                <!-- Map Interaction Hint -->
+                                <div class="absolute bottom-4 left-4 right-4 bg-white/10 backdrop-blur-lg px-4 py-3 rounded-xl border border-white/20 flex items-center gap-3">
+                                    <i class="fa-solid fa-circle-info text-blue-400"></i>
+                                    <span class="text-sm text-white">Haritayı zoom/move yapabilirsiniz</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Info Cards -->
+                        <div class="grid grid-cols-2 gap-4">
+
+                            <!-- Working Hours -->
+                            <div class="glass rounded-2xl p-6 hover:border-green-400 transition-all duration-300 group cursor-pointer border">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-clock text-2xl text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-bold mb-2 text-white">Çalışma Saatleri</h3>
+                                <p class="text-gray-300 text-sm">Pzt-Cum: 09:00 - 18:00</p>
+                                <p class="text-gray-400 text-xs mt-1">Cmt: 10:00 - 14:00</p>
+                            </div>
+
+                            <!-- Response Time -->
+                            <div class="glass rounded-2xl p-6 hover:border-orange-400 transition-all duration-300 group cursor-pointer border">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-timer text-2xl text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-bold mb-2 text-white">Yanıt Süresi</h3>
+                                <p class="text-gray-300 text-sm">Ortalama 2 saat</p>
+                                <p class="text-gray-400 text-xs mt-1">7/24 destek</p>
+                            </div>
+
+                        </div>
+
+                        <!-- Direct Contact Buttons -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <a href="tel:02167553555"
+                               class="glass rounded-2xl p-6 hover:border-blue-400 transition-all duration-300 group text-center border hover:scale-105">
+                                <i class="fa-solid fa-phone text-4xl text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                                <p class="font-bold text-white mb-1">Hemen Ara</p>
+                                <p class="text-sm text-gray-300">0216 755 35 55</p>
+                            </a>
+
+                            <a href="mailto:info@ixtif.com"
+                               class="glass rounded-2xl p-6 hover:border-purple-400 transition-all duration-300 group text-center border hover:scale-105">
+                                <i class="fa-solid fa-envelope text-4xl text-purple-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                                <p class="font-bold text-white mb-1">E-Posta Gönder</p>
+                                <p class="text-sm text-gray-300">info@ixtif.com</p>
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Form -->
+                    <div class="glass rounded-3xl p-10 shadow-2xl border">
+
+                        <!-- Success Message -->
+                        <div x-show="showSuccess"
+                             x-transition
+                             class="absolute inset-0 flex items-center justify-center bg-green-500/90 backdrop-blur-lg rounded-3xl z-20">
+                            <div class="text-center">
+                                <i class="fa-solid fa-circle-check text-8xl text-white mb-6"></i>
+                                <h3 class="text-3xl font-bold text-white mb-3">Mesajınız İletildi!</h3>
+                                <p class="text-white/90">Size en kısa sürede dönüş yapacağız.</p>
+                            </div>
+                        </div>
+
+                        <!-- Tabs -->
+                        <div class="flex gap-4 mb-8 border-b border-white/10 pb-4">
+                            <button @click="activeTab = 'form'"
+                                    class="px-6 py-3 rounded-xl font-semibold transition-all"
+                                    :class="activeTab === 'form' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'">
+                                <i class="fa-solid fa-message mr-2"></i>
+                                Mesaj Formu
+                            </button>
+                            <button @click="activeTab = 'info'"
+                                    class="px-6 py-3 rounded-xl font-semibold transition-all"
+                                    :class="activeTab === 'info' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : 'text-gray-400 hover:text-white'">
+                                <i class="fa-solid fa-info-circle mr-2"></i>
+                                İletişim Bilgileri
+                            </button>
+                        </div>
+
+                        <!-- Tab Content: Form -->
+                        <div x-show="activeTab === 'form'" x-transition>
+                            <form @submit.prevent="submitForm" class="space-y-6">
+
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2 text-gray-300">Ad Soyad</label>
+                                    <input type="text" x-model="formData.name" required
+                                           class="w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 transition-all"
+                                           placeholder="Adınız ve soyadınız">
+                                </div>
+
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-semibold mb-2 text-gray-300">E-Posta</label>
+                                        <input type="email" x-model="formData.email" required
+                                               class="w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all"
+                                               placeholder="ornek@email.com">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold mb-2 text-gray-300">Telefon</label>
+                                        <input type="tel" x-model="formData.phone"
+                                               class="w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/20 transition-all"
+                                               placeholder="0 (5XX) XXX XX XX">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2 text-gray-300">Mesajınız</label>
+                                    <textarea x-model="formData.message" required rows="6"
+                                              class="w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-400/20 transition-all resize-none"
+                                              placeholder="Mesajınızı buraya yazın..."></textarea>
+                                </div>
+
+                                <button type="submit"
+                                        :disabled="isSubmitting"
+                                        class="w-full px-8 py-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-bold text-lg text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:scale-100">
+                                    <span x-show="!isSubmitting" class="flex items-center justify-center gap-3">
+                                        <span>Gönder</span>
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </span>
+                                    <span x-show="isSubmitting" class="flex items-center justify-center gap-3">
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+                                        <span>Gönderiliyor...</span>
+                                    </span>
+                                </button>
+
+                            </form>
+                        </div>
+
+                        <!-- Tab Content: Info -->
+                        <div x-show="activeTab === 'info'" x-transition class="space-y-6">
+
+                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-location-dot text-xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white mb-1">Adres</h3>
+                                    <p class="text-gray-300 text-sm">Çamlık Mah. İmes Sanayi Sitesi B Blok No:24</p>
+                                    <p class="text-gray-400 text-sm">Beylikdüzü / İstanbul</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-phone text-xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white mb-1">Telefon</h3>
+                                    <a href="tel:02167553555" class="text-purple-300 hover:text-purple-200 text-sm">0216 755 35 55</a>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-envelope text-xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white mb-1">E-Posta</h3>
+                                    <a href="mailto:info@ixtif.com" class="text-green-300 hover:text-green-200 text-sm">info@ixtif.com</a>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-globe text-xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white mb-1">Website</h3>
+                                    <a href="https://ixtif.com" target="_blank" class="text-orange-300 hover:text-orange-200 text-sm">www.ixtif.com</a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+</body>
+</html>

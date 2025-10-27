@@ -232,11 +232,11 @@
         {{-- Linkler Yatay --}}
         @php
             $footerLinks = [
-                ['name' => 'Hakkımızda', 'url' => '#'],
+                ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
                 ['name' => 'Kategoriler', 'url' => href('Shop', 'index')],
                 ['name' => 'Kampanyalar', 'url' => '#'],
                 ['name' => 'Blog', 'url' => '#'],
-                ['name' => 'İletişim', 'url' => '#'],
+                ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
                 ['name' => 'Kariyer', 'url' => '#'],
                 ['name' => 'SSS', 'url' => '#'],
                 ['name' => 'İade & Değişim', 'url' => '#']

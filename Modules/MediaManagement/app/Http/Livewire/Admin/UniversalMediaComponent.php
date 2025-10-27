@@ -1278,13 +1278,13 @@ class UniversalMediaComponent extends Component
                 return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
             }
 
-            // Root user (ID: 1) için sınırsız upload
-            $maxSize = (auth()->check() && auth()->user()->id === 1) ? PHP_INT_MAX : 20480;
-
-            // Validate
-            $request->validate([
-                'file' => 'required|file|max:' . $maxSize, // Root: unlimited, Others: 20MB
-            ]);
+            // Root user (ID: 1) için validation SKIP
+            if (!auth()->check() || auth()->user()->id !== 1) {
+                $request->validate([
+                    'file' => 'required|file|max:20480', // 20MB for non-root
+                ]);
+            }
+            // Root user: NO validation = UNLIMITED
 
             // Save to temp storage
             $tempPath = $file->store('livewire-tmp', 'public');

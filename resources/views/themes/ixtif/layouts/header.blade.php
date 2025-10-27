@@ -764,9 +764,50 @@
                                 this.query = keyword.text;
                                 this.goToSearch();
                             },
-                            selectProduct(product) {
+                            selectProduct(product, index = 0) {
                                 if (product?.url) {
+                                    // Track click before navigation
+                                    this.trackClick(product, index);
                                     window.location.href = product.url;
+                                }
+                            },
+                            async trackClick(product, position) {
+                                if (!product) return;
+
+                                try {
+                                    // Type mapping (frontend format → backend model class)
+                                    const typeMap = {
+                                        'products': 'Modules\\Shop\\App\\Models\\ShopProduct',
+                                        'categories': 'Modules\\Shop\\App\\Models\\ShopCategory',
+                                        'brands': 'Modules\\Shop\\App\\Models\\ShopBrand'
+                                    };
+
+                                    const modelType = typeMap[product.type] || product.type;
+
+                                    // Extract ID from product
+                                    let productId = product.id;
+                                    if (!productId && product.url) {
+                                        // Try to extract ID from URL if needed
+                                        const urlParts = product.url.split('/');
+                                        productId = parseInt(urlParts[urlParts.length - 1]) || 0;
+                                    }
+
+                                    await fetch('/api/search/track-click', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                                        },
+                                        body: JSON.stringify({
+                                            query: this.query,
+                                            result_id: productId,
+                                            result_type: modelType,
+                                            position: position,
+                                            opened_in_new_tab: false
+                                        })
+                                    });
+                                } catch (error) {
+                                    console.warn('Click tracking failed:', error);
                                 }
                             },
                             handleFocus() {
@@ -805,7 +846,7 @@
                             {{-- Hybrid Autocomplete Dropdown --}}
                             <div x-show="isOpen"
                                  x-transition
-                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-40 border border-gray-200 dark:border-gray-700 overflow-hidden" style="z-index:40;">
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-40 border border-gray-200 dark:border-gray-700" style="z-index:40;">
 
                                 <template x-if="error">
                                     <div class="px-5 py-6 text-sm text-red-600 dark:text-red-400 flex items-center gap-3">
@@ -855,7 +896,7 @@
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                 <template x-for="(product, index) in products" :key="'p-'+index">
                                                     <a href="#"
-                                                       @click.prevent="selectProduct(product)"
+                                                       @click.prevent="selectProduct(product, index)"
                                                        @mouseenter="setHighlight(index, 'product')"
                                                        @mouseleave="clearHighlight()"
                                                        :class="[

@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Search\App\Http\Livewire\Admin;
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Search\App\Models\SearchQuery;
 use Carbon\Carbon;
 
+#[Layout('admin.layout')]
 class RecentSearchesComponent extends Component
 {
     use WithPagination;
@@ -91,13 +93,6 @@ class RecentSearchesComponent extends Component
         return view('search::admin.livewire.recent-searches', [
             'searches' => $searches,
             'stats' => $stats,
-        ])->layout('admin.layouts.app', [
-            'title' => 'Son Aramalar',
-            'breadcrumbs' => [
-                ['name' => 'Admin', 'url' => route('admin.dashboard')],
-                ['name' => 'Arama', 'url' => route('admin.search.index')],
-                ['name' => 'Son Aramalar', 'url' => null],
-            ],
         ]);
     }
 

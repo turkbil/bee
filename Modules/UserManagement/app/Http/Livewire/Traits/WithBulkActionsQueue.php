@@ -93,8 +93,9 @@ trait WithBulkActionsQueue
         $this->currentBulkJob = $cacheKey;
         $this->bulkProgress = ['progress' => 0, 'status' => 'processing'];
         $this->closeBulkModal();
-        
-        $this->emit('bulkJobStarted', $cacheKey);
+
+        // Livewire 3: emit() -> dispatch() oldu
+        $this->dispatch('bulkJobStarted', cacheKey: $cacheKey);
         session()->flash('message', 'Toplu silme işlemi başlatıldı.');
     }
 
@@ -195,7 +196,8 @@ trait WithBulkActionsQueue
         $this->closeBulkModal();
         $this->resetBulkFields();
 
-        $this->emit('bulkJobStarted', $cacheKey);
+        // Livewire 3: emit() -> dispatch() oldu
+        $this->dispatch('bulkJobStarted', cacheKey: $cacheKey);
         session()->flash('message', "Toplu {$operation} işlemi başlatıldı.");
     }
 

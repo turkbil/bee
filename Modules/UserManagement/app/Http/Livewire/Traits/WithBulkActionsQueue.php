@@ -237,10 +237,10 @@ trait WithBulkActionsQueue
         $this->selectAll = false;
         $this->bulkActionsEnabled = false;
         $this->currentBulkJob = null;
-        
+
         // Refresh the component data
-        $this->emit('refreshComponent');
-        $this->render();
+        // Livewire 3: Self refresh, event'leri kaldır
+        // Component'in render method'u otomatik çağrılacak
     }
 
     // Clear progress manually

@@ -139,11 +139,31 @@ module.exports = {
         'hover:text-yellow-600', 'dark:hover:text-yellow-400',
 
         // Service Cards - Teal/Cyan
-        'from-teal-50', 'to-teal-50', 'from-teal-500', 'to-teal-600',
+        'from-teal-50', 'to-teal-50', 'from-teal-100', 'to-teal-100', 'from-teal-500', 'to-teal-600',
         'from-teal-500', 'to-cyan-500', 'via-teal-500', 'via-cyan-500',
-        'from-cyan-50', 'to-cyan-50', 'from-cyan-500', 'to-cyan-600',
+        'from-cyan-50', 'to-cyan-50', 'from-cyan-100', 'to-cyan-100', 'from-cyan-500', 'to-cyan-600',
         'hover:from-teal-50/50', 'hover:to-cyan-50/50',
         'dark:hover:from-teal-900/20', 'dark:hover:to-cyan-900/20',
+        'dark:from-teal-900/20', 'dark:to-teal-900/30', 'dark:from-teal-900/30', 'dark:to-teal-900/30',
+        'dark:from-cyan-900/20', 'dark:to-cyan-900/30', 'dark:from-cyan-900/30', 'dark:to-cyan-900/30',
+        'text-teal-600', 'text-teal-400', 'dark:text-teal-400',
+        'text-cyan-600', 'text-cyan-400', 'dark:text-cyan-400',
+
+        // Mega Menu Colors - Yellow (additional)
+        'from-yellow-50', 'to-yellow-100', 'from-yellow-100', 'to-yellow-100',
+        'dark:from-yellow-900/20', 'dark:to-yellow-900/30', 'dark:from-yellow-900/30', 'dark:to-yellow-900/30',
+        'text-yellow-600', 'text-yellow-400', 'dark:text-yellow-400',
+
+        // Mega Menu Colors - Indigo
+        'from-indigo-50', 'to-indigo-50', 'from-indigo-100', 'to-indigo-100',
+        'dark:from-indigo-900/20', 'dark:to-indigo-900/30', 'dark:from-indigo-900/30', 'dark:to-indigo-900/30',
+        'text-indigo-600', 'text-indigo-400', 'dark:text-indigo-400',
+        'bg-indigo-100', 'dark:bg-indigo-900/30',
+
+        // Mega Menu Colors - Emerald
+        'from-emerald-50', 'to-emerald-100', 'from-emerald-100', 'to-emerald-100',
+        'dark:from-emerald-900/20', 'dark:to-emerald-900/30', 'dark:from-emerald-900/30', 'dark:to-emerald-900/30',
+        'text-emerald-600', 'text-emerald-400', 'dark:text-emerald-400',
 
         // Badge Gradient Animation
         'bg-[length:200%_100%]', 'animate-gradient',

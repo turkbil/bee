@@ -161,6 +161,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
 // Helper dosylarını doğru sırada yükle
 $helperFiles = [
+    app_path('Helpers/LivewireUploadHelper.php'), // 0. Livewire upload helper (Config'den ÖNCE!)
     app_path('Helpers/Functions.php'),           // 1. Temel fonksiyonlar (Log, Settings dahil)
     app_path('Helpers/CacheHelper.php'),         // 2. Cache helper
     app_path('Helpers/LanguageHelper.php'),      // 3. Dil helper'ları

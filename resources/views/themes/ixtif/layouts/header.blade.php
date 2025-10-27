@@ -215,10 +215,10 @@
                         @endif
                     </div>
                     <div class="flex items-center gap-3 sm:gap-4">
-                        {{-- Sık Sorulan Sorular - xs/sm'de gizli, md+'da görünür --}}
-                        <a href="{{ href('Page', 'show', 'sss') }}" class="hidden md:inline-block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
-                            <i class="fa-solid fa-circle-question mr-1"></i>
-                            Sık Sorulan Sorular
+                        {{-- İletişim - xs/sm'de gizli, md+'da görünür --}}
+                        <a href="{{ href('Page', 'show', 'iletisim') }}" class="hidden md:inline-block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
+                            <i class="fa-solid fa-envelope mr-1"></i>
+                            İletişim
                         </a>
 
                         {{-- Site Dil Değiştirici --}}
@@ -1012,137 +1012,198 @@
              x-transition
              class="lg:hidden bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20 mobile-nav-container"
              x-cloak>
-            <div class="px-4 py-3 space-y-1 max-w-full overflow-x-hidden">
+            <div class="px-4 py-3 max-w-full overflow-x-hidden">
                 @php
-                    // Mobile için ana kategoriler ve alt kategoriler
-                    $mainCategories = [
-                        [
-                            'name' => 'Forklift',
-                            'slug' => 'forklift',
-                            'icon' => 'fa-solid fa-forklift',
-                            'subcategories' => [
-                                ['name' => 'Elektrikli Forklift', 'slug' => 'elektrikli-forklift'],
-                                ['name' => 'Dizel Forklift', 'slug' => 'dizel-forklift'],
-                                ['name' => 'LPG Forklift', 'slug' => 'lpg-forklift'],
-                                ['name' => 'Reach Truck', 'slug' => 'reach-truck'],
-                            ]
-                        ],
-                        [
-                            'name' => 'Transpalet',
-                            'slug' => 'transpalet',
-                            'icon' => 'fa-solid fa-dolly',
-                            'subcategories' => [
-                                ['name' => 'Manuel Transpalet', 'slug' => 'manuel-transpalet'],
-                                ['name' => 'Akülü Transpalet', 'slug' => 'akulu-transpalet'],
-                                ['name' => 'Makaslı Transpalet', 'slug' => 'makasli-transpalet'],
-                            ]
-                        ],
-                        [
-                            'name' => 'İstif Makinesi',
-                            'slug' => 'istif-makinesi',
-                            'icon' => 'fa-solid fa-box-open-full',
-                            'subcategories' => [
-                                ['name' => 'Yürüyen İstif', 'slug' => 'yuruyen-istif'],
-                                ['name' => 'Binekli İstif', 'slug' => 'binekli-istif'],
-                                ['name' => 'Geniş Ayaklı İstif', 'slug' => 'genis-ayakli-istif'],
-                            ]
-                        ],
+                    // Sistemden kategorileri çek
+                    $allCategories = \Modules\Shop\app\Models\ShopCategory::where('is_active', 1)
+                        ->where('show_in_menu', 1)
+                        ->whereNull('parent_id')
+                        ->orderBy('sort_order', 'asc')
+                        ->get();
+
+                    // 2 kolona böl (sol 4, sağ 3)
+                    $leftCategories = $allCategories->take(4);
+                    $rightCategories = $allCategories->skip(4);
+
+                    // İkonlar (fallback)
+                    $categoryIcons = [
+                        'forklift' => 'fa-solid fa-forklift',
+                        'transpalet' => 'fa-solid fa-dolly',
+                        'istif-makinesi' => 'fa-solid fa-box-open-full',
+                        'reach-truck' => 'fa-solid fa-truck-ramp-box',
+                        'order-picker' => 'fa-solid fa-boxes-packing',
+                        'otonom-sistemler' => 'fa-solid fa-robot',
+                        'yedek-parca' => 'fa-solid fa-screwdriver-wrench',
                     ];
                 @endphp
 
-                {{-- Ana Kategoriler (Mobile) - Accordion Style --}}
-                @foreach($mainCategories as $cat)
-                    <div class="space-y-1">
-                        {{-- Ana Kategori Başlığı --}}
-                        <div class="flex items-center gap-2">
-                            <button @click="expandedCategory = expandedCategory === '{{ $cat['slug'] }}' ? null : '{{ $cat['slug'] }}'"
-                                    class="flex-1 flex items-center justify-between px-3 py-2 rounded-md text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                <span class="flex items-center gap-2">
-                                    <i class="{{ $cat['icon'] }} text-sm"></i>
-                                    <span>{{ $cat['name'] }}</span>
-                                </span>
-                                <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
-                                   :class="{ 'rotate-180': expandedCategory === '{{ $cat['slug'] }}' }"></i>
-                            </button>
-                            {{-- Hepsini Gör Linki --}}
-                            <a href="{{ route('shop.index') }}?category={{ $cat['slug'] }}"
+                {{-- 2 Kolonlu Kategori Grid --}}
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    {{-- Sol Kolon --}}
+                    <div class="space-y-2">
+                        @foreach($leftCategories as $cat)
+                            @php
+                                $title = is_array($cat->title) ? $cat->title['tr'] : $cat->title;
+                                $slug = is_array($cat->slug) ? $cat->slug['tr'] : $cat->slug;
+                                $icon = $categoryIcons[$slug] ?? 'fa-solid fa-box';
+                            @endphp
+                            <a href="/shop/kategori/{{ $slug }}"
                                @click="mobileMenuOpen = false"
-                               class="px-2 py-2 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md transition">
-                                Tümü
+                               class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
+                                <i class="{{ $icon }} text-sm"></i>
+                                <span class="truncate">{{ $title }}</span>
                             </a>
-                        </div>
-
-                        {{-- Alt Kategoriler --}}
-                        <div x-show="expandedCategory === '{{ $cat['slug'] }}'"
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 -translate-y-2"
-                             x-transition:enter-end="opacity-100 translate-y-0"
-                             x-transition:leave="transition ease-in duration-150"
-                             x-transition:leave-start="opacity-100 translate-y-0"
-                             x-transition:leave-end="opacity-0 -translate-y-2"
-                             class="pl-8 space-y-1 bg-gray-50 dark:bg-gray-900/50 rounded-md py-1">
-                            @foreach($cat['subcategories'] as $sub)
-                                <a href="{{ route('shop.index') }}?category={{ $sub['slug'] }}"
-                                   @click="mobileMenuOpen = false"
-                                   class="block px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 rounded-md transition">
-                                    {{ $sub['name'] }}
-                                </a>
-                            @endforeach
-                        </div>
+                        @endforeach
                     </div>
-                @endforeach
 
-                {{-- Tüm Kategoriler --}}
-                <a href="{{ route('shop.index') }}"
-                   @click="mobileMenuOpen = false"
-                   class="block px-3 py-2 rounded-md text-sm font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 flex items-center gap-2">
-                    <i class="fa-solid fa-grid-2 text-sm"></i>
-                    <span>Tüm Kategoriler</span>
-                </a>
+                    {{-- Sağ Kolon --}}
+                    <div class="space-y-2">
+                        @foreach($rightCategories as $cat)
+                            @php
+                                $title = is_array($cat->title) ? $cat->title['tr'] : $cat->title;
+                                $slug = is_array($cat->slug) ? $cat->slug['tr'] : $cat->slug;
+                                $icon = $categoryIcons[$slug] ?? 'fa-solid fa-box';
+                            @endphp
+                            <a href="/shop/kategori/{{ $slug }}"
+                               @click="mobileMenuOpen = false"
+                               class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
+                                <i class="{{ $icon }} text-sm"></i>
+                                <span class="truncate">{{ $title }}</span>
+                            </a>
+                        @endforeach
 
-                @php
-                    $currentLocale = app()->getLocale();
-                    $headerMenu = getDefaultMenu($currentLocale);
-                @endphp
+                        {{-- Tüm Ürünler (Sağ Kolonun Son Sırası) --}}
+                        <a href="{{ route('shop.index') }}"
+                           @click="mobileMenuOpen = false"
+                           class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold text-blue-700 dark:text-blue-300 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-300 dark:border-blue-600 transition hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-900/40 dark:hover:to-blue-800/40">
+                            <i class="fa-solid fa-grid-2 text-sm"></i>
+                            <span class="truncate">Tüm Ürünler</span>
+                        </a>
+                    </div>
+                </div>
 
-                {{-- Diğer Dinamik Menüler (varsa) --}}
-                @if($headerMenu && !empty($headerMenu['items']))
-                    <div class="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2"></div>
-                    @foreach($headerMenu['items'] as $menuIndex => $menuItem)
-                        @if(!empty($menuItem['children']))
-                            <div>
-                                <button @click="expandedCategory = expandedCategory === 'menu-{{ $menuIndex }}' ? null : 'menu-{{ $menuIndex }}'"
-                                        class="w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium {{ $menuItem['has_active_child'] ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30' : 'text-gray-700 dark:text-gray-300' }}">
-                                    <span class="flex items-center gap-2">
-                                        @if($menuItem['icon'])
-                                            <i class="{{ $menuItem['icon'] }}"></i>
-                                        @endif
-                                        {{ $menuItem['title'] }}
-                                    </span>
-                                    <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': expandedCategory === 'menu-{{ $menuIndex }}' }"></i>
-                                </button>
-                                <div x-show="expandedCategory === 'menu-{{ $menuIndex }}'" x-transition class="pl-4 space-y-1">
-                                    @foreach($menuItem['children'] as $child)
-                                        <a href="{{ $child['url'] }}"
-                                           @click="mobileMenuOpen = false"
-                                           class="block px-3 py-2 text-sm rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 {{ $child['is_active'] ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-400' }}">
-                                            {{ $child['title'] }}
-                                        </a>
-                                    @endforeach
+                {{-- Ayırıcı --}}
+                <div class="border-t-2 border-gray-300 dark:border-gray-700 my-3"></div>
+
+                {{-- Kurumsal Accordion --}}
+                <div class="mb-2">
+                    <button @click="expandedCategory = expandedCategory === 'kurumsal' ? null : 'kurumsal'"
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition border border-gray-200 dark:border-gray-700">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-building text-sm"></i>
+                            <span>Kurumsal</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
+                           :class="{ 'rotate-180': expandedCategory === 'kurumsal' }"></i>
+                    </button>
+
+                    {{-- Kurumsal İçerik (2 Kolon) --}}
+                    <div x-show="expandedCategory === 'kurumsal'"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-2"
+                         class="mt-2 bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+
+                        <div class="grid grid-cols-2 gap-3">
+                            {{-- Sol Kolon: Hakkımızda & Alışveriş --}}
+                            <div class="space-y-2">
+                                {{-- Hakkımızda --}}
+                                <div class="space-y-1">
+                                    <div class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-building text-xs"></i>
+                                        <span>Hakkımızda</span>
+                                    </div>
+                                    <a href="{{ href('Page', 'show', 'hakkimizda') }}"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                        Biz Kimiz
+                                    </a>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                        Kariyer
+                                    </a>
+                                </div>
+
+                                {{-- Alışveriş --}}
+                                <div class="space-y-1 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="text-xs font-bold text-green-600 dark:text-green-400 mb-1.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-shopping-cart text-xs"></i>
+                                        <span>Alışveriş</span>
+                                    </div>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition">
+                                        Ödeme
+                                    </a>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition">
+                                        Kargo
+                                    </a>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition">
+                                        İade
+                                    </a>
                                 </div>
                             </div>
-                        @else
-                            <a href="{{ $menuItem['url'] }}"
-                               @click="mobileMenuOpen = false"
-                               class="block px-3 py-2 rounded-md text-sm font-medium {{ $menuItem['is_active'] ? 'text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30' : 'text-gray-700 dark:text-gray-300' }} flex items-center gap-2">
-                                @if($menuItem['icon'])
-                                    <i class="{{ $menuItem['icon'] }}"></i>
-                                @endif
-                                {{ $menuItem['title'] }}
-                            </a>
-                        @endif
-                    @endforeach
-                @endif
+
+                            {{-- Sağ Kolon: Yasal & İletişim --}}
+                            <div class="space-y-2">
+                                {{-- Yasal --}}
+                                <div class="space-y-1">
+                                    <div class="text-xs font-bold text-red-600 dark:text-red-400 mb-1.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-scale-balanced text-xs"></i>
+                                        <span>Yasal</span>
+                                    </div>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition">
+                                        Gizlilik
+                                    </a>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition">
+                                        KVKK
+                                    </a>
+                                    <a href="#"
+                                       @click="mobileMenuOpen = false"
+                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition">
+                                        Çerez
+                                    </a>
+                                </div>
+
+                                {{-- İletişim Bilgileri --}}
+                                <div class="space-y-1 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                    <div class="text-xs font-bold text-purple-600 dark:text-purple-400 mb-1.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-headset text-xs"></i>
+                                        <span>Bilgiler</span>
+                                    </div>
+                                    <div class="px-2 py-1 text-xs text-gray-700 dark:text-gray-300">
+                                        <i class="fa-solid fa-phone text-purple-600 dark:text-purple-400 mr-1"></i>
+                                        <span class="text-xs">0216 755 3 555</span>
+                                    </div>
+                                    <div class="px-2 py-1 text-xs text-gray-700 dark:text-gray-300">
+                                        <i class="fa-brands fa-whatsapp text-purple-600 dark:text-purple-400 mr-1"></i>
+                                        <span class="text-xs">0501 005 67 58</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- İletişim Özel Buton --}}
+                <a href="{{ href('Page', 'show', 'iletisim') }}"
+                   @click="mobileMenuOpen = false"
+                   class="block px-3 py-2.5 rounded-lg text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center justify-center gap-2 shadow-lg transition">
+                    <i class="fa-solid fa-envelope text-sm"></i>
+                    <span>İletişim</span>
+                </a>
             </div>
         </div>
     </header>

@@ -10,6 +10,14 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
+// DEBUG UPLOAD TEST ROUTES
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('/debug/upload', [App\Http\Controllers\DebugUploadController::class, 'index'])->name('debug.upload');
+    Route::post('/debug/upload', [App\Http\Controllers\DebugUploadController::class, 'upload'])->name('debug.upload.submit');
+    Route::get('/debug/upload/logs', [App\Http\Controllers\DebugUploadController::class, 'getLogs'])->name('debug.upload.logs');
+    Route::post('/debug/upload/clear-logs', [App\Http\Controllers\DebugUploadController::class, 'clearLogs'])->name('debug.upload.clear');
+});
+
 // TEST ROUTE - Upload configuration debug
 Route::get('/test-upload-config', function() {
     $config = app(\Livewire\Features\SupportFileUploads\FileUploadConfiguration::class);

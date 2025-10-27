@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Split Screen Glassmorphism - iXtif İletişim</title>
+    <title>Split Screen + Sticky iXtif Asistanı - İletişim</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
@@ -18,18 +18,22 @@
             -webkit-backdrop-filter: blur(40px);
         }
 
-        @keyframes slide-in-left {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        /* Sticky Sidebar (Desktop Only) */
+        @media (min-width: 1024px) {
+            #sticky-assistant {
+                position: sticky;
+                top: 6rem;
+                align-self: flex-start;
+            }
         }
 
-        @keyframes slide-in-right {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        /* Chat message animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-slide-in-left { animation: slide-in-left 0.8s ease-out; }
-        .animate-slide-in-right { animation: slide-in-right 0.8s ease-out; }
+        .chat-message { animation: slideIn 0.3s ease-out; }
     </style>
 </head>
 <body class="bg-black text-white overflow-x-hidden">
@@ -62,248 +66,323 @@
         </div>
     </div>
 
-    <!-- Split Screen Container -->
-    <div class="min-h-screen pt-20 flex flex-col lg:flex-row" x-data="{
+    <!-- Main Container -->
+    <div class="min-h-screen pt-24 pb-12 bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950" x-data="{
         formData: { name: '', email: '', phone: '', subject: '', message: '' },
         isSubmitting: false,
         showSuccess: false,
-        activeInfo: null,
+        chatMessages: [
+            { type: 'bot', text: 'Merhaba! 👋 Size nasıl yardımcı olabilirim?', time: '14:23' },
+            { type: 'bot', text: 'Ürünlerimiz hakkında bilgi almak için formu doldurabilir veya doğrudan bize ulaşabilirsiniz.', time: '14:23' }
+        ],
+        quickActions: [
+            { icon: 'fa-phone', text: 'Ara', action: 'phone' },
+            { icon: 'fa-envelope', text: 'Mail', action: 'email' },
+            { icon: 'fa-whatsapp', text: 'WhatsApp', action: 'whatsapp' }
+        ],
         submitForm() {
             this.isSubmitting = true;
             setTimeout(() => {
                 this.isSubmitting = false;
                 this.showSuccess = true;
-                setTimeout(() => { this.showSuccess = false; }, 4000);
+                this.chatMessages.push({
+                    type: 'user',
+                    text: '✅ Form gönderildi',
+                    time: new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'})
+                });
+                setTimeout(() => {
+                    this.chatMessages.push({
+                        type: 'bot',
+                        text: 'Mesajınızı aldık! 24 saat içinde size dönüş yapacağız. 🚀',
+                        time: new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'})
+                    });
+                }, 1000);
+                setTimeout(() => { this.showSuccess = false; }, 3000);
                 this.formData = { name: '', email: '', phone: '', subject: '', message: '' };
             }, 1500);
         }
     }">
+        <div class="container mx-auto px-4">
+            <div class="grid lg:grid-cols-3 gap-8">
 
-        <!-- Left Side: Info & Contact Details -->
-        <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 flex items-center animate-slide-in-left">
+                <!-- LEFT: Contact Form (2/3 - Scrollable) -->
+                <div class="lg:col-span-2">
 
-            <!-- Background Decoration -->
-            <div class="absolute inset-0 opacity-20">
-                <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500 rounded-full blur-3xl animate-pulse"></div>
-                <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-            </div>
-
-            <div class="relative z-10 w-full max-w-xl mx-auto">
-
-                <!-- Header -->
-                <div class="mb-12">
-                    <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full border border-white/20 mb-6">
-                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span class="text-sm text-gray-300">7/24 Aktif Destek</span>
+                    <!-- Header -->
+                    <div class="mb-12">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full border border-white/20 mb-6">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm text-gray-300">7/24 Aktif Destek</span>
+                        </div>
+                        <h1 class="text-5xl lg:text-7xl font-black mb-6 leading-tight">
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">
+                                Bize Ulaşın
+                            </span>
+                        </h1>
+                        <p class="text-xl text-gray-300 leading-relaxed max-w-2xl">
+                            Projeleriniz için en iyi çözümleri birlikte bulalım. İletişim formunu doldurun veya sağdaki asistanımız üzerinden hızlıca bize ulaşın.
+                        </p>
                     </div>
 
-                    <h1 class="text-6xl lg:text-7xl font-black mb-6 leading-tight">
-                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                            Haydi,<br>Konuşalım
-                        </span>
-                    </h1>
+                    <!-- Contact Info Cards -->
+                    <div class="grid md:grid-cols-3 gap-4 mb-12">
+                        <!-- Phone -->
+                        <a href="tel:02167553555" class="group glass rounded-2xl p-6 border border-white/10 hover:border-pink-400 transition-all duration-300 cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-phone text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">Telefon</h3>
+                            <p class="text-pink-300 font-semibold text-sm">0216 755 35 55</p>
+                        </a>
 
-                    <p class="text-xl text-gray-300 leading-relaxed">
-                        Projeleriniz için en iyi çözümleri birlikte bulalım. Size nasıl yardımcı olabiliriz?
-                    </p>
+                        <!-- Email -->
+                        <a href="mailto:info@ixtif.com" class="group glass rounded-2xl p-6 border border-white/10 hover:border-purple-400 transition-all duration-300 cursor-pointer">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-envelope text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">E-Posta</h3>
+                            <p class="text-purple-300 font-semibold text-sm">info@ixtif.com</p>
+                        </a>
+
+                        <!-- Location -->
+                        <div class="glass rounded-2xl p-6 border border-white/10 hover:border-indigo-400 transition-all duration-300 cursor-pointer group">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-location-dot text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">Adres</h3>
+                            <p class="text-indigo-300 text-xs">Beylikdüzü / İstanbul</p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="relative glass rounded-3xl p-10 border border-white/10 shadow-2xl">
+
+                        <!-- Success Message -->
+                        <div x-show="showSuccess"
+                             x-transition
+                             class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-500/90 to-emerald-500/90 backdrop-blur-lg rounded-3xl z-20">
+                            <div class="text-center p-12">
+                                <i class="fa-solid fa-circle-check text-9xl text-white mb-6"></i>
+                                <h3 class="text-4xl font-black text-white mb-4">Harika!</h3>
+                                <p class="text-white/90 text-xl">Mesajınız başarıyla gönderildi.</p>
+                                <p class="text-white/70 mt-2">En kısa sürede size dönüş yapacağız.</p>
+                            </div>
+                        </div>
+
+                        <!-- Form Header -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400">
+                                İletişim Formu
+                            </h2>
+                            <p class="text-gray-400 text-lg">
+                                Formu doldurun, size 24 saat içinde geri dönelim.
+                            </p>
+                        </div>
+
+                        <form @submit.prevent="submitForm" class="space-y-6">
+
+                            <!-- Name -->
+                            <div class="group">
+                                <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-pink-400 transition-colors">
+                                    <i class="fa-solid fa-user mr-2"></i>Ad Soyad *
+                                </label>
+                                <input type="text" x-model="formData.name" required
+                                       class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-400/20 transition-all"
+                                       placeholder="Adınız ve soyadınız">
+                            </div>
+
+                            <!-- Email & Phone -->
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="group">
+                                    <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-purple-400 transition-colors">
+                                        <i class="fa-solid fa-envelope mr-2"></i>E-Posta *
+                                    </label>
+                                    <input type="email" x-model="formData.email" required
+                                           class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all"
+                                           placeholder="ornek@email.com">
+                                </div>
+
+                                <div class="group">
+                                    <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-indigo-400 transition-colors">
+                                        <i class="fa-solid fa-phone mr-2"></i>Telefon
+                                    </label>
+                                    <input type="tel" x-model="formData.phone"
+                                           class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 transition-all"
+                                           placeholder="0 (5XX) XXX XX XX">
+                                </div>
+                            </div>
+
+                            <!-- Subject -->
+                            <div class="group">
+                                <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-blue-400 transition-colors">
+                                    <i class="fa-solid fa-tag mr-2"></i>Konu *
+                                </label>
+                                <input type="text" x-model="formData.subject" required
+                                       class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 transition-all"
+                                       placeholder="Mesaj konusu">
+                            </div>
+
+                            <!-- Message -->
+                            <div class="group">
+                                <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-pink-400 transition-colors">
+                                    <i class="fa-solid fa-message mr-2"></i>Mesajınız *
+                                </label>
+                                <textarea x-model="formData.message" required rows="6"
+                                          class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-400/20 transition-all resize-none"
+                                          placeholder="Mesajınızı detaylı bir şekilde yazın..."></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit"
+                                    :disabled="isSubmitting"
+                                    class="group w-full relative px-8 py-5 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-xl font-black text-xl text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 disabled:opacity-50 overflow-hidden"
+                                    :class="isSubmitting ? '' : 'hover:scale-105'">
+
+                                <span class="relative z-10 flex items-center justify-center gap-3">
+                                    <span x-show="!isSubmitting">Gönder</span>
+                                    <span x-show="isSubmitting">Gönderiliyor...</span>
+                                    <i class="fa-solid fa-paper-plane group-hover:translate-x-2 transition-transform" x-show="!isSubmitting"></i>
+                                    <i class="fa-solid fa-spinner fa-spin" x-show="isSubmitting"></i>
+                                </span>
+
+                                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            </button>
+
+                            <!-- Privacy Notice -->
+                            <p class="text-xs text-gray-500 text-center">
+                                <i class="fa-solid fa-shield-check text-green-400 mr-1"></i>
+                                Bilgileriniz güvenle saklanır ve 3. kişilerle paylaşılmaz.
+                            </p>
+
+                        </form>
+
+                    </div>
+
                 </div>
 
-                <!-- Contact Methods -->
-                <div class="space-y-6">
+                <!-- RIGHT: Sticky iXtif Asistanı (1/3 - Desktop Sticky, Mobile Bottom) -->
+                <div class="lg:col-span-1">
+                    <aside id="sticky-assistant" class="space-y-6">
 
-                    <!-- Phone -->
-                    <div @mouseenter="activeInfo = 'phone'" @mouseleave="activeInfo = null"
-                         class="glass rounded-2xl p-6 border border-white/10 hover:border-pink-400 transition-all duration-300 cursor-pointer group"
-                         :class="activeInfo === 'phone' ? 'scale-105 border-pink-400 shadow-2xl shadow-pink-500/30' : ''">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-phone text-2xl text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-bold text-white mb-1">Telefon</h3>
-                                <a href="tel:02167553555" class="text-pink-300 hover:text-pink-200 text-lg font-semibold">
-                                    0216 755 35 55
-                                </a>
-                            </div>
-                            <i class="fa-solid fa-arrow-right text-pink-400 group-hover:translate-x-2 transition-transform"></i>
-                        </div>
-                    </div>
+                        <!-- Assistant Card -->
+                        <div class="glass rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
 
-                    <!-- Email -->
-                    <div @mouseenter="activeInfo = 'email'" @mouseleave="activeInfo = null"
-                         class="glass rounded-2xl p-6 border border-white/10 hover:border-purple-400 transition-all duration-300 cursor-pointer group"
-                         :class="activeInfo === 'email' ? 'scale-105 border-purple-400 shadow-2xl shadow-purple-500/30' : ''">
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-envelope text-2xl text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-bold text-white mb-1">E-Posta</h3>
-                                <a href="mailto:info@ixtif.com" class="text-purple-300 hover:text-purple-200 text-lg font-semibold">
-                                    info@ixtif.com
-                                </a>
-                            </div>
-                            <i class="fa-solid fa-arrow-right text-purple-400 group-hover:translate-x-2 transition-transform"></i>
-                        </div>
-                    </div>
-
-                    <!-- Address -->
-                    <div @mouseenter="activeInfo = 'address'" @mouseleave="activeInfo = null"
-                         class="glass rounded-2xl p-6 border border-white/10 hover:border-indigo-400 transition-all duration-300 cursor-pointer group"
-                         :class="activeInfo === 'address' ? 'scale-105 border-indigo-400 shadow-2xl shadow-indigo-500/30' : ''">
-                        <div class="flex items-start gap-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                                <i class="fa-solid fa-location-dot text-2xl text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-lg font-bold text-white mb-1">Ofis Adresi</h3>
-                                <p class="text-gray-300 leading-relaxed">
-                                    Çamlık Mah. İmes Sanayi Sitesi<br>
-                                    B Blok No:24 Beylikdüzü / İstanbul
+                            <!-- Header -->
+                            <div class="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 p-6">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="relative">
+                                        <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center">
+                                            <i class="fa-solid fa-robot text-2xl text-white"></i>
+                                        </div>
+                                        <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-400 rounded-full border-2 border-purple-600"></div>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-black text-white text-xl">iXtif Asistanı</h3>
+                                        <p class="text-white/80 text-sm flex items-center gap-2">
+                                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                            Online - Hemen Yanıt
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="text-white/90 text-sm">
+                                    Size en hızlı şekilde yardımcı olmak için buradayız. Aşağıdaki yöntemlerle bize ulaşabilirsiniz.
                                 </p>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Social Media -->
-                    <div class="glass rounded-2xl p-6 border border-white/10">
-                        <h3 class="text-lg font-bold text-white mb-4">Sosyal Medya</h3>
-                        <div class="flex gap-4">
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 hover:bg-blue-500 flex items-center justify-center transition-all hover:scale-110">
-                                <i class="fa-brands fa-facebook text-xl"></i>
-                            </a>
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 hover:bg-pink-500 flex items-center justify-center transition-all hover:scale-110">
-                                <i class="fa-brands fa-instagram text-xl"></i>
-                            </a>
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 hover:bg-blue-400 flex items-center justify-center transition-all hover:scale-110">
-                                <i class="fa-brands fa-twitter text-xl"></i>
-                            </a>
-                            <a href="#" class="w-12 h-12 rounded-xl bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-all hover:scale-110">
-                                <i class="fa-brands fa-linkedin text-xl"></i>
-                            </a>
-                        </div>
-                    </div>
+                            <!-- Chat Messages -->
+                            <div class="p-6 space-y-4 bg-white/5 max-h-96 overflow-y-auto">
+                                <template x-for="(msg, index) in chatMessages" :key="index">
+                                    <div :class="msg.type === 'user' ? 'flex justify-end' : 'flex justify-start'" class="chat-message">
+                                        <div :class="msg.type === 'user' ? 'bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl rounded-tr-none' : 'bg-white/10 rounded-2xl rounded-tl-none'"
+                                             class="max-w-xs px-4 py-3">
+                                            <p class="text-white text-sm" x-text="msg.text"></p>
+                                            <p class="text-xs mt-1 opacity-70" x-text="msg.time"></p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
 
+                            <!-- Quick Actions -->
+                            <div class="p-6 space-y-3 bg-white/5">
+                                <p class="text-xs text-gray-400 font-semibold mb-3">Hızlı İletişim:</p>
+
+                                <a href="tel:02167553555" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all group border border-white/10 hover:border-pink-400">
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-phone text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs text-gray-400">Telefon</p>
+                                        <p class="text-white font-bold text-sm">0216 755 35 55</p>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-right text-pink-400 group-hover:translate-x-2 transition-transform"></i>
+                                </a>
+
+                                <a href="mailto:info@ixtif.com" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all group border border-white/10 hover:border-purple-400">
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-envelope text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs text-gray-400">E-Posta</p>
+                                        <p class="text-white font-bold text-sm">info@ixtif.com</p>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-right text-purple-400 group-hover:translate-x-2 transition-transform"></i>
+                                </a>
+
+                                <a href="https://wa.me/902167553555" target="_blank" class="flex items-center gap-3 p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all group border border-white/10 hover:border-green-400">
+                                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-brands fa-whatsapp text-white text-lg"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-xs text-gray-400">WhatsApp</p>
+                                        <p class="text-white font-bold text-sm">Mesaj Gönder</p>
+                                    </div>
+                                    <i class="fa-solid fa-arrow-right text-green-400 group-hover:translate-x-2 transition-transform"></i>
+                                </a>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="p-6 bg-white/5 border-t border-white/10">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center">
+                                        <div class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-400 mb-1">
+                                            2h
+                                        </div>
+                                        <p class="text-gray-400 text-xs">Ort. Yanıt</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-1">
+                                            98%
+                                        </div>
+                                        <p class="text-gray-400 text-xs">Memnuniyet</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Additional Info Card -->
+                        <div class="glass rounded-2xl p-6 border border-white/10">
+                            <h3 class="font-bold text-white mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-location-dot text-pink-400"></i>
+                                Ofis Adresimiz
+                            </h3>
+                            <p class="text-gray-300 text-sm leading-relaxed">
+                                Çamlık Mah. İmes Sanayi Sitesi<br>
+                                B Blok No:24<br>
+                                Beylikdüzü / İstanbul
+                            </p>
+                            <div class="mt-4 pt-4 border-t border-white/10">
+                                <p class="text-xs text-gray-400 mb-2"><i class="fa-solid fa-clock mr-2 text-indigo-400"></i>Çalışma Saatleri:</p>
+                                <p class="text-white text-sm font-semibold">Pzt-Cum: 09:00 - 18:00</p>
+                                <p class="text-gray-400 text-xs">Cmt: 10:00 - 14:00</p>
+                            </div>
+                        </div>
+
+                    </aside>
                 </div>
 
             </div>
         </div>
-
-        <!-- Right Side: Contact Form -->
-        <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 flex items-center animate-slide-in-right">
-
-            <!-- Background Decoration -->
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
-            </div>
-
-            <div class="relative z-10 w-full max-w-xl mx-auto">
-
-                <!-- Success Message -->
-                <div x-show="showSuccess"
-                     x-transition
-                     class="absolute inset-0 flex items-center justify-center bg-green-500/90 backdrop-blur-lg rounded-3xl z-30 -m-8">
-                    <div class="text-center p-12">
-                        <i class="fa-solid fa-circle-check text-9xl text-white mb-6"></i>
-                        <h3 class="text-4xl font-black text-white mb-4">Harika!</h3>
-                        <p class="text-white/90 text-xl">Mesajınız başarıyla gönderildi.</p>
-                        <p class="text-white/70 mt-2">En kısa sürede size dönüş yapacağız.</p>
-                    </div>
-                </div>
-
-                <!-- Form Header -->
-                <div class="mb-10">
-                    <h2 class="text-4xl lg:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                        Mesaj Gönderin
-                    </h2>
-                    <p class="text-gray-400 text-lg">
-                        Formu doldurun, size 24 saat içinde geri dönelim.
-                    </p>
-                </div>
-
-                <!-- Form -->
-                <form @submit.prevent="submitForm" class="space-y-6">
-
-                    <!-- Name -->
-                    <div class="group">
-                        <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
-                            Ad Soyad *
-                        </label>
-                        <input type="text" x-model="formData.name" required
-                               class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 transition-all"
-                               placeholder="Adınız ve soyadınız">
-                    </div>
-
-                    <!-- Email & Phone -->
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="group">
-                            <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-purple-400 transition-colors">
-                                E-Posta *
-                            </label>
-                            <input type="email" x-model="formData.email" required
-                                   class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all"
-                                   placeholder="ornek@email.com">
-                        </div>
-
-                        <div class="group">
-                            <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-green-400 transition-colors">
-                                Telefon
-                            </label>
-                            <input type="tel" x-model="formData.phone"
-                                   class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/20 transition-all"
-                                   placeholder="0 (5XX) XXX XX XX">
-                        </div>
-                    </div>
-
-                    <!-- Subject -->
-                    <div class="group">
-                        <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-orange-400 transition-colors">
-                            Konu *
-                        </label>
-                        <input type="text" x-model="formData.subject" required
-                               class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-400/20 transition-all"
-                               placeholder="Mesaj konusu">
-                    </div>
-
-                    <!-- Message -->
-                    <div class="group">
-                        <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-pink-400 transition-colors">
-                            Mesajınız *
-                        </label>
-                        <textarea x-model="formData.message" required rows="6"
-                                  class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-400/20 transition-all resize-none"
-                                  placeholder="Mesajınızı detaylı bir şekilde yazın..."></textarea>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit"
-                            :disabled="isSubmitting"
-                            class="group w-full relative px-8 py-5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl font-black text-xl text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 disabled:opacity-50 overflow-hidden"
-                            :class="isSubmitting ? '' : 'hover:scale-105'">
-
-                        <!-- Button Content -->
-                        <span class="relative z-10 flex items-center justify-center gap-3">
-                            <span x-show="!isSubmitting">Gönder</span>
-                            <span x-show="isSubmitting">Gönderiliyor...</span>
-                            <i class="fa-solid fa-paper-plane group-hover:translate-x-2 transition-transform" x-show="!isSubmitting"></i>
-                            <i class="fa-solid fa-spinner fa-spin" x-show="isSubmitting"></i>
-                        </span>
-
-                        <!-- Animated Gradient -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    </button>
-
-                    <!-- Privacy Notice -->
-                    <p class="text-xs text-gray-500 text-center">
-                        <i class="fa-solid fa-shield-check text-green-400 mr-1"></i>
-                        Bilgileriniz güvenle saklanır ve 3. kişilerle paylaşılmaz.
-                    </p>
-
-                </form>
-
-            </div>
-        </div>
-
     </div>
 
 </body>

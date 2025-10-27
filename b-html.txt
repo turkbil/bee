@@ -1,80 +1,53 @@
-<aside class="col-span-12 lg:col-span-3">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 px-5 py-4">
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-scale-balanced"></i>
-                Yasal Bilgiler
-            </h3>
-        </div>
-        <nav class="p-3">
-            <ul class="space-y-1 list-none m-0 p-0">
-                <li class="list-none">
-                    <a href="/page/gizlilik-politikasi" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-shield-halved text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Gizlilik Politikası</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/kullanim-kosullari" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-file-contract text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Kullanım Koşulları</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/kvkk-aydinlatma" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-user-shield text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">KVKK Aydınlatma</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/kvkk-basvuru" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-file-signature text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">KVKK Başvuru</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/cerez-politikasi" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-cookie-bite text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Çerez Politikası</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/iptal-iade" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-arrow-rotate-left text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">İptal &amp; İade</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/cayma-hakki" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-hand-holding-heart text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Cayma Hakkı</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/mesafeli-satis" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-handshake text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Mesafeli Satış</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/teslimat-kargo" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-truck-fast text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Teslimat &amp; Kargo</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/odeme-yontemleri" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-credit-card text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Ödeme Yöntemleri</span>
-                    </a>
-                </li>
-                <li class="list-none">
-                    <a href="/page/guvenli-alisveris" class="no-underline group flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:no-underline transition-all">
-                        <i class="fa-solid fa-lock text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm font-medium">Güvenli Alışveriş</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</aside>
+# Symfony\Component\ErrorHandler\Error\FatalError - Internal Server Error
+Cannot make static method Livewire\Features\SupportFileUploads\FileUploadConfiguration::rules() non static in class App\Livewire\CustomFileUploadConfiguration
+
+PHP 8.3.26
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - app/Livewire/CustomFileUploadConfiguration.php:12
+
+## Request
+
+GET /test-upload-config
+
+## Headers
+
+* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; _ym_uid=176118900044921329; _ym_d=1761189000; last_activity_read=1761445892; _gcl_au=1.1.612840818.1761453196; _fbp=fb.1.1761456765935.67835112351166348; _ym_isad=2; _ym_visorc=w; _clck=1ok4nj5%5E2%5Eg0i%5E0%5E2125; _ga_5DDRPR03QM=GS2.1.s1761508971$o48$g1$t1761532231$j60$l0$h0; _clsk=14dn83g%5E1761532232880%5E174%5E1%5Eb.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6Ikloc2s3TUZwYWdZU1pmSFE1MTJ2cFE9PSIsInZhbHVlIjoiT1FxN0NDK0V1RndkZE5CbHQzY2FVS2QzcURRYUQ1NzZCNi9vcVNHZzFyTGloZWlpekZJS0dJbyt1Qmh2T05Jdms1WGkyditHVjBVQ3Z2cURENXVMSkxSTmhMTkhKUHFlQml0aE1iOStmQnl3eHBoWWh3d3JOcnc3MU5RVFFFMWQiLCJtYWMiOiIxMjY2ZWE5NWEyYmYwNTE1MTNiZjQ0ODhhNGYwNmMxYjdlOWYzOWJjMzM1Mjg2N2JkODllOWI0NzJkNmU5ODY5IiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IjJzVXBZdzlGckpuaHlPd1M0RTBlaGc9PSIsInZhbHVlIjoiYXNjd2ZWVGQ0aUY2bi92Z3NvTk9JQXN1Z2lVdEI2blZvNUVWOXdaV09VcXBBTEJneGh0ekhJRjJVN29pSmFuMGpvR044R01wZGNXR2dwTjYwaWJCaTVTelNxVFZpazZVQmNIcFlNNHdoV3dFUDdrbGgwQWFVSzBtWVl0NGZZY0EiLCJtYWMiOiJlMjllODgyNjllMjIyNjdlZGZiYWY1ODcyNmRjMjgxMzE4NWE3NDdmZTU4MmU4YzkzMTkxNzJjMDlmYTkwOGE3IiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **sec-fetch-dest**: document
+* **sec-fetch-user**: ?1
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: none
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **sec-ch-ua-platform**: "macOS"
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 92.44.119.135
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Closure
+middleware: web, auth
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (2.26 ms)
+* mysql - select * from `sessions` where `id` = 'UvACH6GXWpxIpaYjozGVwIq4rFZacaO9Zta8GfZF' limit 1 (0.54 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.06 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.43 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.58 ms)

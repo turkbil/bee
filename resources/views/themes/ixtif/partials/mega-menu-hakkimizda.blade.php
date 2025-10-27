@@ -38,100 +38,169 @@
         {{-- ========================================== --}}
         <div class="hidden lg:block">
             <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-6">
-                <div class="grid grid-cols-3 gap-6">
+                <div class="grid grid-cols-4 gap-6">
 
-                    {{-- 1. Hakkımızda --}}
-                    <a href="{{ href('Page', 'show', 'hakkimizda') }}"
-                       class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600 block">
-                        <div class="flex items-center gap-3">
+                    {{-- 1. Kurumsal --}}
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                        <div class="flex items-center gap-3 mb-4">
                             <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-building text-white text-2xl"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Hakkımızda</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Firmamızı Tanıyın</div>
-                            </div>
-                        </div>
-                    </a>
-
-                    {{-- 2. İletişim --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-green-400 dark:hover:border-green-600">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-envelope text-white text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">İletişim</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Bize Ulaşın</div>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Kurumsal</h3>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Hakkımızda</div>
                             </div>
                         </div>
                         <ul class="space-y-2">
-                            @php
-                                $contactPhone = setting('contact_phone_1', '0216 755 3 555');
-                                $contactWhatsapp = setting('contact_whatsapp_1', '0501 005 67 58');
-                                $contactEmail = setting('contact_email_1', 'info@ixtif.com');
-                            @endphp
+                            <li>
+                                <a href="{{ href('Page', 'show', 'hakkimizda') }}"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Hakkımızda
+                                </a>
+                            </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'iletisim') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>İletişim Formu
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>İletişim
                                 </a>
                             </li>
                             <li>
-                                <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>{{ $contactPhone }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}"
-                                   target="_blank"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>WhatsApp: {{ $contactWhatsapp }}
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Kariyer
                                 </a>
                             </li>
                         </ul>
                     </div>
 
-                    {{-- 3. Sosyal Medya --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-purple-400 dark:hover:border-purple-600">
+                    {{-- 2. Alışveriş --}}
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
                         <div class="flex items-center gap-3 mb-4">
-                            <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-share-nodes text-white text-2xl"></i>
+                            <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-shopping-cart text-white text-2xl"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Sosyal Medya</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Bizi Takip Edin</div>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">Alışveriş</h3>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Müşteri Hizmetleri</div>
                             </div>
                         </div>
                         <ul class="space-y-2">
                             <li>
-                                <a href="{{ setting('social_facebook', '#') }}"
-                                   target="_blank"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Facebook
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Ödeme Yöntemleri
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ setting('social_instagram', '#') }}"
-                                   target="_blank"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Instagram
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Teslimat & Kargo
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ setting('social_linkedin', '#') }}"
-                                   target="_blank"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>LinkedIn
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Güvenli Alışveriş
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ setting('social_twitter', '#') }}"
-                                   target="_blank"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Twitter
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>SSS
                                 </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>İptal & İade
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Cayma Hakkı
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Mesafeli Satış Sözleşmesi
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {{-- 3. Yasal --}}
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-scale-balanced text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">Yasal</h3>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Mevzuat & Politikalar</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Gizlilik Politikası
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Kullanım Koşulları
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>KVKK Aydınlatma
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>Çerez Politikası
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {{-- 4. İletişim --}}
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-headset text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">İletişim</h3>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Bize Ulaşın</div>
+                            </div>
+                        </div>
+                        <ul class="space-y-2">
+                            <li>
+                                <div class="text-sm text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-phone text-xs text-purple-600 dark:text-purple-400"></i>
+                                    <span class="font-semibold">Telefon</span>
+                                </div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 ml-5">0216 755 3 555</div>
+                            </li>
+                            <li class="pt-1">
+                                <div class="text-sm text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
+                                    <i class="fab fa-whatsapp text-xs text-purple-600 dark:text-purple-400"></i>
+                                    <span class="font-semibold">WhatsApp</span>
+                                </div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 ml-5">0501 005 67 58</div>
+                            </li>
+                            <li class="pt-1">
+                                <div class="text-sm text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
+                                    <i class="fa-solid fa-envelope text-xs text-purple-600 dark:text-purple-400"></i>
+                                    <span class="font-semibold">E-posta</span>
+                                </div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 ml-5">info@ixtif.com</div>
                             </li>
                         </ul>
                     </div>

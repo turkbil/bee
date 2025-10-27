@@ -1,0 +1,438 @@
+<!-- HAKKIMIZDA SAYFASI - İXTİF İÇİN ÖZEL HAZIRLANMIŞ İÇERİK -->
+<!-- Design: Modern Minimalist (design-hakkimizda-1.html temel alınarak) -->
+<!-- Veri Kaynağı: readme/ixtif/marka-kimlik.md + readme/ixtif/pages-content/hakkimizda/content.html -->
+
+<!-- Hero Section -->
+<section class="pt-32 pb-20 px-4">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center" x-data="{ show: false }" x-init="setTimeout(() => show = true, 100)">
+            <div x-show="show" x-transition.duration.800ms class="inline-block mb-6">
+                <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold">
+                    <i class="fa-solid fa-star mr-2"></i>Türkiye'nin İstif Pazarı
+                </span>
+            </div>
+
+            <h1 x-show="show" x-transition.delay.200ms.duration.1000ms class="text-5xl md:text-7xl font-black text-gray-900 dark:text-white mb-6">
+                Depo Ekipmanlarında
+                <span class="gradient-text block mt-2">Lider Çözüm Ortağınız</span>
+            </h1>
+
+            <p x-show="show" x-transition.delay.400ms.duration.1000ms class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-10">
+                2000 yılından bu yana forklift, transpalet ve istif makinelerinde güvenilir çözümler sunuyoruz.
+                Satış, kiralama ve serviste tek adres: iXtif.
+            </p>
+
+            <div x-show="show" x-transition.delay.600ms.duration.1000ms class="flex items-center justify-center gap-4 flex-wrap">
+                <a href="#iletisim" class="group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:shadow-2xl hover:scale-105 transition-all">
+                    <i class="fa-solid fa-phone mr-2"></i>Hemen İletişime Geç
+                    <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform inline-block"></i>
+                </a>
+                <a href="#hizmetler" class="border-2 border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 px-8 py-4 rounded-full font-semibold hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">
+                    Hizmetlerimiz <i class="fa-solid fa-chevron-down ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <div class="text-center" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 25) count++ }, 50)">
+                <div class="text-5xl font-black mb-2">
+                    <span x-text="count">0</span>+
+                </div>
+                <div class="text-blue-100 font-medium">Yıl Tecrübe</div>
+            </div>
+
+            <div class="text-center" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 1020) count += 20 }, 10)">
+                <div class="text-5xl font-black mb-2">
+                    <span x-text="count.toLocaleString('tr-TR')">0</span>+
+                </div>
+                <div class="text-blue-100 font-medium">Ürün Çeşidi</div>
+            </div>
+
+            <div class="text-center" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 500) count += 10 }, 20)">
+                <div class="text-5xl font-black mb-2">
+                    <span x-text="count">0</span>+
+                </div>
+                <div class="text-blue-100 font-medium">Kurumsal Müşteri</div>
+            </div>
+
+            <div class="text-center" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 98) count++ }, 30)">
+                <div class="text-5xl font-black mb-2">
+                    %<span x-text="count">0</span>
+                </div>
+                <div class="text-blue-100 font-medium">Müşteri Memnuniyeti</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Company Story -->
+<section class="py-20 px-4" id="hikaye">
+    <div class="container mx-auto max-w-6xl">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <i class="fa-solid fa-building mr-2"></i>Şirket Hikayesi
+                </div>
+
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white">
+                    Türkiye'nin En Güvenilir
+                    <span class="gradient-text">İstif Markası</span>
+                </h2>
+
+                <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <strong class="text-gray-900 dark:text-white">İXTİF İç ve Dış Ticaret A.Ş.</strong> olarak, 2000 yılından bu yana
+                    Türkiye'nin depo ve lojistik sektörüne hizmet veriyoruz. Tuzla'daki 5,000 m² ana depomuzda
+                    1,020+ ürün kapasitesiyle forklift, transpalet, istif makinesi ve reach truck ekipmanlarında
+                    sektörün öncü markasıyız.
+                </p>
+
+                <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                    Elektrikli, dizel ve LPG forkliftlerden otonom depo robotlarına kadar geniş ürün yelpazemiz,
+                    satış, kiralama, servis ve yedek parça hizmetlerimizle desteklenmektedir.
+                </p>
+
+                <div class="flex items-center gap-4 pt-4">
+                    <div class="flex -space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 border-2 border-white dark:border-gray-800"></div>
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 border-2 border-white dark:border-gray-800"></div>
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 border-2 border-white dark:border-gray-800"></div>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <strong class="text-gray-900 dark:text-white">50+ uzman ekip</strong> üyemiz hizmetinizde
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <div class="absolute -top-6 -left-6 w-72 h-72 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-70 animate-float"></div>
+                <div class="absolute -bottom-6 -right-6 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-xl opacity-70 animate-float" style="animation-delay: 1s;"></div>
+
+                <div class="relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-2xl">
+                            <i class="fa-solid fa-forklift text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <div class="text-2xl font-black text-gray-900 dark:text-white">1,020</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Aktif Ürün</div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl">
+                            <i class="fa-solid fa-warehouse text-4xl text-purple-600 dark:text-purple-400 mb-4"></i>
+                            <div class="text-2xl font-black text-gray-900 dark:text-white">5,000m²</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Depo Alanı</div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-6 rounded-2xl">
+                            <i class="fa-solid fa-tools text-4xl text-green-600 dark:text-green-400 mb-4"></i>
+                            <div class="text-2xl font-black text-gray-900 dark:text-white">7/24</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Teknik Destek</div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 p-6 rounded-2xl">
+                            <i class="fa-solid fa-certificate text-4xl text-pink-600 dark:text-pink-400 mb-4"></i>
+                            <div class="text-2xl font-black text-gray-900 dark:text-white">ISO</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Sertifikalı</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-20 px-4 bg-gray-50 dark:bg-gray-900/50" id="degerler">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-16">
+            <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold">
+                <i class="fa-solid fa-gem mr-2"></i>Değerlerimiz
+            </span>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mt-6 mb-4">
+                Başarımızın <span class="gradient-text">Anahtarları</span>
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                İşimizde bizi öne çıkaran temel değerler ve prensiplerimiz
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="group bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-shield-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Güvenilirlik</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    25+ yıldır sektördeki güvenilir varlığımızla müşterilerimize kaliteli hizmet sunuyoruz.
+                </p>
+            </div>
+
+            <div class="group bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-lightbulb text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Yenilikçilik</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Otonom depo robotlarından Li-Ion teknolojiye kadar en yeni çözümleri sunuyoruz.
+                </p>
+            </div>
+
+            <div class="group bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-hand-holding-heart text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Erişilebilirlik</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    KOBİ'den kurumsala, kiralama ve satışla herkese uygun çözümler sunuyoruz.
+                </p>
+            </div>
+
+            <div class="group bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-eye text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Şeffaflık</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Net fiyatlandırma, gizli maliyet yok. Her aşamada açık ve dürüst iletişim.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-20 px-4" id="hizmetler">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-16">
+            <span class="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-semibold">
+                <i class="fa-solid fa-cogs mr-2"></i>Hizmetlerimiz
+            </span>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mt-6 mb-4">
+                Eksiksiz <span class="gradient-text">İstif Çözümleri</span>
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="/shop" class="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-shopping-cart text-5xl mb-4 opacity-80"></i>
+                <h3 class="text-2xl font-bold mb-3">Satın Alma</h3>
+                <p class="text-blue-100 mb-4">Sıfır ekipmanlar, 2 yıl garanti, ücretsiz montaj</p>
+                <div class="flex items-center text-sm font-semibold">
+                    İncele <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="/shop?hizmet=kiralama" class="group relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-700 p-8 rounded-3xl text-white hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-sync-alt text-5xl mb-4 opacity-80"></i>
+                <h3 class="text-2xl font-bold mb-3">Kiralama</h3>
+                <p class="text-purple-100 mb-4">Günlük, aylık, yıllık esnek kiralama seçenekleri</p>
+                <div class="flex items-center text-sm font-semibold">
+                    İncele <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="/shop?hizmet=ikinciel" class="group relative overflow-hidden bg-gradient-to-br from-green-500 to-green-700 p-8 rounded-3xl text-white hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-recycle text-5xl mb-4 opacity-80"></i>
+                <h3 class="text-2xl font-bold mb-3">İkinci El</h3>
+                <p class="text-green-100 mb-4">Garantili 2. el, %40 daha ekonomik fiyatlar</p>
+                <div class="flex items-center text-sm font-semibold">
+                    İncele <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="/shop/kategori/yedek-parca" class="group relative overflow-hidden bg-gradient-to-br from-orange-500 to-orange-700 p-8 rounded-3xl text-white hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-puzzle-piece text-5xl mb-4 opacity-80"></i>
+                <h3 class="text-2xl font-bold mb-3">Yedek Parça</h3>
+                <p class="text-orange-100 mb-4">Orijinal parçalar, 24-48 saat teslimat</p>
+                <div class="flex items-center text-sm font-semibold">
+                    İncele <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="/iletisim?konu=servis" class="group relative overflow-hidden bg-gradient-to-br from-red-500 to-red-700 p-8 rounded-3xl text-white hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-tools text-5xl mb-4 opacity-80"></i>
+                <h3 class="text-2xl font-bold mb-3">Teknik Servis</h3>
+                <p class="text-red-100 mb-4">7/24 saha servisi, acil müdahale ekibi</p>
+                <div class="flex items-center text-sm font-semibold">
+                    İncele <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="/iletisim?konu=bakim" class="group relative overflow-hidden bg-gradient-to-br from-pink-500 to-pink-700 p-8 rounded-3xl text-white hover:shadow-2xl hover:scale-105 transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-calendar-check text-5xl mb-4 opacity-80"></i>
+                <h3 class="text-2xl font-bold mb-3">Bakım Anlaşması</h3>
+                <p class="text-pink-100 mb-4">Yıllık kontrat, planlı bakım, %20 parça indirimi</p>
+                <div class="flex items-center text-sm font-semibold">
+                    İncele <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info Section -->
+<section class="py-20 px-4 bg-gray-50 dark:bg-gray-900/50" id="iletisim">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-16">
+            <span class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-4 py-2 rounded-full text-sm font-semibold">
+                <i class="fa-solid fa-phone mr-2"></i>İletişim
+            </span>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mt-6 mb-4">
+                Hemen <span class="gradient-text">Başlayalım!</span>
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            <!-- Kurumsal Bilgiler -->
+            <div class="space-y-6">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-building text-blue-600 dark:text-blue-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Ticari Unvan</div>
+                            <div class="font-bold text-gray-900 dark:text-white">İXTİF İÇ VE DIŞ TİCARET A.Ş.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-receipt text-purple-600 dark:text-purple-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Vergi Bilgileri</div>
+                            <div class="font-bold text-gray-900 dark:text-white">Kartal V.D. - 4831552951</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-phone text-green-600 dark:text-green-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">İletişim</div>
+                            <div class="space-y-1">
+                                <a href="tel:0216 755 3 555" class="block font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                    0216 755 3 555
+                                </a>
+                                <a href="mailto:info@ixtif.com" class="block text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                    info@ixtif.com
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adres ve Depo -->
+            <div class="space-y-6">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-location-dot text-red-600 dark:text-red-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Merkez Adres</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white leading-relaxed">
+                                Karlıktepe Mahallesi, Çamlık Sokak<br>
+                                Manzara Adalar Sitesi, B Blok No: 1/B<br>
+                                İç Kapı No: 89, Kartal / İSTANBUL
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-warehouse text-orange-600 dark:text-orange-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Ana Depo</div>
+                            <div class="font-bold text-gray-900 dark:text-white">İXTİF Tuzla Ana Depo</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                <i class="fa-solid fa-box-check mr-2"></i>5,000 m² kapalı alan
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-2xl shadow-lg text-white">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-brands fa-whatsapp text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-green-100 mb-1">7/24 WhatsApp Destek</div>
+                            <div class="font-bold text-white">0532 216 07 54</div>
+                        </div>
+                    </div>
+                    <a href="https://wa.me/905322160754?text=Merhaba, iXtif hakkında bilgi almak istiyorum." target="_blank" class="block w-full bg-white text-green-600 text-center py-3 rounded-xl font-bold hover:bg-green-50 transition">
+                        WhatsApp ile İletişime Geç
+                        <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-12">
+            <a href="/iletisim" class="group bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-full font-bold text-xl transition-all inline-block text-center">
+                <i class="fa-solid fa-paper-plane mr-3 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                İletişim Formu
+            </a>
+
+            <a href="/shop" class="group bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 px-12 py-5 rounded-full font-bold text-xl transition-all inline-block text-center">
+                <i class="fa-solid fa-store mr-3 group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                Ürünleri İncele
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+</style>

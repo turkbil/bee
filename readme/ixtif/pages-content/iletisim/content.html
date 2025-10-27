@@ -1,0 +1,147 @@
+<!-- İLETİŞİM -->
+
+<div class="py-16 md:py-24">
+    <div class="text-center mb-16">
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-gray-900 dark:text-white" style="font-weight: 900;">
+            <span class="gradient-animate block py-2">İLETİŞİME</span>
+            <span class="gradient-animate block py-2">GEÇİN</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300">
+            7/24 destek hattımızdan bize ulaşabilirsiniz
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12 lg:gap-16 max-w-5xl mx-auto">
+        <!-- İletişim Bilgileri -->
+        <div class="space-y-8">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-light fa-phone text-blue-600 dark:text-blue-300 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Telefon (Sabit)</div>
+                    <a href="tel:0216 755 3 555" class="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 transition">
+                        0216 755 3 555
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-light fa-mobile text-blue-600 dark:text-blue-300 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Telefon (Mobil)</div>
+                    <a href="tel:0501 005 67 58" class="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 transition">
+                        0501 005 67 58
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-green-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">WhatsApp (7/24)</div>
+                    <a href="https://wa.me/905322160754" target="_blank" class="text-lg font-bold text-gray-900 dark:text-white hover:text-green-600 transition">
+                        0532 216 07 54
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-light fa-envelope text-blue-600 dark:text-blue-300 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">E-posta</div>
+                    <a href="mailto:info@ixtif.com" class="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 transition">
+                        info@ixtif.com
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fa-light fa-location-dot text-blue-600 dark:text-blue-300 text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Adres</div>
+                    <div class="text-sm font-medium text-gray-900 dark:text-white leading-relaxed">
+                        Karlıktepe Mahallesi, Çamlık Sokak<br>
+                        Manzara Adalar Sitesi, B Blok No: 1/B<br>
+                        İç Kapı No: 89, Kartal / İSTANBUL
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İletişim Formu (Basit) -->
+        <div>
+            <div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-8">
+                <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Mesaj Gönderin</h3>
+
+                <form action="/iletisim" method="POST" class="space-y-4">
+                    <div>
+                        <input type="text" name="name" placeholder="Ad Soyad" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <input type="email" name="email" placeholder="E-posta" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <input type="tel" name="phone" placeholder="Telefon" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <select name="subject" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                            <option value="">Konu Seçin</option>
+                            <option value="satis">Satış</option>
+                            <option value="kiralama">Kiralama</option>
+                            <option value="servis">Servis</option>
+                            <option value="yedek-parca">Yedek Parça</option>
+                            <option value="diger">Diğer</option>
+                        </select>
+                    </div>
+                    <div>
+                        <textarea name="message" rows="4" placeholder="Mesajınız" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all">
+                        Gönder
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WhatsApp Hızlı Erişim -->
+<div class="py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Hızlı Erişim
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-400">WhatsApp üzerinden departmanlara direkt ulaşın</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="https://wa.me/905322160754?text=Satış" target="_blank" class="group text-center p-6 bg-green-50 dark:bg-slate-800/50 rounded-2xl hover:bg-green-100 dark:hover:bg-slate-700/50 transition">
+            <i class="fa-brands fa-whatsapp text-4xl text-green-600 mb-3 group-hover:scale-110 transition-transform"></i>
+            <div class="font-bold text-gray-900 dark:text-white">Satış</div>
+        </a>
+
+        <a href="https://wa.me/905322160754?text=Kiralama" target="_blank" class="group text-center p-6 bg-green-50 dark:bg-slate-800/50 rounded-2xl hover:bg-green-100 dark:hover:bg-slate-700/50 transition">
+            <i class="fa-brands fa-whatsapp text-4xl text-green-600 mb-3 group-hover:scale-110 transition-transform"></i>
+            <div class="font-bold text-gray-900 dark:text-white">Kiralama</div>
+        </a>
+
+        <a href="https://wa.me/905322160754?text=Servis" target="_blank" class="group text-center p-6 bg-green-50 dark:bg-slate-800/50 rounded-2xl hover:bg-green-100 dark:hover:bg-slate-700/50 transition">
+            <i class="fa-brands fa-whatsapp text-4xl text-green-600 mb-3 group-hover:scale-110 transition-transform"></i>
+            <div class="font-bold text-gray-900 dark:text-white">Servis</div>
+        </a>
+
+        <a href="https://wa.me/905322160754?text=Yedek Parça" target="_blank" class="group text-center p-6 bg-green-50 dark:bg-slate-800/50 rounded-2xl hover:bg-green-100 dark:hover:bg-slate-700/50 transition">
+            <i class="fa-brands fa-whatsapp text-4xl text-green-600 mb-3 group-hover:scale-110 transition-transform"></i>
+            <div class="font-bold text-gray-900 dark:text-white">Yedek Parça</div>
+        </a>
+    </div>
+</div>

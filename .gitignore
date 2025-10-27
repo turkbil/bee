@@ -77,9 +77,6 @@ SUNUCU_BILGILERI.txt
 /backups
 !database-backups/**/*.sql
 
-# Readme/Döküman klasörü (local development)
-/readme
-
 # Temporary analysis files
 background-analysis.txt
 unique-gradients.txt

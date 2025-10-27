@@ -1,0 +1,436 @@
+{
+    "category_slug": "transpalet",
+    "model_code": "F2",
+    "sku": "F2-EPT",
+    "title": "F2 Elektrikli Transpalet 1.5T - Li-Ion Bataryalı Perakende Çözümü",
+    "slug": "f2-elektrikli-transpalet-1-5t-li-ion",
+    "short_description": "1.5 ton kapasiteli F2 elektrikli transpalet, 24V/20Ah Li-Ion batarya teknolojisi ve 120 kg ultra hafif gövdesi ile perakende sektörü için optimize edilmiştir. Şık tasarım ve fırsat şarjı özelliği ile süpermarket ve AVM'lerde ideal çözüm.",
+
+    "body": "<section class=\"marketing-intro\"><h2>Perakende Sektörü İçin Akıllı ve Şık Çözüm</h2><p>F2 Elektrikli Transpalet, süpermarket, hipermarket ve AVM'ler gibi perakende alanları için özel olarak tasarlanmış 1.5 ton kapasiteli modern bir palet taşıma sistemidir. 24V/20Ah Li-Ion batarya teknolojisi ile fırsat şarjı yapabilir, bakım gerektirmez ve her zaman kullanıma hazır olur.</p><p>Piyasada kanıtlanmış EPT12-EZ modelinden türetilen F2, hem görünüm hem de lityum güç kaynağı açısından güçlü özellikleri miras alır. Şık transpalet çerçevesi süpermarket ve alışveriş merkezlerinde kullanım için mükemmeldir.</p></section><section class=\"marketing-body\"><h3>Li-Ion Batarya Teknolojisinin Avantajları</h3><p>F2'nin akıllı Li-Ion bataryası, perakende kullanımı için ideal özellikler sunar:</p><ul><li><strong>Fırsat Şarjı (Opportunity Charging):</strong> Mola aralarında kısa süreli şarj yaparak gün boyu kesintisiz kullanım</li><li><strong>Sıfır Bakım:</strong> Su ekleme, terminal temizliği gerektirmez</li><li><strong>Ultra Hafif:</strong> Sadece 5 kg batarya ağırlığı (AGM: 30 kg)</li><li><strong>Uzun Ömür:</strong> 2000+ şarj döngüsü, geleneksel bataryaların 2 katı</li><li><strong>Hızlı Şarj:</strong> 2-3 saatte %80 kapasite</li><li><strong>Çevre Dostu:</strong> Kurşun içermez, geri dönüştürülebilir</li></ul><h3>Yükseltilmiş Kapasite, Daha Fazla Verimlilik</h3><p>F2, 120 kg kendiliğinden ağırlığa sahip olmasına rağmen EPT12-EZ'den daha yüksek yük kapasitesi (1.5 ton) sunarak üretkenlikte büyük artış sağlar. Ultra hafif gövde tasarımı sayesinde enerji tüketimi minimalize edilir, manevra kabiliyeti maksimize edilir.</p><h3>Ergonomik Yeni Timoni Tasarımı</h3><p>F2, kullanıcının başparmak yerine el ayasıyla transpaleti daha kolay kullanmasını sağlayan yeni timoni başlığını benimser. Operasyonlar sırasında kontrol topuzuna uygulanan kısma kuvveti en aza indirilir, böylece ellerdeki aşırı fiziksel stres ve gerilme azaltılır.</p><h3>Platform F Tasarımı ile Maliyet Avantajı</h3><p>4 ünite/kutu standart toptan sevkiyat, dağıtım sürecindeki toplam harcamaları azaltır. F2, 40' nakliye konteynerine 176 ünite sığabilir (EPT12-EZ'nin 108 ünitesine karşılık), bu da %30-40 okyanus navlun ücreti tasarrufu sağlar.</p><h3>İXTİF Hizmet Garantisi</h3><p>İXTİF İç ve Dış Ticaret A.Ş. olarak F2 transpalet için kapsamlı satış sonrası hizmetler sunuyoruz:</p><ul><li><strong>Yeni ve İkinci El Satış:</strong> İhtiyacınıza uygun esnek satış seçenekleri</li><li><strong>Kiralama Hizmeti:</strong> Kısa ve uzun dönem kiralama imkanı</li><li><strong>Yedek Parça Desteği:</strong> Orijinal yedek parça tedariki ve stok garantisi</li><li><strong>Teknik Servis:</strong> Yetkili servis ağımız ile hızlı müdahale</li><li><strong>Li-Ion Batarya Desteği:</strong> Uzman ekip ile batarya yönetim sistemleri</li></ul><p><strong>İletişim:</strong> 0216 755 3 555 | info@ixtif.com</p></section>",
+
+    "technical_specs": {
+        "general": {
+            "manufacturer": "EP EQUIPMENT CO.,LTD",
+            "model": "F2",
+            "series": "F Series",
+            "operator_type": "Pedestrian",
+            "drive_type": "Electric"
+        },
+        "capacity": {
+            "load_capacity": { "value": 1500, "unit": "kg" },
+            "load_center_distance": { "value": 600, "unit": "mm" }
+        },
+        "dimensions": {
+            "service_weight": { "value": 120, "unit": "kg" },
+            "overall_length": { "value": 1550, "unit": "mm" },
+            "length_to_face_of_forks": { "value": 400, "unit": "mm" },
+            "overall_width": { "value": 695, "unit": "mm" },
+            "lowered_height": { "value": 82, "unit": "mm" },
+            "lift_height": { "value": 105, "unit": "mm" },
+            "tiller_height_min": { "value": 750, "unit": "mm" },
+            "tiller_height_max": { "value": 1190, "unit": "mm" },
+            "wheelbase": { "value": 1180, "unit": "mm" },
+            "ground_clearance": { "value": 25, "unit": "mm" }
+        },
+        "fork_specifications": {
+            "fork_dimensions": {
+                "thickness": { "value": 55, "unit": "mm" },
+                "width": { "value": 150, "unit": "mm" },
+                "length": { "value": 1150, "unit": "mm" }
+            },
+            "fork_spread": {
+                "standard": { "value": 685, "unit": "mm" },
+                "adjustable": { "value": 560, "unit": "mm" }
+            },
+            "fork_options": "560mm genişlik: 800/900/1000/1220/1350/1500 uzunluk | 685mm genişlik: 800/900/1000/1150/1220/1350/1500 uzunluk"
+        },
+        "wheels": {
+            "tyre_type": "Polyurethane",
+            "front_tyre_size": "210×70 mm",
+            "rear_tyre_size": "Ø80×60 (Ø74×88)",
+            "castor_wheels": "Ø74×30 (Optional)",
+            "wheel_configuration": "1×2/4 (front×rear)",
+            "tread_width_rear": { "value": 535, "unit": "mm" }
+        },
+        "performance": {
+            "travel_speed_laden": { "value": 4, "unit": "km/h" },
+            "travel_speed_unladen": { "value": 4.5, "unit": "km/h" },
+            "lifting_speed_laden": { "value": 0.017, "unit": "m/s" },
+            "lifting_speed_unladen": { "value": 0.02, "unit": "m/s" },
+            "lowering_speed_laden": { "value": 0.046, "unit": "m/s" },
+            "lowering_speed_unladen": { "value": 0.058, "unit": "m/s" },
+            "max_gradeability_laden": { "value": 5, "unit": "%" },
+            "max_gradeability_unladen": { "value": 16, "unit": "%" }
+        },
+        "aisle_widths": {
+            "pallet_1000x1200_crossways": { "value": 2160, "unit": "mm" },
+            "pallet_800x1200_crossways": { "value": 2025, "unit": "mm" },
+            "turning_radius": { "value": 1360, "unit": "mm" }
+        },
+        "electrical": {
+            "battery": {
+                "type": "Li-Ion (Lithium-Ion)",
+                "voltage": { "value": 24, "unit": "V" },
+                "nominal_capacity": { "value": 20, "unit": "Ah" },
+                "weight": { "value": 5, "unit": "kg" },
+                "cycle_life": "2000+ cycles",
+                "charging_features": [
+                    "Opportunity Charging",
+                    "Fast Charging",
+                    "Maintenance Free"
+                ]
+            },
+            "charger": {
+                "type": "External",
+                "options": [
+                    "24V/5A External (Standard)",
+                    "24V/10A External (Optional)"
+                ],
+                "charging_time_80_percent": "2-3 hours",
+                "charging_time_100_percent": "4-5 hours"
+            },
+            "motors": {
+                "drive_motor": { "rating": "0.75 kW S2 60 min" },
+                "lift_motor": { "rating": "0.5 kW S3 15%" }
+            }
+        },
+        "control_systems": {
+            "drive_control": "DC",
+            "steering": "Mechanical",
+            "service_brake": "Electromagnetic"
+        },
+        "safety": {
+            "sound_level": { "value": 74, "unit": "dB(A)" },
+            "ce_certified": true,
+            "buzzer": "Standard",
+            "battery_indicator": "Without time display",
+            "turtle_speed": "Standard (slow speed mode)"
+        },
+        "options": {
+            "fork_dimensions": [
+                "1150×560 (standard)",
+                "800×560",
+                "900×560",
+                "1000×560",
+                "1220×560",
+                "1350×560",
+                "1500×560",
+                "800×685",
+                "900×685",
+                "1000×685",
+                "1150×685",
+                "1220×685",
+                "1350×685",
+                "1500×685"
+            ],
+            "fork_lowered_heights": ["80mm (standard)", "55mm"],
+            "load_wheel_type": "Double (standard) / Single",
+            "castor_wheels_available": "Optional",
+            "handle_types": ["Big handle head (standard)", "Small handle head"],
+            "drive_cover": "Off the ground (optional)"
+        }
+    },
+
+    "primary_specs": [
+        { "label": "Yük Kapasitesi", "value": "1.5 Ton" },
+        { "label": "Akü Sistemi", "value": "Li-Ion 24V/20Ah" },
+        { "label": "Ağırlık", "value": "120 kg" },
+        { "label": "Fırsat Şarjı", "value": "Mevcut" }
+    ],
+
+    "features": {
+        "list": [
+            "24V/20Ah Li-Ion batarya - sıfır bakım ve uzun ömür",
+            "Fırsat şarjı (opportunity charging) - mola aralarında hızlı şarj",
+            "120 kg ultra hafif gövde - en hafif 1.5 ton transpalet",
+            "Sadece 5 kg batarya ağırlığı - kolay değişim",
+            "2000+ şarj döngüsü - geleneksel bataryaların 2 katı ömür",
+            "Yeni ergonomik timoni - el ayası kontrolü, düşük yorgunluk",
+            "Şık ve kompakt tasarım - perakende alanlar için ideal",
+            "EPT12-EZ'nin kanıtlanmış mühendisliği",
+            "Polyurethane tekerler - düşük gürültü, zemin dostu",
+            "Elektromanyetik fren sistemi - güvenli durdurma",
+            "CE sertifikalı - Avrupa güvenlik standartları",
+            "Kaplumbağa hızı modu - dar alanda hassas kontrol",
+            "Platform F tasarımı - maliyet avantajı",
+            "4 ünite/kutu paketleme - %30-40 nakliye tasarrufu",
+            "176 ünite/40' konteyner kapasitesi"
+        ]
+    },
+
+    "highlighted_features": [
+        {
+            "title": "Li-Ion Batarya Teknolojisi",
+            "description": "24V/20Ah Li-Ion batarya, fırsat şarjı özelliği ile mola aralarında hızlı şarj imkanı sunar. Sıfır bakım gerektirir ve 2000+ döngü ömrüyle uzun vadeli tasarruf sağlar."
+        },
+        {
+            "title": "Ultra Hafif Tasarım",
+            "description": "120 kg servis ağırlığı ile segmentinin en hafif transpaleti. 5 kg Li-Ion batarya (AGM'ye göre %83 daha hafif) sayesinde mükemmel manevra kabiliyeti."
+        },
+        {
+            "title": "Ergonomik Yeni Timoni",
+            "description": "El ayası (palm) kontrolü ile başparmak yorgunluğunu ortadan kaldıran yeni timoni tasarımı. Operatör konforu ve uzun vardiya performansı için optimize edilmiş."
+        },
+        {
+            "title": "Perakende Optimizasyonu",
+            "description": "Şık çerçeve tasarımı ve sessiz çalışma ile süpermarket, hipermarket ve AVM'lerde müşteri alanlarında kullanıma uygun. Kompakt boyutlar dar koridor geçişlerinde avantaj sağlar."
+        }
+    ],
+
+    "use_cases": [
+        "Süpermarket ve hipermarket arka depo stok yönetimi",
+        "Alışveriş merkezi (AVM) mağaza ikmal operasyonları",
+        "Perakende zincir mağazaların günlük yük hareketleri",
+        "E-ticaret mağaza içi sipariş hazırlama (store picking)",
+        "Gıda perakende - soğuk hava deposu yakın alan kullanımı",
+        "Eczane ve kozmetik mağazaları raf ikmal işlemleri",
+        "Elektronik mağazaları ürün transfer ve depolama",
+        "Giyim ve ayakkabı mağazaları mevsimlik stok hareketleri",
+        "Kitap ve kırtasiye mağazaları raf düzenleme",
+        "Ev tekstili ve mobilya showroom stok yönetimi",
+        "Küçük ölçekli depo operasyonları (günlük 4-6 saat kullanım)",
+        "Fuar ve etkinlik organizasyonlarında malzeme taşıma"
+    ],
+
+    "competitive_advantages": [
+        "Li-Ion batarya - fırsat şarjı ile gün boyu kesintisiz kullanım",
+        "Sıfır bakım - su ekleme, terminal temizliği gerektirmez",
+        "120 kg ultra hafif - segmentinin en hafif 1.5 ton transpaleti",
+        "5 kg batarya ağırlığı - kolay taşınabilir, hızlı değişim",
+        "2000+ döngü ömrü - geleneksel bataryaların 2 katı ekonomi",
+        "Hızlı şarj - 2-3 saatte %80 kapasite, 4-5 saatte tam şarj",
+        "Ergonomik el ayası kontrolü - operatör yorgunluğu minimalize",
+        "Şık tasarım - müşteri alanlarında kullanıma uygun estetik",
+        "Kompakt boyutlar - dar koridorlarda üstün manevra",
+        "Sessiz çalışma (74 dB) - perakende ortamı için ideal",
+        "Platform F tasarımı - %30-40 nakliye maliyet tasarrufu",
+        "EPT12-EZ'nin kanıtlanmış güvenilirliği - saha testinde onaylı",
+        "Çevre dostu Li-Ion - kurşun içermez, geri dönüştürülebilir",
+        "Kaplumbağa hızı modu - dar alanlarda hassas kontrol",
+        "Düşük enerji tüketimi - Li-Ion verimli enerji kullanımı"
+    ],
+
+    "target_industries": [
+        "Süpermarket ve Hipermarket Zincirleri",
+        "Alışveriş Merkezleri (AVM) ve Outlet'ler",
+        "Perakende Giyim ve Ayakkabı Mağazaları",
+        "Elektronik ve Teknoloji Mağazaları",
+        "Kitap, Kırtasiye ve Hobi Mağazaları",
+        "Kozmetik ve Parfümeri Zincirleri",
+        "Eczane ve Medikal Ürün Mağazaları",
+        "Ev Tekstili ve Dekorasyon Mağazaları",
+        "Mobilya Showroom ve Satış Mağazaları",
+        "Oyuncak ve Çocuk Ürünleri Mağazaları",
+        "Pet Shop ve Hayvan Ürünleri Zincirleri",
+        "Spor Malzemeleri ve Outdoor Mağazaları",
+        "Bahçe ve Yapı Marketleri",
+        "E-ticaret Mağaza İçi Fulfillment",
+        "Gıda Perakende ve Organik Ürün Mağazaları",
+        "Şarküteri ve Delicatessen Dükkanları",
+        "Kuyumcu ve Aksesuar Mağazaları",
+        "Müze ve Galeri Hediye Dükkanları",
+        "Otel ve Resort Lojistik Birimleri",
+        "Restoran ve Kafe Tedarik Alanları",
+        "Havalimanı ve İstasyon Retail Alanları",
+        "Hastane ve Klinik Eczane Birimleri",
+        "Üniversite ve Kampüs Kitapçıları",
+        "Fuar ve Kongre Merkezi Organizasyonları",
+        "Küçük-Orta Ölçekli Depo ve Antrepolar"
+    ],
+
+    "faq_data": [
+        {
+            "question": "F2 hangi tip işletmeler için uygundur?",
+            "answer": "F2, özellikle perakende sektörü için tasarlanmıştır. Süpermarket, hipermarket, AVM mağazaları, giyim-ayakkabı zincirleri, elektronik mağazaları, kitap-kırtasiye dükkanları ve benzeri perakende alanlar için idealdir. Şık tasarımı sayesinde müşteri alanlarında kullanıma uygundur. Kompakt boyutları ve sessiz çalışması ile dar koridorlu mağazalarda mükemmel performans gösterir. Ayrıca küçük-orta ölçekli depolarda günlük 4-6 saat kullanım gerektiren operasyonlar için de uygundur. Li-Ion bataryasının fırsat şarjı özelliği sayesinde yoğun retail operasyonlarında kesintisiz kullanım sağlar.",
+            "sort_order": 1
+        },
+        {
+            "question": "Li-Ion batarya nedir ve AGM'den farkı nedir?",
+            "answer": "Li-Ion (Lityum-İyon) batarya, modern elektrikli araçlarda kullanılan gelişmiş batarya teknolojisidir. AGM (kurşun-asit) ile karşılaştırma: 1) AĞIRLIK: Li-Ion 5 kg, AGM 30 kg (%83 daha hafif), 2) ÖMÜR: Li-Ion 2000+ döngü, AGM 1000 döngü (2 kat daha uzun), 3) ŞARJ: Li-Ion 2-3 saat hızlı şarj, AGM 6-8 saat, 4) BAKIM: Li-Ion sıfır bakım, AGM periyodik su ekleme, 5) FIRSAT ŞARJI: Li-Ion mola aralarında kısa şarj yapılabilir, AGM tam deşarj-şarj döngüsü gerektirir, 6) ÇEVREcİLİK: Li-Ion kurşun içermez, AGM zehirli kurşun. Li-Ion daha pahalı ilk yatırım ama toplam sahip olma maliyeti (TCO) daha düşüktür. Perakende kullanımda fırsat şarjı büyük avantajdır.",
+            "sort_order": 2
+        },
+        {
+            "question": "Fırsat şarjı (opportunity charging) nedir?",
+            "answer": "Fırsat şarjı, Li-Ion bataryaların özel özelliğidir ve mola aralarında kısa süreli şarj yapma imkanı sunar. Nasıl çalışır: 1) Vardiya içinde 15-30 dakikalık molalarda transpaleti prize takarsınız, 2) Bu kısa şarj, batarya kapasitesini %10-20 artırır, 3) Gün boyunca birkaç fırsat şarjı ile kesintisiz kullanım sağlanır, 4) Gece tam şarj ile ertesi gün hazır. AVANTAJLARI: 1) Yedek bataryaya gerek kalmaz, 2) Batarya değişim süresinden tasarruf, 3) Yoğun retail operasyonlarında kesintisiz çalışma, 4) Li-Ion'un hafıza etkisi olmadığı için zararsız. UYARI: AGM bataryalarda fırsat şarjı yapılamaz, tam deşarj-şarj döngüsü gerekir. F2'nin Li-Ion bataryası bu özelliği destekler ve perakende kullanımda büyük avantaj sağlar.",
+            "sort_order": 3
+        },
+        {
+            "question": "F2'nin 120 kg ağırlığı avantaj mı dezavantaj mı?",
+            "answer": "120 kg ultra hafif ağırlık, F2'nin en büyük AVANTAJLARINDAN biridir. Faydaları: 1) KOLAY MANEVRA: Dar koridorlarda, kalabalık alanlarda çevik hareket, 2) DÜŞÜK ENERJİ: Hafif gövde daha az enerji tüketir, batarya ömrü uzar, 3) YER BASINÇ: Hassas zeminlerde (epoksi, mermer) daha az hasar riski, 4) OPERATÖR KONFORU: Hafif transpalet daha az fiziksel güç gerektirir, 5) NAKLİYE: 176 ünite/40' konteyner (ağır modeller: 100-120 ünite), %30-40 nakliye tasarrufu. DENGE KONUSU: F2, 1.5 ton yükü güvenle taşır çünkü mükemmel ağırlık dağılımına sahiptir. Opsiyonel denge tekeri (castor wheel) eğimli zeminlerde ekstra güvenlik sağlar. Hafiflik, performanstan ödün vermeden tasarlanmıştır ve retail kullanımda büyük avantajdır.",
+            "sort_order": 4
+        },
+        {
+            "question": "F2'nin şarj süresi ne kadardır?",
+            "answer": "F2'nin Li-Ion bataryası hızlı şarj özelliğine sahiptir. ŞARJ SÜRELERİ: 1) Hızlı Şarj (%80 kapasite): 2-3 saat, 2) Tam Şarj (%100 kapasite): 4-5 saat, 3) Fırsat Şarjı (15-30 dakika): %10-20 kapasite artışı. ŞARJ CİHAZI SEÇENEKLERİ: 1) 24V/5A Harici (Standart): 4-5 saat tam şarj, 2) 24V/10A Harici (Opsiyonel): 2-3 saat tam şarj. ÖNERİLEN KULLANIM: 1) Gece vardiya bitiminde tam şarj, 2) Gün içinde mola aralarında fırsat şarjı, 3) Hafta sonu uzun şarj (batarya dengeleme). AVANTAJ: AGM bataryalara göre %40-50 daha hızlı şarj. Li-Ion'un hızlı şarj kabiliyeti retail operasyonlarında büyük avantaj sağlar. Batarya yönetim sistemi (BMS) aşırı şarjı önler, bataryayı korur.",
+            "sort_order": 5
+        },
+        {
+            "question": "F2 ile F1 arasındaki farklar nelerdir?",
+            "answer": "F2 ve F1, F Serisi platformunun farklı uygulamalar için optimize edilmiş versiyonlarıdır. BENZERLIKLER: 1) Aynı yük kapasitesi (1.5 ton), 2) Aynı platform tasarımı, 3) Aynı çatal boyutları (1150×560/685 mm). FARKLILIKLAR: F1 (Endüstriyel): 1) AGM batarya 24V/65Ah, 2) Entegre şarj cihazı, 3) 145 kg ağırlık, 4) 5-6 saat kesintisiz çalışma, 5) Yoğun depo operasyonları için. F2 (Retail): 1) Li-Ion batarya 24V/20Ah, 2) Harici şarj cihazı, 3) 120 kg ultra hafif, 4) Fırsat şarjı özelliği, 5) Şık tasarım, 6) Ergonomik yeni timoni, 7) Süpermarket/AVM için. SEÇİM KILAVUZU: Yoğun depo kullanımı → F1, Retail/hafif kullanım → F2, Uzun vardiya/fırsat şarjı → F2, Ekonomik çözüm → F1. Her iki model de mükemmel performans sunar, uygulama farkı vardır.",
+            "sort_order": 6
+        },
+        {
+            "question": "Yeni ergonomik timoni nasıl çalışır?",
+            "answer": "F2'nin yeni timoni tasarımı, operatör konforunu maksimize etmek için geliştirilmiştir. GELENEKSEL TİMONİ: Başparmakla kontrol topuzu (knob) kullanılır, uzun süre kullanımda başparmak yorgunluğu ve ağrısı oluşur. YENİ ERGONOMİK TİMONİ: El ayası (palm) ile kontrolde, tüm el kullanılır, basınç dağılımı eşit olur. AVANTAJLARI: 1) Başparmak yorgunluğu ortadan kalkar, 2) El ve bilek gerginliği azalır, 3) Uzun vardiyalarda konfor artar, 4) Operasyon hassasiyeti yükselir, 5) Kas-iskelet sistemi rahatsızlıkları riski düşer. İKİ SEÇENEK: 1) Büyük timoni başlığı (standart) - büyük el için, 2) Küçük timoni başlığı (opsiyonel) - küçük el için. Ergonomik tasarım, EU iş güvenliği standartlarına (EN 1726-1) uygundur. Özellikle retail sektöründe günde 6-8 saat kullanan operatörler için büyük fark yaratır.",
+            "sort_order": 7
+        },
+        {
+            "question": "F2'de denge tekeri (castor wheel) gerekli midir?",
+            "answer": "Denge tekeri, F2'de opsiyoneldir ve kullanım koşullarına göre değerlendirilmelidir. DENGE TEKERİ GEREKMEZ: 1) Düz ve sert zemin (epoksi, beton), 2) İç mekan retail kullanımı, 3) Normal yük (1-1.5 ton), 4) Düz yüzeyler (süpermarket, AVM). DENGE TEKERİ ÖNERİLİR: 1) Eğimli yüzeyler ve rampalar, 2) Dengesiz veya bozuk zemin, 3) Açık alan kullanımı, 4) Sürekli 1.5 ton maksimum yük taşıma, 5) Dar dönüş manevraları. F2'NİN AVANTAJI: 120 kg ultra hafif gövde, mükemmel ağırlık dağılımı sayesinde denge tekeri olmadan bile stabil çalışır. Çoğu retail uygulamada denge tekeri gereksizdir. Ancak eğimli zeminlerde (rampalı depo, otoparka inen yol) güvenlik için önerilir. Uygulamanıza uygun konfigürasyonu belirlemek için 0216 755 3 555 numaralı telefondan teknik ekibimizle görüşebilirsiniz.",
+            "sort_order": 8
+        },
+        {
+            "question": "Li-Ion bataryanın ömrü ne kadardır?",
+            "answer": "F2'nin Li-Ion bataryası, geleneksel kurşun-asit bataryalardan çok daha uzun ömürlüdür. DÖNGÜ ÖMRÜ: 2000+ şarj-deşarj döngüsü (AGM: 1000 döngü). YIL OLARAK: 1) Günlük 1 şarj: 5-6 yıl, 2) Günlük 2 şarj (fırsat şarjı dahil): 3-4 yıl, 3) Haftada 5 gün kullanım: 7-8 yıl. KAPASİTE DÜŞÜŞÜ: 1) İlk 1000 döngü: %80-90 kapasite korunur, 2) 2000 döngü sonrası: %70-80 kapasite. ÖMÜR UZATMA İPUÇLARI: 1) Aşırı deşarjdan kaçının (%20'nin altına düşmeyin), 2) Aşırı sıcaktan koruyun (ideal: 15-25°C), 3) Düzenli şarj yapın (tam deşarj beklemeden), 4) Orijinal şarj cihazı kullanın, 5) Uzun süre kullanmayacaksanız %50-60 şarjlı saklayın. GARANTİ: İXTİF 2 yıl Li-Ion batarya garantisi sunar. Ömür sonunda batarya değiştirilebilir (5 kg hafif, kolay değişim). Toplam sahip olma maliyeti (TCO) AGM'den %30-40 daha düşüktür.",
+            "sort_order": 9
+        },
+        {
+            "question": "F2'nin servis ve bakımı nasıl yapılır?",
+            "answer": "F2, Li-Ion batarya teknolojisi sayesinde minimum bakım gerektirir. GÜNLÜK BAKIM (Operatör): 1) Görsel kontrol (hasar, sızıntı), 2) Batarya seviye kontrolü (dijital gösterge), 3) Tekerlek durumu kontrolü, 4) Fren testi. HAFTALIK BAKIM: 1) Tekerlek temizliği, 2) Çatal ve hidrolik kontrol, 3) Timoni bağlantıları kontrol. AYLIK BAKIM: 1) Elektriksel bağlantılar kontrol, 2) Hidrolik sistem sızıntı kontrolü, 3) Tekerlek ve rulman kontrolü. YILLIK BAKIM (Yetkili Servis): 1) Kapsamlı mekanik kontrol, 2) Elektrik sistemi testi, 3) Güvenlik ekipmanları testi, 4) Yağlama servisi, 5) Batarya yönetim sistemi (BMS) diagnostik. Lİ-ION AVANTAJI: Sıfır bakım - su ekleme yok, terminal temizliği yok, asit seviyesi kontrolü yok. İXTİF yetkili servis ağı ile profesyonel destek: 0216 755 3 555. Platform tasarımı sayesinde kolay erişim ve hızlı servis.",
+            "sort_order": 10
+        },
+        {
+            "question": "F2 için kiralama seçeneği var mıdır?",
+            "answer": "Evet, İXTİF olarak F2 Li-Ion transpalet için esnek kiralama seçenekleri sunuyoruz. KİRALAMA PAKETLERİ: 1) KISA SÜRELİ: Günlük, haftalık, aylık - mevsimlik kampanya, yoğun sezon, geçici proje için, 2) UZUN SÜRELİ: 12-36-60 ay - sabit aylık ödeme, bütçe kontrolü, 3) KİRALA-SATIN AL: Kira ödemeleri sonunda mülkiyet hakkı. AVANTAJLAR: 1) Düşük başlangıç maliyeti (yüksek Li-Ion batarya yatırımı gerektirmez), 2) Sabit aylık gider - bütçe planlaması kolay, 3) Bakım-servis dahil paketler, 4) Batarya değişimi kiralama kapsamında, 5) Teknoloji yenileme esnekliği, 6) Vergi avantajı (operasyonel gider olarak gösterilebilir). PAKETLER: 1) Bare: Sadece ekipman, 2) Full: Bakım+sigorta+batarya değişimi dahil, 3) Premium: Yedek ekipman+7/24 destek+operatör eğitimi. RETAIL ÖZEL: Perakende zincirleri için filo kiralama özel indirimli. Detaylar: 0216 755 3 555 | info@ixtif.com",
+            "sort_order": 11
+        },
+        {
+            "question": "F2 süpermarket müşteri alanlarında kullanılabilir mi?",
+            "answer": "Evet, F2 özellikle süpermarket ve AVM müşteri alanlarında kullanım için tasarlanmıştır. MÜŞTERİ ALANI UYGUNLUĞU: 1) ŞIK TASARIM: Sleek (ince ve zarif) çerçeve, profesyonel görünüm, müşteri deneyimini olumsuz etkilemez, 2) SESSIZ ÇALIŞMA: 74 dB gürültü seviyesi, normal konuşmanın üzerinde değil, müşterileri rahatsız etmez, 3) KOMPAKT BOYUTLAR: Dar koridorlarda manevra, kalabalık alanda güvenli geçiş, 4) POLYURETHANE TEKERLER: Zemin dostu, iz bırakmaz, pürüzsüz hareket, 5) KAPLUMBAĞA HIZI MODU: Yavaş hareket, müşteri güvenliği. KULLANIM SAATLERİ: 1) Mesai dışı: Gece ikmal operasyonları tercih edilir, 2) Mesai içi: Ara bölümlerde, arka depo yakın alanlar, 3) Acil ikmal: Müşteri saatlerinde güvenli ve hızlı. GÜVENLİK: CE sertifikalı, EU güvenlik standartlarına uygun, operatör eğitimi ile güvenli kullanım. F2'nin estetik tasarımı retail imajınızı korur.",
+            "sort_order": 12
+        }
+    ],
+
+    "pricing": {
+        "price_on_request": true,
+        "currency": "TRY",
+        "tax_included": false,
+        "installment_available": true,
+        "installment_info": "Kredi kartına taksit imkanı, banka kredisi desteği mevcuttur.",
+        "leasing_available": true,
+        "leasing_info": "12-36-60 ay kiralama ve finansal kiralama seçenekleri. Retail zincirleri için filo kiralama özel indirimli."
+    },
+
+    "inventory": {
+        "stock_status": "available",
+        "stock_tracking": true,
+        "lead_time_days": 30,
+        "minimum_order_quantity": 1
+    },
+
+    "warranty_info": "1 Yıl Genel Garanti | 2 Yıl Li-Ion Batarya Garantisi | Kapsamlı Yedek Parça Desteği",
+
+    "shipping_info": {
+        "shipping_available": true,
+        "shipping_cost": "Konuma göre hesaplanır",
+        "delivery_time": "30-45 gün (stokta yoksa)",
+        "installation_available": true,
+        "training_available": true,
+        "training_info": "Operatör eğitimi, Li-Ion batarya kullanım talimatları ve fırsat şarjı eğitimi ücretsiz sağlanır."
+    },
+
+    "seo_meta": {
+        "meta_title": "F2 Elektrikli Transpalet 1.5T - Li-Ion Bataryalı Perakende Çözümü | İXTİF",
+        "meta_description": "F2 Li-Ion transpalet 120 kg ultra hafif, fırsat şarjı özelliği ile süpermarket ve AVM'ler için ideal. Şık tasarım ve ergonomik timoni. ☎ 0216 755 3 555",
+        "meta_keywords": "F2 transpalet, Li-Ion transpalet, 1.5 ton perakende transpalet, süpermarket transpaleti, fırsat şarjı, ultra hafif transpalet, EP Equipment, retail transpalet, alışveriş merkezi ekipmanı",
+        "og_title": "F2 Elektrikli Transpalet - Perakende Sektörü İçin Akıllı Çözüm",
+        "og_description": "Li-Ion batarya, 120 kg ağırlık, fırsat şarjı. Süpermarket ve AVM'ler için optimize edilmiş F2 transpalet. ☎ 0216 755 3 555",
+        "canonical_url": "/shop/f2-elektrikli-transpalet-1-5t-li-ion"
+    },
+
+    "structured_data": {
+        "product_schema": true,
+        "rating_value": null,
+        "review_count": null
+    },
+
+    "tags": [
+        "transpalet",
+        "elektrikli-transpalet",
+        "li-ion-transpalet",
+        "1-5-ton",
+        "perakende-ekipman",
+        "supermarket-transpalet",
+        "ultra-hafif",
+        "firsat-sarji",
+        "EP-Equipment",
+        "F-Series",
+        "retail-ekipman",
+        "avm-ekipmani"
+    ],
+
+    "images": {
+        "featured_image": "/storage/products/f2-transpalet-main.jpg",
+        "gallery": [
+            "/storage/products/f2-transpalet-front.jpg",
+            "/storage/products/f2-transpalet-side.jpg",
+            "/storage/products/f2-transpalet-battery.jpg",
+            "/storage/products/f2-transpalet-controls.jpg",
+            "/storage/products/f2-transpalet-tiller.jpg",
+            "/storage/products/f2-transpalet-supermarket.jpg"
+        ]
+    },
+
+    "videos": [],
+
+    "downloads": [
+        {
+            "title": "F2 Transpalet Teknik Broşür (TR)",
+            "file_path": "/storage/downloads/F2-Brosur-TR.pdf",
+            "file_size": "3.3 MB"
+        },
+        {
+            "title": "F2 Kullanım Kılavuzu",
+            "file_path": "/storage/downloads/F2-Kullanim-Kilavuzu.pdf",
+            "file_size": "1.8 MB"
+        },
+        {
+            "title": "Li-Ion Batarya Bakım Rehberi",
+            "file_path": "/storage/downloads/Li-Ion-Bakim-Rehberi.pdf",
+            "file_size": "850 KB"
+        }
+    ],
+
+    "related_products": ["F1", "F3", "F4", "F4-201"],
+
+    "brand_id": 1,
+    "brand_name": "İXTİF",
+    "manufacturer": "EP EQUIPMENT CO.,LTD",
+
+    "is_active": true,
+    "is_featured": true,
+    "published_at": null,
+
+    "attributes": {
+        "yuk_kapasitesi": "1500 kg",
+        "voltaj": "24V",
+        "batarya_tipi": "Li-Ion",
+        "catal_uzunlugu": "1150 mm",
+        "servis_agirligi": "120 kg",
+        "urun_durumu": "yeni"
+    },
+
+    "contact": {
+        "phone": "0216 755 3 555",
+        "email": "info@ixtif.com",
+        "company": "İXTİF İç ve Dış Ticaret A.Ş."
+    },
+
+    "additional_services": {
+        "second_hand_available": true,
+        "rental_available": true,
+        "spare_parts_available": true,
+        "technical_service_available": true,
+        "periodic_maintenance_available": true,
+        "battery_replacement_service": true
+    },
+
+    "certifications": ["CE"],
+
+    "metadata": {
+        "source_pdf": "/Users/nurullah/Desktop/cms/EP PDF/2-Transpalet/F2/F2-EN-Brochure.pdf",
+        "extraction_date": "2025-10-11",
+        "version": "1.0",
+        "notes": "F Series retail-optimized model. Li-Ion battery with opportunity charging. Derived from EPT12-EZ. 176 units/40' container. Ergonomic palm-control tiller. 120kg ultralight design."
+    }
+}

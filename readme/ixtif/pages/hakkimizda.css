@@ -1,0 +1,110 @@
+/* HAKKIMIZDA SAYFASI - ÖZEL CSS */
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom animations for hero section */
+.about-page {
+    position: relative;
+}
+
+/* Gradient text animation */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.text-transparent {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* Hover effects for value cards */
+.group:hover .group-hover\:rotate-12 {
+    transform: rotate(12deg);
+}
+
+.group:hover .group-hover\:scale-110 {
+    transform: scale(1.1);
+}
+
+/* Stats number styling */
+#stat-products,
+#stat-categories,
+#stat-experience,
+#stat-partners {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+/* CTA button ripple effect */
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(59, 130, 246, 0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    /* Reduce hero font size on mobile */
+    .about-page h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
+    /* Stack stats vertically on very small screens */
+    .about-page .grid-cols-2 {
+        gap: 1.5rem;
+    }
+
+    /* Adjust padding on mobile */
+    .about-page section {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+}
+
+/* Dark mode specific adjustments */
+@media (prefers-color-scheme: dark) {
+    .about-page {
+        color: #f3f4f6;
+    }
+}
+
+/* Print styles */
+@media print {
+    .about-page section {
+        page-break-inside: avoid;
+    }
+
+    .about-page a[href^="https://wa.me"] {
+        display: none;
+    }
+}
+
+/* Accessibility: Focus states */
+.about-page a:focus,
+.about-page button:focus {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+}
+
+/* Loading animation for CountUp */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.about-page [id^="stat-"] {
+    animation: pulse 2s ease-in-out;
+}

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Builder Test Sayfası</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .test-section {
+            border: 2px dashed #dee2e6;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .footer-demo {
+            position: relative;
+            background: #2c3e50;
+            color: #ffffff;
+            margin: 10px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .config-panel {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .widget-config {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .back-to-top:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .bottom-bar {
+            background: #1a252f !important;
+            border-top: 1px solid #34495e;
+        }
+        .widget-column {
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .widget-column:last-child {
+            border-right: none;
+        }
+        .social-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+        .newsletter-form {
+            max-width: 300px;
+        }
+        .footer-link {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-link:hover {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sol Panel: Konfigürasyon -->
+            <div class="col-md-4 bg-light p-4" style="height: 100vh; overflow-y: auto;">
+                <h2 class="h4 mb-4">🎯 Footer Builder Konfigürasyonu</h2>
+                
+                <!-- Layout Ayarları -->
+                <div class="config-panel">
+                    <h5>Layout Ayarları</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Footer Tipi</label>
+                        <select class="form-select" id="footerType">
+                            <option value="single">Single Column</option>
+                            <option value="multi" selected>Multi Column</option>
+                            <option value="mega">Mega Footer</option>
+                            <option value="minimal">Minimalist</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sütun Sayısi</label>
+                        <select class="form-select" id="columnCount">
+                            <option value="2">2 Sütun</option>
+                            <option value="3">3 Sütun</option>
+                            <option value="4" selected>4 Sütun</option>
+                            <option value="5">5 Sütun</option>
+                        </select>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showFooter" checked>
+                        <label class="form-check-label" for="showFooter">
+                            Footer Göster
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Widget Yönetimi -->
+                <div class="config-panel">
+                    <h5>Widget Yönetimi</h5>
+                    
+                    <!-- Sütun 1: Hakkımızda -->
+                    <div class="widget-config">
+                        <h6>Sütun 1: Hakkımızda</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showLogo" checked>
+                            <label class="form-check-label" for="showLogo">Logo Göster</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showDescription" checked>
+                            <label class="form-check-label" for="showDescription">Açıklama Göster</label>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small">Logo Boyutu</label>
+                            <select class="form-select form-select-sm" id="logoSize">
+                                <option value="small">Küçük</option>
+                                <option value="medium" selected>Orta</option>
+                                <option value="large">Büyük</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Sütun 2: Hızlı Linkler -->
+                    <div class="widget-config">
+                        <h6>Sütun 2: Hızlı Linkler</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showQuickLinks" checked>
+                            <label class="form-check-label" for="showQuickLinks">Hızlı Linkler</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showLinkIcons">
+                            <label class="form-check-label" for="showLinkIcons">Link İkonları</label>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">Link Ekle</button>
+                    </div>
+
+                    <!-- Sütun 3: İletişim -->
+                    <div class="widget-config">
+                        <h6>Sütun 3: İletişim</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showContactAddress" checked>
+                            <label class="form-check-label" for="showContactAddress">Adres</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showContactPhone" checked>
+                            <label class="form-check-label" for="showContactPhone">Telefon</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showContactEmail" checked>
+                            <label class="form-check-label" for="showContactEmail">E-posta</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showWorkingHours">
+                            <label class="form-check-label" for="showWorkingHours">Çalışma Saatleri</label>
+                        </div>
+                    </div>
+
+                    <!-- Sütun 4: Newsletter -->
+                    <div class="widget-config">
+                        <h6>Sütun 4: Newsletter</h6>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showNewsletter" checked>
+                            <label class="form-check-label" for="showNewsletter">E-Bülten Formu</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="showPrivacyConsent" checked>
+                            <label class="form-check-label" for="showPrivacyConsent">Gizlilik Onayı</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sosyal Medya Ayarları -->
+                <div class="config-panel">
+                    <h5>Sosyal Medya</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Pozisyon</label>
+                        <select class="form-select" id="socialPosition">
+                            <option value="top">Üstte</option>
+                            <option value="bottom" selected>Altta</option>
+                            <option value="widget">Widget İçinde</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Stil</label>
+                        <select class="form-select" id="socialStyle">
+                            <option value="icons" selected>Sadece İkonlar</option>
+                            <option value="text">Sadece Metin</option>
+                            <option value="combined">İkonlar + Metin</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="socialFacebook" checked>
+                                <label class="form-check-label" for="socialFacebook">Facebook</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="socialTwitter" checked>
+                                <label class="form-check-label" for="socialTwitter">Twitter</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="socialInstagram" checked>
+                                <label class="form-check-label" for="socialInstagram">Instagram</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="socialLinkedin">
+                                <label class="form-check-label" for="socialLinkedin">LinkedIn</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="socialYoutube">
+                                <label class="form-check-label" for="socialYoutube">YouTube</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="socialTiktok">
+                                <label class="form-check-label" for="socialTiktok">TikTok</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alt Bar Ayarları -->
+                <div class="config-panel">
+                    <h5>Alt Bar (Bottom Bar)</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showBottomBar" checked>
+                        <label class="form-check-label" for="showBottomBar">Alt Bar Göster</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showCopyright" checked>
+                        <label class="form-check-label" for="showCopyright">Telif Hakkı</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showLegalLinks" checked>
+                        <label class="form-check-label" for="showLegalLinks">Yasal Linkler</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="showPaymentMethods">
+                        <label class="form-check-label" for="showPaymentMethods">Ödeme Yöntemleri</label>
+                    </div>
+                </div>
+
+                <!-- Ek Özellikler -->
+                <div class="config-panel">
+                    <h5>Ek Özellikler</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showBackToTop" checked>
+                        <label class="form-check-label" for="showBackToTop">Yukarı Dön Butonu</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Buton Stili</label>
+                        <select class="form-select" id="backToTopStyle">
+                            <option value="button" selected>Buton</option>
+                            <option value="text">Metin</option>
+                            <option value="icon">Sadece İkon</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Renk Ayarları -->
+                <div class="config-panel">
+                    <h5>Renk Ayarları</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Arka Plan Rengi</label>
+                        <input type="color" class="form-control form-control-color" id="backgroundColor" value="#2c3e50">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Metin Rengi</label>
+                        <input type="color" class="form-control form-control-color" id="textColor" value="#ffffff">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Link Rengi</label>
+                        <input type="color" class="form-control form-control-color" id="linkColor" value="#3498db">
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" onclick="updatePreview()">
+                        <i class="fas fa-eye me-2"></i>Önizleme Güncelle
+                    </button>
+                    <button class="btn btn-success" onclick="saveConfiguration()">
+                        <i class="fas fa-save me-2"></i>Konfigürasyonu Kaydet
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetConfiguration()">
+                        <i class="fas fa-undo me-2"></i>Varsayılana Dön
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sağ Panel: Önizleme -->
+            <div class="col-md-8 p-4" style="height: 100vh; overflow-y: auto;">
+                <h2 class="h4 mb-4">👁️ Footer Önizleme</h2>
+
+                <!-- Test Başlığı -->
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Aşağıdaki örnekler farklı footer tiplerini göstermektedir. Sol panelden konfigürasyonu değiştirerek canlı önizleme yapabilirsiniz.
+                </div>
+
+                <!-- Multi Column Footer Demo -->
+                <div class="test-section">
+                    <h5>1. Multi Column Footer (4 Sütun)</h5>
+                    <div class="footer-demo" id="multi-column-footer">
+                        <!-- Ana Footer İçeriği -->
+                        <div class="container-fluid py-5">
+                            <div class="row">
+                                <!-- Sütun 1: Hakkımızda -->
+                                <div class="col-lg-3 col-md-6 mb-4 widget-column">
+                                    <div class="footer-logo mb-3">
+                                        <img src="https://via.placeholder.com/150x50/3498db/ffffff?text=COMPANY+LOGO" alt="Logo" class="img-fluid" style="max-width: 150px;">
+                                    </div>
+                                    <p class="footer-description mb-3">
+                                        Teknoloji ve inovasyon odaklı çözümlerimizle müşterilerimizin dijital dönüşüm yolculuğunda güvenilir iş ortağıyız.
+                                    </p>
+                                    <div class="company-info small">
+                                        <p class="mb-1"><i class="fas fa-calendar me-2"></i>Kuruluş: 2015</p>
+                                        <p class="mb-0"><i class="fas fa-users me-2"></i>50+ Mutlu Müşteri</p>
+                                    </div>
+                                </div>
+
+                                <!-- Sütun 2: Hızlı Linkler -->
+                                <div class="col-lg-3 col-md-6 mb-4 widget-column">
+                                    <h5 class="footer-widget-title mb-3">Hızlı Linkler</h5>
+                                    <ul class="list-unstyled footer-links">
+                                        <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-home me-2"></i>Ana Sayfa</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-info-circle me-2"></i>Hakkımızda</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-cog me-2"></i>Hizmetlerimiz</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-briefcase me-2"></i>Portföy</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-blog me-2"></i>Blog</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link"><i class="fas fa-envelope me-2"></i>İletişim</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Sütun 3: İletişim -->
+                                <div class="col-lg-3 col-md-6 mb-4 widget-column">
+                                    <h5 class="footer-widget-title mb-3">İletişim Bilgileri</h5>
+                                    <div class="contact-info">
+                                        <div class="contact-item mb-3">
+                                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                            <div class="d-inline-block">
+                                                <strong>Adres:</strong><br>
+                                                Maslak Mahallesi, Büyükdere Caddesi<br>
+                                                No: 123, Sarıyer/İstanbul
+                                            </div>
+                                        </div>
+                                        <div class="contact-item mb-3">
+                                            <i class="fas fa-phone me-2 text-primary"></i>
+                                            <div class="d-inline-block">
+                                                <strong>Telefon:</strong><br>
+                                                <a href="tel:+905551234567" class="footer-link">+90 555 123 45 67</a><br>
+                                                <a href="tel:+902125551234" class="footer-link">+90 212 555 12 34</a>
+                                            </div>
+                                        </div>
+                                        <div class="contact-item mb-3">
+                                            <i class="fas fa-envelope me-2 text-primary"></i>
+                                            <div class="d-inline-block">
+                                                <strong>E-posta:</strong><br>
+                                                <a href="mailto:info@company.com" class="footer-link">info@company.com</a><br>
+                                                <a href="mailto:destek@company.com" class="footer-link">destek@company.com</a>
+                                            </div>
+                                        </div>
+                                        <div class="contact-item mb-3">
+                                            <i class="fas fa-clock me-2 text-primary"></i>
+                                            <div class="d-inline-block">
+                                                <strong>Çalışma Saatleri:</strong><br>
+                                                Pazartesi - Cuma: 09:00 - 18:00<br>
+                                                Cumartesi: 10:00 - 16:00
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sütun 4: Newsletter -->
+                                <div class="col-lg-3 col-md-6 mb-4">
+                                    <h5 class="footer-widget-title mb-3">E-Bülten</h5>
+                                    <p class="mb-3">Yeni ürün ve kampanyalardan ilk siz haberdar olun!</p>
+                                    <form class="newsletter-form">
+                                        <div class="input-group mb-3">
+                                            <input type="email" class="form-control" placeholder="E-posta adresiniz" required>
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fas fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="newsletterConsent" required>
+                                            <label class="form-check-label small" for="newsletterConsent">
+                                                <a href="#" class="footer-link">Gizlilik politikası</a>nı kabul ediyorum.
+                                            </label>
+                                        </div>
+                                    </form>
+                                    
+                                    <!-- Sosyal Medya (Widget İçinde) -->
+                                    <div class="social-media mt-4">
+                                        <h6 class="mb-3">Bizi Takip Edin</h6>
+                                        <div class="social-links">
+                                            <a href="#" class="social-icon" style="background: #1877f2;" title="Facebook">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                            <a href="#" class="social-icon" style="background: #1da1f2;" title="Twitter">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                            <a href="#" class="social-icon" style="background: #e4405f;" title="Instagram">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                            <a href="#" class="social-icon" style="background: #0077b5;" title="LinkedIn">
+                                                <i class="fab fa-linkedin-in"></i>
+                                            </a>
+                                            <a href="#" class="social-icon" style="background: #ff0000;" title="YouTube">
+                                                <i class="fab fa-youtube"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alt Bar (Bottom Bar) -->
+                        <div class="bottom-bar py-3">
+                            <div class="container-fluid">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <p class="mb-0 small">
+                                            © 2025 Company Name. Tüm hakları saklıdır.
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6 text-md-end">
+                                        <div class="legal-links">
+                                            <a href="#" class="footer-link small me-3">Gizlilik Politikası</a>
+                                            <a href="#" class="footer-link small me-3">Kullanım Şartları</a>
+                                            <a href="#" class="footer-link small">Çerez Politikası</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single Column Footer Demo -->
+                <div class="test-section">
+                    <h5>2. Single Column Footer</h5>
+                    <div class="footer-demo">
+                        <div class="container-fluid py-5 text-center">
+                            <div class="footer-logo mb-4">
+                                <img src="https://via.placeholder.com/200x60/e74c3c/ffffff?text=BRAND+LOGO" alt="Logo" class="img-fluid">
+                            </div>
+                            <p class="footer-description mb-4 mx-auto" style="max-width: 600px;">
+                                Müşteri memnuniyeti odaklı hizmet anlayışımızla, teknolojinin sunduğu imkanları en iyi şekilde değerlendiriyoruz.
+                            </p>
+                            <div class="social-links mb-4">
+                                <a href="#" class="social-icon me-3" style="background: #1877f2;">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-icon me-3" style="background: #1da1f2;">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon me-3" style="background: #e4405f;">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="social-icon" style="background: #0077b5;">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                            <div class="bottom-bar py-3 mt-4" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                                <p class="mb-0 small">© 2025 Brand Name. Tüm hakları saklıdır.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mega Footer Demo -->
+                <div class="test-section">
+                    <h5>3. Mega Footer (E-commerce)</h5>
+                    <div class="footer-demo">
+                        <!-- Logo ve Ana Alan -->
+                        <div class="container-fluid py-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <img src="https://via.placeholder.com/180x50/f39c12/ffffff?text=E-SHOP+LOGO" alt="Logo" class="img-fluid">
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <div class="newsletter-inline d-inline-flex">
+                                        <input type="email" class="form-control me-2" placeholder="E-posta için abone ol" style="width: 250px;">
+                                        <button class="btn btn-warning">Abone Ol</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mega Content -->
+                        <div class="container-fluid py-5">
+                            <div class="row">
+                                <!-- Sütun 1: Ürün Kategorileri -->
+                                <div class="col-lg-2 col-md-4 mb-4">
+                                    <h6 class="footer-widget-title mb-3">Kategoriler</h6>
+                                    <ul class="list-unstyled footer-links small">
+                                        <li class="mb-2"><a href="#" class="footer-link">Elektronik</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Moda</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Ev & Yaşam</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Spor</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Kitap</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Oyuncak</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Sütun 2: Müşteri Hizmetleri -->
+                                <div class="col-lg-2 col-md-4 mb-4">
+                                    <h6 class="footer-widget-title mb-3">Müşteri Hizmetleri</h6>
+                                    <ul class="list-unstyled footer-links small">
+                                        <li class="mb-2"><a href="#" class="footer-link">Sipariş Takibi</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">İade & Değişim</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Kargo Bilgileri</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">SSS</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Canlı Destek</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">İletişim</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Sütun 3: Hesabım -->
+                                <div class="col-lg-2 col-md-4 mb-4">
+                                    <h6 class="footer-widget-title mb-3">Hesabım</h6>
+                                    <ul class="list-unstyled footer-links small">
+                                        <li class="mb-2"><a href="#" class="footer-link">Giriş Yap</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Üye Ol</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Siparişlerim</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Favorilerim</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">İndirim Kuponları</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Puan Durumu</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Sütun 4: Kurumsal -->
+                                <div class="col-lg-3 col-md-6 mb-4">
+                                    <h6 class="footer-widget-title mb-3">Kurumsal</h6>
+                                    <ul class="list-unstyled footer-links small">
+                                        <li class="mb-2"><a href="#" class="footer-link">Hakkımızda</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Kariyer</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Basın</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Yatırımcı İlişkileri</a></li>
+                                        <li class="mb-2"><a href="#" class="footer-link">Sürdürülebilirlik</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Sütun 5: İletişim & Ödeme -->
+                                <div class="col-lg-3 col-md-6 mb-4">
+                                    <h6 class="footer-widget-title mb-3">İletişim</h6>
+                                    <div class="contact-info small mb-3">
+                                        <p class="mb-1"><i class="fas fa-phone me-2"></i>0850 123 45 67</p>
+                                        <p class="mb-1"><i class="fas fa-envelope me-2"></i>info@eshop.com</p>
+                                        <p class="mb-3"><i class="fas fa-clock me-2"></i>7/24 Müşteri Hizmetleri</p>
+                                    </div>
+                                    
+                                    <h6 class="footer-widget-title mb-3">Güvenli Ödeme</h6>
+                                    <div class="payment-methods">
+                                        <img src="https://via.placeholder.com/40x25/ffffff/007bff?text=VISA" alt="Visa" class="me-2 mb-2">
+                                        <img src="https://via.placeholder.com/40x25/ffffff/ff5722?text=MC" alt="Mastercard" class="me-2 mb-2">
+                                        <img src="https://via.placeholder.com/40x25/ffffff/4caf50?text=AMEX" alt="American Express" class="me-2 mb-2">
+                                        <img src="https://via.placeholder.com/40x25/ffffff/2196f3?text=PP" alt="PayPal" class="me-2 mb-2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Bar -->
+                        <div class="bottom-bar py-3">
+                            <div class="container-fluid">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <p class="mb-0 small">© 2025 E-Shop. Tüm hakları saklıdır.</p>
+                                    </div>
+                                    <div class="col-md-6 text-md-end">
+                                        <div class="social-links">
+                                            <a href="#" class="social-icon me-2" style="background: #1877f2; width: 30px; height: 30px; line-height: 30px; font-size: 12px;">
+                                                <i class="fab fa-facebook-f"></i>
+                                            </a>
+                                            <a href="#" class="social-icon me-2" style="background: #1da1f2; width: 30px; height: 30px; line-height: 30px; font-size: 12px;">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                            <a href="#" class="social-icon me-2" style="background: #e4405f; width: 30px; height: 30px; line-height: 30px; font-size: 12px;">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minimalist Footer Demo -->
+                <div class="test-section">
+                    <h5>4. Minimalist Footer</h5>
+                    <div class="footer-demo">
+                        <div class="container-fluid py-4 text-center">
+                            <div class="mb-3">
+                                <a href="#" class="footer-link me-4">Ana Sayfa</a>
+                                <a href="#" class="footer-link me-4">Hakkımızda</a>
+                                <a href="#" class="footer-link me-4">Hizmetler</a>
+                                <a href="#" class="footer-link me-4">Portföy</a>
+                                <a href="#" class="footer-link">İletişim</a>
+                            </div>
+                            <div class="social-links mb-3">
+                                <a href="#" class="social-icon me-2" style="background: #1877f2; width: 35px; height: 35px; line-height: 35px;">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="social-icon me-2" style="background: #1da1f2; width: 35px; height: 35px; line-height: 35px;">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="social-icon" style="background: #0077b5; width: 35px; height: 35px; line-height: 35px;">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </div>
+                            <p class="mb-0 small">© 2025 Minimal Design. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Footer Demo -->
+                <div class="test-section">
+                    <h5>5. Mobile Footer (Responsive)</h5>
+                    <div class="footer-demo" style="max-width: 375px; margin: 0 auto;">
+                        <div class="container-fluid py-4">
+                            <!-- Mobile'da tek sütun -->
+                            <div class="text-center mb-4">
+                                <img src="https://via.placeholder.com/120x40/9b59b6/ffffff?text=MOBILE" alt="Logo" class="img-fluid">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="footer-widget-title mb-3">Hızlı Linkler</h6>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <ul class="list-unstyled footer-links small">
+                                            <li class="mb-2"><a href="#" class="footer-link">Ana Sayfa</a></li>
+                                            <li class="mb-2"><a href="#" class="footer-link">Hakkımızda</a></li>
+                                            <li class="mb-2"><a href="#" class="footer-link">Hizmetler</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <ul class="list-unstyled footer-links small">
+                                            <li class="mb-2"><a href="#" class="footer-link">Portföy</a></li>
+                                            <li class="mb-2"><a href="#" class="footer-link">Blog</a></li>
+                                            <li class="mb-2"><a href="#" class="footer-link">İletişim</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="footer-widget-title mb-3">İletişim</h6>
+                                <div class="contact-info small">
+                                    <p class="mb-2"><i class="fas fa-phone me-2"></i>0555 123 45 67</p>
+                                    <p class="mb-2"><i class="fas fa-envelope me-2"></i>info@mobile.com</p>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-4">
+                                <div class="social-links">
+                                    <a href="#" class="social-icon me-2" style="background: #1877f2; width: 35px; height: 35px; line-height: 35px;">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="social-icon me-2" style="background: #1da1f2; width: 35px; height: 35px; line-height: 35px;">
+                                        <i class="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" class="social-icon" style="background: #e4405f; width: 35px; height: 35px; line-height: 35px;">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="bottom-bar py-3 text-center">
+                                <p class="mb-0 small">© 2025 Mobile App</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test İçeriği -->
+                <div class="mt-5">
+                    <h4>Test İçeriği</h4>
+                    <p>Bu alan back to top butonunu test etmek için eklendi. Sayfayı aşağı kaydırın ve butonun davranışını gözlemleyin.</p>
+                    <div style="height: 800px; background: linear-gradient(to bottom, #f8f9fa, #e9ecef); display: flex; align-items: center; justify-content: center;">
+                        <div class="text-center">
+                            <h3>Sayfa İçeriği</h3>
+                            <p>Footer'ların farklı tiplerini inceleyin</p>
+                            <p>Back to top butonunu test edin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTopBtn" onclick="scrollToTop()" style="display: none;">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Back to top functionality
+        window.onscroll = function() {
+            const backToTopBtn = document.getElementById('backToTopBtn');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = 'block';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        };
+
+        function scrollToTop() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+        function updatePreview() {
+            const footerType = document.getElementById('footerType').value;
+            const showFooter = document.getElementById('showFooter').checked;
+            const columnCount = document.getElementById('columnCount').value;
+            const backgroundColor = document.getElementById('backgroundColor').value;
+            
+            // Footer'ları göster/gizle
+            const footerDemos = document.querySelectorAll('.footer-demo');
+            footerDemos.forEach(footer => {
+                footer.style.display = showFooter ? 'block' : 'none';
+                footer.style.backgroundColor = backgroundColor;
+            });
+            
+            alert(`Footer konfigürasyonu güncellendi!\n\nTip: ${footerType}\nGörünüm: ${showFooter ? 'Aktif' : 'Gizli'}\nSütun: ${columnCount}\nRenk: ${backgroundColor}`);
+        }
+
+        function saveConfiguration() {
+            const config = {
+                layout: {
+                    type: document.getElementById('footerType').value,
+                    columns: parseInt(document.getElementById('columnCount').value),
+                    show: document.getElementById('showFooter').checked
+                },
+                widgets: {
+                    about: {
+                        show_logo: document.getElementById('showLogo').checked,
+                        show_description: document.getElementById('showDescription').checked,
+                        logo_size: document.getElementById('logoSize').value
+                    },
+                    quick_links: {
+                        show: document.getElementById('showQuickLinks').checked,
+                        show_icons: document.getElementById('showLinkIcons').checked
+                    },
+                    contact: {
+                        show_address: document.getElementById('showContactAddress').checked,
+                        show_phone: document.getElementById('showContactPhone').checked,
+                        show_email: document.getElementById('showContactEmail').checked,
+                        show_working_hours: document.getElementById('showWorkingHours').checked
+                    },
+                    newsletter: {
+                        show: document.getElementById('showNewsletter').checked,
+                        privacy_consent: document.getElementById('showPrivacyConsent').checked
+                    }
+                },
+                social_media: {
+                    position: document.getElementById('socialPosition').value,
+                    style: document.getElementById('socialStyle').value,
+                    platforms: {
+                        facebook: document.getElementById('socialFacebook').checked,
+                        twitter: document.getElementById('socialTwitter').checked,
+                        instagram: document.getElementById('socialInstagram').checked,
+                        linkedin: document.getElementById('socialLinkedin').checked,
+                        youtube: document.getElementById('socialYoutube').checked,
+                        tiktok: document.getElementById('socialTiktok').checked
+                    }
+                },
+                bottom_bar: {
+                    show: document.getElementById('showBottomBar').checked,
+                    copyright: document.getElementById('showCopyright').checked,
+                    legal_links: document.getElementById('showLegalLinks').checked,
+                    payment_methods: document.getElementById('showPaymentMethods').checked
+                },
+                back_to_top: {
+                    show: document.getElementById('showBackToTop').checked,
+                    style: document.getElementById('backToTopStyle').value
+                },
+                styling: {
+                    background_color: document.getElementById('backgroundColor').value,
+                    text_color: document.getElementById('textColor').value,
+                    link_color: document.getElementById('linkColor').value
+                }
+            };
+            
+            console.log('Footer Konfigürasyonu:', config);
+            alert('Footer konfigürasyonu kaydedildi! Konsolu kontrol edin.');
+        }
+
+        function resetConfiguration() {
+            // Varsayılan değerlere dön
+            document.getElementById('footerType').value = 'multi';
+            document.getElementById('columnCount').value = '4';
+            document.getElementById('showFooter').checked = true;
+            document.getElementById('showLogo').checked = true;
+            document.getElementById('showDescription').checked = true;
+            document.getElementById('logoSize').value = 'medium';
+            document.getElementById('socialPosition').value = 'bottom';
+            document.getElementById('socialStyle').value = 'icons';
+            document.getElementById('backgroundColor').value = '#2c3e50';
+            document.getElementById('textColor').value = '#ffffff';
+            document.getElementById('linkColor').value = '#3498db';
+            
+            alert('Footer konfigürasyonu varsayılan değerlere sıfırlandı!');
+        }
+
+        // Newsletter form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsletterForms = document.querySelectorAll('.newsletter-form');
+            newsletterForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Newsletter aboneliği başarılı! (Demo)');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

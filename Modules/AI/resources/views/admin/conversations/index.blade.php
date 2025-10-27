@@ -798,9 +798,11 @@
 
     // Önizleme fonksiyonu
     function showPreview(conversationId) {
-        // Modal'ı aç
-        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
-        modal.show();
+        // Modal elementini al
+        const modalElement = document.getElementById('previewModal');
+
+        // Tabler.io jQuery ile Bootstrap modal kullanıyor
+        $('#previewModal').modal('show');
 
         // Loading durumu
         const previewContent = document.getElementById('previewContent');

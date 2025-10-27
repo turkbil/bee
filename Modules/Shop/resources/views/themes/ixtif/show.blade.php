@@ -325,32 +325,50 @@
                             <div class="grid grid-cols-3 lg:flex gap-2 lg:gap-4">
                                 {{-- Teklif Al --}}
                                 <a href="#contact"
-                                    class="inline-flex items-center justify-center gap-2 lg:gap-3 bg-white text-purple-600 px-3 lg:px-8 py-4 rounded-2xl font-bold text-base lg:text-lg hover:shadow-2xl transition-all">
+                                    class="inline-flex items-center justify-center gap-2 lg:gap-3 bg-white text-purple-600 px-3 lg:px-8 py-4 rounded-2xl font-bold text-base lg:text-lg hover:shadow-2xl transition-all group relative"
+                                    x-data="{ showTooltip: false }"
+                                    @mouseenter="showTooltip = true"
+                                    @mouseleave="showTooltip = false">
                                     <i class="fa-solid fa-envelope text-lg lg:text-xl"></i>
                                     <span class="hidden lg:inline">Teklif Al</span>
+                                    <div x-show="showTooltip" x-transition class="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap pointer-events-none z-50 lg:hidden">
+                                        Teklif Al
+                                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                                    </div>
                                 </a>
-
-                                {{-- Telefon --}}
-                                @if($contactPhone)
-                                    <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                                        class="inline-flex items-center justify-center gap-2 lg:gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-3 lg:px-8 py-4 rounded-2xl font-bold text-base lg:text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
-                                        <i class="fa-solid fa-phone text-lg lg:text-xl"></i>
-                                        <span class="hidden lg:inline">{{ $contactPhone }}</span>
-                                    </a>
-                                @endif
 
                                 {{-- WhatsApp --}}
                                 @if($contactWhatsapp)
                                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
-                                        class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white border-2 border-green-500 hover:border-green-600 px-3 lg:px-4 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-2xl transition-all">
+                                        class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white border-2 border-green-500 hover:border-green-600 px-3 lg:px-4 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-2xl transition-all group relative"
+                                        x-data="{ showTooltip: false }"
+                                        @mouseenter="showTooltip = true"
+                                        @mouseleave="showTooltip = false">
                                         <i class="fa-brands fa-whatsapp text-2xl"></i>
+                                        <div x-show="showTooltip" x-transition class="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap pointer-events-none z-50">
+                                            WhatsApp ile İletişime Geç
+                                            <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                                        </div>
                                     </a>
                                 @endif
+
+                                {{-- Yapay Zeka Chatbot - Sadece ikon (desktop) --}}
+                                <button @click="isChatOpen = true"
+                                    class="hidden lg:inline-flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-3 lg:px-4 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-2xl hover:scale-105 transition-all group relative"
+                                    x-data="{ showTooltip: false }"
+                                    @mouseenter="showTooltip = true"
+                                    @mouseleave="showTooltip = false">
+                                    <i class="fa-solid fa-robot text-2xl"></i>
+                                    <div x-show="showTooltip" x-transition class="absolute bottom-full mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap pointer-events-none z-50">
+                                        Yapay Zeka ile Soru Sor
+                                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900"></div>
+                                    </div>
+                                </button>
                             </div>
 
-                            {{-- Yapay Zeka ile Soru Sor - Hero sağdaki inline chat'i aç (MOBİLDE GİZLİ!) --}}
+                            {{-- Yapay Zeka ile Soru Sor - Mobil ve tablet için büyük buton (masaüstünde gizli) --}}
                             <button @click="isChatOpen = true"
-                                class="hidden lg:inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all self-start">
+                                class="lg:hidden inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all self-start">
                                 <i class="fa-solid fa-robot"></i>
                                 <span>Yapay Zeka ile Soru Sor</span>
                             </button>

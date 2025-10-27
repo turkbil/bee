@@ -1,1 +1,69 @@
+<aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform;">
+                    
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">basliksiz-16</h1>
 
+                                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 leading-relaxed">
+                                48V sistem gücüyle 2.0 ton kapasite sunan, l2=400 mm kompakt gövdeye ve yalnızca 140 kg servis ağırlığına sahip elektrikli transpalet. Çıkarılabilir 2×24V/20Ah Li-Ion batarya, hızlı şarj ve düşük bakım ile verimliliği artırır.</p>
+                        
+                        
+                        <div class="mb-6">
+                            
+                            <div class="rounded-xl p-6 mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-md text-xs text-white mb-2">
+                                    <span class="w-1.5 h-1.5 bg-green-400"></span>
+                                    Stokta Mevcut
+                                </div>
+                                <div class="text-2xl font-bold text-white mb-1">Özel Fiyat Alın</div>
+                                <div class="text-sm text-white">En iyi fiyat garantisi</div>
+                            </div>
+
+                            
+
+                            
+                            <div class="lg:hidden space-y-3">
+                                <div class="grid grid-cols-3 gap-2">
+                                    
+                                    <a href="#contact" class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-lg transition-colors">
+                                        <i class="fa-solid fa-envelope text-xl"></i>
+                                    </a>
+
+                                    
+                                                                            <a href="tel:02167553555" class="flex items-center justify-center bg-gray-700 hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-700 text-white py-4 rounded-lg transition-colors">
+                                            <i class="fa-solid fa-phone text-xl"></i>
+                                        </a>
+                                    
+                                    
+                                                                            <a href="https://wa.me/05010056758" target="_blank" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg transition-colors">
+                                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                                        </a>
+                                                                    </div>
+
+                                
+                                                                <a href="https://ixtif.com/shop/pdf/ixtif-f4-201-20-ton-li-ion-transpalet" target="_blank" class="flex items-center justify-center gap-2 border-2 border-red-500 dark:border-red-600 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 text-sm font-medium py-3 rounded-lg hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20 dark:hover:text-red-300 hover:border-red-600 dark:hover:border-red-500 transition-all">
+                                    <i class="fa-solid fa-file-pdf"></i>PDF İndir
+                                </a>
+                            </div>
+
+                            
+                            <div class="hidden lg:block space-y-4">
+                                <a href="#contact" class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+                                    <i class="fa-solid fa-envelope"></i>Teklif İste
+                                </a>
+                                <div class="grid grid-cols-2 gap-3">
+                                                                            <a href="tel:02167553555" class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
+                                            <i class="fa-solid fa-phone"></i>Ara
+                                        </a>
+                                                                                                                <a href="https://wa.me/05010056758" target="_blank" class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-3 rounded-lg transition-colors">
+                                            <i class="fa-brands fa-whatsapp"></i>WhatsApp
+                                        </a>
+                                                                    </div>
+
+                                
+                                                                <a href="https://ixtif.com/shop/pdf/ixtif-f4-201-20-ton-li-ion-transpalet" target="_blank" class="flex items-center justify-center gap-2 border-2 border-red-500 dark:border-red-600 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 text-sm font-medium py-3 rounded-lg hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20 dark:hover:text-red-300 hover:border-red-600 dark:hover:border-red-500 transition-all">
+                                    <i class="fa-solid fa-file-pdf"></i>PDF İndir
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </aside>

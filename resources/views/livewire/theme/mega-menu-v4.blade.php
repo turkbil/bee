@@ -115,10 +115,10 @@
                     @endforeach
                 </div>
 
-                {{-- Hizmetler - Horizontal Badges --}}
-                <div class="flex flex-wrap gap-3">
+                {{-- Hizmetler - Responsive Grid --}}
+                <div class="grid grid-cols-2 xl:grid-cols-4 gap-3">
                     {{-- Sıfır Ürün --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-badge-check text-gray-700 dark:text-white text-lg"></i>
@@ -128,7 +128,7 @@
                     </div>
 
                     {{-- İkinci El --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-recycle text-gray-700 dark:text-white text-lg"></i>
@@ -138,7 +138,7 @@
                     </div>
 
                     {{-- Kiralama --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-calendar-days text-gray-700 dark:text-white text-lg"></i>
@@ -148,7 +148,7 @@
                     </div>
 
                     {{-- Teknik Servis --}}
-                    <div class="flex-1 min-w-[140px] bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-screwdriver-wrench text-gray-700 dark:text-white text-lg"></i>

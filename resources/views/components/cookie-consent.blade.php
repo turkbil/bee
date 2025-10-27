@@ -1,7 +1,7 @@
 {{-- Cookie Consent Component - Design 4 (Minimal Card) --}}
 <div x-data="cookieConsentApp()" x-cloak>
 
-    {{-- Cookie Consent Banner - Design 4 --}}
+    {{-- Cookie Consent Banner - Design 4 (EXACT COPY) --}}
     <div x-show="showCookieConsent"
          x-transition:enter="transition ease-out duration-500"
          x-transition:enter-start="opacity-0 translate-y-8"
@@ -26,7 +26,7 @@
                         class="flex-1 text-sm py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
                     Kabul Et
                 </button>
-                <button @click="openModal()"
+                <button @click="showModal = true; stopAutoAcceptTimer()"
                         class="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                     <i class="fa-solid fa-gear"></i>
                 </button>
@@ -34,17 +34,19 @@
         </div>
     </div>
 
-    {{-- Cookie Preferences Modal --}}
+    {{-- Cookie Preferences Modal - Sadece tıklandığında açılır --}}
     <div x-show="showModal"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          @click.self="showModal = false"
+         style="display: none;"
          class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
 
         <div x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-90"
              x-transition:enter-end="opacity-100 scale-100"
+             @click.stop
              class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
 
             <div class="flex items-center justify-between mb-6">
@@ -83,7 +85,7 @@
                             </div>
                         </div>
                         <label class="relative inline-block w-12 h-6 cursor-pointer">
-                            <input type="checkbox" x-model="preferences.functional" class="sr-only peer">
+                            <input type="checkbox" x-model="preferences.functional" class="sr-only peer" checked>
                             <div class="w-12 h-6 bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 rounded-full transition-colors"></div>
                             <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-6"></div>
                         </label>
@@ -102,7 +104,7 @@
                             </div>
                         </div>
                         <label class="relative inline-block w-12 h-6 cursor-pointer">
-                            <input type="checkbox" x-model="preferences.analytics" class="sr-only peer">
+                            <input type="checkbox" x-model="preferences.analytics" class="sr-only peer" checked>
                             <div class="w-12 h-6 bg-gray-300 dark:bg-gray-600 peer-checked:bg-purple-600 rounded-full transition-colors"></div>
                             <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-6"></div>
                         </label>
@@ -121,7 +123,7 @@
                             </div>
                         </div>
                         <label class="relative inline-block w-12 h-6 cursor-pointer">
-                            <input type="checkbox" x-model="preferences.marketing" class="sr-only peer">
+                            <input type="checkbox" x-model="preferences.marketing" class="sr-only peer" checked>
                             <div class="w-12 h-6 bg-gray-300 dark:bg-gray-600 peer-checked:bg-orange-600 rounded-full transition-colors"></div>
                             <div class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-6"></div>
                         </label>
@@ -142,8 +144,8 @@
             </div>
 
             <p class="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
-                Daha fazla bilgi için <a href="/privacy-policy" class="text-blue-600 dark:text-blue-400 hover:underline">Gizlilik Politikası</a> ve
-                <a href="/cookie-policy" class="text-blue-600 dark:text-blue-400 hover:underline">Çerez Politikası</a> sayfalarını ziyaret edebilirsiniz.
+                Daha fazla bilgi için <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Gizlilik Politikası</a> ve
+                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Çerez Politikası</a> sayfalarını ziyaret edebilirsiniz.
             </p>
         </div>
     </div>

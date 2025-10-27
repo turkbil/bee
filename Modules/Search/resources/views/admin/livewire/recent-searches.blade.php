@@ -126,7 +126,6 @@
                         <th>Kullanıcı</th>
                         <th>Tip</th>
                         <th class="text-center">Sonuç</th>
-                        <th class="text-center">Tıklamalar</th>
                         <th class="text-center">Süre (ms)</th>
                         <th>Dil</th>
                         <th>IP</th>
@@ -179,13 +178,6 @@
                             @endif
                         </td>
                         <td class="text-center">
-                            @if($search->clicks_count > 0)
-                                <span class="badge bg-purple">{{ $search->clicks_count }}</span>
-                            @else
-                                <span class="text-muted">-</span>
-                            @endif
-                        </td>
-                        <td class="text-center">
                             <span class="text-muted">{{ $search->response_time_ms ?? '-' }}</span>
                         </td>
                         <td>
@@ -225,7 +217,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="10" class="text-center text-muted py-5">
+                        <td colspan="9" class="text-center text-muted py-5">
                             <i class="ti ti-search-off fs-1 mb-2"></i>
                             <div>Kayıt bulunamadı</div>
                         </td>

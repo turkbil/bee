@@ -632,10 +632,10 @@ class PublicAIController extends Controller
                 $contextOptions
             );
 
-            // 🧠 CONVERSATION MEMORY: Get last 20 messages for context (kullanıcı isteği)
+            // 🧠 CONVERSATION MEMORY: Get last 10 messages for context (hız optimizasyonu)
             $conversationHistory = $conversation->messages()
                 ->orderBy('created_at', 'desc')
-                ->limit(20)
+                ->limit(10)
                 ->get()
                 ->reverse()
                 ->map(function ($msg) {

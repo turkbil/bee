@@ -6,28 +6,29 @@
          x-transition:enter="transition ease-out duration-500"
          x-transition:enter-start="opacity-0 translate-y-8"
          x-transition:enter-end="opacity-100 translate-y-0"
-         class="fixed bottom-6 left-6 max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 border border-gray-200 dark:border-gray-700 z-50">
+         class="fixed bottom-6 left-6 max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-5 border border-gray-200 dark:border-gray-700 z-50">
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-start gap-3">
             <div class="text-3xl">🍪</div>
             <div class="flex-1">
-                <h3 class="font-bold text-gray-900 dark:text-white text-lg mb-2">Çerezler</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Bu site, hizmet kalitesini artırmak amacıyla çerez kullanmaktadır.</p>
-            </div>
-            {{-- Timer + Buttons - Tek Satır --}}
-            <div class="flex items-center gap-2">
-                <button @click="showModal = true; stopAutoAcceptTimer()"
-                        class="text-xs px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors whitespace-nowrap">
-                    Ayarlar
-                </button>
-                <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-2 rounded-lg whitespace-nowrap">
-                    <i class="fa-solid fa-clock"></i>
-                    <span x-text="timeRemaining + 's'"></span>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Çerezler</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Bu site, hizmet kalitesini artırmak amacıyla çerez kullanmaktadır.</p>
+
+                {{-- Timer + Buttons - Tek Satır --}}
+                <div class="flex items-center gap-2">
+                    <button @click="openModal()"
+                            class="text-xs px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors whitespace-nowrap">
+                        Ayarlar
+                    </button>
+                    <div class="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-2 rounded-lg whitespace-nowrap">
+                        <i class="fa-solid fa-clock"></i>
+                        <span x-text="timeRemaining + 's'"></span>
+                    </div>
+                    <button @click="acceptAll()"
+                            class="text-xs px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap">
+                        Kabul Et
+                    </button>
                 </div>
-                <button @click="acceptAll()"
-                        class="text-xs px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap">
-                    Kabul Et
-                </button>
             </div>
         </div>
     </div>

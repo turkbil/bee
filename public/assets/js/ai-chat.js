@@ -161,7 +161,7 @@ function registerAiChatStore() {
             }
         },
 
-        // Send message to AI
+        // Send message to AI (STREAMING VERSION - ChatGPT style)
         async sendMessage(messageText, contextOverride = {}) {
             if (!messageText || !messageText.trim()) {
                 return;
@@ -179,16 +179,27 @@ function registerAiChatStore() {
             this.isTyping = true;
             this.error = null;
 
-            try {
-                // Merge context
-                const finalContext = { ...this.context, ...contextOverride };
+            // Merge context
+            const finalContext = { ...this.context, ...contextOverride };
 
-                // API request
-                const response = await fetch(this.apiEndpoint, {
+            // 🌊 STREAMING REQUEST - EventSource
+            const streamEndpoint = window.location.origin + '/api/ai/v1/shop-assistant/chat-stream';
+
+            // 🌊 Create temporary AI message (will update in real-time)
+            const aiMessageIndex = this.messages.length;
+            this.addMessage({
+                role: 'assistant',
+                content: '',
+                created_at: new Date().toISOString(),
+                isStreaming: true,
+            });
+
+            try {
+                // POST request to start streaming
+                const response = await fetch(streamEndpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                     },
                     body: JSON.stringify({
@@ -200,34 +211,58 @@ function registerAiChatStore() {
                     }),
                 });
 
-                const data = await response.json();
-
                 if (!response.ok) {
-                    throw new Error(data.error || 'Bir hata oluştu');
+                    throw new Error('Streaming başlatılamadı');
                 }
 
-                // Update session ID
-                if (data.data.session_id) {
-                    this.sessionId = data.data.session_id;
-                    localStorage.setItem('ai_chat_session_id', this.sessionId);
+                // Read stream
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n\n');
+                    buffer = lines.pop(); // Keep incomplete line in buffer
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const jsonStr = line.substring(6);
+                            try {
+                                const data = JSON.parse(jsonStr);
+
+                                if (data.chunk) {
+                                    // Update message content (typing effect)
+                                    this.messages[aiMessageIndex].content += data.chunk;
+                                    this.scrollToBottom();
+                                }
+
+                                if (data.event === 'end') {
+                                    // Update session info
+                                    if (data.session_id) {
+                                        this.sessionId = data.session_id;
+                                        localStorage.setItem('ai_chat_session_id', this.sessionId);
+                                    }
+                                    if (data.conversation_id) {
+                                        this.conversationId = data.conversation_id;
+                                    }
+                                }
+
+                                if (data.event === 'error') {
+                                    throw new Error(data.error || 'Hata oluştu');
+                                }
+                            } catch (e) {
+                                console.warn('JSON parse error:', e);
+                            }
+                        }
+                    }
                 }
 
-                // Update conversation ID
-                if (data.data.conversation_id) {
-                    this.conversationId = data.data.conversation_id;
-                }
-
-                // Update assistant name
-                if (data.data.assistant_name) {
-                    this.assistantName = data.data.assistant_name;
-                }
-
-                // Add AI response
-                this.addMessage({
-                    role: 'assistant',
-                    content: data.data.message,
-                    created_at: new Date().toISOString(),
-                });
+                // Mark streaming as complete
+                this.messages[aiMessageIndex].isStreaming = false;
 
             } catch (error) {
                 console.error('❌ Failed to send message:', error);

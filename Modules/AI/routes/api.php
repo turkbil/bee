@@ -41,6 +41,9 @@ Route::prefix('ai/v1')
     Route::post('/shop-assistant/chat', [PublicAIController::class, 'shopAssistantChat'])
         ->name('shop-assistant.chat');
 
+    Route::post('/shop-assistant/chat-stream', [PublicAIController::class, 'shopAssistantChatStream'])
+        ->name('shop-assistant.chat-stream');
+
     Route::get('/shop-assistant/history', [PublicAIController::class, 'getConversationHistory'])
         ->name('shop-assistant.history');
 

@@ -283,12 +283,15 @@
 
         <!-- Sticky Container (Desktop Only) -->
         <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-xl mx-auto">
-            <x-ai.inline-widget
-                title="iXtif Destek Asistanı"
-                page-slug="iletisim"
-                :always-open="true"
-                height="700px"
-                theme="purple" />
+            <!-- Responsive Height Wrapper: 400px mobile, 700px desktop -->
+            <div class="h-[400px] lg:h-[700px]">
+                <x-ai.inline-widget
+                    title="iXtif Destek Asistanı"
+                    page-slug="iletisim"
+                    :always-open="true"
+                    height="100%"
+                    theme="purple" />
+            </div>
         </div>
     </div>
 

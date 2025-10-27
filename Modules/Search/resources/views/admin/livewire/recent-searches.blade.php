@@ -11,7 +11,7 @@
                     <div class="d-flex align-items-center">
                         <div class="subheader">Bugün</div>
                         <div class="ms-auto">
-                            <i class="ti ti-clock fs-1 text-blue"></i>
+                            <i class="fas fa-clock fa-2x text-blue"></i>
                         </div>
                     </div>
                     <div class="h1 mb-0 mt-2">{{ number_format($stats['total_today']) }}</div>
@@ -25,7 +25,7 @@
                     <div class="d-flex align-items-center">
                         <div class="subheader">Bu Hafta</div>
                         <div class="ms-auto">
-                            <i class="ti ti-calendar-week fs-1 text-green"></i>
+                            <i class="fas fa-calendar-week fa-2x text-green"></i>
                         </div>
                     </div>
                     <div class="h1 mb-0 mt-2">{{ number_format($stats['total_week']) }}</div>
@@ -39,7 +39,7 @@
                     <div class="d-flex align-items-center">
                         <div class="subheader">Bu Ay</div>
                         <div class="ms-auto">
-                            <i class="ti ti-calendar-month fs-1 text-purple"></i>
+                            <i class="fas fa-calendar-alt fa-2x text-purple"></i>
                         </div>
                     </div>
                     <div class="h1 mb-0 mt-2">{{ number_format($stats['total_month']) }}</div>
@@ -53,7 +53,7 @@
                     <div class="d-flex align-items-center">
                         <div class="subheader">Sonuçsuz (Bugün)</div>
                         <div class="ms-auto">
-                            <i class="ti ti-search-off fs-1 text-red"></i>
+                            <i class="fas fa-search-minus fa-2x text-red"></i>
                         </div>
                     </div>
                     <div class="h1 mb-0 mt-2">{{ number_format($stats['zero_results_today']) }}</div>
@@ -129,7 +129,7 @@
                         <th class="text-center">Süre (ms)</th>
                         <th>Dil</th>
                         <th>IP</th>
-                        <th class="text-end">İşlemler</th>
+                        <th class="text-center" style="width: 160px">İşlemler</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -144,12 +144,12 @@
                                 <strong>{{ $search->query }}</strong>
                                 @if($search->is_popular)
                                     <span class="badge bg-yellow text-dark" title="Popüler">
-                                        <i class="ti ti-star-filled"></i>
+                                        <i class="fa-solid fa-star"></i>
                                     </span>
                                 @endif
                                 @if($search->is_hidden)
                                     <span class="badge bg-red" title="Gizli">
-                                        <i class="ti ti-eye-off"></i>
+                                        <i class="fa-solid fa-eye-slash"></i>
                                     </span>
                                 @endif
                             </div>
@@ -191,34 +191,40 @@
                                 {{ $search->ip_address }}
                             </button>
                         </td>
-                        <td class="text-end">
-                            <div class="btn-group" role="group">
-                                <button type="button"
-                                        wire:click="markAsPopular({{ $search->id }})"
-                                        class="btn btn-sm btn-icon {{ $search->is_popular ? 'btn-warning' : 'btn-outline-warning' }}"
-                                        title="{{ $search->is_popular ? 'Popüler İşaretini Kaldır' : 'Popüler Olarak İşaretle' }}">
-                                    <i class="ti ti-star{{ $search->is_popular ? '-filled' : '' }}"></i>
-                                </button>
-                                <button type="button"
-                                        wire:click="hideSearch({{ $search->id }})"
-                                        class="btn btn-sm btn-icon {{ $search->is_hidden ? 'btn-danger' : 'btn-outline-secondary' }}"
-                                        title="{{ $search->is_hidden ? 'Görünür Yap' : 'Gizle' }}">
-                                    <i class="ti ti-eye{{ $search->is_hidden ? '-off' : '' }}"></i>
-                                </button>
-                                <button type="button"
-                                        wire:click="deleteSearch({{ $search->id }})"
-                                        wire:confirm="Bu arama kaydını silmek istediğinize emin misiniz?"
-                                        class="btn btn-sm btn-icon btn-outline-danger"
-                                        title="Sil">
-                                    <i class="ti ti-trash"></i>
-                                </button>
+                        <td class="text-center align-middle">
+                            <div class="d-flex align-items-center gap-3 justify-content-center">
+                                <a href="javascript:void(0);"
+                                   wire:click="markAsPopular({{ $search->id }})"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{{ $search->is_popular ? 'Popüler İşaretini Kaldır' : 'Popüler Olarak İşaretle' }}"
+                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                    <i class="{{ $search->is_popular ? 'fa-solid' : 'fa-regular' }} fa-star {{ $search->is_popular ? 'link-warning' : 'link-secondary' }} fa-lg"></i>
+                                </a>
+                                <a href="javascript:void(0);"
+                                   wire:click="hideSearch({{ $search->id }})"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="{{ $search->is_hidden ? 'Görünür Yap' : 'Gizle' }}"
+                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                    <i class="fa-solid fa-eye{{ $search->is_hidden ? '-slash' : '' }} link-secondary fa-lg"></i>
+                                </a>
+                                <a href="javascript:void(0);"
+                                   wire:click="deleteSearch({{ $search->id }})"
+                                   wire:confirm="Bu arama kaydını silmek istediğinize emin misiniz?"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Sil"
+                                   style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                    <i class="fa-solid fa-trash link-danger fa-lg"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
                         <td colspan="9" class="text-center text-muted py-5">
-                            <i class="ti ti-search-off fs-1 mb-2"></i>
+                            <i class="fas fa-search-minus fa-3x mb-2"></i>
                             <div>Kayıt bulunamadı</div>
                         </td>
                     </tr>

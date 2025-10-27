@@ -65,13 +65,7 @@ return [
 
     'temporary_file_upload' => [
         'disk' => null,        // Example: 'local', 's3'              | Default: 'default'
-        'rules' => function() {
-            // Root user (ID: 1) için sınırsız upload
-            if (auth()->check() && auth()->user()->id === 1) {
-                return ['required', 'file', 'max:' . (1024 * 1024)]; // 1GB max for root
-            }
-            return ['required', 'file', 'max:12288']; // 12MB for others
-        },
+        'rules' => null,       // Custom validation in FileUploadConfiguration override
         'directory' => null,   // Example: 'tmp'                      | Default: 'livewire-tmp'
         'middleware' => null,  // Example: 'throttle:5,1'             | Default: 'throttle:60,1'
         'preview_mimes' => [   // Supported file types for temporary pre-signed file URLs...

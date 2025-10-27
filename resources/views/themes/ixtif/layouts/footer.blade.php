@@ -231,17 +231,16 @@
 
         {{-- Linkler Grid (Kategorize) - Mobile: 2 kolon, Tablet: 3 kolon, Desktop: 5 kolon --}}
         @php
-            use Modules\Shop\app\Models\ShopCategory;
-
             // Ana kategorileri çek (parent_id = null)
-            $mainCategories = ShopCategory::whereNull('parent_id')
+            $mainCategories = \Modules\Shop\app\Models\ShopCategory::whereNull('parent_id')
                 ->where('is_active', 1)
                 ->orderBy('sort_order')
                 ->get()
                 ->map(function($cat) {
+                    $slug = $cat->getTranslated('slug', app()->getLocale());
                     return [
                         'name' => $cat->getTranslated('title', app()->getLocale()),
-                        'url' => $cat->getUrl()
+                        'url' => href('Shop', 'category', $slug)
                     ];
                 })
                 ->toArray();

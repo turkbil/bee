@@ -1271,23 +1271,44 @@ class UniversalMediaComponent extends Component
      */
     public static function manualFeaturedUpload(\Illuminate\Http\Request $request)
     {
+        \Log::info('🔍 [MANUAL_UPLOAD] START', [
+            'user_id' => auth()->id(),
+            'is_root' => auth()->check() && auth()->user()->id === 1,
+            'has_file' => $request->hasFile('file'),
+        ]);
+
         try {
             $file = $request->file('file');
 
             if (!$file) {
+                \Log::warning('❌ [MANUAL_UPLOAD] No file uploaded');
                 return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
             }
 
+            \Log::info('📁 [MANUAL_UPLOAD] File received', [
+                'size_bytes' => $file->getSize(),
+                'size_mb' => round($file->getSize() / 1024 / 1024, 2),
+                'mime' => $file->getMimeType(),
+                'original_name' => $file->getClientOriginalName(),
+            ]);
+
             // Root user (ID: 1) için validation SKIP
-            if (!auth()->check() || auth()->user()->id !== 1) {
+            $isRoot = auth()->check() && auth()->user()->id === 1;
+
+            if (!$isRoot) {
+                \Log::info('⚠️ [MANUAL_UPLOAD] Non-root user - validating');
                 $request->validate([
                     'file' => 'required|file|max:20480', // 20MB for non-root
                 ]);
+                \Log::info('✅ [MANUAL_UPLOAD] Validation passed');
+            } else {
+                \Log::info('✅ [MANUAL_UPLOAD] Root user - SKIP validation');
             }
-            // Root user: NO validation = UNLIMITED
 
             // Save to temp storage
+            \Log::info('💾 [MANUAL_UPLOAD] Storing file...');
             $tempPath = $file->store('livewire-tmp', 'public');
+            \Log::info('✅ [MANUAL_UPLOAD] File stored', ['temp_path' => $tempPath]);
 
             return response()->json([
                 'success' => true,
@@ -1295,15 +1316,30 @@ class UniversalMediaComponent extends Component
                 'message' => 'File uploaded successfully'
             ]);
 
-        } catch (\Exception $e) {
-            \Log::error('[MANUAL_UPLOAD_ERROR]', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('❌ [MANUAL_UPLOAD] Validation failed', [
+                'errors' => $e->errors(),
+                'message' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'Validation failed: ' . $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch (\Exception $e) {
+            \Log::error('❌ [MANUAL_UPLOAD] Exception', [
+                'type' => get_class($e),
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Upload failed: ' . $e->getMessage()
             ], 500);
         }
     }

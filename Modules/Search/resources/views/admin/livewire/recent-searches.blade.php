@@ -144,7 +144,7 @@
                         </td>
                         <td>
                             @if($search->user)
-                                <a href="{{ route('admin.users.edit', $search->user->id) }}">
+                                <a href="{{ route('admin.usermanagement.manage', $search->user->id) }}">
                                     {{ $search->user->name }}
                                 </a>
                             @else

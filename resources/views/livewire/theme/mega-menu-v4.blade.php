@@ -160,7 +160,7 @@
             </div>
 
             {{-- ========================================== --}}
-            {{-- SAĞ: YEDEK PARÇA FEATURED (col-span-5) --}}
+            {{-- SAĞ: YEDEK PARÇA LİST (col-span-5) --}}
             {{-- ========================================== --}}
             <div class="col-span-12 lg:col-span-5">
                 @php
@@ -169,31 +169,28 @@
                     $yedekParcaIcon = $yedekParcaCategory && $yedekParcaCategory->icon_class ? $yedekParcaCategory->icon_class : 'fa-solid fa-wrench';
                 @endphp
 
-                <div class="bg-gradient-to-br from-gray-600 to-gray-700 dark:from-gray-700 dark:to-gray-800 rounded-2xl p-6 text-white relative overflow-hidden h-full">
-                    <div class="relative z-10">
-                        {{-- Header --}}
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center">
-                                <i class="{{ $yedekParcaIcon }} text-white text-4xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-3xl font-black">{{ $yedekParcaTitle }}</h3>
-                            </div>
+                <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-6">
+                    {{-- Header --}}
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200 dark:border-white/10">
+                        <div class="w-12 h-12 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-gray-200 dark:border-white/20">
+                            <i class="{{ $yedekParcaIcon }} text-gray-700 dark:text-white text-xl"></i>
                         </div>
+                        <h3 class="text-xl font-black text-gray-900 dark:text-white">{{ $yedekParcaTitle }}</h3>
+                    </div>
 
-                        {{-- Subcategories Grid --}}
-                        <div class="grid grid-cols-2 gap-3">
-                            @foreach($yedekParcaSubcategories as $subcategory)
-                                @php
-                                    $subTitle = is_array($subcategory->title) ? $subcategory->title['tr'] : $subcategory->title;
-                                    $subSlug = is_array($subcategory->slug) ? $subcategory->slug['tr'] : $subcategory->slug;
-                                @endphp
-                                <a href="/shop/kategori/{{ $subSlug }}"
-                                   class="bg-white/20 backdrop-blur-md rounded-lg p-3 hover:bg-white/30 transition-all cursor-pointer border border-white/20">
-                                    <div class="font-bold text-sm mb-1">{{ $subTitle }}</div>
-                                </a>
-                            @endforeach
-                        </div>
+                    {{-- Subcategories 2-Column List --}}
+                    <div class="grid grid-cols-2 gap-2">
+                        @foreach($yedekParcaSubcategories as $subcategory)
+                            @php
+                                $subTitle = is_array($subcategory->title) ? $subcategory->title['tr'] : $subcategory->title;
+                                $subSlug = is_array($subcategory->slug) ? $subcategory->slug['tr'] : $subcategory->slug;
+                            @endphp
+                            <a href="/shop/kategori/{{ $subSlug }}"
+                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1.5 px-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                                <i class="fa-solid fa-chevron-right text-xs text-gray-400 dark:text-gray-500"></i>
+                                <span class="text-sm font-medium">{{ $subTitle }}</span>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
             </div>

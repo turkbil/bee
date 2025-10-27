@@ -6,7 +6,7 @@
          x-transition:enter="transition ease-out duration-500"
          x-transition:enter-start="opacity-0 translate-y-8"
          x-transition:enter-end="opacity-100 translate-y-0"
-         class="fixed bottom-6 left-6 max-w-xs bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 border-l-4 border-blue-500 dark:border-blue-400 z-50">
+         class="hidden md:block fixed bottom-6 left-6 max-w-xs bg-white dark:bg-gray-800 rounded-xl shadow-lg p-5 border-l-4 border-blue-500 dark:border-blue-400 z-50">
 
         <div>
             <div class="flex items-center gap-2 mb-2">

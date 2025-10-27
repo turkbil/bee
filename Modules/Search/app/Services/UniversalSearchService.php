@@ -666,7 +666,8 @@ class UniversalSearchService
     protected function getItemPrice($item): ?string
     {
         if (isset($item->base_price) && $item->base_price > 0) {
-            return number_format($item->base_price, 2) . ' ' . ($item->currency ?? 'TRY');
+            $price = is_numeric($item->base_price) ? (float) $item->base_price : 0;
+            return number_format($price, 2) . ' ' . ($item->currency ?? 'TRY');
         }
         return null;
     }

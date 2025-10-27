@@ -452,15 +452,29 @@ window.cookieConsentApp = function() {
             const consent = localStorage.getItem('cookieConsent');
 
             if (!consent) {
-                // İlk ziyaret - banner göster
+                // İlk ziyaret - banner göster, modal ASLA açma
                 this.showCookieConsent = true;
+                this.showModal = false;
                 this.startAutoAcceptTimer();
             } else {
-                // Daha önce kaydedilmiş - banner gösterme
+                // Daha önce kaydedilmiş - hiçbir şey gösterme
                 this.preferences = JSON.parse(consent);
                 this.showCookieConsent = false;
+                this.showModal = false;
                 this.loadTrackingScripts();
             }
+        },
+
+        openModal() {
+            // Modal açılırken timer'ı durdur
+            this.stopAutoAcceptTimer();
+
+            // Preferences'ı koru - hepsi açık olmalı
+            if (!this.preferences.functional) this.preferences.functional = true;
+            if (!this.preferences.analytics) this.preferences.analytics = true;
+            if (!this.preferences.marketing) this.preferences.marketing = true;
+
+            this.showModal = true;
         },
 
         startAutoAcceptTimer() {

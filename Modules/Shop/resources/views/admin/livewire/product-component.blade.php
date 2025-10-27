@@ -134,7 +134,7 @@
                             @endif
                             <th class="text-end">{{ __('shop::admin.price') }}</th>
                             <th class="text-center" style="width: 100px">Stok</th>
-                            <th class="text-center" style="width: 80px">{{ __('shop::admin.status') }}</th>
+                            <th style="width: 80px">{{ __('shop::admin.status') }}</th>
                             <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
                         </tr>
                     </thead>
@@ -395,8 +395,8 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="text-center align-middle">
-                                    <div class="d-flex align-items-center gap-2 justify-content-center">
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center gap-2">
                                         <!-- Aktif/Pasif -->
                                         <button wire:click="toggleActive({{ $product->product_id }})"
                                             class="btn btn-icon btn-sm {{ $product->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"

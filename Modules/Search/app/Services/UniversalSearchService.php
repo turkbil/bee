@@ -157,7 +157,6 @@ class UniversalSearchService
                 // Sadece kısa kelimeleri al (ürün isimleri çok uzun)
                 ->whereRaw('CHAR_LENGTH(query) BETWEEN 2 AND 50')
                 // Test verilerini filtrele
-                ->where('query', 'NOT LIKE', '%OBSERVER TEST%')
                 ->where('query', 'NOT LIKE', '%İXTİF CPD%')
                 ->selectRaw('query, COUNT(*) as count')
                 ->groupBy('query')

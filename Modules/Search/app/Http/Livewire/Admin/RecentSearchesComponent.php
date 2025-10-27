@@ -16,14 +16,14 @@ class RecentSearchesComponent extends Component
     use WithPagination;
 
     public $perPage = 50;
-    public $dateFilter = 'today'; // today, week, month, all
+    public $dateFilter = 'all'; // today, week, month, all
     public $typeFilter = 'all'; // all, products, categories, brands
     public $showZeroResults = false;
     public $searchTerm = '';
     public $ipFilter = '';
 
     protected $queryString = [
-        'dateFilter' => ['except' => 'today'],
+        'dateFilter' => ['except' => 'all'],
         'typeFilter' => ['except' => 'all'],
         'showZeroResults' => ['except' => false],
         'searchTerm' => ['except' => ''],

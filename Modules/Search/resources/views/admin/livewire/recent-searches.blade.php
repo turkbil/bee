@@ -73,7 +73,7 @@
                         <option value="today">Bugün</option>
                         <option value="week">Bu Hafta</option>
                         <option value="month">Bu Ay</option>
-                        <option value="all">Tümü</option>
+                        <option value="all" selected>Tümü</option>
                     </select>
                 </div>
                 <div class="col-md-3">

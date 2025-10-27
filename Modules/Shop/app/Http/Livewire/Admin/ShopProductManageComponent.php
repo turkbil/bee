@@ -559,7 +559,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
         // Redirect istendiyse
         if ($redirect) {
             session()->flash('toast', $toast);
-            return redirect()->route('admin.shop.products.index');
+            return redirect()->route('admin.shop.index');
         }
 
         // Yeni kayıt oluşturulduysa - medya event'ini dispatch et ve redirect
@@ -568,7 +568,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
             $this->dispatch('product-saved', $product->product_id);
 
             session()->flash('toast', $toast);
-            return redirect()->route('admin.shop.products.manage', ['id' => $product->product_id]);
+            return redirect()->route('admin.shop.manage', ['id' => $product->product_id]);
         }
 
         Log::info('✅ Save method başarıyla tamamlandı', [

@@ -988,7 +988,22 @@
                 </div>
 
                 {{-- Hakkımızda Hibrit Mega Menu --}}
-                @include('themes.ixtif.partials.mega-menu-hakkimizda')
+                <div x-show="activeMegaMenu === 'hakkimizda'"
+                     @mouseenter="activeMegaMenu = 'hakkimizda'"
+                     @mouseleave="activeMegaMenu = null"
+                     class="absolute left-0 right-0 top-full z-50 -mt-2"
+                     x-cloak>
+                    <div x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-3"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-3">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                            @include('themes.ixtif.partials.mega-menu-hakkimizda')
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 

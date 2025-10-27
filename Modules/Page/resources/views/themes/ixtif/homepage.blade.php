@@ -231,13 +231,20 @@
 <section class="w-full py-8 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
-            {{-- Sol: Görsel --}}
-            <div class="relative rounded-3xl h-[600px] flex items-center justify-center overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5"></div>
-                <div class="text-center relative z-10">
-                    <i class="fa-light fa-building text-9xl mb-6 text-blue-600 dark:text-blue-400"></i>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">İxtif.com</p>
-                </div>
+            {{-- Sol: Video --}}
+            <div class="relative rounded-3xl h-[600px] overflow-hidden">
+                <video
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    poster="https://ixtif.com/storage/tenant2/77/f4-super-hero.jpg"
+                    class="absolute inset-0 w-full h-full object-cover"
+                >
+                    <source src="https://ixtif.com/storage/tenant2/76/f4-super-hero.mp4" type="video/mp4">
+                    {{-- Fallback için poster gösterilecek --}}
+                    <img src="https://ixtif.com/storage/tenant2/77/f4-super-hero.jpg" alt="İxtif Depo ve Üretim" class="w-full h-full object-cover">
+                </video>
             </div>
 
             {{-- Sağ: İçerik --}}

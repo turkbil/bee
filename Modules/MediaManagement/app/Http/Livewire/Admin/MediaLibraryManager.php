@@ -488,7 +488,18 @@ class MediaLibraryManager extends Component
 
     public function isPreviewable(Media $media): bool
     {
-        return $media->mime_type ? Str::startsWith($media->mime_type, 'image/') : false;
+        if (!$media->mime_type) {
+            return false;
+        }
+
+        // Image ve video preview destekli
+        return Str::startsWith($media->mime_type, 'image/')
+            || Str::startsWith($media->mime_type, 'video/');
+    }
+
+    public function isVideo(Media $media): bool
+    {
+        return $media->mime_type ? Str::startsWith($media->mime_type, 'video/') : false;
     }
 
     public function previewUrl(Media $media): ?string

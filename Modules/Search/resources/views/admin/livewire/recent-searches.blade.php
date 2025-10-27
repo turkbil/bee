@@ -195,20 +195,20 @@
                             <div class="btn-group" role="group">
                                 <button type="button"
                                         wire:click="markAsPopular({{ $search->id }})"
-                                        class="btn btn-sm btn-icon {{ $search->is_popular ? 'btn-warning' : 'btn-ghost-secondary' }}"
+                                        class="btn btn-sm btn-icon {{ $search->is_popular ? 'btn-warning' : 'btn-outline-warning' }}"
                                         title="{{ $search->is_popular ? 'Popüler İşaretini Kaldır' : 'Popüler Olarak İşaretle' }}">
                                     <i class="ti ti-star{{ $search->is_popular ? '-filled' : '' }}"></i>
                                 </button>
                                 <button type="button"
                                         wire:click="hideSearch({{ $search->id }})"
-                                        class="btn btn-sm btn-icon {{ $search->is_hidden ? 'btn-danger' : 'btn-ghost-secondary' }}"
+                                        class="btn btn-sm btn-icon {{ $search->is_hidden ? 'btn-danger' : 'btn-outline-secondary' }}"
                                         title="{{ $search->is_hidden ? 'Görünür Yap' : 'Gizle' }}">
                                     <i class="ti ti-eye{{ $search->is_hidden ? '-off' : '' }}"></i>
                                 </button>
                                 <button type="button"
                                         wire:click="deleteSearch({{ $search->id }})"
                                         wire:confirm="Bu arama kaydını silmek istediğinize emin misiniz?"
-                                        class="btn btn-sm btn-icon btn-ghost-secondary"
+                                        class="btn btn-sm btn-icon btn-outline-danger"
                                         title="Sil">
                                     <i class="ti ti-trash"></i>
                                 </button>

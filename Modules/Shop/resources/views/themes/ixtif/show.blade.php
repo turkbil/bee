@@ -1120,7 +1120,7 @@
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky (MOBİLDE GİZLİ!) --}}
             <div class="hidden lg:block lg:col-span-1 order-first lg:order-last relative">
-                <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform;">
+                <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform; z-index: 1;">
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">

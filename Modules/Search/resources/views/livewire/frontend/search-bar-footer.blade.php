@@ -50,9 +50,51 @@
              window.location.href = '{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
          },
 
-         selectProduct(product) {
+         selectProduct(product, index = 0) {
              if (!product?.url) return;
+             // Track click before navigation
+             this.trackClick(product, index);
              window.location.href = product.url;
+         },
+
+         async trackClick(product, position) {
+             if (!product) return;
+
+             try {
+                 // Type mapping (frontend format → backend model class)
+                 const typeMap = {
+                     'products': 'Modules\\Shop\\App\\Models\\ShopProduct',
+                     'categories': 'Modules\\Shop\\App\\Models\\ShopCategory',
+                     'brands': 'Modules\\Shop\\App\\Models\\ShopBrand'
+                 };
+
+                 const modelType = typeMap[product.type] || product.type;
+
+                 // Extract ID from product
+                 let productId = product.id;
+                 if (!productId && product.url) {
+                     // Try to extract ID from URL if needed
+                     const urlParts = product.url.split('/');
+                     productId = parseInt(urlParts[urlParts.length - 1]) || 0;
+                 }
+
+                 await fetch('/api/search/track-click', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                     },
+                     body: JSON.stringify({
+                         query: this.query,
+                         result_id: productId,
+                         result_type: modelType,
+                         position: position,
+                         opened_in_new_tab: false
+                     })
+                 });
+             } catch (error) {
+                 console.warn('Click tracking failed:', error);
+             }
          }
      }"
      @click.away="open = false"
@@ -86,7 +128,8 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 translate-y-1"
-         class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700 overflow-hidden">
+         class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-2xl rounded-xl z-50 border border-gray-200 dark:border-gray-700"
+         style="z-index:50;">
 
         <div class="max-h-[28rem] overflow-y-auto">
             <div class="grid gap-4 md:gap-6 px-4 py-4 grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
@@ -123,7 +166,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <template x-for="(product, index) in products" :key="'p-'+index">
                             <a href="#"
-                               @click.prevent="selectProduct(product)"
+                               @click.prevent="selectProduct(product, index)"
                                class="flex gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition group hover:border-indigo-400 dark:hover:border-indigo-400 hover:shadow-md">
                                 <div class="w-16 h-16 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                                     <template x-if="product.image">

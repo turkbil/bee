@@ -661,13 +661,29 @@ class UniversalSearchService
     }
 
     /**
-     * Helper: Get item price
+     * Helper: Get item price with currency icon
      */
     protected function getItemPrice($item): ?string
     {
         if (isset($item->base_price) && $item->base_price > 0) {
             $price = is_numeric($item->base_price) ? (float) $item->base_price : 0;
-            return number_format($price, 2) . ' ' . ($item->currency ?? 'TRY');
+
+            // Format: Remove .00 if decimal is zero
+            $formatted = number_format($price, 2, '.', ',');
+            if (str_ends_with($formatted, '.00')) {
+                $formatted = substr($formatted, 0, -3);
+            }
+
+            // Currency icon mapping
+            $currencyIcon = match (strtoupper($item->currency ?? 'TRY')) {
+                'TRY' => '₺',
+                'USD' => '$',
+                'EUR' => '€',
+                'GBP' => '£',
+                default => strtoupper($item->currency ?? 'TRY'),
+            };
+
+            return $formatted . ' ' . $currencyIcon;
         }
         return null;
     }

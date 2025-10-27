@@ -41,7 +41,7 @@
 
 - **Telefon (Sabit):** 0216 755 3 555
 - **Telefon (Mobil):** 0501 005 67 58
-- **WhatsApp:** 0532 216 07 54 (7/24 Hızlı Destek)
+- **WhatsApp:** 0501 005 67 58 (7/24 Hızlı Destek)
 - **E-posta:** info@ixtif.com
 - **Web:** www.ixtif.com
 
@@ -847,7 +847,7 @@ Adres: Tuzla, İstanbul - Anadolu Yakası
 Telefon (Sabit): 0216 755 3 555
 Telefon (Mobil): 0501 005 67 58
 E-posta: info@ixtif.com
-WhatsApp: 0532 216 07 54
+WhatsApp: 0501 005 67 58
 WhatsApp Business: https://wa.me/905010056758
 ```
 
@@ -896,7 +896,7 @@ Pazar: Kapalı
 - 📸 Instagram: instagram.com/ixtifcom
 - 👥 Facebook: facebook.com/ixtif
 - 🎥 YouTube: youtube.com/@ixtif
-- 🐦 Twitter: twitter.com/ixtif
+- 🐦 Twitter: twitter.com/ixtifcom
 - 💬 WhatsApp: wa.me/905010056758
 
 **Hızlı İletişim Kanalları:**
@@ -1298,7 +1298,7 @@ Web: www.ixtif.com
 {{ settings('contact_phone_1', '0216 755 3 555') }}
 
 {{-- WhatsApp --}}
-{{ settings('contact_whatsapp_1', '0532 216 07 54') }}
+{{ settings('contact_whatsapp_1', '0501 005 67 58') }}
 
 {{-- E-posta --}}
 {{ settings('contact_email_1', 'info@ixtif.com') }}
@@ -1310,7 +1310,7 @@ Web: www.ixtif.com
 ```
 contact_phone_1       → 0216 755 3 555 (Sabit Hat)
 contact_phone_2       → 0501 005 67 58 (Mobil)
-contact_whatsapp_1    → 0532 216 07 54 (WhatsApp)
+contact_whatsapp_1    → 0501 005 67 58 (WhatsApp)
 contact_email_1       → info@ixtif.com
 site_email            → info@ixtif.com
 ```
@@ -1319,8 +1319,8 @@ site_email            → info@ixtif.com
 
 ```blade
 @php
-    $whatsapp = settings('contact_whatsapp_1', '0532 216 07 54');
-    // "0532 216 07 54" → "905010056758"
+    $whatsapp = settings('contact_whatsapp_1', '0501 005 67 58');
+    // "0501 005 67 58" → "905010056758"
     $waLink = '9' . str_replace([' ', '0'], '', $whatsapp);
 @endphp
 
@@ -1345,7 +1345,7 @@ site_email            → info@ixtif.com
     </p>
     <p>
         💬 WhatsApp: <a href="https://wa.me/905010056758" target="_blank">
-            {{ settings('contact_whatsapp_1', '0532 216 07 54') }}
+            {{ settings('contact_whatsapp_1', '0501 005 67 58') }}
         </a>
     </p>
     <p>
@@ -1403,15 +1403,15 @@ site_email            → info@ixtif.com
 📱 Telefon (Mobil): 0501 005 67 58
 📧 E-posta: info@ixtif.com
 🌐 Web: www.ixtif.com
-💬 WhatsApp: 0532 216 07 54 (7/24 Hızlı Destek)
+💬 WhatsApp: 0501 005 67 58 (7/24 Hızlı Destek)
 🔗 WhatsApp Business: https://wa.me/905010056758
 
 **Departmanlar:**
-- Satış: satis@ixtif.com
-- Kiralama: kiralama@ixtif.com
-- Servis: servis@ixtif.com
-- Yedek Parça: yedekparca@ixtif.com
-- İnsan Kaynakları: ik@ixtif.com
+- Satış: info@ixtif.com
+- Kiralama: info@ixtif.com
+- Servis: info@ixtif.com
+- Yedek Parça: info@ixtif.com
+- İnsan Kaynakları: info@ixtif.com
 
 **Çalışma Saatleri:**
 - Hafta İçi: 08:00 - 18:00

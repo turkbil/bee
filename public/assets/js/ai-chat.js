@@ -85,17 +85,11 @@ function registerAiChatStore() {
             setTimeout(() => {
                 this.scrollToBottom();
             }, 500);
-
-            console.log('🤖 AI Chat Store initialized', {
-                floatingOpen: this.floatingOpen,
-                sessionId: this.sessionId
-            });
         },
 
         // Update context (product_id, category_id, page_slug)
         updateContext(newContext) {
             this.context = { ...this.context, ...newContext };
-            console.log('🔄 Context updated:', this.context);
         },
 
         // Toggle floating widget
@@ -235,11 +229,6 @@ function registerAiChatStore() {
                     created_at: new Date().toISOString(),
                 });
 
-                console.log('✅ Message sent successfully', {
-                    tokens: data.data.tokens_used,
-                    modules: data.data.context_used?.modules,
-                });
-
             } catch (error) {
                 console.error('❌ Failed to send message:', error);
                 this.error = error.message || 'Mesaj gönderilemedi';
@@ -280,8 +269,6 @@ function registerAiChatStore() {
                 if (response.ok && data.success) {
                     this.messages = data.data.messages || [];
                     this.conversationId = data.data.conversation_id;
-
-                    console.log('📜 History loaded:', this.messages.length, 'messages');
 
                     // Scroll to bottom after history is loaded
                     setTimeout(() => {
@@ -518,7 +505,6 @@ window.clearAIConversation = function(button) {
     const chat = window.Alpine.store('aiChat');
 
     if (!chat.conversationId) {
-        console.log('ℹ️ Aktif bir konuşma bulunamadı.');
         return;
     }
 
@@ -536,9 +522,6 @@ window.clearAIConversation = function(button) {
 
             // Clear from Alpine store
             chat.clearConversation();
-
-            // Success feedback (no alert!)
-            console.log('✅ AI konuşma geçmişi silindi!');
 
             // Visual feedback
             button.querySelector('.button-text').textContent = '✓ Temizlendi';
@@ -560,6 +543,3 @@ window.clearAIConversation = function(button) {
             button.disabled = false;
         });
 };
-
-console.log('✅ AI Chat System JavaScript loaded');
-console.log('📦 Includes: Chat Store, Placeholder System, Markdown Converter, Admin Functions');

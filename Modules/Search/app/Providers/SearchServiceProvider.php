@@ -11,6 +11,8 @@ use RecursiveIteratorIterator;
 use Modules\Search\App\Http\Livewire\Frontend\SearchBarComponent;
 use Modules\Search\App\Http\Livewire\Admin\SearchQueriesManagementComponent;
 use Modules\Search\App\Http\Livewire\Admin\SearchAnalyticsComponent;
+use Modules\Search\App\Http\Livewire\Admin\RecentSearchesComponent;
+use Modules\Search\App\Http\Livewire\Admin\ClickAnalyticsComponent;
 
 class SearchServiceProvider extends ServiceProvider
 {
@@ -45,6 +47,8 @@ class SearchServiceProvider extends ServiceProvider
         // Admin components
         Livewire::component('search::admin.search-queries-management', SearchQueriesManagementComponent::class);
         Livewire::component('search::admin.search-analytics', SearchAnalyticsComponent::class);
+        Livewire::component('search::admin.recent-searches', RecentSearchesComponent::class);
+        Livewire::component('search::admin.click-analytics', ClickAnalyticsComponent::class);
     }
 
     /**

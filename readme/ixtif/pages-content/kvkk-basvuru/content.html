@@ -1,0 +1,135 @@
+<!-- KVKK BAŞVURU FORMU -->
+
+<div class="py-16 md:py-24">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-gray-900 dark:text-white" style="font-weight: 900;">
+            <span class="gradient-animate block py-2">KVKK BAŞVURU</span>
+            <span class="gradient-animate block py-2">FORMU</span>
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+            Kişisel Verilerinizle İlgili Haklarınızı Kullanın
+        </p>
+    </div>
+
+    <div class="max-w-3xl mx-auto">
+        <!-- Bilgilendirme -->
+        <div class="bg-blue-50 dark:bg-slate-800/50 rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">📋 Başvuru Hakları</h3>
+            <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3">
+                6698 sayılı KVKK'nın 11. maddesi uyarınca aşağıdaki haklara sahipsiniz:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 text-sm space-y-1 ml-4">
+                <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
+                <li>İşlenme amacını ve uygunluğunu öğrenme</li>
+                <li>Yurtiçi/yurtdışı aktarımları öğrenme</li>
+                <li>Düzeltilmesini, silinmesini veya yok edilmesini isteme</li>
+                <li>Otomatik işleme sonuçlarına itiraz etme</li>
+                <li>Zararınızın giderilmesini talep etme</li>
+            </ul>
+            <p class="text-gray-600 dark:text-gray-400 text-xs mt-3">
+                * Başvurunuz en geç 30 gün içinde değerlendirilerek sonuçlandırılacaktır.
+            </p>
+        </div>
+
+        <!-- Başvuru Formu -->
+        <div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-8">
+            <form action="/kvkk-basvuru" method="POST" enctype="multipart/form-data" class="space-y-6">
+                <!-- Kimlik Bilgileri -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Kimlik Bilgileri</h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad *</label>
+                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">TC Kimlik No *</label>
+                        <input type="text" name="tc_no" maxlength="11" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-posta *</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telefon *</label>
+                        <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adres *</label>
+                        <textarea name="address" rows="2" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Başvuru Konusu -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Başvuru Konusu</h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Talep Türü *</label>
+                        <select name="request_type" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                            <option value="">Seçiniz</option>
+                            <option value="bilgi">Kişisel verilerimin işlenip işlenmediğini öğrenmek</option>
+                            <option value="erisim">İşlenen kişisel verilerim hakkında bilgi talep etmek</option>
+                            <option value="amac">İşlenme amacını ve uygunluğunu öğrenmek</option>
+                            <option value="aktarim">Yurtiçi/yurtdışı aktarımları öğrenmek</option>
+                            <option value="duzeltme">Kişisel verilerimin düzeltilmesini talep etmek</option>
+                            <option value="silme">Kişisel verilerimin silinmesini/yok edilmesini talep etmek</option>
+                            <option value="itiraz">Otomatik işleme sonuçlarına itiraz etmek</option>
+                            <option value="tazminat">Zarar giderimini talep etmek</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Açıklama *</label>
+                        <textarea name="description" rows="6" placeholder="Başvurunuzun detaylarını açıklayınız..." required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Kimlik Doğrulama -->
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Kimlik Doğrulama</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Güvenliğiniz için kimlik belgesi fotokopisi veya e-Devlet üzerinden alınmış Kimlik Paylaşımı belgesi yükleyiniz.
+                    </p>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kimlik Belgesi (PDF, JPG) *</label>
+                        <input type="file" name="identity_document" accept=".pdf,.jpg,.jpeg,.png" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Onay -->
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" id="consent" name="consent" required class="mt-1">
+                    <label for="consent" class="text-sm text-gray-700 dark:text-gray-300">
+                        Başvuru formunda verdiğim bilgilerin doğru olduğunu, başvurumun değerlendirilmesi için gerekli işlemlerin yapılmasını kabul ediyorum. *
+                    </label>
+                </div>
+
+                <!-- Gönder -->
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all">
+                    Başvuruyu Gönder
+                </button>
+
+                <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+                    Başvurunuz kayıt altına alınacak ve 30 gün içinde tarafınıza dönüş yapılacaktır.
+                </p>
+            </form>
+        </div>
+
+        <!-- Alternatif Başvuru Yöntemleri -->
+        <div class="mt-8 text-center">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Alternatif Başvuru Yöntemleri</h3>
+            <div class="bg-gray-50 dark:bg-slate-800/50 rounded-xl p-6 text-left">
+                <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                    <strong>Posta:</strong> Küçükyalı Mah. Çamlık Sok. Manzara Adalar Sit. B Blok No:1/B İç Kapı:89 Kartal/İSTANBUL<br>
+                    <strong>E-posta:</strong> <a href="mailto:info@ixtif.com" class="text-blue-600 dark:text-blue-400 hover:underline">info@ixtif.com</a> (Islak imzalı başvuru + kimlik belgesi)
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

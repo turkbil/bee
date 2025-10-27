@@ -1,0 +1,132 @@
+<!-- CAYMA HAKKI FORMU -->
+
+<div class="py-16 md:py-24">
+    <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 text-gray-900 dark:text-white" style="font-weight: 900;">
+            <span class="gradient-animate block py-2">CAYMA HAKKI</span>
+            <span class="gradient-animate block py-2">FORMU</span>
+        </h1>
+    </div>
+
+    <div class="max-w-3xl mx-auto">
+        <!-- Bilgilendirme -->
+        <div class="bg-blue-50 dark:bg-slate-800/50 rounded-2xl p-6 mb-8">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">📋 Cayma Hakkı Bilgilendirme</h3>
+            <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                6502 sayılı Tüketicinin Korunması Hakkında Kanun uyarınca, ürünü teslim aldığınız tarihten itibaren 14 gün içinde herhangi bir gerekçe göstermeksizin ve cezai şart ödemeksizin sözleşmeden cayma hakkınız bulunmaktadır.
+            </p>
+        </div>
+
+        <!-- Cayma Hakkı Formu -->
+        <div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Cayma Bildirimi</h2>
+
+            <form action="/cayma-hakki" method="POST" class="space-y-6">
+                <!-- Müşteri Bilgileri -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Müşteri Bilgileri</h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad *</label>
+                        <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-posta *</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telefon *</label>
+                        <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Teslimat Adresi *</label>
+                        <textarea name="address" rows="2" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+
+                <!-- Sipariş Bilgileri -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Sipariş Bilgileri</h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sipariş No *</label>
+                        <input type="text" name="order_no" placeholder="Örn: #12345" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sipariş Tarihi *</label>
+                        <input type="date" name="order_date" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Teslim Tarihi *</label>
+                        <input type="date" name="delivery_date" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ürün Adı *</label>
+                        <input type="text" name="product_name" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- İade Sebebi -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İade Sebebi (İsteğe Bağlı)</label>
+                    <textarea name="reason" rows="4" placeholder="İade sebebinizi belirtebilirsiniz..." class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <!-- İade Yöntemi -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Para İadesi Yöntemi *</label>
+                    <select name="refund_method" required class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                        <option value="">Seçiniz</option>
+                        <option value="credit_card">Kredi Kartına İade</option>
+                        <option value="bank_transfer">Banka Hesabına Havale</option>
+                    </select>
+                </div>
+
+                <div id="bank_info" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">IBAN</label>
+                    <input type="text" name="iban" placeholder="TR00 0000 0000 0000 0000 0000 00" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Onay -->
+                <div class="flex items-start gap-3">
+                    <input type="checkbox" id="cayma_onay" name="cayma_onay" required class="mt-1">
+                    <label for="cayma_onay" class="text-sm text-gray-700 dark:text-gray-300">
+                        İşbu sözleşmeden cayma hakkımı kullanarak ürünü iade etmek istediğimi beyan ederim. *
+                    </label>
+                </div>
+
+                <!-- Gönder -->
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all">
+                    Cayma Bildirimi Gönder
+                </button>
+
+                <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+                    Formunuz alındıktan sonra 1 iş günü içinde size dönüş yapılacaktır.
+                </p>
+            </form>
+        </div>
+
+        <!-- Bilgilendirme -->
+        <div class="mt-8 bg-gray-50 dark:bg-slate-800/50 rounded-xl p-6">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-3">⚠️ Önemli Notlar</h3>
+            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 text-sm space-y-2 ml-4">
+                <li>Ürün kullanılmamış ve orijinal ambalajında olmalıdır</li>
+                <li>Tüm aksesuar ve belgeler eksiksiz gönderilmelidir</li>
+                <li>İade kargo ücreti müşteriye aittir</li>
+                <li>Para iadesi 10 iş günü içinde yapılır</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelector('[name="refund_method"]').addEventListener('change', function() {
+    document.getElementById('bank_info').style.display = this.value === 'bank_transfer' ? 'block' : 'none';
+});
+</script>

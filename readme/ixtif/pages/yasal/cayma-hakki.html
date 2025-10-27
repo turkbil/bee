@@ -1,0 +1,82 @@
+<h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Cayma Hakkı Formu</h2>
+
+<div class="space-y-6">
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+        6502 sayılı Tüketicinin Korunması Hakkında Kanun'un 15. maddesi uyarınca, mesafeli sözleşmelerde tüketicilerin 14 gün içinde herhangi bir gerekçe göstermeksizin cayma hakkı kullanma hakkı bulunmaktadır.
+    </p>
+
+    <div class="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-600 p-4 rounded-r-lg">
+        <p class="text-sm text-gray-800 dark:text-gray-200">
+            <strong>⏰ Cayma Süresi:</strong> Ürünün size veya belirlediğiniz kişiye teslim edildiği tarihten itibaren 14 gün
+        </p>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4">Cayma Hakkının Kullanımı</h3>
+    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+        Cayma hakkınızı kullanmak için aşağıdaki formu doldurarak bize iletebilir veya cayma iradenizi açıkça içeren bir beyan ile bildirimde bulunabilirsiniz.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-700 text-center">
+            <i class="fa-solid fa-envelope text-blue-600 text-3xl mb-2"></i>
+            <h4 class="font-bold text-gray-900 dark:text-white mb-2">E-posta</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">iade@ixtif.com</p>
+        </div>
+        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-700 text-center">
+            <i class="fa-solid fa-fax text-green-600 text-3xl mb-2"></i>
+            <h4 class="font-bold text-gray-900 dark:text-white mb-2">Faks</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">[Faks bilgisi mevcut değil]</p>
+        </div>
+        <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-700 text-center">
+            <i class="fa-solid fa-mailbox text-purple-600 text-3xl mb-2"></i>
+            <h4 class="font-bold text-gray-900 dark:text-white mb-2">Posta</h4>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Karlıktepe Mahallesi, Çamlık Sokak, Manzara Adalar Sitesi, B Blok No: 1/B, İç Kapı No: 89, Kartal / İSTANBUL</p>
+        </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4">CAYMA HAKKI BİLDİRİM FORMU</h3>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border-2 border-blue-200 dark:border-blue-700 shadow-sm">
+        <p class="font-semibold text-gray-900 dark:text-white mb-2">Kime:</p>
+        <p class="text-gray-700 dark:text-gray-300 mb-4">İXTİF İç ve Dış Ticaret Anonim Şirketi<br>Karlıktepe Mahallesi, Çamlık Sokak, Manzara Adalar Sitesi, B Blok No: 1/B, İç Kapı No: 89, Kartal / İSTANBUL<br>E-posta: iade@ixtif.com</p>
+
+        <p class="text-gray-700 dark:text-gray-300 mb-6 italic">
+            İşbu form ile aşağıda detayları verilen mal/hizmet alımına ilişkin sözleşmeden cayma hakkımı kullandığımı bildiririm.
+        </p>
+
+        @livewire('page.refund-request-form')
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4">Cayma Hakkı Sonrası Yapılacaklar</h3>
+    <ol class="list-decimal list-inside space-y-3 ml-4 text-gray-700 dark:text-gray-300">
+        <li>Bu formu doldurarak yukarıdaki iletişim bilgilerinden birine gönderin</li>
+        <li>Ürünü orijinal ambalajında, kullanılmamış ve eksiksiz şekilde hazırlayın</li>
+        <li>Fatura ve varsa hediye/aksesuar ürünlerini de ekleyin</li>
+        <li>Ürünü cayma bildirimi tarihinden itibaren 10 gün içinde kargoya verin</li>
+        <li>Kargo takip numarasını bize e-posta ile bildirin (iade@ixtif.com)</li>
+        <li>Ürün tarafımıza ulaştıktan sonra en geç 14 gün içinde ödemeniz iade edilir</li>
+    </ol>
+
+    <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-600 p-4 rounded-r-lg mt-6">
+        <p class="font-semibold text-gray-900 dark:text-white mb-2">⚠️ Cayma Hakkı Kullanılamayan Ürünler:</p>
+        <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1 ml-4 list-disc list-inside">
+            <li>Tüketicinin istekleri veya kişisel ihtiyaçları doğrultusunda hazırlanan mallar</li>
+            <li>Niteliği itibarıyla iade edilemeyecek mallar</li>
+            <li>Çabuk bozulabilen veya son kullanma tarihi geçebilecek mallar</li>
+            <li>Ambalajı açılmış olan mallardan; iadesi sağlık ve hijyen açısından uygun olmayanlar</li>
+            <li>Teslimden sonra başka ürünlerle karışan ve doğası gereği ayrıştırılamayan mallar</li>
+            <li>Elektronik ortamda anında ifa edilen hizmetler ve tüketiciye anında teslim edilen gayrimaddi mallar</li>
+            <li>Ses veya görüntü kayıtlarının, kitap, dijital içerik, yazılım ambalajının açılması halinde</li>
+        </ul>
+    </div>
+
+    <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 p-4 rounded-r-lg mt-4">
+        <p class="text-sm text-gray-800 dark:text-gray-200">
+            <strong>📞 Yardım:</strong> Cayma hakkı kullanımı hakkında sorularınız için iade@ixtif.com veya 0216 755 3 555 numarasından bize ulaşabilirsiniz.
+        </p>
+    </div>
+
+    <p class="text-xs text-gray-600 dark:text-gray-400 mt-8 italic">
+        Bu form, 27.11.2014 tarih ve 29188 sayılı Resmi Gazete'de yayımlanan Mesafeli Sözleşmeler Yönetmeliği Ek-3'te yer alan örnek cayma formu esas alınarak hazırlanmıştır.
+    </p>
+</div>

@@ -87,6 +87,26 @@
                     </div>
                 </div>
 
+                <!-- WhatsApp -->
+                <div @mouseenter="activeInfo = 'whatsapp'" @mouseleave="activeInfo = null"
+                     class="glass rounded-2xl p-6 border border-white/10 hover:border-green-400 transition-all duration-300 cursor-pointer group"
+                     :class="activeInfo === 'whatsapp' ? 'scale-105 border-green-400 shadow-2xl shadow-green-500/30' : ''">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-brands fa-whatsapp text-2xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1">WhatsApp</h3>
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"
+                               target="_blank"
+                               class="text-green-300 hover:text-green-200 text-lg font-semibold">
+                                0501 005 67 58
+                            </a>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-green-400 group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
                 <!-- Email -->
                 <div @mouseenter="activeInfo = 'email'" @mouseleave="activeInfo = null"
                      class="glass rounded-2xl p-6 border border-white/10 hover:border-purple-400 transition-all duration-300 cursor-pointer group"

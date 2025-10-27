@@ -109,6 +109,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // 🔧 Livewire Upload Rules - Runtime override based on authenticated user
+        // Must be in boot() to access auth() helper
+        $maxSize = (auth()->check() && auth()->user()->id === 1) ? (1024 * 1024) : 12288;
+        config(['livewire.temporary_file_upload.rules' => ['required', 'file', 'max:' . $maxSize]]);
+
         // Livewire pagination views are published and customized in resources/views/vendor/livewire/
 
         // Register Model Observers - Automatic Embedding Generation

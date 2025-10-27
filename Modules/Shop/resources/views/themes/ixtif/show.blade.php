@@ -331,9 +331,9 @@
                                 @if($contactPhone)
                                     <div class="flex gap-2">
                                         <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
-                                            class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
+                                            class="inline-flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/10 backdrop-blur-lg text-gray-900 dark:text-white border-2 border-gray-300 dark:border-white/30 px-4 lg:px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
                                             <i class="fa-solid fa-phone"></i>
-                                            <span>{{ $contactPhone }}</span>
+                                            <span class="hidden lg:inline">{{ $contactPhone }}</span>
                                         </a>
                                         @if($contactWhatsapp)
                                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
@@ -1113,9 +1113,9 @@
 
             </div>
 
-            {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky (MOBILE: STATIC!) --}}
-            <div class="lg:col-span-1 order-first lg:order-last static lg:relative">
-                <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200 static lg:relative" style="will-change: transform;">
+            {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky (MOBİLDE GİZLİ!) --}}
+            <div class="hidden lg:block lg:col-span-1 order-first lg:order-last relative">
+                <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform;">
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">

@@ -81,6 +81,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // 9. LIVEWIRE JSON SANITIZER - Livewire JSON responses için UTF-8 sanitization
         $middleware->appendToGroup('web', \App\Http\Middleware\LivewireJsonSanitizer::class);
 
+        // 10. DEBUG LIVEWIRE UPLOAD - Root user için upload debug
+        $middleware->appendToGroup('web', \App\Http\Middleware\DebugLivewireUpload::class);
+
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,

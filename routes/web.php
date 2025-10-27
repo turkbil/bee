@@ -10,6 +10,18 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
+// TEST ROUTE - Upload configuration debug
+Route::get('/test-upload-config', function() {
+    $config = app(\Livewire\Features\SupportFileUploads\FileUploadConfiguration::class);
+
+    return [
+        'class' => get_class($config),
+        'rules' => $config->rules(),
+        'user_id' => auth()->id(),
+        'is_root' => auth()->check() && auth()->user()->id === 1,
+    ];
+})->middleware('auth');
+
 // DESIGN LIBRARY STATIC FILES - MUST BE FIRST, BEFORE ADMIN & CATCHALL ROUTES
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
 Route::get('design/{file}', [App\Http\Controllers\DesignLibraryController::class, 'show'])->where('file', '.*')->name('designs.show');

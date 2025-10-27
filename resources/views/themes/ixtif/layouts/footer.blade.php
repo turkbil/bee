@@ -229,16 +229,31 @@
             @endforeach
         </div>
 
-        {{-- Linkler Grid (Kategorize) - Mobile: 2 kolon, Tablet: 3 kolon, Desktop: 4 kolon --}}
+        {{-- Linkler Grid (Kategorize) - Mobile: 2 kolon, Tablet: 3 kolon, Desktop: 5 kolon --}}
         @php
+            use Modules\Shop\app\Models\ShopCategory;
+
+            // Ana kategorileri çek (parent_id = null)
+            $mainCategories = ShopCategory::whereNull('parent_id')
+                ->where('is_active', 1)
+                ->orderBy('sort_order')
+                ->get()
+                ->map(function($cat) {
+                    return [
+                        'name' => $cat->getTranslated('title', app()->getLocale()),
+                        'url' => $cat->getUrl()
+                    ];
+                })
+                ->toArray();
+
             $footerSections = [
                 'Kurumsal' => [
                     ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
                     ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
                     ['name' => 'Kariyer', 'url' => href('Page', 'show', 'kariyer')],
                 ],
+                'Ürün Kategorileri' => $mainCategories,
                 'Alışveriş' => [
-                    ['name' => 'Kategoriler', 'url' => href('Shop', 'index')],
                     ['name' => 'Ödeme Yöntemleri', 'url' => href('Page', 'show', 'odeme-yontemleri')],
                     ['name' => 'Teslimat & Kargo', 'url' => href('Page', 'show', 'teslimat-kargo')],
                     ['name' => 'Güvenli Alışveriş', 'url' => href('Page', 'show', 'guvenli-alisveris')],
@@ -258,7 +273,7 @@
             ];
         @endphp
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12 text-sm">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12 text-sm">
             @foreach($footerSections as $title => $links)
                 <div class="text-center">
                     <h4 class="font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h4>

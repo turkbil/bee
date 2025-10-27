@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Search\App\Http\Livewire\Admin\SearchAnalyticsComponent;
 use Modules\Search\App\Http\Livewire\Admin\SearchQueriesManagementComponent;
+use Modules\Search\App\Http\Livewire\Admin\RecentSearchesComponent;
+use Modules\Search\App\Http\Livewire\Admin\ClickAnalyticsComponent;
 
 // Search Module Admin Routes
 Route::middleware(['admin', 'tenant'])
@@ -19,5 +21,13 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/analytics', SearchAnalyticsComponent::class)
                     ->middleware('module.permission:search,view')
                     ->name('analytics');
+
+                Route::get('/recent', RecentSearchesComponent::class)
+                    ->middleware('module.permission:search,view')
+                    ->name('recent');
+
+                Route::get('/clicks', ClickAnalyticsComponent::class)
+                    ->middleware('module.permission:search,view')
+                    ->name('clicks');
             });
     });

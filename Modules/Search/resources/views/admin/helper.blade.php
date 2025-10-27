@@ -24,6 +24,18 @@
                 @endhasmoduleaccess
 
                 @hasmoduleaccess('search', 'view')
+                    <a href="{{ route('admin.search.recent') }}" class="dropdown-module-item btn btn-ghost-primary">
+                        <i class="fa-solid fa-clock me-2"></i>Son Aramalar
+                    </a>
+                @endhasmoduleaccess
+
+                @hasmoduleaccess('search', 'view')
+                    <a href="{{ route('admin.search.clicks') }}" class="dropdown-module-item btn btn-ghost-primary">
+                        <i class="fa-solid fa-hand-pointer me-2"></i>Tıklama İstatistikleri
+                    </a>
+                @endhasmoduleaccess
+
+                @hasmoduleaccess('search', 'view')
                     <a href="{{ route('admin.search.analytics') }}" class="dropdown-module-item btn btn-ghost-primary">
                         <i class="fa-solid fa-chart-bar me-2"></i>Analytics
                     </a>

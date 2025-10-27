@@ -98,12 +98,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\AI\HybridSearchService::class);
         $this->app->singleton(\App\Services\AI\ProductSearchService::class);
 
-        // 📤 Livewire FileUploadConfiguration Override - Root user unlimited upload
-        $this->app->singleton(
-            \Livewire\Features\SupportFileUploads\FileUploadConfiguration::class,
-            \App\Livewire\CustomFileUploadConfiguration::class
-        );
-
         $this->loadHelperFiles();
     }
 

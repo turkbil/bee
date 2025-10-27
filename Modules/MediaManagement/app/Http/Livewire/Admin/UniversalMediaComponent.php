@@ -208,8 +208,11 @@ class UniversalMediaComponent extends Component
             return;
         }
 
+        // Root user (ID: 1) için sınırsız upload
+        $maxSize = (auth()->check() && auth()->user()->id === 1) ? PHP_INT_MAX : 20480;
+
         $this->validate([
-            'featuredImageFile' => 'file|max:20480', // 20MB - MIME validation Spatie'de yapılıyor
+            'featuredImageFile' => 'file|max:' . $maxSize, // Root: unlimited, Others: 20MB
         ]);
 
         // HER ZAMAN temp storage kullan (SSL handshake sorununu bypass et)
@@ -273,8 +276,11 @@ class UniversalMediaComponent extends Component
             return;
         }
 
+        // Root user (ID: 1) için sınırsız upload
+        $maxSize = (auth()->check() && auth()->user()->id === 1) ? PHP_INT_MAX : 20480;
+
         $this->validate([
-            'seoOgImageFile' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB, max 4000x4000px
+            'seoOgImageFile' => 'image|max:' . $maxSize . '|dimensions:max_width=4000,max_height=4000', // Root: unlimited, Others: 20MB
         ]);
 
         if (!$this->modelId) {
@@ -317,8 +323,11 @@ class UniversalMediaComponent extends Component
 
     public function updatedGalleryFiles()
     {
+        // Root user (ID: 1) için sınırsız upload
+        $maxSize = (auth()->check() && auth()->user()->id === 1) ? PHP_INT_MAX : 20480;
+
         $this->validate([
-            'galleryFiles.*' => 'image|max:20480|dimensions:max_width=4000,max_height=4000', // 20MB per file, max 4000x4000px
+            'galleryFiles.*' => 'image|max:' . $maxSize . '|dimensions:max_width=4000,max_height=4000', // Root: unlimited, Others: 20MB
         ]);
 
         // HER ZAMAN temp storage kullan (SSL handshake sorununu bypass et)
@@ -1267,9 +1276,12 @@ class UniversalMediaComponent extends Component
                 return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
             }
 
+            // Root user (ID: 1) için sınırsız upload
+            $maxSize = (auth()->check() && auth()->user()->id === 1) ? PHP_INT_MAX : 20480;
+
             // Validate
             $request->validate([
-                'file' => 'required|file|max:20480', // 20MB
+                'file' => 'required|file|max:' . $maxSize, // Root: unlimited, Others: 20MB
             ]);
 
             // Save to temp storage

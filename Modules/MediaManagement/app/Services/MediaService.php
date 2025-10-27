@@ -32,9 +32,15 @@ class MediaService
 
     /**
      * Get max file size for a media type (in KB)
+     * Root user has unlimited upload size
      */
     public function getMaxFileSize(string $type): int
     {
+        // Root user (ID: 1) has unlimited upload
+        if (auth()->check() && auth()->user()->id === 1) {
+            return PHP_INT_MAX; // Unlimited
+        }
+
         return config("mediamanagement.media_types.{$type}.max_size", 10240);
     }
 
@@ -299,6 +305,7 @@ class MediaService
 
     /**
      * Validate file against media type rules
+     * Root user (ID: 1) bypasses file size limits
      */
     public function validateFile($file, string $type): array
     {
@@ -310,10 +317,12 @@ class MediaService
             $errors[] = "Invalid file type. Allowed: " . implode(', ', $this->getAllowedExtensions($type));
         }
 
-        // Check file size
-        $maxSize = $this->getMaxFileSize($type) * 1024; // Convert to bytes
-        if ($file->getSize() > $maxSize) {
-            $errors[] = "File too large. Max size: " . ($this->getMaxFileSize($type) / 1024) . "MB";
+        // Check file size (skip for root user)
+        if (!auth()->check() || auth()->user()->id !== 1) {
+            $maxSize = $this->getMaxFileSize($type) * 1024; // Convert to bytes
+            if ($file->getSize() > $maxSize) {
+                $errors[] = "File too large. Max size: " . ($this->getMaxFileSize($type) / 1024) . "MB";
+            }
         }
 
         return $errors;

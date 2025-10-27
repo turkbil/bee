@@ -47,7 +47,7 @@
             this.startAutoAcceptTimer();
         },
         startAutoAcceptTimer() {
-            this.timeRemaining = 30;
+            this.timeRemaining = 12;
             if (this.autoAcceptTimer) clearInterval(this.autoAcceptTimer);
 
             this.autoAcceptTimer = setInterval(() => {
@@ -174,32 +174,26 @@
                      x-transition:enter-end="opacity-100 translate-y-0"
                      class="fixed bottom-6 left-6 max-w-sm bg-white rounded-2xl shadow-2xl p-6 border border-gray-200 z-50">
 
-                    <div class="flex items-start gap-4">
+                    <div class="flex items-center gap-4">
                         <div class="text-3xl">🍪</div>
                         <div class="flex-1">
                             <h3 class="font-bold text-gray-900 text-lg mb-2">Çerezler</h3>
                             <p class="text-sm text-gray-600 mb-3">Siteyi daha iyi hale getirmek için çerezler kullanıyoruz.</p>
-
-                            <!-- Timer Badge -->
-                            <div class="mb-3 inline-flex items-center gap-2 text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                        </div>
+                        <!-- Timer + Buttons - Tek Satır -->
+                        <div class="flex items-center gap-2">
+                            <button @click="showModal = true; stopAutoAcceptTimer()"
+                                    class="text-xs px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors whitespace-nowrap">
+                                Ayarlar
+                            </button>
+                            <div class="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-2 py-2 rounded-lg whitespace-nowrap">
                                 <i class="fa-solid fa-clock"></i>
-                                <span x-text="timeRemaining + 's sonra otomatik kabul'"></span>
+                                <span x-text="timeRemaining + 's'"></span>
                             </div>
-
-                            <div class="flex flex-wrap gap-2">
-                                <button @click="showModal = true; stopAutoAcceptTimer()"
-                                        class="text-sm px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                                    Ayarlar
-                                </button>
-                                <button @click="rejectAll()"
-                                        class="text-sm px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                                    Reddet
-                                </button>
-                                <button @click="acceptAll()"
-                                        class="text-sm px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
-                                    Kabul Et
-                                </button>
-                            </div>
+                            <button @click="acceptAll()"
+                                    class="text-xs px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium whitespace-nowrap">
+                                Kabul Et
+                            </button>
                         </div>
                     </div>
                 </div>

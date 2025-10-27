@@ -1,0 +1,485 @@
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+  LANDING PAGE: ELEKTRİKLİ TRANSPALET FIRSATLARI
+  Framework: Tailwind CSS + Alpine.js
+  Mode: Full-Screen (No Header/Footer - Page modülü ile kullan)
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         HERO SECTION - Split Layout (Content Left, Form Right)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12 lg:py-20">
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+
+            <!-- ═══════════ LEFT COLUMN: Content ═══════════ -->
+            <div class="space-y-6 lg:space-y-8">
+
+                <!-- Main Heading -->
+                <div>
+                    <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+                        Elektrikli Transpalet <span class="text-blue-600 dark:text-blue-400">Fırsatları!</span>
+                    </h1>
+                </div>
+
+                <!-- Campaign Badge -->
+                <div class="bg-gradient-to-r from-orange-500 via-red-500 to-red-600 text-white px-6 py-5 rounded-xl shadow-2xl border-2 border-white/20">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">🔥</span>
+                        <span class="text-sm font-semibold uppercase tracking-wide bg-white/20 px-3 py-1 rounded-full">Kampanya!</span>
+                    </div>
+                    <p class="text-xl lg:text-2xl font-bold leading-relaxed">
+                        Lityum İyon Akülü F4 Elektrikli Transpaletler sadece
+                        <span class="block text-4xl lg:text-5xl font-black mt-2 text-yellow-300 drop-shadow-lg">$1,350</span>
+                    </p>
+                </div>
+
+                <!-- Description -->
+                <div class="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <p class="text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+                        Lityum akülü, yüksek kaliteli transpaletlerle iş yükünüzü hafifletin.<br>
+                        <strong>LİTEF</strong>'in güçlü ve kolay kullanımlı taşıma çözümlerini keşfedin.
+                    </p>
+                </div>
+
+                <!-- Contact Buttons -->
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <!-- Phone Button -->
+                    <a href="tel:+902162060200"
+                       onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Landing Telefon', 'value': 1});"
+                       class="group flex items-center justify-center gap-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-4 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-green-500/50 font-bold text-lg">
+                        <i class="fas fa-phone-volume text-xl group-hover:rotate-12 transition-transform"></i>
+                        <span>0216 206 02 00</span>
+                    </a>
+
+                    <!-- WhatsApp Button -->
+                    <a href="https://wa.me/902162060200?text=Merhaba,%20elektrikli%20transpalet%20hakkında%20bilgi%20almak%20istiyorum"
+                       onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Landing WhatsApp', 'value': 1});"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="group flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-4 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/50 font-bold text-lg">
+                        <i class="fab fa-whatsapp text-2xl group-hover:scale-125 transition-transform"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+
+                <!-- Main CTA Button -->
+                <div class="pt-2">
+                    <button
+                       onclick="document.getElementById('name-input').focus(); document.getElementById('form-section').scrollIntoView({behavior: 'smooth', block: 'center'});"
+                       class="group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white px-10 py-6 rounded-xl shadow-2xl text-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50 border-2 border-white/20">
+                        <span>BİZ SİZİ ARAYALIM</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                </div>
+
+                <!-- Trust Badges (Mobile Hidden) -->
+                <div class="hidden lg:flex items-center gap-6 pt-4 opacity-75">
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-shield-check text-green-600 text-2xl"></i>
+                        <span class="text-sm font-semibold">Garantili Ürün</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-truck-fast text-blue-600 text-2xl"></i>
+                        <span class="text-sm font-semibold">Hızlı Teslimat</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-headset text-purple-600 text-2xl"></i>
+                        <span class="text-sm font-semibold">7/24 Destek</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════ RIGHT COLUMN: Form ═══════════ -->
+            <div class="sticky top-24">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 lg:p-8 border-2 border-gray-100 dark:border-gray-700" id="form-section">
+
+                    <!-- Form Header -->
+                    <div class="text-center mb-6">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-4">
+                            <i class="fas fa-headset text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                            Uzmanlarımız Sizi Arasın
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">
+                            Formu doldurun, size en kısa sürede dönelim
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form
+                        action="/api/landing/elektrikli-transpalet/submit"
+                        method="POST"
+                        x-data="{
+                            isSubmitting: false,
+                            successMessage: false,
+                            errorMessage: ''
+                        }"
+                        @submit.prevent="
+                            isSubmitting = true;
+                            fetch($event.target.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                },
+                                body: JSON.stringify(Object.fromEntries(new FormData($event.target)))
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    successMessage = true;
+                                    $event.target.reset();
+                                    gtag('event', 'generate_lead', {'event_category': 'Form', 'event_label': 'Landing Form Submit'});
+                                } else {
+                                    errorMessage = data.message || 'Bir hata oluştu';
+                                }
+                            })
+                            .catch(error => {
+                                errorMessage = 'Bağlantı hatası oluştu';
+                            })
+                            .finally(() => {
+                                isSubmitting = false;
+                            });
+                        "
+                        class="space-y-4">
+
+                        @csrf
+                        <input type="hidden" name="landing_page" value="elektrikli-transpalet-fiyatlari">
+                        <input type="hidden" name="source" value="landing_page">
+
+                        <!-- Name Input (Floating Label) -->
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="name-input"
+                                name="name"
+                                required
+                                minlength="3"
+                                pattern="[A-Za-zÇçĞğİıÖöŞşÜü\s]{3,}"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="Adınız Soyadınız">
+                            <label
+                                for="name-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Adınız Soyadınız *
+                            </label>
+                        </div>
+
+                        <!-- Phone Input (Floating Label) -->
+                        <div class="relative">
+                            <input
+                                type="tel"
+                                id="phone-input"
+                                name="phone"
+                                required
+                                minlength="10"
+                                pattern="[0-9]{10,11}"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="Telefon Numaranız">
+                            <label
+                                for="phone-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Telefon Numaranız *
+                            </label>
+                        </div>
+
+                        <!-- Email Input (Optional) -->
+                        <div class="relative">
+                            <input
+                                type="email"
+                                id="email-input"
+                                name="email"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="E-posta Adresiniz">
+                            <label
+                                for="email-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                E-posta (Opsiyonel)
+                            </label>
+                        </div>
+
+                        <!-- Message Textarea -->
+                        <div class="relative">
+                            <textarea
+                                id="message-input"
+                                name="message"
+                                rows="4"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all resize-none"
+                                placeholder="Mesajınız"></textarea>
+                            <label
+                                for="message-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Mesajınız
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button
+                            type="submit"
+                            :disabled="isSubmitting"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
+                                   disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed
+                                   text-white px-6 py-4 rounded-lg shadow-lg text-lg font-bold
+                                   transition-all duration-300 hover:scale-105 disabled:scale-100
+                                   flex items-center justify-center gap-3">
+                            <span x-show="!isSubmitting">Gönder</span>
+                            <span x-show="isSubmitting" x-cloak>Gönderiliyor...</span>
+                            <i class="fas fa-paper-plane" x-show="!isSubmitting"></i>
+                            <svg x-show="isSubmitting" x-cloak class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Success Message -->
+                        <div
+                            x-show="successMessage"
+                            x-cloak
+                            x-transition
+                            class="bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg text-center font-semibold">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.
+                        </div>
+
+                        <!-- Error Message -->
+                        <div
+                            x-show="errorMessage"
+                            x-cloak
+                            x-transition
+                            class="bg-red-100 dark:bg-red-900/30 border-2 border-red-500 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg text-center font-semibold"
+                            x-text="errorMessage">
+                        </div>
+
+                        <!-- Privacy Notice -->
+                        <p class="text-xs text-gray-600 dark:text-gray-400 text-center mt-4">
+                            <i class="fas fa-lock mr-1"></i>
+                            Bilgileriniz güvenli bir şekilde saklanmaktadır.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FEATURES SECTION - Why Choose Us?
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900 py-16 lg:py-24">
+        <div class="container mx-auto px-4">
+
+            <!-- Section Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    Neden LİTEF Elektrikli Transpalet?
+                </h2>
+                <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+                    Sektörde güvenilir isim, yüksek kalite standartları ve müşteri memnuniyeti
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- Feature 1: Lityum Akü -->
+                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-battery-full text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Lityum İyon Akü</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                        Uzun ömürlü ve hızlı şarj olabilen lityum akü teknolojisi ile kesintisiz çalışma
+                    </p>
+                </div>
+
+                <!-- Feature 2: Kolay Kullanım -->
+                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-cogs text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Kolay Kullanım</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                        Ergonomik tasarım ve basit kontroller ile herkes tarafından rahatlıkla kullanılabilir
+                    </p>
+                </div>
+
+                <!-- Feature 3: Güvenlik -->
+                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-shield-alt text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Yüksek Güvenlik</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                        CE sertifikalı, uluslararası güvenlik standartlarına uygun ürünler
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TRUST SECTION - Badges & Social Proof
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12">
+        <div class="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">Garantili Ürünler</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">2 Yıl Garanti</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-truck text-blue-600 dark:text-blue-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">Hızlı Teslimat</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Türkiye Geneli</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-headset text-purple-600 dark:text-purple-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">7/24 Destek</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Teknik Destek</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-medal text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">20+ Yıl Tecrübe</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Sektör Lideri</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FOOTER CTA - Final Call to Action
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-4">
+                Fırsatı Kaçırmayın!
+            </h2>
+            <p class="text-xl lg:text-2xl mb-8 text-white/90">
+                Sınırlı sayıda stokta! Hemen teklif alın.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                    onclick="document.getElementById('name-input').focus(); window.scrollTo({top: 0, behavior: 'smooth'});"
+                    class="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-xl">
+                    FORMU DOLDUR
+                </button>
+                <a href="tel:+902162060200"
+                   class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-xl">
+                    <i class="fas fa-phone mr-2"></i> HEMEN ARA
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CUSTOM STYLES
+═══════════════════════════════════════════════════════════════════ -->
+<style>
+/* Alpine.js x-cloak directive */
+[x-cloak] { display: none !important; }
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Floating label animation enhancement */
+input:focus + label,
+textarea:focus + label {
+    font-weight: 600;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Form focus glow */
+input:focus,
+textarea:focus {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Dark mode form focus */
+.dark input:focus,
+.dark textarea:focus {
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TRACKING SCRIPTS (Google Analytics, Facebook Pixel, etc.)
+═══════════════════════════════════════════════════════════════════ -->
+<script>
+// Form view tracking
+gtag && gtag('event', 'page_view', {
+    'page_title': 'Elektrikli Transpalet Landing',
+    'page_location': window.location.href,
+    'page_path': window.location.pathname
+});
+
+// Scroll tracking (50%, 75%, 100%)
+let scrollTracked = {50: false, 75: false, 100: false};
+window.addEventListener('scroll', () => {
+    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+
+    if (scrollPercent >= 50 && !scrollTracked[50]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '50%'});
+        scrollTracked[50] = true;
+    }
+    if (scrollPercent >= 75 && !scrollTracked[75]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '75%'});
+        scrollTracked[75] = true;
+    }
+    if (scrollPercent >= 99 && !scrollTracked[100]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '100%'});
+        scrollTracked[100] = true;
+    }
+});
+</script>

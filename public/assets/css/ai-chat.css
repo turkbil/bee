@@ -249,55 +249,177 @@
    AI Product/Category Link Styles
    ======================================== */
 
-/* Product Links - Blue */
+/* Product Links - Blue with underline */
 .ai-product-link {
-    color: #2563eb !important;
-    text-decoration: none !important;
+    color: #2563eb !important; /* blue-600 */
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
     display: block;
     margin: 6px 0;
     transition: all 0.2s ease;
     line-height: 1.6;
+    font-weight: 600;
 }
 
 .ai-product-link:hover {
-    color: #1d4ed8 !important;
-    text-decoration: underline !important;
+    color: #1d4ed8 !important; /* blue-700 */
+    text-decoration-thickness: 2px !important;
+    transform: translateX(2px);
 }
 
-/* Category Links - Green */
+/* Category Links - Green with underline */
 .ai-category-link {
-    color: #059669 !important;
-    text-decoration: none !important;
+    color: #059669 !important; /* emerald-600 */
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
     display: block;
     margin: 6px 0;
     transition: all 0.2s ease;
     line-height: 1.6;
+    font-weight: 600;
 }
 
 .ai-category-link:hover {
-    color: #047857 !important;
+    color: #047857 !important; /* emerald-700 */
+    text-decoration-thickness: 2px !important;
+    transform: translateX(2px);
+}
+
+/* Standard Links - Orange (catch-all for markdown [text](url)) */
+.ai-standard-link {
+    color: #ea580c !important; /* orange-600 */
     text-decoration: underline !important;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.ai-standard-link:hover {
+    color: #c2410c !important; /* orange-700 */
+    text-decoration-thickness: 2px !important;
+}
+
+/* WhatsApp Links - Green with icon hint */
+.ai-whatsapp-link {
+    color: #16a34a !important; /* green-600 */
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.ai-whatsapp-link:hover {
+    color: #15803d !important; /* green-700 */
+    text-decoration-thickness: 2px !important;
+}
+
+.ai-whatsapp-link::before {
+    content: "💬 ";
+}
+
+/* Email Links - Blue */
+.ai-email-link {
+    color: #0284c7 !important; /* sky-600 */
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.ai-email-link:hover {
+    color: #0369a1 !important; /* sky-700 */
+    text-decoration-thickness: 2px !important;
+}
+
+.ai-email-link::before {
+    content: "📧 ";
+}
+
+/* Phone Links - Purple */
+.ai-phone-link {
+    color: #9333ea !important; /* purple-600 */
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.ai-phone-link:hover {
+    color: #7e22ce !important; /* purple-700 */
+    text-decoration-thickness: 2px !important;
+}
+
+.ai-phone-link::before {
+    content: "📞 ";
+}
+
+/* Telegram Links - Blue */
+.ai-telegram-link {
+    color: #0088cc !important;
+    text-decoration: underline !important;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.ai-telegram-link:hover {
+    color: #006699 !important;
+    text-decoration-thickness: 2px !important;
 }
 
 /* Bold text inside links */
 .ai-product-link strong,
-.ai-category-link strong {
+.ai-category-link strong,
+.ai-standard-link strong,
+.ai-whatsapp-link strong,
+.ai-email-link strong,
+.ai-phone-link strong {
     font-weight: 700;
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .ai-product-link {
-        color: #60a5fa !important;
+        color: #60a5fa !important; /* blue-400 */
     }
     .ai-product-link:hover {
-        color: #93c5fd !important;
+        color: #93c5fd !important; /* blue-300 */
     }
     .ai-category-link {
-        color: #34d399 !important;
+        color: #34d399 !important; /* emerald-400 */
     }
     .ai-category-link:hover {
-        color: #6ee7b7 !important;
+        color: #6ee7b7 !important; /* emerald-300 */
+    }
+    .ai-standard-link {
+        color: #fb923c !important; /* orange-400 */
+    }
+    .ai-standard-link:hover {
+        color: #fdba74 !important; /* orange-300 */
+    }
+    .ai-whatsapp-link {
+        color: #4ade80 !important; /* green-400 */
+    }
+    .ai-whatsapp-link:hover {
+        color: #86efac !important; /* green-300 */
+    }
+    .ai-email-link {
+        color: #38bdf8 !important; /* sky-400 */
+    }
+    .ai-email-link:hover {
+        color: #7dd3fc !important; /* sky-300 */
+    }
+    .ai-phone-link {
+        color: #c084fc !important; /* purple-400 */
+    }
+    .ai-phone-link:hover {
+        color: #e9d5ff !important; /* purple-200 */
+    }
+    .ai-telegram-link {
+        color: #38bdf8 !important;
+    }
+    .ai-telegram-link:hover {
+        color: #7dd3fc !important;
     }
 }
 

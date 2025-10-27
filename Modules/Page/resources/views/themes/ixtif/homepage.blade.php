@@ -232,7 +232,7 @@
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             {{-- Sol: Görsel (Ken Burns + Parallax Efekt) --}}
-            <div class="relative rounded-3xl h-[600px] overflow-hidden" id="aboutPhotoContainer">
+            <div class="relative rounded-3xl h-[350px] md:h-[450px] lg:h-[600px] overflow-hidden" id="aboutPhotoContainer">
                 <img src="https://ixtif.com/storage/tenant2/78/super-hero.jpg"
                      alt="İxtif - Depoda, Üretimde, Dağıtımda"
                      class="w-full h-full object-cover about-hero-photo"
@@ -242,11 +242,11 @@
 
             {{-- Sağ: İçerik --}}
             <div>
-                <h2 class="text-5xl font-black text-gray-900 dark:text-white mb-6">Depoda, Üretimde, Dağıtımda</h2>
-                <p class="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                    Depoda, üretimde, dağıtımda işletmelerin yükünü hafifletmek için çalışan <span class="whitespace-nowrap">İXTİF İÇ VE DIŞ TİCARET ANONİM ŞİRKETİ,</span> satışın yanında kiralama, ikinci el, teknik servis ve bakım anlaşmalarıyla tam çözüm sunar.
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-6">Depoda, Üretimde, Dağıtımda</h2>
+                <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                    Depoda, üretimde, dağıtımda işletmelerin yükünü hafifletmek için çalışan <span class="md:whitespace-nowrap">İXTİF İÇ VE DIŞ TİCARET ANONİM ŞİRKETİ,</span> satışın yanında kiralama, ikinci el, teknik servis ve bakım anlaşmalarıyla tam çözüm sunar.
                 </p>
-                <p class="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
                     Garanti kapsamlı ürünler, hızlı yedek parça temini ve 7/24 saha desteğiyle operasyonlarınızı güvenle sürdürmenizi sağlar.
                 </p>
 
@@ -399,7 +399,7 @@
         <div class="flex flex-wrap lg:flex-nowrap">
             <!-- 1. Telefon -->
             <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
-                <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
+                <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
                 <a href="tel:02167553555" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                         <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">
@@ -414,7 +414,7 @@
 
             <!-- 2. WhatsApp -->
             <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
-                <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
+                <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
                 <a href="https://wa.me/905010056758" target="_blank" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                         <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">
@@ -429,7 +429,7 @@
 
             <!-- 3. E-posta -->
             <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
-                <div class="absolute right-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
+                <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
                 <a href="mailto:info@ixtif.com" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                         <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">

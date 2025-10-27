@@ -6,10 +6,10 @@
 
 <section class="w-full py-12">
     <div class="container mx-auto px-4 sm:px-4 md:px-2">
-        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-12 px-6 rounded-3xl shadow-2xl">
+        <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-8 md:py-12 px-4 md:px-6 rounded-3xl shadow-2xl">
             <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>
-                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8">Binlerce ürün için hemen arayın!</p>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>
+                <p class="text-base md:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Binlerce ürün için hemen arayın!</p>
 
                 {{-- Livewire Search Bar with Custom Footer Styling --}}
                 <div class="mb-6">
@@ -234,12 +234,10 @@
             $footerLinks = [
                 ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
                 ['name' => 'Kategoriler', 'url' => href('Shop', 'index')],
-                ['name' => 'Kampanyalar', 'url' => '#'],
-                ['name' => 'Blog', 'url' => '#'],
                 ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
-                ['name' => 'Kariyer', 'url' => '#'],
-                ['name' => 'SSS', 'url' => '#'],
-                ['name' => 'İade & Değişim', 'url' => '#']
+                ['name' => 'Kariyer', 'url' => href('Page', 'show', 'kariyer')],
+                ['name' => 'SSS', 'url' => href('Page', 'show', 'sss')],
+                ['name' => 'İptal & İade', 'url' => href('Page', 'show', 'iptal-iade')],
             ];
         @endphp
 
@@ -311,11 +309,11 @@
                 {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($companyName ?? $siteTitle, app()->getLocale()) }}
             </div>
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
-                <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Gizlilik Politikası</a>
+                <a href="{{ href('Page', 'show', 'gizlilik-politikasi') }}" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Gizlilik Politikası</a>
                 <span class="text-gray-400 dark:text-gray-600">|</span>
-                <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Kullanım Koşulları</a>
+                <a href="{{ href('Page', 'show', 'kullanim-kosullari') }}" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Kullanım Koşulları</a>
                 <span class="text-gray-400 dark:text-gray-600">|</span>
-                <a href="#" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">KVKK</a>
+                <a href="{{ href('Page', 'show', 'kvkk-aydinlatma') }}" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">KVKK</a>
             </div>
         </div>
     </div>

@@ -59,11 +59,20 @@ class SearchBarComponent extends Component
      */
     public function trackClick(int $resultId, string $resultType, int $position)
     {
+        // Convert type string to model class name
+        $typeMap = [
+            'products' => \Modules\Shop\App\Models\ShopProduct::class,
+            'categories' => \Modules\Shop\App\Models\ShopCategory::class,
+            'brands' => \Modules\Shop\App\Models\ShopBrand::class,
+        ];
+
+        $modelType = $typeMap[$resultType] ?? $resultType;
+
         $tracker = app(SearchClickTracker::class);
         $tracker->trackClick(
             query: $this->query,
             resultId: $resultId,
-            resultType: $resultType,
+            resultType: $modelType,
             position: $position,
             openedInNewTab: false
         );

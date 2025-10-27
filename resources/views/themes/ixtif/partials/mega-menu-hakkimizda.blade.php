@@ -1,15 +1,5 @@
-{{-- Hakkımızda Hibrit Mega Menu --}}
-<div class="absolute left-0 right-0 top-full w-full bg-white dark:bg-slate-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-white/10 shadow-2xl transition-all duration-300 transform z-40"
-     x-show="activeMegaMenu === 'hakkimizda'"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 -translate-y-4"
-     x-transition:enter-end="opacity-100 translate-y-0"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 translate-y-0"
-     x-transition:leave-end="opacity-0 -translate-y-4"
-     @click.away="activeMegaMenu = null"
-     x-cloak>
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+{{-- Hakkımızda Hibrit Mega Menu Content --}}
+<div class="bg-white dark:bg-slate-900/95 backdrop-blur-xl border-t border-gray-200 dark:border-white/10 shadow-2xl py-8 rounded-b-2xl">
 
         {{-- 3 Kolon Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -276,6 +266,4 @@
                 </div>
             </div>
         </div>
-
-    </div>
 </div>

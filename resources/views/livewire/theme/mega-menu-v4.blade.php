@@ -12,7 +12,7 @@
                     $categorySlug = is_array($category->slug) ? $category->slug['tr'] : $category->slug;
                 @endphp
 
-                <a href="/shop/kategori/{{ $categorySlug }}"
+                <a href="{{ href('Shop', 'category', $categorySlug) }}"
                    class="flex items-center gap-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl p-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200">
 
                     {{-- Icon --}}
@@ -44,22 +44,22 @@
                     Hizmetler
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <a href="{{ href('Shop', 'index') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <i class="fa-solid fa-badge-check text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Sıfır Ürün</p>
-                    </div>
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    </a>
+                    <a href="{{ href('Shop', 'index') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <i class="fa-solid fa-recycle text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">İkinci El</p>
-                    </div>
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    </a>
+                    <a href="{{ href('Page', 'show', 'iletisim') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <i class="fa-solid fa-calendar-days text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Kiralama</p>
-                    </div>
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    </a>
+                    <a href="{{ href('Page', 'show', 'iletisim') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-lg px-3 py-2 text-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <i class="fa-solid fa-screwdriver-wrench text-gray-700 dark:text-white text-sm mb-1"></i>
                         <p class="text-xs font-bold text-gray-900 dark:text-white">Teknik Servis</p>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                                 $categorySlug = is_array($category->slug) ? $category->slug['tr'] : $category->slug;
                             @endphp
 
-                            <a href="/shop/kategori/{{ $categorySlug }}"
+                            <a href="{{ href('Shop', 'category', $categorySlug) }}"
                                class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-6 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 overflow-hidden">
 
                                 <div class="relative z-10 flex items-center gap-4">
@@ -118,44 +118,44 @@
                 {{-- Hizmetler - Responsive Grid --}}
                 <div class="grid grid-cols-2 xl:grid-cols-4 gap-3">
                     {{-- Sıfır Ürün --}}
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <a href="{{ href('Shop', 'index') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-badge-check text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Sıfır Ürün</p>
                         </div>
-                    </div>
+                    </a>
 
                     {{-- İkinci El --}}
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <a href="{{ href('Shop', 'index') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-recycle text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">İkinci El</p>
                         </div>
-                    </div>
+                    </a>
 
                     {{-- Kiralama --}}
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <a href="{{ href('Page', 'show', 'iletisim') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-calendar-days text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Kiralama</p>
                         </div>
-                    </div>
+                    </a>
 
                     {{-- Teknik Servis --}}
-                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer">
+                    <a href="{{ href('Page', 'show', 'iletisim') }}" class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 block">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
                                 <i class="fa-solid fa-screwdriver-wrench text-gray-700 dark:text-white text-lg"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900 dark:text-white">Teknik Servis</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
@@ -185,7 +185,7 @@
                                 $subTitle = is_array($subcategory->title) ? $subcategory->title['tr'] : $subcategory->title;
                                 $subSlug = is_array($subcategory->slug) ? $subcategory->slug['tr'] : $subcategory->slug;
                             @endphp
-                            <a href="/shop/kategori/{{ $subSlug }}"
+                            <a href="{{ href('Shop', 'category', $subSlug) }}"
                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1.5 px-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
                                 <i class="fa-solid fa-chevron-right text-xs text-gray-400 dark:text-gray-500"></i>
                                 <span class="text-sm font-medium">{{ $subTitle }}</span>

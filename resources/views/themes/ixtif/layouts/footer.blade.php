@@ -229,33 +229,56 @@
             @endforeach
         </div>
 
-        {{-- Linkler Yatay --}}
+        {{-- Linkler Grid (Kategorize) - Mobile: 2 kolon, Tablet: 3 kolon, Desktop: 4 kolon --}}
         @php
-            $footerLinks = [
-                ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
-                ['name' => 'Kategoriler', 'url' => href('Shop', 'index')],
-                ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
-                ['name' => 'Kariyer', 'url' => href('Page', 'show', 'kariyer')],
-                ['name' => 'SSS', 'url' => href('Page', 'show', 'sss')],
-                ['name' => 'İptal & İade', 'url' => href('Page', 'show', 'iptal-iade')],
+            $footerSections = [
+                'Kurumsal' => [
+                    ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
+                    ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
+                    ['name' => 'Kariyer', 'url' => href('Page', 'show', 'kariyer')],
+                ],
+                'Alışveriş' => [
+                    ['name' => 'Kategoriler', 'url' => href('Shop', 'index')],
+                    ['name' => 'Ödeme Yöntemleri', 'url' => href('Page', 'show', 'odeme-yontemleri')],
+                    ['name' => 'Teslimat & Kargo', 'url' => href('Page', 'show', 'teslimat-kargo')],
+                    ['name' => 'Güvenli Alışveriş', 'url' => href('Page', 'show', 'guvenli-alisveris')],
+                ],
+                'Müşteri Hizmetleri' => [
+                    ['name' => 'SSS', 'url' => href('Page', 'show', 'sss')],
+                    ['name' => 'İptal & İade', 'url' => href('Page', 'show', 'iptal-iade')],
+                    ['name' => 'Cayma Hakkı', 'url' => href('Page', 'show', 'cayma-hakki')],
+                    ['name' => 'Mesafeli Satış Sözleşmesi', 'url' => href('Page', 'show', 'mesafeli-satis')],
+                ],
+                'Yasal' => [
+                    ['name' => 'Gizlilik Politikası', 'url' => href('Page', 'show', 'gizlilik-politikasi')],
+                    ['name' => 'Kullanım Koşulları', 'url' => href('Page', 'show', 'kullanim-kosullari')],
+                    ['name' => 'KVKK Aydınlatma', 'url' => href('Page', 'show', 'kvkk-aydinlatma')],
+                    ['name' => 'Çerez Politikası', 'url' => href('Page', 'show', 'cerez-politikasi')],
+                ],
             ];
         @endphp
 
-        <div class="flex flex-wrap justify-center gap-6 mb-12 text-sm">
-            @foreach($footerLinks as $index => $link)
-                @if($index > 0)
-                    <span class="text-gray-400 dark:text-gray-600">•</span>
-                @endif
-                <a href="{{ $link['url'] }}"
-                   class="text-gray-600 dark:text-gray-400
-                          hover:text-gray-900 dark:hover:text-white
-                          transition-colors">
-                    {{ $link['name'] }}
-                </a>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12 text-sm">
+            @foreach($footerSections as $title => $links)
+                <div class="text-center">
+                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h4>
+                    <ul class="space-y-2">
+                        @foreach($links as $link)
+                            <li>
+                                <a href="{{ $link['url'] }}"
+                                   class="text-gray-600 dark:text-gray-400
+                                          hover:text-gray-900 dark:hover:text-white
+                                          transition-colors">
+                                    {{ $link['name'] }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             @endforeach
         </div>
 
-        {{-- Sosyal Medya --}}
+        {{-- Sosyal Medya (SOL) + Ödeme Logoları (SAĞ) - 2 Kolon --}}
         @php
             $socialMedia = [
                 ['icon' => 'facebook-f', 'url' => setting('social_facebook', 'https://facebook.com/ixtif'), 'gradient' => 'from-blue-500 to-blue-600'],
@@ -266,16 +289,27 @@
             ];
         @endphp
 
-        <div class="flex justify-center gap-4 mb-12">
-            @foreach($socialMedia as $social)
-            <a href="{{ $social['url'] }}"
-               class="group w-14 h-14 bg-gradient-to-br {{ $social['gradient'] }}
-                      rounded-2xl flex items-center justify-center"
-               aria-label="{{ $social['icon'] }}">
-                <i class="fa-brands fa-{{ $social['icon'] }} text-xl text-white
-                          group-hover:scale-125 transition-transform duration-300"></i>
-            </a>
-            @endforeach
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12">
+            {{-- Sosyal Medya (SOL) --}}
+            <div class="flex justify-center md:justify-start gap-4">
+                @foreach($socialMedia as $social)
+                <a href="{{ $social['url'] }}"
+                   class="group w-14 h-14 bg-gradient-to-br {{ $social['gradient'] }}
+                          rounded-2xl flex items-center justify-center"
+                   aria-label="{{ $social['icon'] }}">
+                    <i class="fa-brands fa-{{ $social['icon'] }} text-xl text-white
+                              group-hover:scale-125 transition-transform duration-300"></i>
+                </a>
+                @endforeach
+            </div>
+
+            {{-- Ödeme Logoları (SAĞ) --}}
+            <div class="flex justify-center md:justify-end">
+                <img src="https://ixtif.com/storage/tenant2/81/cc.png"
+                     alt="Ödeme Yöntemleri - Mastercard, Visa"
+                     class="h-8 md:h-10 w-auto object-contain"
+                     loading="lazy">
+            </div>
         </div>
 
         {{-- İletişim Bilgileri --}}
@@ -305,16 +339,7 @@
         {{-- Copyright --}}
         <div class="text-center text-gray-500 dark:text-gray-500 text-sm
                     border-t border-gray-300 dark:border-white/10 pt-8">
-            <div class="mb-3">
-                {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($companyName ?? $siteTitle, app()->getLocale()) }}
-            </div>
-            <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
-                <a href="{{ href('Page', 'show', 'gizlilik-politikasi') }}" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Gizlilik Politikası</a>
-                <span class="text-gray-400 dark:text-gray-600">|</span>
-                <a href="{{ href('Page', 'show', 'kullanim-kosullari') }}" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Kullanım Koşulları</a>
-                <span class="text-gray-400 dark:text-gray-600">|</span>
-                <a href="{{ href('Page', 'show', 'kvkk-aydinlatma') }}" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">KVKK</a>
-            </div>
+            {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($companyName ?? $siteTitle, app()->getLocale()) }}
         </div>
     </div>
 

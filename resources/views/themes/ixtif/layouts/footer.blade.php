@@ -185,50 +185,6 @@
             </div>
         </div>
 
-        {{-- İstatistikler --}}
-        @php
-            use Modules\Shop\app\Models\ShopProduct;
-            use Modules\Shop\app\Models\ShopCategory;
-
-            $totalProducts = ShopProduct::count();
-            $totalCategories = ShopCategory::count();
-
-            $topCategories = ShopCategory::withCount('products')
-                ->orderBy('products_count', 'desc')
-                ->take(2)
-                ->get();
-
-            $stats = [
-                ['count' => $totalProducts * 10, 'label' => 'Toplam Ürün', 'gradient' => 'from-blue-400 to-cyan-400'],
-                ['count' => $totalCategories, 'label' => 'Kategori', 'gradient' => 'from-blue-400 to-cyan-400'],
-            ];
-
-            foreach($topCategories as $index => $category) {
-                $gradients = [
-                    'from-blue-400 to-cyan-400',
-                    'from-blue-400 to-cyan-400',
-                ];
-                $stats[] = [
-                    'count' => $category->products_count * 10,
-                    'label' => $category->getTranslated('title', app()->getLocale()) ?? 'Kategori',
-                    'gradient' => $gradients[$index] ?? 'from-blue-400 to-cyan-400'
-                ];
-            }
-        @endphp
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-            @foreach($stats as $stat)
-            <div class="text-center">
-                <div class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r {{ $stat['gradient'] }} mb-2">
-                    {{ $stat['count'] }}
-                </div>
-                <div class="text-gray-600 dark:text-gray-400">
-                    {{ $stat['label'] }}
-                </div>
-            </div>
-            @endforeach
-        </div>
-
         {{-- Linkler Grid (Kategorize) - Mobile: 2 kolon, Tablet: 3 kolon, Desktop: 5 kolon --}}
         @php
             // Ana kategorileri çek (parent_id = null)
@@ -285,9 +241,14 @@
                     ]
                 ],
             ];
+
+            // İletişim bilgileri
+            $contactPhone = setting('contact_phone_1', '0216 755 3 555');
+            $contactWhatsapp = setting('contact_whatsapp_1', '0501 005 67 58');
+            $contactEmail = setting('contact_email_1', 'info@ixtif.com');
         @endphp
 
-        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8 mb-12 text-sm">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 md:gap-8 mb-12 text-sm">
             @foreach($footerSections as $title => $section)
                 <div>
                     <h5 class="font-bold mb-4 text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
@@ -308,6 +269,38 @@
                     </ul>
                 </div>
             @endforeach
+
+            {{-- İletişim Kolonu --}}
+            <div>
+                <h5 class="font-bold mb-4 text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                    <i class="fa-solid fa-phone text-blue-600 dark:text-blue-400"></i>
+                    İletişim
+                </h5>
+                <ul class="space-y-3 text-sm">
+                    <li>
+                        <div class="text-gray-400 dark:text-gray-500 text-xs mb-1">Telefon</div>
+                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                           class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                            {{ $contactPhone }}
+                        </a>
+                    </li>
+                    <li>
+                        <div class="text-gray-400 dark:text-gray-500 text-xs mb-1">WhatsApp</div>
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}"
+                           target="_blank"
+                           class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                            {{ $contactWhatsapp }}
+                        </a>
+                    </li>
+                    <li>
+                        <div class="text-gray-400 dark:text-gray-500 text-xs mb-1">E-posta</div>
+                        <a href="mailto:{{ $contactEmail }}"
+                           class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                            {{ $contactEmail }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
         {{-- Sosyal Medya (SOL) + Ödeme Logoları (SAĞ) - 2 Kolon --}}

@@ -48,9 +48,12 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
     init() {
         // Auto-open after 10 seconds if user hasn't interacted
         // BUT only on desktop (NOT on mobile/tablet: sm/xs/md breakpoints)
+        // AND only if user hasn't manually closed the widget before
         this.autoOpenTimer = setTimeout(() => {
             const isMobile = window.innerWidth < 1024; // lg breakpoint (1024px)
-            if (this.chat?.floatingOpen === false && !this.chat?.hasConversation && !isMobile) {
+            const userHasClosed = localStorage.getItem('user_closed_ai_chat') === 'true';
+
+            if (this.chat?.floatingOpen === false && !this.chat?.hasConversation && !isMobile && !userHasClosed) {
                 console.log('🤖 Auto-opening AI chat (desktop only)...');
                 this.chat?.openFloating?.();
             }
@@ -88,7 +91,7 @@ class="fixed {{ $selectedPosition }} z-50">
          class="absolute bottom-0 right-0"
          x-cloak>
     <button
-        @click="chat?.toggleFloating?.(); clearTimeout(autoOpenTimer);"
+        @click="chat?.toggleFloating?.(); clearTimeout(autoOpenTimer); localStorage.removeItem('user_closed_ai_chat');"
         x-data="{
             // Desktop messages (longer)
             desktopMessages: [
@@ -272,7 +275,7 @@ class="fixed {{ $selectedPosition }} z-50">
             <div class="flex items-center gap-2">
                 {{-- Close button --}}
                 <button
-                    @click="chat?.closeFloating?.()"
+                    @click="chat?.closeFloating?.(); localStorage.setItem('user_closed_ai_chat', 'true');"
                     class="p-2 hover:bg-white/10 rounded-lg transition"
                     title="Kapat"
                 >

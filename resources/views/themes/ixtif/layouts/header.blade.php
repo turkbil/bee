@@ -216,7 +216,7 @@
                     </div>
                     <div class="flex items-center gap-3 sm:gap-4">
                         {{-- Sık Sorulan Sorular - xs/sm'de gizli, md+'da görünür --}}
-                        <a href="#" class="hidden md:inline-block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
+                        <a href="{{ href('Page', 'show', 'sss') }}" class="hidden md:inline-block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
                             <i class="fa-solid fa-circle-question mr-1"></i>
                             Sık Sorulan Sorular
                         </a>
@@ -453,6 +453,19 @@
                                 <span>Tüm Kategoriler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                    :class="{ 'rotate-180': activeMegaMenu === 'all-categories' }"></i>
+                            </button>
+
+                        </div>
+
+                        {{-- Hakkımızda (Hibrit Mega Menu) --}}
+                        <div class="relative mega-menu-item py-2"
+                             @mouseenter="activeMegaMenu = 'hakkimizda'"
+                             @mouseleave="activeMegaMenu = null">
+                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                                <i :class="activeMegaMenu === 'hakkimizda' ? 'fa-solid' : 'fa-light'" class="fa-building transition-all duration-300"></i>
+                                <span>Hakkımızda</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
+                                   :class="{ 'rotate-180': activeMegaMenu === 'hakkimizda' }"></i>
                             </button>
 
                         </div>
@@ -973,6 +986,9 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Hakkımızda Hibrit Mega Menu --}}
+                @include('themes.ixtif.partials.mega-menu-hakkimizda')
             </div>
         </nav>
 

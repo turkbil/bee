@@ -49,6 +49,15 @@
         @php
             $currentLocale = app()->getLocale();
             $title = $item->getTranslated('title', $currentLocale);
+
+            // Fallback: Eğer title slug veya "basliksiz-" ile başlıyorsa, boş bırak (başlık gösterme)
+            if (str_starts_with($title, 'basliksiz-') || str_contains($title, '-')) {
+                // Slug formatında ise başlık gösterme, sadece açıklama göster
+                if (strlen($title) < 50 && !str_contains($title, ' ')) {
+                    $title = null; // Başlık gösterilmeyecek
+                }
+            }
+
             $shortDescription = $item->getTranslated('short_description', $currentLocale);
             $longDescription = $item->getTranslated('body', $currentLocale);
 
@@ -1115,7 +1124,9 @@
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h1>
+                        @if ($title)
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h1>
+                        @endif
 
                         @if ($shortDescription)
                             <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 leading-relaxed">

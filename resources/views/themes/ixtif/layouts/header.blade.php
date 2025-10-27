@@ -846,7 +846,7 @@
                             {{-- Hybrid Autocomplete Dropdown --}}
                             <div x-show="isOpen"
                                  x-transition
-                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-40 border border-gray-200 dark:border-gray-700" style="z-index:40;">
+                                 class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-lg z-50 border border-gray-200 dark:border-gray-700" style="z-index:50;">
 
                                 <template x-if="error">
                                     <div class="px-5 py-6 text-sm text-red-600 dark:text-red-400 flex items-center gap-3">

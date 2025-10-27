@@ -150,6 +150,20 @@
     transform-origin: top center;
 }
 
+/* Rotate Wiggle Animation - Teknik Servis */
+@keyframes rotate-wiggle {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(45deg);
+    }
+}
+
+.animate-rotate-wiggle {
+    animation: rotate-wiggle 1.5s ease-in-out infinite;
+}
+
 /* Hover Versions - Only animate on hover */
 .group:hover .group-hover\:animate-slide-x {
     animation: slide-x 1.5s ease-in-out infinite;
@@ -162,4 +176,8 @@
 
 .group:hover .group-hover\:animate-bounce-y {
     animation: bounce-y 2s ease-in-out infinite;
+}
+
+.group:hover .group-hover\:animate-rotate-wiggle {
+    animation: rotate-wiggle 1.5s ease-in-out infinite;
 }

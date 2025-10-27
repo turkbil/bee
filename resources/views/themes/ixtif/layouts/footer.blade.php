@@ -5,7 +5,7 @@
 @endphp
 
 <section class="w-full py-12">
-    <div class="container mx-auto px-4 sm:px-4 md:px-0">
+    <div class="container mx-auto px-4 sm:px-4 md:px-2">
         <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-12 px-6 rounded-3xl shadow-2xl">
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-3xl md:text-4xl font-black mb-3 text-gray-900 dark:text-white">Aradığınızı Bulamadınız Mı?</h2>

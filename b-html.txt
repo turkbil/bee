@@ -1,233 +1,528 @@
+<div class="min-h-screen">
+    
+    
+    <section class="bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-md border-y border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto py-6">
+            <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
+                <!-- Left: Title & Breadcrumb -->
+                <div class="flex flex-col justify-between">
+                    <div class="flex items-center gap-6">
+                        <i class="fa-solid fa-file-lines text-6xl text-blue-600 dark:text-blue-400 drop-shadow-lg"></i>
+                        <div>
+                            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
+                                Hakkımızda
+                            </h1>
+                            <!-- Breadcrumb -->
+                            <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                <a href="/" class="no-underline hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
+                                    <i class="fa-solid fa-home text-xs"></i>
+                                    <span>Ana Sayfa</span>
+                                </a>
+                                <i class="fa-solid fa-chevron-right text-xs opacity-50"></i>
+                                <span class="font-semibold text-gray-900 dark:text-white">Hakkımızda</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-Topluluk Şablon Galerisi'nde diğer etiket türlerini keşfedin
-Öne çıkanlar
-	Google Analytics	
-	Google Ads	
-	Floodlight	
-	
-Google etiketi
-Google
-	
-Dönüşüm Bağlayıcı
-Google
-Seçilen Topluluk CMP Şablonları
-GTM'nin kullanıcı rızası yapılandırması ile etkili bir şekilde entegre olan, seçili CMP şablonlarını keşfedin
-Özel
-	
-Özel HTML
-Özel HTML Etiketi
-	
-Özel Resim
-Özel Resim Etiketi
-	
-Microsoft Clarity - Official
-microsoft
-Galeri
-Daha fazla
-	
-AB TASTY Generic Tag
-AB TASTY
-	
-Adometry
-Adometry
-	
-AdRoll Akıllı Piksel
-AdRoll
-	
-Audience Center 360
-Audience Center 360
-	
-AWIN Dönüşümü
-AWIN
-	
-AWIN Yolculuğu
-AWIN
-	
-Bizrate Insights Buyer Survey Solution
-Bizrate Insights
-	
-Bizrate Insights Site Abandonment Survey Solution
-Bizrate Insights
-	
-ClickTale Standard Tracking (OBSOLETE)
-ClickTale
-	
-comScore Unified Digital Measurement
-comScore
-	
-Crazy Egg
-Crazy Egg
-	
-Criteo OneTag
-Criteo
-Eski
-	
-DistroScale Etiketi
-DistroScale
-	
-Dstillery Evrensel Pikseli
-Dstillery
-	
-Euler Analizi
-Euler Analizi
-	
-FoxMetrics
-FoxMetrics
-	
-Cloud Perakende
-Google Cloud
-	
-Recommendations AI
-Google Cloud
-Eski
-	
-Google Anketler Web Sitesi Memnuniyeti
-Google Marketing Platform
-Eski
-	
-Google Trusted Stores
-Google Trusted Stores
-	
-Google Uçuş Arama Dönüşüm İzleme
-Google Uçuş Arama
-	
-Google Uçuş Arama Fiyat Doğruluğu
-Google Uçuş Arama
-	
-Google Envanter Toplayıcı
-Google Yerel Envanter Reklamları
-	
-Hotjar Tracking Code
-Hotjar
-	
-Infinity Call Tracking Tag
-Infinity Tracking
-	
-K50 tracking tag
-K50
-	
-LeadLab
-LeadLab by wiredminds
-	
-LinkedIn Insight
-LinkedIn
-	
-Lytics JS Tag
-Lytics, Inc.
-	
-Marin Software
-Marin Software
-	
-Mediaplex - IFRAME MCT Etiketi
-Mediaplex
-	
-Mediaplex - Standart IMG YG Etiketi
-Mediaplex
-	
-Microsoft Advertising Universal Event Tracking
-Microsoft Advertising
-	
-Mouseflow
-Mouseflow
-	
-AdAdvisor
-Neustar
-	
-DCR Static
-Nielsen
-	
-Nudge Content Analytics
-Nudge Content Analytics
-	
-Oktopost Tracking Code
-Oktopost
-	
-Optimise Conversion Tag
-Optimise Media
-	
-Message Mate
-OwnerListens
-	
-Perfect Audience Pikseli
-Perfect Audience
-	
-Personali Canvas
-Personali
-	
-Pinterest Tag
-Pinterest
-	
-Placed
-Placed Inc.
-	
-Pulse Insights Müşterinin Sesi Platformu
-Pulse Insights
-	
-Quantcast Advertise
-Quantcast
-	
-Quantcast Ölçümü
-Quantcast
-	
-Quora Pixel
-Quora
-	
-SaleCycle JavaScript Etiketi
-SaleCycle
-	
-SaleCycle Piksel Etiketi
-SaleCycle
-	
-Açılış Sayfası için SearchForce JavaScript İzleme
-SearchForce
-	
-Dönüşüm Sayfası için SearchForce JavaScript İzleme
-SearchForce
-	
-SearchForce Yönlendirme İzleme
-SearchForce
-	
-Shareaholic
-Shareaholic
-	
-Survicate Widget'ı
-Survicate
-	
-Tapad Conversion Pixel
-Tapad
-	
-Tradedoubler Potansiyel Müşteri Dönüşümü
-Tradedoubler
-	
-Tradedoubler Satış Dönüşümü
-Tradedoubler
-T
-Turn Dönüşüm İzleme
-Turn
-T
-Turn Veri Toplama
-Turn
-	
-Twitter Evrensel Web Sitesi Etiketi
-Twitter
-Eski
-	
-Upsellit Confirmation Tag
-Upsellit.com
-	
-Upsellit Global Footer Tag
-Upsellit.com
-	
-Ve Interactive JavaScript
-Ve Interactive
-	
-Ve Interactive Pixel
-Ve Interactive
-	
-VisualDNA Dönüşüm Etiketi
-VisualDNA
-	
-Xtremepush - Web Push & Onsite Engagement
-Xtremepush
-	
-Yieldify
+    <div class="container mx-auto py-12">
+        <article class="prose prose-xl max-w-none dark:prose-invert
+                      prose-headings:text-gray-900 dark:prose-headings:text-white
+                      prose-p:text-gray-700 dark:prose-p:text-gray-300
+                      prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:text-blue-700 dark:hover:prose-a:text-blue-300
+                      prose-strong:text-gray-900 dark:prose-strong:text-white
+                      prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50/50 dark:prose-blockquote:bg-blue-900/10
+                      prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:bg-blue-50 dark:prose-code:bg-blue-900/20
+                      prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
+                      prose-img:rounded-lg">
+            <!-- HAKKIMIZDA SAYFASI - İXTİF (V4 - GENERIC VERSION) -->
+<!-- Somut sayılar yok, genel tanıtım, profesyonel odaklı -->
+
+<!-- Hero Section -->
+<section class="pt-16 pb-12 px-4">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center" x-data="{ show: false }" x-init="setTimeout(() =&gt; show = true, 100)">
+            <div x-show="show" x-transition.duration.800ms="" class="inline-block mb-6">
+                <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold">
+                    <i class="fa-solid fa-star mr-2"></i>Türkiye'nin İstif Pazarı
+                </span>
+            </div>
+
+            <h1 x-show="show" x-transition.delay.200ms.duration.1000ms="" class="text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 dark:text-white mb-6 leading-[1.2]" style="font-weight: 900;">
+                <span class="gradient-animate block py-2">İXTİF İç ve Dış Ticaret A.Ş.</span>
+            </h1>
+
+            <p x-show="show" x-transition.delay.400ms.duration.1000ms="" class="text-xl md:text-2xl text-gray-700 dark:text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
+                Forklift, transpalet ve istif makineleri konusunda güvenilir çözüm ortağınız.
+                <br>Türkiye'nin depo ekipman platformu.
+            </p>
+
+            <div x-show="show" x-transition.delay.600ms.duration.1000ms="" class="flex items-center justify-center gap-4 flex-wrap">
+                <a href="/shop" class="no-underline bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl inline-block text-center">
+                    <i class="fa-light fa-shopping-cart mr-2"></i>
+                    Ürünleri İncele
+                </a>
+                <a href="/iletisim" class="no-underline bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl inline-block text-center">
+                    <i class="fa-light fa-phone mr-2"></i>
+                    İletişime Geç
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="py-20 px-4 bg-blue-600 text-white">
+    <div class="container mx-auto max-w-4xl text-center">
+        <h2 class="text-4xl md:text-5xl font-black mb-6 text-white" style="font-weight: 900;">
+            Misyonumuz
+        </h2>
+        <p class="text-xl md:text-2xl text-white leading-relaxed font-medium">
+            İşletmelere en uygun depo ekipmanlarını bulmaları için güvenilir bir platform sunmak.
+            Alıcı ile satıcıyı dijital ortamda buluşturarak, doğru ürünlere kolayca ulaşmalarını sağlamak.
+        </p>
+    </div>
+</section>
+
+<!-- Company Info -->
+<section class="py-20 px-4">
+    <div class="container mx-auto max-w-6xl">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="inline-block bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    <i class="fa-solid fa-building mr-2"></i>Kurumsal Kimlik
+                </div>
+
+                <h2 class="text-4xl font-black text-gray-900 dark:text-white">
+                    Profesyonel ve
+                    <span class="gradient-animate">Güvenilir Platform</span>
+                </h2>
+
+                <p class="text-lg text-gray-700 dark:text-gray-200 leading-relaxed font-medium">
+                    İXTİF İç ve Dış Ticaret Anonim Şirketi, Türkiye'nin depo ve lojistik sektörüne yönelik güvenilir bir çözüm platformudur.
+                    Forklift, transpalet, istif makinesi ve reach truck ekipmanlarında geniş ürün yelpazesi sunuyoruz.
+                </p>
+
+                <p class="text-lg text-gray-700 dark:text-gray-200 leading-relaxed font-medium">
+                    Elektrikli, dizel ve LPG forkliftlerden otonom depo robotlarına kadar modern ekipmanlar,
+                    satış, kiralama, servis ve yedek parça hizmetlerimizle desteklenmektedir.
+                </p>
+            </div>
+
+            <div class="relative">
+                <div class="relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-2xl">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-2xl text-center">
+                            <i class="fa-solid fa-forklift text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <div class="text-sm text-gray-900 dark:text-white font-bold">Geniş Ürün</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Yelpazesi</div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-2xl text-center">
+                            <i class="fa-solid fa-shield-check text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <div class="text-sm text-gray-900 dark:text-white font-bold">Güvenilir</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Hizmet</div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-2xl text-center">
+                            <i class="fa-solid fa-headset text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <div class="text-sm text-gray-900 dark:text-white font-bold">Profesyonel</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Destek</div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-slate-700/50 p-6 rounded-2xl text-center">
+                            <i class="fa-solid fa-rocket text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <div class="text-sm text-gray-900 dark:text-white font-bold">Hızlı</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Çözüm</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-20 px-4 bg-gray-50 dark:bg-gray-900/50">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-16">
+            <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold">
+                <i class="fa-solid fa-gem mr-2"></i>Değerlerimiz
+            </span>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mt-6 mb-4" style="font-weight: 900;">
+                Temel <span class="gradient-animate">Prensiplerimiz</span>
+            </h2>
+            <p class="text-xl text-gray-700 dark:text-gray-200 max-w-2xl mx-auto font-medium">
+                İşimizde bizi öne çıkaran değerler
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-shield-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Güvenilirlik</h3>
+                <p class="text-gray-700 dark:text-gray-200 font-medium">
+                    Müşterilerimize güvenilir ürünler ve kaliteli hizmet sunmak önceliğimizdir.
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-lightbulb text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Yenilikçilik</h3>
+                <p class="text-gray-700 dark:text-gray-200 font-medium">
+                    Modern teknolojiler ve yenilikçi çözümlerle sektöre değer katıyoruz.
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-users text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Müşteri Odaklılık</h3>
+                <p class="text-gray-700 dark:text-gray-200 font-medium">
+                    Müşteri memnuniyeti her zaman önceliğimizdir. İhtiyaçlarınıza özel çözümler sunuyoruz.
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-handshake text-white text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Şeffaflık</h3>
+                <p class="text-gray-700 dark:text-gray-200 font-medium">
+                    Net fiyatlandırma ve açık iletişim ile güven oluşturuyoruz.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-20 px-4">
+    <div class="container mx-auto max-w-6xl">
+        <div class="text-center mb-16">
+            <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-full text-sm font-semibold">
+                <i class="fa-solid fa-cogs mr-2"></i>Hizmetlerimiz
+            </span>
+            <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mt-6 mb-4" style="font-weight: 900;">
+                Kapsamlı <span class="gradient-animate">Çözümler</span>
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="/shop" class="no-underline relative overflow-hidden bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-shopping-cart text-5xl mb-4 opacity-80 text-white"></i>
+                <h3 class="text-2xl font-bold mb-3 text-white">Satın Alma</h3>
+                <p class="text-white/90 mb-4">Kaliteli ekipmanlar, güvenilir tedarik</p>
+                <div class="flex items-center text-sm font-semibold text-white">
+                    İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </a>
+
+            <a href="/shop?hizmet=kiralama" class="no-underline relative overflow-hidden bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-sync-alt text-5xl mb-4 opacity-80 text-white"></i>
+                <h3 class="text-2xl font-bold mb-3 text-white">Kiralama</h3>
+                <p class="text-white/90 mb-4">Esnek kiralama seçenekleri</p>
+                <div class="flex items-center text-sm font-semibold text-white">
+                    İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </a>
+
+            <a href="/shop?hizmet=ikinciel" class="no-underline relative overflow-hidden bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-recycle text-5xl mb-4 opacity-80 text-white"></i>
+                <h3 class="text-2xl font-bold mb-3 text-white">İkinci El</h3>
+                <p class="text-white/90 mb-4">Ekonomik ve garantili seçenekler</p>
+                <div class="flex items-center text-sm font-semibold text-white">
+                    İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </a>
+
+            <a href="/shop/kategori/yedek-parca" class="no-underline relative overflow-hidden bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-puzzle-piece text-5xl mb-4 opacity-80 text-white"></i>
+                <h3 class="text-2xl font-bold mb-3 text-white">Yedek Parça</h3>
+                <p class="text-white/90 mb-4">Orjinal yedek parçalar</p>
+                <div class="flex items-center text-sm font-semibold text-white">
+                    İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </a>
+
+            <a href="/iletisim?konu=servis" class="no-underline relative overflow-hidden bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-tools text-5xl mb-4 opacity-80 text-white"></i>
+                <h3 class="text-2xl font-bold mb-3 text-white">Teknik Servis</h3>
+                <p class="text-white/90 mb-4">Profesyonel bakım ve onarım</p>
+                <div class="flex items-center text-sm font-semibold text-white">
+                    İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </a>
+
+            <a href="/iletisim?konu=danismanlik" class="no-underline relative overflow-hidden bg-blue-600 hover:bg-blue-700 p-8 rounded-3xl text-white hover:shadow-2xl transition-all">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
+                <i class="fa-solid fa-headset text-5xl mb-4 opacity-80 text-white"></i>
+                <h3 class="text-2xl font-bold mb-3 text-white">Danışmanlık</h3>
+                <p class="text-white/90 mb-4">Uzman destek ve rehberlik</p>
+                <div class="flex items-center text-sm font-semibold text-white">
+                    İncele <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+        </article>
+
+                <script>// HAKKIMIZDA SAYFASI - JAVASCRIPT
+// AOS (Animate On Scroll) ve CountUp.js entegrasyonu
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // 1. AOS (Animate On Scroll) başlat
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-out-cubic',
+            delay: 0
+        });
+    }
+
+    // 2. CountUp.js animasyonları
+    // Not: Alpine.js x-data init() içinde de çalıştırılıyor
+    // Ancak fallback olarak burada da ekliyoruz
+    if (typeof CountUp !== 'undefined') {
+        // Intersection Observer ile görünür olduğunda başlat
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                    entry.target.classList.add('counted');
+
+                    const targetId = entry.target.id;
+                    let endValue = 0;
+
+                    switch(targetId) {
+                        case 'stat-products':
+                            endValue = 1020;
+                            break;
+                        case 'stat-categories':
+                            endValue = 106;
+                            break;
+                        case 'stat-experience':
+                            endValue = 10;
+                            break;
+                        case 'stat-partners':
+                            endValue = 250;
+                            break;
+                    }
+
+                    if (endValue > 0) {
+                        const counter = new CountUp(targetId, 0, endValue, 0, 2.5, {
+                            separator: endValue >= 1000 ? '.' : '',
+                            decimal: ',',
+                            useEasing: true,
+                            useGrouping: true
+                        });
+
+                        counter.start();
+                    }
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        // Tüm stat elementlerini gözlemle
+        document.querySelectorAll('[id^="stat-"]').forEach(el => {
+            statsObserver.observe(el);
+        });
+    }
+
+    // 3. Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                e.preventDefault();
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+                // URL güncelle (history)
+                if (history.pushState) {
+                    history.pushState(null, null, targetId);
+                }
+            }
+        });
+    });
+
+    // 4. URL'de hash varsa otomatik scroll
+    if (window.location.hash) {
+        setTimeout(() => {
+            const targetElement = document.querySelector(window.location.hash);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }, 100);
+    }
+
+    // 5. Parallax effect for hero section (optional)
+    const heroSection = document.querySelector('.about-page section:first-child');
+    if (heroSection) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * 0.5;
+
+            if (scrolled <= heroSection.offsetHeight) {
+                heroSection.style.transform = `translate3d(0, ${rate}px, 0)`;
+            }
+        });
+    }
+
+    // 6. Console log (development only)
+    console.log('İXTİF Hakkımızda sayfası yüklendi ✅');
+    console.log('AOS:', typeof AOS !== 'undefined' ? 'Aktif ✅' : 'Yüklenmedi ❌');
+    console.log('CountUp.js:', typeof CountUp !== 'undefined' ? 'Aktif ✅' : 'Yüklenmedi ❌');
+    console.log('Alpine.js:', typeof Alpine !== 'undefined' ? 'Aktif ✅' : 'Yüklenmedi ❌');
+});
+
+// 7. Window load event (tüm kaynaklar yüklendiğinde)
+window.addEventListener('load', function() {
+    // AOS refresh (görsel kaymalarını önle)
+    if (typeof AOS !== 'undefined') {
+        AOS.refresh();
+    }
+
+    console.log('Sayfa tamamen yüklendi ????');
+});
+</script>
+        
+                <style>/* HAKKIMIZDA SAYFASI - ÖZEL CSS */
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom animations for hero section */
+.about-page {
+    position: relative;
+}
+
+/* Gradient text animation */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.text-transparent {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+/* Hover effects for value cards */
+.group:hover .group-hover\:rotate-12 {
+    transform: rotate(12deg);
+}
+
+.group:hover .group-hover\:scale-110 {
+    transform: scale(1.1);
+}
+
+/* Stats number styling */
+#stat-products,
+#stat-categories,
+#stat-experience,
+#stat-partners {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+/* CTA button ripple effect */
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(59, 130, 246, 0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    /* Reduce hero font size on mobile */
+    .about-page h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
+    /* Stack stats vertically on very small screens */
+    .about-page .grid-cols-2 {
+        gap: 1.5rem;
+    }
+
+    /* Adjust padding on mobile */
+    .about-page section {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+}
+
+/* Dark mode specific adjustments */
+@media (prefers-color-scheme: dark) {
+    .about-page {
+        color: #f3f4f6;
+    }
+}
+
+/* Print styles */
+@media print {
+    .about-page section {
+        page-break-inside: avoid;
+    }
+
+    .about-page a[href^="https://wa.me"] {
+        display: none;
+    }
+}
+
+/* Accessibility: Focus states */
+.about-page a:focus,
+.about-page button:focus {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+}
+
+/* Loading animation for CountUp */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.about-page [id^="stat-"] {
+    animation: pulse 2s ease-in-out;
+}
+</style>
+            </div>
+</div>

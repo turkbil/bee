@@ -142,7 +142,7 @@
         {{-- Categories Filter --}}
         @if($categories->count() > 0)
         <section class="py-8 border-b border-gray-200 dark:border-white/10">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
                     {{-- All Categories (Modal Trigger) --}}
                     <button @click="$refs.categoryModal.classList.remove('hidden')"
@@ -177,7 +177,7 @@
         {{-- Subcategories (if category is selected and has children) --}}
         @if($selectedCategory && $selectedCategory->children->count() > 0)
         <section class="py-12">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
                     <i class="fa-light fa-folder-tree mr-2 text-blue-600 dark:text-blue-400"></i>
                     {{ __('shop::front.subcategories') }}
@@ -208,7 +208,7 @@
 
         {{-- Products Section --}}
         <section class="py-12">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 @if($products->count() > 0)
                     {{-- Loading Spinner (Initial Page Load) --}}
                     <div x-show="!loaded" class="flex justify-center items-center py-32">

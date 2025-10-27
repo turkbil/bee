@@ -37,7 +37,7 @@
     </section>
 
     <div class="py-20">
-        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+        <div class="container mx-auto px-4 sm:px-4 md:px-2">
             @if($items->count() > 0)
             <!-- Articles Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

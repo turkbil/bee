@@ -214,7 +214,7 @@
             <!-- 4. Teknik Servis -->
             <a href="#" class="group relative h-48 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-6 lg:p-8">
-                    <i class="fa-light fa-wrench text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:rotate-45 transition-all duration-500"></i>
+                    <i class="fa-light fa-wrench text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-4 group-hover:animate-rotate-wiggle"></i>
                     <h3 class="text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Teknik Servis</h3>
                     <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-3">Forklift bakım, periyodik bakım, profesyonel servis ve bakım anlaşmaları</p>
                     <div class="flex items-center text-gray-700 dark:text-gray-200 font-semibold">

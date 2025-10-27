@@ -1609,8 +1609,8 @@ class PublicAIController extends Controller
                 $formatted[] = "- ASLA örnek ürün adı/slug kullanma!";
                 $formatted[] = "";
 
-                // LIMIT: Maksimum 10 ürün göster (token tasarrufu + hız optimizasyonu)
-                $limitedProducts = array_slice($shopContext['all_products'], 0, 10);
+                // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
+                $limitedProducts = array_slice($shopContext['all_products'], 0, 30);
 
                 foreach ($limitedProducts as $product) {
                     $title = is_array($product['title']) ? json_encode($product['title'], JSON_UNESCAPED_UNICODE) : $product['title'];

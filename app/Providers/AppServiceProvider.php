@@ -108,6 +108,11 @@ class AppServiceProvider extends ServiceProvider
         $maxSize = (auth()->check() && auth()->user()->id === 1) ? (1024 * 1024) : 12288;
         config(['livewire.temporary_file_upload.rules' => ['required', 'file', 'max:' . $maxSize]]);
 
+        // 🔧 Spatie Media Library - Root user unlimited upload
+        if (auth()->check() && auth()->user()->id === 1) {
+            config(['media-library.max_file_size' => PHP_INT_MAX]); // Unlimited for root
+        }
+
         // Livewire pagination views are published and customized in resources/views/vendor/livewire/
 
         // Register Model Observers - Automatic Embedding Generation

@@ -37,6 +37,12 @@ Arama Yönetimi
                         <i class="icon-menu fa-solid fa-chart-bar"></i>Arama Analytics
                     </a>
                     @endhasmoduleaccess
+
+                    @hasmoduleaccess('search', 'view')
+                    <a class="dropdown-item" href="{{ route('admin.search.recent') }}">
+                        <i class="icon-menu fa-solid fa-clock-rotate-left"></i>Son Aramalar
+                    </a>
+                    @endhasmoduleaccess
                 </div>
             </div>
         </div>

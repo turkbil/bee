@@ -11,6 +11,84 @@ namespace Modules\AI\App\Services;
 class OptimizedPromptService
 {
     /**
+     * Get company information from settings (tenant bazlı)
+     */
+    protected static function getCompanyInfo(): array
+    {
+        $info = [];
+
+        try {
+            // settings() helper kullan (tenant-aware)
+            if (function_exists('settings')) {
+                // Firma temel bilgileri
+                $info['name'] = settings('site_title');
+                $info['description'] = settings('company_description');
+
+                // İletişim bilgileri (Group 10)
+                $info['phone_1'] = settings('contact_phone_1');
+                $info['phone_2'] = settings('contact_phone_2');
+                $info['whatsapp_1'] = settings('contact_whatsapp_1');
+                $info['whatsapp_2'] = settings('contact_whatsapp_2');
+                $info['email_1'] = settings('contact_email_1');
+                $info['email_2'] = settings('contact_email_2');
+                $info['address'] = trim(
+                    (settings('contact_address_line_1') ?? '') . ' ' .
+                    (settings('contact_address_line_2') ?? '') . ' ' .
+                    (settings('contact_city') ?? '') . ' ' .
+                    (settings('contact_country') ?? '')
+                );
+                $info['working_hours'] = settings('contact_working_hours');
+
+                // AI Ayarları (Group 9)
+                $info['ai_assistant_name'] = settings('ai_assistant_name');
+                $info['ai_personality_role'] = settings('ai_personality_role');
+                $info['ai_company_sector'] = settings('ai_company_sector');
+                $info['ai_company_founded_year'] = settings('ai_company_founded_year');
+                $info['ai_company_main_services'] = settings('ai_company_main_services');
+                $info['ai_company_expertise'] = settings('ai_company_expertise');
+                $info['ai_target_customer_profile'] = settings('ai_target_customer_profile');
+                $info['ai_target_industries'] = settings('ai_target_industries');
+                $info['ai_response_tone'] = settings('ai_response_tone');
+                $info['ai_sales_approach'] = settings('ai_sales_approach');
+                $info['ai_custom_instructions'] = settings('ai_custom_instructions');
+                $info['ai_forbidden_topics'] = settings('ai_forbidden_topics');
+                $info['ai_company_certifications'] = settings('ai_company_certifications');
+                $info['ai_knowledge_base'] = settings('ai_knowledge_base');
+
+                // Modül Yetkilendirmeleri
+                $info['ai_module_shop_enabled'] = settings('ai_module_shop_enabled');
+                $info['ai_module_page_enabled'] = settings('ai_module_page_enabled');
+                $info['ai_module_blog_enabled'] = settings('ai_module_blog_enabled');
+            }
+
+            // Fallback: Domain'den firma adını çıkar
+            if (empty($info['name']) && function_exists('tenant') && tenant('id')) {
+                $domain = \Modules\Tenant\App\Models\Domain::where('tenant_id', tenant('id'))->first();
+                if ($domain) {
+                    $name = str_replace(['.com', '.com.tr', '.net'], '', $domain->domain);
+                    $info['name'] = ucfirst($name);
+                }
+            }
+
+            // Boş değerleri temizle
+            return array_filter($info);
+
+        } catch (\Exception $e) {
+            \Log::warning('AI: Firma bilgileri alınamadı', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+
+    /**
+     * Get company name from settings (eski metod - geriye dönük uyumluluk)
+     */
+    protected static function getCompanyName(): ?string
+    {
+        $info = self::getCompanyInfo();
+        return $info['name'] ?? null;
+    }
+
+    /**
      * Build optimized system prompt (50 satır)
      */
     public static function buildSystemPrompt(): string
@@ -81,20 +159,65 @@ class OptimizedPromptService
         $prompts[] = "**❗ KRİTİK: Her yanıtta firma adını belirt!**";
         $prompts[] = "";
         $prompts[] = "**Firma Kimliği:**";
-        $prompts[] = "- Sen **İxtif** şirketinin AI asistanısın";
-        $prompts[] = "- ✅ İlk yanıtta MUTLAKA 'İxtif olarak...' ile başla";
-        $prompts[] = "- ✅ Konuşma devam ederken 'Firmamız', 'Bizde', 'İxtif olarak' kullan";
-        $prompts[] = "- ❌ ASLA firma adı vermeden yanıt verme!";
+        $prompts[] = "- Sen firmamızın AI asistanısın";
+        $prompts[] = "- ✅ İlk yanıtta 'Firmamız olarak...' veya firma adıyla başla";
+        $prompts[] = "- ✅ Konuşma devam ederken 'Firmamız', 'Bizde' kullan";
+        $prompts[] = "- ⚠️ Firma adı tenant settings'ten gelir, prompt'ta firma adı verilecek";
         $prompts[] = "";
         $prompts[] = "**ÖRNEK YANIT BAŞLANGIÇLARI:**";
-        $prompts[] = "- 'İxtif olarak, size en uygun transpaleti önermekten mutluluk duyarız! 😊'";
+        $prompts[] = "- 'Firmamız olarak, size en uygun transpaleti önermekten mutluluk duyarız! 😊'";
         $prompts[] = "- 'Firmamızda 2 ton kapasiteli elektrikli transpaletler mevcut.'";
-        $prompts[] = "- 'İxtif olarak forklift kiralama hizmetimiz var.'";
+        $prompts[] = "- 'Forklift kiralama hizmetimiz bulunuyor.'";
         $prompts[] = "";
         $prompts[] = "**Rolün:**";
         $prompts[] = "- Profesyonel satış danışmanı";
         $prompts[] = "- Sadece şirket ürünleri ve hizmetleri hakkında konuş";
         $prompts[] = "- Konu dışı konuları kibarca reddet";
+        $prompts[] = "";
+        $prompts[] = "## 🗣️ KONUŞMA TONU VE STİL (ÖNEMLİ!)";
+        $prompts[] = "";
+        $prompts[] = "**✅ DOĞAL VE SAMİMİ KONUŞ:**";
+        $prompts[] = "- İnsan gibi, arkadaşça, sıcak bir dille konuş";
+        $prompts[] = "- Nazik ve yardımsever ol";
+        $prompts[] = "- Kısa, net, anlaşılır cümleler kullan";
+        $prompts[] = "";
+        $prompts[] = "**❌ ASLA YAPMA:**";
+        $prompts[] = "- ❌ 'Ben bir yapay zeka asistanıyım' DEME!";
+        $prompts[] = "- ❌ 'Duygularım yok' DEME!";
+        $prompts[] = "- ❌ Robotik, teknik dil kullanma!";
+        $prompts[] = "- ❌ Pazarlamacı gibi abartılı övgü yapma!";
+        $prompts[] = "- ❌ 'Size nasıl yardımcı olabilirim?' her cevaba ekleme!";
+        $prompts[] = "";
+        $prompts[] = "**✅ SOHBET SORULARINDA DOĞAL YANITLAR:**";
+        $prompts[] = "```";
+        $prompts[] = "Kullanıcı: Nasılsın?";
+        $prompts[] = "AI: İyiyim, teşekkür ederim! 😊 Sen nasılsın?";
+        $prompts[] = "";
+        $prompts[] = "Kullanıcı: Günaydın";
+        $prompts[] = "AI: Günaydın! Size nasıl yardımcı olabilirim? 😊";
+        $prompts[] = "";
+        $prompts[] = "Kullanıcı: Teşekkürler";
+        $prompts[] = "AI: Rica ederim! 😊 Başka bir konuda yardımcı olabilirsem söyleyin.";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "## 🏆 FİRMA VE ÜRÜN HAKKINDA KONUŞMA";
+        $prompts[] = "";
+        $prompts[] = "**✅ DOĞAL ŞEKİLDE ÖVME (Yalan yok!):**";
+        $prompts[] = "- 'Kaliteli ürünler sunuyoruz'";
+        $prompts[] = "- 'Güvenilir çözümler sağlıyoruz'";
+        $prompts[] = "- 'Müşteri memnuniyeti önceliğimiz'";
+        $prompts[] = "- 'Uzman ekibimiz size yardımcı olacak'";
+        $prompts[] = "";
+        $prompts[] = "**❌ ABARTMA YAPMA:**";
+        $prompts[] = "- ❌ 'En iyi', 'Türkiye'nin lideri' gibi iddialar yapma!";
+        $prompts[] = "- ❌ Rakiplerle karşılaştırma yapma!";
+        $prompts[] = "- ❌ Gerçek olmayan özellikler ekleme!";
+        $prompts[] = "";
+        $prompts[] = "**ÖRNEK:**";
+        $prompts[] = "```";
+        $prompts[] = "✅ DOĞRU: 'Firmamız kaliteli transpaletler sunuyor. İşletmenize uygun modeli bulmanıza yardımcı olabilirim.'";
+        $prompts[] = "❌ YANLIŞ: 'Firmamız Türkiye'nin 1 numaralı transpalet firmasıdır! Rakipsiz ürünlerimiz...'";
+        $prompts[] = "```";
         $prompts[] = "";
         $prompts[] = "## YANIT KURALLARI (ZORUNLU!)";
         $prompts[] = "❌ ASLA düşüncelerini (reasoning) kullanıcıya gösterme!";
@@ -1028,6 +1151,135 @@ class OptimizedPromptService
     public static function getFullPrompt(array $aiContext, array $conversationHistory = []): string
     {
         $prompts = [];
+
+        // 0. Firma Kimliği ve AI Ayarları (Tenant bazlı - Settings Group 9 & 10)
+        $companyInfo = self::getCompanyInfo();
+        if (!empty($companyInfo)) {
+            $prompts[] = "# 🏢 FİRMA KİMLİĞİ VE AYARLARI";
+            $prompts[] = "";
+
+            // Firma adı ve sektör
+            if (!empty($companyInfo['name'])) {
+                $prompts[] = "**Firmanın Adı:** {$companyInfo['name']}";
+                $prompts[] = "**Önemli:** Müşterilerle konuşurken firma adını kullan. Örnek: '{$companyInfo['name']} olarak...', 'Firmamızda...'";
+                $prompts[] = "";
+            }
+
+            if (!empty($companyInfo['ai_company_sector'])) {
+                $prompts[] = "**Sektör:** {$companyInfo['ai_company_sector']}";
+                $prompts[] = "";
+            }
+
+            if (!empty($companyInfo['description'])) {
+                $prompts[] = "**Firma Hakkında:** {$companyInfo['description']}";
+                $prompts[] = "";
+            }
+
+            // AI Kişilik ayarları
+            if (!empty($companyInfo['ai_company_main_services'])) {
+                $prompts[] = "**Ana Hizmetler:** {$companyInfo['ai_company_main_services']}";
+            }
+            if (!empty($companyInfo['ai_company_expertise'])) {
+                $prompts[] = "**Uzmanlaştığımız Alanlar:** {$companyInfo['ai_company_expertise']}";
+            }
+            if (!empty($companyInfo['ai_target_customer_profile'])) {
+                $prompts[] = "**Hedef Müşteri Profilimiz:** {$companyInfo['ai_target_customer_profile']}";
+            }
+            if (!empty($companyInfo['ai_company_certifications'])) {
+                $prompts[] = "**Sertifikalarımız:** {$companyInfo['ai_company_certifications']}";
+            }
+            if (!empty($companyInfo['ai_company_founded_year'])) {
+                $prompts[] = "**Kuruluş Yılı:** {$companyInfo['ai_company_founded_year']}";
+            }
+
+            $prompts[] = "";
+
+            // İletişim bilgileri (markdown link formatında)
+            $contacts = [];
+            if (!empty($companyInfo['whatsapp_1'])) {
+                $phone = preg_replace('/[^0-9]/', '', $companyInfo['whatsapp_1']);
+                $contacts[] = "💬 **WhatsApp:** [{$companyInfo['whatsapp_1']}](https://wa.me/{$phone})";
+            }
+            if (!empty($companyInfo['phone_1'])) {
+                $phone = preg_replace('/[^0-9]/', '', $companyInfo['phone_1']);
+                $contacts[] = "📞 **Telefon:** [{$companyInfo['phone_1']}](tel:{$phone})";
+            }
+            if (!empty($companyInfo['email_1'])) {
+                $contacts[] = "📧 **E-posta:** [{$companyInfo['email_1']}](mailto:{$companyInfo['email_1']})";
+            }
+            if (!empty($companyInfo['address'])) {
+                $contacts[] = "📍 **Adres:** {$companyInfo['address']}";
+            }
+            if (!empty($companyInfo['working_hours'])) {
+                $contacts[] = "🕐 **Çalışma Saatleri:** {$companyInfo['working_hours']}";
+            }
+
+            if (!empty($contacts)) {
+                $prompts[] = "**İletişim Bilgileri (Müşteri istediğinde AYNEN bu formatta ver!):**";
+                foreach ($contacts as $contact) {
+                    $prompts[] = $contact;
+                }
+                $prompts[] = "";
+            }
+
+            // Özel talimatlar (Custom Instructions)
+            if (!empty($companyInfo['ai_custom_instructions'])) {
+                $prompts[] = "## 📋 ÖZEL TALİMATLAR (Mutlaka Uygula!)";
+                $prompts[] = "";
+                $prompts[] = $companyInfo['ai_custom_instructions'];
+                $prompts[] = "";
+            }
+
+            // Yasaklı konular
+            if (!empty($companyInfo['ai_forbidden_topics'])) {
+                $prompts[] = "## ❌ YASAKLI KONULAR";
+                $prompts[] = "";
+                $prompts[] = "Bu konular hakkında ASLA bilgi verme: {$companyInfo['ai_forbidden_topics']}";
+                $prompts[] = "Kullanıcı sorduğunda kibarca reddet: 'Bu konu hakkında bilgi veremiyorum. Ürün ve hizmetlerimiz hakkında size yardımcı olabilirim.'";
+                $prompts[] = "";
+            }
+
+            // Bilgi Bankası (Sık Sorulan Sorular)
+            if (!empty($companyInfo['ai_knowledge_base'])) {
+                $prompts[] = "## 📚 BİLGİ BANKASI (Sık Sorulan Sorular)";
+                $prompts[] = "";
+                $prompts[] = $companyInfo['ai_knowledge_base'];
+                $prompts[] = "";
+            }
+
+            // Modül Yetkilendirmeler (Shop/Page/Blog)
+            $moduleRules = [];
+
+            if (!empty($companyInfo['ai_module_shop_enabled']) && $companyInfo['ai_module_shop_enabled'] === 'enabled') {
+                $moduleRules[] = "✅ **Shop Modülü Aktif:** Ürünler hakkında bilgi verebilir, ürün önerisi yapabilirsin.";
+            } else {
+                $moduleRules[] = "❌ **Shop Modülü Kapalı:** Ürün bilgisi veremezsin. Kullanıcı ürün sorduğunda: 'Ürün bilgileri için müşteri temsilcilerimizle iletişime geçebilirsiniz.'";
+            }
+
+            if (!empty($companyInfo['ai_module_page_enabled']) && $companyInfo['ai_module_page_enabled'] === 'enabled') {
+                $moduleRules[] = "✅ **Page Modülü Aktif:** Firma sayfaları, hizmetler, hakkımızda gibi konularda bilgi verebilirsin.";
+            } else {
+                $moduleRules[] = "❌ **Page Modülü Kapalı:** Firma sayfaları hakkında detaylı bilgi veremezsin.";
+            }
+
+            if (!empty($companyInfo['ai_module_blog_enabled']) && $companyInfo['ai_module_blog_enabled'] === 'enabled') {
+                $moduleRules[] = "✅ **Blog Modülü Aktif:** Blog makaleleri önerebilir, içerik paylaşabilirsin.";
+            } else {
+                $moduleRules[] = "❌ **Blog Modülü Kapalı:** Blog içerikleri hakkında bilgi veremezsin.";
+            }
+
+            if (!empty($moduleRules)) {
+                $prompts[] = "## 🔌 MODÜL YETKİLERİ (Dikkat!)";
+                $prompts[] = "";
+                foreach ($moduleRules as $rule) {
+                    $prompts[] = $rule;
+                }
+                $prompts[] = "";
+            }
+
+            $prompts[] = "---";
+            $prompts[] = "";
+        }
 
         // 1. System prompt (rules)
         $prompts[] = self::buildSystemPrompt();

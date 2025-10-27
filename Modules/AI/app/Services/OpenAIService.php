@@ -4,6 +4,7 @@ namespace Modules\AI\App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Client as GuzzleClient;
 
 class OpenAIService
 {
@@ -167,12 +168,12 @@ class OpenAIService
                 'messages_count' => count($payload['messages'])
             ]);
 
-            // ✨ STREAMING HTTP REQUEST
+            // ✨ REAL-TIME STREAMING HTTP REQUEST (Guzzle)
             $fullResponse = '';
             $inputTokens = 0;
             $outputTokens = 0;
             $totalTokens = 0;
-            
+
             // DEBUG: Log API key being used
             Log::info('🔑 OpenAI API Key Debug', [
                 'key_starts_with' => substr($this->apiKey, 0, 15) . '...',
@@ -180,14 +181,14 @@ class OpenAIService
                 'key_is_empty' => empty($this->apiKey),
             ]);
 
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->timeout(30)->post($this->baseUrl . '/chat/completions', $payload);
+            // GPT-5 non-streaming (Laravel Http)
+            if ($isGPT5) {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Content-Type' => 'application/json',
+                ])->timeout(30)->post($this->baseUrl . '/chat/completions', $payload);
 
-            if ($response->successful()) {
-                // GPT-5 non-streaming response (JSON)
-                if ($isGPT5) {
+                if ($response->successful()) {
                     $data = $response->json();
 
                     // DEBUG: Full JSON response'u log'la (truncated for safety)
@@ -220,57 +221,75 @@ class OpenAIService
                         $totalTokens = $data['usage']['total_tokens'] ?? 0;
                     }
                 } else {
-                    // Streaming response (SSE format)
-                    $lines = explode("\n", $response->body());
+                    throw new \Exception('OpenAI API hatası: ' . $response->status() . ' - ' . $response->body());
+                }
+            } else {
+                // ⚡ GERÇEK STREAMING (cURL ile basit)
+                $ch = curl_init($this->baseUrl . '/chat/completions');
 
-                    foreach ($lines as $line) {
-                        $line = trim($line);
+                curl_setopt_array($ch, [
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => json_encode($payload),
+                    CURLOPT_HTTPHEADER => [
+                        'Authorization: Bearer ' . $this->apiKey,
+                        'Content-Type: application/json',
+                    ],
+                    CURLOPT_RETURNTRANSFER => false,
+                    CURLOPT_TIMEOUT => 30,
+                    CURLOPT_WRITEFUNCTION => function($curl, $data) use (&$fullResponse, &$inputTokens, &$outputTokens, &$totalTokens, $streamCallback) {
+                        $lines = explode("\n", $data);
 
-                        // SSE veri satırlarını filtrele
-                        if (strpos($line, 'data: ') === 0) {
-                            $jsonData = substr($line, 6); // "data: " kısmını çıkar
+                        foreach ($lines as $line) {
+                            $line = trim($line);
 
-                            // [DONE] kontrolü
-                            if ($jsonData === '[DONE]') {
-                                break;
-                            }
+                            if (strpos($line, 'data: ') === 0) {
+                                $jsonData = substr($line, 6);
 
-                            // JSON parse et
-                            $data = json_decode($jsonData, true);
-                            if (!$data) continue;
+                                if ($jsonData === '[DONE]') {
+                                    return strlen($data);
+                                }
 
-                            // Content chunk'ını al
-                            $chunk = $data['choices'][0]['delta']['content'] ?? '';
+                                $parsed = json_decode($jsonData, true);
+                                if (!$parsed) continue;
 
-                            if (!empty($chunk)) {
-                                $fullResponse .= $chunk;
+                                $chunk = $parsed['choices'][0]['delta']['content'] ?? '';
 
-                                // Callback varsa çağır (Frontend'e gönder)
-                                if ($streamCallback && is_callable($streamCallback)) {
-                                    call_user_func($streamCallback, $chunk);
+                                if (!empty($chunk)) {
+                                    $fullResponse .= $chunk;
+
+                                    if ($streamCallback && is_callable($streamCallback)) {
+                                        call_user_func($streamCallback, $chunk);
+                                    }
+                                }
+
+                                if (isset($parsed['usage'])) {
+                                    $inputTokens = $parsed['usage']['prompt_tokens'] ?? 0;
+                                    $outputTokens = $parsed['usage']['completion_tokens'] ?? 0;
+                                    $totalTokens = $parsed['usage']['total_tokens'] ?? 0;
                                 }
                             }
-
-                            // Token usage bilgilerini al (varsa)
-                            if (isset($data['usage'])) {
-                                $inputTokens = $data['usage']['prompt_tokens'] ?? 0;
-                                $outputTokens = $data['usage']['completion_tokens'] ?? 0;
-                                $totalTokens = $data['usage']['total_tokens'] ?? 0;
-                            }
                         }
+
+                        return strlen($data);
                     }
-                }
-                
-                Log::info('⚡ OpenAI yanıt alındı', [
-                    'response_time_ms' => round((microtime(true) - $apiStartTime) * 1000, 2),
-                    'response_length' => strlen($fullResponse),
-                    'input_tokens' => $inputTokens,
-                    'output_tokens' => $outputTokens,
-                    'total_tokens' => $totalTokens
                 ]);
-            } else {
-                throw new \Exception('OpenAI API hatası: ' . $response->status() . ' - ' . $response->body());
+
+                curl_exec($ch);
+
+                if (curl_errno($ch)) {
+                    throw new \Exception('OpenAI streaming error: ' . curl_error($ch));
+                }
+
+                curl_close($ch);
             }
+
+            Log::info('⚡ OpenAI yanıt alındı', [
+                'response_time_ms' => round((microtime(true) - $apiStartTime) * 1000, 2),
+                'response_length' => strlen($fullResponse),
+                'input_tokens' => $inputTokens,
+                'output_tokens' => $outputTokens,
+                'total_tokens' => $totalTokens
+            ]);
 
             $totalTime = round((microtime(true) - $apiStartTime) * 1000, 2);
             Log::info('🏁 OpenAI streaming tamamlandı', [

@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Top bar height'ı hesapla
     const topBarHeight = topBar.offsetHeight;
-    console.log('Top bar height:', topBarHeight + 'px');
 
     // CSS variable olarak ekle
     document.documentElement.style.setProperty('--top-bar-height', topBarHeight + 'px');
@@ -94,8 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
             header.classList.remove('scrolled');
         }
     });
-
-    console.log('✅ Sticky header initialized');
 });
 
 /**
@@ -104,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 if (localStorage.getItem('selectedFont')) {
     localStorage.removeItem('selectedFont');
-    console.log('✅ Font ayarları temizlendi - Roboto sabit font olarak ayarlandı');
 }
 
 /**
@@ -139,7 +135,6 @@ function initGLightbox() {
                 close: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
             }
         });
-        console.log('✅ GLightbox initialized with keyboard & mouse controls');
     } else {
         console.warn('⚠️ GLightbox library not loaded yet');
     }
@@ -525,13 +520,11 @@ window.cookieConsentApp = function() {
         loadTrackingScripts() {
             // Analytics
             if (this.preferences.analytics) {
-                console.log('Analytics enabled');
                 // Google Analytics kodu buraya gelecek
             }
 
             // Marketing
             if (this.preferences.marketing) {
-                console.log('Marketing enabled');
                 // Meta Pixel, Google Ads kodu buraya gelecek
             }
         }

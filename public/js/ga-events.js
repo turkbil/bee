@@ -26,8 +26,6 @@
             'event_category': 'engagement',
             'event_label': 'form_submission'
         });
-
-        console.log('📊 GTM Event: form_submit', { form_name: formName, form_id: formId });
     }
 
     /**
@@ -42,8 +40,6 @@
             'event_category': 'engagement',
             'event_label': 'phone_call_attempt'
         });
-
-        console.log('📞 GTM Event: phone_click', { phone: phoneNumber, location: location });
     }
 
     /**
@@ -58,8 +54,6 @@
             'event_category': 'engagement',
             'event_label': 'whatsapp_message_attempt'
         });
-
-        console.log('💬 GTM Event: whatsapp_click', { phone: phoneNumber, location: location });
     }
 
     /**
@@ -74,8 +68,6 @@
             'event_category': 'engagement',
             'event_label': 'email_attempt'
         });
-
-        console.log('📧 GTM Event: email_click', { email: email, location: location });
     }
 
     /**
@@ -90,8 +82,6 @@
             'event_category': 'engagement',
             'event_label': 'file_download'
         });
-
-        console.log('📄 GTM Event: file_download', { file: fileName });
     }
 
     /**
@@ -112,8 +102,6 @@
             'event_category': 'ecommerce',
             'event_label': 'product_view'
         });
-
-        console.log('🛒 GTM Event: view_item', { product_id: productId, name: productName });
     }
 
     /**
@@ -142,8 +130,6 @@
                     'event_category': 'engagement',
                     'event_label': 'scroll_' + threshold + '%'
                 });
-
-                console.log('📜 GTM Event: scroll_depth', { percentage: threshold + '%' });
             }
         });
     }
@@ -220,8 +206,6 @@
         document.addEventListener('form-success', function(e) {
             trackFormSubmit(e.detail?.formName || 'livewire_form', e.detail?.formId || 'unknown');
         });
-
-        console.log('✅ GA Events Auto-Tracking başlatıldı');
     }
 
     // DOM hazır olduğunda başlat
@@ -233,7 +217,6 @@
 
     // Livewire navigasyonlarında yeniden başlat
     document.addEventListener('livewire:navigated', function() {
-        console.log('🔄 Livewire navigated - Event listeners yenilendi');
         initAutoTracking();
     });
 

@@ -89,6 +89,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Resize'da güncelle
     window.addEventListener('resize', updateScreenSize);
-
-    console.log('✅ Development Tools loaded (Admin/Root only)');
 });

@@ -282,12 +282,12 @@
         </div>
 
         <!-- Sticky Container (Desktop Only) -->
-        <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-4xl mx-auto">
+        <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-3xl mx-auto">
             <x-ai.inline-widget
                 title="iXtif Destek Asistanı"
                 page-slug="iletisim"
                 :always-open="true"
-                height="calc(100vh - 8rem)"
+                height="700px"
                 theme="purple" />
         </div>
     </div>

@@ -37,7 +37,7 @@
         {{-- DESKTOP GÖRÜNÜM (lg+) --}}
         {{-- ========================================== --}}
         <div class="hidden lg:block">
-            <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-6 border-2 border-indigo-200 dark:border-indigo-800">
+            <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-6">
                 <div class="grid grid-cols-3 gap-6">
 
                     {{-- 1. Hakkımızda --}}

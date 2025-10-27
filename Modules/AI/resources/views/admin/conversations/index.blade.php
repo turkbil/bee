@@ -346,7 +346,7 @@
                     </thead>
                     <tbody class="table-tbody">
                         @forelse($conversations as $conversation)
-                        <tr class="hover-trigger">
+                        <tr class="hover-trigger" data-conversation-id="{{ $conversation->id }}">
                             <td class="sort-id small d-none d-md-table-cell">
                                 <div class="hover-toggle">
                                     <span class="hover-hide">{{ $conversation->id }}</span>
@@ -659,10 +659,26 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                    <a href="#" id="previewDetailLink" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt me-2"></i>Detaylı Görünüm
-                    </a>
+                    <div class="d-flex w-100 justify-content-between align-items-center">
+                        <!-- Sol: Navigasyon -->
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary" id="prevConversationBtn" onclick="navigateModal('prev')" title="Önceki (←)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="mx-2 text-muted small" id="modalPositionInfo">1 / 1</span>
+                            <button type="button" class="btn btn-outline-secondary" id="nextConversationBtn" onclick="navigateModal('next')" title="Sonraki (→)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Sağ: İşlem butonları -->
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                            <a href="#" id="previewDetailLink" class="btn btn-primary">
+                                <i class="fas fa-external-link-alt me-2"></i>Detaylı Görünüm
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -796,13 +812,36 @@
         });
     });
 
+    // Modal Navigation System
+    let conversationIds = [];
+    let currentConversationIndex = -1;
+
+    // Sayfa yüklendiğinde tüm konuşma ID'lerini topla
+    document.addEventListener('DOMContentLoaded', function() {
+        updateConversationList();
+    });
+
+    function updateConversationList() {
+        // Tablodaki tüm konuşma satırlarından ID'leri al
+        conversationIds = [];
+        document.querySelectorAll('tr[data-conversation-id]').forEach(row => {
+            conversationIds.push(parseInt(row.getAttribute('data-conversation-id')));
+        });
+    }
+
     // Önizleme fonksiyonu
-    function showPreview(conversationId) {
+    function showPreview(conversationId, updateIndex = true) {
         // Modal elementini al
         const modalElement = document.getElementById('previewModal');
 
         // Tabler.io jQuery ile Bootstrap modal kullanıyor
         $('#previewModal').modal('show');
+
+        // Mevcut index'i güncelle
+        if (updateIndex) {
+            currentConversationIndex = conversationIds.indexOf(conversationId);
+            updateNavigationButtons();
+        }
 
         // Loading durumu
         const previewContent = document.getElementById('previewContent');
@@ -912,5 +951,61 @@
         div.textContent = text;
         return div.innerHTML;
     }
+
+    // Modal Navigation Functions
+    function navigateModal(direction) {
+        if (direction === 'next' && currentConversationIndex < conversationIds.length - 1) {
+            currentConversationIndex++;
+            const nextId = conversationIds[currentConversationIndex];
+            showPreview(nextId, false);
+            updateNavigationButtons();
+        } else if (direction === 'prev' && currentConversationIndex > 0) {
+            currentConversationIndex--;
+            const prevId = conversationIds[currentConversationIndex];
+            showPreview(prevId, false);
+            updateNavigationButtons();
+        }
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevConversationBtn');
+        const nextBtn = document.getElementById('nextConversationBtn');
+        const positionInfo = document.getElementById('modalPositionInfo');
+
+        // Buton durumlarını güncelle
+        if (prevBtn) prevBtn.disabled = (currentConversationIndex <= 0);
+        if (nextBtn) nextBtn.disabled = (currentConversationIndex >= conversationIds.length - 1);
+
+        // Pozisyon bilgisini güncelle
+        if (positionInfo && conversationIds.length > 0) {
+            positionInfo.textContent = `${currentConversationIndex + 1} / ${conversationIds.length}`;
+        }
+    }
+
+    // Klavye kısayolları (Modal açıkken)
+    document.addEventListener('keydown', function(e) {
+        // Modal açık mı kontrol et
+        const modal = document.getElementById('previewModal');
+        if (!modal || !modal.classList.contains('show')) {
+            return;
+        }
+
+        // Sol ok tuşu: Önceki
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            navigateModal('prev');
+        }
+
+        // Sağ ok tuşu: Sonraki
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            navigateModal('next');
+        }
+
+        // ESC tuşu: Kapat (Bootstrap zaten yapıyor ama güvenlik için)
+        if (e.key === 'Escape') {
+            $('#previewModal').modal('hide');
+        }
+    });
 </script>
 @endpush

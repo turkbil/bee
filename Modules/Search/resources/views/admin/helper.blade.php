@@ -33,24 +33,8 @@ Arama Yönetimi
                     @endhasmoduleaccess
 
                     @hasmoduleaccess('search', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.search.recent') }}">
-                        <i class="icon-menu fa-solid fa-clock"></i>Son Aramalar
-                    </a>
-                    @endhasmoduleaccess
-
-                    <h6 class="dropdown-menu-header card-header-light">
-                        <span class="dropdown-header">İstatistikler</span>
-                    </h6>
-
-                    @hasmoduleaccess('search', 'view')
-                    <a class="dropdown-item" href="{{ route('admin.search.clicks') }}">
-                        <i class="icon-menu fa-solid fa-hand-pointer"></i>Tıklama İstatistikleri
-                    </a>
-                    @endhasmoduleaccess
-
-                    @hasmoduleaccess('search', 'view')
                     <a class="dropdown-item" href="{{ route('admin.search.analytics') }}">
-                        <i class="icon-menu fa-solid fa-chart-bar"></i>Genel Analytics
+                        <i class="icon-menu fa-solid fa-chart-bar"></i>Arama Analytics
                     </a>
                     @endhasmoduleaccess
                 </div>

@@ -8,13 +8,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Search\App\Services\UniversalSearchService;
-use Modules\Search\App\Services\SearchClickTracker;
 
 class SearchApiController extends Controller
 {
     public function __construct(
-        protected UniversalSearchService $searchService,
-        protected SearchClickTracker $clickTracker
+        protected UniversalSearchService $searchService
     ) {}
 
     /**
@@ -184,43 +182,6 @@ class SearchApiController extends Controller
                 'success' => false,
                 'message' => 'Öneri alınırken hata oluştu.',
             ], 500);
-        }
-    }
-
-    /**
-     * Track click on search result
-     */
-    public function trackClick(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'query' => 'required|string|max:500',
-            'result_id' => 'required|integer',
-            'result_type' => 'required|string',
-            'position' => 'nullable|integer|min:0',
-            'opened_in_new_tab' => 'nullable|boolean',
-        ]);
-
-        try {
-            $this->clickTracker->trackClick(
-                query: $validated['query'],
-                resultId: $validated['result_id'],
-                resultType: $validated['result_type'],
-                position: $validated['position'] ?? 0,
-                openedInNewTab: $validated['opened_in_new_tab'] ?? false
-            );
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Click tracked successfully',
-            ]);
-        } catch (\Exception $e) {
-            \Log::error('Click tracking error: ' . $e->getMessage());
-
-            // Don't fail the request for tracking errors
-            return response()->json([
-                'success' => true,
-                'message' => 'Request processed',
-            ]);
         }
     }
 }

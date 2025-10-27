@@ -46,14 +46,6 @@ class SearchQuery extends Model
     }
 
     /**
-     * Get all clicks for this search query
-     */
-    public function clicks(): HasMany
-    {
-        return $this->hasMany(SearchClick::class);
-    }
-
-    /**
      * Scope: Get searches with no results
      */
     public function scopeNoResults($query)
@@ -155,19 +147,5 @@ class SearchQuery extends Model
             ->where('created_at', '>=', now()->subDays($days))
             ->whereNotNull('response_time_ms')
             ->avg('response_time_ms');
-    }
-
-    /**
-     * Get click-through rate for this query
-     */
-    public function getClickThroughRate(): float
-    {
-        $totalSearches = static::where('query', $this->query)->count();
-        $clickedSearches = static::where('query', $this->query)
-            ->has('clicks')
-            ->distinct()
-            ->count();
-
-        return $totalSearches > 0 ? ($clickedSearches / $totalSearches) * 100 : 0;
     }
 }

@@ -7,7 +7,6 @@ namespace Modules\Search\App\Services;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Search\App\Models\SearchQuery;
-use Modules\Search\App\Models\SearchClick;
 
 class SearchAnalyticsService
 {
@@ -23,9 +22,6 @@ class SearchAnalyticsService
             'unique_queries' => $this->getUniqueQueries($days),
             'avg_response_time' => $this->getAverageResponseTime($days),
             'zero_result_count' => $this->getZeroResultCount($days),
-            'total_clicks' => $this->getTotalClicks($days),
-            'avg_ctr' => $this->getAverageClickThroughRate($days),
-            'searches_with_clicks' => $this->getSearchesWithClicks($days),
         ];
     }
 
@@ -116,48 +112,6 @@ class SearchAnalyticsService
     }
 
     /**
-     * Get click position analytics
-     */
-    public function getClickPositionAnalytics(int $days = 30): Collection
-    {
-        return SearchClick::query()
-            ->where('created_at', '>=', now()->subDays($days))
-            ->selectRaw('click_position, COUNT(*) as clicks')
-            ->groupBy('click_position')
-            ->orderBy('click_position')
-            ->get();
-    }
-
-    /**
-     * Get new tab statistics
-     */
-    public function getNewTabStatistics(int $days = 30): array
-    {
-        $total = SearchClick::query()
-            ->where('created_at', '>=', now()->subDays($days))
-            ->count();
-
-        if ($total === 0) {
-            return [
-                'new_tab' => 0,
-                'same_tab' => 0,
-                'new_tab_percentage' => 0,
-            ];
-        }
-
-        $newTab = SearchClick::query()
-            ->where('created_at', '>=', now()->subDays($days))
-            ->where('opened_in_new_tab', true)
-            ->count();
-
-        return [
-            'new_tab' => $newTab,
-            'same_tab' => $total - $newTab,
-            'new_tab_percentage' => round(($newTab / $total) * 100, 2),
-        ];
-    }
-
-    /**
      * Get locale distribution
      */
     public function getLocaleDistribution(int $days = 30): Collection
@@ -214,63 +168,23 @@ class SearchAnalyticsService
     }
 
     /**
-     * Helper: Get total clicks
-     */
-    protected function getTotalClicks(int $days): int
-    {
-        return SearchClick::query()
-            ->where('created_at', '>=', now()->subDays($days))
-            ->count();
-    }
-
-    /**
-     * Helper: Get searches with clicks
-     */
-    protected function getSearchesWithClicks(int $days): int
-    {
-        return SearchQuery::query()
-            ->where('created_at', '>=', now()->subDays($days))
-            ->has('clicks')
-            ->distinct()
-            ->count();
-    }
-
-    /**
-     * Helper: Get average CTR
-     */
-    protected function getAverageClickThroughRate(int $days): float
-    {
-        $totalSearches = $this->getTotalSearches($days);
-
-        if ($totalSearches === 0) {
-            return 0.0;
-        }
-
-        $searchesWithClicks = $this->getSearchesWithClicks($days);
-
-        return round(($searchesWithClicks / $totalSearches) * 100, 2);
-    }
-
-    /**
      * Export search data to CSV
      */
     public function exportToCsv(int $days = 30): string
     {
         $queries = SearchQuery::query()
-            ->with('clicks')
             ->where('created_at', '>=', now()->subDays($days))
             ->orderByDesc('created_at')
             ->get();
 
-        $csv = "Query,Results Count,Response Time (ms),Clicks,Created At,Locale,User ID\n";
+        $csv = "Query,Results Count,Response Time (ms),Created At,Locale,User ID\n";
 
         foreach ($queries as $query) {
             $csv .= sprintf(
-                "\"%s\",%d,%d,%d,\"%s\",\"%s\",%s\n",
+                "\"%s\",%d,%d,\"%s\",\"%s\",%s\n",
                 str_replace('"', '""', $query->query),
                 $query->results_count,
                 $query->response_time_ms ?? 0,
-                $query->clicks->count(),
                 $query->created_at->format('Y-m-d H:i:s'),
                 $query->locale,
                 $query->user_id ?? 'Guest'

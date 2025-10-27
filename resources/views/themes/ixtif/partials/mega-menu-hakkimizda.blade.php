@@ -38,40 +38,21 @@
         {{-- ========================================== --}}
         <div class="hidden lg:block">
             <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-6 border-2 border-indigo-200 dark:border-indigo-800">
-                <div class="grid grid-cols-4 gap-6">
+                <div class="grid grid-cols-3 gap-6">
 
                     {{-- 1. Hakkımızda --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600">
-                        <div class="flex items-center gap-3 mb-4">
+                    <a href="{{ href('Page', 'show', 'hakkimizda') }}"
+                       class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600 block">
+                        <div class="flex items-center gap-3">
                             <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-building text-white text-2xl"></i>
                             </div>
                             <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Kurumsal</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Hakkımızda</div>
+                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Hakkımızda</h3>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Firmamızı Tanıyın</div>
                             </div>
                         </div>
-                        <ul class="space-y-2">
-                            <li>
-                                <a href="{{ href('Page', 'show', 'hakkimizda') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Firmamızı Tanıyın
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ href('Page', 'show', 'hakkimizda') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Vizyonumuz & Misyonumuz
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ href('Page', 'show', 'hakkimizda') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Değerlerimiz
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    </a>
 
                     {{-- 2. İletişim --}}
                     <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-green-400 dark:hover:border-green-600">
@@ -150,39 +131,6 @@
                                    target="_blank"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Twitter
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {{-- 4. Yasal Mevzuat --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group border-2 border-transparent hover:border-red-400 dark:hover:border-red-600">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-scale-balanced text-white text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">Yasal</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Mevzuat & Politikalar</div>
-                            </div>
-                        </div>
-                        <ul class="space-y-2">
-                            <li>
-                                <a href="{{ href('Page', 'show', 'gizlilik-politikasi') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Gizlilik Politikası
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ href('Page', 'show', 'kullanim-kosullari') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Kullanım Koşulları
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ href('Page', 'show', 'kvkk-aydinlatma') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>KVKK Aydınlatma
                                 </a>
                             </li>
                         </ul>

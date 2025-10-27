@@ -848,7 +848,7 @@ Telefon (Sabit): 0216 755 3 555
 Telefon (Mobil): 0501 005 67 58
 E-posta: info@ixtif.com
 WhatsApp: 0532 216 07 54
-WhatsApp Business: https://wa.me/905322160754
+WhatsApp Business: https://wa.me/905010056758
 ```
 
 **Çalışma Saatleri:**
@@ -862,12 +862,12 @@ Pazar: Kapalı
 
 **Departmanlar:**
 ```
-📧 Satış: satis@ixtif.com | 💬 WhatsApp: wa.me/905322160754?text=Satış
-📧 Kiralama: kiralama@ixtif.com | 💬 WhatsApp: wa.me/905322160754?text=Kiralama
-📧 Servis: servis@ixtif.com | 💬 WhatsApp: wa.me/905322160754?text=Servis
-📧 Yedek Parça: yedekparca@ixtif.com | 💬 WhatsApp: wa.me/905322160754?text=YedekParca
-📧 İnsan Kaynakları: ik@ixtif.com
-📧 Muhasebe: muhasebe@ixtif.com
+📧 Satış: info@ixtif.com | 💬 WhatsApp: wa.me/905010056758?text=Satış
+📧 Kiralama: info@ixtif.com | 💬 WhatsApp: wa.me/905010056758?text=Kiralama
+📧 Servis: info@ixtif.com | 💬 WhatsApp: wa.me/905010056758?text=Servis
+📧 Yedek Parça: info@ixtif.com | 💬 WhatsApp: wa.me/905010056758?text=YedekParca
+📧 İnsan Kaynakları: info@ixtif.com
+📧 Muhasebe: info@ixtif.com
 ```
 
 **İletişim Formu:**
@@ -897,12 +897,12 @@ Pazar: Kapalı
 - 👥 Facebook: facebook.com/ixtif
 - 🎥 YouTube: youtube.com/@ixtif
 - 🐦 Twitter: twitter.com/ixtif
-- 💬 WhatsApp: wa.me/905322160754
+- 💬 WhatsApp: wa.me/905010056758
 
 **Hızlı İletişim Kanalları:**
 - 📞 Sesli Arama (Sabit): 0216 755 3 555
 - 📱 Sesli Arama (Mobil): 0501 005 67 58
-- 💬 WhatsApp Chat: wa.me/905322160754
+- 💬 WhatsApp Chat: wa.me/905010056758
 - 📧 E-posta: info@ixtif.com
 - 🌐 Canlı Destek: www.ixtif.com (site üzerinden)
 
@@ -1320,7 +1320,7 @@ site_email            → info@ixtif.com
 ```blade
 @php
     $whatsapp = settings('contact_whatsapp_1', '0532 216 07 54');
-    // "0532 216 07 54" → "905322160754"
+    // "0532 216 07 54" → "905010056758"
     $waLink = '9' . str_replace([' ', '0'], '', $whatsapp);
 @endphp
 
@@ -1344,7 +1344,7 @@ site_email            → info@ixtif.com
         </a>
     </p>
     <p>
-        💬 WhatsApp: <a href="https://wa.me/905322160754" target="_blank">
+        💬 WhatsApp: <a href="https://wa.me/905010056758" target="_blank">
             {{ settings('contact_whatsapp_1', '0532 216 07 54') }}
         </a>
     </p>
@@ -1404,7 +1404,7 @@ site_email            → info@ixtif.com
 📧 E-posta: info@ixtif.com
 🌐 Web: www.ixtif.com
 💬 WhatsApp: 0532 216 07 54 (7/24 Hızlı Destek)
-🔗 WhatsApp Business: https://wa.me/905322160754
+🔗 WhatsApp Business: https://wa.me/905010056758
 
 **Departmanlar:**
 - Satış: satis@ixtif.com

@@ -38,7 +38,7 @@
 }">
 
     <!-- Left Side: Info & Contact Details & Form -->
-    <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 animate-slide-in-left overflow-y-auto">
+    <div class="lg:w-1/2 lg:min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 animate-slide-in-left overflow-y-auto">
 
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-20 pointer-events-none">
@@ -273,15 +273,15 @@
         </div>
     </div>
 
-    <!-- Right Side: AI Chat Assistant (Sticky) -->
-    <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 animate-slide-in-right">
+    <!-- Right Side: AI Chat Assistant (Sticky on Desktop Only) -->
+    <div class="lg:w-1/2 lg:min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 animate-slide-in-right">
 
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-10 pointer-events-none">
             <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
-        <!-- Sticky Container -->
+        <!-- Sticky Container (Desktop Only) -->
         <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-xl mx-auto">
             <x-ai.inline-widget
                 title="iXtif Destek Asistanı"

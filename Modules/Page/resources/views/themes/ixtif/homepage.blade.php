@@ -78,7 +78,7 @@
 
             <!-- Right Content - Hero Image -->
             <div class="flex items-center justify-center">
-                <img src="https://ixtif.com/storage/tenant2/13/hero.png"
+                <img src="https://ixtif.com/storage/tenant2/79/hero.jpg"
                      alt="iXtif İstif Makinesi - Forklift"
                      class="w-full h-auto object-contain"
                      loading="lazy">
@@ -231,20 +231,12 @@
 <section class="w-full py-8 relative overflow-hidden">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
-            {{-- Sol: Video --}}
+            {{-- Sol: Görsel --}}
             <div class="relative rounded-3xl h-[600px] overflow-hidden">
-                <video
-                    autoplay
-                    loop
-                    muted
-                    playsinline
-                    poster="https://ixtif.com/storage/tenant2/77/f4-super-hero.jpg"
-                    class="absolute inset-0 w-full h-full object-cover"
-                >
-                    <source src="https://ixtif.com/storage/tenant2/76/f4-super-hero.mp4" type="video/mp4">
-                    {{-- Fallback için poster gösterilecek --}}
-                    <img src="https://ixtif.com/storage/tenant2/77/f4-super-hero.jpg" alt="İxtif Depo ve Üretim" class="w-full h-full object-cover">
-                </video>
+                <img src="https://ixtif.com/storage/tenant2/78/super-hero.jpg"
+                     alt="İxtif - Depoda, Üretimde, Dağıtımda"
+                     class="w-full h-full object-cover"
+                     loading="lazy">
             </div>
 
             {{-- Sağ: İçerik --}}

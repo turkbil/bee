@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotoğraf Efekt Demo - İxtif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 1. Hover Zoom + Pan */
+        .effect-hover-zoom img {
+            transition: transform 0.6s ease-out;
+        }
+        .effect-hover-zoom:hover img {
+            transform: scale(1.15) translate(10px, -10px);
+        }
+
+        /* 2. Parallax Scroll Effect */
+        .effect-parallax img {
+            transition: transform 0.3s ease-out;
+        }
+
+        /* 3. Ken Burns Effect (Continuous Animation) */
+        @keyframes kenBurns {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+            25% {
+                transform: scale(1.1) translate(-20px, -15px);
+            }
+            50% {
+                transform: scale(1.15) translate(15px, -10px);
+            }
+            75% {
+                transform: scale(1.1) translate(-10px, 10px);
+            }
+            100% {
+                transform: scale(1) translate(0, 0);
+            }
+        }
+        .effect-ken-burns img {
+            animation: kenBurns 20s ease-in-out infinite;
+        }
+
+        /* 4. Tilt Effect (3D) */
+        .effect-tilt {
+            perspective: 1000px;
+        }
+        .effect-tilt img {
+            transition: transform 0.3s ease-out;
+            transform-style: preserve-3d;
+        }
+
+        /* 5. Gradient Overlay + Pulse */
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        .effect-gradient-pulse::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.3), rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3));
+            background-size: 200% 200%;
+            animation: gradientMove 8s ease infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .effect-gradient-pulse img {
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        /* Common */
+        .container-box {
+            position: relative;
+            border-radius: 1.5rem;
+            height: 600px;
+            overflow: hidden;
+        }
+        .container-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Navigation */
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-8">
+    <div class="max-w-7xl w-full">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-black mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Fotoğraf Efekt Demosu
+            </h1>
+            <p class="text-gray-400 text-xl mb-6" id="effectName">Hover Zoom + Pan</p>
+            <div class="flex items-center justify-center gap-4">
+                <span class="text-blue-400 font-bold" id="currentEffect">1</span>
+                <span class="text-gray-500">/</span>
+                <span class="text-gray-400">5</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid lg:grid-cols-2 gap-16 items-center mb-12">
+            <!-- Left: Photo with Effect -->
+            <div id="photoContainer" class="container-box effect-hover-zoom">
+                <img src="https://ixtif.com/storage/tenant2/78/super-hero.jpg"
+                     alt="İxtif - Depoda, Üretimde, Dağıtımda"
+                     id="effectPhoto">
+            </div>
+
+            <!-- Right: Description -->
+            <div>
+                <h2 class="text-5xl font-black text-white mb-6">Depoda, Üretimde, Dağıtımda</h2>
+                <p class="text-xl text-gray-400 mb-6 leading-relaxed">
+                    Depoda, üretimde, dağıtımda işletmelerin yükünü hafifletmek için çalışan
+                    <span class="whitespace-nowrap text-white font-bold">İXTİF İÇ VE DIŞ TİCARET ANONİM ŞİRKETİ,</span>
+                    satışın yanında kiralama, ikinci el, teknik servis ve bakım anlaşmalarıyla tam çözüm sunar.
+                </p>
+
+                <!-- Effect Description -->
+                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-8">
+                    <h3 class="text-2xl font-bold mb-3 text-blue-400" id="effectTitle">1. Hover Zoom + Pan</h3>
+                    <p class="text-gray-300 leading-relaxed" id="effectDescription">
+                        Mouse ile fotoğrafın üzerine geldiğinizde hafifçe büyür ve kayar.
+                        Modern, etkileşimli efekt. Container sınırları içinde kalır.
+                    </p>
+                    <div class="mt-4 text-sm text-gray-500" id="effectTech">
+                        <strong>Teknik:</strong> CSS hover + transform scale + translate
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="text-center">
+                        <div class="text-4xl font-black text-blue-400 mb-2">
+                            <i class="fa-light fa-truck-fast"></i>
+                        </div>
+                        <div class="text-gray-400">Hızlı Teslimat</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-black text-blue-400 mb-2">
+                            <i class="fa-light fa-shield-check"></i>
+                        </div>
+                        <div class="text-gray-400">Garanti Güvencesi</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-black text-blue-400 mb-2">
+                            <i class="fa-light fa-screwdriver-wrench"></i>
+                        </div>
+                        <div class="text-gray-400">Teknik Servis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex items-center justify-center gap-8">
+            <button id="prevBtn"
+                    class="nav-btn bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                    disabled>
+                ← Geri
+            </button>
+            <button id="nextBtn"
+                    class="nav-btn bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg">
+                İleri →
+            </button>
+        </div>
+
+        <!-- Instructions -->
+        <div class="text-center mt-8 text-gray-500 text-sm">
+            <p>💡 Her efekti test edin! Mouse ile fotoğrafın üzerine gelin veya scroll yapın.</p>
+        </div>
+    </div>
+
+    <!-- Font Awesome (for icons) -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.0/css/all.css">
+
+    <script>
+        const effects = [
+            {
+                name: 'Hover Zoom + Pan',
+                class: 'effect-hover-zoom',
+                title: '1. Hover Zoom + Pan',
+                description: 'Mouse ile fotoğrafın üzerine geldiğinizde hafifçe büyür ve kayar. Modern, etkileşimli efekt. Container sınırları içinde kalır.',
+                tech: 'CSS hover + transform scale + translate',
+                instruction: 'Mouse\'u fotoğrafın üzerine getirin!'
+            },
+            {
+                name: 'Parallax Scroll',
+                class: 'effect-parallax',
+                title: '2. Parallax Scroll',
+                description: 'Sayfa kaydıkça fotoğraf yavaşça container içinde hareket eder. Derinlik hissi verir, overflow hidden ile sınır içinde kalır.',
+                tech: 'JavaScript scroll event + transform translateY',
+                instruction: 'Sayfayı yukarı aşağı kaydırın!'
+            },
+            {
+                name: 'Ken Burns Effect',
+                class: 'effect-ken-burns',
+                title: '3. Ken Burns Effect (Sinematik)',
+                description: 'Fotoğraf sürekli yavaşça zoom yapıp hafif kayar. Video gibi canlı, sinematik efekt. Kullanıcı etkileşimi gerektirmez.',
+                tech: 'CSS @keyframes animation + scale + translate',
+                instruction: 'Otomatik animasyon - izleyin!'
+            },
+            {
+                name: '3D Tilt Effect',
+                class: 'effect-tilt',
+                title: '4. 3D Tilt Effect',
+                description: 'Mouse pozisyonuna göre fotoğraf hafif eğilir. 3D derinlik hissi verir, modern ve interaktif.',
+                tech: 'JavaScript mousemove + CSS 3D transform',
+                instruction: 'Mouse\'u fotoğraf üzerinde hareket ettirin!'
+            },
+            {
+                name: 'Gradient Overlay + Pulse',
+                class: 'effect-gradient-pulse',
+                title: '5. Gradient Overlay + Pulse',
+                description: 'Fotoğraf üzerinde renkli gradient overlay hareket eder ve hafif pulse/nefes alma efekti vardır. Çok dinamik!',
+                tech: 'CSS gradient animation + pulse animation',
+                instruction: 'Otomatik animasyon - izleyin!'
+            }
+        ];
+
+        let currentIndex = 0;
+        const container = document.getElementById('photoContainer');
+        const photo = document.getElementById('effectPhoto');
+        const effectName = document.getElementById('effectName');
+        const effectTitle = document.getElementById('effectTitle');
+        const effectDescription = document.getElementById('effectDescription');
+        const effectTech = document.getElementById('effectTech');
+        const currentEffectSpan = document.getElementById('currentEffect');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateEffect() {
+            const effect = effects[currentIndex];
+
+            // Remove all effect classes
+            container.className = 'container-box ' + effect.class;
+
+            // Update text
+            effectName.textContent = effect.name;
+            effectTitle.textContent = effect.title;
+            effectDescription.textContent = effect.description;
+            effectTech.innerHTML = `<strong>Teknik:</strong> ${effect.tech}<br><strong>İpucu:</strong> ${effect.instruction}`;
+            currentEffectSpan.textContent = currentIndex + 1;
+
+            // Update buttons
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === effects.length - 1;
+
+            // Special handling for parallax
+            if (effect.class === 'effect-parallax') {
+                enableParallax();
+            } else {
+                disableParallax();
+            }
+
+            // Special handling for tilt
+            if (effect.class === 'effect-tilt') {
+                enableTilt();
+            } else {
+                disableTilt();
+            }
+        }
+
+        // Parallax Scroll
+        let parallaxHandler = null;
+        function enableParallax() {
+            parallaxHandler = function() {
+                const rect = container.getBoundingClientRect();
+                const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                const moveY = (scrollPercent - 0.5) * 100; // -50 to 50
+                photo.style.transform = `translateY(${moveY}px)`;
+            };
+            window.addEventListener('scroll', parallaxHandler);
+            parallaxHandler(); // Initial call
+        }
+        function disableParallax() {
+            if (parallaxHandler) {
+                window.removeEventListener('scroll', parallaxHandler);
+                parallaxHandler = null;
+            }
+        }
+
+        // 3D Tilt
+        let tiltHandler = null;
+        function enableTilt() {
+            tiltHandler = function(e) {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                photo.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            };
+            const resetTilt = function() {
+                photo.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+            };
+            container.addEventListener('mousemove', tiltHandler);
+            container.addEventListener('mouseleave', resetTilt);
+        }
+        function disableTilt() {
+            if (tiltHandler) {
+                container.removeEventListener('mousemove', tiltHandler);
+                tiltHandler = null;
+            }
+        }
+
+        // Navigation
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < effects.length - 1) {
+                currentIndex++;
+                updateEffect();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateEffect();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentIndex < effects.length - 1) {
+                currentIndex++;
+                updateEffect();
+            } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                currentIndex--;
+                updateEffect();
+            }
+        });
+
+        // Initialize
+        updateEffect();
+    </script>
+</body>
+</html>

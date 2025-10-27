@@ -766,49 +766,7 @@
                             },
                             selectProduct(product, index = 0) {
                                 if (product?.url) {
-                                    // Track click before navigation
-                                    this.trackClick(product, index);
                                     window.location.href = product.url;
-                                }
-                            },
-                            async trackClick(product, position) {
-                                if (!product) return;
-
-                                try {
-                                    // Type mapping (frontend format to backend model class)
-                                    // Backslash escape fix: use String.fromCharCode(92) to avoid Blade/Alpine parse errors
-                                    const typeMap = {
-                                        'products': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopProduct',
-                                        'categories': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopCategory',
-                                        'brands': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopBrand'
-                                    };
-
-                                    const modelType = typeMap[product.type] || product.type;
-
-                                    // Extract ID from product
-                                    let productId = product.id;
-                                    if (!productId && product.url) {
-                                        // Try to extract ID from URL if needed
-                                        const urlParts = product.url.split('/');
-                                        productId = parseInt(urlParts[urlParts.length - 1]) || 0;
-                                    }
-
-                                    await fetch('/api/search/track-click', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                                        },
-                                        body: JSON.stringify({
-                                            query: this.query,
-                                            result_id: productId,
-                                            result_type: modelType,
-                                            position: position,
-                                            opened_in_new_tab: false
-                                        })
-                                    });
-                                } catch (error) {
-                                    console.warn('Click tracking failed:', error);
                                 }
                             },
                             handleFocus() {

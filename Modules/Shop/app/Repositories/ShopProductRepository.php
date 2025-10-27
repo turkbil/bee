@@ -171,6 +171,10 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
         if ($sortField === 'title') {
             $locale = $filters['currentLocale'] ?? app()->getLocale();
             $query->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) {$sortDirection}");
+        } elseif ($sortField === 'sort_order') {
+            // Sort order aynı olanları product_id ASC ile sırala (eski ürünler önce, yeni ürünler sonda)
+            $query->orderBy('sort_order', $sortDirection)
+                  ->orderBy('product_id', 'asc');
         } else {
             $query->orderBy($sortField, $sortDirection);
         }

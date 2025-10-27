@@ -112,12 +112,14 @@ return new class extends Migration
             }
 
             // custom_json_fields'i güncelle (sadece veri varsa)
+            // NOT: sort_order gibi önemli field'ları KORUMAK için sadece gerekli kolonları update et
             if (!empty($customJsonFields)) {
                 DB::table('shop_products')
                     ->where('product_id', $product->product_id)
                     ->update([
                         'custom_json_fields' => json_encode($customJsonFields),
                         'updated_at' => now()
+                        // sort_order kasıtlı olarak dahil edilmedi - mevcut değer korunur
                     ]);
             }
         }

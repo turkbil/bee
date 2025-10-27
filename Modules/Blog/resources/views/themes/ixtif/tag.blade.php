@@ -81,26 +81,9 @@
                         <div class="md:flex">
                             @if($featuredImage)
                                 <div class="md:w-1/3 lg:w-2/5">
-                                    <div class="aspect-[16/10] md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden relative" x-data="{ loaded: false }">
-                                        {{-- Skeleton Loader --}}
-                                        <div x-show="!loaded"
-                                             class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
-                                            <div class="w-full h-full flex items-center justify-center">
-                                                <div class="flex flex-col items-center gap-2">
-                                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                                    <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- Actual Image --}}
+                                    <div class="aspect-[16/10] md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden">
                                         <img src="{{ $featuredImage->getUrl() }}"
                                              alt="{{ $postTitle }}"
-                                             x-show="loaded"
-                                             x-transition:enter="transition ease-out duration-300"
-                                             x-transition:enter-start="opacity-0"
-                                             x-transition:enter-end="opacity-100"
-                                             @load="loaded = true"
                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                              loading="lazy">
                                     </div>

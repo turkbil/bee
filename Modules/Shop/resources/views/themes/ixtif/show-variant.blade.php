@@ -117,26 +117,9 @@
                     </div>
 
                     @if ($featuredImage)
-                        <div class="hidden lg:block relative" x-data="{ loaded: false }">
-                            {{-- Skeleton Loader --}}
-                            <div x-show="!loaded"
-                                 class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse rounded-lg">
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <div class="w-16 h-16 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                        <div class="h-3 w-24 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Actual Image - Net görsel --}}
+                        <div class="hidden lg:block">
                             <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
                                  alt="{{ $title }}"
-                                 x-show="loaded"
-                                 x-transition:enter="transition ease-out duration-300"
-                                 x-transition:enter-start="opacity-0"
-                                 x-transition:enter-end="opacity-100"
-                                 @load="loaded = true"
                                  class="w-full rounded-lg"
                                  loading="lazy">
                         </div>
@@ -207,28 +190,10 @@
                                 };
                             @endphp
                             <a href="{{ $image->getUrl() }}"
-                                class="glightbox block relative overflow-hidden rounded-lg group {{ $spanClass }}"
-                                data-gallery="shop-gallery"
-                                x-data="{ loaded: false }">
-                                {{-- Skeleton Loader --}}
-                                <div x-show="!loaded"
-                                     class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                            <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Actual Image --}}
+                                class="glightbox block overflow-hidden rounded-lg group {{ $spanClass }}"
+                                data-gallery="shop-gallery">
                                 <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
                                      alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                     x-show="loaded"
-                                     x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0"
-                                     x-transition:enter-end="opacity-100"
-                                     @load="loaded = true"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                      loading="lazy">
                                 <div
@@ -371,26 +336,9 @@
                                 class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
 
                                 @if ($variantImageUrl)
-                                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700 relative" x-data="{ loaded: false }">
-                                        {{-- Skeleton Loader --}}
-                                        <div x-show="!loaded"
-                                             class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
-                                            <div class="w-full h-full flex items-center justify-center">
-                                                <div class="flex flex-col items-center gap-2">
-                                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                                    <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {{-- Actual Image --}}
+                                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
                                         <img src="{{ $variantImageUrl }}"
                                              alt="{{ $variantTitle }}"
-                                             x-show="loaded"
-                                             x-transition:enter="transition ease-out duration-300"
-                                             x-transition:enter-start="opacity-0"
-                                             x-transition:enter-end="opacity-100"
-                                             @load="loaded = true"
                                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                              loading="lazy">
                                     </div>

@@ -38,30 +38,12 @@
                     <div class="lg:col-span-1 order-2 lg:order-1">
                         <figure class="sticky top-8">
                             <a href="{{ $featuredImage->getUrl() }}"
-                               class="glightbox block relative"
+                               class="glightbox block"
                                data-gallery="portfolio-gallery"
                                data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                               data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}"
-                               x-data="{ loaded: false }">
-                                {{-- Skeleton Loader --}}
-                                <div x-show="!loaded"
-                                     class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse rounded-xl">
-                                    <div class="w-full h-full flex items-center justify-center">
-                                        <div class="flex flex-col items-center gap-3">
-                                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                            <div class="h-3 w-24 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Actual Image --}}
+                               data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
                                 <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
                                      alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                     x-show="loaded"
-                                     x-transition:enter="transition ease-out duration-300"
-                                     x-transition:enter-start="opacity-0"
-                                     x-transition:enter-end="opacity-100"
-                                     @load="loaded = true"
                                      class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
                                      loading="lazy">
                             </a>
@@ -122,30 +104,12 @@
                         @foreach($galleryImages as $image)
                             <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
                                 <a href="{{ $image->getUrl() }}"
-                                   class="glightbox block relative"
+                                   class="glightbox block"
                                    data-gallery="portfolio-gallery"
                                    data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}"
-                                   x-data="{ loaded: false }">
-                                    {{-- Skeleton Loader --}}
-                                    <div x-show="!loaded"
-                                         class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
-                                        <div class="w-full h-full flex items-center justify-center">
-                                            <div class="flex flex-col items-center gap-2">
-                                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                                <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Actual Image --}}
+                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
                                     <img src="{{ $image->getUrl('thumb') }}"
                                          alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                         x-show="loaded"
-                                         x-transition:enter="transition ease-out duration-300"
-                                         x-transition:enter-start="opacity-0"
-                                         x-transition:enter-end="opacity-100"
-                                         @load="loaded = true"
                                          class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110"
                                          loading="lazy">
                                 </a>

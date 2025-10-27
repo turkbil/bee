@@ -64,7 +64,7 @@ class RecentSearchesComponent extends Component
     public function render()
     {
         $query = SearchQuery::query()
-            ->with(['user', 'clicks'])
+            ->with(['user'])
             ->orderByDesc('created_at');
 
         // Date filter

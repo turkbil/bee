@@ -183,7 +183,7 @@ class OpenAIService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->timeout(600)->post($this->baseUrl . '/chat/completions', $payload);
+            ])->timeout(30)->post($this->baseUrl . '/chat/completions', $payload);
 
             if ($response->successful()) {
                 // GPT-5 non-streaming response (JSON)

@@ -8,7 +8,6 @@ use Livewire\Attributes\{Url, Layout};
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Search\App\Models\SearchQuery;
-use Modules\Search\App\Models\SearchClick;
 
 #[Layout('admin.layout')]
 class SearchQueriesManagementComponent extends Component
@@ -188,21 +187,8 @@ class SearchQueriesManagementComponent extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        // Get most clicked queries
-        $mostClickedQueries = SearchClick::query()
-            ->join('search_queries', 'search_clicks.search_query_id', '=', 'search_queries.id')
-            ->selectRaw('
-                search_queries.query,
-                COUNT(*) as click_count
-            ')
-            ->groupBy('search_queries.query')
-            ->orderByDesc('click_count')
-            ->limit(10)
-            ->get();
-
         return view('search::admin.livewire.search-queries-management-component', [
             'queries' => $queries,
-            'mostClickedQueries' => $mostClickedQueries,
         ]);
     }
 }

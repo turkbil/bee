@@ -686,9 +686,9 @@ class PublicAIController extends Controller
             }
 
             // Call AI service with enhanced system prompt + conversation history
-            // 🔄 AUTOMATIC FALLBACK CHAIN: GPT-5-mini → GPT-4o-mini → Claude-Haiku → DeepSeek
+            // 🔄 AUTOMATIC FALLBACK CHAIN: GPT-4o-mini → Claude-Haiku → DeepSeek
             $aiResponseText = null;
-            $usedModel = 'gpt-5-mini';
+            $usedModel = 'gpt-4o-mini';
 
             try {
                 $aiResponse = $this->aiService->ask($validated['message'], [
@@ -1609,8 +1609,8 @@ class PublicAIController extends Controller
                 $formatted[] = "- ASLA örnek ürün adı/slug kullanma!";
                 $formatted[] = "";
 
-                // LIMIT: Maksimum 30 ürün göster (token tasarrufu + tüm transpaletleri kapsa)
-                $limitedProducts = array_slice($shopContext['all_products'], 0, 30);
+                // LIMIT: Maksimum 10 ürün göster (token tasarrufu + hız optimizasyonu)
+                $limitedProducts = array_slice($shopContext['all_products'], 0, 10);
 
                 foreach ($limitedProducts as $product) {
                     $title = is_array($product['title']) ? json_encode($product['title'], JSON_UNESCAPED_UNICODE) : $product['title'];

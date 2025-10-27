@@ -345,9 +345,9 @@
                                 @endif
                             </div>
 
-                            {{-- Yapay Zeka ile Soru Sor - Hero sağdaki inline chat'i aç --}}
+                            {{-- Yapay Zeka ile Soru Sor - Hero sağdaki inline chat'i aç (MOBİLDE GİZLİ!) --}}
                             <button @click="isChatOpen = true"
-                                class="inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all self-start">
+                                class="hidden lg:inline-flex items-center justify-center gap-3 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all self-start">
                                 <i class="fa-solid fa-robot"></i>
                                 <span>Yapay Zeka ile Soru Sor</span>
                             </button>
@@ -1140,8 +1140,54 @@
                                 <div class="text-sm text-white">En iyi fiyat garantisi</div>
                             </div>
 
-                            {{-- CTA Buttons --}}
-                            <div class="space-y-4">
+                            {{-- CTA Buttons - MOBILE: 3'lü grid sadece ikonlar | DESKTOP: Normal --}}
+
+                            {{-- MOBİL GÖRÜNÜM (< lg): 3'lü grid, sadece ikonlar --}}
+                            <div class="lg:hidden space-y-3">
+                                <div class="grid grid-cols-3 gap-2">
+                                    {{-- Teklif Al İkonu --}}
+                                    <a href="#contact"
+                                        class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-lg transition-colors">
+                                        <i class="fa-solid fa-envelope text-xl"></i>
+                                    </a>
+
+                                    {{-- Telefon İkonu --}}
+                                    @if($contactPhone)
+                                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                                            class="flex items-center justify-center bg-gray-700 hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-700 text-white py-4 rounded-lg transition-colors">
+                                            <i class="fa-solid fa-phone text-xl"></i>
+                                        </a>
+                                    @else
+                                        <div class="flex items-center justify-center bg-gray-300 dark:bg-gray-700 text-gray-500 py-4 rounded-lg opacity-50">
+                                            <i class="fa-solid fa-phone text-xl"></i>
+                                        </div>
+                                    @endif
+
+                                    {{-- WhatsApp İkonu --}}
+                                    @if($contactWhatsapp)
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                                            class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg transition-colors">
+                                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                                        </a>
+                                    @else
+                                        <div class="flex items-center justify-center bg-gray-300 dark:bg-gray-700 text-gray-500 py-4 rounded-lg opacity-50">
+                                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- PDF İndir (Altta) --}}
+                                @php
+                                    $pdfSlug = $item->getTranslated('slug', $currentLocale);
+                                @endphp
+                                <a href="{{ route('shop.pdf', ['slug' => $pdfSlug]) }}" target="_blank"
+                                    class="flex items-center justify-center gap-2 border-2 border-red-500 dark:border-red-600 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 text-sm font-medium py-3 rounded-lg hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20 dark:hover:text-red-300 hover:border-red-600 dark:hover:border-red-500 transition-all">
+                                    <i class="fa-solid fa-file-pdf"></i>PDF İndir
+                                </a>
+                            </div>
+
+                            {{-- DESKTOP GÖRÜNÜM (>= lg): Normal butonlar --}}
+                            <div class="hidden lg:block space-y-4">
                                 <a href="#contact"
                                     class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
                                     <i class="fa-solid fa-envelope"></i>Teklif İste

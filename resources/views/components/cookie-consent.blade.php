@@ -13,19 +13,21 @@
                 <span class="text-xl">🍪</span>
                 <h3 class="font-semibold text-gray-900 dark:text-white">Gizlilik Bildirimi</h3>
             </div>
-            <p class="text-xs text-gray-600 dark:text-gray-300 mb-2">Sitemizde gezinmeye devam ederek çerez kullanımını kabul etmiş sayılırsınız.</p>
+            <p class="text-xs text-gray-600 dark:text-gray-300 mb-3">Sitemizde gezinmeye devam ederek çerez kullanımını kabul etmiş sayılırsınız.</p>
 
-            {{-- Timer --}}
-            <div class="mb-3 text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-1 rounded inline-flex items-center gap-1">
-                <i class="fa-solid fa-clock"></i>
-                <span x-text="timeRemaining + 's'"></span>
-            </div>
-
-            <div class="flex gap-2">
+            {{-- Kabul Et - Sayaç - Ayarlar --}}
+            <div class="flex items-center gap-2">
                 <button @click="acceptAll()"
                         class="flex-1 text-sm py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
                     Kabul Et
                 </button>
+
+                {{-- Timer (Orta) --}}
+                <div class="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 px-2 py-2 rounded inline-flex items-center gap-1">
+                    <i class="fa-solid fa-clock"></i>
+                    <span x-text="timeRemaining + 's'"></span>
+                </div>
+
                 <button @click="showModal = true; stopAutoAcceptTimer()"
                         class="px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                     <i class="fa-solid fa-gear"></i>
@@ -144,8 +146,8 @@
             </div>
 
             <p class="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
-                Daha fazla bilgi için <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Gizlilik Politikası</a> ve
-                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Çerez Politikası</a> sayfalarını ziyaret edebilirsiniz.
+                Daha fazla bilgi için <a href="/page/gizlilik-politikasi" class="text-blue-600 dark:text-blue-400 hover:underline">Gizlilik Politikası</a> ve
+                <a href="/page/cerez-politikasi" class="text-blue-600 dark:text-blue-400 hover:underline">Çerez Politikası</a> sayfalarını ziyaret edebilirsiniz.
             </p>
         </div>
     </div>

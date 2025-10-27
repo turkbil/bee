@@ -19,7 +19,7 @@
                 class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-600/20 dark:to-purple-600/20">
             </div>
             <div class="relative py-20">
-                <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                <div class="container mx-auto px-4 sm:px-4 md:px-2">
                     <div class="max-w-3xl">
                         <h1
                             class="text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4">
@@ -34,7 +34,7 @@
         </div>
 
         <div class="py-20">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 @if ($items->count() > 0)
                     <!-- Articles Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

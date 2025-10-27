@@ -190,7 +190,7 @@
 
         {{-- Top Info Bar - Scroll'da kaybolacak --}}
         <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
                         @php
@@ -345,7 +345,7 @@
 
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="relative bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
-            <div class="container mx-auto px-4 sm:px-4 md:px-0">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div id="nav-container" class="flex items-center justify-between">
                     {{-- Logo - Sabit Genişlik Container --}}
                     <div class="flex items-center gap-3 py-4" style="width: 200px;">
@@ -914,7 +914,7 @@
                          x-transition:leave="transition ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0"
                          x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
                             @include('themes.ixtif.partials.mega-menu-forklift')
                         </div>
                     </div>
@@ -932,7 +932,7 @@
                          x-transition:leave="transition ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0"
                          x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
                             @include('themes.ixtif.partials.mega-menu-transpalet')
                         </div>
                     </div>
@@ -950,7 +950,7 @@
                          x-transition:leave="transition ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0"
                          x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
                             @include('themes.ixtif.partials.mega-menu-istif')
                         </div>
                     </div>
@@ -968,7 +968,7 @@
                          x-transition:leave="transition ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0"
                          x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-0">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
                             @include('themes.ixtif.partials.mega-menu-content')
                         </div>
                     </div>

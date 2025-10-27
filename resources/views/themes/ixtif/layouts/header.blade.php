@@ -775,11 +775,12 @@
                                 if (!product) return;
 
                                 try {
-                                    // Type mapping (frontend format → backend model class)
+                                    // Type mapping (frontend format to backend model class)
+                                    // Backslash escape fix: use String.fromCharCode(92) to avoid Blade/Alpine parse errors
                                     const typeMap = {
-                                        'products': 'Modules\\Shop\\App\\Models\\ShopProduct',
-                                        'categories': 'Modules\\Shop\\App\\Models\\ShopCategory',
-                                        'brands': 'Modules\\Shop\\App\\Models\\ShopBrand'
+                                        'products': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopProduct',
+                                        'categories': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopCategory',
+                                        'brands': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopBrand'
                                     };
 
                                     const modelType = typeMap[product.type] || product.type;

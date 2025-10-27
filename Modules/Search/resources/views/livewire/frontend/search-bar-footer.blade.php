@@ -1,3 +1,7 @@
+@php
+    $searchShowRoute = route('search.show', ['query' => '_PLACEHOLDER_']);
+@endphp
+
 <div class="relative mb-6"
      x-data="{
          query: $wire.entangle('query').live,
@@ -7,6 +11,7 @@
          total: 0,
          loading: false,
          debounceTimer: null,
+         searchShowUrl: '{{ $searchShowRoute }}',
 
          async fetchSuggestions() {
              const trimmed = this.query?.trim() || '';
@@ -47,7 +52,7 @@
 
          selectKeyword(keyword) {
              if (!keyword?.text) return;
-             window.location.href = '{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
+             window.location.href = this.searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(keyword.text));
          },
 
          selectProduct(product, index = 0) {
@@ -61,11 +66,12 @@
              if (!product) return;
 
              try {
-                 // Type mapping (frontend format → backend model class)
+                 // Type mapping (frontend format to backend model class)
+                 // Type mapping: Use String.fromCharCode(92) for backslashes to avoid Blade/Alpine parse errors
                  const typeMap = {
-                     'products': 'Modules\\Shop\\App\\Models\\ShopProduct',
-                     'categories': 'Modules\\Shop\\App\\Models\\ShopCategory',
-                     'brands': 'Modules\\Shop\\App\\Models\\ShopBrand'
+                     'products': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopProduct',
+                     'categories': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopCategory',
+                     'brands': 'Modules' + String.fromCharCode(92) + 'Shop' + String.fromCharCode(92) + 'App' + String.fromCharCode(92) + 'Models' + String.fromCharCode(92) + 'ShopBrand'
                  };
 
                  const modelType = typeMap[product.type] || product.type;
@@ -98,19 +104,19 @@
          }
      }"
      @click.away="open = false"
-     x-init="$nextTick(() => { if (typeof query !== 'undefined') $watch('query', () => debouncedFetch()); })">
+     x-init="$watch('query', () => debouncedFetch())">
 
     <div class="flex gap-3">
         <div class="flex-1 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl z-10"></i>
             <input type="search"
                    x-model="query"
-                   @keydown.enter.prevent="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+                   @keydown.enter.prevent="if(query?.trim()) window.location.href=searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(query))"
                    placeholder="Ürün ara..."
                    class="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl pl-16 pr-6 py-5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-lg focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 focus:border-blue-500 dark:focus:border-blue-400 transition-all">
         </div>
         <button
-            @click="if(query?.trim()) window.location.href='{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}'.replace('_PLACEHOLDER_', encodeURIComponent(query))"
+            @click="if(query?.trim()) window.location.href=searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(query))"
             :disabled="!query?.trim()"
             :class="{'opacity-50 cursor-not-allowed': !query?.trim()}"
             class="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 text-white px-8 md:px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-2">
@@ -199,7 +205,7 @@
         </div>
 
         {{-- View All Results --}}
-        <a :href="`{{ route('search.show', ['query' => '_PLACEHOLDER_']) }}`.replace('_PLACEHOLDER_', encodeURIComponent(query || ''))"
+        <a :href="searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(query || ''))"
            x-show="(total || 0) > 0"
            class="block p-4 text-center text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 font-semibold transition border-t border-gray-200 dark:border-gray-700">
             <i class="fa-solid fa-arrow-right mr-2"></i>

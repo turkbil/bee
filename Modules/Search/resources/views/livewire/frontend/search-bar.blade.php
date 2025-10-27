@@ -1,18 +1,40 @@
-<div class="relative" x-data="{ open: @entangle('isOpen') }" @click.away="$wire.closeDropdown()">
+@php
+    $searchShowRoute = route('search.show', ['query' => '_PLACEHOLDER_']);
+@endphp
+
+<div class="relative"
+     x-data="{
+         query: @entangle('query').live,
+         open: @entangle('isOpen').live,
+         keywords: [],
+         products: [],
+         total: 0,
+         loading: false,
+         debounceTimer: null,
+         searchShowUrl: '{{ $searchShowRoute }}',
+
+         showEmptyState() {
+             return this.open && !this.loading && (this.keywords.length === 0 && this.products.length === 0) && this.query?.trim().length >= 2;
+         }
+     }"
+     @click.away="open = false">
+
     <div class="relative">
         <input type="search"
-               wire:model.live.debounce.300ms="query"
+               x-model="query"
+               @keydown.enter.prevent="if(query?.trim()) window.location.href=searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(query))"
                placeholder="Ürün, kategori veya marka arayın..."
                class="w-full bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full px-6 py-3 pl-12 pr-24 focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500">
         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-blue-500 dark:text-blue-400"></i>
-        <a href="{{ route('search.show', ['query' => $query]) }}"
+        <a :href="searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(query || ''))"
            class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full hover:from-blue-700 hover:to-purple-700 transition">
             Ara
         </a>
     </div>
 
     @if($isOpen && count($this->results) > 0)
-        <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-xl z-50 max-h-[32rem] overflow-y-auto border border-gray-200 dark:border-gray-700">
+        <div class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 shadow-xl rounded-xl z-50 max-h-[32rem] overflow-y-auto border border-gray-200 dark:border-gray-700"
+             style="z-index:50;">
             @foreach($this->results as $index => $item)
                 <a href="{{ $item['url'] }}"
                    @click="$wire.trackClick({{ $item['id'] }}, '{{ $item['type'] }}', {{ $index }})"
@@ -57,7 +79,7 @@
             @endforeach
 
             @if(strlen($query) >= 2)
-                <a href="{{ route('search.show', ['query' => $query]) }}"
+                <a :href="searchShowUrl.replace('_PLACEHOLDER_', encodeURIComponent(query || ''))"
                    class="block p-3 md:p-4 text-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold transition text-sm md:text-base">
                     Tüm sonuçları gör ({{ count($this->results) }}+) →
                 </a>

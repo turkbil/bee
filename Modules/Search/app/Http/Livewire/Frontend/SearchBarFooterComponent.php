@@ -12,6 +12,7 @@ class SearchBarFooterComponent extends Component
 {
     public $query = '';
     public $isOpen = false;
+    public $refreshKey = 'v3'; // Force cache bust - UTF-8 arrow fix
 
     public function updatedQuery()
     {

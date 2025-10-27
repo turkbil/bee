@@ -1,3 +1,7 @@
+@php
+    View::share('pretitle', 'Tıklama İstatistikleri');
+@endphp
+@include('search::admin.helper')
 <div>
     {{-- Statistics Cards --}}
     <div class="row mb-4">

@@ -20,12 +20,14 @@ class RecentSearchesComponent extends Component
     public $typeFilter = 'all'; // all, products, categories, brands
     public $showZeroResults = false;
     public $searchTerm = '';
+    public $ipFilter = '';
 
     protected $queryString = [
         'dateFilter' => ['except' => 'today'],
         'typeFilter' => ['except' => 'all'],
         'showZeroResults' => ['except' => false],
         'searchTerm' => ['except' => ''],
+        'ipFilter' => ['except' => ''],
     ];
 
     public function updatingSearchTerm()
@@ -45,6 +47,17 @@ class RecentSearchesComponent extends Component
 
     public function updatingShowZeroResults()
     {
+        $this->resetPage();
+    }
+
+    public function updatingIpFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function filterByIp($ip)
+    {
+        $this->ipFilter = $ip;
         $this->resetPage();
     }
 
@@ -77,6 +90,11 @@ class RecentSearchesComponent extends Component
         // Search term filter
         if (!empty($this->searchTerm)) {
             $query->where('query', 'LIKE', "%{$this->searchTerm}%");
+        }
+
+        // IP filter
+        if (!empty($this->ipFilter)) {
+            $query->where('ip_address', $this->ipFilter);
         }
 
         $searches = $query->paginate($this->perPage);

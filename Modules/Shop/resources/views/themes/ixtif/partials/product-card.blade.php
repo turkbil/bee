@@ -12,19 +12,25 @@
        class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 relative"
        x-data="{ loaded: false }">
         @if($product->hasMedia('featured_image'))
-            {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
-            <img src="{{ thumb($product->getFirstMedia('featured_image'), 40, 40, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
-                 alt="{{ $product->getTranslated('title') }}"
-                 :style="'opacity: ' + (loaded ? '0' : '1') + '; transition: opacity 0.3s;'"
-                 class="absolute inset-0 w-full h-full object-contain blur-2xl scale-110 p-4 md:p-6">
+            {{-- Skeleton Loader --}}
+            <div x-show="!loaded"
+                 class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
+                <div class="w-full h-full flex items-center justify-center">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                        <div class="h-2 md:h-3 w-24 md:w-32 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                    </div>
+                </div>
+            </div>
 
             {{-- Actual Image - Net 400x400 --}}
-            <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
+            <div x-show="loaded"
+                 x-transition.opacity.duration.300ms
+                 class="w-full h-full p-4 md:p-6 flex items-center justify-center">
                 <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                      alt="{{ $product->getTranslated('title') }}"
-                     :style="'opacity: ' + (loaded ? '1' : '0') + '; transition: opacity 0.3s;'"
-                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark relative z-10"
                      @load="loaded = true"
+                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark"
                      loading="lazy"
                      decoding="async"
                      fetchpriority="low"
@@ -95,19 +101,25 @@
                class="block w-full aspect-square flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none relative"
                x-data="{ loaded: false }">
                 @if($product->hasMedia('featured_image'))
-                    {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
-                    <img src="{{ thumb($product->getFirstMedia('featured_image'), 40, 40, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
-                         alt="{{ $product->getTranslated('title') }}"
-                         :style="'opacity: ' + (loaded ? '0' : '1') + '; transition: opacity 0.3s;'"
-                         class="absolute inset-0 w-full h-full object-contain blur-2xl scale-110 p-4 md:p-6">
+                    {{-- Skeleton Loader --}}
+                    <div x-show="!loaded"
+                         class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
+                        <div class="w-full h-full flex items-center justify-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-16 h-16 md:w-20 md:h-20 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                                <div class="h-2 md:h-3 w-24 md:w-32 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
 
                     {{-- Actual Image - Net 400x400 --}}
-                    <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
+                    <div x-show="loaded"
+                         x-transition.opacity.duration.300ms
+                         class="w-full h-full p-4 md:p-6 flex items-center justify-center">
                         <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                              alt="{{ $product->getTranslated('title') }}"
-                             :style="'opacity: ' + (loaded ? '1' : '0') + '; transition: opacity 0.3s;'"
-                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark relative z-10"
                              @load="loaded = true"
+                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark"
                              loading="lazy"
                              decoding="async"
                              fetchpriority="low"

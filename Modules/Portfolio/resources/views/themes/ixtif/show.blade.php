@@ -43,11 +43,16 @@
                                data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
                                data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}"
                                x-data="{ loaded: false }">
-                                {{-- Blur Placeholder (LQIP) - Mini 50x50 ~3KB --}}
-                                <img src="{{ thumb($featuredImage, 50, 50, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
-                                     alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                     x-show="!loaded"
-                                     class="absolute inset-0 w-full rounded-xl blur-2xl scale-110">
+                                {{-- Skeleton Loader --}}
+                                <div x-show="!loaded"
+                                     class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse rounded-xl">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <div class="flex flex-col items-center gap-3">
+                                            <div class="w-16 h-16 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                                            <div class="h-3 w-24 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {{-- Actual Image --}}
                                 <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
@@ -56,8 +61,8 @@
                                      x-transition:enter="transition ease-out duration-300"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] relative z-10"
                                      @load="loaded = true"
+                                     class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
                                      loading="lazy">
                             </a>
                             @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
@@ -122,11 +127,16 @@
                                    data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
                                    data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}"
                                    x-data="{ loaded: false }">
-                                    {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
-                                    <img src="{{ thumb($image, 40, 40, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
-                                         alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                         x-show="!loaded"
-                                         class="absolute inset-0 w-full h-48 md:h-56 object-cover blur-2xl scale-110">
+                                    {{-- Skeleton Loader --}}
+                                    <div x-show="!loaded"
+                                         class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <div class="flex flex-col items-center gap-2">
+                                                <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                                                <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     {{-- Actual Image --}}
                                     <img src="{{ $image->getUrl('thumb') }}"
@@ -135,8 +145,8 @@
                                          x-transition:enter="transition ease-out duration-300"
                                          x-transition:enter-start="opacity-0"
                                          x-transition:enter-end="opacity-100"
-                                         class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110 relative z-10"
                                          @load="loaded = true"
+                                         class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110"
                                          loading="lazy">
                                 </a>
                                 @if($image->getCustomProperty('title')[$currentLocale] ?? false)

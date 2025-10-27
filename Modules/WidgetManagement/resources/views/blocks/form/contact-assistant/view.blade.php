@@ -1,4 +1,4 @@
-{{-- Split Screen Glassmorphism Contact Assistant Widget --}}
+{{-- Split Screen Glassmorphism Contact with AI Assistant --}}
 <style>
     .glass {
         background: rgba(255, 255, 255, 0.03);
@@ -21,7 +21,7 @@
 </style>
 
 <!-- Split Screen Container -->
-<div class="min-h-screen flex flex-col lg:flex-row" x-data="{
+<div class="flex flex-col lg:flex-row" x-data="{
     formData: { name: '', email: '', phone: '', subject: '', message: '' },
     isSubmitting: false,
     showSuccess: false,
@@ -37,32 +37,32 @@
     }
 }">
 
-    <!-- Left Side: Info & Contact Details -->
-    <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 flex items-center animate-slide-in-left">
+    <!-- Left Side: Info & Contact Details & Form -->
+    <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 p-8 lg:p-16 animate-slide-in-left overflow-y-auto">
 
         <!-- Background Decoration -->
-        <div class="absolute inset-0 opacity-20">
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
             <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-pink-500 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
         </div>
 
-        <div class="relative z-10 w-full max-w-xl mx-auto">
+        <div class="relative z-10 w-full max-w-xl mx-auto space-y-8">
 
             <!-- Header -->
-            <div class="mb-12">
+            <div class="mb-8">
                 <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full border border-white/20 mb-6">
                     <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span class="text-sm text-gray-300">7/24 Aktif Destek</span>
                 </div>
 
-                <h1 class="text-6xl lg:text-7xl font-black mb-6 leading-tight">
+                <h1 class="text-5xl lg:text-6xl font-black mb-6 leading-tight">
                     <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                        Haydi,<br>Konuşalım
+                        İletişime<br>Geçin
                     </span>
                 </h1>
 
                 <p class="text-xl text-gray-300 leading-relaxed">
-                    Projeleriniz için en iyi çözümleri birlikte bulalım. Size nasıl yardımcı olabiliriz?
+                    Projeleriniz için en iyi çözümleri sunmak üzere yanınızdayız. Bizimle iletişime geçin.
                 </p>
             </div>
 
@@ -116,8 +116,9 @@
                         <div class="flex-1">
                             <h3 class="text-lg font-bold text-white mb-1">Ofis Adresi</h3>
                             <p class="text-gray-300 leading-relaxed">
-                                Çamlık Mah. İmes Sanayi Sitesi<br>
-                                B Blok No:24 Beylikdüzü / İstanbul
+                                Orta Mah. Atayolu Cad.<br>
+                                Boya Vernikçiler Sanayi Sitesi No:51/B<br>
+                                Tuzla / İstanbul / Türkiye
                             </p>
                         </div>
                     </div>
@@ -142,123 +143,132 @@
                     </div>
                 </div>
 
+                <!-- Contact Form -->
+                <div class="bg-slate-900/60 backdrop-blur-md rounded-2xl p-8 border border-white/20 mt-8">
+                    <!-- Success Message -->
+                    <div x-show="showSuccess"
+                         x-transition
+                         class="absolute inset-0 flex items-center justify-center bg-green-500/90 backdrop-blur-lg rounded-2xl z-30">
+                        <div class="text-center p-12">
+                            <i class="fa-solid fa-circle-check text-7xl text-white mb-6"></i>
+                            <h3 class="text-3xl font-black text-white mb-4">Harika!</h3>
+                            <p class="text-white/90 text-lg">Mesajınız başarıyla gönderildi.</p>
+                            <p class="text-white/70 mt-2">En kısa sürede size dönüş yapacağız.</p>
+                        </div>
+                    </div>
+
+                    <!-- Form Header -->
+                    <div class="mb-6">
+                        <h2 class="text-3xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                            Mesaj Gönderin
+                        </h2>
+                        <p class="text-gray-300 text-sm">
+                            Formu doldurun, size 24 saat içinde geri dönelim.
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form @submit.prevent="submitForm" class="space-y-5">
+
+                        <!-- Name -->
+                        <div class="group">
+                            <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-blue-400 transition-colors">
+                                Ad Soyad *
+                            </label>
+                            <input type="text" x-model="formData.name" required
+                                   class="w-full px-5 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 transition-all"
+                                   placeholder="Adınız ve soyadınız">
+                        </div>
+
+                        <!-- Email & Phone -->
+                        <div class="grid md:grid-cols-2 gap-5">
+                            <div class="group">
+                                <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-purple-400 transition-colors">
+                                    E-Posta *
+                                </label>
+                                <input type="email" x-model="formData.email" required
+                                       class="w-full px-5 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all"
+                                       placeholder="ornek@email.com">
+                            </div>
+
+                            <div class="group">
+                                <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-green-400 transition-colors">
+                                    Telefon
+                                </label>
+                                <input type="tel" x-model="formData.phone"
+                                       class="w-full px-5 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/20 transition-all"
+                                       placeholder="0 (5XX) XXX XX XX">
+                            </div>
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="group">
+                            <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-orange-400 transition-colors">
+                                Konu *
+                            </label>
+                            <input type="text" x-model="formData.subject" required
+                                   class="w-full px-5 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-400/20 transition-all"
+                                   placeholder="Mesaj konusu">
+                        </div>
+
+                        <!-- Message -->
+                        <div class="group">
+                            <label class="block text-sm font-bold mb-2 text-gray-300 group-focus-within:text-pink-400 transition-colors">
+                                Mesajınız *
+                            </label>
+                            <textarea x-model="formData.message" required rows="5"
+                                      class="w-full px-5 py-3 bg-white/5 border-2 border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-400/20 transition-all resize-none"
+                                      placeholder="Mesajınızı detaylı bir şekilde yazın..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit"
+                                :disabled="isSubmitting"
+                                class="group w-full relative px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl font-black text-lg text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 disabled:opacity-50 overflow-hidden"
+                                :class="isSubmitting ? '' : 'hover:scale-105'">
+
+                            <!-- Button Content -->
+                            <span class="relative z-10 flex items-center justify-center gap-3">
+                                <span x-show="!isSubmitting">Gönder</span>
+                                <span x-show="isSubmitting">Gönderiliyor...</span>
+                                <i class="fa-solid fa-paper-plane group-hover:translate-x-2 transition-transform" x-show="!isSubmitting"></i>
+                                <i class="fa-solid fa-spinner fa-spin" x-show="isSubmitting"></i>
+                            </span>
+
+                            <!-- Animated Gradient -->
+                            <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        </button>
+
+                        <!-- Privacy Notice -->
+                        <p class="text-xs text-gray-400 text-center">
+                            <i class="fa-solid fa-shield-check text-green-400 mr-1"></i>
+                            Bilgileriniz güvenle saklanır ve 3. kişilerle paylaşılmaz.
+                        </p>
+
+                    </form>
+                </div>
+
             </div>
 
         </div>
     </div>
 
-    <!-- Right Side: Contact Form -->
-    <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 flex items-center animate-slide-in-right">
+    <!-- Right Side: AI Chat Assistant (Sticky) -->
+    <div class="lg:w-1/2 min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 animate-slide-in-right">
 
         <!-- Background Decoration -->
-        <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
             <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
-        <div class="relative z-10 w-full max-w-xl mx-auto">
-
-            <!-- Success Message -->
-            <div x-show="showSuccess"
-                 x-transition
-                 class="absolute inset-0 flex items-center justify-center bg-green-500/90 backdrop-blur-lg rounded-3xl z-30 -m-8">
-                <div class="text-center p-12">
-                    <i class="fa-solid fa-circle-check text-9xl text-white mb-6"></i>
-                    <h3 class="text-4xl font-black text-white mb-4">Harika!</h3>
-                    <p class="text-white/90 text-xl">Mesajınız başarıyla gönderildi.</p>
-                    <p class="text-white/70 mt-2">En kısa sürede size dönüş yapacağız.</p>
-                </div>
-            </div>
-
-            <!-- Form Header -->
-            <div class="mb-10">
-                <h2 class="text-4xl lg:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
-                    Mesaj Gönderin
-                </h2>
-                <p class="text-gray-400 text-lg">
-                    Formu doldurun, size 24 saat içinde geri dönelim.
-                </p>
-            </div>
-
-            <!-- Form -->
-            <form @submit.prevent="submitForm" class="space-y-6">
-
-                <!-- Name -->
-                <div class="group">
-                    <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
-                        Ad Soyad *
-                    </label>
-                    <input type="text" x-model="formData.name" required
-                           class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-400/20 transition-all"
-                           placeholder="Adınız ve soyadınız">
-                </div>
-
-                <!-- Email & Phone -->
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="group">
-                        <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-purple-400 transition-colors">
-                            E-Posta *
-                        </label>
-                        <input type="email" x-model="formData.email" required
-                               class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all"
-                               placeholder="ornek@email.com">
-                    </div>
-
-                    <div class="group">
-                        <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-green-400 transition-colors">
-                            Telefon
-                        </label>
-                        <input type="tel" x-model="formData.phone"
-                               class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-green-400 focus:ring-4 focus:ring-green-400/20 transition-all"
-                               placeholder="0 (5XX) XXX XX XX">
-                    </div>
-                </div>
-
-                <!-- Subject -->
-                <div class="group">
-                    <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-orange-400 transition-colors">
-                        Konu *
-                    </label>
-                    <input type="text" x-model="formData.subject" required
-                           class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-400/20 transition-all"
-                           placeholder="Mesaj konusu">
-                </div>
-
-                <!-- Message -->
-                <div class="group">
-                    <label class="block text-sm font-bold mb-2 text-gray-400 group-focus-within:text-pink-400 transition-colors">
-                        Mesajınız *
-                    </label>
-                    <textarea x-model="formData.message" required rows="6"
-                              class="w-full px-6 py-4 glass border-2 border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-pink-400 focus:ring-4 focus:ring-pink-400/20 transition-all resize-none"
-                              placeholder="Mesajınızı detaylı bir şekilde yazın..."></textarea>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit"
-                        :disabled="isSubmitting"
-                        class="group w-full relative px-8 py-5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl font-black text-xl text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-500 disabled:opacity-50 overflow-hidden"
-                        :class="isSubmitting ? '' : 'hover:scale-105'">
-
-                    <!-- Button Content -->
-                    <span class="relative z-10 flex items-center justify-center gap-3">
-                        <span x-show="!isSubmitting">Gönder</span>
-                        <span x-show="isSubmitting">Gönderiliyor...</span>
-                        <i class="fa-solid fa-paper-plane group-hover:translate-x-2 transition-transform" x-show="!isSubmitting"></i>
-                        <i class="fa-solid fa-spinner fa-spin" x-show="isSubmitting"></i>
-                    </span>
-
-                    <!-- Animated Gradient -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </button>
-
-                <!-- Privacy Notice -->
-                <p class="text-xs text-gray-500 text-center">
-                    <i class="fa-solid fa-shield-check text-green-400 mr-1"></i>
-                    Bilgileriniz güvenle saklanır ve 3. kişilerle paylaşılmaz.
-                </p>
-
-            </form>
-
+        <!-- Sticky Container -->
+        <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-xl mx-auto">
+            <x-ai.inline-widget
+                title="iXtif Destek Asistanı"
+                page-slug="iletisim"
+                :always-open="true"
+                height="700px"
+                theme="purple" />
         </div>
     </div>
 

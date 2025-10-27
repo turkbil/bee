@@ -43,25 +43,9 @@
 
                     {{-- Product Image - Conditional BG --}}
                     @if($featuredProduct->hasMedia('featured_image'))
-                        <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-48 group-hover:scale-105 transition-transform duration-300 relative overflow-hidden"
-                             x-data="{ loaded: false }">
-                            {{-- Skeleton Loader --}}
-                            <div x-show="!loaded"
-                                 class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse rounded-2xl">
-                                <div class="w-full h-full flex items-center justify-center">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
-                                        <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Actual Image - Net 300x300 --}}
-                            <img x-show="loaded"
-                                 x-transition.opacity.duration.300ms
-                                 src="{{ thumb($featuredProduct->getFirstMedia('featured_image'), 300, 300, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                        <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-48 group-hover:scale-105 transition-transform duration-300">
+                            <img src="{{ thumb($featuredProduct->getFirstMedia('featured_image'), 300, 300, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                  alt="{{ is_array($featuredProduct->title) ? $featuredProduct->title['tr'] : $featuredProduct->title }}"
-                                 @load="loaded = true"
                                  class="w-full h-full object-contain"
                                  loading="lazy">
                         </div>
@@ -129,22 +113,9 @@
                             <div class="flex items-center gap-2.5">
                                 @if($product->hasMedia('featured_image'))
                                     {{-- Fotoğraf varsa: Beyaz/Gri arka plan --}}
-                                    <div class="w-11 h-11 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 p-1 border border-gray-200 dark:border-gray-600 relative overflow-hidden"
-                                         x-data="{ loaded: false }">
-                                        {{-- Skeleton Loader --}}
-                                        <div x-show="!loaded"
-                                             class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-600 dark:to-gray-500 animate-pulse rounded-lg">
-                                            <div class="w-full h-full flex items-center justify-center">
-                                                <div class="w-5 h-5 bg-gray-200 dark:bg-gray-400 rounded-full"></div>
-                                            </div>
-                                        </div>
-
-                                        {{-- Actual Image --}}
-                                        <img x-show="loaded"
-                                             x-transition.opacity.duration.300ms
-                                             src="{{ thumb($product->getFirstMedia('featured_image'), 44, 44, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                                    <div class="w-11 h-11 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 p-1 border border-gray-200 dark:border-gray-600">
+                                        <img src="{{ thumb($product->getFirstMedia('featured_image'), 44, 44, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                              alt="{{ is_array($product->title) ? $product->title['tr'] : $product->title }}"
-                                             @load="loaded = true"
                                              class="w-full h-full object-contain"
                                              loading="lazy">
                                     </div>

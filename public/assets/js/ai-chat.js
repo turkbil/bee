@@ -125,6 +125,9 @@ function registerAiChatStore() {
             // Save state to localStorage
             localStorage.setItem('ai_chat_floating_open', 'true');
 
+            // Clear "user closed" flag (user is actively using the chat now)
+            localStorage.removeItem('user_closed_ai_chat');
+
             // Mark all messages as read
             if (this.messages.length > 0) {
                 localStorage.setItem('ai_chat_last_read_index', (this.messages.length - 1).toString());
@@ -142,6 +145,9 @@ function registerAiChatStore() {
 
             // Save state to localStorage
             localStorage.setItem('ai_chat_floating_open', 'false');
+
+            // Mark that user has manually closed the widget (prevents auto-open on other pages)
+            localStorage.setItem('user_closed_ai_chat', 'true');
         },
 
         // Register inline widget

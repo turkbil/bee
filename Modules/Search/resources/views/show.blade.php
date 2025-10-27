@@ -64,6 +64,35 @@
             debounceTimer: null,
             maxAutoLoadPages: 50,
             autoLoadedPages: 1,
+            async trackClick(itemId, itemType, position) {
+                try {
+                    // Convert type string to model class name
+                    const typeMap = {
+                        'products': 'Modules\\Shop\\App\\Models\\ShopProduct',
+                        'categories': 'Modules\\Shop\\App\\Models\\ShopCategory',
+                        'brands': 'Modules\\Shop\\App\\Models\\ShopBrand'
+                    };
+
+                    const modelType = typeMap[itemType] || itemType;
+
+                    await fetch('/api/search/track-click', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]')?.content || ''
+                        },
+                        body: JSON.stringify({
+                            query: this.query,
+                            result_id: itemId,
+                            result_type: modelType,
+                            position: position,
+                            opened_in_new_tab: false
+                        })
+                    });
+                } catch (error) {
+                    console.warn('Click tracking failed:', error);
+                }
+            },
             scrollToResults() {
                 // Smooth scroll to results section when new search is performed
                 const resultsSection = document.querySelector('.search-results-container');
@@ -275,6 +304,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     <template x-for="(item, index) in results" :key="`${item.id}-${index}`">
                         <a :href="item.url"
+                           @click="trackClick(item.id, item.type, index)"
                            class="block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition p-4 md:p-6 border border-gray-200 dark:border-gray-700 group">
                             <div class="flex flex-row gap-3 md:gap-5">
                                 <template x-if="item.image">

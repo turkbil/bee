@@ -1200,7 +1200,7 @@
                 {{-- İletişim Özel Buton --}}
                 <a href="{{ href('Page', 'show', 'iletisim') }}"
                    @click="mobileMenuOpen = false"
-                   class="block px-3 py-2.5 rounded-lg text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center justify-center gap-2 shadow-lg transition">
+                   class="block px-3 py-2.5 rounded-lg text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center justify-start gap-2 shadow-lg transition">
                     <i class="fa-solid fa-envelope text-sm"></i>
                     <span>İletişim</span>
                 </a>

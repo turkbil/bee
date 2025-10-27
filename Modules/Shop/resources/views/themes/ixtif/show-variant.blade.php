@@ -118,11 +118,16 @@
 
                     @if ($featuredImage)
                         <div class="hidden lg:block relative" x-data="{ loaded: false }">
-                            {{-- Blur Placeholder (LQIP) - Mini 50x50 ~3KB --}}
-                            <img src="{{ thumb($featuredImage, 50, 50, ['quality' => 50, 'scale' => 0, 'format' => 'webp']) }}"
-                                 alt="{{ $title }}"
-                                 x-show="!loaded"
-                                 class="absolute inset-0 w-full h-full object-cover rounded-lg blur-2xl scale-110">
+                            {{-- Skeleton Loader --}}
+                            <div x-show="!loaded"
+                                 class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse rounded-lg">
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-16 h-16 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                                        <div class="h-3 w-24 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
 
                             {{-- Actual Image - Net görsel --}}
                             <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
@@ -131,8 +136,8 @@
                                  x-transition:enter="transition ease-out duration-300"
                                  x-transition:enter-start="opacity-0"
                                  x-transition:enter-end="opacity-100"
-                                 class="w-full rounded-lg relative z-10"
                                  @load="loaded = true"
+                                 class="w-full rounded-lg"
                                  loading="lazy">
                         </div>
                     @endif
@@ -205,11 +210,16 @@
                                 class="glightbox block relative overflow-hidden rounded-lg group {{ $spanClass }}"
                                 data-gallery="shop-gallery"
                                 x-data="{ loaded: false }">
-                                {{-- Blur Placeholder (LQIP) - Mini 40x40 ~2KB --}}
-                                <img src="{{ thumb($image, 40, 40, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
-                                     alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                     x-show="!loaded"
-                                     class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+                                {{-- Skeleton Loader --}}
+                                <div x-show="!loaded"
+                                     class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                                            <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {{-- Actual Image --}}
                                 <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
@@ -218,8 +228,8 @@
                                      x-transition:enter="transition ease-out duration-300"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 relative z-10"
                                      @load="loaded = true"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                      loading="lazy">
                                 <div
                                     class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center z-20">
@@ -362,11 +372,16 @@
 
                                 @if ($variantImageUrl)
                                     <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700 relative" x-data="{ loaded: false }">
-                                        {{-- Blur Placeholder (LQIP) - Mini 30x30 ~2KB --}}
-                                        <img src="{{ thumb($variant->getFirstMedia('featured_image'), 30, 30, ['quality' => 50, 'scale' => 1, 'format' => 'webp']) }}"
-                                             alt="{{ $variantTitle }}"
-                                             x-show="!loaded"
-                                             class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+                                        {{-- Skeleton Loader --}}
+                                        <div x-show="!loaded"
+                                             class="absolute inset-0 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 animate-pulse">
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <div class="flex flex-col items-center gap-2">
+                                                    <div class="w-12 h-12 bg-gray-200 dark:bg-gray-500 rounded-full"></div>
+                                                    <div class="h-2 w-20 bg-gray-200 dark:bg-gray-500 rounded"></div>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         {{-- Actual Image --}}
                                         <img src="{{ $variantImageUrl }}"
@@ -375,8 +390,8 @@
                                              x-transition:enter="transition ease-out duration-300"
                                              x-transition:enter-start="opacity-0"
                                              x-transition:enter-end="opacity-100"
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 relative z-10"
                                              @load="loaded = true"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                              loading="lazy">
                                     </div>
                                 @endif

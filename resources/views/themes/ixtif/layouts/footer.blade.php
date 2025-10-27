@@ -247,41 +247,59 @@
 
             $footerSections = [
                 'Kurumsal' => [
-                    ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
-                    ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
-                    ['name' => 'Kariyer', 'url' => href('Page', 'show', 'kariyer')],
+                    'icon' => 'fa-solid fa-building',
+                    'links' => [
+                        ['name' => 'Hakkımızda', 'url' => href('Page', 'show', 'hakkimizda')],
+                        ['name' => 'İletişim', 'url' => href('Page', 'show', 'iletisim')],
+                        ['name' => 'Kariyer', 'url' => href('Page', 'show', 'kariyer')],
+                    ]
                 ],
-                'Ürün Kategorileri' => $mainCategories,
+                'Ürün Kategorileri' => [
+                    'icon' => 'fa-solid fa-grid-2',
+                    'links' => $mainCategories
+                ],
                 'Alışveriş' => [
-                    ['name' => 'Ödeme Yöntemleri', 'url' => href('Page', 'show', 'odeme-yontemleri')],
-                    ['name' => 'Teslimat & Kargo', 'url' => href('Page', 'show', 'teslimat-kargo')],
-                    ['name' => 'Güvenli Alışveriş', 'url' => href('Page', 'show', 'guvenli-alisveris')],
+                    'icon' => 'fa-solid fa-shopping-cart',
+                    'links' => [
+                        ['name' => 'Ödeme Yöntemleri', 'url' => href('Page', 'show', 'odeme-yontemleri')],
+                        ['name' => 'Teslimat & Kargo', 'url' => href('Page', 'show', 'teslimat-kargo')],
+                        ['name' => 'Güvenli Alışveriş', 'url' => href('Page', 'show', 'guvenli-alisveris')],
+                    ]
                 ],
                 'Müşteri Hizmetleri' => [
-                    ['name' => 'SSS', 'url' => href('Page', 'show', 'sss')],
-                    ['name' => 'İptal & İade', 'url' => href('Page', 'show', 'iptal-iade')],
-                    ['name' => 'Cayma Hakkı', 'url' => href('Page', 'show', 'cayma-hakki')],
-                    ['name' => 'Mesafeli Satış Sözleşmesi', 'url' => href('Page', 'show', 'mesafeli-satis')],
+                    'icon' => 'fa-solid fa-headset',
+                    'links' => [
+                        ['name' => 'SSS', 'url' => href('Page', 'show', 'sss')],
+                        ['name' => 'İptal & İade', 'url' => href('Page', 'show', 'iptal-iade')],
+                        ['name' => 'Cayma Hakkı', 'url' => href('Page', 'show', 'cayma-hakki')],
+                        ['name' => 'Mesafeli Satış Sözleşmesi', 'url' => href('Page', 'show', 'mesafeli-satis')],
+                    ]
                 ],
                 'Yasal' => [
-                    ['name' => 'Gizlilik Politikası', 'url' => href('Page', 'show', 'gizlilik-politikasi')],
-                    ['name' => 'Kullanım Koşulları', 'url' => href('Page', 'show', 'kullanim-kosullari')],
-                    ['name' => 'KVKK Aydınlatma', 'url' => href('Page', 'show', 'kvkk-aydinlatma')],
-                    ['name' => 'Çerez Politikası', 'url' => href('Page', 'show', 'cerez-politikasi')],
+                    'icon' => 'fa-solid fa-gavel',
+                    'links' => [
+                        ['name' => 'Gizlilik Politikası', 'url' => href('Page', 'show', 'gizlilik-politikasi')],
+                        ['name' => 'Kullanım Koşulları', 'url' => href('Page', 'show', 'kullanim-kosullari')],
+                        ['name' => 'KVKK Aydınlatma', 'url' => href('Page', 'show', 'kvkk-aydinlatma')],
+                        ['name' => 'Çerez Politikası', 'url' => href('Page', 'show', 'cerez-politikasi')],
+                    ]
                 ],
             ];
         @endphp
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12 text-sm">
-            @foreach($footerSections as $title => $links)
-                <div class="text-center">
-                    <h4 class="font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h4>
-                    <ul class="space-y-2">
-                        @foreach($links as $link)
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8 mb-12 text-sm">
+            @foreach($footerSections as $title => $section)
+                <div>
+                    <h5 class="font-bold mb-4 text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                        <i class="{{ $section['icon'] }} text-blue-600 dark:text-blue-400"></i>
+                        {{ $title }}
+                    </h5>
+                    <ul class="space-y-2 text-sm">
+                        @foreach($section['links'] as $link)
                             <li>
                                 <a href="{{ $link['url'] }}"
                                    class="text-gray-600 dark:text-gray-400
-                                          hover:text-gray-900 dark:hover:text-white
+                                          hover:text-blue-600 dark:hover:text-blue-400
                                           transition-colors">
                                     {{ $link['name'] }}
                                 </a>

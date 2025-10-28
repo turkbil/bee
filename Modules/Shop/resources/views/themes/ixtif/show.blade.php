@@ -501,7 +501,11 @@
                     @if ($longDescription)
                         <section id="description" class="scroll-mt-24 mb-20 lg:mb-24">
                             <div class="prose prose-lg max-w-none dark:prose-invert prose-section-spacing">
-                                @parsewidgets($longDescription)
+                                @php
+                                    // İki aşamalı render: Önce widget parse, sonra Blade render
+                                    $parsedDescription = parse_widget_shortcodes($longDescription ?? '');
+                                @endphp
+                                {!! Blade::render($parsedDescription, [], true) !!}
                             </div>
                         </section>
                     @endif

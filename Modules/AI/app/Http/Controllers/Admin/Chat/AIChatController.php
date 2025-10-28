@@ -377,7 +377,20 @@ class AIChatController extends Controller
                     ob_flush();
                     flush();
                 });
-                
+
+                // 🔧 VALIDATE AND AUTO-CORRECT AI RESPONSE
+                // Fixes common AI hallucinations (wrong titles, slugs)
+                $validationResult = $this->aiResponseValidator->validateAndFix($fullResponse);
+                if ($validationResult['has_errors']) {
+                    Log::info('🔧 AI Stream Response auto-corrected', [
+                        'corrections_count' => count($validationResult['corrections']),
+                        'corrections' => $validationResult['corrections']
+                    ]);
+
+                    // Use corrected response
+                    $fullResponse = $validationResult['response'];
+                }
+
                 // AI yanıtını veritabanına kaydet
                 $aiMessage = new Message();
                 $aiMessage->conversation_id = $conversation->id;

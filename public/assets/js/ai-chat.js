@@ -390,15 +390,10 @@ window.aiChatRenderMarkdown = function(content) {
         return text;
     }
 
-    // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] - optional description
-    // Matches: **Text** [LINK:shop:slug] - extra text (dash + description dahil)
-    // ⚠️ SADECE 1-2 kelimelik kısa açıklama (noktalı sayı destekli: "1.5 ton")
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[\w.]+(?:[\s,]+[\w.]+)?)?/gi, function(match, linkText, slug, extraText) {
+    // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug]
+    // ⚠️ FIX: Dash sonrası text KALDIRILDI - AI zaten link text'e yazıyor, duplikasyon önlendi
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         linkText = sanitizeLinkText(linkText);
-        if (extraText) {
-            // Dash + extra text varsa link text'e ekle
-            linkText += extraText.replace(/[ \t]+-[ \t]+/, ' - '); // Normalize dash spacing
-        }
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
     });
 
@@ -412,19 +407,28 @@ window.aiChatRenderMarkdown = function(content) {
     });
 
     // 1A3: CATCH-ALL - **Text** [LINK:shopANYTHING] (slug "shop" ile başlıyorsa)
-    // 1A2'yi geçen tüm `[LINK:shop...]` formatlarını yakala
+    // 1A2'yi geçen tüm `[LINK:shop...]` formatlarını yakala + "shop" prefix düzelt
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:(shop[\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         linkText = sanitizeLinkText(linkText);
-        // Slug'ı olduğu gibi kullan (ör: "shopxtif-f1" → /shop/shopxtif-f1)
+
+        // ⚠️ FIX: "shopxtif-f1" gibi colon unutulmuş format → "shop" prefix çıkar
+        // Test: "shop" sonrası harf geliyorsa (shopxtif) colon unutulmuş demektir
+        if (/^shop[a-zıİ]/i.test(slug)) {
+            slug = slug.substring(4);  // "shop" çıkar → "xtif-f1"
+
+            // ⚠️ TURKISH i LOSS FIX: "xtif" → "ixtif"
+            if (slug.startsWith('xtif')) {
+                slug = 'i' + slug;  // "ixtif-f1" (doğru URL)
+            }
+        }
+
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
     });
 
-    // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] - optional description
-    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[\w.]+(?:[\s,]+[\w.]+)?)?/gi, function(match, linkText, slug, extraText) {
+    // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug]
+    // ⚠️ FIX: Dash sonrası text KALDIRILDI
+    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         linkText = sanitizeLinkText(linkText);
-        if (extraText) {
-            linkText += extraText.replace(/[ \t]+-[ \t]+/, ' - ');
-        }
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
     });
 
@@ -519,8 +523,9 @@ window.aiChatRenderMarkdown = function(content) {
     });
 
     // STEP 5: Add Tailwind Classes
-    html = html.replace(/<ul>/gi, '<ul class="space-y-0.5 my-1 pl-3 list-disc">');
-    html = html.replace(/<ol>/gi, '<ol class="space-y-0.5 my-1 pl-3 list-decimal">');
+    // ⚠️ FIX: pl-3 kaldırıldı - Alan dar, her şey soldan sıfır başlasın
+    html = html.replace(/<ul>/gi, '<ul class="space-y-0.5 my-1 list-none">');
+    html = html.replace(/<ol>/gi, '<ol class="space-y-0.5 my-1 pl-5 list-decimal">');
     html = html.replace(/<li>/gi, '<li class="text-gray-800 dark:text-gray-200 leading-snug">');
     html = html.replace(/<p>/gi, '<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">');
     html = html.replace(/<strong>/gi, '<strong class="font-bold text-gray-900 dark:text-white">');

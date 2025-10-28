@@ -376,25 +376,46 @@ window.aiChatRenderMarkdown = function(content) {
     if (!content) return '';
 
     let html = content;
+    let preservedLinks = []; // Link koruma array'i
 
-    // STEP 1: Link Processing
+    // STEP 1: Link Processing - Parse et ve HEMEN koruma altına al
+
+    // HELPER: Link text içindeki markdown pattern'lerini temizle
+    function sanitizeLinkText(text) {
+        text = text.trim();
+        // Newline + liste pattern'lerini temizle (- veya 1. 2. 3.)
+        text = text.replace(/\n\s*-\s+/g, ' - ');        // "\n- item" → " - item"
+        text = text.replace(/\n\s*\d+[.)]\s+/g, ' ');    // "\n1. item" → " item"
+        text = text.replace(/\n/g, ' ');                  // Kalan newline'ları space yap
+        return text;
+    }
 
     // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] (eski format)
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText.trim()}</strong></a>`;
+        linkText = sanitizeLinkText(linkText);
+        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
     });
 
     // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] (text sonra link)
     html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer">${linkText.trim()}</a>`;
+        linkText = sanitizeLinkText(linkText);
+        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
     });
 
     // 1C: Standard Markdown - [text](url) (yeni format)
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gi, function(match, linkText, url) {
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText.trim()}</a>`;
+        linkText = sanitizeLinkText(linkText);
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
     });
 
-    // STEP 2: List Processing (MOVED BEFORE BOLD - fixes inline list items!)
+    // 1D: KORUMA ALTINA AL - Link içindeki text işlenmesin!
+    html = html.replace(/(<a[\s\S]*?<\/a>)/g, function(match, link) {
+        let placeholder = `___LINK_PRESERVED_${preservedLinks.length}___`;
+        preservedLinks.push(link);
+        return placeholder;
+    });
+
+    // STEP 2: List Processing (Artık link'ler korunuyor!)
 
     // 2A: Önce satır içi liste öğelerini ayır (AI bazen `- item1 - item2` gibi yazabiliyor)
     // Pattern 1: Satır başında OLMAYAN tüm " - **" pattern'lerini yeni satıra al
@@ -438,19 +459,8 @@ window.aiChatRenderMarkdown = function(content) {
         return result;
     });
 
-    // STEP 3: Bold Processing (AFTER list processing!)
-    let preservedLinks = [];
-    html = html.replace(/(<a[\s\S]*?<\/a>)/g, function(match, link) {
-        let linkPlaceholder = `___LINK_PRESERVED_${preservedLinks.length}___`;
-        preservedLinks.push(link);
-        return linkPlaceholder;
-    });
-
+    // STEP 3: Bold Processing (Link'ler zaten korunuyor, sadece bold parse et)
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-    preservedLinks.forEach((link, index) => {
-        html = html.replace(`___LINK_PRESERVED_${index}___`, link);
-    });
 
     // STEP 4: Paragraph Processing
     let preservedBlocks = [];
@@ -476,6 +486,11 @@ window.aiChatRenderMarkdown = function(content) {
     // STEP 4B: Liste bitişinden sonra paragraf başlıyorsa ayır
     // Örnek: "</ul>Bu forkliftler" → "</ul>\n\n<p>Bu forkliftler"
     html = html.replace(/(<\/ul>|<\/ol>)([A-ZİÇŞĞÜÖ])/g, '$1\n\n$2');
+
+    // STEP 4C: LINK RESTORATION - Placeholder'ları gerçek link'lerle değiştir
+    preservedLinks.forEach((link, index) => {
+        html = html.replace(`___LINK_PRESERVED_${index}___`, link);
+    });
 
     // STEP 5: Add Tailwind Classes
     html = html.replace(/<ul>/gi, '<ul class="space-y-0.5 my-1 pl-3 list-disc">');

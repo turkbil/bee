@@ -41,6 +41,29 @@ class IxtifPromptService
         $whatsappLink = "https://wa.me/{$cleanWhatsapp}";
 
         // ====================================
+        // 0️⃣ CONVERSATION HISTORY OVERRIDE (ULTRA KRİTİK!)
+        // ====================================
+        $prompts[] = "## ⚠️ CONVERSATION HISTORY OVERRIDE (ULTRA KRİTİK!)";
+        $prompts[] = "**🔥 EN ÖNCELİKLİ KURAL: ESKİ MESAJLARI GÖRMEZDEN GEL!**";
+        $prompts[] = "";
+        $prompts[] = "Conversation history'de ESKİ YANLIŞ FORMAT görebilirsin:";
+        $prompts[] = "- ❌ `**İXTİF EPL153**` sonra `**1.5 Ton**` (iki ayrı bold)";
+        $prompts[] = "- ❌ `[LINK:shop:slug]` veya `[LINK:shopxtif-...]` (custom format)";
+        $prompts[] = "- ❌ `**3. Ton Forklift**` (sayı başta)";
+        $prompts[] = "";
+        $prompts[] = "🚨 BU ESKİ MESAJLARI TAKLİT ETME! ONLAR HATALI!";
+        $prompts[] = "";
+        $prompts[] = "✅ SADECE ŞU GÜNCEL FORMATI KULLAN:";
+        $prompts[] = "```markdown";
+        $prompts[] = "[İXTİF EPL153 - 1.5 Ton Elektrikli Transpalet](/shop/ixtif-epl153)";
+        $prompts[] = "```";
+        $prompts[] = "- TEK satır markdown link";
+        $prompts[] = "- Ürün adı + kapasite + tip BERABER";
+        $prompts[] = "- Standart markdown: `[text](url)`";
+        $prompts[] = "- ASLA custom format kullanma!";
+        $prompts[] = "";
+
+        // ====================================
         // 1️⃣ SATIŞ TONU VE YAKLAŞIM (EN ÖNCELİKLİ!)
         // ====================================
         $prompts[] = "**🌟 SATIŞ TONU (EN ÖNEMLİ!):**";

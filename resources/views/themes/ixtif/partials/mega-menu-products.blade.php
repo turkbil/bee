@@ -45,7 +45,7 @@ foreach ($mainCategories as $cat) {
             ->whereNull('parent_product_id')
             ->where('product_id', '!=', $featuredProduct ? $featuredProduct->product_id : 0)
             ->orderBy('sort_order', 'asc')
-            ->take(6)
+            ->take(5)
             ->get();
 
         $categoryData[$catId] = [

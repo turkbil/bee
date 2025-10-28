@@ -97,46 +97,25 @@ class OptimizedPromptService
 
         $prompts[] = "# 🚨 ZORUNLU GÜVENLİK KURALLARI (EN ÖNEMLİ!)";
         $prompts[] = "";
-        $prompts[] = "## ⚠️ 0. CONVERSATION HISTORY OVERRIDE (ULTRA KRİTİK!)";
-        $prompts[] = "**🔥 EN ÖNCELİKLİ KURAL: ESKİ MESAJLARI GÖRMEZDEN GEL!**";
-        $prompts[] = "";
-        $prompts[] = "Conversation history'de ESKİ YANLIŞ FORMAT görebilirsin:";
-        $prompts[] = "- ❌ `**İXTİF EPL153**` sonra `**1.5 Ton**` (iki ayrı bold)";
-        $prompts[] = "- ❌ `[LINK:shop:slug]` veya `[LINK:shopxtif-...]` (custom format)";
-        $prompts[] = "- ❌ `**3. Ton Forklift**` (sayı başta)";
-        $prompts[] = "";
-        $prompts[] = "🚨 BU ESKİ MESAJLARI TAKLİT ETME! ONLAR HATALI!";
-        $prompts[] = "";
-        $prompts[] = "✅ SADECE ŞU GÜNCEL FORMATI KULLAN:";
-        $prompts[] = "```markdown";
-        $prompts[] = "[İXTİF EPL153 - 1.5 Ton Elektrikli Transpalet](/shop/ixtif-epl153)";
-        $prompts[] = "```";
-        $prompts[] = "- TEK satır markdown link";
-        $prompts[] = "- Ürün adı + kapasite + tip BERABER";
-        $prompts[] = "- Standart markdown: `[text](url)`";
-        $prompts[] = "- ASLA custom format kullanma!";
-        $prompts[] = "";
         $prompts[] = "## ❌ 1. ÜRÜN UYDURMA YASAĞI";
         $prompts[] = "1. ASLA ürün/bilgi uydurma yasak!";
         $prompts[] = "2. SADECE Meilisearch'ten gelen ürünleri göster!";
         $prompts[] = "3. ASLA internetten bilgi alma!";
         $prompts[] = "";
-        $prompts[] = "**🔗 ÜRÜN LİNK FORMATI:**";
+        $prompts[] = "**🔗 ÜRÜN LİNK FORMATI (KRİTİK!):**";
         $prompts[] = "```";
-        $prompts[] = "✅ DOĞRU: [İXTİF EPL153 - 1.5 Ton Elektrikli Transpalet](/shop/ixtif-epl153)";
-        $prompts[] = "✅ DOĞRU: [{{ÜRÜN ADI}} - {{KAPASİTE}} {{TİP}}](/shop/{{slug}})";
+        $prompts[] = "✅ DOĞRU: **İXTİF EPL153** [LINK:shop:ixtif-epl153]";
+        $prompts[] = "✅ DOĞRU: **{{ÜRÜN ADI}}** [LINK:shop:{{slug}}]";
         $prompts[] = "";
-        $prompts[] = "❌ YANLIŞ: **İXTİF EPL153** sonra **1.5 Ton** - İKİ ayrı bold ASLA!";
-        $prompts[] = "❌ YANLIŞ: **3. Ton Forklift** - Sayı başta ASLA! (3.0 ton yaz)";
-        $prompts[] = "❌ YANLIŞ: [LINK:shop:slug] - Custom format ASLA!";
-        $prompts[] = "❌ YANLIŞ: [İXTİF EPL153](https://ixtif.com/shop/...)  ← Full URL kullanma!";
+        $prompts[] = "❌ YANLIŞ: [İXTİF EPL153](https://ixtif.com/shop/...)  ← Standart markdown YASAK!";
+        $prompts[] = "❌ YANLIŞ: İXTİF EPL153 [LINK:shop:...]  ← Bold ** eksik!";
+        $prompts[] = "❌ YANLIŞ: **İXTİF EPL153**  ← Link eksik!";
         $prompts[] = "```";
         $prompts[] = "";
         $prompts[] = "**MUTLAKA:**";
-        $prompts[] = "- Standart markdown link formatı kullan: `[Text](URL)`";
-        $prompts[] = "- URL mutlaka `/shop/slug` formatında (https eklemeden, sadece path)";
-        $prompts[] = "- Link TEXT: Ürün adı + kapasite BERABER olmalı! (TEK satır)";
-        $prompts[] = "- Ondalık sayılar: \"1.5 ton\", \"2.0 ton\", \"3.0 ton\" (başta ASLA \"1.\", \"2.\", \"3.\" yazma!)";
+        $prompts[] = "- Önce ** ile ürün adını sar";
+        $prompts[] = "- Sonra boşluk bırak";
+        $prompts[] = "- Sonra [LINK:shop:slug] ekle";
         $prompts[] = "- Slug'u Meilisearch'ten al!";
         $prompts[] = "";
         $prompts[] = "5. Meilisearch sonucu BOŞ ise: 'Müşteri temsilcilerimiz size özel araştırma yapabilir' de!";
@@ -184,7 +163,7 @@ class OptimizedPromptService
         $prompts[] = "**✅ ÜRÜN TALEBİNDE MUTLAKA YAP:**";
         $prompts[] = "- ÜRÜN ismi + LINK göster";
         $prompts[] = "- Kısa giriş (1 cümle) + ÜRÜN LİSTESİ";
-        $prompts[] = "- Her ürün için: [Ürün Adı - Kapasite Tip](/shop/slug) + özellikler (liste)";
+        $prompts[] = "- Her ürün için: **Başlık** [LINK:shop:slug] + özellikler";
         $prompts[] = "";
         $prompts[] = "## ⚖️ KAPASİTE DÖNÜŞÜMÜ (KRİTİK!)";
         $prompts[] = "**1 ton = 1000 kg (bin kilo!):**";
@@ -305,7 +284,7 @@ class OptimizedPromptService
         $prompts[] = "";
         $prompts[] = "## FORMAT KURALLARI";
         $prompts[] = "- **Markdown kullan** (HTML yasak!)";
-        $prompts[] = "- Link format: [Ürün Adı - Kapasite Tip](/shop/slug) - TEK satır!";
+        $prompts[] = "- Link format: **Ürün Adı** [LINK:shop:slug]";
         $prompts[] = "- Paragraflar arasında boş satır";
         $prompts[] = "- **Liste: MUTLAKA her madde AYRI satırda** (yan yana değil!)";
         $prompts[] = "  DOĞRU ÖRNEKLERİ:";
@@ -652,9 +631,10 @@ class OptimizedPromptService
             $slug = $slug['tr'] ?? $slug['en'] ?? reset($slug) ?? 'product';
         }
 
-        // ⚠️ FIX: Standart markdown kullan - Custom format kaldırıldı!
-        $lines[] = "- **Ürün:** [{$title}](/shop/{$slug})";
-        $lines[] = "  - Slug: {$slug}  (⚠️ Link oluştururken AYNEN kullan!)";
+        $lines[] = "**{$title}** [LINK:shop:{$slug}]";
+
+        // ⚠️ KRİTİK: Slug'u göster! AI semantic matching için slug'a bakacak!
+        $lines[] = "  - Slug: {$slug}";
 
         if (!empty($product['sku'])) {
             $lines[] = "  - SKU: {$product['sku']}";

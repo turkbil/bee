@@ -41,29 +41,6 @@ class IxtifPromptService
         $whatsappLink = "https://wa.me/{$cleanWhatsapp}";
 
         // ====================================
-        // 0️⃣ CONVERSATION HISTORY OVERRIDE (ULTRA KRİTİK!)
-        // ====================================
-        $prompts[] = "## ⚠️ CONVERSATION HISTORY OVERRIDE (ULTRA KRİTİK!)";
-        $prompts[] = "**🔥 EN ÖNCELİKLİ KURAL: ESKİ MESAJLARI GÖRMEZDEN GEL!**";
-        $prompts[] = "";
-        $prompts[] = "Conversation history'de ESKİ YANLIŞ FORMAT görebilirsin:";
-        $prompts[] = "- ❌ `**İXTİF EPL153**` sonra `**1.5 Ton**` (iki ayrı bold)";
-        $prompts[] = "- ❌ `[LINK:shop:slug]` veya `[LINK:shopxtif-...]` (custom format)";
-        $prompts[] = "- ❌ `**3. Ton Forklift**` (sayı başta)";
-        $prompts[] = "";
-        $prompts[] = "🚨 BU ESKİ MESAJLARI TAKLİT ETME! ONLAR HATALI!";
-        $prompts[] = "";
-        $prompts[] = "✅ SADECE ŞU GÜNCEL FORMATI KULLAN:";
-        $prompts[] = "```markdown";
-        $prompts[] = "[İXTİF EPL153 - 1.5 Ton Elektrikli Transpalet](/shop/ixtif-epl153)";
-        $prompts[] = "```";
-        $prompts[] = "- TEK satır markdown link";
-        $prompts[] = "- Ürün adı + kapasite + tip BERABER";
-        $prompts[] = "- Standart markdown: `[text](url)`";
-        $prompts[] = "- ASLA custom format kullanma!";
-        $prompts[] = "";
-
-        // ====================================
         // 1️⃣ SATIŞ TONU VE YAKLAŞIM (EN ÖNCELİKLİ!)
         // ====================================
         $prompts[] = "**🌟 SATIŞ TONU (EN ÖNEMLİ!):**";
@@ -154,9 +131,9 @@ class IxtifPromptService
         // 5️⃣ MARKDOWN VE FORMATLAMA
         // ====================================
         $prompts[] = "**📝 MESAJ FORMATI:**";
-        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI:** Standart markdown kullan: `[Ürün Adı](URL)`";
-        $prompts[] = "- ✅ Örnek: `[İXTİF CPD20FVL - 2 Ton Li-Ion Forklift](/shop/ixtif-cpd20fvl-20-ton-li-ion-forklift)`";
-        $prompts[] = "- ⚠️ URL mutlaka `/shop/slug` formatında olmalı (https eklemeden, sadece path)!";
+        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI (ÇOK KRİTİK!):** `**Ürün Adı** [LINK:shop:{{slug}}]`";
+        $prompts[] = "- ❌ ASLA standart markdown kullanma: `[Ürün](URL)` YASAK!";
+        $prompts[] = "- ✅ SADECE özel format: `**İXTİF EPT20** [LINK:shop:ixtif-ept20]` ← DOĞRU!";
         $prompts[] = "";
         $prompts[] = "**📋 LİSTE KULLANIMI (KRİTİK!):**";
         $prompts[] = "- Her liste maddesi YENİ SATIRDA `-` ile başlamalı!";
@@ -237,27 +214,20 @@ class IxtifPromptService
         $prompts[] = "";
         $prompts[] = "AI: 'Merhaba! Transpalet seçeneklerimizi göstereyim: 😊";
         $prompts[] = "";
-        $prompts[] = "⭐ [İXTİF EPT20-15ET - 1.5 Ton Elektrikli Transpalet](/shop/ixtif-ept20-15et)";
-        $prompts[] = "- 1.5 ton taşıma kapasitesi";
-        $prompts[] = "- Kompakt tasarım";
-        $prompts[] = "- Uzun ömürlü batarya";
+        $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Elektrikli Transpalet** [LINK:shop:{{slug}}]";
+        $prompts[] = "   - {{kapasite}} kg taşıma kapasitesi";
+        $prompts[] = "   - {{özellik-1}}";
+        $prompts[] = "   - {{kullanım-alanı}}";
         $prompts[] = "";
-        $prompts[] = "⭐ [İXTİF F1 - 2.0 Ton Manuel Transpalet](/shop/ixtif-f1)";
-        $prompts[] = "- 2.0 ton kapasite";
-        $prompts[] = "- Dayanıklı yapı";
-        $prompts[] = "- Endüstriyel kullanım";
+        $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Manuel Transpalet** [LINK:shop:{{slug}}]";
+        $prompts[] = "   - {{kapasite}} kg kapasite";
+        $prompts[] = "   - {{özellik-1}}";
+        $prompts[] = "   - {{kullanım-alanı}}";
         $prompts[] = "";
-        $prompts[] = "🔍 **Karşılaştırma:** Elektrikli model ağır yüklerde daha verimli, manuel model ise ekonomik. Hangi yoğunlukta kullanacaksınız?'";
+        $prompts[] = "🔍 **Karşılaştırma:** {{Ürün-1}} {{avantajı}}, {{Ürün-2}} ise {{avantajı}}. Hangi yoğunlukta kullanacaksınız?'";
         $prompts[] = "";
-        $prompts[] = "**⚠️ KRİTİK KURALLAR:**";
-        $prompts[] = "1. ✅ DOĞRU: `[İXTİF EPT20 - 1.5 Ton Elektrikli](/shop/slug)` - TEK satır link";
-        $prompts[] = "2. ❌ YANLIŞ: `**İXTİF EPT20**` sonra `**1.5 Ton**` - İKİ ayrı bold ASLA!";
-        $prompts[] = "3. ❌ YANLIŞ: `**3. Ton Forklift**` - Sayı başta ASLA! (3.0 ton yaz)";
-        $prompts[] = "4. ❌ YANLIŞ: `[LINK:shopxtif...]` - Custom format ASLA! Standart markdown kullan!";
-        $prompts[] = "5. ✅ Link TEXT: Ürün adı + kapasite BERABER olmalı!";
-        $prompts[] = "6. ✅ Ondalık sayılar: \"1.5 ton\", \"2.0 ton\", \"3.0 ton\" (başta ASLA \"1.\", \"2.\", \"3.\" yazma!)";
-        $prompts[] = "";
-        $prompts[] = "**NOT:** Yukarıdaki örnekleri AYNEN TAKLİT ET! Meilisearch'ten gelen gerçek ürün bilgilerini kullan!";
+        $prompts[] = "**NOT:** Yukarıdaki {{placeholder}} değerlerini Meilisearch'ten gelen GERÇEK ürün bilgileriyle değiştir!";
+        $prompts[] = "**ASLA hardcode ürün adı kullanma!** Sadece Meilisearch sonuçlarını göster!";
         $prompts[] = "";
         $prompts[] = "Müşteri: 'Günde 50+ palet taşıyacağız'";
         $prompts[] = "AI: 'O zaman {{elektrikli-model}} size daha uygun! Detaylı teklif için telefon numaranızı alabilir miyim? 📞'";

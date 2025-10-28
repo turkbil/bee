@@ -297,14 +297,12 @@ function registerAiChatStore() {
 
         // Clear conversation
         clearConversation() {
-            if (confirm('Konuşma geçmişini silmek istediğinizden emin misiniz?')) {
-                this.messages = [];
-                this.conversationId = null;
-                this.sessionId = null;
-                localStorage.removeItem('ai_chat_session_id');
+            this.messages = [];
+            this.conversationId = null;
+            this.sessionId = null;
+            localStorage.removeItem('ai_chat_session_id');
 
-                // Placeholder will automatically show when messages are empty
-            }
+            // Placeholder will automatically show when messages are empty
         },
 
         // Scroll to bottom of chat

@@ -18,19 +18,6 @@
                     <i class="fa-solid fa-chevron-right text-sm"></i>
                 </div>
             </a>
-
-            <a href="{{ href('Page', 'show', 'iletisim') }}"
-               class="flex items-center gap-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl p-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200">
-                <div class="w-12 h-12 bg-white/40 dark:bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center flex-shrink-0 border border-gray-200 dark:border-white/20">
-                    <i class="fa-solid fa-envelope text-gray-700 dark:text-white text-lg"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h5 class="font-bold text-gray-900 dark:text-white text-base">İletişim</h5>
-                </div>
-                <div class="text-gray-500 dark:text-gray-400 flex-shrink-0">
-                    <i class="fa-solid fa-chevron-right text-sm"></i>
-                </div>
-            </a>
         </div>
 
         {{-- ========================================== --}}
@@ -38,7 +25,7 @@
         {{-- ========================================== --}}
         <div class="hidden lg:block">
             <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-6">
-                <div class="grid grid-cols-4 gap-6">
+                <div class="grid grid-cols-3 gap-6">
 
                     {{-- 1. Kurumsal --}}
                     <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
@@ -56,12 +43,6 @@
                                 <a href="{{ href('Page', 'show', 'hakkimizda') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Hakkımızda
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ href('Page', 'show', 'iletisim') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>İletişim
                                 </a>
                             </li>
                             <li>
@@ -165,42 +146,6 @@
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Çerez Politikası
                                 </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {{-- 4. İletişim --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-headset text-white text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">İletişim</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Bize Ulaşın</div>
-                            </div>
-                        </div>
-                        <ul class="space-y-2">
-                            <li>
-                                <div class="text-sm text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-phone text-xs text-purple-600 dark:text-purple-400"></i>
-                                    <span class="font-semibold">Telefon</span>
-                                </div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 ml-5">0216 755 3 555</div>
-                            </li>
-                            <li class="pt-1">
-                                <div class="text-sm text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
-                                    <i class="fab fa-whatsapp text-xs text-purple-600 dark:text-purple-400"></i>
-                                    <span class="font-semibold">WhatsApp</span>
-                                </div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 ml-5">0501 005 67 58</div>
-                            </li>
-                            <li class="pt-1">
-                                <div class="text-sm text-gray-700 dark:text-gray-300 inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-envelope text-xs text-purple-600 dark:text-purple-400"></i>
-                                    <span class="font-semibold">E-posta</span>
-                                </div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400 ml-5">info@ixtif.com</div>
                             </li>
                         </ul>
                     </div>

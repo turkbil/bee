@@ -765,12 +765,10 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             $images[] = $media->getUrl();
         }
 
-        // Eğer hiç image yoksa placeholder ekle (Google image alanını ZORUNLU istiyor)
-        if (empty($images)) {
-            $images[] = asset('assets/images/product-placeholder.jpg');
+        // SADECE gerçek image varsa ekle (Google placeholder 404'ü kabul etmiyor)
+        if (!empty($images)) {
+            $productSchema['image'] = count($images) === 1 ? $images[0] : $images;
         }
-
-        $productSchema['image'] = count($images) === 1 ? $images[0] : $images;
 
         // SKU & Identifiers
         if ($this->sku) {
@@ -786,10 +784,15 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         // Brand (ZORUNLU - Google Search Console hatası için)
         if ($this->brand) {
             $brandName = $this->brand->getTranslated('name', $locale) ?? $this->brand->name;
-            // Eğer brand name boşsa site adını kullan
-            if (empty($brandName)) {
+
+            // Brand name array veya boş/çok kısa ise site adını kullan
+            if (is_array($brandName) || empty($brandName) || strlen(trim($brandName)) < 2) {
                 $brandName = setting('site_title', tenant() ? tenant()->id : 'Store');
             }
+
+            // Google max brand name: 160 karakter
+            $brandName = Str::limit(trim($brandName), 160, '');
+
             $productSchema['brand'] = [
                 '@type' => 'Brand',
                 'name' => $brandName,
@@ -821,10 +824,14 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             // Price on request: Google için "0" price + priceValidUntil ekle
             $offer['price'] = '0';
             $offer['priceValidUntil'] = now()->addYear()->format('Y-m-d');
-        } elseif ($this->base_price) {
+        } elseif ($this->base_price && $this->base_price > 0) {
             // Normal fiyatlı ürün
             $offer['price'] = number_format((float) $this->base_price, 2, '.', '');
             $offer['priceValidUntil'] = now()->addMonths(6)->format('Y-m-d');
+        } else {
+            // Fallback: Fiyat bilgisi yok ama price field ZORUNLU (Google requirement)
+            $offer['price'] = '0';
+            $offer['priceValidUntil'] = now()->addYear()->format('Y-m-d');
         }
 
         // Seller bilgisi

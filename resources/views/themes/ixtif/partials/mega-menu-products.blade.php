@@ -201,15 +201,15 @@ $subcategoryColors = [
 
                                         {{-- Product Image --}}
                                         @if($product->hasMedia('featured_image'))
-                                            <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-52 group-hover:scale-105 transition-transform duration-300">
-                                                <img src="{{ thumb($product->getFirstMedia('featured_image'), 350, 350, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                                            <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-4 h-40 group-hover:scale-105 transition-transform duration-300">
+                                                <img src="{{ thumb($product->getFirstMedia('featured_image'), 280, 280, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                                      alt="{{ $pTitle }}"
                                                      class="w-full h-full object-contain"
                                                      loading="lazy">
                                             </div>
                                         @else
-                                            <div class="flex items-center justify-center mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-6 h-52 group-hover:scale-105 transition-transform duration-300">
-                                                <i class="{{ $data['icon'] }} text-7xl text-indigo-600 dark:text-indigo-400"></i>
+                                            <div class="flex items-center justify-center mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-4 h-40 group-hover:scale-105 transition-transform duration-300">
+                                                <i class="{{ $data['icon'] }} text-6xl text-indigo-600 dark:text-indigo-400"></i>
                                             </div>
                                         @endif
 

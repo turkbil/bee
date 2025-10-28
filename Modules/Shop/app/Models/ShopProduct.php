@@ -817,12 +817,15 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         ];
 
         // Fiyat bilgisi - ZORUNLU (Google Search Console hatası için)
-        if (!$this->price_on_request && $this->base_price) {
+        if ($this->price_on_request) {
+            // Price on request: Google için "0" price + priceValidUntil ekle
+            $offer['price'] = '0';
+            $offer['priceValidUntil'] = now()->addYear()->format('Y-m-d');
+        } elseif ($this->base_price) {
+            // Normal fiyatlı ürün
             $offer['price'] = number_format((float) $this->base_price, 2, '.', '');
             $offer['priceValidUntil'] = now()->addMonths(6)->format('Y-m-d');
         }
-        // price_on_request durumunda price alanını EKLEME (Google kabul etmiyor)
-        // priceSpecification kullan
 
         // Seller bilgisi
         $offer['seller'] = [

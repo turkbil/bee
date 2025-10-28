@@ -8,27 +8,6 @@
 {{-- V6: HYBRID - V4/V1 Content + V2 Sticky Sidebar --}}
 
 @push('head')
-{{-- Schema.org Product (JSON-LD) --}}
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "Product",
-    "name": @json($item->getTranslated('title', app()->getLocale())),
-    "description": @json(strip_tags($item->getTranslated('short_description', app()->getLocale()))),
-    "image": @json($item->getFirstMedia('featured_image') ? $item->getFirstMedia('featured_image')->getUrl() : ''),
-    "brand": {
-        "@@type": "Brand",
-        "name": @json($item->brand->title ?? setting('site_title'))
-    },
-    "sku": @json($item->sku ?? 'N/A'),
-    "offers": {
-        "@@type": "Offer",
-        "url": @json(url()->current()),
-        "priceCurrency": "TRY",
-        "availability": "https://schema.org/InStock"
-    }
-}
-</script>
 {{-- Product View Event --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {

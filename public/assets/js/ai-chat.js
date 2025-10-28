@@ -374,76 +374,39 @@ window.aiChatRenderMarkdown = function(content) {
     if (!content) return '';
 
     let html = content;
-    let preservedLinks = []; // Link koruma array'i
 
-    // STEP 1: Link Processing - Parse et ve HEMEN koruma altına al
+    // STEP 1: Link Processing (process FIRST)
 
-    // HELPER: Link text içindeki markdown pattern'lerini temizle
-    function sanitizeLinkText(text) {
-        text = text.trim();
-        // Newline + liste pattern'lerini temizle (- veya 1. 2. 3.)
-        text = text.replace(/\n\s*-\s+/g, ' - ');        // "\n- item" → " - item"
-        text = text.replace(/\n\s*\d+[.)]\s+/g, ' ');    // "\n1. item" → " item"
-        text = text.replace(/\n/g, ' ');                  // Kalan newline'ları space yap
-        return text;
-    }
-
-    // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug]
-    // ⚠️ FIX: Dash sonrası text KALDIRILDI - AI zaten link text'e yazıyor, duplikasyon önlendi
+    // 1A: Product links - **Ürün Adı** [LINK:shop:litef-ept15]
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        linkText = sanitizeLinkText(linkText);
-        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
+        const url = `/shop/${slug}`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong>${linkText.trim()}</strong></a>`;
     });
 
-    // 1A2: BROKEN FORMAT - **Text** [LINK:shopSLUG] (colon eksik)
-    // ⚠️ REGEX FIX: Positive lookahead - SADECE "shop" sonrası dash/digit varsa match et!
-    // [LINK:shop-product] ✅ Match | [LINK:shop123] ✅ Match | [LINK:shopxtif] ❌ No match!
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop(?=[-\d])([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        linkText = sanitizeLinkText(linkText);
-        // Slug zaten "-product" veya "123..." şeklinde captured (shop matched but not captured)
-        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
+    // 1B: Category links - **Kategori** [LINK:shop:category:slug]
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+        const url = `/shop/category/${slug}`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-category-link"><strong>${linkText.trim()}</strong></a>`;
     });
 
-    // 1A3: CATCH-ALL - **Text** [LINK:shopANYTHING] (slug "shop" ile başlıyorsa)
-    // 1A2'yi geçen tüm `[LINK:shop...]` formatlarını yakala + "shop" prefix düzelt
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:(shop[\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        linkText = sanitizeLinkText(linkText);
-
-        // ⚠️ FIX: "shopxtif-f1" gibi colon unutulmuş format → "shop" prefix çıkar
-        // Test: "shop" sonrası harf geliyorsa (shopxtif) colon unutulmuş demektir
-        if (/^shop[a-zıİ]/i.test(slug)) {
-            slug = slug.substring(4);  // "shop" çıkar → "xtif-f1"
-
-            // ⚠️ TURKISH i LOSS FIX: "xtif" → "ixtif"
-            if (slug.startsWith('xtif')) {
-                slug = 'i' + slug;  // "ixtif-f1" (doğru URL)
-            }
+    // 1C: Standard Markdown links - [text](url) - WhatsApp, email, tel links
+    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+|mailto:[^\)]+|tel:[^\)]+)\)/gi, function(match, linkText, url) {
+        // Determine link type for styling
+        let linkClass = 'ai-standard-link';
+        if (url.includes('wa.me') || url.includes('whatsapp')) {
+            linkClass = 'ai-whatsapp-link';
+        } else if (url.startsWith('mailto:')) {
+            linkClass = 'ai-email-link';
+        } else if (url.startsWith('tel:')) {
+            linkClass = 'ai-phone-link';
+        } else if (url.includes('t.me') || url.includes('telegram')) {
+            linkClass = 'ai-telegram-link';
         }
 
-        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${linkText.trim()}</a>`;
     });
 
-    // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug]
-    // ⚠️ FIX: Dash sonrası text KALDIRILDI
-    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        linkText = sanitizeLinkText(linkText);
-        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
-    });
-
-    // 1C: Standard Markdown - [text](url) (yeni format)
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gi, function(match, linkText, url) {
-        linkText = sanitizeLinkText(linkText);
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
-    });
-
-    // 1D: KORUMA ALTINA AL - Link içindeki text işlenmesin!
-    html = html.replace(/(<a[\s\S]*?<\/a>)/g, function(match, link) {
-        let placeholder = `___LINK_PRESERVED_${preservedLinks.length}___`;
-        preservedLinks.push(link);
-        return placeholder;
-    });
-
-    // STEP 2: List Processing (Artık link'ler korunuyor!)
+    // STEP 2: List Processing (MOVED BEFORE BOLD - fixes inline list items!)
 
     // 2A: Önce satır içi liste öğelerini ayır (AI bazen `- item1 - item2` gibi yazabiliyor)
     // Pattern 1: Satır başında OLMAYAN tüm " - **" pattern'lerini yeni satıra al
@@ -453,39 +416,39 @@ window.aiChatRenderMarkdown = function(content) {
     // Örnek: "- 2 ton - 80V - Verimli" → "- 2 ton\n- 80V\n- Verimli"
     html = html.replace(/(?<!^|\n)(\s+-\s+)(?=[A-Za-z0-9İıĞğÜüŞşÖöÇç])/gm, '\n- ');
 
-    // 2B: Numbered lists: DEVRE DIŞI!
-    // ⚠️ FIX: "3. Ton" gibi sayıları liste olarak algılıyordu → KAPANDI
-    // AI zaten "-" kullanıyor, numbered list gereksiz ve zararlı!
-    // html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
-    //     ...
-    // });
+    // 2B: Numbered lists: 1. 2. 3.
+    html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
+        let items = match.split('\n').filter(line => /^\d+[.)](?!\d)\s+/.test(line.trim()));
+        let listItems = items.map(line => {
+            let text = line.replace(/^\d+[.)](?!\d)\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ol>\n${listItems}\n</ol>`;
+    });
 
     // 2C: Unordered lists: - item (şimdi düzgün alt alta olmalı)
     html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {
         let items = match.split('\n').filter(line => line.trim().startsWith('- '));
         let listItems = items.map(line => {
             let text = line.replace(/^-\s*/, '').trim();
-
-            // CRITICAL FIX: Liste maddesi içinde cümle bitişi + yeni cümle varsa ayır
-            // Örnek: "- Özellik A Fiyat talep üzerine..." → "- Özellik A" + paragraf
-            // Pattern: ". " veya "! " veya "? " sonra büyük harf = yeni cümle başlıyor
-            let sentenceSplit = text.match(/^(.*?[.!?])\s+([A-ZİÇŞĞÜÖ].*)$/);
-            if (sentenceSplit) {
-                // İlk cümle liste içinde kalsın, ikincisi liste dışına çıksın
-                return `<li>${sentenceSplit[1]}</li>\n</ul>\n\n<p>${sentenceSplit[2]}</p>\n<ul>`;
-            }
-
             return `<li>${text}</li>`;
         }).join('\n');
-
-        // Boş <ul></ul> çiftlerini temizle (split işleminden kalan)
-        let result = `<ul>\n${listItems}\n</ul>`;
-        result = result.replace(/<\/ul>\s*<ul>/g, '');
-        return result;
+        return `<ul>\n${listItems}\n</ul>`;
     });
 
-    // STEP 3: Bold Processing (Link'ler zaten korunuyor, sadece bold parse et)
+    // STEP 3: Bold Processing (AFTER list processing!)
+    let preservedLinks = [];
+    html = html.replace(/(<a[\s\S]*?<\/a>)/g, function(match, link) {
+        let linkPlaceholder = `___LINK_PRESERVED_${preservedLinks.length}___`;
+        preservedLinks.push(link);
+        return linkPlaceholder;
+    });
+
     html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    preservedLinks.forEach((link, index) => {
+        html = html.replace(`___LINK_PRESERVED_${index}___`, link);
+    });
 
     // STEP 4: Paragraph Processing
     let preservedBlocks = [];
@@ -512,45 +475,13 @@ window.aiChatRenderMarkdown = function(content) {
     // Örnek: "</ul>Bu forkliftler" → "</ul>\n\n<p>Bu forkliftler"
     html = html.replace(/(<\/ul>|<\/ol>)([A-ZİÇŞĞÜÖ])/g, '$1\n\n$2');
 
-    // STEP 4C: LINK RESTORATION - Placeholder'ları gerçek link'lerle değiştir
-    preservedLinks.forEach((link, index) => {
-        html = html.replace(`___LINK_PRESERVED_${index}___`, link);
-    });
-
     // STEP 5: Add Tailwind Classes
-    // ⚠️ FIX: pl-3 kaldırıldı - Alan dar, her şey soldan sıfır başlasın
+    // ⚠️ FIX: pl-3 → list-none (padding kaldırıldı, user feedback)
     html = html.replace(/<ul>/gi, '<ul class="space-y-0.5 my-1 list-none">');
     html = html.replace(/<ol>/gi, '<ol class="space-y-0.5 my-1 pl-5 list-decimal">');
     html = html.replace(/<li>/gi, '<li class="text-gray-800 dark:text-gray-200 leading-snug">');
     html = html.replace(/<p>/gi, '<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">');
     html = html.replace(/<strong>/gi, '<strong class="font-bold text-gray-900 dark:text-white">');
-
-    // STEP 6: POST-PROCESS - Add CSS classes to all <a> tags based on href
-    html = html.replace(/<a\s+([^>]*href=["']([^"']+)["'][^>]*)>/gi, function(match, attrs, href) {
-        let linkClass = 'ai-standard-link';
-
-        // URL pattern'ine göre class belirle
-        if (href.startsWith('/shop/')) {
-            linkClass = 'ai-product-link';
-        } else if (href.startsWith('/category/') || href.includes('/shop/category/')) {
-            linkClass = 'ai-category-link';
-        } else if (href.includes('wa.me') || href.includes('whatsapp')) {
-            linkClass = 'ai-whatsapp-link';
-        } else if (href.startsWith('mailto:')) {
-            linkClass = 'ai-email-link';
-        } else if (href.startsWith('tel:')) {
-            linkClass = 'ai-phone-link';
-        } else if (href.includes('t.me') || href.includes('telegram')) {
-            linkClass = 'ai-telegram-link';
-        }
-
-        // Mevcut class varsa ekle, yoksa yeni ekle
-        if (attrs.includes('class=')) {
-            return `<a ${attrs.replace(/class=["']([^"']*)["']/i, `class="$1 ${linkClass}"`)}>`;
-        } else {
-            return `<a ${attrs} class="${linkClass}">`;
-        }
-    });
 
     return html;
 };

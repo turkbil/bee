@@ -392,8 +392,8 @@ window.aiChatRenderMarkdown = function(content) {
 
     // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] - optional description
     // Matches: **Text** [LINK:shop:slug] - extra text (dash + description dahil)
-    // ⚠️ SADECE aynı satırdaki dash + text'i yakala (newline EXCLUDE)
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[^\n]+)?/gi, function(match, linkText, slug, extraText) {
+    // ⚠️ SADECE 1-2 kelimelik kısa açıklama (ör: "2 ton", "elektrikli model")
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+\w+(?:[\s,]+\w+)?)?/gi, function(match, linkText, slug, extraText) {
         linkText = sanitizeLinkText(linkText);
         if (extraText) {
             // Dash + extra text varsa link text'e ekle
@@ -411,7 +411,7 @@ window.aiChatRenderMarkdown = function(content) {
     });
 
     // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] - optional description
-    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[^\n]+)?/gi, function(match, linkText, slug, extraText) {
+    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+\w+(?:[\s,]+\w+)?)?/gi, function(match, linkText, slug, extraText) {
         linkText = sanitizeLinkText(linkText);
         if (extraText) {
             linkText += extraText.replace(/[ \t]+-[ \t]+/, ' - ');

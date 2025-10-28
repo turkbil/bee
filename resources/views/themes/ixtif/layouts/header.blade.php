@@ -444,6 +444,19 @@
 
                         </div>
 
+                        {{-- Ürünler (Mega Menu + Tabs) --}}
+                        <div class="relative mega-menu-item py-2"
+                             @mouseenter="activeMegaMenu = 'products'"
+                             @mouseleave="activeMegaMenu = null">
+                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                                <i :class="activeMegaMenu === 'products' ? 'fa-solid' : 'fa-light'" class="fa-box-open transition-all duration-300"></i>
+                                <span>Ürünler</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
+                                   :class="{ 'rotate-180': activeMegaMenu === 'products' }"></i>
+                            </button>
+
+                        </div>
+
                         {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'all-categories'"
@@ -965,6 +978,24 @@
                          x-transition:leave-end="opacity-0 -translate-y-3">
                         <div class="container mx-auto px-4 sm:px-4 md:px-2">
                             @include('themes.ixtif.partials.mega-menu-istif')
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Ürünler Mega Menu --}}
+                <div x-show="activeMegaMenu === 'products'"
+                     @mouseenter="activeMegaMenu = 'products'"
+                     @mouseleave="activeMegaMenu = null"
+                     class="absolute left-0 right-0 top-full z-50 -mt-2"
+                     x-cloak>
+                    <div x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 -translate-y-3"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-3">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                            @include('themes.ixtif.partials.mega-menu-products')
                         </div>
                     </div>
                 </div>

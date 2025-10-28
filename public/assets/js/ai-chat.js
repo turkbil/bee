@@ -411,8 +411,12 @@ window.aiChatRenderMarkdown = function(content) {
     // STEP 2: List Processing (MOVED BEFORE BOLD - fixes inline list items!)
 
     // 2A: Önce satır içi liste öğelerini ayır (AI bazen `- item1 - item2` gibi yazabiliyor)
-    // Pattern: Satır başında OLMAYAN tüm " - **" pattern'lerini yeni satıra al
+    // Pattern 1: Satır başında OLMAYAN tüm " - **" pattern'lerini yeni satıra al
     html = html.replace(/(?<!^)\s+-\s+\*\*/gm, '\n- **');
+
+    // Pattern 2: Satır başında OLMAYAN tüm " - " (bold olmasa da) yeni satıra al
+    // Örnek: "- 2 ton - 80V - Verimli" → "- 2 ton\n- 80V\n- Verimli"
+    html = html.replace(/(?<!^|\n)(\s+-\s+)(?=[A-Za-z0-9İıĞğÜüŞşÖöÇç])/gm, '\n- ');
 
     // 2B: Numbered lists: 1. 2. 3.
     html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
@@ -468,6 +472,10 @@ window.aiChatRenderMarkdown = function(content) {
     preservedBlocks.forEach((block, index) => {
         html = html.replace(`___PRESERVED_BLOCK_${index}___`, block);
     });
+
+    // STEP 4B: Liste bitişinden sonra paragraf başlıyorsa ayır
+    // Örnek: "</ul>Bu forkliftler" → "</ul>\n\n<p>Bu forkliftler"
+    html = html.replace(/(<\/ul>|<\/ol>)([A-ZİÇŞĞÜÖ])/g, '$1\n\n$2');
 
     // STEP 5: Add Tailwind Classes
     html = html.replace(/<ul>/gi, '<ul class="space-y-0.5 my-1 pl-3 list-disc">');

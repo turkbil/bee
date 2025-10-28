@@ -405,18 +405,7 @@ window.aiChatRenderMarkdown = function(content) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>`;
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-gray-200 dark:border-gray-700
-                   hover:border-blue-500 dark:hover:border-blue-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${shopIcon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + shopIcon + '<span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // 0B. Category SLUG format: [LINK:shop:category:SLUG]
@@ -435,18 +424,7 @@ window.aiChatRenderMarkdown = function(content) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>`;
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-green-200 dark:border-green-700
-                   hover:border-green-500 dark:hover:border-green-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${icon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + icon + '<span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
@@ -515,17 +493,7 @@ window.aiChatRenderMarkdown = function(content) {
             borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
         }
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border ${borderColor}
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${icon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ' + borderColor + ' rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + icon + '<span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
@@ -542,18 +510,7 @@ window.aiChatRenderMarkdown = function(content) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>`;
 
-        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-gray-200 dark:border-gray-700
-                   hover:border-blue-500 dark:hover:border-blue-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${shopIcon}
-            <span class="no-underline">${productName.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        return '<a href="' + productUrl + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + shopIcon + '<span class="no-underline">' + productName.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // ═══════════════════════════════════════════════════════════════════

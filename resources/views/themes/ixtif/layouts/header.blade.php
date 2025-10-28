@@ -402,48 +402,6 @@
 
                     {{-- Main Navigation (Desktop) --}}
                     <div class="hidden lg:flex items-center gap-6">
-                        {{-- Forklift (Mega Menu) --}}
-                        <div class="relative mega-menu-item py-2"
-                             @mouseenter="activeMegaMenu = 'forklift'"
-                             @mouseleave="activeMegaMenu = null">
-                            <a href="/shop/kategori/forklift"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
-                                <i :class="activeMegaMenu === 'forklift' ? 'fa-solid' : 'fa-light'" class="fa-forklift text-sm transition-all"></i>
-                                <span>Forklift</span>
-                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
-                                   :class="{ 'rotate-180': activeMegaMenu === 'forklift' }"></i>
-                            </a>
-
-                        </div>
-
-                        {{-- Transpalet (Mega Menu) --}}
-                        <div class="relative mega-menu-item py-2"
-                             @mouseenter="activeMegaMenu = 'transpalet'"
-                             @mouseleave="activeMegaMenu = null">
-                            <a href="/shop/kategori/transpalet"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
-                                <i :class="activeMegaMenu === 'transpalet' ? 'fa-solid' : 'fa-light'" class="fa-dolly text-sm transition-all"></i>
-                                <span>Transpalet</span>
-                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
-                                   :class="{ 'rotate-180': activeMegaMenu === 'transpalet' }"></i>
-                            </a>
-
-                        </div>
-
-                        {{-- İstif Makinesi (Mega Menu) --}}
-                        <div class="relative mega-menu-item hidden xl:block py-2"
-                             @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                             @mouseleave="activeMegaMenu = null">
-                            <a href="/shop/kategori/istif-makinesi"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
-                                <i :class="activeMegaMenu === 'istif-makinesi' ? 'fa-solid' : 'fa-light'" class="fa-box-open-full text-sm transition-all"></i>
-                                <span>İstif Makinesi</span>
-                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
-                                   :class="{ 'rotate-180': activeMegaMenu === 'istif-makinesi' }"></i>
-                            </a>
-
-                        </div>
-
                         {{-- Ürünler (Mega Menu + Tabs) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'products'"
@@ -454,19 +412,6 @@
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                    :class="{ 'rotate-180': activeMegaMenu === 'products' }"></i>
                             </a>
-
-                        </div>
-
-                        {{-- Tüm Kategoriler (Mega Menu + Tabs) --}}
-                        <div class="relative mega-menu-item py-2"
-                             @mouseenter="activeMegaMenu = 'all-categories'"
-                             @mouseleave="activeMegaMenu = null">
-                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
-                                <i :class="activeMegaMenu === 'all-categories' ? 'fa-solid' : 'fa-light'" class="fa-grid-2 transition-all duration-300"></i>
-                                <span>Tüm Kategoriler</span>
-                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
-                                   :class="{ 'rotate-180': activeMegaMenu === 'all-categories' }"></i>
-                            </button>
 
                         </div>
 
@@ -928,60 +873,6 @@
                 </div>
 
                 {{-- Mega Menu'ler (Container Seviyesinde, Navbar'a Hizalı) --}}
-                {{-- Forklift Mega Menu --}}
-                <div x-show="activeMegaMenu === 'forklift'"
-                     @mouseenter="activeMegaMenu = 'forklift'"
-                     @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-2"
-                     x-cloak>
-                    <div x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 -translate-y-3"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                            @include('themes.ixtif.partials.mega-menu-forklift')
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Transpalet Mega Menu --}}
-                <div x-show="activeMegaMenu === 'transpalet'"
-                     @mouseenter="activeMegaMenu = 'transpalet'"
-                     @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-2"
-                     x-cloak>
-                    <div x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 -translate-y-3"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                            @include('themes.ixtif.partials.mega-menu-transpalet')
-                        </div>
-                    </div>
-                </div>
-
-                {{-- İstif Makinesi Mega Menu --}}
-                <div x-show="activeMegaMenu === 'istif-makinesi'"
-                     @mouseenter="activeMegaMenu = 'istif-makinesi'"
-                     @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-2"
-                     x-cloak>
-                    <div x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 -translate-y-3"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                            @include('themes.ixtif.partials.mega-menu-istif')
-                        </div>
-                    </div>
-                </div>
-
                 {{-- Ürünler Mega Menu --}}
                 <div x-show="activeMegaMenu === 'products'"
                      @mouseenter="activeMegaMenu = 'products'"
@@ -996,24 +887,6 @@
                          x-transition:leave-end="opacity-0 -translate-y-3">
                         <div class="container mx-auto px-4 sm:px-4 md:px-2">
                             @include('themes.ixtif.partials.mega-menu-products')
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Tüm Kategoriler Mega Menu --}}
-                <div x-show="activeMegaMenu === 'all-categories'"
-                     @mouseenter="activeMegaMenu = 'all-categories'"
-                     @mouseleave="activeMegaMenu = null"
-                     class="absolute left-0 right-0 top-full z-50 -mt-2"
-                     x-cloak>
-                    <div x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 -translate-y-3"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                            @include('themes.ixtif.partials.mega-menu-content')
                         </div>
                     </div>
                 </div>

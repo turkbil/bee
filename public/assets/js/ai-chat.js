@@ -395,11 +395,10 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
 
-        // FontAwesome icons
-        const shopIcon = '<i class="fas fa-shopping-bag"></i>';
+        // Only arrow icon at the end
         const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
 
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + shopIcon + '<span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-blue-300 dark:border-blue-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // 0B. Category SLUG format: [LINK:shop:category:SLUG]
@@ -408,91 +407,66 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
 
-        // FontAwesome category icon
-        const icon = '<i class="fas fa-list"></i>';
-
-        // FontAwesome arrow icon
+        // Only arrow icon at the end
         const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
 
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + icon + '<span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-green-300 dark:border-green-600 hover:border-green-500 dark:hover:border-green-400 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
     // Format: **Ürün Adı** [LINK:shop:product:296] → /shop/product/296
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:(\w+):(\w+):(\d+)\]/gi, function(match, linkText, module, type, id) {
         // Universal link format: [LINK:module:type:id]
-        let url, icon, colorClass;
+        let url, borderColor;
 
         // Shop module
         if (module === 'shop') {
             if (type === 'product') {
                 url = `/shop/product/${id}`;
-                icon = '<i class="fas fa-shopping-bag"></i>';
-                colorClass = 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50';
+                borderColor = 'border-blue-300 dark:border-blue-600 hover:border-blue-500 dark:hover:border-blue-400';
             } else if (type === 'category') {
                 url = `/shop/category-by-id/${id}`;
-                icon = '<i class="fas fa-list"></i>';
-                colorClass = 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50';
+                borderColor = 'border-green-300 dark:border-green-600 hover:border-green-500 dark:hover:border-green-400';
             } else if (type === 'brand') {
                 url = `/shop/brand-by-id/${id}`;
-                icon = '<i class="fas fa-tag"></i>';
-                colorClass = 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/50';
+                borderColor = 'border-purple-300 dark:border-purple-600 hover:border-purple-500 dark:hover:border-purple-400';
             }
         }
         // Blog module
         else if (module === 'blog') {
             url = `/blog/post-by-id/${id}`;
-            icon = '<i class="fas fa-newspaper"></i>';
-            colorClass = 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50';
+            borderColor = 'border-orange-300 dark:border-orange-600 hover:border-orange-500 dark:hover:border-orange-400';
         }
         // Page module
         else if (module === 'page') {
             url = `/page-by-id/${id}`;
-            icon = '<i class="fas fa-file-alt"></i>';
-            colorClass = 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50';
+            borderColor = 'border-indigo-300 dark:border-indigo-600 hover:border-indigo-500 dark:hover:border-indigo-400';
         }
         // Portfolio module
         else if (module === 'portfolio') {
             url = `/portfolio/project-by-id/${id}`;
-            icon = '<i class="fas fa-briefcase"></i>';
-            colorClass = 'bg-pink-50 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/50';
+            borderColor = 'border-pink-300 dark:border-pink-600 hover:border-pink-500 dark:hover:border-pink-400';
         }
         // Fallback
         else {
             url = '#';
-            icon = '';
-            colorClass = 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
+            borderColor = 'border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400';
         }
 
-        // FontAwesome arrow icon
+        // Only arrow icon at the end
         const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
 
-        // Determine border color based on module type for minimal differentiation
-        let borderColor = 'border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500';
-        if (module === 'shop' && type === 'category') {
-            borderColor = 'border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500';
-        } else if (module === 'shop' && type === 'brand') {
-            borderColor = 'border-purple-200 dark:border-purple-700 hover:border-purple-500 dark:hover:border-purple-500';
-        } else if (module === 'blog') {
-            borderColor = 'border-orange-200 dark:border-orange-700 hover:border-orange-500 dark:hover:border-orange-500';
-        } else if (module === 'page') {
-            borderColor = 'border-indigo-200 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-500';
-        } else if (module === 'portfolio') {
-            borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
-        }
-
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ' + borderColor + ' rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + icon + '<span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
+        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ' + borderColor + ' rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)(?::([a-z0-9-]+))?\]/gi, function(match, productName, productId, productSlug) {
         const productUrl = `/shop/product/${productId}`;
 
-        // FontAwesome icons
-        const shopIcon = '<i class="fas fa-shopping-bag"></i>';
+        // Only arrow icon at the end
         const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
 
-        return '<a href="' + productUrl + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">' + shopIcon + '<span class="no-underline">' + productName.trim() + '</span>' + arrowIcon + '</a>';
+        return '<a href="' + productUrl + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-blue-300 dark:border-blue-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + productName.trim() + '</span>' + arrowIcon + '</a>';
     });
 
     // ═══════════════════════════════════════════════════════════════════

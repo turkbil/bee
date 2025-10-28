@@ -334,3 +334,14 @@ $subcategoryColors = [
     background: rgb(51 65 85);
 }
 </style>
+
+{{-- Tailwind Safelist: Tüm kategori renkleri için gradient sınıfları --}}
+{{--
+    from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700
+    from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
+    from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700
+    from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700
+    from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700
+    from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700
+    from-slate-600 to-gray-700 hover:from-slate-700 hover:to-gray-800
+--}}

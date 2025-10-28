@@ -448,12 +448,12 @@
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'products'"
                              @mouseleave="activeMegaMenu = null">
-                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                            <a href="{{ route('shop.index') }}" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                                 <i :class="activeMegaMenu === 'products' ? 'fa-solid' : 'fa-light'" class="fa-box-open transition-all duration-300"></i>
                                 <span>Ürünler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
                                    :class="{ 'rotate-180': activeMegaMenu === 'products' }"></i>
-                            </button>
+                            </a>
 
                         </div>
 

@@ -117,6 +117,17 @@ class OptimizedPromptService
         $prompts[] = "- Sonra boşluk bırak";
         $prompts[] = "- Sonra [LINK:shop:slug] ekle";
         $prompts[] = "- Slug'u Meilisearch'ten al!";
+        $prompts[] = "- ⚠️ KRİTİK: Slug'u AYNEN kullan, kendin slug üretme, title'dan slug yapma!";
+        $prompts[] = "- ⚠️ KRİTİK: Slug'ta 1 karakter bile değiştirme! (örn: '1200' yerine '120' YAZMA!)";
+        $prompts[] = "";
+        $prompts[] = "**📝 FORMATLAMA KURALLARI:**";
+        $prompts[] = "1. ✅ \"3 ton\" yaz (doğru)";
+        $prompts[] = "2. ❌ \"3. ton\" YAZMA (yanlış - liste olarak algılanır!)";
+        $prompts[] = "3. ✅ Tire'li maddeleri YENİ SATIRDA yaz:";
+        $prompts[] = "   - İlk özellik";
+        $prompts[] = "   - İkinci özellik";
+        $prompts[] = "   - Üçüncü özellik";
+        $prompts[] = "4. ❌ Tire'li maddeleri YAN YANA YAZMA: \"- özellik1 - özellik2 - özellik3\"";
         $prompts[] = "";
         $prompts[] = "5. Meilisearch sonucu BOŞ ise: 'Müşteri temsilcilerimiz size özel araştırma yapabilir' de!";
         $prompts[] = "";

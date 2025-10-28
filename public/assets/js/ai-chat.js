@@ -496,10 +496,10 @@ window.aiChatRenderMarkdown = function(content) {
     // ═══════════════════════════════════════════════════════════════════
 
     // 🔢 NUMBERED LIST: "1. item", "2. item", "3. item" → <ol><li>item</li></ol>
-    // CRITICAL FIX: This was missing, causing numbers to show as raw text like "2."
+    // ⚠️ KRİTİK: SADECE satır başındaki sayıları yakala! Cümle içindeki "3. ton" gibi ifadeleri yakalama!
     //
     // Pattern matches:
-    // - "1. Item text" or "1) Item text"
+    // - "1. Item text" or "1) Item text" (SATIR BAŞINDA)
     // - Consecutive numbered items (multi-line)
     // - Numbers can be 1-999
     //
@@ -512,16 +512,9 @@ window.aiChatRenderMarkdown = function(content) {
     //   <li>İXTİF EPT15-15ES ___LINK_PRESERVED_0___</li>
     //   <li>İXTİF EPT20-20ETC ___LINK_PRESERVED_1___</li>
     //   </ol>
-    html = html.replace(/((?:^|\n)\d+[.)]\s+.+(?:\n\d+[.)]\s+.+)*)/gm, function(match) {
-        // Split by newlines and filter lines that start with number + period/paren
-        let items = match.split('\n').filter(line => /^\d+[.)]\s+/.test(line.trim()));
-        let listItems = items.map(line => {
-            // Remove "1. " or "1) " prefix
-            let text = line.replace(/^\d+[.)]\s*/, '').trim();
-            return `<li>${text}</li>`;
-        }).join('\n');
-        return `<ol>\n${listItems}\n</ol>`;
-    });
+    //
+    // ⚠️ DİKKAT: Bu regex'i KALDIRDIK! Çünkü "3. ton" gibi ifadeleri parçalıyordu.
+    // AI zaten liste kullanmıyor, gereksiz.
 
     // 📋 UNORDERED LIST: "- item" → <ul><li>item</li></ul>
     //
@@ -534,13 +527,16 @@ window.aiChatRenderMarkdown = function(content) {
     //   <li>Yüksek performans</li>
     //   <li>Uzun ömürlü</li>
     //   </ul>
-    html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {
-        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
-        let listItems = items.map(line => {
-            let text = line.replace(/^-\s*/, '').trim();
-            return `<li>${text}</li>`;
-        }).join('\n');
-        return `<ul>\n${listItems}\n</ul>`;
+    //
+    // ⚠️ KRİTİK: SADECE satır başındaki tire'leri yakala!
+    // Link içindeki tire'leri yakalama (örn: "EFL302X4 - 3. Ton")
+    html = html.replace(/^-\s+(.+)$/gm, function(match, text) {
+        return `<li>${text.trim()}</li>`;
+    });
+
+    // Consecutive <li> tags'leri <ul> ile sar
+    html = html.replace(/(<li>.*?<\/li>\s*)+/gs, function(match) {
+        return `<ul class="space-y-1 my-2 pl-4 list-disc">\n${match}</ul>`;
     });
 
     // ═══════════════════════════════════════════════════════════════════

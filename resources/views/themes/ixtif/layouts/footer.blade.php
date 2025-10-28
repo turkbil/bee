@@ -4,7 +4,7 @@
     $popularSearches = SearchQuery::getMarkedPopular(10);
 @endphp
 
-<section class="w-full py-12">
+<section class="w-full py-12" @mouseenter="$dispatch('close-megamenu')">
     <div class="container mx-auto px-4 sm:px-4 md:px-2">
         <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-8 md:py-12 px-4 md:px-6 rounded-3xl shadow-2xl" style="overflow: visible;">
             <div class="max-w-4xl mx-auto text-center">

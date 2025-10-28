@@ -105,13 +105,13 @@ $subcategoryColors = [
 <div class="w-full rounded-2xl overflow-hidden relative border border-gray-300 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-800"
      x-data="{ activeTab: {{ $mainCategories->first()->category_id ?? 1 }} }">
 
-    <div class="grid grid-cols-12 min-h-[520px]">
+    <div class="grid grid-cols-12 min-h-[400px]">
 
         {{-- ========================================== --}}
         {{-- SOL: ANA KATEGORİLER (TABS) --}}
         {{-- ========================================== --}}
-        <div class="col-span-4 bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800 p-6 border-r border-gray-200 dark:border-gray-700">
-            <div class="space-y-2">
+        <div class="col-span-4 bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800 p-5 border-r border-gray-200 dark:border-gray-700">
+            <div class="space-y-0.5">
                 @foreach($mainCategories as $cat)
                     @php
                         $catId = $cat->category_id;
@@ -147,7 +147,7 @@ $subcategoryColors = [
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 translate-x-4"
                      x-transition:enter-end="opacity-100 translate-x-0"
-                     class="p-6 h-full"
+                     class="p-5 h-full"
                      x-cloak>
 
                     @if($data['type'] === 'subcategories')
@@ -163,8 +163,8 @@ $subcategoryColors = [
                             </a>
                         </div>
 
-                        {{-- Scrollable Grid with Custom Scrollbar --}}
-                        <div class="grid grid-cols-3 gap-3 max-h-[440px] overflow-y-auto pr-2 custom-scrollbar">
+                        {{-- Alt Kategoriler Grid --}}
+                        <div class="grid grid-cols-3 gap-3">
                             @foreach($data['subcategories'] as $subcat)
                                 @php
                                     $subTitle = is_array($subcat->title) ? ($subcat->title['tr'] ?? '') : $subcat->title;
@@ -198,28 +198,28 @@ $subcategoryColors = [
                                     @endphp
 
                                     <a href="/shop/{{ $pSlug }}"
-                                       class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border-2 border-gray-200 dark:border-gray-600 {{ $catBorderColors['featured'] }} hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
+                                       class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-4 border-2 border-gray-200 dark:border-gray-600 {{ $catBorderColors['featured'] }} hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
 
                                         {{-- Product Image --}}
                                         @if($product->hasMedia('featured_image'))
-                                            <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-4 h-40 group-hover:scale-105 transition-transform duration-300">
-                                                <img src="{{ thumb($product->getFirstMedia('featured_image'), 280, 280, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                                            <div class="flex items-center justify-center mb-3 bg-white dark:bg-gray-800 rounded-2xl p-3 h-32 group-hover:scale-105 transition-transform duration-300">
+                                                <img src="{{ thumb($product->getFirstMedia('featured_image'), 240, 240, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                                      alt="{{ $pTitle }}"
                                                      class="w-full h-full object-contain"
                                                      loading="lazy">
                                             </div>
                                         @else
-                                            <div class="flex items-center justify-center mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-4 h-40 group-hover:scale-105 transition-transform duration-300">
-                                                <i class="{{ $data['icon'] }} text-6xl text-indigo-600 dark:text-indigo-400"></i>
+                                            <div class="flex items-center justify-center mb-3 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-3 h-32 group-hover:scale-105 transition-transform duration-300">
+                                                <i class="{{ $data['icon'] }} text-5xl text-indigo-600 dark:text-indigo-400"></i>
                                             </div>
                                         @endif
 
-                                        <h4 class="text-xl font-black text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                        <h4 class="text-lg font-black text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                                             {{ $pTitle }}
                                         </h4>
 
                                         @if($pDesc)
-                                            <p class="text-gray-600 dark:text-gray-400 mb-4 leading-snug text-sm flex-1 line-clamp-3">
+                                            <p class="text-gray-600 dark:text-gray-400 leading-snug text-sm flex-1 line-clamp-2">
                                                 {{ $pDesc }}
                                             </p>
                                         @endif
@@ -234,8 +234,8 @@ $subcategoryColors = [
 
                             {{-- Diğer Ürünler --}}
                             <div class="flex flex-col justify-between">
-                                {{-- Scrollable Product List with Custom Scrollbar --}}
-                                <div class="flex-1 overflow-y-auto pr-2 space-y-2 max-h-[440px] custom-scrollbar">
+                                {{-- Product List --}}
+                                <div class="flex-1 space-y-2">
                                     @if($data['products']->isNotEmpty())
                                         @php
                                             $catBorderColors = $borderColors[$catId] ?? $borderColors[2];

@@ -9,6 +9,20 @@
     $initialPage = $initialData['page'] ?? 1;
     $initialPerPage = $initialData['per_page'] ?? 20;
     $prefetched = $initialTotal > 0;
+
+    // Prepare initial data for JavaScript (strip HTML tags to prevent XSS and size issues)
+    $jsInitialData = [
+        'items' => $initialItems->map(function($item) {
+            $item['highlighted_title'] = strip_tags($item['highlighted_title'] ?? $item['title']);
+            $item['highlighted_description'] = strip_tags($item['highlighted_description'] ?? '');
+            return $item;
+        })->values()->toArray(),
+        'total' => $initialTotal,
+        'response_time' => $initialResponse,
+        'page' => $initialPage,
+        'per_page' => $initialPerPage,
+        'last_page' => $initialData['last_page'] ?? 1
+    ];
 @endphp
 
 @extends('themes.' . $themeName . '.layouts.app')
@@ -27,46 +41,50 @@
 @endpush
 
 @push('scripts')
+@if($prefetched)
 <script>
-    // Debug Alpine.js loading
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('🔍 Search Page Debug:');
-        console.log('  Alpine available:', typeof window.Alpine !== 'undefined');
-        console.log('  Livewire available:', typeof window.Livewire !== 'undefined');
-
-        setTimeout(() => {
-            const searchContainer = document.querySelector('[x-data*="query"]');
-            console.log('  Search container found:', !!searchContainer);
-            console.log('  Alpine initialized:', searchContainer?.__x !== undefined);
-        }, 1000);
-    });
+    // Store initial search data in global variable (avoid x-data attribute overflow)
+    window.__searchInitialData = @json($jsInitialData);
 </script>
-@endpush
-
-@section('module_content')
-    <div x-data="{
+@endif
+<script>
+    // Register Alpine.js component (avoid x-data attribute overflow)
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('searchPage', () => ({
             query: @js($query),
-            results: @js($initialItems->map(function($item) {
-                // Remove HTML from highlighted fields for Alpine.js
-                $item['highlighted_title'] = strip_tags($item['highlighted_title'] ?? $item['title']);
-                $item['highlighted_description'] = strip_tags($item['highlighted_description'] ?? '');
-                return $item;
-            })->values()->toArray()),
-            total: {{ $initialTotal }},
-            responseTime: {{ $initialResponse }},
-            loading: {{ $prefetched ? 'false' : 'true' }},
+            results: [],
+            total: 0,
+            responseTime: 0,
+            loading: true,
             loadingMore: false,
-            page: {{ $initialPage }},
+            page: 1,
             perPage: {{ $initialPerPage }},
-            lastPage: {{ $initialData['last_page'] ?? 1 }},
+            lastPage: 1,
             activeTab: 'all',
             prefetched: {{ $prefetched ? 'true' : 'false' }},
             debounceTimer: null,
             maxAutoLoadPages: 50,
             autoLoadedPages: 1,
+
+            init() {
+                // Load initial data from global variable (if exists)
+                if (window.__searchInitialData) {
+                    this.results = window.__searchInitialData.items || [];
+                    this.total = window.__searchInitialData.total || 0;
+                    this.responseTime = window.__searchInitialData.response_time || 0;
+                    this.page = window.__searchInitialData.page || 1;
+                    this.lastPage = window.__searchInitialData.last_page || 1;
+                    this.loading = false;
+                }
+
+                this.removeFallback();
+                if (!this.prefetched) {
+                    this.fetchResults(true);
+                }
+            },
+
             async trackClick(itemId, itemType, position) {
                 try {
-                    // Convert type string to model class name
                     const typeMap = {
                         'products': 'Modules\\Shop\\App\\Models\\ShopProduct',
                         'categories': 'Modules\\Shop\\App\\Models\\ShopCategory',
@@ -79,7 +97,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]')?.content || ''
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
                         },
                         body: JSON.stringify({
                             query: this.query,
@@ -93,13 +111,14 @@
                     console.warn('Click tracking failed:', error);
                 }
             },
+
             scrollToResults() {
-                // Smooth scroll to results section when new search is performed
                 const resultsSection = document.querySelector('.search-results-container');
                 if (resultsSection) {
                     resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             },
+
             async fetchResults(reset = false) {
                 const trimmedQuery = this.query.trim();
 
@@ -108,7 +127,7 @@
                     this.autoLoadedPages = 1;
                 }
 
-                if (trimmedQuery.length &lt; 2) {
+                if (trimmedQuery.length < 2) {
                     this.loading = false;
                     this.results = [];
                     this.total = 0;
@@ -158,7 +177,6 @@
                     this.loading = false;
                     this.prefetched = false;
 
-                    // Scroll to results on new search
                     if (reset) {
                         this.$nextTick(() => {
                             this.scrollToResults();
@@ -166,20 +184,21 @@
                     }
                 }
             },
+
             startSearch() {
                 this.prefetched = false;
                 this.fetchResults(true);
             },
+
             debouncedSearch() {
-                // Clear existing timer
                 if (this.debounceTimer) {
                     clearTimeout(this.debounceTimer);
                 }
-                // Set new timer
                 this.debounceTimer = setTimeout(() => {
                     this.startSearch();
                 }, 500);
             },
+
             async loadMore() {
                 if (!this.canLoadMore || this.loadingMore) {
                     return;
@@ -201,8 +220,6 @@
 
                     if (data.success && data.data) {
                         const items = data.data.items || [];
-
-                        // Append new results (don't replace)
                         this.results = [...this.results, ...items];
                         this.page = nextPage;
                         this.autoLoadedPages++;
@@ -217,23 +234,31 @@
                     this.loadingMore = false;
                 }
             },
+
             get canLoadMore() {
-                return this.page &lt; this.lastPage &&
-                       this.autoLoadedPages &lt; this.maxAutoLoadPages &&
+                return this.page < this.lastPage &&
+                       this.autoLoadedPages < this.maxAutoLoadPages &&
                        !this.loading &&
                        !this.loadingMore;
             },
+
             get totalPages() {
                 return Math.max(1, Math.ceil(this.total / this.perPage));
             },
+
             removeFallback() {
                 const fallback = document.querySelector('.js-search-fallback');
                 if (fallback) {
                     fallback.remove();
                 }
             }
-        }"
-        x-init="removeFallback(); if (!prefetched) { fetchResults(true); }">
+        }));
+    });
+</script>
+@endpush
+
+@section('module_content')
+    <div x-data="searchPage">
         <div class="container mx-auto px-4 sm:px-4 md:px-0 py-8 md:py-12">
             {{-- Header --}}
             <div class="mb-6 space-y-4">

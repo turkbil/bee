@@ -186,10 +186,11 @@
     }"
     class="sticky top-0 left-0 right-0 z-50"
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
-    @keydown.escape.window="searchOpen = false; activeMegaMenu = null">
+    @keydown.escape.window="searchOpen = false; activeMegaMenu = null"
+    @close-megamenu.window="activeMegaMenu = null">
 
         {{-- Top Info Bar - Scroll'da kaybolacak --}}
-        <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden">
+        <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden" @mouseenter="activeMegaMenu = null">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
@@ -348,7 +349,7 @@
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div id="nav-container" class="flex items-center justify-between">
                     {{-- Logo - Sabit Genişlik Container --}}
-                    <div class="flex items-center gap-3 py-4" style="width: 200px;">
+                    <div class="flex items-center gap-3 py-4" style="width: 200px;" @mouseenter="activeMegaMenu = null">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
                             @php
                                 // LogoService kullan - daha temiz ve bakımı kolay
@@ -404,8 +405,7 @@
                     <div class="hidden lg:flex items-center gap-6">
                         {{-- Ürünler (Mega Menu + Tabs) --}}
                         <div class="relative mega-menu-item py-2"
-                             @mouseenter="activeMegaMenu = 'products'"
-                             @mouseleave="activeMegaMenu = null">
+                             @mouseenter="activeMegaMenu = 'products'">
                             <a href="{{ route('shop.index') }}" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                                 <i :class="activeMegaMenu === 'products' ? 'fa-solid' : 'fa-light'" class="fa-box-open transition-all duration-300"></i>
                                 <span>Ürünler</span>
@@ -417,8 +417,7 @@
 
                         {{-- Kurumsal (Hibrit Mega Menu) --}}
                         <div class="relative mega-menu-item py-2"
-                             @mouseenter="activeMegaMenu = 'hakkimizda'"
-                             @mouseleave="activeMegaMenu = null">
+                             @mouseenter="activeMegaMenu = 'hakkimizda'">
                             <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
                                 <i :class="activeMegaMenu === 'hakkimizda' ? 'fa-solid' : 'fa-light'" class="fa-building transition-all duration-300"></i>
                                 <span>Kurumsal</span>
@@ -429,7 +428,7 @@
                         </div>
 
                         {{-- İletişim --}}
-                        <div class="py-2">
+                        <div class="py-2" @mouseenter="activeMegaMenu = null">
                             <a href="/iletisim" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
                                 <i class="fa-light fa-envelope transition-all duration-300"></i>
                                 <span>İletişim</span>
@@ -488,7 +487,7 @@
                     </div>
 
                     {{-- Right Actions --}}
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2" @mouseenter="activeMegaMenu = null">
                         {{-- Search Button with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
                             <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
@@ -884,7 +883,6 @@
                 {{-- Ürünler Mega Menu --}}
                 <div x-show="activeMegaMenu === 'products'"
                      @mouseenter="activeMegaMenu = 'products'"
-                     @mouseleave="activeMegaMenu = null"
                      class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"
@@ -902,7 +900,6 @@
                 {{-- Hakkımızda Hibrit Mega Menu --}}
                 <div x-show="activeMegaMenu === 'hakkimizda'"
                      @mouseenter="activeMegaMenu = 'hakkimizda'"
-                     @mouseleave="activeMegaMenu = null"
                      class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
                     <div x-transition:enter="transition ease-out duration-300"

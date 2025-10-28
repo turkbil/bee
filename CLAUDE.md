@@ -337,9 +337,56 @@ Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
 **Detaylı teknik dökümanlar**: `readme/claude-docs/` klasöründe
 
 
-### 🗑️ DOSYA TEMİZLEME
-- **Log/Fotoğraf** gönderirsen: Oku → Analiz et → Boşalt → Sil
+### 🗑️ DOSYA & VERİTABANI TEMİZLEME
+
+**⚡ KURAL: İş bittikten sonra gereksiz dosya/kayıtları MUTLAKA temizle!**
+
+#### ✅ Otomatik Temizlenmesi Gerekenler:
+
+**Dosya Sistemi:**
+- **Log/Fotoğraf**: Oku → Analiz et → Boşalt → Sil
+- **Test Sayfaları**: /tmp/ altında veya geçici klasörde oluşturulan test*.html, debug*.php
+- **Debug Dosyaları**: Geçici debug script'leri, test komutları
+- **Temporary Script'ler**: Sorun çözme için oluşturduğun geçici PHP/Bash dosyaları
+- **Yanlış konuma açılan dosyalar**: Ana dizine açılan gereksiz dosyalar
+
+**Veritabanı:**
+- **Yanlış kayıtlar**: Test amaçlı eklenen kayıtlar
+- **Yanlış DB'ye eklenen kayıtlar**: Farklı tenant'a yanlışlıkla eklenmiş veriler
+- **Duplicate kayıtlar**: Hata sonucu oluşan çift kayıtlar
+- **Test verileri**: Debug için eklenen dummy data
+
+#### 📋 Temizlik Workflow:
+
+**İş Başında:**
+1. Geçici dosya/kayıt oluşturacaksan → Todo'ya "🗑️ Temizlik" ekle
+2. Test kayıtları oluşturacaksan → ID'lerini not al
+
+**İş Bitiminde:**
+1. Todo'daki "🗑️ Temizlik" maddesini kontrol et
+2. Oluşturduğun geçici dosyaları sil
+3. Test veritabanı kayıtlarını sil (ÖNCE KULLANICI ONAYINI AL!)
+4. Yanlış konumdaki dosyaları doğru yere taşı veya sil
+5. Temizlik yaptığını todo'da işaretle
+
+#### ⚠️ KRİTİK:
+- **UNUTMA!** Her iş bitişinde temizlik yap
+- **Sistemde yer kaplama!** Gereksiz dosya/kayıt bırakma
+- **Veritabanı temizliğinde**: MUTLAKA kullanıcı onayı al!
 - **Otomatik temizlik** her işlem sonrası
+
+#### 📝 Todo Örneği:
+```markdown
+- [x] Test sayfası oluştur (/tmp/test-navbar.html)
+- [x] Debug script yaz (debug-category.php)
+- [x] Navbar sorununu düzelt
+- [ ] 🗑️ Geçici dosyaları temizle
+```
+
+#### 🚫 Asla Temizleme:
+- **Buffer dosyaları**: a-console.txt, a-html.txt (sadece boşalt)
+- **Core dosyalar**: CLAUDE.md, README.md, .env
+- **Canlı veriler**: Production kayıtları, kullanıcı verileri
 
 ### 🛡️ BUFFER DOSYALARI (a-console.txt, a-html.txt)
 
@@ -593,6 +640,117 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 ---
 
 ## 🏢 TENANT YÖNETİMİ
+
+### 🚨 TENANT SİSTEMİ - KRİTİK BİLGİLER
+
+**⚠️ BU BİR MULTI-TENANT SİSTEMDİR!**
+
+#### 📊 Sistem Yapısı:
+- **Merkezi Sistem**: `tuufi.com` (Central domain - tenant değil, sadece yönetim merkezi)
+- **Tenant Sayısı**: Yüzlerce farklı tenant (sürekli artacak)
+- **Her Tenant**: Farklı sektör, farklı konu, tamamen bağımsız site
+
+#### 🎯 VARSAYILAN ÇALIŞMA TENANT'I (Özellikle belirtilmezse):
+- **Domain**: `ixtif.com`
+- **Tenant ID**: 2
+- **Sektör**: Endüstriyel ekipman (forklift, transpalet vb.)
+- **Not**: Kullanıcı başka tenant belirtmezse, işlemler bu tenant için yapılır. Bu değer kullanıcı tarafından güncellenebilir.
+
+#### ⚠️ KRİTİK KURAL: TENANT ODAKLI ÇALIŞMA
+
+**❌ YANLIŞ YAKLAŞIM:**
+```php
+// Central domain'e özgü çalışma
+// Tüm sistem için tek bir çözüm üretme
+// Tenant context'ini göz ardı etme
+```
+
+**✅ DOĞRU YAKLAŞIM:**
+```php
+// Her zaman tenant context'inde çalış
+// İşlemleri aktif tenant için yap
+// Tenant-spesifik verileri kullan
+```
+
+#### 📋 Tenant Context Kontrolü:
+```php
+// Mevcut tenant bilgisi
+$tenant = tenant();  // Tenant ID: 2 (ixtif.com)
+$tenantId = tenant('id');  // 2
+
+// Tenant database
+// Her tenant'ın kendi database'i var
+```
+
+#### 🗄️ MİGRATION OLUŞTURMA KURALLARI
+
+**🚨 ÇİFTE MİGRATION ZORUNLULUĞU!**
+
+Her migration dosyası **İKİ YERDE** oluşturulmalı:
+
+**1. Central Migration:**
+```bash
+database/migrations/YYYY_MM_DD_HHMMSS_create_table_name.php
+```
+
+**2. Tenant Migration:**
+```bash
+database/migrations/tenant/YYYY_MM_DD_HHMMSS_create_table_name.php
+```
+
+**⚠️ UNUTURSAN:** Tenant database'ler çalışmaz, sistem bozulur!
+
+#### 📝 Migration Workflow:
+```bash
+# 1. Migration oluştur (otomatik olarak tenant/ klasörüne de kopyalanmalı)
+php artisan make:migration create_products_table
+
+# 2. MANUEL KONTROL: İki dosya da var mı?
+ls database/migrations/*create_products_table.php
+ls database/migrations/tenant/*create_products_table.php
+
+# 3. Eğer tenant/ klasöründe yoksa, MUTLAKA kopyala!
+cp database/migrations/YYYY_MM_DD_HHMMSS_create_products_table.php \
+   database/migrations/tenant/YYYY_MM_DD_HHMMSS_create_products_table.php
+
+# 4. Migration çalıştır
+php artisan migrate  # Central için
+php artisan tenants:migrate  # Tüm tenant'lar için
+```
+
+#### ⚠️ DIKKAT EDILMESI GEREKENLER:
+
+**Data İşlemleri:**
+- ✅ Tenant-spesifik veriyi oku/yaz
+- ❌ Central data ile tenant data'yı karıştırma
+- ✅ Her zaman aktif tenant context'inde çalış
+
+**Test/Debug:**
+- ✅ ixtif.com üzerinde test et (Tenant ID: 2)
+- ❌ tuufi.com'da tenant işlemlerini test etme
+- ✅ Tenant database'ini kullandığını doğrula
+
+**Modül Geliştirme:**
+- ✅ Tenant-aware modüller yaz
+- ✅ Her tenant için bağımsız çalışsın
+- ❌ Hard-coded tenant ID kullanma
+- ✅ `tenant()` helper'ı kullan
+
+#### 🔍 Tenant Kontrol Komutları:
+```bash
+# Aktif tenant'ı göster
+php artisan tinker
+>>> tenant()
+>>> tenant('id')
+
+# Tüm tenant'ları listele
+php artisan tenants:list
+
+# Tenant migration durumu
+php artisan tenants:migrate --pretend
+```
+
+---
 
 ### YENİ TENANT EKLEME
 **Detaylı kılavuz:** `readme/tenant-olusturma.md`

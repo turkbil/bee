@@ -15,6 +15,16 @@ class SearchPageController extends Controller
      */
     public function show(Request $request, ?string $query = null)
     {
+        // 🚀 CLEAN URL REDIRECT: /search?q=F4 → /search/F4 (SEO Friendly)
+        if (!$query && $request->has('q')) {
+            $queryString = $request->get('q');
+            if (!empty($queryString)) {
+                return redirect()->route('search.show', [
+                    'query' => $queryString
+                ], 301); // 301 Permanent Redirect (SEO)
+            }
+        }
+
         // Get query from URL parameter or route parameter
         $searchQuery = $query ?? $request->get('q', '');
 
@@ -73,6 +83,9 @@ class SearchPageController extends Controller
             }
         }
 
+        // 🎯 DYNAMIC SEO META TAGS (Tenant-Aware)
+        $this->generateSearchSeoMeta($searchQuery, $initialData);
+
         return view('search::show', [
             'query' => $searchQuery,
             'pageTitle' => $searchQuery
@@ -80,6 +93,92 @@ class SearchPageController extends Controller
                 : 'Arama',
             'initialData' => $initialData,
         ]);
+    }
+
+    /**
+     * Generate dynamic SEO meta tags for search page (Tenant-Aware)
+     */
+    private function generateSearchSeoMeta(string $searchQuery, array $initialData): void
+    {
+        // Get tenant-specific settings (dynamic)
+        $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name');
+        $siteDescription = setting('site_description') ?: setting('site_slogan');
+        $currentLocale = app()->getLocale();
+
+        // Search results count
+        $totalResults = $initialData['total'] ?? 0;
+
+        // Build dynamic meta tags
+        $metaTags = [
+            // Title (Max 60 chars recommended)
+            'title' => $searchQuery
+                ? "'{$searchQuery}' Arama Sonuçları - {$siteName}"
+                : "Arama - {$siteName}",
+
+            // Description (Max 160 chars recommended) - Tenant-specific
+            'description' => $searchQuery
+                ? ($totalResults > 0
+                    ? "'{$searchQuery}' için {$totalResults} sonuç bulundu. {$siteDescription}"
+                    : "'{$searchQuery}' araması için sonuç bulunamadı. {$siteDescription}")
+                : "Site içi arama yapın. {$siteDescription}",
+
+            // Canonical URL (SEO için önemli)
+            'canonical_url' => $searchQuery
+                ? route('search.show', ['query' => $searchQuery])
+                : route('search.query'),
+
+            // Robots: Arama sayfaları noindex (duplicate content önleme)
+            'robots' => 'noindex, follow',
+
+            // Open Graph
+            'og_titles' => $searchQuery
+                ? "'{$searchQuery}' - {$siteName}"
+                : "Arama - {$siteName}",
+            'og_descriptions' => $searchQuery && $totalResults > 0
+                ? "{$totalResults} sonuç listeleniyor."
+                : "Site içi arama",
+            'og_image' => null, // Arama sayfası için özel görsel yok
+            'og_type' => 'website',
+            'og_locale' => str_replace('-', '_', $currentLocale),
+            'og_site_name' => $siteName,
+            'og_url' => url()->current(),
+
+            // Twitter Card
+            'twitter_card' => 'summary',
+            'twitter_title' => $searchQuery
+                ? "'{$searchQuery}' - Arama Sonuçları"
+                : 'Arama',
+            'twitter_description' => $searchQuery && $totalResults > 0
+                ? "{$totalResults} sonuç bulundu."
+                : 'Site içi arama yapın.',
+            'twitter_image' => null, // Arama sayfası için özel görsel yok
+            'twitter_site' => null,
+            'twitter_creator' => null,
+        ];
+
+        // Schema.org WebSite + SearchAction (Google Search Box için)
+        if (!$searchQuery) {
+            // Sadece /search anasayfasında göster
+            $metaTags['schemas'] = [
+                'website' => [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'WebSite',
+                    'url' => url('/'),
+                    'name' => $siteName,
+                    'potentialAction' => [
+                        '@type' => 'SearchAction',
+                        'target' => [
+                            '@type' => 'EntryPoint',
+                            'urlTemplate' => route('search.show', ['query' => '{search_term_string}'])
+                        ],
+                        'query-input' => 'required name=search_term_string'
+                    ]
+                ]
+            ];
+        }
+
+        // Share to view (SeoMeta component will use this)
+        view()->share('metaTags', $metaTags);
     }
 
     /**

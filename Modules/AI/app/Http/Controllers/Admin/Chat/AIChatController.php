@@ -12,6 +12,7 @@ use Modules\AI\App\Services\AIResponseRepository;
 use Modules\AI\App\Services\DeepSeekService;
 use Modules\AI\App\Services\MarkdownService;
 use Modules\AI\App\Services\ConversationService;
+use Modules\AI\App\Services\AIResponseValidator;
 use Modules\AI\App\Models\Conversation;
 use Modules\AI\App\Models\Message;
 use Illuminate\Support\Facades\Auth;
@@ -24,12 +25,20 @@ class AIChatController extends Controller
     protected $aiService;
     protected $aiResponseRepository;
     protected $conversationService;
+    protected $aiResponseValidator;
 
-    public function __construct(DeepSeekService $deepSeekService, MarkdownService $markdownService, ConversationService $conversationService, AIService $aiService = null, AIResponseRepository $aiResponseRepository = null)
-    {
+    public function __construct(
+        DeepSeekService $deepSeekService,
+        MarkdownService $markdownService,
+        ConversationService $conversationService,
+        AIResponseValidator $aiResponseValidator,
+        AIService $aiService = null,
+        AIResponseRepository $aiResponseRepository = null
+    ) {
         $this->deepSeekService = $deepSeekService;
         $this->markdownService = $markdownService;
         $this->conversationService = $conversationService;
+        $this->aiResponseValidator = $aiResponseValidator;
         $this->aiService = $aiService ?? app(AIService::class);
         $this->aiResponseRepository = $aiResponseRepository ?? app(AIResponseRepository::class);
     }
@@ -148,18 +157,31 @@ class AIChatController extends Controller
                 'prompt_id' => $promptId,
                 'tenant_id' => $tenantId
             ]);
-            
+
             // Validate AI response
             if (empty($aiResponse) || !is_string($aiResponse)) {
                 Log::error('❌ Empty AI response', [
                     'message' => $message,
                     'response' => $aiResponse
                 ]);
-                
+
                 return response()->json([
                     'success' => false,
                     'message' => 'AI yanıt üretemedi. Lütfen tekrar deneyin.'
                 ], 500);
+            }
+
+            // 🔧 VALIDATE AND AUTO-CORRECT AI RESPONSE
+            // Fixes common AI hallucinations (wrong titles, slugs)
+            $validationResult = $this->aiResponseValidator->validateAndFix($aiResponse);
+            if ($validationResult['has_errors']) {
+                Log::info('🔧 AI Response auto-corrected', [
+                    'corrections_count' => count($validationResult['corrections']),
+                    'corrections' => $validationResult['corrections']
+                ]);
+
+                // Use corrected response
+                $aiResponse = $validationResult['response'];
             }
             
             // Save AI message

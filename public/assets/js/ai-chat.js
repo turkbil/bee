@@ -395,10 +395,28 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
 
-        // Only arrow icon at the end
-        const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
+        // Minimal shopping icon
+        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>`;
 
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-blue-300 dark:border-blue-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            ${shopIcon}
+            <span class="no-underline">${linkText.trim()}</span>
+            ${arrowIcon}
+        </a>`;
     });
 
     // 0B. Category SLUG format: [LINK:shop:category:SLUG]
@@ -407,66 +425,135 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
 
-        // Only arrow icon at the end
-        const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
+        // Minimal category icon
+        const icon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>`;
 
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-green-300 dark:border-green-600 hover:border-green-500 dark:hover:border-green-400 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-green-200 dark:border-green-700
+                   hover:border-green-500 dark:hover:border-green-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            ${icon}
+            <span class="no-underline">${linkText.trim()}</span>
+            ${arrowIcon}
+        </a>`;
     });
 
     // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
     // Format: **Ürün Adı** [LINK:shop:product:296] → /shop/product/296
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:(\w+):(\w+):(\d+)\]/gi, function(match, linkText, module, type, id) {
         // Universal link format: [LINK:module:type:id]
-        let url, borderColor;
+        let url, icon, colorClass;
 
         // Shop module
         if (module === 'shop') {
             if (type === 'product') {
                 url = `/shop/product/${id}`;
-                borderColor = 'border-blue-300 dark:border-blue-600 hover:border-blue-500 dark:hover:border-blue-400';
+                icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>`;
+                colorClass = 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50';
             } else if (type === 'category') {
                 url = `/shop/category-by-id/${id}`;
-                borderColor = 'border-green-300 dark:border-green-600 hover:border-green-500 dark:hover:border-green-400';
+                icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+                colorClass = 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50';
             } else if (type === 'brand') {
                 url = `/shop/brand-by-id/${id}`;
-                borderColor = 'border-purple-300 dark:border-purple-600 hover:border-purple-500 dark:hover:border-purple-400';
+                icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>`;
+                colorClass = 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/50';
             }
         }
         // Blog module
         else if (module === 'blog') {
             url = `/blog/post-by-id/${id}`;
-            borderColor = 'border-orange-300 dark:border-orange-600 hover:border-orange-500 dark:hover:border-orange-400';
+            icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>`;
+            colorClass = 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50';
         }
         // Page module
         else if (module === 'page') {
             url = `/page-by-id/${id}`;
-            borderColor = 'border-indigo-300 dark:border-indigo-600 hover:border-indigo-500 dark:hover:border-indigo-400';
+            icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>`;
+            colorClass = 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50';
         }
         // Portfolio module
         else if (module === 'portfolio') {
             url = `/portfolio/project-by-id/${id}`;
-            borderColor = 'border-pink-300 dark:border-pink-600 hover:border-pink-500 dark:hover:border-pink-400';
+            icon = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>`;
+            colorClass = 'bg-pink-50 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/50';
         }
         // Fallback
         else {
             url = '#';
-            borderColor = 'border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400';
+            icon = '';
+            colorClass = 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400';
         }
 
-        // Only arrow icon at the end
-        const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
 
-        return '<a href="' + url + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ' + borderColor + ' rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + linkText.trim() + '</span>' + arrowIcon + '</a>';
+        // Determine border color based on module type for minimal differentiation
+        let borderColor = 'border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500';
+        if (module === 'shop' && type === 'category') {
+            borderColor = 'border-green-200 dark:border-green-700 hover:border-green-500 dark:hover:border-green-500';
+        } else if (module === 'shop' && type === 'brand') {
+            borderColor = 'border-purple-200 dark:border-purple-700 hover:border-purple-500 dark:hover:border-purple-500';
+        } else if (module === 'blog') {
+            borderColor = 'border-orange-200 dark:border-orange-700 hover:border-orange-500 dark:hover:border-orange-500';
+        } else if (module === 'page') {
+            borderColor = 'border-indigo-200 dark:border-indigo-700 hover:border-indigo-500 dark:hover:border-indigo-500';
+        } else if (module === 'portfolio') {
+            borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
+        }
+
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border ${borderColor}
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            ${icon}
+            <span class="no-underline">${linkText.trim()}</span>
+            ${arrowIcon}
+        </a>`;
     });
 
     // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK_ID:(\d+)(?::([a-z0-9-]+))?\]/gi, function(match, productName, productId, productSlug) {
         const productUrl = `/shop/product/${productId}`;
 
-        // Only arrow icon at the end
-        const arrowIcon = '<i class="fas fa-chevron-right opacity-50 group-hover:opacity-100 transition-opacity"></i>';
+        // Minimal shopping icon
+        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>`;
 
-        return '<a href="' + productUrl + '" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-blue-300 dark:border-blue-600 hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100"><span class="no-underline">' + productName.trim() + '</span>' + arrowIcon + '</a>';
+        // Minimal arrow icon
+        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>`;
+
+        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer"
+            class="group inline-flex items-center gap-2 px-3 py-2 my-1
+                   bg-white dark:bg-gray-800
+                   border border-gray-200 dark:border-gray-700
+                   hover:border-blue-500 dark:hover:border-blue-500
+                   rounded-lg transition-all duration-200
+                   text-sm font-medium no-underline
+                   text-gray-900 dark:text-gray-100">
+            ${shopIcon}
+            <span class="no-underline">${productName.trim()}</span>
+            ${arrowIcon}
+        </a>`;
     });
 
     // ═══════════════════════════════════════════════════════════════════
@@ -496,10 +583,10 @@ window.aiChatRenderMarkdown = function(content) {
     // ═══════════════════════════════════════════════════════════════════
 
     // 🔢 NUMBERED LIST: "1. item", "2. item", "3. item" → <ol><li>item</li></ol>
-    // ⚠️ KRİTİK: SADECE satır başındaki sayıları yakala! Cümle içindeki "3. ton" gibi ifadeleri yakalama!
+    // CRITICAL FIX: This was missing, causing numbers to show as raw text like "2."
     //
     // Pattern matches:
-    // - "1. Item text" or "1) Item text" (SATIR BAŞINDA)
+    // - "1. Item text" or "1) Item text"
     // - Consecutive numbered items (multi-line)
     // - Numbers can be 1-999
     //
@@ -512,9 +599,16 @@ window.aiChatRenderMarkdown = function(content) {
     //   <li>İXTİF EPT15-15ES ___LINK_PRESERVED_0___</li>
     //   <li>İXTİF EPT20-20ETC ___LINK_PRESERVED_1___</li>
     //   </ol>
-    //
-    // ⚠️ DİKKAT: Bu regex'i KALDIRDIK! Çünkü "3. ton" gibi ifadeleri parçalıyordu.
-    // AI zaten liste kullanmıyor, gereksiz.
+    html = html.replace(/((?:^|\n)\d+[.)]\s+.+(?:\n\d+[.)]\s+.+)*)/gm, function(match) {
+        // Split by newlines and filter lines that start with number + period/paren
+        let items = match.split('\n').filter(line => /^\d+[.)]\s+/.test(line.trim()));
+        let listItems = items.map(line => {
+            // Remove "1. " or "1) " prefix
+            let text = line.replace(/^\d+[.)]\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ol>\n${listItems}\n</ol>`;
+    });
 
     // 📋 UNORDERED LIST: "- item" → <ul><li>item</li></ul>
     //
@@ -527,16 +621,13 @@ window.aiChatRenderMarkdown = function(content) {
     //   <li>Yüksek performans</li>
     //   <li>Uzun ömürlü</li>
     //   </ul>
-    //
-    // ⚠️ KRİTİK: SADECE satır başındaki tire'leri yakala!
-    // Link içindeki tire'leri yakalama (örn: "EFL302X4 - 3. Ton")
-    html = html.replace(/^-\s+(.+)$/gm, function(match, text) {
-        return `<li>${text.trim()}</li>`;
-    });
-
-    // Consecutive <li> tags'leri <ul> ile sar
-    html = html.replace(/(<li>.*?<\/li>\s*)+/gs, function(match) {
-        return `<ul class="space-y-1 my-2 pl-4 list-disc">\n${match}</ul>`;
+    html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {
+        let items = match.split('\n').filter(line => line.trim().startsWith('- '));
+        let listItems = items.map(line => {
+            let text = line.replace(/^-\s*/, '').trim();
+            return `<li>${text}</li>`;
+        }).join('\n');
+        return `<ul>\n${listItems}\n</ul>`;
     });
 
     // ═══════════════════════════════════════════════════════════════════

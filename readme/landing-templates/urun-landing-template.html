@@ -1,0 +1,723 @@
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+  LANDING PAGE: ÜRÜN SHOWCASE TEMPLATE
+  Framework: Tailwind CSS + Alpine.js
+  Mode: Full-Screen (No Header/Footer - Page modülü ile kullan)
+
+  KULLANIM:
+  1. Bu HTML'i kopyalayıp Page modülünün body alanına yapıştırın
+  2. Ürün bilgilerini güncelleyin
+  3. Fotoğraf placeholder'larına (fa-image) gerçek image src ekleyin
+
+  NOT: Şu an placeholder ikonlar var, fotoğraf linkleri gelince güncellenecek
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         HERO SECTION - Başlık & Açıklama
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12 lg:py-20">
+        <div class="text-center max-w-4xl mx-auto mb-12">
+            <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
+                Elektrikli İstif & <span class="text-blue-600 dark:text-blue-400">Transpalet Fırsatları!</span>
+            </h1>
+            <p class="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+                Yüksek kaliteli ürünlerimizle iş yükünüzü hafifletin. <strong>LİTEF</strong> güvencesiyle profesyonel çözümler.
+            </p>
+
+            <!-- Campaign Badge -->
+            <div class="bg-gradient-to-r from-orange-500 via-red-500 to-red-600 text-white px-6 py-5 rounded-xl shadow-2xl border-2 border-white/20 inline-block">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">🔥</span>
+                    <span class="text-sm font-semibold uppercase tracking-wide bg-white/20 px-3 py-1 rounded-full">Kampanya!</span>
+                </div>
+                <p class="text-xl lg:text-2xl font-bold">
+                    Tüm Ürünlerde <span class="text-yellow-300">%15 İndirim!</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ÜRÜN KARTLARI SECTION - 3 Kolon Grid
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- ÜRÜN KARTI 1 -->
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+                <!-- Fotoğraf Alanı - PLACEHOLDER -->
+                <div class="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden">
+                    <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl"></i>
+                    <!-- Gerçek fotoğraf için: -->
+                    <!-- <img src="FOTO_URL_BURAYA" alt="Ürün Adı" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"> -->
+
+                    <!-- Kampanya Badge -->
+                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        %15 İNDİRİM
+                    </div>
+                </div>
+
+                <!-- Ürün Bilgileri -->
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Elektrikli Transpalet F4
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        Lityum İyon Akülü | 2000 kg Kapasite
+                    </p>
+
+                    <!-- Özellikler -->
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Hızlı Şarj Özelliği
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Ergonomik Tasarım
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            CE Sertifikalı
+                        </li>
+                    </ul>
+
+                    <!-- Fiyat -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 line-through">$1,590</span>
+                            <span class="text-3xl font-black text-blue-600 dark:text-blue-400">$1,350</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA Butonları -->
+                    <div class="flex gap-2">
+                        <a href="#form-section"
+                           onclick="document.getElementById('product-input').value='Elektrikli Transpalet F4'; document.getElementById('name-input').focus();"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-center transition-all hover:scale-105 shadow-lg">
+                            Teklif Al
+                        </a>
+                        <a href="tel:+902162060200"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-all hover:scale-105 shadow-lg">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÜRÜN KARTI 2 -->
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+                <!-- Fotoğraf Alanı - PLACEHOLDER -->
+                <div class="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden">
+                    <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl"></i>
+
+                    <!-- Kampanya Badge -->
+                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        %15 İNDİRİM
+                    </div>
+                </div>
+
+                <!-- Ürün Bilgileri -->
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Elektrikli İstif Makinesi
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        3.5m Kaldırma | 1500 kg Kapasite
+                    </p>
+
+                    <!-- Özellikler -->
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Yüksek Kaldırma Kapasitesi
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Sessiz Çalışma
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Dayanıklı Yapı
+                        </li>
+                    </ul>
+
+                    <!-- Fiyat -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 line-through">$2,350</span>
+                            <span class="text-3xl font-black text-blue-600 dark:text-blue-400">$1,995</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA Butonları -->
+                    <div class="flex gap-2">
+                        <a href="#form-section"
+                           onclick="document.getElementById('product-input').value='Elektrikli İstif Makinesi'; document.getElementById('name-input').focus();"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-center transition-all hover:scale-105 shadow-lg">
+                            Teklif Al
+                        </a>
+                        <a href="tel:+902162060200"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-all hover:scale-105 shadow-lg">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÜRÜN KARTI 3 -->
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+                <!-- Fotoğraf Alanı - PLACEHOLDER -->
+                <div class="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden">
+                    <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl"></i>
+
+                    <!-- Kampanya Badge -->
+                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        %15 İNDİRİM
+                    </div>
+                </div>
+
+                <!-- Ürün Bilgileri -->
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Manuel Transpalet
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        Standart Model | 2500 kg Kapasite
+                    </p>
+
+                    <!-- Özellikler -->
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Bakım Gerektirmez
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Kolay Kullanım
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Uygun Fiyat
+                        </li>
+                    </ul>
+
+                    <!-- Fiyat -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 line-through">$470</span>
+                            <span class="text-3xl font-black text-blue-600 dark:text-blue-400">$399</span>
+                        </div>
+                    </div>
+
+                    <!-- CTA Butonları -->
+                    <div class="flex gap-2">
+                        <a href="#form-section"
+                           onclick="document.getElementById('product-input').value='Manuel Transpalet'; document.getElementById('name-input').focus();"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-center transition-all hover:scale-105 shadow-lg">
+                            Teklif Al
+                        </a>
+                        <a href="tel:+902162060200"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-all hover:scale-105 shadow-lg">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÜRÜN KARTI 4 -->
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+                <div class="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden">
+                    <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl"></i>
+                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        %15 İNDİRİM
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Forklift Elektrikli
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        4.5m Kaldırma | 3000 kg Kapasite
+                    </p>
+
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Güçlü Motor
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Geniş Görüş Alanı
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Konforlu Sürüş
+                        </li>
+                    </ul>
+
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 line-through">$8,820</span>
+                            <span class="text-3xl font-black text-blue-600 dark:text-blue-400">$7,500</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="#form-section"
+                           onclick="document.getElementById('product-input').value='Forklift Elektrikli'; document.getElementById('name-input').focus();"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-center transition-all hover:scale-105 shadow-lg">
+                            Teklif Al
+                        </a>
+                        <a href="tel:+902162060200"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-all hover:scale-105 shadow-lg">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÜRÜN KARTI 5 -->
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+                <div class="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden">
+                    <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl"></i>
+                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        %15 İNDİRİM
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Platform İstif Makinesi
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        Platform Tipi | 1200 kg Kapasite
+                    </p>
+
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Operatör Platformu
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Dar Alan Kullanımı
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Güvenli Çalışma
+                        </li>
+                    </ul>
+
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 line-through">$3,180</span>
+                            <span class="text-3xl font-black text-blue-600 dark:text-blue-400">$2,700</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="#form-section"
+                           onclick="document.getElementById('product-input').value='Platform İstif Makinesi'; document.getElementById('name-input').focus();"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-center transition-all hover:scale-105 shadow-lg">
+                            Teklif Al
+                        </a>
+                        <a href="tel:+902162060200"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-all hover:scale-105 shadow-lg">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÜRÜN KARTI 6 -->
+            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+
+                <div class="relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center overflow-hidden">
+                    <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl"></i>
+                    <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                        %15 İNDİRİM
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        Reach Truck İstif
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        6m Kaldırma | 1800 kg Kapasite
+                    </p>
+
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Çift Direkli Sistem
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Depo İçi Kullanım
+                        </li>
+                        <li class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                            <i class="fa-solid fa-check-circle text-green-600 dark:text-green-400"></i>
+                            Yüksek Verimlilik
+                        </li>
+                    </ul>
+
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-sm text-gray-500 dark:text-gray-400 line-through">$5,880</span>
+                            <span class="text-3xl font-black text-blue-600 dark:text-blue-400">$5,000</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <a href="#form-section"
+                           onclick="document.getElementById('product-input').value='Reach Truck İstif'; document.getElementById('name-input').focus();"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-center transition-all hover:scale-105 shadow-lg">
+                            Teklif Al
+                        </a>
+                        <a href="tel:+902162060200"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-all hover:scale-105 shadow-lg">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         İLETİŞİM FORMU SECTION
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900 py-16" id="form-section">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 lg:p-8 border-2 border-gray-100 dark:border-gray-700">
+
+                    <!-- Form Header -->
+                    <div class="text-center mb-6">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-4">
+                            <i class="fas fa-headset text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                            Uzmanlarımız Sizi Arasın
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">
+                            Formu doldurun, size en kısa sürede dönelim
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form
+                        action="/api/landing/urun-showcase/submit"
+                        method="POST"
+                        x-data="{
+                            isSubmitting: false,
+                            successMessage: false,
+                            errorMessage: ''
+                        }"
+                        @submit.prevent="
+                            isSubmitting = true;
+                            fetch($event.target.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                },
+                                body: JSON.stringify(Object.fromEntries(new FormData($event.target)))
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    successMessage = true;
+                                    $event.target.reset();
+                                    gtag && gtag('event', 'generate_lead', {'event_category': 'Form', 'event_label': 'Ürün Landing Form'});
+                                } else {
+                                    errorMessage = data.message || 'Bir hata oluştu';
+                                }
+                            })
+                            .catch(error => {
+                                errorMessage = 'Bağlantı hatası oluştu';
+                            })
+                            .finally(() => {
+                                isSubmitting = false;
+                            });
+                        "
+                        class="space-y-4">
+
+                        @csrf
+                        <input type="hidden" name="landing_page" value="urun-showcase">
+                        <input type="hidden" name="source" value="landing_page">
+
+                        <!-- Product Input (Hidden - Ürün seçimi butonlardan gelir) -->
+                        <input type="hidden" id="product-input" name="product" value="">
+
+                        <!-- Name Input (Floating Label) -->
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="name-input"
+                                name="name"
+                                required
+                                minlength="3"
+                                pattern="[A-Za-zÇçĞğİıÖöŞşÜü\s]{3,}"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="Adınız Soyadınız">
+                            <label
+                                for="name-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Adınız Soyadınız *
+                            </label>
+                        </div>
+
+                        <!-- Phone Input (Floating Label) -->
+                        <div class="relative">
+                            <input
+                                type="tel"
+                                id="phone-input"
+                                name="phone"
+                                required
+                                minlength="10"
+                                pattern="[0-9]{10,11}"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="Telefon Numaranız">
+                            <label
+                                for="phone-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Telefon Numaranız *
+                            </label>
+                        </div>
+
+                        <!-- Email Input (Optional) -->
+                        <div class="relative">
+                            <input
+                                type="email"
+                                id="email-input"
+                                name="email"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="E-posta Adresiniz">
+                            <label
+                                for="email-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                E-posta (Opsiyonel)
+                            </label>
+                        </div>
+
+                        <!-- Message Textarea -->
+                        <div class="relative">
+                            <textarea
+                                id="message-input"
+                                name="message"
+                                rows="4"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all resize-none"
+                                placeholder="Mesajınız"></textarea>
+                            <label
+                                for="message-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Mesajınız
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button
+                            type="submit"
+                            :disabled="isSubmitting"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
+                                   disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed
+                                   text-white px-6 py-4 rounded-lg shadow-lg text-lg font-bold
+                                   transition-all duration-300 hover:scale-105 disabled:scale-100
+                                   flex items-center justify-center gap-3">
+                            <span x-show="!isSubmitting">Gönder</span>
+                            <span x-show="isSubmitting" x-cloak>Gönderiliyor...</span>
+                            <i class="fas fa-paper-plane" x-show="!isSubmitting"></i>
+                            <svg x-show="isSubmitting" x-cloak class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Success Message -->
+                        <div
+                            x-show="successMessage"
+                            x-cloak
+                            x-transition
+                            class="bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg text-center font-semibold">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.
+                        </div>
+
+                        <!-- Error Message -->
+                        <div
+                            x-show="errorMessage"
+                            x-cloak
+                            x-transition
+                            class="bg-red-100 dark:bg-red-900/30 border-2 border-red-500 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg text-center font-semibold"
+                            x-text="errorMessage">
+                        </div>
+
+                        <!-- Privacy Notice -->
+                        <p class="text-xs text-gray-600 dark:text-gray-400 text-center mt-4">
+                            <i class="fas fa-lock mr-1"></i>
+                            Bilgileriniz güvenli bir şekilde saklanmaktadır.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TRUST BADGES
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12">
+        <div class="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">Garantili Ürünler</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">2 Yıl Garanti</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-truck text-blue-600 dark:text-blue-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">Hızlı Teslimat</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Türkiye Geneli</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-headset text-purple-600 dark:text-purple-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">7/24 Destek</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Teknik Destek</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-medal text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">20+ Yıl Tecrübe</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Sektör Lideri</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FOOTER CTA
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-4">
+                Fırsatı Kaçırmayın!
+            </h2>
+            <p class="text-xl lg:text-2xl mb-8 text-white/90">
+                Sınırlı sayıda stokta! Hemen teklif alın.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                    onclick="document.getElementById('name-input').focus(); document.getElementById('form-section').scrollIntoView({behavior: 'smooth', block: 'center'});"
+                    class="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-xl">
+                    FORMU DOLDUR
+                </button>
+                <a href="tel:+902162060200"
+                   class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-xl">
+                    <i class="fas fa-phone mr-2"></i> HEMEN ARA
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CUSTOM STYLES
+═══════════════════════════════════════════════════════════════════ -->
+<style>
+/* Alpine.js x-cloak directive */
+[x-cloak] { display: none !important; }
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Floating label animation enhancement */
+input:focus + label,
+textarea:focus + label {
+    font-weight: 600;
+}
+
+/* Form focus glow */
+input:focus,
+textarea:focus {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Dark mode form focus */
+.dark input:focus,
+.dark textarea:focus {
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TRACKING SCRIPTS
+═══════════════════════════════════════════════════════════════════ -->
+<script>
+// Form view tracking
+gtag && gtag('event', 'page_view', {
+    'page_title': 'Ürün Showcase Landing',
+    'page_location': window.location.href,
+    'page_path': window.location.pathname
+});
+
+// Scroll tracking (50%, 75%, 100%)
+let scrollTracked = {50: false, 75: false, 100: false};
+window.addEventListener('scroll', () => {
+    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+
+    if (scrollPercent >= 50 && !scrollTracked[50]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '50%'});
+        scrollTracked[50] = true;
+    }
+    if (scrollPercent >= 75 && !scrollTracked[75]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '75%'});
+        scrollTracked[75] = true;
+    }
+    if (scrollPercent >= 99 && !scrollTracked[100]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '100%'});
+        scrollTracked[100] = true;
+    }
+});
+</script>

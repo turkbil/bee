@@ -74,13 +74,13 @@ $gradients = [
 
 // Border renkleri (sabit - Tailwind uyumlu)
 $borderColors = [
-    1 => ['normal' => 'border-orange-300 dark:border-orange-500', 'hover' => 'group-hover:text-orange-500'],  // Forklift
-    2 => ['normal' => 'border-blue-300 dark:border-blue-500', 'hover' => 'group-hover:text-blue-500'],        // Transpalet
-    3 => ['normal' => 'border-green-300 dark:border-green-500', 'hover' => 'group-hover:text-green-500'],     // İstif
-    4 => ['normal' => 'border-purple-300 dark:border-purple-500', 'hover' => 'group-hover:text-purple-500'],  // Order Picker
-    5 => ['normal' => 'border-cyan-300 dark:border-cyan-500', 'hover' => 'group-hover:text-cyan-500'],        // Otonom
-    6 => ['normal' => 'border-yellow-300 dark:border-yellow-500', 'hover' => 'group-hover:text-yellow-500'],  // Reach Truck
-    7 => ['normal' => 'border-slate-300 dark:border-slate-500', 'hover' => 'group-hover:text-slate-500'],     // Yedek Parça
+    1 => ['normal' => 'border-orange-300 dark:border-orange-500', 'hover' => 'group-hover:text-orange-500', 'featured' => 'hover:border-orange-400 dark:hover:border-orange-500', 'product' => 'hover:border-orange-400 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20'],  // Forklift
+    2 => ['normal' => 'border-blue-300 dark:border-blue-500', 'hover' => 'group-hover:text-blue-500', 'featured' => 'hover:border-blue-400 dark:hover:border-blue-500', 'product' => 'hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'],        // Transpalet
+    3 => ['normal' => 'border-green-300 dark:border-green-500', 'hover' => 'group-hover:text-green-500', 'featured' => 'hover:border-green-400 dark:hover:border-green-500', 'product' => 'hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20'],     // İstif
+    4 => ['normal' => 'border-purple-300 dark:border-purple-500', 'hover' => 'group-hover:text-purple-500', 'featured' => 'hover:border-purple-400 dark:hover:border-purple-500', 'product' => 'hover:border-purple-400 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20'],  // Order Picker
+    5 => ['normal' => 'border-cyan-300 dark:border-cyan-500', 'hover' => 'group-hover:text-cyan-500', 'featured' => 'hover:border-cyan-400 dark:hover:border-cyan-500', 'product' => 'hover:border-cyan-400 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20'],        // Otonom
+    6 => ['normal' => 'border-yellow-300 dark:border-yellow-500', 'hover' => 'group-hover:text-yellow-500', 'featured' => 'hover:border-yellow-400 dark:hover:border-yellow-500', 'product' => 'hover:border-yellow-400 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'],  // Reach Truck
+    7 => ['normal' => 'border-slate-300 dark:border-slate-500', 'hover' => 'group-hover:text-slate-500', 'featured' => 'hover:border-slate-400 dark:hover:border-slate-500', 'product' => 'hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900/20'],     // Yedek Parça
 ];
 
 // Alt kategori renkleri (sabit)
@@ -94,7 +94,7 @@ $subcategoryColors = [
     'asansor-grubu' => ['icon' => 'fa-solid fa-elevator', 'border' => 'hover:border-red-400 dark:hover:border-red-500', 'text' => 'text-red-600 dark:text-red-400'],
     'rulman-grubu' => ['icon' => 'fa-solid fa-circle-dot', 'border' => 'hover:border-indigo-400 dark:hover:border-indigo-500', 'text' => 'text-indigo-600 dark:text-indigo-400'],
     'elektrik-elektronik-aku' => ['icon' => 'fa-solid fa-battery-full', 'border' => 'hover:border-yellow-400 dark:hover:border-yellow-500', 'text' => 'text-yellow-600 dark:text-yellow-400'],
-    'forklift-dingil-parcalari' => ['icon' => 'fa-solid fa-axle', 'border' => 'hover:border-teal-400 dark:hover:border-teal-500', 'text' => 'text-teal-600 dark:text-teal-400'],
+    'forklift-dingil-parcalari' => ['icon' => 'fa-solid fa-gear', 'border' => 'hover:border-teal-400 dark:hover:border-teal-500', 'text' => 'text-teal-600 dark:text-teal-400'],
     'forklift-aksesuarlari' => ['icon' => 'fa-solid fa-toolbox', 'border' => 'hover:border-emerald-400 dark:hover:border-emerald-500', 'text' => 'text-emerald-600 dark:text-emerald-400'],
     'pompalar' => ['icon' => 'fa-solid fa-pump', 'border' => 'hover:border-rose-400 dark:hover:border-rose-500', 'text' => 'text-rose-600 dark:text-rose-400'],
     'fren-grubu' => ['icon' => 'fa-solid fa-brake-warning', 'border' => 'hover:border-violet-400 dark:hover:border-violet-500', 'text' => 'text-violet-600 dark:text-violet-400'],
@@ -194,10 +194,11 @@ $subcategoryColors = [
                                         $pTitle = is_array($product->title) ? ($product->title['tr'] ?? '') : $product->title;
                                         $pSlug = is_array($product->slug) ? ($product->slug['tr'] ?? '') : $product->slug;
                                         $pDesc = is_array($product->short_description ?? '') ? ($product->short_description['tr'] ?? '') : ($product->short_description ?? '');
+                                        $catBorderColors = $borderColors[$catId] ?? $borderColors[2];
                                     @endphp
 
                                     <a href="/shop/{{ $pSlug }}"
-                                       class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border-2 border-gray-200 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
+                                       class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border-2 border-gray-200 dark:border-gray-600 {{ $catBorderColors['featured'] }} hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
 
                                         {{-- Product Image --}}
                                         @if($product->hasMedia('featured_image'))
@@ -236,6 +237,9 @@ $subcategoryColors = [
                                 {{-- Scrollable Product List with Custom Scrollbar --}}
                                 <div class="flex-1 overflow-y-auto pr-2 space-y-2 max-h-[440px] custom-scrollbar">
                                     @if($data['products']->isNotEmpty())
+                                        @php
+                                            $catBorderColors = $borderColors[$catId] ?? $borderColors[2];
+                                        @endphp
                                         @foreach($data['products'] as $index => $product)
                                             @php
                                                 $pTitle = is_array($product->title) ? ($product->title['tr'] ?? '') : $product->title;
@@ -244,7 +248,7 @@ $subcategoryColors = [
                                             @endphp
 
                                             <a href="/shop/{{ $pSlug }}"
-                                               class="block bg-gray-50 dark:bg-gray-700 rounded-xl p-3 border-2 border-gray-200 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:shadow-md transition-all duration-200">
+                                               class="block bg-gray-50 dark:bg-gray-700 rounded-xl p-3 border-2 border-gray-200 dark:border-gray-600 {{ $catBorderColors['product'] }} hover:shadow-md transition-all duration-200">
                                                 <div class="flex items-center gap-2.5">
                                                     @if($product->hasMedia('featured_image'))
                                                         <div class="w-11 h-11 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 p-1 border border-gray-200 dark:border-gray-600">
@@ -272,17 +276,12 @@ $subcategoryColors = [
                                                             <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight truncate">{{ $pDesc }}</p>
                                                         @endif
                                                     </div>
-                                                    <div class="text-blue-600 dark:text-blue-400 flex-shrink-0">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                                                    <div class="flex-shrink-0">
+                                                        <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
                                                     </div>
                                                 </div>
                                             </a>
                                         @endforeach
-                                    @else
-                                        <div class="text-center py-12 text-gray-500 dark:text-gray-400 text-sm">
-                                            <i class="{{ $data['icon'] }} text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
-                                            <p>Diğer ürünler yükleniyor...</p>
-                                        </div>
                                     @endif
                                 </div>
 

@@ -1,33 +1,19 @@
 <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
                                 'text-white [&amp;_*]:!text-white': msg.role === 'user',
                                 'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
                                 'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
                                 'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant">İxtif olarak, forklift seçeneklerimizden bazıları şunlardır: ⭐ <a href="/shop/ixtif-efx5-251-2-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">İXTİF EFX5 251</strong></a><ul class="space-y-0.5 my-1 pl-3 list-disc"><a href="/shop/ixtif-efx5-251-2-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">
-</strong></a><li class="text-gray-800 dark:text-gray-200 leading-snug"><a href="/shop/ixtif-efx5-251-2-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">2 Ton Li-Ion Forklift</strong></a></li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">2 ton kapasiteli</li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">80V Li-Ion modüler akü</li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">Verimli ve güvenli çalışma için artırılmış görüşlü yeni direk ⭐ <a href="/shop/ixtif-efx5-301-3-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">İXTİF EFX5 301</strong></a></li><a href="/shop/ixtif-efx5-301-3-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">
-</strong></a><li class="text-gray-800 dark:text-gray-200 leading-snug"><a href="/shop/ixtif-efx5-301-3-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">3 Ton Li-Ion Forklift</strong></a></li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">3 ton kapasiteli</li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">80V Li-Ion modüler akü</li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">Yüksek kaldırma ve geniş lastikler ile tasarlanmış ⭐ <a href="/shop/ixtif-efx5-381-3-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">İXTİF EFX5 381</strong></a></li><a href="/shop/ixtif-efx5-381-3-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">
-</strong></a><li class="text-gray-800 dark:text-gray-200 leading-snug"><a href="/shop/ixtif-efx5-381-3-ton-li-ion-forklift" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">3 Ton Li-Ion Forklift</strong></a></li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">3 ton kapasiteli</li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">80V Li-Ion modüler akü</li>
-<li class="text-gray-800 dark:text-gray-200 leading-snug">Yüksek performans ve güvenilir çalışma Bu forkliftler, yüksek taşıma kapasitesi ve verimli çalışma özellikleri ile dikkat çekiyor. Hangi kapasitede bir forklift arıyorsunuz?</li>
+                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Elbette! 2 tonluk forklift ile birlikte kullanabileceğiniz transpalet seçeneklerimiz de mevcut.</p>
+İşte birkaç öneri: 😊 ⭐ <a href="/shop/ixtif-ept20-15et-15-ton-elektrikli-transpalet" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">İXTİF EPT20-15ET - 1.5 Ton Elektrikli Transpalet</strong></a><ul class="space-y-0.5 my-1 pl-3 list-disc">
+<li class="text-gray-800 dark:text-gray-200 leading-snug">1.5 ton kapasiteli</li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">Kompakt gövde, DC sürüş kontrollü</li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">2x12V/85Ah akü ile uzun çalışma süresi ⭐ <strong class="font-bold text-gray-900 dark:text-white">İXTİF F1</strong></li><strong class="font-bold text-gray-900 dark:text-white">
+</strong><li class="text-gray-800 dark:text-gray-200 leading-snug"><strong class="font-bold text-gray-900 dark:text-white">1.5 Ton Akülü Transpalet (AGM 24V/65Ah)</strong> [LINK:shopxtif-f1-15-ton-akulu-transpalet-agm-24v65ah]</li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">Endüstriyel kullanımlar için dayanıklı</li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">24V/65Ah AGM akü ile 5-6 saat çalışma süresi ⭐ <a href="/shop/ixtif-ept20-18ea-1220685-mm-catal-genis" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong class="font-bold text-gray-900 dark:text-white">İXTİF EPT20-18EA - 122×685 mm Çatal (Geniş)</strong></a></li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">122×685 mm geniş çatal seçeneği</li>
+<li class="text-gray-800 dark:text-gray-200 leading-snug">Farklı palet tiplerinde stabilite sağlar Fiyatlar talep üzerine, detaylar için iletişime geçebilirsiniz.</li>
 </ul>
-<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">😊</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">02:58</p>
-                    </div>
+<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Hangi ürün hakkında daha fazla bilgi almak istersiniz?</p>
+<ul class="space-y-0.5 my-1 pl-3 list-disc">
+</ul></div>

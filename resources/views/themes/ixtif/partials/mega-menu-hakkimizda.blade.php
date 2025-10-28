@@ -65,7 +65,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'kariyer') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Kariyer
                                 </a>
@@ -86,43 +86,43 @@
                         </div>
                         <ul class="space-y-2">
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'odeme-yontemleri') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Ödeme Yöntemleri
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'teslimat-kargo') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Teslimat & Kargo
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'guvenli-alisveris') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Güvenli Alışveriş
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'sikca-sorulan-sorular') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>SSS
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'iptal-iade') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>İptal & İade
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'cayma-hakki') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Cayma Hakkı
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'mesafeli-satis') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Mesafeli Satış Sözleşmesi
                                 </a>
@@ -143,25 +143,25 @@
                         </div>
                         <ul class="space-y-2">
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'gizlilik-politikasi') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Gizlilik Politikası
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'kullanim-kosullari') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Kullanım Koşulları
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'kvkk-aydinlatma') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>KVKK Aydınlatma
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a href="{{ href('Page', 'show', 'cerez-politikasi') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Çerez Politikası
                                 </a>

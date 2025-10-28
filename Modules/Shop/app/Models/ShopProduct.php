@@ -887,16 +887,18 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 
         $productSchema['offers'] = $offer;
 
-        // Aggregated Rating - GOOGLE SEARCH CONSOLE FIX
-        // Google "offers", "review" VEYA "aggregateRating"den EN AZ BİRİNİ istiyor
-        // Review sistemi olmadığı için dummy aggregateRating ekliyoruz
-        $productSchema['aggregateRating'] = [
-            '@type' => 'AggregateRating',
-            'ratingValue' => '4.5',
-            'reviewCount' => 10,
-            'bestRating' => '5',
-            'worstRating' => '1',
-        ];
+        // Aggregated Rating - Sadece gerçek review sistemi varsa ekle
+        // Google guideline: Fake/misleading review data kullanma!
+        // NOT: Review sistemi eklendiğinde bu field'ları ekle: reviews_count, average_rating
+        if (isset($this->reviews_count) && $this->reviews_count > 0 && isset($this->average_rating) && $this->average_rating > 0) {
+            $productSchema['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => (string) number_format($this->average_rating, 1),
+                'reviewCount' => $this->reviews_count,
+                'bestRating' => '5',
+                'worstRating' => '1',
+            ];
+        }
 
         // Weight & Dimensions
         if ($this->weight) {

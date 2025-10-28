@@ -86,7 +86,11 @@
                           prose-pre:shadow-lg prose-pre:my-8
                           prose-img:rounded-xl prose-img:shadow-md prose-img:my-8
                           prose-hr:my-12 prose-hr:border-gray-200 dark:prose-hr:border-gray-700">
-                        @parsewidgets($body ?? '')
+                        @php
+                            // İki aşamalı render: Önce widget parse, sonra Blade render
+                            $parsedBody = parse_widget_shortcodes($body ?? '');
+                        @endphp
+                        {!! Blade::render($parsedBody, [], true) !!}
                     </div>
                 </article>
             </div>

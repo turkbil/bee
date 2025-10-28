@@ -26,7 +26,11 @@
 
     @if($isFullScreenWidget)
         {{-- Full Screen Widget Layout (No Container, No Padding) --}}
-        @parsewidgets($body ?? '')
+        @php
+            // İki aşamalı render: Önce widget parse, sonra Blade render
+            $parsedBody = parse_widget_shortcodes($body ?? '');
+        @endphp
+        {!! Blade::render($parsedBody, [], true) !!}
 
         @if(isset($item->js))
         <script>{!! $item->js !!}</script>
@@ -76,7 +80,11 @@
                               prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:bg-blue-50 dark:prose-code:bg-blue-900/20
                               prose-pre:bg-gray-900 dark:prose-pre:bg-gray-800
                               prose-img:rounded-lg">
-                    @parsewidgets($body ?? '')
+                    @php
+                        // İki aşamalı render: Önce widget parse, sonra Blade render
+                        $parsedBody = parse_widget_shortcodes($body ?? '');
+                    @endphp
+                    {!! Blade::render($parsedBody, [], true) !!}
                 </article>
 
                 @if(isset($item->js))

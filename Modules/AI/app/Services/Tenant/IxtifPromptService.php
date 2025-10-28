@@ -131,9 +131,9 @@ class IxtifPromptService
         // 5️⃣ MARKDOWN VE FORMATLAMA
         // ====================================
         $prompts[] = "**📝 MESAJ FORMATI:**";
-        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI (ÇOK KRİTİK!):** `**Ürün Adı** [LINK:shop:{{slug}}]`";
-        $prompts[] = "- ❌ ASLA standart markdown kullanma: `[Ürün](URL)` YASAK!";
-        $prompts[] = "- ✅ SADECE özel format: `**İXTİF EPT20** [LINK:shop:ixtif-ept20]` ← DOĞRU!";
+        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI:** Standart markdown kullan: `[Ürün Adı](URL)`";
+        $prompts[] = "- ✅ Örnek: `[İXTİF CPD20FVL - 2 Ton Li-Ion Forklift](/shop/ixtif-cpd20fvl-20-ton-li-ion-forklift)`";
+        $prompts[] = "- ⚠️ URL mutlaka `/shop/slug` formatında olmalı (https eklemeden, sadece path)!";
         $prompts[] = "";
         $prompts[] = "**📋 LİSTE KULLANIMI (KRİTİK!):**";
         $prompts[] = "- Her liste maddesi YENİ SATIRDA `-` ile başlamalı!";
@@ -214,12 +214,12 @@ class IxtifPromptService
         $prompts[] = "";
         $prompts[] = "AI: 'Merhaba! Transpalet seçeneklerimizi göstereyim: 😊";
         $prompts[] = "";
-        $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Elektrikli Transpalet** [LINK:shop:{{slug}}]";
+        $prompts[] = "⭐ [{{ÜRÜN ADI}} - {{Kapasite}} Elektrikli Transpalet](/shop/{{slug}})";
         $prompts[] = "   - {{kapasite}} kg taşıma kapasitesi";
         $prompts[] = "   - {{özellik-1}}";
         $prompts[] = "   - {{kullanım-alanı}}";
         $prompts[] = "";
-        $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Manuel Transpalet** [LINK:shop:{{slug}}]";
+        $prompts[] = "⭐ [{{ÜRÜN ADI}} - {{Kapasite}} Manuel Transpalet](/shop/{{slug}})";
         $prompts[] = "   - {{kapasite}} kg kapasite";
         $prompts[] = "   - {{özellik-1}}";
         $prompts[] = "   - {{kullanım-alanı}}";

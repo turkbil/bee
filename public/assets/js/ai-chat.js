@@ -369,7 +369,7 @@ if (typeof Alpine !== 'undefined' && Alpine.version) {
  * - **kalın yazı** → <strong> tags
  * - - liste → bullet liste
  * - 1. 2. 3. → numaralı liste
- * - [LINK:shop:slug] → tıklanabilir ürün linki
+ * - [text](url) → Standart markdown link (href'e göre otomatik class eklenir)
  * - Paragraflar, renkler, hover efektleri ekler
  */
 window.aiChatRenderMarkdown = function(content) {
@@ -377,35 +377,10 @@ window.aiChatRenderMarkdown = function(content) {
 
     let html = content;
 
-    // STEP 1: Link Processing (process FIRST)
-
-    // 1A: Product links - **Ürün Adı** [LINK:shop:litef-ept15]
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        const url = `/shop/${slug}`;
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-product-link"><strong>${linkText.trim()}</strong></a>`;
-    });
-
-    // 1B: Category links - **Kategori** [LINK:shop:category:slug]
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
-        const url = `/shop/category/${slug}`;
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ai-category-link"><strong>${linkText.trim()}</strong></a>`;
-    });
-
-    // 1C: Standard Markdown links - [text](url) - WhatsApp, email, tel links
-    html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+|mailto:[^\)]+|tel:[^\)]+)\)/gi, function(match, linkText, url) {
-        // Determine link type for styling
-        let linkClass = 'ai-standard-link';
-        if (url.includes('wa.me') || url.includes('whatsapp')) {
-            linkClass = 'ai-whatsapp-link';
-        } else if (url.startsWith('mailto:')) {
-            linkClass = 'ai-email-link';
-        } else if (url.startsWith('tel:')) {
-            linkClass = 'ai-phone-link';
-        } else if (url.includes('t.me') || url.includes('telegram')) {
-            linkClass = 'ai-telegram-link';
-        }
-
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${linkText.trim()}</a>`;
+    // STEP 1: Link Processing - Standard Markdown ONLY
+    // [text](url) formatını parse et, class'ları sonra ekleyeceğiz
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gi, function(match, linkText, url) {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText.trim()}</a>`;
     });
 
     // STEP 2: List Processing (MOVED BEFORE BOLD - fixes inline list items!)
@@ -483,6 +458,33 @@ window.aiChatRenderMarkdown = function(content) {
     html = html.replace(/<li>/gi, '<li class="text-gray-800 dark:text-gray-200 leading-snug">');
     html = html.replace(/<p>/gi, '<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">');
     html = html.replace(/<strong>/gi, '<strong class="font-bold text-gray-900 dark:text-white">');
+
+    // STEP 6: POST-PROCESS - Add CSS classes to all <a> tags based on href
+    html = html.replace(/<a\s+([^>]*href=["']([^"']+)["'][^>]*)>/gi, function(match, attrs, href) {
+        let linkClass = 'ai-standard-link';
+
+        // URL pattern'ine göre class belirle
+        if (href.startsWith('/shop/')) {
+            linkClass = 'ai-product-link';
+        } else if (href.startsWith('/category/') || href.includes('/shop/category/')) {
+            linkClass = 'ai-category-link';
+        } else if (href.includes('wa.me') || href.includes('whatsapp')) {
+            linkClass = 'ai-whatsapp-link';
+        } else if (href.startsWith('mailto:')) {
+            linkClass = 'ai-email-link';
+        } else if (href.startsWith('tel:')) {
+            linkClass = 'ai-phone-link';
+        } else if (href.includes('t.me') || href.includes('telegram')) {
+            linkClass = 'ai-telegram-link';
+        }
+
+        // Mevcut class varsa ekle, yoksa yeni ekle
+        if (attrs.includes('class=')) {
+            return `<a ${attrs.replace(/class=["']([^"']*)["']/i, `class="$1 ${linkClass}"`)}>`;
+        } else {
+            return `<a ${attrs} class="${linkClass}">`;
+        }
+    });
 
     return html;
 };

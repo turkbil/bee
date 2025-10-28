@@ -74,13 +74,13 @@ $gradients = [
 
 // Border renkleri (sabit - Tailwind uyumlu)
 $borderColors = [
-    1 => ['normal' => 'border-orange-300 dark:border-orange-500', 'hover' => 'group-hover:text-orange-500', 'featured' => 'hover:border-orange-400 dark:hover:border-orange-500', 'product' => 'hover:border-orange-400 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20'],  // Forklift
-    2 => ['normal' => 'border-blue-300 dark:border-blue-500', 'hover' => 'group-hover:text-blue-500', 'featured' => 'hover:border-blue-400 dark:hover:border-blue-500', 'product' => 'hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20'],        // Transpalet
-    3 => ['normal' => 'border-green-300 dark:border-green-500', 'hover' => 'group-hover:text-green-500', 'featured' => 'hover:border-green-400 dark:hover:border-green-500', 'product' => 'hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20'],     // İstif
-    4 => ['normal' => 'border-purple-300 dark:border-purple-500', 'hover' => 'group-hover:text-purple-500', 'featured' => 'hover:border-purple-400 dark:hover:border-purple-500', 'product' => 'hover:border-purple-400 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20'],  // Order Picker
-    5 => ['normal' => 'border-cyan-300 dark:border-cyan-500', 'hover' => 'group-hover:text-cyan-500', 'featured' => 'hover:border-cyan-400 dark:hover:border-cyan-500', 'product' => 'hover:border-cyan-400 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20'],        // Otonom
-    6 => ['normal' => 'border-yellow-300 dark:border-yellow-500', 'hover' => 'group-hover:text-yellow-500', 'featured' => 'hover:border-yellow-400 dark:hover:border-yellow-500', 'product' => 'hover:border-yellow-400 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'],  // Reach Truck
-    7 => ['normal' => 'border-slate-300 dark:border-slate-500', 'hover' => 'group-hover:text-slate-500', 'featured' => 'hover:border-slate-400 dark:hover:border-slate-500', 'product' => 'hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900/20'],     // Yedek Parça
+    1 => ['normal' => 'border-orange-300 dark:border-orange-500', 'hover' => 'group-hover:text-orange-500', 'featured' => 'hover:border-orange-400 dark:hover:border-orange-500', 'product' => 'hover:border-orange-400 dark:hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-900/20', 'button' => 'from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700'],  // Forklift
+    2 => ['normal' => 'border-blue-300 dark:border-blue-500', 'hover' => 'group-hover:text-blue-500', 'featured' => 'hover:border-blue-400 dark:hover:border-blue-500', 'product' => 'hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20', 'button' => 'from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'],        // Transpalet
+    3 => ['normal' => 'border-green-300 dark:border-green-500', 'hover' => 'group-hover:text-green-500', 'featured' => 'hover:border-green-400 dark:hover:border-green-500', 'product' => 'hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20', 'button' => 'from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'],     // İstif
+    4 => ['normal' => 'border-purple-300 dark:border-purple-500', 'hover' => 'group-hover:text-purple-500', 'featured' => 'hover:border-purple-400 dark:hover:border-purple-500', 'product' => 'hover:border-purple-400 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-900/20', 'button' => 'from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'],  // Order Picker
+    5 => ['normal' => 'border-cyan-300 dark:border-cyan-500', 'hover' => 'group-hover:text-cyan-500', 'featured' => 'hover:border-cyan-400 dark:hover:border-cyan-500', 'product' => 'hover:border-cyan-400 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20', 'button' => 'from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700'],        // Otonom
+    6 => ['normal' => 'border-yellow-300 dark:border-yellow-500', 'hover' => 'group-hover:text-yellow-500', 'featured' => 'hover:border-yellow-400 dark:hover:border-yellow-500', 'product' => 'hover:border-yellow-400 dark:hover:border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/20', 'button' => 'from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700'],  // Reach Truck
+    7 => ['normal' => 'border-slate-300 dark:border-slate-500', 'hover' => 'group-hover:text-slate-500', 'featured' => 'hover:border-slate-400 dark:hover:border-slate-500', 'product' => 'hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900/20', 'button' => 'from-slate-600 to-gray-700 hover:from-slate-700 hover:to-gray-800'],     // Yedek Parça
 ];
 
 // Alt kategori renkleri (sabit)
@@ -287,8 +287,11 @@ $subcategoryColors = [
 
                                 {{-- Tümünü Gör Butonu --}}
                                 <div class="mt-4">
+                                    @php
+                                        $buttonColors = $borderColors[$catId] ?? $borderColors[2];
+                                    @endphp
                                     <a href="/shop/kategori/{{ $data['slug'] }}"
-                                       class="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold px-6 py-3 rounded-xl hover:from-indigo-700 hover:to-purple-700 hover:scale-105 hover:shadow-lg transition-all duration-300 text-sm">
+                                       class="inline-flex items-center justify-center gap-2 w-full bg-gradient-to-r {{ $buttonColors['button'] }} text-white font-bold px-6 py-3 rounded-xl hover:scale-105 hover:shadow-lg transition-all duration-300 text-sm">
                                         <span>Tüm Ürünleri Keşfet</span>
                                         <i class="fa-solid fa-arrow-right text-xs"></i>
                                     </a>

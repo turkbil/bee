@@ -272,11 +272,11 @@
     </div>
 
     <!-- Right Side: AI Chat Assistant -->
-    <div class="w-full lg:w-1/2 min-h-screen relative bg-gradient-to-br from-slate-900 via-gray-900 to-black p-8 lg:p-16 animate-slide-in-right">
+    <div class="w-full lg:w-1/2 min-h-screen relative bg-white dark:bg-gray-900 p-8 lg:p-16 animate-slide-in-right">
 
         <!-- Background Decoration -->
-        <div class="absolute inset-0 opacity-10 pointer-events-none">
-            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
+            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500 dark:bg-blue-600 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
         <!-- Sticky Container -->

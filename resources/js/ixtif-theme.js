@@ -33,22 +33,28 @@ function clearSystemCache(button) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            text.textContent = 'Başarılı!';
-            button.classList.remove('bg-red-600', 'hover:bg-red-700');
-            button.classList.add('bg-green-600');
+            text.textContent = 'Temizlendi!';
+            button.classList.remove('bg-red-100', 'hover:bg-red-200', 'dark:bg-red-500/20', 'dark:hover:bg-red-500/30');
+            button.classList.add('bg-green-100', 'dark:bg-green-500/20');
 
+            // ⚠️ FIX: Auto-reload KALDIRILDI - Kullanıcı istediğinde manuel yeniler
             setTimeout(() => {
-                // Otomatik sayfa yenileme - hard refresh ile
-                window.location.reload(true);
-            }, 1000);
+                // Reset button
+                button.disabled = false;
+                spinner.classList.add('hidden');
+                icon.classList.remove('hidden');
+                text.textContent = 'Cache';
+                button.classList.remove('bg-green-100', 'dark:bg-green-500/20');
+                button.classList.add('bg-red-100', 'dark:bg-red-500/20', 'hover:bg-red-200', 'dark:hover:bg-red-500/30');
+            }, 2000);
         } else {
             throw new Error(data.message);
         }
     })
     .catch(error => {
         text.textContent = 'Hata!';
-        button.classList.remove('bg-red-600', 'hover:bg-red-700');
-        button.classList.add('bg-red-700');
+        button.classList.remove('bg-red-100', 'dark:bg-red-500/20');
+        button.classList.add('bg-red-200', 'dark:bg-red-500/40');
 
         setTimeout(() => {
             // Reset button
@@ -56,8 +62,8 @@ function clearSystemCache(button) {
             spinner.classList.add('hidden');
             icon.classList.remove('hidden');
             text.textContent = 'Cache';
-            button.classList.remove('bg-red-700');
-            button.classList.add('bg-red-600', 'hover:bg-red-700');
+            button.classList.remove('bg-red-200', 'dark:bg-red-500/40');
+            button.classList.add('bg-red-100', 'dark:bg-red-500/20', 'hover:bg-red-200', 'dark:hover:bg-red-500/30');
         }, 2000);
     });
 }

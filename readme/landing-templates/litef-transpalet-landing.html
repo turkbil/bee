@@ -1,0 +1,817 @@
+{{-- Elektrikli Transpalet Landing Sayfası - Litef.com'dan Tailwind'e Dönüştürüldü --}}
+{{-- Header/Footer Hariç - Sadece Body İçeriği --}}
+
+<div x-data="{ activeAccordion: null }" class="landing-transpalet">
+
+{{-- ========================================== --}}
+{{-- SECTION 1: HERO + FORM --}}
+{{-- ========================================== --}}
+<div class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12 lg:py-20">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap -mx-3">
+      {{-- Sol: Hero Content --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8 lg:mb-0">
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          Elektrikli Transpalet Fırsatları!
+        </h1>
+
+        <div class="bg-yellow-400 dark:bg-yellow-500 text-gray-900 font-semibold text-lg lg:text-xl px-6 py-4 rounded-lg shadow-lg mt-4 mb-4">
+          <span class="font-bold">KAMPANYA!</span> Lityum İyon Akülü F4 Elektrikli Transpaletler sadece <span class="font-bold text-2xl">$1350</span>.
+        </div>
+
+        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+          Lityum akülü, yüksek kaliteli transpaletlerle iş yükünüzü hafifletin.<br />
+          İXTİF'in güçlü ve kolay kullanımlı taşıma çözümlerini keşfedin.
+        </p>
+
+        {{-- İletişim Butonları --}}
+        <div class="flex flex-wrap gap-4 mb-6">
+          <div class="w-full sm:w-auto">
+            <a href="tel:02167553555" class="flex items-center gap-2 text-lg text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+              <i class="fa-solid fa-phone-volume"></i> 0216 755 3 555
+            </a>
+          </div>
+          <div class="w-full sm:w-auto">
+            <a href="https://wa.me/905010056758" class="flex items-center gap-2 text-lg text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 transition-colors">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+            BİZ SİZİ ARAYALIM
+          </button>
+        </div>
+      </div>
+
+      {{-- Sağ: Desktop Form --}}
+      <div class="hidden lg:block w-full lg:w-1/2 px-3">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8">
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">
+            Uzmanlarımız Sizi Arasın
+          </h3>
+
+          <form action="/api/landing/contact" method="POST" class="space-y-4">
+            @csrf
+            <input type="hidden" name="page" value="elektrikli-transpalet-landing" />
+
+            {{-- Floating Label: İsim --}}
+            <div class="relative">
+              <input type="text" name="isim" id="isimInput" placeholder=" " required
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none" />
+              <label for="isimInput"
+                class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Adınız Soyadınız
+              </label>
+            </div>
+
+            {{-- Floating Label: Telefon --}}
+            <div class="relative">
+              <input type="tel" name="telefon" id="telefonInput" placeholder=" " required
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none" />
+              <label for="telefonInput"
+                class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Telefon Numaranız
+              </label>
+            </div>
+
+            {{-- Floating Label: Mesaj --}}
+            <div class="relative">
+              <textarea name="mesaj" id="mesajInput" placeholder=" " rows="4"
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none resize-none"></textarea>
+              <label for="mesajInput"
+                class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Mesajınız
+              </label>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all">
+              Gönder <i class="fa-solid fa-paper-plane ml-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- ========================================== --}}
+{{-- SECTION 2: ÖZELLİKLER + GÖRSEL --}}
+{{-- ========================================== --}}
+<div class="py-16 lg:py-24 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap -mx-3 items-center">
+      {{-- Sol: Özellikler --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8 lg:mb-0 order-2 lg:order-1">
+        <h2 class="text-3xl lg:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+          İXTİF'ten Yenilikçi Tasarımlar
+        </h2>
+        <h3 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-6">
+          Elektrikli Lityum İyon Transpaletler
+        </h3>
+
+        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Dar alanlarda üstün manevra kabiliyeti.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Az bakım gereksinimi.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Uzun ömürlü, çevre dostu aküler.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Suya ve toza karşı dayanıklı.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Kişiye özel ayarlanabilir tasarım.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Kompakt tasarım, geniş alan tasarrufu.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-regular fa-check text-green-600 dark:text-green-400 mt-1 text-xl flex-shrink-0"></i>
+            <span>Kullanım kolaylığı ve konfor.</span>
+          </li>
+        </ul>
+      </div>
+
+      {{-- Sağ: Görsel (Placeholder) --}}
+      <div class="w-full lg:w-1/2 px-3 order-1 lg:order-2 mb-8 lg:mb-0">
+        <div class="bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-2xl aspect-[4/3] flex items-center justify-center">
+          {{-- PLACEHOLDER - Kullanıcı görsel ekleyecek --}}
+          <div class="text-center p-8">
+            <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-6xl mb-4"></i>
+            <p class="text-gray-500 dark:text-gray-400 font-semibold">Transpalet Görseli</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">633x444 px önerilen boyut</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- ========================================== --}}
+{{-- SECTION 3: ÜRÜN KARTLARI --}}
+{{-- ========================================== --}}
+<div class="py-16 lg:py-24 bg-gray-50 dark:bg-gray-800">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap -mx-3">
+
+      {{-- Ürün 1: F4 --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
+          {{-- Header --}}
+          <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="text-2xl font-bold">F4</h3>
+            <div class="text-3xl font-bold">$1350</div>
+          </div>
+
+          {{-- Görsel (Placeholder) --}}
+          <div class="bg-gray-200 dark:bg-gray-700 aspect-[16/9] flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-5xl mb-3"></i>
+              <p class="text-gray-500 dark:text-gray-400 font-semibold">F4 Transpalet Görseli</p>
+            </div>
+          </div>
+
+          {{-- Body --}}
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-weight-hanging text-blue-600"></i>
+                <span class="font-semibold">1500 Kg / 1.5 Ton</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-ruler-vertical text-blue-600"></i>
+                <span class="font-semibold">105 mm</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-car-battery text-blue-600"></i>
+                <span class="font-semibold">Li-ion</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-battery-full text-blue-600"></i>
+                <span class="font-semibold">24/20 V/Ah</span>
+              </div>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              Çift pil yuvası tasarımıyla İXTİF F4 elektrikli transpalet, her türlü iş için ideal. Hem arada kullanım hem de yoğun işler için mükemmel, çeşitli pil seçenekleriyle verimliliği artırır.
+            </p>
+
+            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+              F4 Transpaletler $1350
+            </div>
+
+            <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all">
+              İletişime Geçin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{-- Ürün 2: F4 Terazili --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
+          <div class="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="text-2xl font-bold">F4 TERAZİLİ YAZICILI</h3>
+            <div class="text-3xl font-bold">$2500</div>
+          </div>
+
+          <div class="bg-gray-200 dark:bg-gray-700 aspect-[16/9] flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-5xl mb-3"></i>
+              <p class="text-gray-500 dark:text-gray-400 font-semibold">F4 Terazili Görseli</p>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-weight-hanging text-green-600"></i>
+                <span class="font-semibold">1500 Kg / 1.5 Ton</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-ruler-vertical text-green-600"></i>
+                <span class="font-semibold">105 mm</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-car-battery text-green-600"></i>
+                <span class="font-semibold">Li-ion</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-battery-full text-green-600"></i>
+                <span class="font-semibold">24/20 V/Ah</span>
+              </div>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              İXTİF'in F4 serisi elektrikli terazili transpaleti, her türlü iş ortamına uyum sağlayarak verimliliği ve maliyet etkinliğini artırır. Entegre kantar sistemi ile yük ağırlıklarını hassas şekilde ölçer.
+            </p>
+
+            <div class="text-2xl font-bold text-green-600 dark:text-green-400 mb-4">
+              F4 Terazili Transpaletler $2500
+            </div>
+
+            <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition-all">
+              İletişime Geçin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{-- Ürün 3: F4 201 --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
+          <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="text-2xl font-bold">F4 201</h3>
+            <div class="text-3xl font-bold">$2350</div>
+          </div>
+
+          <div class="bg-gray-200 dark:bg-gray-700 aspect-[16/9] flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-5xl mb-3"></i>
+              <p class="text-gray-500 dark:text-gray-400 font-semibold">F4 201 Görseli</p>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-weight-hanging text-purple-600"></i>
+                <span class="font-semibold">2000 Kg / 2 Ton</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-ruler-vertical text-purple-600"></i>
+                <span class="font-semibold">118 mm</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-car-battery text-purple-600"></i>
+                <span class="font-semibold">Li-ion</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-battery-full text-purple-600"></i>
+                <span class="font-semibold">24/20 V/Ah</span>
+              </div>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              İXTİF F4 201, güçlendirilmiş 48V elektrik sistemi ve 2 ton taşıma kapasitesiyle serinin en güçlüsüdür. Sıfır bakım gerektiren çıkarılabilir Li-ion pilleriyle esneklik sunar.
+            </p>
+
+            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400 mb-4">
+              F4 Transpaletler $2350
+            </div>
+
+            <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-all">
+              İletişime Geçin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{-- Ürün 4: EPL 154 --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
+          <div class="bg-gradient-to-r from-orange-600 to-orange-700 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="text-2xl font-bold">EPL 154</h3>
+            <div class="text-3xl font-bold">$2150</div>
+          </div>
+
+          <div class="bg-gray-200 dark:bg-gray-700 aspect-[16/9] flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-5xl mb-3"></i>
+              <p class="text-gray-500 dark:text-gray-400 font-semibold">EPL 154 Görseli</p>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-weight-hanging text-orange-600"></i>
+                <span class="font-semibold">1500 Kg / 1.5 Ton</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-ruler-vertical text-orange-600"></i>
+                <span class="font-semibold">115 mm</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-car-battery text-orange-600"></i>
+                <span class="font-semibold">Li-ion</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-battery-full text-orange-600"></i>
+                <span class="font-semibold">48/20 V/Ah</span>
+              </div>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              İXTİF EPL154, kompakt yapısı ve 1500 kg taşıma kapasitesi ile lojistik ve sanayi sektörleri için idealdir. 0,75kW motor gücü ve 6 saat şarj süresi ile kesintisiz çalışma imkanı sunar.
+            </p>
+
+            <div class="text-2xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+              EPL 154 Transpaletler $2150
+            </div>
+
+            <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 py-3 rounded-lg transition-all">
+              İletişime Geçin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{-- Ürün 5: EPL 185 --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
+          <div class="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="text-2xl font-bold">EPL 185</h3>
+            <div class="text-3xl font-bold">$2750</div>
+          </div>
+
+          <div class="bg-gray-200 dark:bg-gray-700 aspect-[16/9] flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-5xl mb-3"></i>
+              <p class="text-gray-500 dark:text-gray-400 font-semibold">EPL 185 Görseli</p>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-weight-hanging text-red-600"></i>
+                <span class="font-semibold">1800 Kg / 1.8 Ton</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-ruler-vertical text-red-600"></i>
+                <span class="font-semibold">115 mm</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-car-battery text-red-600"></i>
+                <span class="font-semibold">Li-ion</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-battery-full text-red-600"></i>
+                <span class="font-semibold">24/30 V/Ah</span>
+              </div>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              İXTİF EPL185, 1800 kg yük kapasitesi ve yüksek hızlı 0,9kW DC motoru ile ağır işler için ideal. 2 saatte tam şarj olan 24V 30Ah pil, zorlu uygulamalar için uzun çalışma süresi sağlar.
+            </p>
+
+            <div class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">
+              EPL 185 Transpaletler $2750
+            </div>
+
+            <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition-all">
+              İletişime Geçin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {{-- Ürün 6: EPT 20 --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8">
+        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all">
+          <div class="bg-gradient-to-r from-teal-600 to-teal-700 text-white px-6 py-4 flex justify-between items-center">
+            <h3 class="text-2xl font-bold">EPT 20 - 15ET2H</h3>
+            <div class="text-3xl font-bold">$2350</div>
+          </div>
+
+          <div class="bg-gray-200 dark:bg-gray-700 aspect-[16/9] flex items-center justify-center">
+            <div class="text-center p-8">
+              <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-5xl mb-3"></i>
+              <p class="text-gray-500 dark:text-gray-400 font-semibold">EPT 20 Görseli</p>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-weight-hanging text-teal-600"></i>
+                <span class="font-semibold">1500 Kg / 1.5 Ton</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-ruler-vertical text-teal-600"></i>
+                <span class="font-semibold">115 mm</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-car-battery text-teal-600"></i>
+                <span class="font-semibold">AGM</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <i class="fa-regular fa-battery-full text-teal-600"></i>
+                <span class="font-semibold">24/65 V/Ah</span>
+              </div>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              İXTİF EPT20, 1.5 ton taşıma kapasitesi, su ve tozdan koruyan tam kapalı şanzımanı ile zorlu arazilerde yüksek performans sunar. 1505mm dönüş yarıçapı ile dar alanlarda kolay manevra sağlar.
+            </p>
+
+            <div class="text-2xl font-bold text-teal-600 dark:text-teal-400 mb-4">
+              EPT 20 Transpaletler $2350
+            </div>
+
+            <button @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition-all">
+              İletişime Geçin
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {{-- Daha Fazla Ürün CTA --}}
+    <div class="flex justify-center mt-8">
+      <div class="bg-blue-600 dark:bg-blue-700 text-white rounded-2xl p-8 max-w-3xl shadow-2xl hover:shadow-3xl transition-all cursor-pointer" @click="$refs.contactForm.scrollIntoView({ behavior: 'smooth' })">
+        <h3 class="text-2xl font-bold mb-2 text-center">
+          Daha farklı transpalet ve istif makinelerine mi ihtiyacınız var?
+        </h3>
+        <p class="text-lg text-center text-blue-100">
+          Diğer ürün seçeneklerimiz hakkında bilgi almak için uzmanlarımıza danışın.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- ========================================== --}}
+{{-- SECTION 4: GOOGLE YORUMLARI --}}
+{{-- ========================================== --}}
+<div class="py-16 lg:py-24 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-8">
+      Onaylı Google Yorumları
+    </h2>
+
+    <div class="flex flex-wrap -mx-3">
+      {{-- Yorum 1 --}}
+      <div class="w-full lg:w-1/3 px-3 mb-8">
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all h-full">
+          <p class="text-gray-700 dark:text-gray-300 mb-6 italic">
+            "İXTİF transpaletleri, depomuzun iş akışını hızlandıran bir devrim yarattı. Manevra kabiliyeti ve enerji verimliliği sayesinde dar alanlarda bile üstün performans sergiliyor."
+          </p>
+
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-user text-blue-600 dark:text-blue-400 text-2xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900 dark:text-white">A. Yılmaz</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Depo Yöneticisi</div>
+              <div class="text-yellow-500 mt-1">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{-- Yorum 2 --}}
+      <div class="w-full lg:w-1/3 px-3 mb-8">
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all h-full">
+          <p class="text-gray-700 dark:text-gray-300 mb-6 italic">
+            "Çeşitli transpalet modelleri kullanmış biri olarak, İXTİF'in elektrikli transpaletlerinin sunduğu performans ve kullanım kolaylığına hayran kaldım."
+          </p>
+
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-user text-green-600 dark:text-green-400 text-2xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900 dark:text-white">E. Demir</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Lojistik Koordinatörü</div>
+              <div class="text-yellow-500 mt-1">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{-- Yorum 3 --}}
+      <div class="w-full lg:w-1/3 px-3 mb-8">
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all h-full">
+          <p class="text-gray-700 dark:text-gray-300 mb-6 italic">
+            "Gıda sektöründe çalışırken hijyen ve hız en önemli iki unsurdur. İXTİF'in elektrikli transpaletleri ile hem işlemlerimizi hızlandırdık hem de hijyen standartlarımızı koruyoruz."
+          </p>
+
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-user text-purple-600 dark:text-purple-400 text-2xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-900 dark:text-white">M. Öztürk</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Operasyon Sorumlusu</div>
+              <div class="text-yellow-500 mt-1">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- ========================================== --}}
+{{-- SECTION 5: SIK SORULAN SORULAR (Alpine.js Accordion) --}}
+{{-- ========================================== --}}
+<div class="py-16 lg:py-24 bg-gray-50 dark:bg-gray-800">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-8">
+      Sık Sorulan Sorular
+    </h2>
+
+    <div class="space-y-4">
+      {{-- SSS 1 --}}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+        <button @click="activeAccordion = activeAccordion === 1 ? null : 1"
+          class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <span class="font-semibold text-gray-900 dark:text-white">
+            Elektrikli transpalet ve manuel transpalet arasındaki fark nedir?
+          </span>
+          <i class="fa-solid fa-chevron-down transition-transform" :class="{ 'rotate-180': activeAccordion === 1 }"></i>
+        </button>
+        <div x-show="activeAccordion === 1" x-collapse>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            Elektrikli transpaletler, bir batarya ve motor yardımıyla hareket ettirilir ve daha ağır yükleri taşımak için uygundur. Manuel transpaletler ise fiziksel güçle hareket ettirilir ve daha hafif uygulamalar için tercih edilir.
+          </div>
+        </div>
+      </div>
+
+      {{-- SSS 2 --}}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+        <button @click="activeAccordion = activeAccordion === 2 ? null : 2"
+          class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <span class="font-semibold text-gray-900 dark:text-white">
+            Bir transpaletin taşıma kapasitesi nasıl belirlenir?
+          </span>
+          <i class="fa-solid fa-chevron-down transition-transform" :class="{ 'rotate-180': activeAccordion === 2 }"></i>
+        </button>
+        <div x-show="activeAccordion === 2" x-collapse>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            Taşıma kapasitesi, transpaletin modeline ve motor gücüne göre belirlenir. Örneğin, EPL154 modeli 1500 kg, EPL185 ise 1800 kg taşıma kapasitesine sahiptir. 2000 kg, 2500 kg ya da daha farklı alternatifler de bulunmaktadır.
+          </div>
+        </div>
+      </div>
+
+      {{-- SSS 3 --}}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+        <button @click="activeAccordion = activeAccordion === 3 ? null : 3"
+          class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <span class="font-semibold text-gray-900 dark:text-white">
+            Elektrikli transpaletlerin şarj olma süresi ne kadardır?
+          </span>
+          <i class="fa-solid fa-chevron-down transition-transform" :class="{ 'rotate-180': activeAccordion === 3 }"></i>
+        </button>
+        <div x-show="activeAccordion === 3" x-collapse>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            Şarj olma süresi modeline göre değişiklik gösterir, ama genel olarak tam şarj olmak için yaklaşık 2 ila 3 saat gereklidir.
+          </div>
+        </div>
+      </div>
+
+      {{-- SSS 4 --}}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+        <button @click="activeAccordion = activeAccordion === 4 ? null : 4"
+          class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <span class="font-semibold text-gray-900 dark:text-white">
+            Transpaletin pil ömrü ne kadar sürer?
+          </span>
+          <i class="fa-solid fa-chevron-down transition-transform" :class="{ 'rotate-180': activeAccordion === 4 }"></i>
+        </button>
+        <div x-show="activeAccordion === 4" x-collapse>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            Lityum-iyon piller genellikle transpaletin ömründen fazla dayanabilirler. Lityum İyon Bataryaların 8-10 yıl arasında faydalı kullanım ömrü vardır. Ancak, kullanım yoğunluğuna ve şarj alışkanlıklarına bağlı olarak zamanla daha sık şarj gerekebilir.
+          </div>
+        </div>
+      </div>
+
+      {{-- SSS 5 --}}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+        <button @click="activeAccordion = activeAccordion === 5 ? null : 5"
+          class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <span class="font-semibold text-gray-900 dark:text-white">
+            Elektrikli transpaletler her türlü zeminde kullanılabilir mi?
+          </span>
+          <i class="fa-solid fa-chevron-down transition-transform" :class="{ 'rotate-180': activeAccordion === 5 }"></i>
+        </button>
+        <div x-show="activeAccordion === 5" x-collapse>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            Çoğu elektrikli transpalet düz ve sağlam zeminler için tasarlanmıştır. Ancak, EPT20-15ET2H gibi modeller daha yüksek yerden yüksekliğe sahip tekerleklerle donatılarak engebeli arazilerde ve dış mekanlarda kullanım için optimize edilmiştir.
+          </div>
+        </div>
+      </div>
+
+      {{-- SSS 6 --}}
+      <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+        <button @click="activeAccordion = activeAccordion === 6 ? null : 6"
+          class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          <span class="font-semibold text-gray-900 dark:text-white">
+            Transpaletler soğuk depo ortamlarında kullanılabilir mi?
+          </span>
+          <i class="fa-solid fa-chevron-down transition-transform" :class="{ 'rotate-180': activeAccordion === 6 }"></i>
+        </button>
+        <div x-show="activeAccordion === 6" x-collapse>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+            Lityum-iyon pilli transpaletler genellikle düşük sıcaklıklarda çalışabilir, ancak -20°C'nin altında pilin BMS'si pili devre dışı bırakabilir. Ayrıca, sıcaklık ve nem değişikliklerinin neden olabileceği sorunları önlemek için transpaletin soğuk depo versiyonları tercih edilmelidir.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- ========================================== --}}
+{{-- SECTION 6: GÖRSEL GALERİ --}}
+{{-- ========================================== --}}
+<div class="py-16 lg:py-24 bg-white dark:bg-gray-900">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-8">
+      Görsel Galeri
+    </h2>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {{-- 12 Placeholder Görsel --}}
+      @for ($i = 1; $i <= 12; $i++)
+      <div class="aspect-[4/3] bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer group">
+        <div class="w-full h-full flex flex-col items-center justify-center group-hover:bg-gray-300 dark:group-hover:bg-gray-600 transition-colors">
+          <i class="fa-solid fa-image text-gray-400 dark:text-gray-500 text-4xl mb-2"></i>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Görsel {{ $i }}</p>
+        </div>
+      </div>
+      @endfor
+    </div>
+  </div>
+</div>
+
+{{-- ========================================== --}}
+{{-- SECTION 7: İLETİŞİM FORMU --}}
+{{-- ========================================== --}}
+<div x-ref="contactForm" class="py-16 lg:py-24 bg-gradient-to-br from-blue-600 to-blue-800 dark:from-blue-800 dark:to-blue-950 text-white">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-wrap -mx-3">
+      {{-- Sol: İletişim Bilgileri --}}
+      <div class="w-full lg:w-1/2 px-3 mb-8 lg:mb-0">
+        <h2 class="text-3xl font-bold mb-8">İletişim Bilgileri</h2>
+
+        <div class="space-y-6">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fa-duotone fa-location-dot text-2xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold mb-1">Adres</div>
+              <div class="text-blue-100">
+                Örnek Mah. Test Cad. No:123<br />
+                Kadıköy / İstanbul / Türkiye
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fa-duotone fa-phone text-2xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold mb-1">Telefon</div>
+              <a href="tel:02167553555" class="text-blue-100 hover:text-white transition-colors">
+                +90 216 755 3 555
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <i class="fa-brands fa-whatsapp text-2xl"></i>
+            </div>
+            <div>
+              <div class="font-semibold mb-1">WhatsApp</div>
+              <a href="https://wa.me/905010056758" class="text-blue-100 hover:text-white transition-colors">
+                +90 501 005 67 58
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{-- Sağ: İletişim Formu --}}
+      <div class="w-full lg:w-1/2 px-3">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 text-gray-900 dark:text-white">
+          <h3 class="text-2xl font-bold mb-6">Talepleriniz İçin Bize Ulaşın</h3>
+
+          <form action="/api/landing/contact" method="POST" class="space-y-4">
+            @csrf
+            <input type="hidden" name="page" value="elektrikli-transpalet-landing" />
+
+            <div class="relative">
+              <input type="text" name="isim" placeholder=" " required
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none" />
+              <label class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Adınız Soyadınız
+              </label>
+            </div>
+
+            <div class="relative">
+              <input type="tel" name="telefon" placeholder=" " required
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none" />
+              <label class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Telefon Numaranız
+              </label>
+            </div>
+
+            <div class="relative">
+              <input type="email" name="email" placeholder=" "
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none" />
+              <label class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Email Adresiniz
+              </label>
+            </div>
+
+            <div class="relative">
+              <textarea name="mesaj" placeholder=" " rows="4"
+                class="peer w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:bg-gray-700 dark:text-white transition-all outline-none resize-none"></textarea>
+              <label class="absolute left-4 top-3 text-gray-500 dark:text-gray-400 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-600 peer-focus:bg-white dark:peer-focus:bg-gray-800 peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-sm peer-[:not(:placeholder-shown)]:bg-white dark:peer-[:not(:placeholder-shown)]:bg-gray-800 peer-[:not(:placeholder-shown)]:px-2">
+                Mesajınız
+              </label>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all">
+              Gönder <i class="fa-solid fa-paper-plane ml-2"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+{{-- Alpine.js için x-collapse directive (CDN'den yüklenecek) --}}
+@push('scripts')
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+@endpush

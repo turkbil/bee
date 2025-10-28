@@ -392,8 +392,8 @@ window.aiChatRenderMarkdown = function(content) {
 
     // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] - optional description
     // Matches: **Text** [LINK:shop:slug] - extra text (dash + description dahil)
-    // ⚠️ SADECE 1-2 kelimelik kısa açıklama (ör: "2 ton", "elektrikli model")
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+\w+(?:[\s,]+\w+)?)?/gi, function(match, linkText, slug, extraText) {
+    // ⚠️ SADECE 1-2 kelimelik kısa açıklama (noktalı sayı destekli: "1.5 ton")
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[\w.]+(?:[\s,]+[\w.]+)?)?/gi, function(match, linkText, slug, extraText) {
         linkText = sanitizeLinkText(linkText);
         if (extraText) {
             // Dash + extra text varsa link text'e ekle
@@ -402,16 +402,25 @@ window.aiChatRenderMarkdown = function(content) {
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
     });
 
-    // 1A2: BROKEN FORMAT - **Text** [LINK:shopslug] (colon eksik, "shop" prefix strip)
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+    // 1A2: BROKEN FORMAT - **Text** [LINK:shopSLUG] (colon eksik)
+    // ⚠️ REGEX FIX: Positive lookahead - SADECE "shop" sonrası dash/digit varsa match et!
+    // [LINK:shop-product] ✅ Match | [LINK:shop123] ✅ Match | [LINK:shopxtif] ❌ No match!
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop(?=[-\d])([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         linkText = sanitizeLinkText(linkText);
-        // "shop" prefix varsa çıkar (ör: "shopxtif-f1" → "xtif-f1")
-        slug = slug.replace(/^shop/, '');
+        // Slug zaten "-product" veya "123..." şeklinde captured (shop matched but not captured)
+        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
+    });
+
+    // 1A3: CATCH-ALL - **Text** [LINK:shopANYTHING] (slug "shop" ile başlıyorsa)
+    // 1A2'yi geçen tüm `[LINK:shop...]` formatlarını yakala
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:(shop[\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+        linkText = sanitizeLinkText(linkText);
+        // Slug'ı olduğu gibi kullan (ör: "shopxtif-f1" → /shop/shopxtif-f1)
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
     });
 
     // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] - optional description
-    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+\w+(?:[\s,]+\w+)?)?/gi, function(match, linkText, slug, extraText) {
+    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[\w.]+(?:[\s,]+[\w.]+)?)?/gi, function(match, linkText, slug, extraText) {
         linkText = sanitizeLinkText(linkText);
         if (extraText) {
             linkText += extraText.replace(/[ \t]+-[ \t]+/, ' - ');

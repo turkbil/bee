@@ -844,13 +844,6 @@ class PublicAIController extends Controller
                 'context_data' => $contextOptions,
             ]);
 
-            // ⚠️ TEMPORARY DEBUG: AI RAW OUTPUT
-            file_put_contents('/var/www/vhosts/tuufi.com/httpdocs/a-html.txt',
-                "========== AI RAW OUTPUT ==========\n" .
-                ($aiResponse['content'] ?? 'EMPTY') .
-                "\n========== END ==========\n"
-            );
-
             // Save AI response
             $assistantMessage = AIMessage::create([
                 'conversation_id' => $conversation->id,

@@ -249,22 +249,26 @@
    AI Product/Category Link Styles
    ======================================== */
 
-/* Product Links - Blue with underline */
+/* Product Links - Blue with subtle background box */
 .ai-product-link {
     color: #2563eb !important; /* blue-600 */
-    text-decoration: underline !important;
-    text-underline-offset: 3px;
-    display: block;
-    margin: 6px 0;
+    text-decoration: none !important;
+    display: inline-block;
+    margin: 4px 0;
+    padding: 6px 12px;
+    background: rgba(37, 99, 235, 0.08); /* subtle blue bg */
+    border-radius: 6px;
+    border-left: 3px solid #2563eb;
     transition: all 0.2s ease;
-    line-height: 1.6;
+    line-height: 1.5;
     font-weight: 600;
 }
 
 .ai-product-link:hover {
     color: #1d4ed8 !important; /* blue-700 */
-    text-decoration-thickness: 2px !important;
-    transform: translateX(2px);
+    background: rgba(37, 99, 235, 0.15);
+    border-left-color: #1d4ed8;
+    transform: translateX(3px);
 }
 
 /* Category Links - Green with underline */
@@ -381,9 +385,13 @@
 @media (prefers-color-scheme: dark) {
     .ai-product-link {
         color: #60a5fa !important; /* blue-400 */
+        background: rgba(96, 165, 250, 0.12);
+        border-left-color: #60a5fa;
     }
     .ai-product-link:hover {
         color: #93c5fd !important; /* blue-300 */
+        background: rgba(96, 165, 250, 0.2);
+        border-left-color: #93c5fd;
     }
     .ai-category-link {
         color: #34d399 !important; /* emerald-400 */

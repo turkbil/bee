@@ -1,547 +1,489 @@
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+  LANDING PAGE: ELEKTRİKLİ TRANSPALET FIRSATLARI
+  Framework: Tailwind CSS + Alpine.js
+  Mode: Full-Screen (No Header/Footer - Page modülü ile kullan)
 
-<div x-data="{
-    chat: $store.aiChat,
-    message: '',
-    autoOpenTimer: null,
-    expanded: false,
+  KULLANIM:
+  Bu HTML'i kopyalayıp Page modülünün body alanına yapıştırın.
+  Admin → Sayfalar → Düzenle → Body
+═══════════════════════════════════════════════════════════════════════════════
+-->
 
-    init() {
-        // Auto-open after 10 seconds if user hasn't interacted
-        // BUT only on desktop (NOT on mobile/tablet: sm/xs/md breakpoints)
-        // AND only if user hasn't manually closed the widget before
-        this.autoOpenTimer = setTimeout(() =&gt; {
-            const isMobile = window.innerWidth &lt; 1024; // lg breakpoint (1024px)
-            const userHasClosed = localStorage.getItem('user_closed_ai_chat') === 'true';
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 
-            if (this.chat?.floatingOpen === false &amp;&amp; !this.chat?.hasConversation &amp;&amp; !isMobile &amp;&amp; !userHasClosed) {
-                console.log('🤖 Auto-opening AI chat (desktop only)...');
-                this.chat?.openFloating?.();
-            }
-        }, 10000);
+    <!-- ═══════════════════════════════════════════════════════════════════
+         HERO SECTION - Split Layout (Content Left, Form Right)
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12 lg:py-20">
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
 
-        // Watch for conversation changes - auto expand if messages exist
-        this.$watch('chat?.hasConversation', value =&gt; {
-            if (value) this.expanded = true;
-        });
-    },
+            <!-- ═══════════ LEFT COLUMN: Content ═══════════ -->
+            <div class="space-y-6 lg:space-y-8">
 
-    destroy() {
-        // Clear timer on component destroy
-        if (this.autoOpenTimer) {
-            clearTimeout(this.autoOpenTimer);
-        }
-    },
+                <!-- Main Heading -->
+                <div>
+                    <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+                        Elektrikli Transpalet <span class="text-blue-600 dark:text-blue-400">Fırsatları!</span>
+                    </h1>
+                </div>
 
-    submitMessage() {
-        if (this.message.trim()) {
-            this.chat.sendMessage(this.message);
-            this.message = '';
-            this.expanded = true; // Expand when sending message
-        }
-    }
-}" class="fixed bottom-6 right-6 z-50">
+                <!-- Campaign Badge -->
+                <div class="bg-gradient-to-r from-orange-500 via-red-500 to-red-600 text-white px-6 py-5 rounded-xl shadow-2xl border-2 border-white/20">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-3xl">🔥</span>
+                        <span class="text-sm font-semibold uppercase tracking-wide bg-white/20 px-3 py-1 rounded-full">Kampanya!</span>
+                    </div>
+                    <p class="text-xl lg:text-2xl font-bold leading-relaxed">
+                        Lityum İyon Akülü F4 Elektrikli Transpaletler sadece
+                        <span class="block text-4xl lg:text-5xl font-black mt-2 text-yellow-300 drop-shadow-lg">$1,350</span>
+                    </p>
+                </div>
 
-    
-    <div x-show="!chat?.floatingOpen" x-transition:enter="transition-opacity ease-out duration-500" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" style="transition-delay: 0.5s; display: none;" class="absolute bottom-0 right-0">
-    <button @click="chat?.toggleFloating?.(); clearTimeout(autoOpenTimer); localStorage.removeItem('user_closed_ai_chat');" x-data="{
-            // Desktop messages (longer)
-            desktopMessages: [
-                'Merhaba! Nasıl yardımcı olabilirim? 👋',
-                'Ürünler hakkında her şeyi sorabilirsiniz',
-                'Size en uygun modeli bulabilirim',
-                'Sorularınızı anında yanıtlıyorum ⚡',
-                'Akıllı ürün karşılaştırması yapabilirim',
-                'Teknik detayları kolayca açıklıyorum',
-                'İhtiyacınıza göre öneri sunuyorum',
-                '7/24 anlık destek burada 🤖',
-                'Tüm özellikleri size anlatayım',
-                'Merak ettiklerinizi öğrenin',
-                'Ürün seçiminde yardımcı oluyorum',
-                'Karmaşık bilgileri basitleştiriyorum',
-                'Size özel çözüm öneriyorum',
-                'Her sorunuza hızlı cevap veriyorum',
-                'Doğru ürünü bulmak çok kolay',
-                'Akıllı asistan olarak buradayım',
-                'Soru sormaktan çekinmeyin',
-                'Anında bilgi alın',
-                'İhtiyacınızı anlıyor ve yönlendiriyorum',
-                'Hadi konuşalım! 💬'
-            ],
-            // Mobile messages (shorter, concise, natural Turkish)
-            mobileMessages: [
-                'Merhaba! 👋',
-                'Size yardımcı olabilirim',
-                'Sorularınızı bekliyorum',
-                'Ürünler hakkında bilgi verebilirim',
-                'Hızlı yanıt alabilirsiniz ⚡',
-                '7/24 bilgi alabilirsiniz 🤖',
-                'Merak ettiklerinizi sorun',
-                'Hemen yazabilirsiniz',
-                'Konuşmaya başlayalım! 💬'
-            ],
-            currentIndex: 0,
-            currentMessage: 'Merhaba! 👋',
-            bubbleVisible: true,
+                <!-- Description -->
+                <div class="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <p class="text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+                        Lityum akülü, yüksek kaliteli transpaletlerle iş yükünüzü hafifletin.<br>
+                        <strong>LİTEF</strong>'in güçlü ve kolay kullanımlı taşıma çözümlerini keşfedin.
+                    </p>
+                </div>
 
-            init() {
-                // Set initial message based on screen size
-                this.updateMessage();
+                <!-- Contact Buttons -->
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <!-- Phone Button -->
+                    <a href="tel:+902162060200"
+                       onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Landing Telefon', 'value': 1});"
+                       class="group flex items-center justify-center gap-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-4 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-green-500/50 font-bold text-lg">
+                        <i class="fas fa-phone-volume text-xl group-hover:rotate-12 transition-transform"></i>
+                        <span>0216 206 02 00</span>
+                    </a>
 
-                // Animation cycle optimized for mobile:
-                // - Bubble shows: 1.5s
-                // - Fade out: 300ms
-                // - Robot shows: 1.5s (no bubble)
-                // - Fade in next bubble: 300ms
-                // Total: 3.6s per cycle
-                setInterval(() =&gt; {
-                    // Show bubble for 1.5s
-                    this.bubbleVisible = true;
+                    <!-- WhatsApp Button -->
+                    <a href="https://wa.me/902162060200?text=Merhaba,%20elektrikli%20transpalet%20hakkında%20bilgi%20almak%20istiyorum"
+                       onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Landing WhatsApp', 'value': 1});"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="group flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-4 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/50 font-bold text-lg">
+                        <i class="fab fa-whatsapp text-2xl group-hover:scale-125 transition-transform"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
 
-                    // Hide bubble after 1.5s
-                    setTimeout(() =&gt; {
-                        this.bubbleVisible = false;
+                <!-- Main CTA Button -->
+                <div class="pt-2">
+                    <button
+                       onclick="document.getElementById('name-input').focus(); document.getElementById('form-section').scrollIntoView({behavior: 'smooth', block: 'center'});"
+                       class="group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white px-10 py-6 rounded-xl shadow-2xl text-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50 border-2 border-white/20">
+                        <span>BİZ SİZİ ARAYALIM</span>
+                        <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                </div>
 
-                        // Change message while hidden (after fade-out)
-                        setTimeout(() =&gt; {
-                            this.currentIndex = (this.currentIndex + 1) % this.getMessages().length;
-                            this.updateMessage();
-                        }, 300);
-                    }, 1500);
-                }, 3300); // 1.5s visible + 300ms fade + 1.5s robot visible
-            },
-
-            getMessages() {
-                return window.innerWidth &lt; 1024 ? this.mobileMessages : this.desktopMessages;
-            },
-
-            updateMessage() {
-                this.currentMessage = this.getMessages()[this.currentIndex];
-            }
-        }" class="relative group" aria-label="Sohbeti Aç">
-        
-        <div :class="{ 'opacity-0 pointer-events-none': chat?.floatingOpen || !bubbleVisible }" class="absolute z-[101] transition-opacity duration-300 max-lg:hidden top-[-70px] right-[-10px] opacity-0 pointer-events-none" style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));">
-            
-            <div x-text="currentMessage" class="bg-white px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Ürün seçiminde yardımcı oluyorum</div>
-
-            
-            <div class="absolute w-0 h-0 bottom-[-10px] right-[39px]" style="
-                    border-left: 11px solid transparent;
-                    border-right: 11px solid transparent;
-                    border-top: 11px solid white;
-                "></div>
-        </div>
-
-        
-        <div class="relative w-20 h-20 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center group-hover:scale-110 v1-classic-button" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); z-index: 1;">
-
-            
-            <div :class="{ 'opacity-0 pointer-events-none': chat?.floatingOpen || !bubbleVisible }" class="lg:hidden absolute inset-0 z-[2] transition-opacity duration-300 w-20 h-20 rounded-full flex items-center justify-center text-center bg-white shadow-2xl opacity-0 pointer-events-none" style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));">
-                <p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Ürün seçiminde yardımcı oluyorum</p>
+                <!-- Trust Badges (Mobile Hidden) -->
+                <div class="hidden lg:flex items-center gap-6 pt-4 opacity-75">
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-shield-check text-green-600 text-2xl"></i>
+                        <span class="text-sm font-semibold">Garantili Ürün</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-truck-fast text-blue-600 text-2xl"></i>
+                        <span class="text-sm font-semibold">Hızlı Teslimat</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <i class="fas fa-headset text-purple-600 text-2xl"></i>
+                        <span class="text-sm font-semibold">7/24 Destek</span>
+                    </div>
+                </div>
             </div>
-                
-                <svg class="w-12 h-12 transition-transform group-hover:scale-110 group-hover:rotate-6" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
-                    <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
-                    <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
-                    <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
-                    <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
-                    <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
-                    <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
-                </svg>
 
-            
-            <span class="absolute top-0 right-0 w-4 h-4 bg-green-400 rounded-full animate-ping"></span>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full"></span>
+            <!-- ═══════════ RIGHT COLUMN: Form ═══════════ -->
+            <div class="sticky top-24">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 lg:p-8 border-2 border-gray-100 dark:border-gray-700" id="form-section">
+
+                    <!-- Form Header -->
+                    <div class="text-center mb-6">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-4">
+                            <i class="fas fa-headset text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                            Uzmanlarımız Sizi Arasın
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">
+                            Formu doldurun, size en kısa sürede dönelim
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form
+                        action="/api/landing/elektrikli-transpalet/submit"
+                        method="POST"
+                        x-data="{
+                            isSubmitting: false,
+                            successMessage: false,
+                            errorMessage: ''
+                        }"
+                        @submit.prevent="
+                            isSubmitting = true;
+                            fetch($event.target.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                },
+                                body: JSON.stringify(Object.fromEntries(new FormData($event.target)))
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    successMessage = true;
+                                    $event.target.reset();
+                                    gtag('event', 'generate_lead', {'event_category': 'Form', 'event_label': 'Landing Form Submit'});
+                                } else {
+                                    errorMessage = data.message || 'Bir hata oluştu';
+                                }
+                            })
+                            .catch(error => {
+                                errorMessage = 'Bağlantı hatası oluştu';
+                            })
+                            .finally(() => {
+                                isSubmitting = false;
+                            });
+                        "
+                        class="space-y-4">
+
+                        @csrf
+                        <input type="hidden" name="landing_page" value="elektrikli-transpalet-fiyatlari">
+                        <input type="hidden" name="source" value="landing_page">
+
+                        <!-- Name Input (Floating Label) -->
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="name-input"
+                                name="name"
+                                required
+                                minlength="3"
+                                pattern="[A-Za-zÇçĞğİıÖöŞşÜü\s]{3,}"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="Adınız Soyadınız">
+                            <label
+                                for="name-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Adınız Soyadınız *
+                            </label>
+                        </div>
+
+                        <!-- Phone Input (Floating Label) -->
+                        <div class="relative">
+                            <input
+                                type="tel"
+                                id="phone-input"
+                                name="phone"
+                                required
+                                minlength="10"
+                                pattern="[0-9]{10,11}"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="Telefon Numaranız">
+                            <label
+                                for="phone-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Telefon Numaranız *
+                            </label>
+                        </div>
+
+                        <!-- Email Input (Optional) -->
+                        <div class="relative">
+                            <input
+                                type="email"
+                                id="email-input"
+                                name="email"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
+                                placeholder="E-posta Adresiniz">
+                            <label
+                                for="email-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                E-posta (Opsiyonel)
+                            </label>
+                        </div>
+
+                        <!-- Message Textarea -->
+                        <div class="relative">
+                            <textarea
+                                id="message-input"
+                                name="message"
+                                rows="4"
+                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all resize-none"
+                                placeholder="Mesajınız"></textarea>
+                            <label
+                                for="message-input"
+                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
+                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
+                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
+                                Mesajınız
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button
+                            type="submit"
+                            :disabled="isSubmitting"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
+                                   disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed
+                                   text-white px-6 py-4 rounded-lg shadow-lg text-lg font-bold
+                                   transition-all duration-300 hover:scale-105 disabled:scale-100
+                                   flex items-center justify-center gap-3">
+                            <span x-show="!isSubmitting">Gönder</span>
+                            <span x-show="isSubmitting" x-cloak>Gönderiliyor...</span>
+                            <i class="fas fa-paper-plane" x-show="!isSubmitting"></i>
+                            <svg x-show="isSubmitting" x-cloak class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Success Message -->
+                        <div
+                            x-show="successMessage"
+                            x-cloak
+                            x-transition
+                            class="bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg text-center font-semibold">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.
+                        </div>
+
+                        <!-- Error Message -->
+                        <div
+                            x-show="errorMessage"
+                            x-cloak
+                            x-transition
+                            class="bg-red-100 dark:bg-red-900/30 border-2 border-red-500 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg text-center font-semibold"
+                            x-text="errorMessage">
+                        </div>
+
+                        <!-- Privacy Notice -->
+                        <p class="text-xs text-gray-600 dark:text-gray-400 text-center mt-4">
+                            <i class="fas fa-lock mr-1"></i>
+                            Bilgileriniz güvenli bir şekilde saklanmaktadır.
+                        </p>
+                    </form>
+                </div>
+            </div>
+
         </div>
+    </section>
 
-        
-        <span x-show="chat?.unreadCount &gt; 0 &amp;&amp; !chat?.floatingOpen" x-text="chat?.unreadCount || 0" class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg" style="display: none;">0</span>
-    </button>
-    </div>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FEATURES SECTION - Why Choose Us?
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900 py-16 lg:py-24">
+        <div class="container mx-auto px-4">
 
-    
-    <div x-show="chat?.floatingOpen" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95" :style="{
-            height: (expanded || chat?.hasConversation) ? '600px' : '420px',
-            transition: 'height 0.4s ease-in-out',
-            maxHeight: 'calc(100vh - 120px)'
-        }" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700" style="height: 600px; transition: height 0.4s ease-in-out; max-height: calc(-120px + 100vh);">
-        
-        <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
-                    </svg>
+            <!-- Section Header -->
+            <div class="text-center mb-12">
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    Neden LİTEF Elektrikli Transpalet?
+                </h2>
+                <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+                    Sektörde güvenilir isim, yüksek kalite standartları ve müşteri memnuniyeti
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- Feature 1: Lityum Akü -->
+                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-battery-full text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Lityum İyon Akü</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                        Uzun ömürlü ve hızlı şarj olabilen lityum akü teknolojisi ile kesintisiz çalışma
+                    </p>
+                </div>
+
+                <!-- Feature 2: Kolay Kullanım -->
+                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-cogs text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Kolay Kullanım</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                        Ergonomik tasarım ve basit kontroller ile herkes tarafından rahatlıkla kullanılabilir
+                    </p>
+                </div>
+
+                <!-- Feature 3: Güvenlik -->
+                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-shield-alt text-white text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Yüksek Güvenlik</h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                        CE sertifikalı, uluslararası güvenlik standartlarına uygun ürünler
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TRUST SECTION - Badges & Social Proof
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="container mx-auto px-4 py-12">
+        <div class="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-2xl"></i>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-lg" x-text="chat?.assistantName || ''">iXtif Yapay Zeka Asistanı</h3>
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        <p class="text-xs text-white/80">Online</p>
-                    </div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">Garantili Ürünler</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">2 Yıl Garanti</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                
-                <button @click="chat?.closeFloating?.(); localStorage.setItem('user_closed_ai_chat', 'true');" class="p-2 hover:bg-white/10 rounded-lg transition" title="Kapat">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-truck text-blue-600 dark:text-blue-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">Hızlı Teslimat</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Türkiye Geneli</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-headset text-purple-600 dark:text-purple-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">7/24 Destek</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Teknik Destek</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
+                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                    <i class="fas fa-medal text-yellow-600 dark:text-yellow-400 text-2xl"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-lg text-gray-900 dark:text-white">20+ Yıl Tecrübe</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Sektör Lideri</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FOOTER CTA - Final Call to Action
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold mb-4">
+                Fırsatı Kaçırmayın!
+            </h2>
+            <p class="text-xl lg:text-2xl mb-8 text-white/90">
+                Sınırlı sayıda stokta! Hemen teklif alın.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button
+                    onclick="document.getElementById('name-input').focus(); window.scrollTo({top: 0, behavior: 'smooth'});"
+                    class="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-xl">
+                    FORMU DOLDUR
                 </button>
+                <a href="tel:+902162060200"
+                   class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-xl">
+                    <i class="fas fa-phone mr-2"></i> HEMEN ARA
+                </a>
             </div>
         </div>
+    </section>
 
-        
-        <div x-show="!chat?.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700" x-data="{
-                suggestions: [
-                    'Ürün özellikleri',
-                    'Stok durumu',
-                    'Fiyat bilgisi',
-                    'Hızlı öneri',
-                    'Karşılaştırma',
-                    'En iyiler'
-                ],
-                currentSuggestion: 0,
-                init() {
-                    setInterval(() =&gt; {
-                        this.currentSuggestion = (this.currentSuggestion + 1) % this.suggestions.length;
-                    }, 2000);
-                }
-            }" style="display: none;">
-            <div class="text-center">
-                
-                <div class="relative inline-block mb-4">
-                    
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-20 h-20 bg-blue-400 rounded-full opacity-20 animate-ping-slow"></div>
-                    </div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-16 h-16 bg-blue-500 rounded-full opacity-30 animate-pulse-slow"></div>
-                    </div>
-
-                    
-                    <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full shadow-lg animate-bounce-subtle">
-                        <svg class="w-8 h-8 text-white animate-wiggle-subtle" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                
-                <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 animate-fade-in-up">
-                    Merhaba! 👋
-                </h4>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 animate-fade-in-up animation-delay-100">
-                    Size nasıl yardımcı olabilirim?
-                </p>
-
-                
-                <div class="h-6 flex items-center justify-center">
-                    <p x-data="{
-                            currentText: 'Ürün özellikleri',
-                            fading: false,
-                            suggestionsList: [
-                                'Ürün özellikleri',
-                                'Stok durumu',
-                                'Fiyat bilgisi',
-                                'Hızlı öneri',
-                                'Karşılaştırma',
-                                'En iyiler'
-                            ],
-                            currentIndex: 0,
-                            init() {
-                                setInterval(() =&gt; {
-                                    // Fade out
-                                    this.fading = true;
-
-                                    // Change text after fade out completes
-                                    setTimeout(() =&gt; {
-                                        this.currentIndex = (this.currentIndex + 1) % this.suggestionsList.length;
-                                        this.currentText = this.suggestionsList[this.currentIndex];
-
-                                        // Fade in
-                                        setTimeout(() =&gt; {
-                                            this.fading = false;
-                                        }, 50);
-                                    }, 250);
-                                }, 2500);
-                            }
-                        }" :class="{ 'opacity-0': fading, 'opacity-100': !fading }" class="text-sm text-gray-600 dark:text-gray-300 text-center transition-opacity duration-250 opacity-0" x-text="currentText">Stok durumu</p>
-                </div>
-            </div>
-        </div>
-
-        
-        <div x-show="chat?.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" data-ai-chat-messages="" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900">
-            
-            <template x-for="(msg, index) in (chat?.messages || [])" :key="index">
-                <div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content" x-html="window.aiChatRenderMarkdown(msg.content)"></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })"></p>
-                    </div>
-                </div>
-            </template><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">merhaba</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">08:34</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Merhaba! Size nasıl yardımcı olabilirim? 😊</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">08:34</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">merhaba</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">01:15</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Merhaba! Size nasıl yardımcı olabilirim? 😊</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">01:15</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">ne yapyorsun</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">01:15</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Ben buradayım ve size yardımcı olmaya hazırım. Siz nasıl bir yardım almak istiyorsunuz?</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">01:16</p>
-                    </div>
-                </div>
-
-            
-            <div x-show="chat?.isTyping" class="flex justify-start" style="display: none;">
-                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
-                    <div class="flex gap-1">
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-            
-            <div x-show="chat?.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" style="display: none;">
-                <span x-text="chat?.error || ''"></span>
-            </div>
-
-            
-            <form @submit.prevent="submitMessage()" class="flex gap-2" x-data="{ inputFocused: false }" data-gtm-form-interact-id="0">
-                <div class="flex-1 relative">
-                    
-                    <div x-show="inputFocused &amp;&amp; !chat?.isLoading" class="absolute inset-0 bg-blue-400 rounded-full opacity-20 animate-pulse-glow pointer-events-none" style="display: none;"></div>
-
-                    <input type="text" x-model="message" @focus="expanded = true; inputFocused = true" @blur="inputFocused = false" placeholder="Mesajınızı yazın..." :disabled="chat?.isLoading" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-all duration-300 relative z-10" :class="{ 'animate-input-invite': !expanded &amp;&amp; !chat?.hasConversation }" autocomplete="off" data-gtm-form-interact-field-id="0">
-                </div>
-                <button type="submit" :disabled="!message.trim() || chat?.isLoading" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors shadow-sm" disabled="disabled">
-                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat?.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path x-show="!chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        <path x-show="chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" style="display: none;"></path>
-                    </svg>
-                </button>
-            </form>
-
-            
-            <div class="mt-2">
-                <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important;" class="text-gray-800 dark:text-white">
-                    Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
-                    <a href="#" @click.prevent="$refs.aiDisclaimerModal.classList.remove('hidden')" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors ml-1">
-                        Devamını Oku
-                    </a>
-                </p>
-            </div>
-
-            
-            <div x-ref="aiDisclaimerModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4" @click.self="$refs.aiDisclaimerModal.classList.add('hidden')">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
-                    
-                    <button @click="$refs.aiDisclaimerModal.classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-
-                    
-                    <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                            Önemli Bilgilendirme
-                        </h3>
-                    </div>
-
-                    <div class="space-y-3 text-sm text-gray-700 dark:text-gray-300 mb-6">
-                        <p>
-                            Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
-                        </p>
-
-                        <p>
-                            Bu yapay zeka asistanı şu anda <strong>öğrenme aşamasındadır</strong> ve kendini sürekli geliştirmektedir.
-                        </p>
-                        <p>
-                            Verdiği yanıtlar her zaman doğru olmayabilir veya eksik bilgiler içerebilir.
-                        </p>
-                        <p>
-                            En doğru ve güncel bilgi için lütfen <strong>firmamız yetkilileriyle doğrudan iletişime</strong> geçiniz.
-                        </p>
-
-                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mt-4">
-                            <a href="tel:+902167553555" class="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                </svg>
-                                <strong class="text-lg">0216 755 3 555</strong>
-                            </a>
-                        </div>
-
-                        <p>
-                            Anlayışınız için teşekkür ederiz.
-                        </p>
-                    </div>
-
-                    
-                    <button @click="$refs.aiDisclaimerModal.classList.add('hidden')" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
-                        Anladım
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     CUSTOM STYLES
+═══════════════════════════════════════════════════════════════════ -->
+<style>
+/* Alpine.js x-cloak directive */
+[x-cloak] { display: none !important; }
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Floating label animation enhancement */
+input:focus + label,
+textarea:focus + label {
+    font-weight: 600;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Form focus glow */
+input:focus,
+textarea:focus {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Dark mode form focus */
+.dark input:focus,
+.dark textarea:focus {
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TRACKING SCRIPTS (Google Analytics, Facebook Pixel, etc.)
+═══════════════════════════════════════════════════════════════════ -->
+<script>
+// Form view tracking
+gtag && gtag('event', 'page_view', {
+    'page_title': 'Elektrikli Transpalet Landing',
+    'page_location': window.location.href,
+    'page_path': window.location.pathname
+});
+
+// Scroll tracking (50%, 75%, 100%)
+let scrollTracked = {50: false, 75: false, 100: false};
+window.addEventListener('scroll', () => {
+    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+
+    if (scrollPercent >= 50 && !scrollTracked[50]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '50%'});
+        scrollTracked[50] = true;
+    }
+    if (scrollPercent >= 75 && !scrollTracked[75]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '75%'});
+        scrollTracked[75] = true;
+    }
+    if (scrollPercent >= 99 && !scrollTracked[100]) {
+        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '100%'});
+        scrollTracked[100] = true;
+    }
+});
+</script>

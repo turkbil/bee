@@ -455,15 +455,12 @@ window.aiChatRenderMarkdown = function(content) {
     // Örnek: "- 2 ton - 80V - Verimli" → "- 2 ton\n- 80V\n- Verimli"
     html = html.replace(/(?<!^|\n)(\s+-\s+)(?=[A-Za-z0-9İıĞğÜüŞşÖöÇç])/gm, '\n- ');
 
-    // 2B: Numbered lists: 1. 2. 3.
-    html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
-        let items = match.split('\n').filter(line => /^\d+[.)](?!\d)\s+/.test(line.trim()));
-        let listItems = items.map(line => {
-            let text = line.replace(/^\d+[.)](?!\d)\s*/, '').trim();
-            return `<li>${text}</li>`;
-        }).join('\n');
-        return `<ol>\n${listItems}\n</ol>`;
-    });
+    // 2B: Numbered lists: DEVRE DIŞI!
+    // ⚠️ FIX: "3. Ton" gibi sayıları liste olarak algılıyordu → KAPANDI
+    // AI zaten "-" kullanıyor, numbered list gereksiz ve zararlı!
+    // html = html.replace(/((?:^|\n)\d+[.)](?!\d)\s+.+(?:\n\d+[.)](?!\d)\s+.+)*)/gm, function(match) {
+    //     ...
+    // });
 
     // 2C: Unordered lists: - item (şimdi düzgün alt alta olmalı)
     html = html.replace(/((?:^|\n)-\s+.+(?:\n-\s+.+)*)/gm, function(match) {

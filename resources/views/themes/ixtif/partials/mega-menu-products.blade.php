@@ -115,9 +115,10 @@ $subcategoryIcons = [
                         $gradient = $gradients[$catId] ?? 'from-blue-500 to-indigo-600';
                     @endphp
 
-                    <button @click="activeTab = {{ $catId }}"
-                            :class="activeTab === {{ $catId }} ? 'bg-white dark:bg-gray-700 shadow-md border-{{ explode('-', explode(' ', $gradient)[0])[1] }}-300 dark:border-{{ explode('-', explode(' ', $gradient)[0])[1] }}-500' : 'border-transparent hover:bg-white/50 dark:hover:bg-gray-700/50'"
-                            class="group w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 border">
+                    <a href="/shop/kategori/{{ $catSlug }}"
+                       @mouseenter="activeTab = {{ $catId }}"
+                       :class="activeTab === {{ $catId }} ? 'bg-white dark:bg-gray-700 shadow-md border-{{ explode('-', explode(' ', $gradient)[0])[1] }}-300 dark:border-{{ explode('-', explode(' ', $gradient)[0])[1] }}-500' : 'border-transparent hover:bg-white/50 dark:hover:bg-gray-700/50'"
+                       class="group w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 border">
                         <div class="w-10 h-10 bg-gradient-to-br {{ $gradient }} rounded-lg flex items-center justify-center flex-shrink-0">
                             <i class="{{ $catIcon }} text-white"></i>
                         </div>
@@ -133,7 +134,7 @@ $subcategoryIcons = [
                         </div>
                         <i class="fa-solid fa-chevron-right text-gray-400 dark:text-gray-500 text-xs group-hover:text-{{ explode('-', explode(' ', $gradient)[0])[1] }}-500 transition"
                            :class="activeTab === {{ $catId }} ? 'text-{{ explode('-', explode(' ', $gradient)[0])[1] }}-500' : ''"></i>
-                    </button>
+                    </a>
                 @endforeach
             </div>
         </div>

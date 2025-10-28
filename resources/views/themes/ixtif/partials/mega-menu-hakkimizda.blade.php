@@ -126,7 +126,7 @@
                         </ul>
                     </div>
 
-                    {{-- 3. Yasal --}}
+                    {{-- 4. Yasal --}}
                     <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
                         <div class="flex items-center gap-3 mb-4">
                             <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
@@ -160,49 +160,6 @@
                                 <a href="{{ href('Page', 'show', 'cerez-politikasi') }}"
                                    class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
                                     <i class="fa-solid fa-chevron-right text-xs"></i>Çerez Politikası
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {{-- 4. İletişim --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300 group">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-headset text-white text-2xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-black text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">İletişim</h3>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Bize Ulaşın</div>
-                            </div>
-                        </div>
-                        <ul class="space-y-3">
-                            <li>
-                                <a href="tel:+902122222222"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-phone text-purple-600 dark:text-purple-400"></i>
-                                    <span>+90 (212) 222 22 22</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://wa.me/905555555555"
-                                   target="_blank"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400"></i>
-                                    <span>WhatsApp Destek</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="mailto:info@tuufi.com"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-envelope text-blue-600 dark:text-blue-400"></i>
-                                    <span>info@tuufi.com</span>
-                                </a>
-                            </li>
-                            <li class="pt-2 border-t border-gray-200 dark:border-gray-700">
-                                <a href="/iletisim"
-                                   class="text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>İletişim Formu
                                 </a>
                             </li>
                         </ul>

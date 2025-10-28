@@ -125,7 +125,7 @@ $subcategoryColors = [
                     <a href="/shop/kategori/{{ $catSlug }}"
                        @mouseenter="activeTab = {{ $catId }}"
                        :class="activeTab === {{ $catId }} ? 'bg-white dark:bg-gray-700 shadow-md {{ $borderColor['normal'] }}' : 'border-transparent hover:bg-white/50 dark:hover:bg-gray-700/50'"
-                       class="group w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 border">
+                       class="group w-full flex items-center gap-3 px-3 py-[11px] rounded-xl transition-all duration-200 border">
                         <div class="w-10 h-10 bg-gradient-to-br {{ $gradient }} rounded-lg flex items-center justify-center flex-shrink-0">
                             <i class="{{ $catIcon }} text-white"></i>
                         </div>

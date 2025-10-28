@@ -377,8 +377,19 @@ window.aiChatRenderMarkdown = function(content) {
 
     let html = content;
 
-    // STEP 1: Link Processing - Standard Markdown ONLY
-    // [text](url) formatını parse et, class'ları sonra ekleyeceğiz
+    // STEP 1: Link Processing
+
+    // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] (eski format)
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText.trim()}</strong></a>`;
+    });
+
+    // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] (text sonra link)
+    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer">${linkText.trim()}</a>`;
+    });
+
+    // 1C: Standard Markdown - [text](url) (yeni format)
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gi, function(match, linkText, url) {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer">${linkText.trim()}</a>`;
     });
@@ -408,9 +419,23 @@ window.aiChatRenderMarkdown = function(content) {
         let items = match.split('\n').filter(line => line.trim().startsWith('- '));
         let listItems = items.map(line => {
             let text = line.replace(/^-\s*/, '').trim();
+
+            // CRITICAL FIX: Liste maddesi içinde cümle bitişi + yeni cümle varsa ayır
+            // Örnek: "- Özellik A Fiyat talep üzerine..." → "- Özellik A" + paragraf
+            // Pattern: ". " veya "! " veya "? " sonra büyük harf = yeni cümle başlıyor
+            let sentenceSplit = text.match(/^(.*?[.!?])\s+([A-ZİÇŞĞÜÖ].*)$/);
+            if (sentenceSplit) {
+                // İlk cümle liste içinde kalsın, ikincisi liste dışına çıksın
+                return `<li>${sentenceSplit[1]}</li>\n</ul>\n\n<p>${sentenceSplit[2]}</p>\n<ul>`;
+            }
+
             return `<li>${text}</li>`;
         }).join('\n');
-        return `<ul>\n${listItems}\n</ul>`;
+
+        // Boş <ul></ul> çiftlerini temizle (split işleminden kalan)
+        let result = `<ul>\n${listItems}\n</ul>`;
+        result = result.replace(/<\/ul>\s*<ul>/g, '');
+        return result;
     });
 
     // STEP 3: Bold Processing (AFTER list processing!)

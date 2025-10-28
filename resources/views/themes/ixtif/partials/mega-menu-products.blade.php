@@ -111,11 +111,6 @@ $subcategoryColors = [
         {{-- SOL: ANA KATEGORİLER (TABS) --}}
         {{-- ========================================== --}}
         <div class="col-span-4 bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800 p-6 border-r border-gray-200 dark:border-gray-700">
-            <h3 class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-layer-group"></i>
-                Ana Kategoriler
-            </h3>
-
             <div class="space-y-2">
                 @foreach($mainCategories as $cat)
                     @php
@@ -204,17 +199,17 @@ $subcategoryColors = [
                                     <a href="/shop/{{ $pSlug }}"
                                        class="bg-gray-50 dark:bg-gray-700 rounded-2xl p-5 border-2 border-gray-200 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500 hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
 
-                                        {{-- Product Image - DAHA BÜYÜK --}}
+                                        {{-- Product Image --}}
                                         @if($product->hasMedia('featured_image'))
-                                            <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-64 group-hover:scale-105 transition-transform duration-300">
-                                                <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
+                                            <div class="flex items-center justify-center mb-4 bg-white dark:bg-gray-800 rounded-2xl p-6 h-52 group-hover:scale-105 transition-transform duration-300">
+                                                <img src="{{ thumb($product->getFirstMedia('featured_image'), 350, 350, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
                                                      alt="{{ $pTitle }}"
                                                      class="w-full h-full object-contain"
                                                      loading="lazy">
                                             </div>
                                         @else
-                                            <div class="flex items-center justify-center mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-6 h-64 group-hover:scale-105 transition-transform duration-300">
-                                                <i class="{{ $data['icon'] }} text-8xl text-indigo-600 dark:text-indigo-400"></i>
+                                            <div class="flex items-center justify-center mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-6 h-52 group-hover:scale-105 transition-transform duration-300">
+                                                <i class="{{ $data['icon'] }} text-7xl text-indigo-600 dark:text-indigo-400"></i>
                                             </div>
                                         @endif
 

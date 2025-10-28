@@ -1,489 +1,1461 @@
-<!--
-═══════════════════════════════════════════════════════════════════════════════
-  LANDING PAGE: ELEKTRİKLİ TRANSPALET FIRSATLARI
-  Framework: Tailwind CSS + Alpine.js
-  Mode: Full-Screen (No Header/Footer - Page modülü ile kullan)
 
-  KULLANIM:
-  Bu HTML'i kopyalayıp Page modülünün body alanına yapıştırın.
-  Admin → Sayfalar → Düzenle → Body
-═══════════════════════════════════════════════════════════════════════════════
--->
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Lityum Akülü Elektrikli Transpalet Fiyatları | LİTEF</title>
+<meta property="og:type" content="website"><meta property="og:image" content="https://litef.com.tr/uploads/logo-sm2.webp"><meta property="og:url" content="https://litef.com.tr/sayfa/elektrikli-transpalet-fiyatlari/"><meta property="og:title" content="Lityum Akülü Elektrikli Transpalet Fiyatları | LİTEF" />
+<meta name="keywords" content="Elektrikli Transpalet, Akülü Transpalet, Transpalet Kiralama, İstanbul Transpalet, 2. El Transpalet, Transpalet Fiyatları, Litef Forklift, Manuel Transpalet, Kantarlı Transpalet, Şarjlı Transpalet" />
+<meta name="description" content="Elektrikli Transpalet Fiyatları LİTEF Forklift&#039;te En avantajlı fiyat ve kampanyalarla sizleri bekliyor! Verimliliğinizi artırmak için hemen teklif alın. " />
+<meta property="og:description" content="Elektrikli Transpalet Fiyatları LİTEF Forklift&#039;te En avantajlı fiyat ve kampanyalarla sizleri bekliyor! Verimliliğinizi artırmak için hemen teklif alın. " />
+<meta name="dcterms.rights" content="LİTEF &copy; All Rights Reserved" >
+<meta name="robots" content="index" />
+<meta name="robots" content="follow" />
+<meta name="revisit-after" content="1 day" />
+<meta name="generator" content="www.turkbilisim.com.tr" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link rel="shortcut icon" type="image/x-icon" href="https://litef.com.tr/assets/favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');">
 
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         HERO SECTION - Split Layout (Content Left, Form Right)
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section class="container mx-auto px-4 py-12 lg:py-20">
-        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-
-            <!-- ═══════════ LEFT COLUMN: Content ═══════════ -->
-            <div class="space-y-6 lg:space-y-8">
-
-                <!-- Main Heading -->
-                <div>
-                    <h1 class="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                        Elektrikli Transpalet <span class="text-blue-600 dark:text-blue-400">Fırsatları!</span>
-                    </h1>
-                </div>
-
-                <!-- Campaign Badge -->
-                <div class="bg-gradient-to-r from-orange-500 via-red-500 to-red-600 text-white px-6 py-5 rounded-xl shadow-2xl border-2 border-white/20">
-                    <div class="flex items-center gap-3 mb-2">
-                        <span class="text-3xl">🔥</span>
-                        <span class="text-sm font-semibold uppercase tracking-wide bg-white/20 px-3 py-1 rounded-full">Kampanya!</span>
-                    </div>
-                    <p class="text-xl lg:text-2xl font-bold leading-relaxed">
-                        Lityum İyon Akülü F4 Elektrikli Transpaletler sadece
-                        <span class="block text-4xl lg:text-5xl font-black mt-2 text-yellow-300 drop-shadow-lg">$1,350</span>
-                    </p>
-                </div>
-
-                <!-- Description -->
-                <div class="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700">
-                    <p class="text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
-                        Lityum akülü, yüksek kaliteli transpaletlerle iş yükünüzü hafifletin.<br>
-                        <strong>LİTEF</strong>'in güçlü ve kolay kullanımlı taşıma çözümlerini keşfedin.
-                    </p>
-                </div>
-
-                <!-- Contact Buttons -->
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <!-- Phone Button -->
-                    <a href="tel:+902162060200"
-                       onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Landing Telefon', 'value': 1});"
-                       class="group flex items-center justify-center gap-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-4 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-green-500/50 font-bold text-lg">
-                        <i class="fas fa-phone-volume text-xl group-hover:rotate-12 transition-transform"></i>
-                        <span>0216 206 02 00</span>
-                    </a>
-
-                    <!-- WhatsApp Button -->
-                    <a href="https://wa.me/902162060200?text=Merhaba,%20elektrikli%20transpalet%20hakkında%20bilgi%20almak%20istiyorum"
-                       onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Landing WhatsApp', 'value': 1});"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="group flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-4 rounded-lg shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/50 font-bold text-lg">
-                        <i class="fab fa-whatsapp text-2xl group-hover:scale-125 transition-transform"></i>
-                        <span>WhatsApp</span>
-                    </a>
-                </div>
-
-                <!-- Main CTA Button -->
-                <div class="pt-2">
-                    <button
-                       onclick="document.getElementById('name-input').focus(); document.getElementById('form-section').scrollIntoView({behavior: 'smooth', block: 'center'});"
-                       class="group w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white px-10 py-6 rounded-xl shadow-2xl text-xl font-bold transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50 border-2 border-white/20">
-                        <span>BİZ SİZİ ARAYALIM</span>
-                        <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
-                    </button>
-                </div>
-
-                <!-- Trust Badges (Mobile Hidden) -->
-                <div class="hidden lg:flex items-center gap-6 pt-4 opacity-75">
-                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                        <i class="fas fa-shield-check text-green-600 text-2xl"></i>
-                        <span class="text-sm font-semibold">Garantili Ürün</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                        <i class="fas fa-truck-fast text-blue-600 text-2xl"></i>
-                        <span class="text-sm font-semibold">Hızlı Teslimat</span>
-                    </div>
-                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                        <i class="fas fa-headset text-purple-600 text-2xl"></i>
-                        <span class="text-sm font-semibold">7/24 Destek</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ═══════════ RIGHT COLUMN: Form ═══════════ -->
-            <div class="sticky top-24">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 lg:p-8 border-2 border-gray-100 dark:border-gray-700" id="form-section">
-
-                    <!-- Form Header -->
-                    <div class="text-center mb-6">
-                        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-4">
-                            <i class="fas fa-headset text-white text-2xl"></i>
-                        </div>
-                        <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                            Uzmanlarımız Sizi Arasın
-                        </h2>
-                        <p class="text-gray-600 dark:text-gray-400 text-sm">
-                            Formu doldurun, size en kısa sürede dönelim
-                        </p>
-                    </div>
-
-                    <!-- Form -->
-                    <form
-                        action="/api/landing/elektrikli-transpalet/submit"
-                        method="POST"
-                        x-data="{
-                            isSubmitting: false,
-                            successMessage: false,
-                            errorMessage: ''
-                        }"
-                        @submit.prevent="
-                            isSubmitting = true;
-                            fetch($event.target.action, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                                },
-                                body: JSON.stringify(Object.fromEntries(new FormData($event.target)))
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    successMessage = true;
-                                    $event.target.reset();
-                                    gtag('event', 'generate_lead', {'event_category': 'Form', 'event_label': 'Landing Form Submit'});
-                                } else {
-                                    errorMessage = data.message || 'Bir hata oluştu';
-                                }
-                            })
-                            .catch(error => {
-                                errorMessage = 'Bağlantı hatası oluştu';
-                            })
-                            .finally(() => {
-                                isSubmitting = false;
-                            });
-                        "
-                        class="space-y-4">
-
-                        @csrf
-                        <input type="hidden" name="landing_page" value="elektrikli-transpalet-fiyatlari">
-                        <input type="hidden" name="source" value="landing_page">
-
-                        <!-- Name Input (Floating Label) -->
-                        <div class="relative">
-                            <input
-                                type="text"
-                                id="name-input"
-                                name="name"
-                                required
-                                minlength="3"
-                                pattern="[A-Za-zÇçĞğİıÖöŞşÜü\s]{3,}"
-                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
-                                placeholder="Adınız Soyadınız">
-                            <label
-                                for="name-input"
-                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
-                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
-                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
-                                Adınız Soyadınız *
-                            </label>
-                        </div>
-
-                        <!-- Phone Input (Floating Label) -->
-                        <div class="relative">
-                            <input
-                                type="tel"
-                                id="phone-input"
-                                name="phone"
-                                required
-                                minlength="10"
-                                pattern="[0-9]{10,11}"
-                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
-                                placeholder="Telefon Numaranız">
-                            <label
-                                for="phone-input"
-                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
-                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
-                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
-                                Telefon Numaranız *
-                            </label>
-                        </div>
-
-                        <!-- Email Input (Optional) -->
-                        <div class="relative">
-                            <input
-                                type="email"
-                                id="email-input"
-                                name="email"
-                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"
-                                placeholder="E-posta Adresiniz">
-                            <label
-                                for="email-input"
-                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
-                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
-                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
-                                E-posta (Opsiyonel)
-                            </label>
-                        </div>
-
-                        <!-- Message Textarea -->
-                        <div class="relative">
-                            <textarea
-                                id="message-input"
-                                name="message"
-                                rows="4"
-                                class="peer w-full px-4 py-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-transparent focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all resize-none"
-                                placeholder="Mesajınız"></textarea>
-                            <label
-                                for="message-input"
-                                class="absolute left-4 -top-2.5 bg-white dark:bg-gray-700 px-2 text-sm font-semibold text-gray-700 dark:text-gray-300 transition-all
-                                       peer-placeholder-shown:text-base peer-placeholder-shown:font-normal peer-placeholder-shown:top-4 peer-placeholder-shown:text-gray-500
-                                       peer-focus:-top-2.5 peer-focus:text-sm peer-focus:font-semibold peer-focus:text-blue-600 dark:peer-focus:text-blue-400">
-                                Mesajınız
-                            </label>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button
-                            type="submit"
-                            :disabled="isSubmitting"
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
-                                   disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed
-                                   text-white px-6 py-4 rounded-lg shadow-lg text-lg font-bold
-                                   transition-all duration-300 hover:scale-105 disabled:scale-100
-                                   flex items-center justify-center gap-3">
-                            <span x-show="!isSubmitting">Gönder</span>
-                            <span x-show="isSubmitting" x-cloak>Gönderiliyor...</span>
-                            <i class="fas fa-paper-plane" x-show="!isSubmitting"></i>
-                            <svg x-show="isSubmitting" x-cloak class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </button>
-
-                        <!-- Success Message -->
-                        <div
-                            x-show="successMessage"
-                            x-cloak
-                            x-transition
-                            class="bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg text-center font-semibold">
-                            <i class="fas fa-check-circle mr-2"></i>
-                            Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.
-                        </div>
-
-                        <!-- Error Message -->
-                        <div
-                            x-show="errorMessage"
-                            x-cloak
-                            x-transition
-                            class="bg-red-100 dark:bg-red-900/30 border-2 border-red-500 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg text-center font-semibold"
-                            x-text="errorMessage">
-                        </div>
-
-                        <!-- Privacy Notice -->
-                        <p class="text-xs text-gray-600 dark:text-gray-400 text-center mt-4">
-                            <i class="fas fa-lock mr-1"></i>
-                            Bilgileriniz güvenli bir şekilde saklanmaktadır.
-                        </p>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         FEATURES SECTION - Why Choose Us?
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section class="bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-800 dark:to-gray-900 py-16 lg:py-24">
-        <div class="container mx-auto px-4">
-
-            <!-- Section Header -->
-            <div class="text-center mb-12">
-                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                    Neden LİTEF Elektrikli Transpalet?
-                </h2>
-                <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
-                    Sektörde güvenilir isim, yüksek kalite standartları ve müşteri memnuniyeti
-                </p>
-            </div>
-
-            <!-- Features Grid -->
-            <div class="grid md:grid-cols-3 gap-8">
-
-                <!-- Feature 1: Lityum Akü -->
-                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-battery-full text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Lityum İyon Akü</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
-                        Uzun ömürlü ve hızlı şarj olabilen lityum akü teknolojisi ile kesintisiz çalışma
-                    </p>
-                </div>
-
-                <!-- Feature 2: Kolay Kullanım -->
-                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-cogs text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Kolay Kullanım</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
-                        Ergonomik tasarım ve basit kontroller ile herkes tarafından rahatlıkla kullanılabilir
-                    </p>
-                </div>
-
-                <!-- Feature 3: Güvenlik -->
-                <div class="group bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-gray-600">
-                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-shield-alt text-white text-4xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Yüksek Güvenlik</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
-                        CE sertifikalı, uluslararası güvenlik standartlarına uygun ürünler
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         TRUST SECTION - Badges & Social Proof
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section class="container mx-auto px-4 py-12">
-        <div class="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
-
-            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 text-2xl"></i>
-                </div>
-                <div>
-                    <p class="font-bold text-lg text-gray-900 dark:text-white">Garantili Ürünler</p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">2 Yıl Garanti</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                    <i class="fas fa-truck text-blue-600 dark:text-blue-400 text-2xl"></i>
-                </div>
-                <div>
-                    <p class="font-bold text-lg text-gray-900 dark:text-white">Hızlı Teslimat</p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Türkiye Geneli</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-                    <i class="fas fa-headset text-purple-600 dark:text-purple-400 text-2xl"></i>
-                </div>
-                <div>
-                    <p class="font-bold text-lg text-gray-900 dark:text-white">7/24 Destek</p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Teknik Destek</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 text-gray-700 dark:text-gray-300">
-                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
-                    <i class="fas fa-medal text-yellow-600 dark:text-yellow-400 text-2xl"></i>
-                </div>
-                <div>
-                    <p class="font-bold text-lg text-gray-900 dark:text-white">20+ Yıl Tecrübe</p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Sektör Lideri</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
-         FOOTER CTA - Final Call to Action
-    ═══════════════════════════════════════════════════════════════════ -->
-    <section class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-16">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-4">
-                Fırsatı Kaçırmayın!
-            </h2>
-            <p class="text-xl lg:text-2xl mb-8 text-white/90">
-                Sınırlı sayıda stokta! Hemen teklif alın.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button
-                    onclick="document.getElementById('name-input').focus(); window.scrollTo({top: 0, behavior: 'smooth'});"
-                    class="bg-white text-blue-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all hover:scale-105 shadow-xl">
-                    FORMU DOLDUR
-                </button>
-                <a href="tel:+902162060200"
-                   class="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all hover:scale-105 shadow-xl">
-                    <i class="fas fa-phone mr-2"></i> HEMEN ARA
-                </a>
-            </div>
-        </div>
-    </section>
-
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════════
-     CUSTOM STYLES
-═══════════════════════════════════════════════════════════════════ -->
-<style>
-/* Alpine.js x-cloak directive */
-[x-cloak] { display: none !important; }
-
-/* Smooth scrolling */
-html {
-    scroll-behavior: smooth;
+<!-- STYLE -->
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/plugins/fontawesome-6.2.0/css/all.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/plugins/bootstrap-5.3.1/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/plugins/fancybox-4.0.26/fancybox.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/plugins/animate-4.1.1/animate.min.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/plugins/swiper-8.1.4/swiper-bundle.min.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/plugins/skeleton.css?v=1.01761611560" rel="stylesheet" type="text/css" />
+<!-- STYLE -->
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/css/main.css?v=1.81761611560" rel="stylesheet" type="text/css" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/css/style.css?v=1.71761611560" rel="stylesheet" type="text/css" />
+<link href="https://litef.com.tr/theme/turkbilisim23/assets/css/responsive.css?v=1.21761611560" rel="stylesheet" type="text/css" />
+<style type="text/css">
+.no-js #loader {
+    display: none;
 }
-
-/* Floating label animation enhancement */
-input:focus + label,
-textarea:focus + label {
-    font-weight: 600;
+.js #loader {
+    display: block;
+    position: absolute;
+    left: 100px;
+    top: 0;
 }
-
-/* Custom animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    /*background: url('img/preloader.gif') center no-repeat #fff;*/
+    background: #fff;
 }
-
-.animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+.fa {
+    font-family: var(--fa-style-family, "Font Awesome 6 Pro");
+    font-weight: var(--fa-style, 900)
 }
-
-/* Form focus glow */
-input:focus,
-textarea:focus {
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+.fa, .fa-brands, .fa-classic, .fa-duotone, .fa-light, .fa-regular, .fa-sharp, .fa-sharp-solid, .fa-solid, .fa-thin, .fab, .fad, .fal, .far, .fas, .fass, .fat {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: var(--fa-display, inline-block);
+    font-style: normal;
+    font-variant: normal;
+    line-height: 1;
+    text-rendering: auto
 }
-
-/* Dark mode form focus */
-.dark input:focus,
-.dark textarea:focus {
-    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2);
+.fa-classic, .fa-light, .fa-regular, .fa-solid, .fa-thin, .fal, .far, .fas, .fat {
+    font-family: "Font Awesome 6 Pro"
+}
+.fa-brands, .fab {
+    font-family: "Font Awesome 6 Brands"
+}
+.fa-classic.fa-duotone, .fa-duotone, .fad {
+    font-family: "Font Awesome 6 Duotone"
+}
+.fa-2x {
+    font-size: 2em
+}
+.fa-sort-desc:before, .fa-sort-down:before {
+    content: "\f0dd"
+}
+.fa-truck-loading:before, .fa-truck-ramp-box:before {
+    content: "\f4de"
+}
+.fa-plug:before {
+    content: "\f1e6"
+}
+.fa-angle-right:before {
+    content: "\f105"
+}
+.fa-forklift:before {
+    content: "\f47a"
+}
+.fa-battery-bolt:before {
+    content: "\f376"
+}
+.fa-arrows-alt-h:before, .fa-left-right:before {
+    content: "\f337"
+}
+.fa-mobile-alt:before, .fa-mobile-screen-button:before {
+    content: "\f3cd"
+}
+.fa-phone:before {
+    content: "\f095"
+}
+.fa-circle-info:before, .fa-info-circle:before {
+    content: "\f05a"
+}
+.fa-location-dot:before, .fa-map-marker-alt:before {
+    content: "\f3c5"
+}
+.fa-magnifying-glass:before, .fa-search:before {
+    content: "\f002"
+}
+.fa-briefcase:before {
+    content: "\f0b1"
+}
+.fa-tire:before {
+    content: "\f631"
+}
+.fa-ruler-vertical:before {
+    content: "\f548"
+}
+:host, :root {
+--fa-style-family-brands: "Font Awesome 6 Brands";
+--fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands"
+}
+.fa-brands, .fab {
+    font-weight: 400
+}
+.fa-whatsapp:before {
+    content: "\f232"
+}
+:host, :root {
+--fa-style-family-duotone: "Font Awesome 6 Duotone";
+--fa-font-duotone: normal 900 1em/1 "Font Awesome 6 Duotone"
+}
+.fa-duotone, .fad {
+    position: relative;
+    font-weight: 900;
+    letter-spacing: normal
+}
+.fa-duotone:before, .fad:before {
+    position: absolute;
+    color: var(--fa-primary-color, inherit);
+    opacity: var(--fa-primary-opacity, 1)
+}
+.fa-duotone:after, .fad:after {
+    color: var(--fa-secondary-color, inherit)
+}
+.fa-duotone.fa-swap-opacity:before, .fa-duotone:after, .fa-swap-opacity .fa-duotone:before, .fa-swap-opacity .fad:before, .fad.fa-swap-opacity:before, .fad:after {
+    opacity: var(--fa-secondary-opacity, .4)
+}
+.fa-duotone.fa-phone:after, .fad.fa-phone:after {
+    content: "\f095\f095"
+}
+.fa-duotone.fa-circle-info:after, .fa-duotone.fa-info-circle:after, .fad.fa-circle-info:after, .fad.fa-info-circle:after {
+    content: "\f05a\f05a"
+}
+.fa-duotone.fa-location-dot:after, .fa-duotone.fa-map-marker-alt:after, .fad.fa-location-dot:after, .fad.fa-map-marker-alt:after {
+    content: "\f3c5\f3c5"
+}
+:host, :root {
+--fa-font-light: normal 300 1em/1 "Font Awesome 6 Pro"
+}
+.fa-light, .fal {
+    font-weight: 300
+}
+:host, :root {
+--fa-font-regular: normal 400 1em/1 "Font Awesome 6 Pro"
+}
+.fa-regular, .far {
+    font-weight: 400
+}
+:host, :root {
+--fa-font-solid: normal 900 1em/1 "Font Awesome 6 Pro"
+}
+.fa-solid, .fas {
+    font-weight: 900
+}
+:host, :root {
+--fa-style-family-classic: "Font Awesome 6 Pro";
+--fa-font-thin: normal 100 1em/1 "Font Awesome 6 Pro"
+}
+.fa-thin, .fat {
+    font-weight: 100
 }
 </style>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     TRACKING SCRIPTS (Google Analytics, Facebook Pixel, etc.)
-═══════════════════════════════════════════════════════════════════ -->
+<!-- Google tag (gtag.js) --> 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RXNMT5J9KZ"></script> 
 <script>
-// Form view tracking
-gtag && gtag('event', 'page_view', {
-    'page_title': 'Elektrikli Transpalet Landing',
-    'page_location': window.location.href,
-    'page_path': window.location.pathname
-});
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-// Scroll tracking (50%, 75%, 100%)
-let scrollTracked = {50: false, 75: false, 100: false};
-window.addEventListener('scroll', () => {
-    const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  gtag('config', 'G-RXNMT5J9KZ');
+</script> 
+<!-- gtag('config', 'AW-11413070049'); --> 
 
-    if (scrollPercent >= 50 && !scrollTracked[50]) {
-        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '50%'});
-        scrollTracked[50] = true;
-    }
-    if (scrollPercent >= 75 && !scrollTracked[75]) {
-        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '75%'});
-        scrollTracked[75] = true;
-    }
-    if (scrollPercent >= 99 && !scrollTracked[100]) {
-        gtag && gtag('event', 'scroll', {'event_category': 'Engagement', 'event_label': '100%'});
-        scrollTracked[100] = true;
-    }
-});
+<!-- Google Tag Manager --> 
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WL63NRXC');</script> 
+<!-- End Google Tag Manager -->
+
+</head>
+<body>
+<div class="se-pre-con"></div>
+<header>
+  <div class="navbar-ana">
+    <div class="">
+      <div class="container-fluid d-flex navbar-ana-container justify-content-start justify-content-lg-between"> <a href="https://litef.com.tr/" class="navbar-brand col-6 col-md-2 order-1 order-xl-1 position-relative"><img src="https://litef.com.tr/uploads/logo-sm2.webp" alt="LİTEF" width="187" height="70" class="logo img-fluid header-logo position-relative" /><img src="https://litef.com.tr/uploads/logo-sm.webp" alt="LİTEF" width="141" height="40" class="logo img-fluid header-logo-navfix" /></a>
+        <nav class="navbar-expand-lg col-2 col-md-auto justify-content-center order-3 order-xl-2">
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2" aria-controls="offcanvasNavbar2" aria-label="Navigation Toggler"> <i class="fa-light fa-bars"></i> </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar2" aria-labelledby="offcanvasNavbar2Label">
+            <div class="offcanvas-header">
+              <button type="button" class="navbar-toggler-kapat" data-bs-dismiss="offcanvas" aria-label="Close"> <i class="fa-light fa-times"></i> </button>
+            </div>
+            <div class="offcanvas-body size-1">
+              <ul class="navbar-nav">
+                <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="https://litef.com.tr/urunler" role="button" aria-expanded="false"> <i class="fa-degis fa-thin fa-forklift mr-1"></i> Ürünler <i class="fa-regular fa-angle-right ml-1"></i> </a>
+                  <div class="dropdown-menu mega-menu">
+                    <div class="container">
+                      <div class="row d-block d-lg-none">
+                        <div class="col-12 col-lg-4">
+                          <ul class="list-unstyled">
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/forkliftler/"><i class="fa-solid fa-caret-right"></i> Forkliftler</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/transpalet/"><i class="fa-solid fa-caret-right"></i> Transpaletler</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/istif-makineleri/"><i class="fa-solid fa-caret-right"></i> İstif Makineleri</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/reach-truck/"><i class="fa-solid fa-caret-right"></i> Reach-Truck</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/order-picker/"><i class="fa-solid fa-caret-right"></i> Order Picker</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/tow-truck/"><i class="fa-solid fa-caret-right"></i> Tow Truck</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/kiralik/"><i class="fa-solid fa-caret-right"></i> Kiralık Makineler</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/ikinci-el/"><i class="fa-solid fa-caret-right"></i> 2. El Ürünler</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/amr/"><i class="fa-solid fa-caret-right"></i> Amr</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/urunler/kategori/yedek-parca/"><i class="fa-solid fa-caret-right"></i> Yedek Parça</a></li>
+                        
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="size-7 d-none d-lg-block">
+                        <div class="row grid gap-0 row-gap-4">
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/forkliftler/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/dizel.webp" alt="" class="icon" /></div>
+                              <div> Forkliftler</div>
+                              </a></div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/transpalet/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/transpalet.webp" alt="" class="icon" /> </div>
+                              <div>Transpaletler </div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/istif-makineleri/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/istif.webp?v=1.1" alt="" class="icon" /> </div>
+                              <div>İstif Makineleri</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/reach-truck/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/reach.webp?v=1.1" alt="" class="icon" /> </div>
+                              <div>Reach Truck</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/order-picker/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/orderpicker.webp?v=1.1" alt="" class="icon" /> </div>
+                              <div>Order Picker</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/tow-truck/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/towtruck.webp?v=1.1" alt="" class="icon" /> </div>
+                              <div>Tow Truck</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/kiralik/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/reach.webp?v=1.1" alt="" class="icon" /> </div>
+                              <div>Kiralık Makineler</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/ikinci-el/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/yedek.webp" alt="" class="icon" /> </div>
+                              <div>2. El Ürünler</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/sayfa/amr/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/otonom.png" alt="" class="icon" /> </div>
+                              <div>Otonom</div>
+                              </a> </div>
+                          </div>
+                          <div class="col-4 col-lg-3">
+                            <div class="link"><a href="https://litef.com.tr/urunler/kategori/yedek-parca/">
+                              <div><img src="https://litef.com.tr/uploads//litef/services/slider/icon/yedek-parca.png" alt="" class="icon" /> </div>
+                              <div>Yedek Parça</div>
+                              </a> </div>
+                          </div>
+                          
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- li class="nav-item dropdown d-none d-lg-block d-xxl-none"> <a class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false"> <i class="fa-degis fa-thin fa-briefcase mr-1"></i> Hizmetlerimiz <i class="fa-regular fa-angle-right ml-1"></i> </a -->
+                <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="https://litef.com.tr/hizmetler/" role="button" aria-expanded="false"> <i class="fa-degis fa-thin fa-truck-loading mr-1"></i> Hizmetler <i class="fa-regular fa-angle-right ml-1"></i> </a>
+                  <div class="dropdown-menu">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 mb-4">
+                          <ul class="list-unstyled">
+                            <li><a class="dropdown-item" href="https://litef.com.tr/hizmetler/kiralama/"><i class="fa-solid fa-caret-right"></i> Kiralama</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/hizmetler/2-el-ikinci-el/"><i class="fa-solid fa-caret-right"></i> İkinci El</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/hizmetler/satin-alim/"><i class="fa-solid fa-caret-right"></i> Satın Alım</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/hizmetler/yedek-parca/"><i class="fa-solid fa-caret-right"></i> Yedek Parça</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/hizmetler/servis/"><i class="fa-solid fa-caret-right"></i> Teknik Servis</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!-- li class="nav-item d-block d-lg-none d-xxl-block"><a href="https://litef.com.tr/hizmetler/kiralama/" class="nav-link"> <i class="fa-degis fa-thin fa-code-compare mr-1"></i> Kiralama</a></li>
+              <li class="nav-item d-block d-lg-none d-xxl-block"><a href="https://litef.com.tr/hizmetler/yedek-parca/" class="nav-link"> <i class="fa-degis fa-thin fa-gear mr-1"></i> Yedek Parça</a></li>
+              <li class="nav-item d-block d-lg-none d-xxl-block"><a href="https://litef.com.tr/hizmetler/servis/" class="nav-link"> <i class="fa-degis fa-thin fa-wrench mr-1"></i> Servis</a></li -->
+                <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false"> <i class="fa-degis fa-thin fa-briefcase mr-1"></i> Kurumsal <i class="fa-regular fa-angle-right ml-1"></i> </a>
+                  <div class="dropdown-menu mega-menu">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12 col-lg-4 mb-4">
+                          <h3><i class="fa-regular fa-city"></i> Kurumsal</h3>
+                          <hr class="dropdown-divider">
+                          <ul class="list-unstyled">
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/neden-litef/"><i class="fa-solid fa-caret-right"></i> Neden LİTEF</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/hakkimizda/"><i class="fa-solid fa-caret-right"></i> Hakkımızda</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/litef-guvencesi/"><i class="fa-solid fa-caret-right"></i> LİTEF Güvencesi</a></li>
+                          </ul>
+                        </div>
+                        <div class="col-12 col-lg-4 mb-4">
+                          <h3><i class="fa-regular fa-medal"></i> Kalite</h3>
+                          <hr class="dropdown-divider">
+                          <ul class="list-unstyled">
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/kalite-politikamiz/"><i class="fa-solid fa-caret-right"></i> Kalite Politikamız</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/endustriyel-standartlar/"><i class="fa-solid fa-caret-right"></i> Endüstriyel Standartlar</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/blog/"><i class="fa-solid fa-caret-right"></i> Blog</a></li>
+                            <!-- li><a class="dropdown-item" href="#"><i class="fa-solid fa-caret-right"></i> İş Sağlığı &amp; Güvenliği</a></li --> 
+                            <!-- 
+                          <li><a class="dropdown-item" href="#"><i class="fa-solid fa-caret-right"></i> Veri Güvenliği</a></li> -->
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/kisisel-verilerin-islenmesi-politikasi/"><i class="fa-solid fa-caret-right"></i> KVKK</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/cerez-politikasi/"><i class="fa-solid fa-caret-right"></i> Çerez Politikası</a></li>
+                          </ul>
+                        </div>
+                        <div class="col-12 col-lg-4 mb-4">
+                          <h3><i class="fa-solid fa-user"></i> Bayilik Sistemi</h3>
+                          <hr class="dropdown-divider">
+                          <ul class="list-unstyled mb-4">
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/bayilik-basvurusu/"><i class="fa-solid fa-caret-right"></i> Bayi Başvurusu</a></li>
+                          </ul>
+                          <h3><i class="fa-solid fa-user"></i> İnsan Kaynakları</h3>
+                          <hr class="dropdown-divider">
+                          <ul class="list-unstyled">
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/ik-politikamiz/"><i class="fa-solid fa-caret-right"></i> İ.K. Politikamız</a></li>
+                            <li><a class="dropdown-item" href="https://litef.com.tr/sayfa/is-basvuru-formu/"><i class="fa-solid fa-caret-right"></i> İş Başvuru Formu</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item mr-3"><a href="https://litef.com.tr/sayfa/iletisim/" class="nav-link"> <i class="fa-degis fa-thin fa-location-dot mr-1"></i> İletişim</a></li>
+                <li class="nav-item mr-3 bg9 d-block d-lg-none"><a href="tel:+902162060200" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="nav-link"> <i class="fa-degis fa-thin fa-phone-volume mr-1"></i> 0216 206 02 00</a></li>
+                <li class="nav-item mr-3 bg9 d-block d-lg-none"><a href="https://litef.com.tr/whatsapp" onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Whatsapp', 'value': 1});" class="nav-link"> <i class="fa-degis fa-brands fa-whatsapp mr-1"></i> Whatsapp</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div class="d-block d-lg-none d-xl-block col-4 col-md-3 text-end order-2 order-xl-3 position-relative">
+          <div class="d-inline d-lg-none"> <a href="https://litef.com.tr/sayfa/iletisim/" class="btn buton buton-1 nowrap">İLETİŞİM</a> </div>
+          <div class="d-lg-inline"> <a href="https://litef.com.tr/sayfa/teklif/" class="btn buton buton-1 nowrap d-none d-lg-inline-block float-end">KURUMSAL TEKLİF</a> <a data-fancybox data-src="#search-box" href="javascript:;" class="search-button float-left float-lg-end"><i class="fa fa-search"></i></a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Top Widgets -->
+                                      <p></p>                                                <div class="dokuz position-absolute l0 b0 f12">elektrikli transpalet, elektrikli transpalet fiyatları, akülü transpalet, 1.5 ton transpalet, 2.5 ton transpalet, transpalet ve istanbul transpalet hizmetleriyle yanınızdayız.</div>
+<div class="landing-1-section-1">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="motto-yazi-1 f700 yedi">Elektrikli Transpalet  Fırsatları!</div>
+        <div class="motto-yazi-3 mt-3 f600 kampanya"><span class="yedi">KAMPANYA!</span> Liyum İyon Akülü F4 Elektrikli Transpaletler sadece <span class="yedi">$1350</span>.</div>
+        <div class="motto-yazi-4 mt-3">Lityum akülü, yüksek kaliteli transpaletlerle iş yükünüzü hafifletin. <br />
+          LİTEF'in güçlü ve kolay kullanımlı taşıma çözümleri keşfedin.</div>
+        
+        <!-- div class="motto-yazi-1 f700 yedi">Aradığınız Elektrikli Transpalet Burada!</div>
+        <!-- div class="motto-yazi-3 mt-3 f600 kampanya p-4 border border-2 bgw yedi"><span class="dokuz">BÜYÜK 11.11 KAMPANYASI!</span><br /> YALNIZCA BUGÜNE ÖZEL F4 ELEKTRİKLİ TRANSPALET SADECE <span class="dokuz"> 
+        
+        <div class="motto-yazi-3 mt-3 f600 kampanya"><span class="yedi">KAMPANYA!</span> ŞAHANE KASIM DEVAM EDİYOOOR! Sınırlı süre için F4 Elektrikli Transpaletler şimdi yılın en düşük fiyatlarıyla sadece <span class="yedi">$1190</span>.</div>$1111</span> <br /></div>
+        <div class="motto-yazi-2 mt-3"></div>--> 
+        
+        <!-- div class="motto-yazi-3 mt-3 f600 kampanya"><span class="yedi">KAMPANYA!</span> 2023’ü kaçırılmayacak fiyatlarla uğurluyoruz! Sınırlı süre için transpaletler şimdi yılın en düşük fiyatlarıyla sadece <span class="yedi">$1190</span>'dan başlıyor.</div 
+        <div class="motto-yazi-4 mt-3">Uygun fiyata, kaliteli ve son teknoloji lityum akülü transpaletlerle tanışın. LİTEF’in güçlü ve kullanımı kolay elektrikli transpaletleriyle, zorlu yük taşıma işlerinizi hafifleştirin. Ağır yükler artık sizin için hafif bir iş haline gelsin. </div>--> 
+        <!-- <div class="size-4 f700">Elektrikli transpalet mi arıyorsunuz? </div>
+        <div class="size-4 mt-3 f700 yedi">Uygun fiyata, kaliteli ve son teknoloji lityum akülü transpaletlerle tanışın. </div>
+        <div class="size-7 mt-3 f700 kampanya">2023’ü kaçırılmayacak fiyatlarla uğurluyoruz! Transpaletler şimdi <span class="vurgu">yılın en düşük fiyatlarıyla</span> sadece $1350'dan başlıyor!</div>
+        <div class="size-3 mt-3">LİTEF elektrikli transpaletleriyle güçlü taşıma kapasitesinin ve kolay kullanımı deneyimleyin.
+          Zorlu yükler artık sizin için çocuk oyuncağı!  </div> -->
+        <div class="row">
+          <div class="col-12 col-md-6">
+            <div class="size-6 mt-4"><a href="tel:+902162060200" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="nav-link"> <i class="fa-solid fa-phone-volume mr-1"></i> 0216 206 02 00</a></div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="size-6 mt-4"><a href="https://litef.com.tr/whatsapp" onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Whatsapp', 'value': 1});" class="nav-link"> <i class="fa-brands fa-whatsapp mr-1"></i> Whatsapp</a></div>
+          </div>
+        </div>
+        <div class="mt-4"><a data-fancybox data-src="#dialog-content" href="javascript:;" class="btn parla box-shadow-25 size-6">BİZ SİZİ ARAYALIM</a></div>
+      </div>
+      <div class="col-12 col-lg-6 mb-5 d-none d-lg-block">
+        <div class="">
+          <div class="size-5 f800 text-start text-lg-center"> Uzmanlarımız Sizi Arasın </div>
+          <div class="landing-form mt-2">
+            <form action="https://turkbilisim.com.tr/x/f/api/no" method="POST">
+              <input type="hidden" name="Link" value="litef.com.tr/sayfa/elektrikli-transpalet-fiyatlari/" />
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="isimInput" placeholder="Adınız Soyadınız" name="isim" pattern="[A-Za-z\s]{3,}" title="Lütfen sadece harf kullanarak en az 3 karakter girin." required="required">
+                <label for="isimInput">Adınız Soyadınız</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="tel" class="form-control" id="telefonInput" placeholder="Telefon Numaranız" name="telefon" pattern="[\0-9]{8,}" title="Lütfen sadece rakam kullanarak en az 8 karakter girin." required="required">
+                <label for="telefonInput">Telefon Numaranız</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control" placeholder="Mesajınız" id="floatingTextarea2" name="mesaj" style="height: 140px"></textarea>
+                <label for="floatingTextarea2">Mesajınız</label>
+              </div>
+              <button type="submit" value="Gönder" class="btn float-end buton landing-buton-1 d-block rounded-0">Gönder <i class="fa-solid fa-paper-plane ml-2"></i></button>
+              <input type="hidden" name="_subject" value="LANDING Sayfasi Mesaji" />
+              <input type="hidden" name="_after" value="https://litef.com.tr/sayfa/landing-tesekkurler/">
+              <input type="hidden" name="cc[]" value="info@litef.com.tr" />
+              <input type="hidden" name="_valid[isim]" value="alpha|min_length[3]|required">
+              <input type="hidden" name="_valid[telefon]" value="numeric|min_length[8]|required">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="landing-1-section-2">
+  <div class="container">
+    <div class="row ortala">
+      <div class="col-12 col-lg-6 mb-5 order-2 order-lg-1">
+        <div class="size-5 f700 yedi">Litef'ten Yenilikçi Tasarımlar</div>
+        <div class="size-4 mt-1 f700">Elektrikli Lityum İyon Transpaletler</div>
+        <div class="size-3 mt-3">
+          <ul class="list-unstyled maddeler">
+            <li><i class="fa-regular fa-check mr-1"></i> Dar alanlarda üstün manevra kabiliyeti.</li>
+            <li><i class="fa-regular fa-check mr-1"></i> Az bakım gereksinimi.</li>
+            <li><i class="fa-regular fa-check mr-1"></i> Uzun ömürlü, çevre dostu aküler.</li>
+            <li><i class="fa-regular fa-check mr-1"></i> Suya ve toza karşı dayanıklı.</li>
+            <li><i class="fa-regular fa-check mr-1"></i> Kişiye özel ayarlanabilir tasarım.</li>
+            <li><i class="fa-regular fa-check mr-1"></i> Kompakt tasarım, geniş alan tasarrufu.</li>
+            <li><i class="fa-regular fa-check mr-1"></i> Kullanım kolaylığı ve konfor.</li>
+          </ul>
+        </div>
+        <!-- div class="size-3 mt-3">F4 serisi, kullanıcıların özel gereksinimlerine uyum sağlayabilecek özelleştirilebilir özellikleriyle öne çıkıyor. İş verimliliğini artırma amacı taşıyan bu serinin her bir modeli, iş akışınıza değer katmak için titizlikle tasarlanmıştır. </div>
+        <div class="size-3 mt-3">F4 serisi transpaletler, kolay kullanımı ve dayanıklı yapısı ile en zorlu iş koşullarına adapte olur. Her LITEF transpaleti, minimum bakım gereksinimi ile maksimum kullanım kolaylığı sunar. Suya ve toza karşı korumalı, uzun ömürlü ve çevre dostu akülerimiz, dayanıklılığı ve sürdürülebilirliği temsil eder. Güçlü performansını dar alanlarda dahi üstün manevra kabiliyeti ile sunan kompakt bir tasarıma sahiptir.</div --> 
+      </div>
+      <div class="col-12 col-lg-6 mb-5 order-1 order-lg-2"> <img src="https://litef.com.tr/uploads//landing/transpalet/10.webp?v=1" alt="Elektrikli Transpalet" width="633" height="444" class="img-fluid"/> </div>
+    </div>
+  </div>
+</div>
+<div class="landing-1-section-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="transpalet">
+          <div class="transpalet-1 text-center size-4 f700 d-flex justify-content-between ortala transpalet-header">
+            <div class="title"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">F4</a></div>
+            <div class="price">
+              <div class="fiyat">$1350</div>
+            </div>
+          </div>
+          <div class="transpalet-gorseli"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin"><img src="https://litef.com.tr/uploads//landing/transpalet/8.webp?v=1" width="631" height="365" alt="Elektrikli Transpalet" class="img-fluid" loading="lazy" /></a></div>
+          <div class="body mt-4">
+            <div class="row mt-4 size-8 f600">
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-1"><i class="fa-regular fa-weight-hanging"></i> 1500 Kg / 1.5 Ton</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-2"><i class="fa-regular fa-ruler-vertical"></i> 105 mm</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-car-battery"></i> Li-ion </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-battery-full"></i> 24/20 V/Ah</div>
+              </div>
+            </div>
+            <div class="metin mt-4">Çift pil yuvası tasarımıyla LİTEF F4 elektrikli transpalet, her türlü iş için ideal. Hem arada kullanım hem de yoğun işler için mükemmel, çeşitli pil seçenekleriyle verimliliği artırır. Tek ve çift batarya seçenekleriyle, her ihtiyaca uygun bir model sunar.</div>
+            <div class="son-fiyat mt-4"> F4 Transpaletler $1350</div>
+          </div>
+        </div>
+        <div class="basvuru"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">İletişime Geçin</a></div>
+      </div>
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="transpalet">
+          <div class="transpalet-2 text-center size-4 f700 d-flex justify-content-between ortala transpalet-header">
+            <div class="title"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">F4 TERAZİLİ YAZICILI</a></div>
+            <div class="price">
+              <div class="fiyat">$2500</div>
+              <div class="kdv d-none">+ KDV</div>
+            </div>
+          </div>
+          <div class="transpalet-gorseli"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin"><img src="https://litef.com.tr/uploads//landing/transpalet/7.webp?v=1" width="631" height="365" alt="Elektrikli Transpalet" class="img-fluid" loading="lazy"/></a></div>
+          <div class="body mt-4">
+            <div class="row mt-4 size-8 f600 ortala">
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-1"><i class="fa-regular fa-weight-hanging"></i> 1500 Kg / 1.5 Ton</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-2"><i class="fa-regular fa-ruler-vertical"></i> 105 mm</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-car-battery"></i> Li-ion </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-battery-full"></i> 24/20 V/Ah</div>
+              </div>
+            </div>
+            <div class="metin mt-4">LİTEF'in F4 serisi elektrikli terazili transpaleti, her türlü iş ortamına uyum sağlayarak verimliliği ve maliyet etkinliğini artırır. Entegre kantar sistemi ile yük ağırlıklarını hassas şekilde ölçer ve nakliye maliyetlerinden tasarruf sağlar.</div>
+            <div class="son-fiyat mt-4"> F4 Terazili Transpaletler $2500</div>
+          </div>
+        </div>
+        <div class="basvuru"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">İletişime Geçin</a></div>
+      </div>
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="transpalet">
+          <div class="transpalet-3 text-center size-4 f700 d-flex justify-content-between ortala transpalet-header">
+            <div class="title"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">F4 201</a></div>
+            <div class="price">
+              <div class="fiyat">$2350</div>
+              <div class="kdv d-none">+ KDV</div>
+            </div>
+          </div>
+          <div class="transpalet-gorseli"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin"><img src="https://litef.com.tr/uploads//landing/transpalet/9.webp?v=1" width="631" height="365" alt="Elektrikli Transpalet" class="img-fluid" loading="lazy"/></a></div>
+          <div class="body mt-4">
+            <div class="row mt-4 size-8 f600">
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-1"><i class="fa-regular fa-weight-hanging"></i> 2000 Kg / 2 Ton</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-2"><i class="fa-regular fa-ruler-vertical"></i> 118 mm</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-car-battery"></i> Li-ion </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-battery-full"></i> 24/20 V/Ah</div>
+              </div>
+            </div>
+            <div class="metin mt-4">LİTEF F4 201, güçlendirilmiş 48V elektrik sistemi ve 2 ton taşıma kapasitesiyle serinin en güçlüsüdür. Sıfır bakım gerektiren çıkarılabilir Li-ion pilleriyle esneklik sunar. Zorlu ortamlar için dayanıklı tasarımı ve verimli motoru ile dikkat çeker.</div>
+            <div class="son-fiyat mt-4"> F4 Transpaletler $2350</div>
+          </div>
+        </div>
+        <div class="basvuru"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">İletişime Geçin</a></div>
+      </div>
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="transpalet">
+          <div class="transpalet-4 text-center size-4 f700 d-flex justify-content-between ortala transpalet-header">
+            <div class="title"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">EPL 154</a></div>
+            <div class="price">
+              <div class="fiyat">$2150</div>
+              <div class="kdv d-none">+ KDV</div>
+            </div>
+          </div>
+          <div class="transpalet-gorseli"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin"><img src="https://litef.com.tr/uploads//landing/transpalet/4.webp?v=1" width="631" height="365" alt="Elektrikli Transpalet" class="img-fluid" loading="lazy"/></a></div>
+          <div class="body mt-4">
+            <div class="row mt-4 size-8 f600">
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-1"><i class="fa-regular fa-weight-hanging"></i> 1500 Kg / 1.5 Ton</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-2"><i class="fa-regular fa-ruler-vertical"></i> 115 mm</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-car-battery"></i> Li-ion </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-battery-full"></i> 48/20 V/Ah</div>
+              </div>
+            </div>
+            <div class="metin mt-4">LİTEF EPL154, kompakt yapısı ve 1500 kg taşıma kapasitesi ile lojistik ve sanayi sektörleri için idealdir. 0,75kW motor gücü ve 6 saat şarj süresi ile kesintisiz çalışma imkanı sunar. Harici şarj cihazı ile daha da verimli.</div>
+            <div class="son-fiyat mt-4"> EPL 154 Transpaletler $2150</div>
+          </div>
+        </div>
+        <div class="basvuru"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">İletişime Geçin</a></div>
+      </div>
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="transpalet">
+          <div class="transpalet-5 text-center size-4 f700 d-flex justify-content-between ortala transpalet-header">
+            <div class="title"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">EPL 185</a></div>
+            <div class="price">
+              <div class="fiyat">$2750</div>
+              <div class="kdv d-none">+ KDV</div>
+            </div>
+          </div>
+          <div class="transpalet-gorseli"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin"><img src="https://litef.com.tr/uploads//landing/transpalet/5.webp?v=1" width="631" height="365" alt="Elektrikli Transpalet" class="img-fluid" loading="lazy"/></a></div>
+          <div class="body mt-4">
+            <div class="row mt-4 size-8 f600">
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-1"><i class="fa-regular fa-weight-hanging"></i> 1800 Kg / 1.8 Ton</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-2"><i class="fa-regular fa-ruler-vertical"></i> 115 mm</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-car-battery"></i> Li-ion </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-battery-full"></i> 24/30 V/Ah</div>
+              </div>
+            </div>
+            <div class="metin mt-4">LİTEF EPL185, 1800 kg yük kapasitesi ve yüksek hızlı 0,9kW DC motoru ile ağır işler için ideal. 2 saatte tam şarj olan 24V 30Ah pil, zorlu uygulamalar için uzun çalışma süresi sağlar. Harici şarj cihazı ile kolay kullanım sunar.</div>
+            <div class="son-fiyat mt-4"> EPL 185 Transpaletler $2750</div>
+          </div>
+        </div>
+        <a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">
+        <div class="basvuru">İletişime Geçin</div>
+        </a> </div>
+      <div class="col-12 col-lg-6 mb-5">
+        <div class="transpalet">
+          <div class="transpalet-6 text-center size-4 f700 d-flex justify-content-between ortala transpalet-header">
+            <div class="title"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">EPT 20 - 15ET2H</a></div>
+            <div class="price">
+              <div class="fiyat">$2350</div>
+              <div class="kdv d-none">+ KDV</div>
+            </div>
+          </div>
+          <div class="transpalet-gorseli"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin"><img src="https://litef.com.tr/uploads//landing/transpalet/6.webp?v=1" width="631" height="365" alt="Elektrikli Transpalet" class="img-fluid" loading="lazy"/></a></div>
+          <div class="body mt-4">
+            <div class="row mt-4 size-8 f600">
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-1"><i class="fa-regular fa-weight-hanging"></i> 1500 Kg / 1.5 Ton</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik ozellik-2"><i class="fa-regular fa-ruler-vertical"></i> 115 mm</div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-car-battery"></i> AGM </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="ozellik"><i class="fa-regular fa-battery-full"></i> 24/65 V/Ah</div>
+              </div>
+            </div>
+            <div class="metin mt-4">LİTEF EPT20, 1.5 ton taşıma kapasitesi, su ve tozdan koruyan tam kapalı şanzımanı ile zorlu arazilerde yüksek performans sunar. 1505mm dönüş yarıçapı ile dar alanlarda kolay manevra sağlar ve yüksek yerden geçiş kapasitesi ile dikkat çeker.</div>
+            <div class="son-fiyat mt-4"> EPT 20 Transpaletler $2350</div>
+          </div>
+        </div>
+        <div class="basvuru"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin">İletişime Geçin</a></div>
+      </div>
+    </div>
+    <div class="row ">
+      <div class="col-12 d-flex justify-content-center mb-5"><a data-fancybox data-src="#dialog-content" href="javascript:;" title="Bizimle İletişime Geçin" class="daha">
+        <div class="daha-1">Daha farklı transpalet ve istif makinelerine mi ihtiyacınız var?</div>
+        <div class="daha-2">Diğer ürün seçeneklerimiz hakkında bilgi almak için uzmanlarımıza danışın.</div>
+        </a></div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-lg-6 mb-5 d-block d-lg-none">
+      <div class="">
+        <div class="size-5 f800 text-start text-lg-center"> Uzmanlarımız Sizi Arasın </div>
+        <div class="landing-form mt-2">
+          <form action="https://turkbilisim.com.tr/x/f/api/no" method="POST">
+            <input type="hidden" name="Link" value="litef.com.tr/sayfa/elektrikli-transpalet-fiyatlari/" />
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="isimInput" placeholder="Adınız Soyadınız" name="isim" pattern="[A-Za-z\s]{3,}" title="Lütfen sadece harf kullanarak en az 3 karakter girin." required="required">
+              <label for="isimInput">Adınız Soyadınız</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="tel" class="form-control" id="telefonInput" placeholder="Telefon Numaranız" name="telefon" pattern="[\0-9]{8,}" title="Lütfen sadece rakam kullanarak en az 8 karakter girin." required="required">
+              <label for="telefonInput">Telefon Numaranız</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="emailInput" placeholder="Email Adresiniz" name="email" pattern=".{10,}" title="Lütfen en az 10 karakterlik geçerli bir email adresi girin.">
+              <label for="emailInput">Email Adresiniz</label>
+            </div>
+            <div class="form-floating">
+              <textarea class="form-control" placeholder="Mesajınız" id="floatingTextarea2" name="mesaj" style="height: 140px"></textarea>
+              <label for="floatingTextarea2">Mesajınız</label>
+            </div>
+            <button type="submit" value="Gönder" class="btn float-end buton landing-buton-1 d-block rounded-0">Gönder <i class="fa-solid fa-paper-plane ml-2"></i></button>
+            <input type="hidden" name="_subject" value="LANDING Sayfasi Mesaji" />
+            <input type="hidden" name="_after" value="https://litef.com.tr/sayfa/landing-tesekkurler/">
+            <input type="hidden" name="cc[]" value="info@litef.com.tr" />
+            <input type="hidden" name="_valid[isim]" value="alpha|min_length[3]|required">
+            <input type="hidden" name="_valid[telefon]" value="numeric|min_length[8]|required">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="landing-1-section-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h3 class="size-9 f800 mb-3">Onaylı Google Yorumları</h3>
+      </div>
+      <div class="col-12 col-lg-4 mb-5">
+        <div class="yorum position-relative">
+          <div class="text">LİTEF transpaletleri, depomuzun iş akışını hızlandıran bir devrim yarattı. Manevra kabiliyeti ve enerji verimliliği sayesinde dar alanlarda bile üstün performans sergiliyor. Bakım ihtiyaçlarının düşük olması da maliyetlerimizi azalttı ve depo yönetimindeki verimliliğimizi artırdı.</div>
+          <div class="kim">
+            <div class="d-flex"><img src="https://litef.com.tr/uploads/landing/patient-male.png?v=1" width="80" height="90" alt="" class="float-left" loading="lazy">
+              <div class="ml-3 ortala d-block">
+                <div class="f600">A. Yılmaz</div>
+                <div class="f300">Depo Yöneticisi</div>
+                <div class="star"> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-4 mb-5">
+        <div class="yorum yorum position-relative">
+          <div class="text">Çeşitli transpalet modelleri kullanmış biri olarak, LİTEF'in elektrikli transpaletlerinin sunduğu performans ve kullanım kolaylığına hayran kaldım. Ayrıca, müşteri hizmetlerinin hızlı ve etkin yaklaşımı da işlerimizi kolaylaştırıyor.</div>
+          <div class="kim">
+            <div class="d-flex"><img src="https://litef.com.tr/uploads/landing/patient-male.png?v=1" width="80" height="90" alt="" class="float-left" loading="lazy">
+              <div class="ml-3 ortala d-block">
+                <div class="f600">E. Demir</div>
+                <div class="f300">Lojistik Koordinatörü </div>
+                <div class="star"> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-4 mb-5">
+        <div class="yorum position-relative">
+          <div class="text">Gıda sektöründe çalışırken hijyen ve hız en önemli iki unsurdur. LİTEF'in elektrikli transpaletleri ile hem işlemlerimizi hızlandırdık hem de hijyen standartlarımızı koruyoruz. Temizlemesi kolay yüzeyleriyle gıda güvenliği standartlarımızı tam anlamıyla karşılıyor.</div>
+          <div class="kim">
+            <div class="d-flex"><img src="https://litef.com.tr/uploads/landing/patient-male.png?v=1" width="80" height="90" alt="" class="float-left" loading="lazy">
+              <div class="ml-3 ortala d-block">
+                <div class="f600">M. Öztürk</div>
+                <div class="f300">Operasyon Sorumlusu </div>
+                <div class="star"> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="landing-1-section-5">
+  <div class="container">
+    <div class="col-12">
+      <h3 class="size-9 f800 mb-3">Sık Sorulan Sorular</h3>
+    </div>
+    <div class="row">
+      <div class="col-12 col-lg-12 mb-5">
+        <div class="accordion accordion-flush" id="accordionFlushSSS">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="true" aria-controls="flush-collapseOne"> Elektrikli transpalet ve manuel transpalet arasındaki fark nedir? </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body"> Elektrikli transpaletler, bir batarya ve motor yardımıyla hareket ettirilir ve daha ağır yükleri taşımak için uygundur. Manuel transpaletler ise fiziksel güçle hareket ettirilir ve daha hafif uygulamalar için tercih edilir. </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="true" aria-controls="flush-collapseTwo"> Bir transpaletin taşıma kapasitesi nasıl belirlenir? </button>
+            </h2>
+            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body">Taşıma kapasitesi, transpaletin modeline ve motor gücüne göre belirlenir. Örneğin, EPL154 modeli 1500 kg, EPL185 ise 1800 kg taşıma kapasitesine sahiptir. 2000 kg, 2500 kg ya da daha farklı alternatifler de bulunmaktadır. </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="true" aria-controls="flush-collapseThree"> Elektrikli transpaletlerin şarj olma süresi ne kadardır? </button>
+            </h2>
+            <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body">Şarj olma süresi modeline göre değişiklik gösterir, ama genel olarak tam şarj olmak için yaklaşık 2 ila 3 saat gereklidir.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="true" aria-controls="flush-collapseFour"> Transpaletin pil ömrü ne kadar sürer? </button>
+            </h2>
+            <div id="flush-collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body"> Lityum-iyon piller genellikle transpaletin ömründen fazla dayanabilirler. Lityum İyon Bataryaların 8-10 yıl arasında faydalı kullanım ömrü vardır. Ancak, kullanım yoğunluğuna ve şarj alışkanlıklarına bağlı olarak zamanla daha sık şarj gerekebilir. </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="true" aria-controls="flush-collapseFive"> Transpaleti düzenli şarj etmek gerekir mi? </button>
+            </h2>
+            <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body"> Hayır, lityum-iyon piller düzensiz kısa süreli şarjlarla çalışmaya uygundur. Eski tip jel veya traksiyoner akülü transpaletler tam şarj olana kadar kesintisiz şarj etmek zorunluydu. Ancak Lityum iyon pilleri ister 2 saatte tam sarj edin, isterseniz aralıklarla şarj ederek kullanın. Lityum Akünün %25 ile %85 doluluk oranı arasında tutulması idealdir. </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="true" aria-controls="flush-collapseSix"> Transpaletlerin frenleri manuel olarak nasıl serbest bırakılabilir? </button>
+            </h2>
+            <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body"> Birçok modelde manuel fren serbest bırakma seçeneği mevcuttur, ancak güvenlik gereği bu genellikle bir kolu çekmek gibi doğrudan bir eylemle yapılmaz. LİTEF lityum akülü transpaletler kendiliğinden motor frenine sahiptir. Hareket butonuna komut verme durduğunda otomatik olarak frenlemektedir. Tırmanma açısına uygun rampalarda geri kaçmayı engelleyen motor frenleri devreye girmektedir. </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="true" aria-controls="flush-collapseSeven"> Elektrikli transpaletler her türlü zeminde kullanılabilir mi? </button>
+            </h2>
+            <div id="flush-collapseSeven" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body"> Çoğu elektrikli transpalet düz ve sağlam zeminler için tasarlanmıştır. Ancak, EPT20-15ET2H gibi modeller daha yüksek yerden yüksekliğe sahip tekerleklerle donatılarak engebeli arazilerde ve dış mekanlarda kullanım için optimize edilmiştir. </div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="true" aria-controls="flush-collapseEight"> Transpaletler soğuk depo ortamlarında kullanılabilir mi? </button>
+            </h2>
+            <div id="flush-collapseEight" class="accordion-collapse collapse" data-bs-parent="#accordionFlushSSS">
+              <div class="accordion-body"> Lityum-iyon pilli transpaletler genellikle düşük sıcaklıklarda çalışabilir, ancak -20°C'nin altında pilin BMS'si pili devre dışı bırakabilir. Ayrıca, sıcaklık ve nem değişikliklerinin neden olabileceği sorunları önlemek için transpaletin soğuk depo versiyonları tercih edilmelidir. </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="landing-1-section-6">
+  <div class="container">
+    <div class="col-12">
+      <h3 class="size-9 f800 mb-3">Görsel Galeri</h3>
+    </div>
+    <div class="row">
+                        <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_598A26-4CB199-968488-316E15-22DC09-C2F611.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_598A26-4CB199-968488-316E15-22DC09-C2F611.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_598A26-4CB199-968488-316E15-22DC09-C2F611.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_75F69B-0E9BAE-E32E11-05F459-A58294-5D0FF5.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_75F69B-0E9BAE-E32E11-05F459-A58294-5D0FF5.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_75F69B-0E9BAE-E32E11-05F459-A58294-5D0FF5.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_2C417E-D81698-413F3D-724543-493459-7CCE8A.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_2C417E-D81698-413F3D-724543-493459-7CCE8A.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_2C417E-D81698-413F3D-724543-493459-7CCE8A.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_681B48-E56E8D-CF8967-A3DCE2-5BC9E5-32806B.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_681B48-E56E8D-CF8967-A3DCE2-5BC9E5-32806B.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_681B48-E56E8D-CF8967-A3DCE2-5BC9E5-32806B.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_7E89EA-FF0195-E54CAD-2C2BA8-C73BAB-DDF988.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_7E89EA-FF0195-E54CAD-2C2BA8-C73BAB-DDF988.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_7E89EA-FF0195-E54CAD-2C2BA8-C73BAB-DDF988.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_2A6869-589F63-CFABB0-D85E30-9035A6-FC283B.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_2A6869-589F63-CFABB0-D85E30-9035A6-FC283B.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_2A6869-589F63-CFABB0-D85E30-9035A6-FC283B.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_3CB4AD-0231CA-5BE9EF-7242F0-A4AFB6-087D6F.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_3CB4AD-0231CA-5BE9EF-7242F0-A4AFB6-087D6F.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_3CB4AD-0231CA-5BE9EF-7242F0-A4AFB6-087D6F.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_13286C-BCEAA0-2EAC22-2855A5-0CDD0C-D02C70.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_13286C-BCEAA0-2EAC22-2855A5-0CDD0C-D02C70.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_13286C-BCEAA0-2EAC22-2855A5-0CDD0C-D02C70.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_81B158-EE3F3D-AC0635-3B2B36-97CB4D-24B689.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_81B158-EE3F3D-AC0635-3B2B36-97CB4D-24B689.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_81B158-EE3F3D-AC0635-3B2B36-97CB4D-24B689.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_0FCB87-31D4BA-7E09D0-F178CE-00D990-85C560.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_0FCB87-31D4BA-7E09D0-F178CE-00D990-85C560.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_0FCB87-31D4BA-7E09D0-F178CE-00D990-85C560.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_D17199-EBA442-C112FE-9C5F1F-2A52FE-4C9926.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_D17199-EBA442-C112FE-9C5F1F-2A52FE-4C9926.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_D17199-EBA442-C112FE-9C5F1F-2A52FE-4C9926.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+            <div class="col-4 col-lg-3 mb-4"> <a href="https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_37F54D-23048C-B410B2-940DD8-9962C5-DDBF8A.webp" class="fancybox" data-fancybox="gallery">
+        <figure><img data-src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_37F54D-23048C-B410B2-940DD8-9962C5-DDBF8A.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/gallery/galleries/landing-elektrikli-transpalet--623/IMG_37F54D-23048C-B410B2-940DD8-9962C5-DDBF8A.webp&amp;h=300&amp;w=400&amp;s=1&amp;a=c&amp;q=100" loading="lazy" width="303" height="227" class="img-fluid" alt="Elektrikli Transpalet 1" /></figure>
+        </a> </div>
+                </div>
+  </div>
+</div>
+<div class="section landing-footer" id="footer-1">
+  <div class="container-fluid pc20">
+    <div class="row iletisim-sol bg9">
+      <div class="col-12 col-lg-6 align-self-center size-1">
+        <div class="py-5 h-100">
+          <div class="row mb-3 mb-sm-3 mb-xxl-4 section-ic">
+            <div class="col-2 col-lg-2 d-flex justify-content-center"> <a href="https://maps.app.goo.gl/TnM9t3mu2CdKSpxD9" target="_blank">
+              <div class="icon mt-0 mt-xxl-2 text-center"><i class="fa-duotone fa-location-dot"></i></div>
+              </a> </div>
+            <div class="col-10 col-lg-10 adres f400">Orta Mah. Atayolu Cd. Ekşioğlu Erdem San. Sit. No:15 F1/2 <br />
+              Tuzla / İstanbul / Türkiye
+              <div class="mt-0 f300"><a href="https://maps.app.goo.gl/TnM9t3mu2CdKSpxD9" target="_blank"><i class="fa-light fa-angle-right"></i> Google Maps'te Konuma Git</a></div>
+            </div>
+          </div>
+          <div class="row mb-3 mb-sm-3 mb-xxl-4 section-ic">
+            <div class="col-2 col-lg-2 d-flex justify-content-center"> <a href="tel:+902162060200" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});">
+              <div class="icon mt-0 mt-xxl-2 text-center"><i class="fa-duotone fa-phone"></i></div>
+              </a> </div>
+            <div class="col-10 col-lg-10">
+              <div class="mt-2 mt-xxl-0 mb-1 mb-sm-1 mb-xxl-1 f400"><a href="tel:+902162060200" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="mono">+90 216 206 02 00</a></div>
+              <div class="mt-0 d-none d-xxl-block f300">Telefon</div>
+            </div>
+          </div>
+          <div class="row mb-3 mb-sm-3 mb-xxl-4 section-ic">
+            <div class="col-2 col-lg-2 d-flex justify-content-center"> <a href="tel:+905335544531" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});">
+              <div class="icon mt-0 mt-xxl-2 text-center"><i class="fa-solid fa-mobile-screen-button"></i></div>
+              </a> </div>
+            <div class="col-10 col-lg-10">
+              <div class="mt-2 mt-xxl-0 mb-1 mb-sm-1 mb-xxl-1 f400"><a href="tel:+905335544531" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="mono">+90 533 554 45 31</a></div>
+              <div class="mt-0 d-none d-xxl-block f300">Gsm</div>
+            </div>
+          </div>
+          <div class="row mb-3 mb-sm-3 mb-xxl-4 section-ic">
+            <div class="col-2 col-lg-2 d-flex justify-content-center"> <a href="https://litef.com.tr/whatsapp" onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Whatsapp', 'value': 1});">
+              <div class="icon mt-0 mt-xxl-2 text-center"><i class="fa-brands fa-whatsapp"></i></div>
+              </a> </div>
+            <div class="col-10 col-lg-10">
+              <div class="mt-2 mt-xxl-0 mb-1 mb-sm-1 mb-xxl-1 f400"><a href="https://litef.com.tr/whatsapp" onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Whatsapp', 'value': 1});" class="mono">Whatsapp İletişim</a></div>
+              <div class="mt-0 d-none d-xxl-block f300 mono">+90 533 554 45 31</div>
+            </div>
+          </div>
+          <div class="row mb-3 mb-sm-3 mb-xxl-4 section-ic">
+            <div class="col-2 col-lg-2 d-flex justify-content-center"> <a href="https://litef.com.tr/sayfa/iletisim-formu/">
+              <div class="icon mt-0 mt-xxl-2 text-center"><i class="fa-duotone fa-circle-info"></i></div>
+              </a> </div>
+            <div class="col-10 col-lg-10">
+              <div class="mt-0 mt-lg-3 mt-xxl-3 mb-2 f400"><a href="https://litef.com.tr/sayfa/iletisim-formu/">Talep ve önerileriniz için bizimle buradan iletişime geçebilirsiniz.</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6 footer-1-sag align-self-center">
+        <div class="py-5 my-5 h-100">
+          <div class="row">
+            <div class="col-12 col-lg-10 offset-lg-1">
+              <div class="w-100">
+                <div class="mb-3 size-5 f700 20px"> Talepleriniz İçin Bize Ulaşın </div>
+                <form action="https://turkbilisim.com.tr/x/f/api/no" method="POST">
+                  <input type="hidden" name="Link" value="litef.com.tr/sayfa/elektrikli-transpalet-fiyatlari/" />
+                  <div class="form-floating mb-3">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="isimInput" placeholder="Adınız Soyadınız" name="isim" pattern="[A-Za-z\s]{3,}" title="Lütfen sadece harf kullanarak en az 3 karakter girin." required="required">
+                    <label for="isimInput">Adınız Soyadınız</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="tel" class="form-control" id="telefonInput" placeholder="Telefon Numaranız" name="telefon" pattern="[\0-9]{8,}" title="Lütfen sadece rakam kullanarak en az 8 karakter girin." required="required">
+                    <label for="telefonInput">Telefon Numaranız</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="emailInput" placeholder="Email Adresiniz" name="email" pattern=".{10,}" title="Lütfen en az 10 karakterlik geçerli bir email adresi girin.">
+                    <label for="emailInput">Email Adresiniz</label>
+                  </div>
+                  <div class="form-floating">
+                    <textarea class="form-control" placeholder="Mesajınız" id="floatingTextarea2" name="mesaj" style="height: 140px"></textarea>
+                    <label for="floatingTextarea2">Mesajınız</label>
+                  </div>
+                  <button type="submit" value="Gönder" class="btn float-end buton landing-buton-1 d-block rounded-0">Gönder <i class="fa-solid fa-paper-plane ml-2"></i></button>
+                  <input type="hidden" name="_subject" value="LANDING Sayfasi Mesaji" />
+                  <input type="hidden" name="_after" value="https://litef.com.tr/sayfa/landing-tesekkurler/">
+                  <input type="hidden" name="cc[]" value="info@litef.com.tr" />
+                  <input type="hidden" name="_valid[isim]" value="alpha|min_length[3]|required">
+                  <input type="hidden" name="_valid[telefon]" value="numeric|min_length[8]|required">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="dialog-content" style="display:none;" class="px-3 py-4 bg9 bes">
+  <div class="container-fluid">
+    <div class="row telefon-iletisim">
+      <div class="col-12">
+        <div class="row section-ic">
+          <div class="col-12">
+            <div class="f400"><a href="tel:+902162060200" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="mono"><i class="fa-duotone fa-phone"></i> +90 216 206 02 00</a></div>
+          </div>
+        </div>
+        <div class="row section-ic">
+          <div class="col-12">
+            <div class="f400"><a href="tel:+905335544531" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="mono"><i class="fa-solid fa-mobile-screen-button"></i> +90 533 554 45 31</a></div>
+          </div>
+        </div>
+        <div class="row section-ic">
+          <div class="col-12">
+            <div class="f400"><a href="https://litef.com.tr/whatsapp" onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Whatsapp', 'value': 1});" class="mono"><i class="fa-brands fa-whatsapp"></i> Whatsapp İletişim</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-12 col-lg-12 mb-5">
+        <div class="">
+          <div class="size-5 f800 text-start text-lg-center"> Uzmanlarımıza Ulaşın </div>
+          <div class="landing-form mt-2">
+            <form action="https://turkbilisim.com.tr/x/f/api/n" method="POST">
+              <input type="hidden" name="Link" value="litef.com.tr/sayfa/elektrikli-transpalet-fiyatlari/" />
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="isimInput" placeholder="Adınız Soyadınız" name="isim" title="Lütfen sadece harf kullanarak en az 3 karakter girin." required="required">
+                <label for="isimInput">Adınız Soyadınız</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="tel" class="form-control" id="telefonInput" placeholder="Telefon Numaranız" name="telefon" title="Lütfen sadece rakam kullanarak en az 8 karakter girin." required="required">
+                <label for="telefonInput">Telefon Numaranız</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="emailInput" placeholder="Email Adresiniz" name="email" title="Lütfen en az 10 karakterlik geçerli bir email adresi girin.">
+                <label for="emailInput">Email Adresiniz</label>
+              </div>
+              <div class="form-floating">
+                <textarea class="form-control" placeholder="Mesajınız" id="floatingTextarea2" name="mesaj" style="height: 140px"></textarea>
+                <label for="floatingTextarea2">(Varsa) Mesajınız</label>
+              </div>
+              <button type="submit" value="Gönder" class="btn float-end buton landing-buton-1 d-block rounded-0">Gönder <i class="fa-solid fa-paper-plane ml-2"></i></button>
+              <input type="hidden" name="_subject" value="LANDING Sayfasi Mesaji" />
+              <input type="hidden" name="_after" value="https://litef.com.tr/sayfa/landing-tesekkurler/">
+              <input type="hidden" name="cc[]" value="info@litef.com.tr" />
+              <input type="hidden" name="cc[]" value="nurullahnet@gmail.com" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row pt-5 landing-hizmetler">
+    <div class="col-6 col-lg-3 pb-4">
+      <div class="overflow border" style="position: relative;"> <a href="https://litef.com.tr/hizmetler/satin-alim/"><img src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/hizmetler/dataimages/IMG_07430F-99E145-795BA5-DC6DE6-E739F0-F457B0.jpg&amp;h=600&amp;w=600&amp;s=1&amp;a=c&amp;q=100" alt="Satın Alım" loading="lazy" class="img-fluid" />
+        <div class="text w-100 position-absolute b0 beyaz size-3 text-center f700" style="background: rgba(0, 0, 0, 0.75);">SATIN ALIM </div>
+        </a> </div>
+    </div>
+    <div class="col-6 col-lg-3 pb-4">
+      <div class="overflow border" style="position: relative;"> <a href="https://litef.com.tr/hizmetler/kiralama/"><img src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/hizmetler/dataimages/IMG_A7DA9A-ACF850-0D05C9-1C5C30-D6CFA6-DE3BEB.png&amp;h=600&amp;w=600&amp;s=1&amp;a=c&amp;q=100" alt="Kiralama" loading="lazy" class="img-fluid" />
+        <div class="text w-100 position-absolute b0 beyaz size-3 text-center f700" style="background: rgba(0, 0, 0, 0.75);">KİRALAMA </div>
+        </a> </div>
+    </div>
+    <div class="col-6 col-lg-3 pb-4">
+      <div class="overflow border" style="position: relative;"> <a href="https://litef.com.tr/hizmetler/servis/"><img src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/hizmetler/dataimages/IMG_E794BB-2DE37E-21060A-81AA0B-3BDC47-BE3D46.png&amp;h=600&amp;w=600&amp;s=1&amp;a=c&amp;q=100" alt="Servis" loading="lazy" class="img-fluid" />
+        <div class="text w-100 position-absolute b0 beyaz size-3 text-center f700" style="background: rgba(0, 0, 0, 0.75);">SERVİS </div>
+        </a> </div>
+    </div>
+    <div class="col-6 col-lg-3 pb-4">
+      <div class="overflow border" style="position: relative;"> <a href="https://litef.com.tr/hizmetler/yedek-parca/"><img src="https://litef.com.tr/thumbmaker.php?src=https://litef.com.tr/modules/hizmetler/dataimages/IMG_AD6E63-679032-C60E58-6DFE47-5EEFD3-C6F1B4.png&amp;h=600&amp;w=600&amp;s=1&amp;a=c&amp;q=100" alt="Yedek Parça Satışı" loading="lazy" class="img-fluid" />
+        <div class="text w-100 position-absolute b0 beyaz size-3 text-center f700" style="background: rgba(0, 0, 0, 0.75);">YEDEK PARÇA </div>
+        </a> </div>
+    </div>
+  </div>
+</div>
+                                    <!-- Top Widgets /-->
+<!-- Full Layout -->
+
+    <div class="d-none">
+	<p>
+		<b>LİTEF Forklift: İstanbul Transpalet ve Elektrikli Transpalet Çözümleri</b>
+	</p>
+	<p>
+	İstanbul'da transpalet ve elektrikli transpalet çözümleri arıyorsanız, LİTEF Forklift tam size göre! Uzman ekibimizle, İstanbul'un her yerine hizmet veriyor, akülü transpaletlerden otomatik ve standart transpaletlere kadar geniş bir yelpazede ürün sunuyoruz.
+	</p>
+	<p>
+	</p>
+	<p>
+		<b>Akülü Transpaletler: Gücü Hissedin!</b>
+	</p>
+	<p>
+	LİTEF Forklift, yüksek taşıma kapasitelerine ihtiyaç duyanlar için ideal. 2500 kg, 1500 kg ve hatta 2000 kg yük taşıma kapasiteli transpaletlerimiz, zorlu iş koşullarında bile üstün performans sunar. Kantarlı transpalet ve istifleme transpalet seçeneklerimizle, depo yönetiminde verimliliği artırıyoruz.
+	</p>
+	<p>
+	</p>
+	<p>
+		<b>Elektrikli Transpaletler: Verimlilik ve Konfor</b>
+	</p>
+	<p>
+	Elektrikli transpaletlerimiz, şarjlı ve enerji verimli çözümler sunar. 1 tonluk transpaletten 3 tonluk transpaletlere kadar farklı kapasitelerdeki modellerimiz, her türlü iş yükünü kolayca kaldırabilir. Şarjlı transpalet ve elektrik transpalet çeşitlerimizle, işlerinizi kolaylaştırın.
+	</p>
+	<p>
+	</p>
+	<p>
+		<b>Kiralama ve İkinci El Seçenekleri</b>
+	</p>
+	<p>
+	Transpalet kiralama hizmetlerimiz, geçici çözümler arayanlar için idealdir. Ayrıca, 2 el transpalet ve 2 el akülü transpalet seçeneklerimizle, bütçenize uygun çözümler sunuyoruz. 3 ton transpalet fiyatlarından, 5 ton transpaletlere kadar en uygun fiyatları bulabilirsiniz.
+	</p>
+	<p>
+	</p>
+	<p>
+		<b>Litef Forklift Farkı</b>
+	</p>
+	<p>
+	Litef olarak, her ihtiyaca uygun çözümler sunuyoruz. Elektrikli transpalet fiyatlarından, 2 el transpalet fiyatlarına kadar en uygun seçenekleri sizlere sunuyoruz. İstanbul transpalet ihtiyaçlarınızda, Tuzla'dan başlayarak şehrin her yerine hizmet sağlıyoruz.
+	</p>
+	<p>
+	</p>
+	<p>
+		<b>Uzman Çözümler, Kaliteli Hizmet</b>
+	</p>
+	<p>
+	Akülü transpalet fiyatları ve elektrikli transpalet fiyatlarımızla rekabetçiyiz. Ayrıca, manuel forklift, motorlu transpalet, ve terazili transpalet gibi çeşitli modellerimizle, her türlü iş yüküne uygun çözümler sunuyoruz. Sessiz transpalet seçeneklerimizle, gürültü hassasiyeti olan alanlarda bile rahatça çalışabilirsiniz.
+	</p>
+	<p>
+	</p>
+	<p>
+		<b>İstanbul'da Güvenilir Transpalet Tedarikçisi</b>
+	</p>
+	<p>
+	İstanbul'un transpalet ve elektrikli transpalet ihtiyaçlarında, LİTEF Forklift olarak yanınızdayız. İster yeni, ister ikinci el, ister kiralık olsun, geniş ürün yelpazemizle tüm ihtiyaçlarınıza çözüm sunuyoruz. Transpalet fiyatları ve elektrikli transpalet fiyatları konusunda en iyisini arıyorsanız, doğru yerdesiniz!</p>
+</div>        <!-- Full Layout /-->
+
+  
+<footer class="footer">
+  <div class="bottom-nav border-top"> <a href="tel:+902162060200" onclick="gtag('event', 'click', {'event_category': 'Arama', 'event_label': 'Arama', 'value': 1});" class="bottom-nav-link"> <i class="fa-solid fa-phone-volume"> </i>Bizi Arayin </a> <a href="https://litef.com.tr/sayfa/teklif/" class="bottom-nav-link"> <i class="fa-solid fa-briefcase"></i>Teklif Alın </a> <a href="https://maps.app.goo.gl/TnM9t3mu2CdKSpxD9" target="_blank" class="bottom-nav-link"> <i class="fa-solid fa-location-arrow"></i> Konumumuz </a> <a href="https://litef.com.tr/whatsapp?no=905335761490" onclick="gtag('event', 'click', {'event_category': 'Whatsapp', 'event_label': 'Whatsapp', 'value': 1});" class="bottom-nav-link bottom-whatsapp-link"> <i class="fa-brands fa-whatsapp"></i> Whatsapp </a> </div>
+  <div class="container px-3 px-xl-5 pt-4 pb-2">
+    <div class="row">
+                <div class="col-12 mb-4 logos">
+            <div class="mb-2"><img src="https://litef.com.tr/uploads/logo-sm.webp" /><img src="https://litef.com.tr/uploads/ep.png" /></div>
+            <em class="f600">Litef Güvencesiyle EP’nin Üstün Kalitesine Sahip Olun</em></div>
+              <div class="col-12 col-xl-8 f15">
+        <div><a href="https://litef.com.tr/sayfa/cerez-politikasi/">Çerez Politikası</a> <span class="mx-2">|</span> <a href="https://litef.com.tr/sayfa/kisisel-verilerin-islenmesi-politikasi/">Kişisel Verilerin İşlenmesi Politikası</a> </div>
+      </div>
+      <div class="col-12 col-xl-4 f15">
+        <div class="d-none d-lg-block text-end"> <a href="https://turkbilisim.com.tr" target="_blank" title="Web Tasarim">Web Tasarım ve Seo: Türk Bilişim</a></div>
+        <div class="d-block d-lg-none mt-2"> <a href="https://turkbilisim.com.tr" target="_blank" title="Web Tasarim">Web Tasarım ve Seo: Türk Bilişim</a></div>
+      </div>
+      <div class="col-12 mt-2 f15">Copyright &copy;2023 <a href="https://litef.com.tr/">Litef Forklift</a> All Rights Reserved.</div>
+    </div>
+  </div>
+</footer>
+<div> <a href="#" class="backToTop"><i class="fa-solid fa-arrow-up"></i></a> </div>
+<div id="search-box" style="display:none;" class="px-3 py-4">
+  <form id="search-form" class="search-box-form"  action="https://litef.com.tr/search" method="get">
+    <h3>Ürün Arama</h3>
+    <div class="form-floating input-group mb-3 mt-3">
+      <input type="text" class="form-control" placeholder="Aranacak Kelime" name="s" required="required">
+      <button class="btn btn-secondary" type="submit"> Ara </button>
+    </div>
+  </form>
+</div>
+
+<a href="https://litef.com.tr/whatsapp?no=905335761490" target="_blank" class="sticky-whatsapp-btn d-none d-md-block"><i class="fa-brands fa-whatsapp" id="btn-vibrate"></i></a>
+<!-- SCRIPTS --> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/jquery-3.6.0/jquery.min.js"></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/modernizr-2.8.3/modernizr.min.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/popper-2.11.5/popper.min.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/bootstrap-5.3.1/js/bootstrap.min.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/fancybox-4.0.26/fancybox.umd.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/swiper-8.1.4/swiper-bundle.min.js" defer ></script> 
+<!-- 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/tilt-1.1.19/tilt.jquery.js"></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/isotope-3.0.6/isotope.pkgd.min.js"></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/parallax-2.0.0/parallax.min.js"></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/counterup-1.0.0/jquery.counterup.min.js"></script> 
+
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/waypoints-2.0.6/waypoints.min.js"></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/lazy-eisbehr-1.7.9/jquery.lazy.min.js"></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/smoothscroll-16.1.2/smooth-scroll.polyfills.min.js"></script> 
+--> 
+<!-- SCRIPTS --> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/sticky-1.3.0/sticky.min.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/wow-1.3.0/wow.min.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/jquery.easing.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/plugins.js?v=1.01761611560" defer></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/plugins/jquery-form/jquery.form.min.js" defer ></script> 
+<script src="https://cdn.litef.com.tr/theme/turkbilisim23/assets/js/main.js?v=1.101761611560" defer></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+    $(".se-pre-con").fadeOut("slow");;
+    });
 </script>
+<link href="https://litef.com.tr/plugins/landing-elektrikli-transpalet-1/style.css?v=1700572021" rel="stylesheet" type="text/css" />
+<!-- Google Analytics --> 
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(95321640, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/95321640" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter --> 
+<!-- Google Analytics /-->
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WL63NRXC"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<script type="text/javascript">
+(function (a) {
+    a.fn.replaceTagName = function (f) {
+        var g = [],
+            h = this.length;
+        while (h--) {
+            var k = document.createElement(f),
+                b = this[h],
+                d = b.attributes;
+            for (var c = d.length - 1; c >= 0; c--) {
+                var j = d[c];
+                k.setAttribute(j.name, j.value)
+            }
+            k.innerHTML = b.innerHTML;
+            a(b).after(k).remove();
+            g[h - 1] = k
+        }
+        return a(g)
+    }
+})(window.jQuery);
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+
+  $('.article').replaceTagName('article');
+
+  if( window.location.href.indexOf('/blog/') >= 0 ){
+
+  $('h2.size-4').replaceTagName('h1');
+
+  }
+
+  $('#talepFormu > div > h1').replaceTagName('div');
+
+  $('.bg7').replaceTagName('div');
+
+  if( window.location.href.indexOf('/blog/') >= 0 ){
+
+  $('h2.size-4').replaceTagName('h1');
+
+  }
+
+
+  });
+</script>
+
+
+
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) {
+
+    var el2 = document.createElement('script');
+   el2.type = 'application/ld+json';  
+   el2.text = JSON.stringify( {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": ""+window.location.href+"/#webpage",
+    "name": ""+$('title').text()+"",
+    "url": ""+window.location.href+"",
+    "lastReviewed": "2020-10-13T22:37:20+03:00",
+    "inLanguage": "tr",
+    "description": ""+$('title').text()+"",
+    "mainEntity": {
+      "@type": "Article",
+      "mainEntityOfPage": ""+window.location.href+"",
+      "headline": ""+$('title').text()+"",
+      "description": ""+$('title').text()+"",
+      "articleBody": ""+$('title').text()+"",
+      "datePublished": "2020-10-13T22:37:20+03:00",
+      "dateModified": "2020-10-13T22:37:20+03:00",
+      "author": {
+        "@type": "Person",
+        "name": "Litef",
+        "sameAs": [
+          "https://litef.com.tr/"
+        ],
+        "image": {
+          "@type": "ImageObject",
+        "url": "https://litef.com.tr/uploads/logo-sm.webp",
+        "width": "141",
+        "height": "40"
+        }
+      },
+      "publisher": {
+      "@type": "Organization",
+      "name": "Litef",
+      "url": "https://litef.com.tr/",
+        "logo": {
+          "@type": "ImageObject",
+        "url": "https://litef.com.tr/uploads/logo-sm.webp",
+        "width": "141",
+        "height": "40"
+        }
+      },
+      "image": {
+        "@type": "ImageObject",
+        "@id": ""+window.location.href+"/#primaryimage",
+        "url": "https://litef.com.tr/uploads/logo-sm.webp",
+        "width": "141",
+        "height": "40"
+      }
+    },
+    "reviewedBy": {
+      "@type": "Organization",
+      "name": "Litef",
+      "url": "https://litef.com.tr/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://litef.com.tr/uploads/logo-sm.webp",
+        "width": "141",
+        "height": "40"
+      }
+    },
+    "comment": null
+  } );
+
+   document.querySelector('head').appendChild(el2);
+
+
+   var el3 = document.createElement('script');
+   el3.type = 'application/ld+json';  
+   el3.text = JSON.stringify( {
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://litef.com.tr/",
+        "name": "Ana Sayfa"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": ""+window.location.href+"",
+        "name": ""+$('title').text()+""
+      }
+    }
+  ]
+} );
+
+   document.querySelector('head').appendChild(el3);
+
+});</script>
+
+
+
+<script type='text/javascript'>
+function myFunction() {
+var x = document.getElementsByTagName("a");
+var i;
+for (i = 0; i < x.length; i++) {
+let uzunluk = x[i].getAttribute('href');
+if(uzunluk != undefined){
+if(uzunluk != null && uzunluk.length > 0){
+if (location.hostname!=x[i].hostname){
+
+if( x[i].hostname.indexOf('domain.com') === -1 ){
+
+x[i].rel = "external nofollow noopener noreferrer";
+
+}
+
+}}}}}
+mft=setTimeout("myFunction()",0);
+function LoadEvent(func){
+var oldonload = window.onload;
+if (typeof window.onload != 'function'){
+window.onload = func;
+}
+else{
+window.onload = function()
+{
+if(oldonload)
+{oldonload();}
+func();}}}
+LoadEvent(function(){
+myFunction();
+});
+</script> 
+
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function(event) {
+var images = document.querySelectorAll("img");
+
+    images.forEach(function(img) {
+        if (!img.hasAttribute("alt") || img.getAttribute("alt").trim() === "") {
+            var filename = img.src.split('/').pop().split('.')[0];
+
+            // Dosya adını küçük harfe çevirirken Türkçe karakterleri koru
+            let altText = filename.toLowerCase('tr-TR');
+
+            // Özel karakterleri boşluk ile değiştir (-, _, . vb.)
+            altText = altText.replace(/[-_\.]+/g, ' ');
+
+            // Çoklu boşlukları tek boşluğa indir
+            altText = altText.replace(/\s+/g, ' ');
+
+            // Baş ve sondaki boşlukları kaldır
+            altText = altText.trim();
+
+            // Türkçe karakterleri dikkate alarak cümle başlıkları (her kelimenin ilk harfini büyük yap)
+            altText = altText.replace(/\b\w/g, function(char) {
+                return char.toLocaleUpperCase('tr-TR');
+            });
+
+
+            img.setAttribute("alt", altText);
+        }
+    });
+
+  });
+
+</script>
+
+</body></html>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/685270d2a1bfba190de8610a/1iu10hdps';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
+
+
+<!-- Google tag (gtag.js) event -->
+<script>
+  gtag('event', 'conversion_event_engagement', {
+    // <event_parameters>
+  });
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-735616682">
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-735616682');
+</script>
+
+

@@ -390,15 +390,32 @@ window.aiChatRenderMarkdown = function(content) {
         return text;
     }
 
-    // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] (eski format)
-    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+    // 1A: BACKWARD COMPATIBILITY - **Text** [LINK:shop:slug] - optional description
+    // Matches: **Text** [LINK:shop:slug] - extra text (dash + description dahil)
+    // ⚠️ SADECE aynı satırdaki dash + text'i yakala (newline EXCLUDE)
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[^\n]+)?/gi, function(match, linkText, slug, extraText) {
         linkText = sanitizeLinkText(linkText);
+        if (extraText) {
+            // Dash + extra text varsa link text'e ekle
+            linkText += extraText.replace(/[ \t]+-[ \t]+/, ' - '); // Normalize dash spacing
+        }
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
     });
 
-    // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] (text sonra link)
-    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
+    // 1A2: BROKEN FORMAT - **Text** [LINK:shopslug] (colon eksik, "shop" prefix strip)
+    html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         linkText = sanitizeLinkText(linkText);
+        // "shop" prefix varsa çıkar (ör: "shopxtif-f1" → "xtif-f1")
+        slug = slug.replace(/^shop/, '');
+        return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer"><strong>${linkText}</strong></a>`;
+    });
+
+    // 1B: BACKWARD COMPATIBILITY - [Text] [LINK:shop:slug] - optional description
+    html = html.replace(/\[([^\]]+)\]\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]([ \t]+-[ \t]+[^\n]+)?/gi, function(match, linkText, slug, extraText) {
+        linkText = sanitizeLinkText(linkText);
+        if (extraText) {
+            linkText += extraText.replace(/[ \t]+-[ \t]+/, ' - ');
+        }
         return `<a href="/shop/${slug}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
     });
 

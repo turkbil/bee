@@ -240,23 +240,37 @@ if (!function_exists('href')) {
      */
     function href($module, $action, $slug = null, $locale = null)
     {
+        // 🎯 PAGE MODÜLÜ ÖZEL DURUMU: Prefix'siz direkt slug
+        if (strtolower($module) === 'page' && $action === 'show' && $slug) {
+            $url = '/' . $slug;
+
+            // Locale prefix desteği ekle
+            $currentLocale = $locale ?: app()->getLocale();
+            if (function_exists('needs_locale_prefix') && needs_locale_prefix($currentLocale)) {
+                $url = '/' . $currentLocale . $url;
+            }
+
+            return $url;
+        }
+
+        // 📋 DİĞER MODÜLLER: Normal prefix'li yapı
         $slugService = app(\App\Services\ModuleSlugService::class);
         $moduleSlug = $slugService->getSlug($module, $action);
-        
+
         $url = '/' . $moduleSlug;
-        
+
         if ($slug) {
             $url .= '/' . $slug;
         }
-        
+
         // Locale prefix desteği ekle
         $currentLocale = $locale ?: app()->getLocale();
-        
+
         // UrlPrefixService kullanarak prefix gerekli mi kontrol et
         if (function_exists('needs_locale_prefix') && needs_locale_prefix($currentLocale)) {
             $url = '/' . $currentLocale . $url;
         }
-        
+
         return $url;
     }
 }

@@ -45,7 +45,7 @@ foreach ($mainCategories as $cat) {
             ->whereNull('parent_product_id')
             ->where('product_id', '!=', $featuredProduct ? $featuredProduct->product_id : 0)
             ->orderBy('sort_order', 'asc')
-            ->take(5)
+            ->take(6)
             ->get();
 
         $categoryData[$catId] = [
@@ -124,13 +124,6 @@ $subcategoryIcons = [
                         </div>
                         <div class="flex-1 text-left">
                             <p class="font-bold text-gray-900 dark:text-white text-sm">{{ $catTitle }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                @if($catId == 7)
-                                    {{ count($categoryData[$catId]['subcategories'] ?? []) }} Kategori
-                                @else
-                                    {{ ($categoryData[$catId]['products']->count() ?? 0) + ($categoryData[$catId]['featured'] ? 1 : 0) }} Ürün
-                                @endif
-                            </p>
                         </div>
                         <i class="fa-solid fa-chevron-right text-gray-400 dark:text-gray-500 text-xs group-hover:text-{{ explode('-', explode(' ', $gradient)[0])[1] }}-500 transition"
                            :class="activeTab === {{ $catId }} ? 'text-{{ explode('-', explode(' ', $gradient)[0])[1] }}-500' : ''"></i>

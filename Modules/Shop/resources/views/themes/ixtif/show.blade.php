@@ -271,10 +271,12 @@
                  }">
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full mb-6">
-                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                            <span class="text-sm font-medium text-purple-700 dark:text-white">Stokta Mevcut</span>
-                        </div>
+                        @if($item->stock_tracking && $item->current_stock > 0)
+                            <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full mb-6">
+                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                <span class="text-sm font-medium text-purple-700 dark:text-white">Stokta Var</span>
+                            </div>
+                        @endif
 
                         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                             {{ $title }}
@@ -288,12 +290,8 @@
 
                         {{-- Fiyat Gösterimi --}}
                         <div class="mb-8">
-                            @if($item->price_on_request)
-                                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-2xl">
-                                    <i class="fa-solid fa-tag text-2xl"></i>
-                                    <span class="text-2xl font-bold">Fiyat Sorunuz</span>
-                                </div>
-                            @elseif($item->base_price)
+                            @if($item->base_price && $item->base_price > 0)
+                                {{-- Fiyat varsa göster (price_on_request'e bakmadan) --}}
                                 <div class="inline-flex flex-col gap-2">
                                     <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400">
                                         {{ formatPrice($item->base_price, $item->currency ?? 'TRY') }}
@@ -303,6 +301,12 @@
                                             {{ formatPrice($item->compare_at_price, $item->currency ?? 'TRY') }}
                                         </div>
                                     @endif
+                                </div>
+                            @elseif($item->price_on_request || !$item->base_price)
+                                {{-- Fiyat yoksa veya "price_on_request" işaretliyse --}}
+                                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-2xl">
+                                    <i class="fa-solid fa-tag text-2xl"></i>
+                                    <span class="text-2xl font-bold">Fiyat Sorunuz</span>
                                 </div>
                             @endif
                         </div>
@@ -1126,13 +1130,14 @@
                             {{-- Fiyat Kutusu --}}
                             <div class="rounded-xl p-6 mb-4"
                                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                <div
-                                    class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-md text-xs text-white mb-2">
-                                    <span class="w-1.5 h-1.5 bg-green-400"></span>
-                                    Stokta Mevcut
-                                </div>
-                                <div class="text-2xl font-bold text-white mb-1">Özel Fiyat Alın</div>
-                                <div class="text-sm text-white">En iyi fiyat garantisi</div>
+                                @if($item->stock_tracking && $item->current_stock > 0)
+                                    <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-md text-xs text-white mb-2">
+                                        <span class="w-1.5 h-1.5 bg-green-400"></span>
+                                        Stokta Var
+                                    </div>
+                                @endif
+                                <div class="text-2xl font-bold text-white mb-1">Fiyat Teklifi Alın</div>
+                                <div class="text-sm text-white">Size özel fiyat sunuyoruz</div>
                             </div>
 
                             {{-- CTA Buttons - MOBILE: 3'lü grid sadece ikonlar | DESKTOP: Normal --}}
@@ -1475,5 +1480,35 @@
             <span>Teklif Al</span>
         </a>
     </div>
+
+    {{-- AI Chat Context - Ürün Sayfası Bilgisi --}}
+    <script>
+        // Alpine yüklenene kadar bekle
+        document.addEventListener('alpine:init', () => {
+            // AI Chat store'a bu ürün bilgisini gönder
+            if (typeof Alpine !== 'undefined' && Alpine.store('aiChat')) {
+                Alpine.store('aiChat').updateContext({
+                    product_id: {{ $product->id }},
+                    category_id: {{ $product->category_id ?? 'null' }},
+                    page_slug: '{{ $product->slug }}',
+                });
+
+                console.log('✅ AI Chat Context Updated:', {
+                    product_id: {{ $product->id }},
+                    product_title: '{{ addslashes($product->getTranslated('title', app()->getLocale())) }}',
+                    category_id: {{ $product->category_id ?? 'null' }},
+                });
+            }
+        });
+
+        // Eğer Alpine zaten yüklüyse direkt güncelle
+        if (typeof Alpine !== 'undefined' && Alpine.store('aiChat')) {
+            Alpine.store('aiChat').updateContext({
+                product_id: {{ $product->id }},
+                category_id: {{ $product->category_id ?? 'null' }},
+                page_slug: '{{ $product->slug }}',
+            });
+        }
+    </script>
 
 @endsection

@@ -42,34 +42,94 @@
         </div>
 
         {{-- Quick Links --}}
+        @php
+            // Tenant-aware & Module-aware quick links
+            $quickLinks = [];
+
+            // Ana Sayfa (her zaman var)
+            $quickLinks[] = [
+                'url' => url('/'),
+                'icon' => 'fas fa-home',
+                'color' => 'text-blue-500',
+                'label' => __('Ana Sayfa')
+            ];
+
+            // Shop modülü
+            if (Module::isEnabled('Shop')) {
+                $shopSlug = \App\Services\ModuleSlugService::getSlug('Shop', 'index');
+                $quickLinks[] = [
+                    'url' => url($shopSlug),
+                    'icon' => 'fas fa-shopping-cart',
+                    'color' => 'text-green-500',
+                    'label' => __('Ürünler')
+                ];
+            }
+
+            // Blog modülü
+            if (Module::isEnabled('Blog')) {
+                $blogSlug = \App\Services\ModuleSlugService::getSlug('Blog', 'index');
+                $quickLinks[] = [
+                    'url' => url($blogSlug),
+                    'icon' => 'fas fa-newspaper',
+                    'color' => 'text-purple-500',
+                    'label' => __('Blog')
+                ];
+            }
+
+            // Portfolio modülü
+            if (Module::isEnabled('Portfolio')) {
+                $portfolioSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'index');
+                $quickLinks[] = [
+                    'url' => url($portfolioSlug),
+                    'icon' => 'fas fa-briefcase',
+                    'color' => 'text-orange-500',
+                    'label' => __('Portfolyo')
+                ];
+            }
+
+            // Announcement modülü
+            if (Module::isEnabled('Announcement')) {
+                $announcementSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'index');
+                $quickLinks[] = [
+                    'url' => url($announcementSlug),
+                    'icon' => 'fas fa-bullhorn',
+                    'color' => 'text-yellow-500',
+                    'label' => __('Duyurular')
+                ];
+            }
+
+            // İletişim sayfası (Page modülü - contact slug)
+            try {
+                $contactPage = \Modules\Page\App\Models\Page::where('is_active', 1)
+                    ->whereJsonContains('slug->tr', 'iletisim')
+                    ->orWhereJsonContains('slug->en', 'contact')
+                    ->first();
+
+                if ($contactPage) {
+                    $contactSlug = $contactPage->getTranslated('slug');
+                    $pageShowSlug = \App\Services\ModuleSlugService::getSlug('Page', 'show');
+                    $quickLinks[] = [
+                        'url' => url("/{$pageShowSlug}/{$contactSlug}"),
+                        'icon' => 'fas fa-envelope',
+                        'color' => 'text-red-500',
+                        'label' => __('İletişim')
+                    ];
+                }
+            } catch (\Exception $e) {
+                // İletişim sayfası yoksa skip
+            }
+
+            // Max 4 link göster (responsive design için)
+            $quickLinks = array_slice($quickLinks, 0, 4);
+        @endphp
+
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {{-- Ana Sayfa --}}
-            <a href="{{ url('/') }}" class="group p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <i class="fas fa-home text-3xl text-blue-500 mb-2"></i>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ __('Ana Sayfa') }}</p>
+            @foreach($quickLinks as $link)
+            <a href="{{ $link['url'] }}" class="group p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1">
+                <i class="{{ $link['icon'] }} text-3xl {{ $link['color'] }} mb-2"></i>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $link['label'] }}</p>
             </a>
-
-            {{-- Shop (varsa) --}}
-            @if(Module::isEnabled('Shop'))
-            <a href="{{ url('/shop') }}" class="group p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <i class="fas fa-shopping-cart text-3xl text-green-500 mb-2"></i>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ __('Ürünler') }}</p>
-            </a>
-            @endif
-
-            {{-- Blog (varsa) --}}
-            @if(Module::isEnabled('Blog'))
-            <a href="{{ url('/blog') }}" class="group p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <i class="fas fa-newspaper text-3xl text-purple-500 mb-2"></i>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ __('Blog') }}</p>
-            </a>
-            @endif
-
-            {{-- İletişim --}}
-            <a href="{{ url('/iletisim') }}" class="group p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <i class="fas fa-envelope text-3xl text-red-500 mb-2"></i>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ __('İletişim') }}</p>
-            </a>
+            @endforeach
         </div>
 
         {{-- Back Button --}}

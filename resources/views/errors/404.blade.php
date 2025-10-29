@@ -43,7 +43,7 @@
 
         {{-- Quick Links --}}
         @php
-            // Tenant-aware & Module-aware quick links
+            // Tenant-aware & Module-aware quick links - TAMAMEN DİNAMİK!
             $quickLinks = [];
 
             // Ana Sayfa (her zaman var)
@@ -54,69 +54,60 @@
                 'label' => __('Ana Sayfa')
             ];
 
-            // Shop modülü
-            if (Module::isEnabled('Shop')) {
-                $shopSlug = \App\Services\ModuleSlugService::getSlug('Shop', 'index');
-                $quickLinks[] = [
-                    'url' => url($shopSlug),
+            // Modül icon/renk/label mapping (yeni modül eklenince buraya ekle)
+            $moduleMap = [
+                'Shop' => [
                     'icon' => 'fas fa-shopping-cart',
                     'color' => 'text-green-500',
                     'label' => __('Ürünler')
-                ];
-            }
-
-            // Blog modülü
-            if (Module::isEnabled('Blog')) {
-                $blogSlug = \App\Services\ModuleSlugService::getSlug('Blog', 'index');
-                $quickLinks[] = [
-                    'url' => url($blogSlug),
+                ],
+                'Blog' => [
                     'icon' => 'fas fa-newspaper',
                     'color' => 'text-purple-500',
                     'label' => __('Blog')
-                ];
-            }
-
-            // Portfolio modülü
-            if (Module::isEnabled('Portfolio')) {
-                $portfolioSlug = \App\Services\ModuleSlugService::getSlug('Portfolio', 'index');
-                $quickLinks[] = [
-                    'url' => url($portfolioSlug),
+                ],
+                'Portfolio' => [
                     'icon' => 'fas fa-briefcase',
                     'color' => 'text-orange-500',
                     'label' => __('Portfolyo')
-                ];
-            }
-
-            // Announcement modülü
-            if (Module::isEnabled('Announcement')) {
-                $announcementSlug = \App\Services\ModuleSlugService::getSlug('Announcement', 'index');
-                $quickLinks[] = [
-                    'url' => url($announcementSlug),
+                ],
+                'Announcement' => [
                     'icon' => 'fas fa-bullhorn',
                     'color' => 'text-yellow-500',
                     'label' => __('Duyurular')
-                ];
-            }
+                ],
+                'Page' => [
+                    'icon' => 'fas fa-file-alt',
+                    'color' => 'text-indigo-500',
+                    'label' => __('Sayfalar')
+                ],
+            ];
 
-            // İletişim sayfası (Page modülü - contact slug)
+            // Tenant'ın aktif modüllerini module_tenants'dan çek
             try {
-                $contactPage = \Modules\Page\App\Models\Page::where('is_active', 1)
-                    ->whereJsonContains('slug->tr', 'iletisim')
-                    ->orWhereJsonContains('slug->en', 'contact')
-                    ->first();
+                $activeModules = \Nwidart\Modules\Facades\Module::allEnabled();
 
-                if ($contactPage) {
-                    $contactSlug = $contactPage->getTranslated('slug');
-                    $pageShowSlug = \App\Services\ModuleSlugService::getSlug('Page', 'show');
-                    $quickLinks[] = [
-                        'url' => url("/{$pageShowSlug}/{$contactSlug}"),
-                        'icon' => 'fas fa-envelope',
-                        'color' => 'text-red-500',
-                        'label' => __('İletişim')
-                    ];
+                foreach ($activeModules as $module) {
+                    $moduleName = $module->getName();
+
+                    // Mapping'de varsa ekle
+                    if (isset($moduleMap[$moduleName])) {
+                        try {
+                            $slug = \App\Services\ModuleSlugService::getSlug($moduleName, 'index');
+                            $quickLinks[] = [
+                                'url' => url($slug),
+                                'icon' => $moduleMap[$moduleName]['icon'],
+                                'color' => $moduleMap[$moduleName]['color'],
+                                'label' => $moduleMap[$moduleName]['label']
+                            ];
+                        } catch (\Exception $e) {
+                            // Slug yoksa skip
+                            continue;
+                        }
+                    }
                 }
             } catch (\Exception $e) {
-                // İletişim sayfası yoksa skip
+                // Hata varsa sadece Ana Sayfa göster
             }
 
             // Max 4 link göster (responsive design için)

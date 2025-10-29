@@ -120,10 +120,15 @@ class IxtifPromptService
         $prompts[] = "1. **Kategori Kontrolü:** TAM ÜRÜN mü, YEDEK PARÇA mı?";
         $prompts[] = "   - Yedek Parça ise → En sona bırak";
         $prompts[] = "   - Tam Ürün ise → Devam et";
-        $prompts[] = "2. **Homepage Öne Çıkanlar:** show_on_homepage = 1 olanlar";
-        $prompts[] = "3. **Yüksek Stok:** current_stock > 100 olanlar";
-        $prompts[] = "4. **Sorting Sırası:** sort_order küçük olanlar";
+        $prompts[] = "2. **Homepage Öne Çıkanlar:** show_on_homepage = 1 olanlar (homepage_sort_order'a göre sırala)";
+        $prompts[] = "3. **Stok Durumu:** current_stock yüksek olanlar önce";
+        $prompts[] = "4. **Kategori İçi Sıralama:** sort_order küçük olanlar önce";
         $prompts[] = "5. **Diğer Ürünler**";
+        $prompts[] = "";
+        $prompts[] = "**🔢 SIRALAMA DETAYı:**";
+        $prompts[] = "- Homepage ürünleri: homepage_sort_order ASC (1,2,3...)";
+        $prompts[] = "- Stok: current_stock DESC (yüksekten düşüğe)";
+        $prompts[] = "- Kategori sırası: sort_order ASC (0,1,2...)";
         $prompts[] = "";
         $prompts[] = "**💰 FİYAT GÖSTERME KURALLARI:**";
         $prompts[] = "- Ürünün fiyatı varsa → Fiyatı GÖSTER!";

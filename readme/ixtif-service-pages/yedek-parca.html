@@ -1,0 +1,311 @@
+<!-- YEDEK PARÇA SAYFASI - CLEAN & MODERN DESIGN -->
+
+<!-- Hero Section -->
+<div class="py-16 md:py-24">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-block mb-6">
+            <div class="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-indigo-500/30 transform hover:scale-110 hover:rotate-3 transition-all duration-500" x-data x-init="$el.classList.add('animate-float')">
+                <i class="fa-light fa-gears text-white text-5xl"></i>
+            </div>
+        </div>
+
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight text-gray-900 dark:text-white" style="font-weight: 900;">
+            <span class="gradient-animate block py-2">YEDEK PARÇA</span>
+        </h1>
+
+        <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+            Forklift ve depo ekipmanları için <strong>geniş yedek parça stoğu</strong>. Orijinal ve muadil parçalar, hızlı teslimat, tüm markalara uyum.
+        </p>
+    </div>
+</div>
+
+<!-- Yedek Parça Avantajları -->
+<div class="py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Neden Bizden Almalısınız?
+        </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Avantaj 1 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-indigo-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-box-check text-indigo-600 dark:text-indigo-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Geniş Stok Çeşitliliği</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Binlerce çeşit yedek parça stoğumuzla ihtiyacınız olan parçayı hızlıca bulun.
+            </p>
+        </div>
+
+        <!-- Avantaj 2 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-green-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-badge-check text-green-600 dark:text-green-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Orijinal & Garantili</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Tüm parçalarımız orijinal veya üretici onaylı. Garanti sertifikası ile teslimat.
+            </p>
+        </div>
+
+        <!-- Avantaj 3 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-blue-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Hızlı Teslimat</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Stokta bulunan parçalar kısa sürede teslim edilir. Acil ihtiyaçlarınız için ekspres servis.
+            </p>
+        </div>
+
+        <!-- Avantaj 4 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-orange-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-tags text-orange-600 dark:text-orange-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Rekabetçi Fiyatlar</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Toptan ve perakende satış seçenekleri. Kurumsal müşterilerimize özel indirimler.
+            </p>
+        </div>
+
+        <!-- Avantaj 5 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-purple-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-headset text-purple-600 dark:text-purple-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Teknik Danışmanlık</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Doğru parçayı seçmenizde yardımcı oluyoruz. Uzman ekibimiz size rehberlik eder.
+            </p>
+        </div>
+
+        <!-- Avantaj 6 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-pink-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-pink-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-screwdriver-wrench text-pink-600 dark:text-pink-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Montaj Desteği</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                İsteğe bağlı profesyonel montaj hizmeti. Parça değişimini uzman teknisyenlerimiz yapar.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Parça Kategorileri -->
+<div class="py-20 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 rounded-3xl">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Yedek Parça Kategorileri
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+            Geniş ürün yelpazesi
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <!-- Kategori 1 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-blue-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-tire text-blue-600 dark:text-blue-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Lastik & Teker</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Dolgu Lastik</li>
+                <li>• Havalı Lastik</li>
+                <li>• Tekerlekler</li>
+                <li>• Jant & Segman</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 2 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-green-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-engine text-green-600 dark:text-green-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Motor Grubu</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Devirdaim</li>
+                <li>• Pervane</li>
+                <li>• Piston Takımı</li>
+                <li>• Kayış & Filtre</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 3 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-purple-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-wrench text-purple-600 dark:text-purple-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Hidrolik Sistem</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Hidrolik Pompa</li>
+                <li>• Pistonlar</li>
+                <li>• Hortumlar</li>
+                <li>• Silindir</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 4 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-orange-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-bolt text-orange-600 dark:text-orange-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Elektrik & Elektronik</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Kontaktör</li>
+                <li>• Konvektör</li>
+                <li>• Farlar</li>
+                <li>• Akü Soketi</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 5 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-pink-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-layer-group text-pink-600 dark:text-pink-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Asansör Grubu</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Kızak Takımı</li>
+                <li>• Zincir</li>
+                <li>• Makara</li>
+                <li>• Tilt Pistonu</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 6 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-indigo-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-brake-warning text-indigo-600 dark:text-indigo-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Fren Grubu</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Fren Balatası</li>
+                <li>• Ana Merkez</li>
+                <li>• Teker Merkezi</li>
+                <li>• Sabitleme Levhası</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 7 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-teal-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-screwdriver text-teal-600 dark:text-teal-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Çatal & Ataşman</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Çatal (Çeşitli Boy)</li>
+                <li>• Çatal Kılıf</li>
+                <li>• Side Shift</li>
+                <li>• Ataşmanlar</li>
+            </ul>
+        </div>
+
+        <!-- Kategori 8 -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow hover:shadow-lg transition-all">
+            <div class="w-14 h-14 bg-red-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center mb-4">
+                <i class="fa-light fa-gears text-red-600 dark:text-red-400 text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Şanzıman Parçaları</h3>
+            <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                <li>• Balata</li>
+                <li>• Tork Converter</li>
+                <li>• Şaft Dişlisi</li>
+                <li>• Segman Takımı</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center mt-12">
+        <p class="text-gray-600 dark:text-gray-400 font-semibold">
+            + Binlerce çeşit yedek parça kategorimiz mevcuttur
+        </p>
+    </div>
+</div>
+
+<!-- Sipariş Süreci -->
+<div class="py-20">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Nasıl Sipariş Verilir?
+        </h2>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-black shadow-lg">
+                1
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Parça Kodunu Belirleyin</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Ekipman markası, model ve parça kodunu tespit edin
+            </p>
+        </div>
+
+        <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-black shadow-lg">
+                2
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">İletişime Geçin</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Telefon, WhatsApp veya e-posta ile sipariş verin
+            </p>
+        </div>
+
+        <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-black shadow-lg">
+                3
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Teklif Alın</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Fiyat, stok durumu ve teslimat süresi bilgisi
+            </p>
+        </div>
+
+        <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl font-black shadow-lg">
+                4
+            </div>
+            <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Teslimat</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Hızlı kargo veya kurye ile adresinize teslim
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-16 text-center">
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-12 shadow-2xl">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-6">
+            Yedek Parça Siparişi Ver
+        </h2>
+        <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            İhtiyacınız olan yedek parçayı hızlıca temin edin. Uzman ekibimiz doğru parçayı bulmanızda yardımcı olur.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/iletisim" class="bg-white hover:bg-gray-100 text-indigo-600 px-8 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                <i class="fa-light fa-cart-shopping mr-2"></i>Sipariş Ver
+            </a>
+            <a href="https://wa.me/{{ settings('contact_whatsapp_1', '905010056758') }}?text=Yedek%20Parça%20Siparişi%20Vermek%20İstiyorum" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                <i class="fa-brands fa-whatsapp mr-2"></i>WhatsApp Sipariş
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Alpine.js Float Animation -->
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+</style>

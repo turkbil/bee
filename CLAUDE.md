@@ -262,6 +262,54 @@ echo "✅ Cache temizlendi, build tamamlandı!"
 - **Backend/Controller** değişikliklerinde gerekli değil
 - **Sadece txt/md** dosyası değişirse gerekli değil
 
+### ⚡ PRODUCTION CACHE KURALLARI (KRİTİK!)
+
+**🚨 ASLA YAPMA: `php artisan config:clear` TEK BAŞINA!**
+
+**Problem:** Config cache olmadan Laravel her istekte `.env` parse eder → Bir hata olursa site çöker (404)
+
+#### ✅ DOĞRU KULLANIM:
+
+**Composer Script ile (ÖNERİLEN):**
+```bash
+# Cache yenileme (tek komut)
+composer config-refresh
+
+# Production cache oluşturma
+composer cache-production
+```
+
+**Manuel kullanım (gerekirse):**
+```bash
+# ❌ ASLA TEK BAŞINA YAPMA:
+php artisan config:clear
+
+# ✅ DAIMA BİRLİKTE YAP:
+php artisan config:clear && php artisan config:cache
+
+# ✅ TAM CACHE YENİLEME:
+php artisan config:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+#### 🛡️ HATIRLATMA:
+
+**Her config değişikliğinden sonra:**
+1. `.env` veya `config/*.php` değiştirdiysen
+2. `composer config-refresh` veya `php artisan config:cache` yap
+3. OPcache varsa reset et: `curl https://domain.com/public/opcache-reset.php`
+
+**Production'da cache ZORUNLU:**
+- Config cache yoksa → DB bağlantısı patlayabilir
+- Route cache yoksa → Performans düşer
+- View cache yoksa → Her istekte Blade compile eder
+
+**UNUTMA:** Cache olmadan production = 💣 bomba!
+
+---
+
 ### 🔐 OTOMATİK GIT CHECKPOINT
 
 **⚡ KURAL:** Kullanıcı Claude'u çağırıp ilk talep/brief verdiğinde BİR KEZ checkpoint commit yap - **ONAY İSTEME!**

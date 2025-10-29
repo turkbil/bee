@@ -1,0 +1,111 @@
+/**
+ * Back to Top Button - Modern & Smooth
+ *
+ * Pozisyon: Sol alt köşe (AI robot sağda olduğu için)
+ * Görünüm: Scroll > 300px sonra fade-in
+ * Animasyon: Smooth scroll to top
+ *
+ * @version 1.0.0
+ */
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 80px; /* Mobile bottom bar üzerinde */
+    left: 20px; /* SOL ALT KÖŞE - AI robot sağda */
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999; /* AI chat altında (1000) */
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dark mode support */
+.dark .back-to-top {
+    background: linear-gradient(135deg, #4c63d2 0%, #5a3d8f 100%);
+    box-shadow: 0 4px 12px rgba(76, 99, 210, 0.5);
+}
+
+/* Visible state (scroll > 300px) */
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Hover effect */
+.back-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+}
+
+.dark .back-to-top:hover {
+    box-shadow: 0 8px 20px rgba(76, 99, 210, 0.7);
+}
+
+/* Active (click) effect */
+.back-to-top:active {
+    transform: translateY(-2px);
+}
+
+/* Icon */
+.back-to-top i {
+    font-size: 20px;
+    transition: transform 0.2s ease;
+}
+
+.back-to-top:hover i {
+    transform: translateY(-3px);
+}
+
+/* Pulse animation (optional - ilk yüklemede dikkat çeker) */
+@keyframes pulse-gentle {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+.back-to-top.pulse {
+    animation: pulse-gentle 2s infinite;
+}
+
+/* Mobil responsive */
+@media (max-width: 768px) {
+    .back-to-top {
+        width: 45px;
+        height: 45px;
+        bottom: 70px; /* Mobile bar için space */
+        left: 15px;
+    }
+
+    .back-to-top i {
+        font-size: 18px;
+    }
+}
+
+/* Desktop large screens */
+@media (min-width: 1920px) {
+    .back-to-top {
+        width: 55px;
+        height: 55px;
+        left: 30px;
+    }
+
+    .back-to-top i {
+        font-size: 22px;
+    }
+}

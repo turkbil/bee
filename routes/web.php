@@ -111,10 +111,155 @@ Route::get('/manifest.json', function () {
         }
     }
 
+    // PWA Shortcuts (tenant-aware - Aktif modüllere göre dinamik)
+    $shortcuts = [];
+
+    // Shop modülü aktifse
+    if (Module::isEnabled('Shop')) {
+        $shortcuts[] = [
+            'name' => __('Ürünler'),
+            'short_name' => __('Ürünler'),
+            'description' => __('Tüm ürünleri görüntüle'),
+            'url' => url('/shop'),
+            'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+        ];
+    }
+
+    // Blog modülü aktifse
+    if (Module::isEnabled('Blog')) {
+        $shortcuts[] = [
+            'name' => __('Blog'),
+            'short_name' => __('Blog'),
+            'description' => __('Blog yazılarını oku'),
+            'url' => url('/blog'),
+            'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+        ];
+    }
+
+    // Portfolio modülü aktifse
+    if (Module::isEnabled('Portfolio')) {
+        $shortcuts[] = [
+            'name' => __('Portföy'),
+            'short_name' => __('Portföy'),
+            'description' => __('Projelerimizi görüntüle'),
+            'url' => url('/portfolio'),
+            'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+        ];
+    }
+
+    // Contact/Page modülü her zaman var (fallback)
+    $shortcuts[] = [
+        'name' => __('İletişim'),
+        'short_name' => __('İletişim'),
+        'description' => __('Bize ulaşın'),
+        'url' => url('/iletisim'),
+        'icons' => $logoUrl ? [['src' => $logoUrl, 'sizes' => '192x192']] : []
+    ];
+
+    // Max 4 shortcut (PWA standardı)
+    $manifest['shortcuts'] = array_slice($shortcuts, 0, 4);
+
     // 1 yıl cache (manifest nadiren değişir)
     return response()->json($manifest)
         ->header('Cache-Control', 'public, max-age=31536000, immutable');
 })->name('manifest');
+
+// security.txt - Tenant-aware dynamic route (RFC 9116)
+Route::get('/.well-known/security.txt', function () {
+    $contactEmail = setting('contact_email') ?: setting('admin_email') ?: 'security@' . request()->getHost();
+    $contactUrl = url('/iletisim');
+    $tenant = tenant();
+    $companyName = setting('site_title') ?: config('app.name');
+
+    $content = "# Security Policy - {$companyName}\n";
+    $content .= "#\n";
+    $content .= "# If you discover a security vulnerability, please report it responsibly.\n";
+    $content .= "# We appreciate your efforts to improve our security.\n\n";
+    $content .= "Contact: mailto:{$contactEmail}\n";
+    $content .= "Contact: {$contactUrl}\n";
+    $content .= "Expires: " . now()->addYear()->toIso8601String() . "\n";
+    $content .= "Preferred-Languages: " . app()->getLocale() . ", en\n";
+    $content .= "Canonical: " . url('/.well-known/security.txt') . "\n\n";
+    $content .= "# Thank you for helping keep {$companyName} and our users safe!\n";
+
+    return response($content, 200)
+        ->header('Content-Type', 'text/plain; charset=utf-8')
+        ->header('Cache-Control', 'public, max-age=86400'); // 1 gün cache
+});
+
+// humans.txt - Tenant-aware dynamic route
+Route::get('/humans.txt', function () {
+    $companyName = setting('site_title') ?: config('app.name');
+    $contactEmail = setting('contact_email') ?: 'info@' . request()->getHost();
+    $tenant = tenant();
+    $tenantName = $tenant ? $tenant->title : 'Central';
+
+    // Aktif modülleri al
+    $enabledModules = [];
+    foreach (['Shop', 'Blog', 'Portfolio', 'Page', 'Search'] as $module) {
+        if (Module::isEnabled($module)) {
+            $enabledModules[] = $module;
+        }
+    }
+
+    $content = "/* TEAM */\n\n";
+    $content .= "Developer: Nurullah Okatan\n";
+    $content .= "Contact: nurullah@nurullah.net\n";
+    $content .= "Location: Istanbul, Turkey\n\n";
+
+    $content .= "/* SITE */\n\n";
+    $content .= "Company: {$companyName}\n";
+    $content .= "Tenant: {$tenantName}\n";
+    $content .= "Contact: {$contactEmail}\n";
+    $content .= "Last update: " . now()->format('Y/m/d') . "\n";
+    $content .= "Language: " . implode(', ', \App\Services\TenantLanguageProvider::getActiveLanguageCodes()) . "\n";
+    $content .= "Doctype: HTML5\n";
+    $content .= "Standards: HTML5, CSS3, JavaScript ES6+\n";
+    $content .= "Components: Laravel 11, Livewire 3, Alpine.js, Tailwind CSS\n";
+    $content .= "IDE: PhpStorm, VS Code\n\n";
+
+    $content .= "/* FEATURES */\n\n";
+    $content .= "- Multi-tenant SaaS platform\n";
+    $content .= "- Progressive Web App (PWA)\n";
+    $content .= "- Service Worker for offline support\n";
+    $content .= "- Dynamic manifest.json\n";
+    $content .= "- Responsive design (mobile-first)\n";
+    $content .= "- Dark mode support\n";
+    $content .= "- Multi-language support\n";
+    $content .= "- SEO optimized\n";
+    $content .= "- Enabled modules: " . implode(', ', $enabledModules) . "\n\n";
+
+    $content .= "/* THANKS */\n\n";
+    $content .= "To all open-source contributors who made this possible!\n\n";
+    $content .= "Laravel - https://laravel.com\n";
+    $content .= "Livewire - https://livewire.laravel.com\n";
+    $content .= "Alpine.js - https://alpinejs.dev\n";
+    $content .= "Tailwind CSS - https://tailwindcss.com\n\n";
+
+    $content .= "                               _\n";
+    $content .= "                            _ooOoo_\n";
+    $content .= "                           o8888888o\n";
+    $content .= "                           88\" . \"88\n";
+    $content .= "                           (| -_- |)\n";
+    $content .= "                           O\\  =  /O\n";
+    $content .= "                        ____/`---'\\____\n";
+    $content .= "                      .'  \\\\|     |//  `.\n";
+    $content .= "                     /  \\\\|||  :  |||//  \\\n";
+    $content .= "                    /  _||||| -:- |||||_  \\\n";
+    $content .= "                    |   | \\\\\\  -  /'| |   |\n";
+    $content .= "                    | \\_|  `\\`---'//  |_/ |\n";
+    $content .= "                    \\  .-\\__ `-. -'__/-.  /\n";
+    $content .= "                  ___`. .'  /--.--\\  `. .'___\n";
+    $content .= "               .\"\" '<  `.___\\_<|>_/___.' _> \\\"\".\n";
+    $content .= "              | | :  `- \\`. ;`. _/; .'/ /  .' ; |\n";
+    $content .= "              \\  \\ `-.   \\_\\_`. _.'_/_/  -' _.' /\n";
+    $content .= "  =============`-.`___`-.__ \\ \\___  /__.-'_.'_.-'================\n\n";
+    $content .= "                       Buddha Bless - No Bugs!\n";
+
+    return response($content, 200)
+        ->header('Content-Type', 'text/plain; charset=utf-8')
+        ->header('Cache-Control', 'public, max-age=86400'); // 1 gün cache
+});
 
 // Test SEO component
 // 🧹 SEO test route arşivlendi

@@ -1,262 +1,345 @@
-<!-- SATIN ALMA SAYFASI - CLEAN & MODERN DESIGN -->
+<!-- SATIN ALMA - MODERN & PROFESSIONAL -->
 
 <!-- Hero Section -->
-<div class="py-16 md:py-24">
-    <div class="text-center max-w-4xl mx-auto">
-        <div class="inline-block mb-6">
-            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/30 transform hover:scale-110 hover:rotate-3 transition-all duration-500" x-data x-init="$el.classList.add('animate-float')">
-                <i class="fa-light fa-shopping-cart text-white text-5xl"></i>
+<section class="py-8 md:py-12 lg:py-16 flex items-center relative overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <!-- Left Content -->
+            <div class="text-gray-900 dark:text-white">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">
+                    <span class="gradient-animate block py-2">DOĞRU YATIRIM,</span>
+                    <span class="gradient-animate block py-2">UZUN ÖMÜR</span>
+                </h1>
+
+                <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-12 leading-relaxed font-medium">
+                    Yeni, sıfır kilometre forklift ve depo ekipmanları. Garantili ürünler, profesyonel kurulum, uzun vadeli ortaklık.
+                </p>
+
+                <!-- Features Grid -->
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-badge-check text-blue-600 dark:text-blue-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900 dark:text-white text-base">Fabrika Garantisi</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">CE & TSE onaylı</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Profesyonel kurulum</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-handshake text-blue-600 dark:text-blue-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900 dark:text-white text-base">Esnek Ödeme</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Taksit imkanı</div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fa-light fa-headset text-blue-600 dark:text-blue-300 text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-gray-900 dark:text-white text-base">Sürekli Destek</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Satış sonrası hizmet</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight text-gray-900 dark:text-white" style="font-weight: 900;">
-            <span class="gradient-animate block py-2">Doğru Yatırım, Uzun Ömür</span>
-        </h1>
-
-        <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Yeni, sıfır kilometre forklift ve depo ekipmanlarınızı <strong>güvenle satın alın</strong>. Garantili ürünler, profesyonel kurulum ve kapsamlı destek.
-        </p>
-    </div>
-</div>
-
-<!-- Öne Çıkan Özellikler -->
-<div class="py-16">
-    <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
-            Neden Bizden Satın Almalısınız?
-        </h2>
-        <p class="text-lg text-gray-600 dark:text-gray-400">
-            Sadece ekipman satmıyoruz, uzun vadeli iş ortaklığı kuruyoruz
-        </p>
-    </div>
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Özellik 1 -->
-        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
-            <div class="w-16 h-16 bg-blue-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
-                <i class="fa-light fa-badge-check text-blue-600 dark:text-blue-400 text-3xl"></i>
+            <!-- Right Content - Image -->
+            <div class="flex items-center justify-center">
+                <div class="w-full aspect-square bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700 rounded-3xl flex items-center justify-center shadow-2xl">
+                    <i class="fa-light fa-shopping-cart text-blue-600 dark:text-blue-400 opacity-20" style="font-size: 12rem;"></i>
+                </div>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Orijinal Garantili Ürünler</h3>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Tüm ekipmanlarımız fabrika garantili, CE sertifikalı ve TSE onaylıdır. Güvenle yatırım yapın.
-            </p>
-        </div>
-
-        <!-- Özellik 2 -->
-        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
-            <div class="w-16 h-16 bg-green-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
-                <i class="fa-light fa-truck-fast text-green-600 dark:text-green-400 text-3xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Hızlı Teslimat</h3>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Stokta bulunan ekipmanlar kısa sürede teslim edilir. Özel siparişlerde şeffaf teslimat takvimi.
-            </p>
-        </div>
-
-        <!-- Özellik 3 -->
-        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
-            <div class="w-16 h-16 bg-purple-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
-                <i class="fa-light fa-tools text-purple-600 dark:text-purple-400 text-3xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Profesyonel Kurulum</h3>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Uzman teknisyenlerimiz ekipmanınızı kurar, test eder ve operatör eğitimi verir.
-            </p>
-        </div>
-
-        <!-- Özellik 4 -->
-        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
-            <div class="w-16 h-16 bg-orange-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
-                <i class="fa-light fa-headset text-orange-600 dark:text-orange-400 text-3xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">7/24 Teknik Destek</h3>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Satış sonrası sürekli destek. Arıza, bakım veya soru için her zaman ulaşabilirsiniz.
-            </p>
-        </div>
-
-        <!-- Özellik 5 -->
-        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
-            <div class="w-16 h-16 bg-pink-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-pink-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
-                <i class="fa-light fa-credit-card text-pink-600 dark:text-pink-400 text-3xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Esnek Ödeme Seçenekleri</h3>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Peşin, taksitli veya finansman seçenekleriyle bütçenize uygun ödeme planları.
-            </p>
-        </div>
-
-        <!-- Özellik 6 -->
-        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
-            <div class="w-16 h-16 bg-indigo-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-indigo-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
-                <i class="fa-light fa-repeat text-indigo-600 dark:text-indigo-400 text-3xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Takas İmkanı</h3>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                Mevcut ekipmanınızı değerlendirip takas yaparak yeni ekipmana geçiş yapabilirsiniz.
-            </p>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Neden Satın Almalısınız - GRADIENT BORDER CARDS -->
+<section class="py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+                Neden Bizden Satın Almalısınız?
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400">
+                Sadece ekipman satmıyoruz, uzun vadeli iş ortaklığı kuruyoruz
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Avantaj 1 -->
+            <div class="group relative p-8 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/5 dark:to-purple-500/5 border border-transparent hover:border-blue-300 dark:hover:border-blue-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                        <i class="fa-light fa-certificate text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Orijinal & Garantili</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Tüm ekipmanlarımız yetkili distribütörlerden temin edilir. Fabrika garantisi, CE ve TSE sertifikaları ile güvence altında.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Avantaj 2 -->
+            <div class="group relative p-8 rounded-2xl bg-gradient-to-br from-green-500/10 to-teal-500/10 dark:from-green-500/5 dark:to-teal-500/5 border border-transparent hover:border-green-300 dark:hover:border-green-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                        <i class="fa-light fa-tools text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Kurulum & Eğitim</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Profesyonel teknik ekibimiz kurulumu yapar, operatör eğitimi verir. İlk bakımı biz yaparız, ekibiniz hemen üretime geçer.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Avantaj 3 -->
+            <div class="group relative p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:from-purple-500/5 dark:to-pink-500/5 border border-transparent hover:border-purple-300 dark:hover:border-purple-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                        <i class="fa-light fa-credit-card text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Esnek Ödeme</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Kredi kartına taksit, açık hesap, banka kredisi desteği. Finansal yükünüzü hafifletir, nakit akışınızı rahatlatırız.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Avantaj 4 -->
+            <div class="group relative p-8 rounded-2xl bg-gradient-to-br from-orange-500/10 to-amber-500/10 dark:from-orange-500/5 dark:to-amber-500/5 border border-transparent hover:border-orange-300 dark:hover:border-orange-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                        <i class="fa-light fa-handshake text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Uzman Danışmanlık</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        İhtiyaç analizi yapar, operasyonunuzu inceler, size en uygun ekipmanı önerir. Doğru yatırım yapmanızı sağlarız.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Avantaj 5 -->
+            <div class="group relative p-8 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 dark:from-cyan-500/5 dark:to-blue-500/5 border border-transparent hover:border-cyan-300 dark:hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                        <i class="fa-light fa-shield-check text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Garanti Sonrası Hizmet</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Garanti süresi bittiğinde yalnız bırakmayız. Yedek parça, periyodik bakım, onarım hizmetlerimiz devam eder.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Avantaj 6 -->
+            <div class="group relative p-8 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/5 dark:to-purple-500/5 border border-transparent hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                <div class="relative">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                        <i class="fa-light fa-truck text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Teslimat & Montaj</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Türkiye geneli teslimat ağımız ile ekipmanınızı güvenle teslim eder, kurulumunu yaparız.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Satın Alma Süreci -->
-<div class="py-20 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 rounded-3xl">
-    <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
-            Satın Alma Süreci
-        </h2>
-        <p class="text-lg text-gray-600 dark:text-gray-400">
-            Basit, şeffaf ve hızlı bir süreç
-        </p>
-    </div>
+<section class="py-16 md:py-24 relative overflow-hidden">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-50 to-white dark:from-slate-900 dark:to-slate-800"></div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-        <!-- Adım 1 -->
-        <div class="text-center">
-            <div class="relative inline-block mb-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-xl">
-                    1
-                </div>
-                <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-check text-white text-sm"></i>
-                </div>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">İhtiyaç Analizi</h3>
-            <p class="text-gray-600 dark:text-gray-400">
-                Uzmanlarımız işletmenizin ihtiyacını dinler, uygun ekipman önerir
+    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+                Satın Alma Süreci
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400">
+                Basit, şeffaf ve hızlı. 6 adımda ekipmanınız teslim
             </p>
         </div>
 
-        <!-- Adım 2 -->
-        <div class="text-center">
-            <div class="relative inline-block mb-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-xl">
-                    2
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Adım 1 -->
+            <div class="relative p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/10 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span class="text-xl font-black">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">İletişim</h3>
                 </div>
-                <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-check text-white text-sm"></i>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Telefon, WhatsApp veya email ile iletişime geçin. İhtiyaçlarınızı dinleriz.
+                </p>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="relative p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/10 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span class="text-xl font-black">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Saha Analizi</h3>
                 </div>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Uzman ekibimiz operasyonunuzu inceler, en uygun ekipman önerisini sunar.
+                </p>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Teklif & Fiyatlandırma</h3>
-            <p class="text-gray-600 dark:text-gray-400">
-                Detaylı, net ve gizli maliyet içermeyen teklif sunulur
-            </p>
-        </div>
 
-        <!-- Adım 3 -->
-        <div class="text-center">
-            <div class="relative inline-block mb-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-xl">
-                    3
+            <!-- Adım 3 -->
+            <div class="relative p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/10 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span class="text-xl font-black">3</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teklif</h3>
                 </div>
-                <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-check text-white text-sm"></i>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Detaylı fiyat teklifi, teknik özellikler ve ödeme seçenekleri sunulur.
+                </p>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="relative p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/10 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span class="text-xl font-black">4</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Sipariş</h3>
                 </div>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Onay sonrası sipariş verilir, üretim/tedarik süreci başlar.
+                </p>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Sipariş & Teslimat</h3>
-            <p class="text-gray-600 dark:text-gray-400">
-                Sözleşme imzalandıktan sonra üretim/teslimat süreci başlar
-            </p>
-        </div>
 
-        <!-- Adım 4 -->
-        <div class="text-center">
-            <div class="relative inline-block mb-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-xl">
-                    4
+            <!-- Adım 5 -->
+            <div class="relative p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/10 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span class="text-xl font-black">5</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teslimat</h3>
                 </div>
-                <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-check text-white text-sm"></i>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Ekipman teslim edilir, profesyonel kurulum yapılır, testler tamamlanır.
+                </p>
+            </div>
+
+            <!-- Adım 6 -->
+            <div class="relative p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-white/10 hover:shadow-lg transition-all">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span class="text-xl font-black">6</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Devreye Alma</h3>
                 </div>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Kurulum & Eğitim</h3>
-            <p class="text-gray-600 dark:text-gray-400">
-                Ekipman kurulur, test edilir ve operatörleriniz eğitilir
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- Satın Alabileceğiniz Ekipmanlar -->
-<div class="py-20">
-    <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
-            Satın Alabileceğiniz Ekipmanlar
-        </h2>
-    </div>
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="flex items-center gap-4 p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
-            <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <i class="fa-light fa-forklift text-blue-600 dark:text-blue-400 text-2xl"></i>
-            </div>
-            <div>
-                <div class="font-bold text-gray-900 dark:text-white">Forklift</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">Elektrikli, Dizel, LPG</div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4 p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
-            <div class="w-12 h-12 bg-green-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <i class="fa-light fa-dolly text-green-600 dark:text-green-400 text-2xl"></i>
-            </div>
-            <div>
-                <div class="font-bold text-gray-900 dark:text-white">Transpalet</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">Manuel, Elektrikli, Tartılı</div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4 p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
-            <div class="w-12 h-12 bg-purple-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <i class="fa-light fa-layer-group text-purple-600 dark:text-purple-400 text-2xl"></i>
-            </div>
-            <div>
-                <div class="font-bold text-gray-900 dark:text-white">İstif Makinesi</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">Manuel, Yarı Elektrikli, Tam Elektrikli</div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4 p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
-            <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <i class="fa-light fa-warehouse text-orange-600 dark:text-orange-400 text-2xl"></i>
-            </div>
-            <div>
-                <div class="font-bold text-gray-900 dark:text-white">Reach Truck</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">Dar Koridor, Yüksek Kaldırma</div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4 p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
-            <div class="w-12 h-12 bg-pink-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <i class="fa-light fa-robot text-pink-600 dark:text-pink-400 text-2xl"></i>
-            </div>
-            <div>
-                <div class="font-bold text-gray-900 dark:text-white">Otonom Sistemler</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">AMR, AGV, Akıllı Depo</div>
-            </div>
-        </div>
-
-        <div class="flex items-center gap-4 p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
-            <div class="w-12 h-12 bg-indigo-50 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
-                <i class="fa-light fa-gears text-indigo-600 dark:text-indigo-400 text-2xl"></i>
-            </div>
-            <div>
-                <div class="font-bold text-gray-900 dark:text-white">Ataşman & Aksesuarlar</div>
-                <div class="text-sm text-gray-600 dark:text-gray-400">Çatal, Varil Tutucu, Side Shift</div>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Operatör eğitimi verilir, ekipman üretime hazır hale gelir.
+                </p>
             </div>
         </div>
     </div>
-</div>
+</section>
 
+<!-- Ekipman Kategorileri -->
+<section class="py-16 md:py-24">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+                Satışını Yaptığımız Ekipmanlar
+            </h2>
+        </div>
 
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="flex items-center gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500/50 transition-all">
+                <i class="fa-light fa-forklift text-blue-600 dark:text-blue-400 text-3xl"></i>
+                <div>
+                    <div class="font-bold text-lg text-gray-900 dark:text-white">Akülü Forklift</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Elektrikli, Sessiz, Ekonomik</div>
+                </div>
+            </div>
 
-<!-- Alpine.js Float Animation -->
+            <div class="flex items-center gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500/50 transition-all">
+                <i class="fa-light fa-truck-ramp text-blue-600 dark:text-blue-400 text-3xl"></i>
+                <div>
+                    <div class="font-bold text-lg text-gray-900 dark:text-white">Dizel/LPG Forklift</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Dış Mekan, Güçlü</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500/50 transition-all">
+                <i class="fa-light fa-dolly text-blue-600 dark:text-blue-400 text-3xl"></i>
+                <div>
+                    <div class="font-bold text-lg text-gray-900 dark:text-white">Transpalet</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Manuel ve Elektrikli</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500/50 transition-all">
+                <i class="fa-light fa-layer-group text-blue-600 dark:text-blue-400 text-3xl"></i>
+                <div>
+                    <div class="font-bold text-lg text-gray-900 dark:text-white">İstif Makinesi</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Yük İstifleyici</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500/50 transition-all">
+                <i class="fa-light fa-warehouse text-blue-600 dark:text-blue-400 text-3xl"></i>
+                <div>
+                    <div class="font-bold text-lg text-gray-900 dark:text-white">Reach Truck</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">Dar Koridor, Yüksek Kaldırma</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500/50 transition-all">
+                <i class="fa-light fa-robot text-blue-600 dark:text-blue-400 text-3xl"></i>
+                <div>
+                    <div class="font-bold text-lg text-gray-900 dark:text-white">Otonom Sistemler</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">AMR, AGV, Akıllı Depo</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gradient Animation CSS -->
 <style>
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
-.animate-float {
-    animation: float 3s ease-in-out infinite;
+
+.gradient-animate {
+    background: linear-gradient(90deg, #3B82F6, #8B5CF6, #EC4899, #3B82F6);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 8s ease infinite;
 }
 </style>

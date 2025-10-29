@@ -260,7 +260,38 @@ class IxtifPromptService
         $prompts[] = "";
 
         // ====================================
-        // 7️⃣ ÖRNEK DİYALOG - ÖNCE ÜRÜN GÖSTER!
+        // 7️⃣ MARKDOWN FORMAT KURALLARI - ZORUNLU!
+        // ====================================
+        $prompts[] = "**📝 MARKDOWN FORMAT KURALLARI (ZORUNLU!):**";
+        $prompts[] = "";
+        $prompts[] = "🚨 **ÜRÜN ÖZELLİKLERİ MUTLAKA LİSTE FORMATINDA YAZILMALI:**";
+        $prompts[] = "";
+        $prompts[] = "✅ **DOĞRU FORMAT (MUTLAKA BU ŞEKİLDE YAZ!):**";
+        $prompts[] = "```";
+        $prompts[] = "⭐ **Ürün Adı** [LINK:shop:slug]";
+        $prompts[] = "";
+        $prompts[] = "- 1.500 kg taşıma kapasitesi";
+        $prompts[] = "- Li-Ion batarya ile uzun kullanım";
+        $prompts[] = "- Ergonomik tasarım";
+        $prompts[] = "";
+        $prompts[] = "Fiyat: $1.350";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "❌ **YANLIŞ FORMAT (ASLA BÖYLE YAZMA!):**";
+        $prompts[] = "```";
+        $prompts[] = "⭐ **Ürün Adı** [LINK:shop:slug] - 1.500 kg kapasiteli - Li-Ion batarya - Ergonomik";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "🔑 **KRİTİK NOKTALAR:**";
+        $prompts[] = "1. Her özellik AYRI SATIRDA olmalı";
+        $prompts[] = "2. Her özellik `- ` (tire + boşluk) ile başlamalı";
+        $prompts[] = "3. Ürün adından sonra BOŞ SATIR bırak";
+        $prompts[] = "4. Özellikler listesinden sonra BOŞ SATIR bırak";
+        $prompts[] = "5. Fiyat ayrı paragrafta olmalı";
+        $prompts[] = "";
+
+        // ====================================
+        // 8️⃣ ÖRNEK DİYALOG - ÖNCE ÜRÜN GÖSTER!
         // ====================================
         $prompts[] = "**💬 ÖRNEK DİYALOG (DOĞRU YAKLAŞIM):**";
         $prompts[] = "";
@@ -269,16 +300,22 @@ class IxtifPromptService
         $prompts[] = "AI: 'Merhaba! Transpalet seçeneklerimizi göstereyim: 😊";
         $prompts[] = "";
         $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Elektrikli Transpalet** [LINK:shop:{{slug}}]";
-        $prompts[] = "   - {{kapasite}} kg taşıma kapasitesi";
-        $prompts[] = "   - {{özellik-1}}";
-        $prompts[] = "   - {{kullanım-alanı}}";
+        $prompts[] = "";
+        $prompts[] = "- {{kapasite}} kg taşıma kapasitesi";
+        $prompts[] = "- {{özellik-1}}";
+        $prompts[] = "- {{kullanım-alanı}}";
+        $prompts[] = "";
+        $prompts[] = "Fiyat: {{fiyat}}";
         $prompts[] = "";
         $prompts[] = "⭐ **{{ÜRÜN ADI}} - {{Kapasite}} Manuel Transpalet** [LINK:shop:{{slug}}]";
-        $prompts[] = "   - {{kapasite}} kg kapasite";
-        $prompts[] = "   - {{özellik-1}}";
-        $prompts[] = "   - {{kullanım-alanı}}";
         $prompts[] = "";
-        $prompts[] = "🔍 **Karşılaştırma:** {{Ürün-1}} {{avantajı}}, {{Ürün-2}} ise {{avantajı}}. Hangi yoğunlukta kullanacaksınız?'";
+        $prompts[] = "- {{kapasite}} kg kapasite";
+        $prompts[] = "- {{özellik-1}}";
+        $prompts[] = "- {{kullanım-alanı}}";
+        $prompts[] = "";
+        $prompts[] = "Fiyat: {{fiyat}}";
+        $prompts[] = "";
+        $prompts[] = "Hangi yoğunlukta kullanacaksınız?'";
         $prompts[] = "";
         $prompts[] = "**NOT:** Yukarıdaki {{placeholder}} değerlerini Meilisearch'ten gelen GERÇEK ürün bilgileriyle değiştir!";
         $prompts[] = "**ASLA hardcode ürün adı kullanma!** Sadece Meilisearch sonuçlarını göster!";

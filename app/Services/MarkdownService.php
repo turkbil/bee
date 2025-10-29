@@ -44,16 +44,67 @@ class MarkdownService
      */
     public function parse(string $markdown): string
     {
-        // Önce custom link formatlarını işle
+        // 🔧 FIX 1: AI tire ile başlayan satırları markdown list formatına çevir (ÖNCE!)
+        // AI yazdığı: "[LINK] - özellik1 - özellik2 - özellik3"
+        // Markdown: "[LINK]\n\n- özellik1\n- özellik2\n- özellik3"
+        $markdown = $this->fixInlineListsToMarkdown($markdown);
+
+        // SONRA custom link formatlarını işle
         $markdown = $this->processCustomLinks($markdown);
 
-        // Sonra standard markdown'ı parse et
+        // Standard markdown'ı parse et
         $html = $this->converter->convert($markdown)->getContent();
 
         // HTML'i temizle ve formatla
         $html = $this->cleanHtml($html);
 
         return $html;
+    }
+
+    /**
+     * AI'nin yanında yazdığı tire'li özellikleri markdown list formatına çevir
+     *
+     * ÖNCE: "Ürün Adı** [LINK] - özellik1 - özellik2 - özellik3"
+     * SONRA: "Ürün Adı** [LINK]\n\n- özellik1\n- özellik2\n- özellik3"
+     *
+     * @param string $markdown
+     * @return string
+     */
+    protected function fixInlineListsToMarkdown(string $markdown): string
+    {
+        // Pattern: Link'ten sonra tire ile başlayan özellikler
+        // AI yazdığı: "**Ürün** [LINK] - özellik1 - özellik2 - özellik3 Fiyat: X"
+        // Hedef: "**Ürün** [LINK]\n\n- özellik1\n- özellik2\n- özellik3\n\nFiyat: X"
+
+        // ADIM 1: Link'ten sonra tire'ye kadar olan kısmı bul ve satırları ayır
+        $markdown = preg_replace_callback(
+            '/(\[LINK:[^\]]+\])\s+([^⭐]+?)(?=\s*(?:Fiyat:|⭐|$))/us',
+            function ($matches) {
+                $link = $matches[1]; // [LINK:shop:slug]
+                $content = trim($matches[2]); // "- özellik1 - özellik2 - özellik3"
+
+                // Eğer tire varsa listeye çevir
+                if (strpos($content, ' - ') !== false) {
+                    // Tire ile başlıyorsa kaldır
+                    $content = preg_replace('/^\s*-\s*/', '', $content);
+
+                    // Tire ile ayrılmış özellikleri parçala
+                    $items = preg_split('/\s+-\s+/', $content, -1, PREG_SPLIT_NO_EMPTY);
+
+                    if (count($items) > 1) {
+                        // Markdown list formatına çevir
+                        $list = "\n\n" . implode("\n", array_map(fn($item) => "- " . trim($item), $items)) . "\n";
+                        return $link . $list;
+                    }
+                }
+
+                // Değişiklik yoksa olduğu gibi döndür
+                return $link . ' ' . $content;
+            },
+            $markdown
+        );
+
+        return $markdown;
     }
 
     /**

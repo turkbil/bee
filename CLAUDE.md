@@ -233,9 +233,8 @@ Finally, add a review section to the projectplan.md file with a summary of the c
 
 #### 📋 Otomatik Komutlar (Sırayla):
 ```bash
-# 1. Cache temizliği
+# 1. Cache temizliği (SAFE - config cache'i korur)
 php artisan view:clear
-php artisan cache:clear
 php artisan responsecache:clear
 
 # 2. Build compile
@@ -244,6 +243,12 @@ npm run prod
 # 3. Doğrulama
 echo "✅ Cache temizlendi, build tamamlandı!"
 ```
+
+**🚨 KRİTİK UYARI: Config Cache ASLA Temizleme!**
+- ❌ **ASLA kullanma**: `php artisan cache:clear` (config cache'i siler, site çöker!)
+- ❌ **ASLA kullanma**: `php artisan config:clear` (tek başına sistem bozar!)
+- ✅ **Kullan**: `composer config-refresh` (gerekirse, ama nadiren!)
+- ✅ **Kullan**: Sadece `view:clear` + `responsecache:clear`
 
 #### ⚠️ KRİTİK:
 - **ONAY BEKLEME!** Her view/tailwind değişikliğinde direkt yap

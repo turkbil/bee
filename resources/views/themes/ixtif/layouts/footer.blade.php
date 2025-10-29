@@ -484,6 +484,15 @@
 <script defer src="{{ asset('assets/js/themes/' . $themeName . '/main.js') }}?v=1.0.1"></script>
 <script src="{{ mix('js/app.js') }}" defer></script>
 
+{{-- Web Share API Helper --}}
+<script defer src="{{ asset('js/web-share.js') }}"></script>
+
+{{-- instant.page - Preload on hover for instant navigation --}}
+<script src="//instant.page/5.2.0" type="module" data-instant-intensity="mousedown"></script>
+
+{{-- Back to Top Button Script --}}
+<script defer src="{{ asset('js/back-to-top.js') }}"></script>
+
 {{-- Dynamic Script Stack --}}
 @stack('scripts')
 

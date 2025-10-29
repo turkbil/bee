@@ -30,7 +30,10 @@
             <div class="flex flex-wrap justify-center gap-3">
                 @forelse($searchTags ?? [] as $tag)
                     @if(!empty($tag->query) && trim($tag->query) !== '' && !str_contains($tag->query, '{'))
-                    <a href="{{ route('search.show', ['query' => trim($tag->query)]) }}"
+                    @php
+                        $tagSlug = $tag->slug ?? \Illuminate\Support\Str::slug(trim($tag->query));
+                    @endphp
+                    <a href="{{ route('search.show', ['query' => $tagSlug]) }}"
                        class="inline-flex items-center gap-2 px-4 py-2
                               bg-gray-100 dark:bg-gray-800
                               border-2 border-gray-200 dark:border-gray-700
@@ -75,7 +78,10 @@
                     <div class="space-y-2">
                         @foreach($popularSearches->take(5) as $search)
                             @if(!empty($search->query) && trim($search->query) !== '' && !str_contains($search->query, '{'))
-                            <a href="{{ route('search.show', ['query' => trim($search->query)]) }}"
+                            @php
+                                $searchSlug = $search->slug ?? \Illuminate\Support\Str::slug(trim($search->query));
+                            @endphp
+                            <a href="{{ route('search.show', ['query' => $searchSlug]) }}"
                                class="block px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700
                                       hover:border-yellow-400 dark:hover:border-yellow-500
                                       rounded-lg transition-all text-gray-700 dark:text-gray-300
@@ -99,7 +105,10 @@
                     <div class="space-y-2">
                         @foreach($recentSearches->take(5) as $search)
                             @if(!empty($search->query) && trim($search->query) !== '' && !str_contains($search->query, '{'))
-                            <a href="{{ route('search.show', ['query' => trim($search->query)]) }}"
+                            @php
+                                $recentSlug = $search->slug ?? \Illuminate\Support\Str::slug(trim($search->query));
+                            @endphp
+                            <a href="{{ route('search.show', ['query' => $recentSlug]) }}"
                                class="block px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700
                                       hover:border-blue-400 dark:hover:border-blue-500
                                       rounded-lg transition-all text-sm text-gray-600 dark:text-gray-400

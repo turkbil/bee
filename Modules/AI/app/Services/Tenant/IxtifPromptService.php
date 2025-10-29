@@ -98,13 +98,36 @@ class IxtifPromptService
         $prompts[] = "";
 
         // ====================================
-        // 3️⃣ SATIŞ YAKLAŞIMI
+        // 3️⃣ ÜRÜN ÖNCELİKLENDİRME & SATIŞ STRATEJİSİ
         // ====================================
-        $prompts[] = "**💼 SATIŞ STRATEJİSİ:**";
-        $prompts[] = "- İhtiyacı anla, sonra öner";
-        $prompts[] = "- Ürün özelliklerini müşteri ihtiyacıyla eşleştir";
-        $prompts[] = "- Fiyat sorulursa 'teklif oluşturalım' de";
-        $prompts[] = "- Stok/teslimat için 'ekibimizle görüşelim' yönlendir";
+        $prompts[] = "**🎯 ÜRÜN ÖNCELİKLENDİRME (KRİTİK!):**";
+        $prompts[] = "";
+        $prompts[] = "**⚠️ TÜM ÜRÜNLER SİSTEMDE VAR!**";
+        $prompts[] = "- Meilisearch'te gelen her ürün stokta VAR gibi davran";
+        $prompts[] = "- 'Stokta yok' ASLA deme!";
+        $prompts[] = "- Tüm ürünler müşteriye sunulabilir";
+        $prompts[] = "";
+        $prompts[] = "**📊 ÜRÜN ÖNERİ SIRALAMA ÖNCELİĞİ:**";
+        $prompts[] = "1. **En yüksek öncelik:** Homepage'de gösterilen ürünler (featured/highlight)";
+        $prompts[] = "2. **İkinci öncelik:** Stok miktarı yüksek ürünler";
+        $prompts[] = "3. **Üçüncü öncelik:** Sorting sıralamasında öne çıkan ürünler";
+        $prompts[] = "4. **Dördüncü öncelik:** Diğer ürünler";
+        $prompts[] = "";
+        $prompts[] = "**💰 FİYAT GÖSTERME KURALLARI:**";
+        $prompts[] = "- Ürünün fiyatı varsa → Fiyatı GÖSTER!";
+        $prompts[] = "- Fiyat yoksa → 'Fiyat teklifi için iletişime geçin' de";
+        $prompts[] = "- Format: 'Fiyat: ₺XX.XXX' veya 'Fiyat: $XX.XXX'";
+        $prompts[] = "";
+        $prompts[] = "**🤝 PAZARLIK & SON FİYAT İSTEYENLER:**";
+        $prompts[] = "- 'İndirim var mı?' → 'Ekibimiz size özel fiyat teklifi hazırlayabilir'";
+        $prompts[] = "- 'Son fiyat nedir?' → 'Size özel kampanyalı fiyat için telefon numaranızı alabilir miyim?'";
+        $prompts[] = "- 'Daha ucuz olur mu?' → 'Müşteri temsilcimiz size özel fiyat sunabilir, iletişime geçelim'";
+        $prompts[] = "";
+        $prompts[] = "**📞 PAZARLIKTA TELEFON TOPLAMA:**";
+        $prompts[] = "1. Önce ürün göster (fiyatıyla birlikte)";
+        $prompts[] = "2. Pazarlık isterse → Telefon numarası iste";
+        $prompts[] = "3. Telefon alamazsan → Bizim numarayı ver: {$whatsapp}";
+        $prompts[] = "4. Argüman: 'Size özel indirim ve kampanyalar hazırlayabiliriz'";
         $prompts[] = "";
 
         // ====================================
@@ -131,9 +154,9 @@ class IxtifPromptService
         // 5️⃣ MARKDOWN VE FORMATLAMA
         // ====================================
         $prompts[] = "**📝 MESAJ FORMATI:**";
-        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI (ÇOK KRİTİK!):** `**Ürün Adı** [LINK:shop:{{slug}}]`";
+        $prompts[] = "- 🔗 **ÜRÜN LİNK FORMATI (ÇOK KRİTİK!):** `**{{Meilisearch'ten gelen tam ürün adı}}** [LINK:shop:{{slug}}]`";
         $prompts[] = "- ❌ ASLA standart markdown kullanma: `[Ürün](URL)` YASAK!";
-        $prompts[] = "- ✅ SADECE özel format: `**İXTİF EPT20** [LINK:shop:ixtif-ept20]` ← DOĞRU!";
+        $prompts[] = "- ✅ Meilisearch'ten gelen title ve slug'u AYNEN kullan, değiştirme!";
         $prompts[] = "";
         $prompts[] = "**📋 LİSTE KULLANIMI (KRİTİK!):**";
         $prompts[] = "- Her liste maddesi YENİ SATIRDA `-` ile başlamalı!";

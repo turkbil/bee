@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class SearchQuery extends Model
 {
@@ -15,6 +16,7 @@ class SearchQuery extends Model
         'user_id',
         'session_id',
         'query',
+        'slug',
         'searchable_type',
         'results_count',
         'filters_applied',
@@ -36,6 +38,26 @@ class SearchQuery extends Model
         'is_popular' => 'boolean',
         'is_hidden' => 'boolean',
     ];
+
+    /**
+     * Boot method - Auto-generate slug
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($searchQuery) {
+            if (empty($searchQuery->slug) && !empty($searchQuery->query)) {
+                $searchQuery->slug = Str::slug($searchQuery->query);
+            }
+        });
+
+        static::updating(function ($searchQuery) {
+            if ($searchQuery->isDirty('query') && !empty($searchQuery->query)) {
+                $searchQuery->slug = Str::slug($searchQuery->query);
+            }
+        });
+    }
 
     /**
      * Get the user who performed the search
@@ -116,7 +138,7 @@ class SearchQuery extends Model
         return static::query()
             ->where('is_popular', true)
             ->where('is_hidden', false)
-            ->selectRaw('query, COUNT(*) as search_count')
+            ->selectRaw('query, MAX(slug) as slug, COUNT(*) as search_count')
             ->groupBy('query')
             ->orderByDesc('search_count')
             ->limit($limit)

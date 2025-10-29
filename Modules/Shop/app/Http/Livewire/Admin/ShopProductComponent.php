@@ -45,7 +45,6 @@ class ShopProductComponent extends Component
     public ?int $editingPriceId = null;
     public ?string $newPrice = null;
     public ?string $newCurrency = null;
-    public bool $newPriceOnRequest = false;
 
     // Inline stock editing
     public ?int $editingStockId = null;
@@ -218,12 +217,11 @@ class ShopProductComponent extends Component
         }
     }
 
-    public function startEditingPrice(int $productId, ?string $currentPrice, ?string $currentCurrency, bool $priceOnRequest = false): void
+    public function startEditingPrice(int $productId, ?string $currentPrice, ?string $currentCurrency): void
     {
         $this->editingPriceId = $productId;
         $this->newPrice = $currentPrice;
         $this->newCurrency = $currentCurrency ?? 'TRY';
-        $this->newPriceOnRequest = $priceOnRequest;
     }
 
     public function updatePriceInline(): void
@@ -235,29 +233,21 @@ class ShopProductComponent extends Component
         try {
             $product = ShopProduct::findOrFail($this->editingPriceId);
 
-            // Update price_on_request
-            $product->price_on_request = $this->newPriceOnRequest;
+            // Validate price
+            $price = $this->newPrice ? (float) str_replace(',', '.', $this->newPrice) : 0;
 
-            if (! $this->newPriceOnRequest) {
-                // Validate price only if not price_on_request
-                $price = $this->newPrice ? (float) str_replace(',', '.', $this->newPrice) : null;
-
-                if ($price !== null && $price < 0) {
-                    $this->dispatch('toast', [
-                        'title' => __('admin.error'),
-                        'message' => __('shop::admin.invalid_price'),
-                        'type' => 'error',
-                    ]);
-                    return;
-                }
-
-                $product->base_price = $price;
-                $product->currency = $this->newCurrency ?? 'TRY';
-            } else {
-                // If price_on_request, clear price
-                $product->base_price = null;
+            if ($price < 0) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.error'),
+                    'message' => __('shop::admin.invalid_price'),
+                    'type' => 'error',
+                ]);
+                return;
             }
 
+            // Update price (0 means "Price on Request")
+            $product->base_price = $price;
+            $product->currency = $this->newCurrency ?? 'TRY';
             $product->save();
 
             $this->dispatch('toast', [
@@ -269,7 +259,6 @@ class ShopProductComponent extends Component
             $this->editingPriceId = null;
             $this->newPrice = null;
             $this->newCurrency = null;
-            $this->newPriceOnRequest = false;
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
@@ -284,7 +273,6 @@ class ShopProductComponent extends Component
         $this->editingPriceId = null;
         $this->newPrice = null;
         $this->newCurrency = null;
-        $this->newPriceOnRequest = false;
     }
 
     public function startEditingStock(int $productId, ?int $currentStock, bool $stockTracking = true): void
@@ -405,13 +393,6 @@ class ShopProductComponent extends Component
                     $product->stock_tracking = (bool) $value;
                     if (!$product->stock_tracking) {
                         $product->current_stock = 0;
-                    }
-                    break;
-
-                case 'price_on_request':
-                    $product->price_on_request = (bool) $value;
-                    if ($product->price_on_request) {
-                        $product->base_price = null;
                     }
                     break;
 

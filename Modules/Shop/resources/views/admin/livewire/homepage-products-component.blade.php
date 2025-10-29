@@ -67,6 +67,7 @@
                                 <th>Kategori</th>
                                 <th>Marka</th>
                                 <th class="text-end">Fiyat</th>
+                                <th class="text-center" style="width: 100px">Stok</th>
                                 <th class="text-center" style="width: 100px">Sıra</th>
                             </tr>
                         </thead>
@@ -108,9 +109,7 @@
                                         @endif
                                     </td>
                                     <td class="text-end">
-                                        @if ($product->price_on_request)
-                                            <span class="badge bg-secondary">Fiyat Talep Edilir</span>
-                                        @elseif ($product->base_price)
+                                        @if ($product->base_price && $product->base_price > 0)
                                             <div class="d-flex flex-column align-items-end">
                                                 <span class="fw-semibold">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
                                                 @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
@@ -120,7 +119,29 @@
                                                 @endif
                                             </div>
                                         @else
-                                            <span class="text-muted">—</span>
+                                            <span class="badge bg-secondary">Fiyat Talep Edilir</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($product->stock_tracking)
+                                            @php
+                                                $hasNoStockData = $product->current_stock == 0;
+                                                $isLowStock = $product->current_stock > 0 && $product->current_stock <= $product->low_stock_threshold;
+                                            @endphp
+                                            @if ($hasNoStockData)
+                                                <span class="text-muted small">0</span>
+                                            @else
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <span class="fw-semibold {{ $isLowStock ? 'text-warning' : '' }}">
+                                                        {{ $product->current_stock }}
+                                                    </span>
+                                                    @if ($isLowStock)
+                                                        <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        @else
+                                            <span class="text-muted small">—</span>
                                         @endif
                                     </td>
                                     <td class="text-center">

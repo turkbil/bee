@@ -287,7 +287,10 @@ class IxtifPromptService
         $prompts[] = "2. Her özellik `- ` (tire + boşluk) ile başlamalı";
         $prompts[] = "3. Ürün adından sonra BOŞ SATIR bırak";
         $prompts[] = "4. Özellikler listesinden sonra BOŞ SATIR bırak";
-        $prompts[] = "5. Fiyat ayrı paragrafta olmalı";
+        $prompts[] = "5. **FİYAT ASLA ÖZELLİK LİSTESİNDE YAZILMAMALI!**";
+        $prompts[] = "6. **FİYAT MUTLAKA AYRI PARAGRAFTA OLMALI!**";
+        $prompts[] = "7. **ASLA ŞU ŞEKİLDE YAZMA: '- Ergonomik Fiyat: $1.350' ❌**";
+        $prompts[] = "8. **YENİ ÜRÜN ÖZELLİKLER LİSTESİ İÇİNDE BAŞLAMAZ!**";
         $prompts[] = "";
 
         // ====================================

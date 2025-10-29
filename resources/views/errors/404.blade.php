@@ -23,7 +23,7 @@
         {{-- Search Box --}}
         <div class="max-w-lg mx-auto mb-8">
             @if(Module::isEnabled('Search'))
-                <form action="{{ route('search.index') }}" method="GET" class="relative">
+                <form action="{{ route('search.query') }}" method="GET" class="relative">
                     <input
                         type="text"
                         name="q"

@@ -251,62 +251,8 @@ class MarkdownService
      */
     protected function cleanHtml(string $html): string
     {
-        // 🔧 FIX 1: <ul> içinde direkt <a> link varsa <li> içine al
-        // Problem: <ul><a href="...">Link</a><li>... → <ul><li><a href="...">Link</a></li><li>...
-        $html = preg_replace('/<ul>(\s*)<a /is', '<ul>$1<li><a ', $html);
-        $html = preg_replace('/<\/a>(\s*)<li>/is', '</a></li>$1<li>', $html);
-
-        // 🔧 FIX 2: <ul> içinde direkt text varsa (li olmadan) → <p> yap
-        // Problem: <ul>Text burada</ul> → <p>Text burada</p>
-        $html = preg_replace_callback(
-            '/<ul>(.*?)<\/ul>/is',
-            function ($matches) {
-                $content = $matches[1];
-                // <li> içinde olmayan text'i bul
-                $cleaned = preg_replace_callback(
-                    '/([^>])([^<]+)(?=<(?!\/li))/is',
-                    function ($m) {
-                        // Eğer bu text <li> içinde değilse, <p> yap
-                        if (!preg_match('/<li[^>]*>.*?' . preg_quote($m[2], '/') . '.*?<\/li>/is', $m[0])) {
-                            return $m[1] . '</ul><p>' . trim($m[2]) . '</p><ul>';
-                        }
-                        return $m[0];
-                    },
-                    $content
-                );
-                return '<ul>' . $cleaned . '</ul>';
-            },
-            $html
-        );
-
-        // 🔧 FIX 3: Liste içinde "Fiyat:" varsa oradan sonrasını ayır
-        // Problem: <li>Özellik Fiyat: $X Açıklama</li> → <li>Özellik</li></ul><p>Fiyat: $X Açıklama</p>
-        $html = preg_replace_callback(
-            '/<li>(.*?Fiyat:[^<]*)/is',
-            function ($matches) {
-                $content = $matches[1];
-                // "Fiyat:" öncesini ve sonrasını ayır
-                if (preg_match('/^(.*?)\s*(Fiyat:.*)$/is', $content, $parts)) {
-                    $beforePrice = trim($parts[1]);
-                    $afterPrice = trim($parts[2]);
-
-                    // Eğer "Fiyat:" öncesi varsa liste item olarak kalsın
-                    if (!empty($beforePrice)) {
-                        return "<li>{$beforePrice}</li></ul>\n<p>{$afterPrice}</p>\n<ul>";
-                    } else {
-                        // "Fiyat:" ile başlıyorsa direkt paragrafa al
-                        return "</ul>\n<p>{$afterPrice}</p>\n<ul>";
-                    }
-                }
-                return $matches[0];
-            },
-            $html
-        );
-
-        // 🔧 FIX 4: Boş tagları temizle
-        $html = preg_replace('/<ul>\s*<\/ul>/is', '', $html);
-        $html = preg_replace('/<p>\s*<\/p>/is', '', $html);
-        $html = preg_replace('/<li>\s*<\/li>/is', '', $html);
+        // 🔧 FIX: DOM tabanlı HTML düzeltme (daha güvenilir)
+        $html = $this->fixHtmlStructureWithDom($html);
 
         // Link'lere target="_blank" ve class ekle
         $html = preg_replace_callback(
@@ -344,11 +290,91 @@ class MarkdownService
             $html
         );
 
-        // Gereksiz boşlukları temizle
-        $html = preg_replace('/\s+/', ' ', $html);
-        $html = trim($html);
-
         return $html;
+    }
+
+    /**
+     * DOM tabanlı HTML yapı düzeltme
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function fixHtmlStructureWithDom(string $html): string
+    {
+        // Boş content kontrol
+        if (empty(trim($html))) {
+            return $html;
+        }
+
+        // UTF-8 encoding için meta tag ekle
+        $htmlWrapped = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>';
+
+        // DOM parser oluştur
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+
+        // Hataları bastır (malformed HTML için)
+        libxml_use_internal_errors(true);
+
+        // HTML'i yükle
+        $dom->loadHTML($htmlWrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Hataları temizle
+        libxml_clear_errors();
+
+        // XPath oluştur
+        $xpath = new \DOMXPath($dom);
+
+        // 🔧 FIX 1: <ul> içindeki yanlış yerleştirilmiş elementleri düzelt
+        $ulElements = $xpath->query('//ul');
+        foreach ($ulElements as $ul) {
+            $nodesToMove = [];
+
+            // <ul> içindeki direkt child'ları kontrol et
+            foreach ($ul->childNodes as $child) {
+                // Text node ise ve boş değilse
+                if ($child->nodeType === XML_TEXT_NODE) {
+                    $text = trim($child->textContent);
+                    if (!empty($text)) {
+                        // Text'i <li> içine al
+                        $li = $dom->createElement('li');
+                        $li->textContent = $text;
+                        $nodesToMove[] = ['old' => $child, 'new' => $li];
+                    }
+                }
+                // <a>, <p>, <strong> gibi taglar <ul> içinde direkt ise
+                elseif ($child->nodeType === XML_ELEMENT_NODE && !in_array($child->nodeName, ['li'])) {
+                    // Bu elementi <li> içine al
+                    $li = $dom->createElement('li');
+                    $clonedChild = $child->cloneNode(true);
+                    $li->appendChild($clonedChild);
+                    $nodesToMove[] = ['old' => $child, 'new' => $li];
+                }
+            }
+
+            // Değişiklikleri uygula
+            foreach ($nodesToMove as $move) {
+                $ul->replaceChild($move['new'], $move['old']);
+            }
+        }
+
+        // 🔧 FIX 2: Boş tagları temizle
+        $emptyTags = $xpath->query('//ul[not(normalize-space())] | //ol[not(normalize-space())] | //p[not(normalize-space())] | //li[not(normalize-space())]');
+        foreach ($emptyTags as $tag) {
+            $tag->parentNode->removeChild($tag);
+        }
+
+        // Body içeriğini al
+        $body = $dom->getElementsByTagName('body')->item(0);
+        $result = '';
+        foreach ($body->childNodes as $node) {
+            $result .= $dom->saveHTML($node);
+        }
+
+        // Fazla boşlukları temizle
+        $result = preg_replace('/\s+/', ' ', $result);
+        $result = trim($result);
+
+        return $result;
     }
 
     /**

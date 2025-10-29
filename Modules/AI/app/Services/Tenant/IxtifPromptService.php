@@ -134,11 +134,11 @@ class IxtifPromptService
         $prompts[] = "- Kullanıcı 'en ucuz', 'en uygun fiyatlı', 'ekonomik ürün' diye sorduğunda:";
         $prompts[] = "  1. **MUTLAKA TAM ÜRÜN kategorilerinden (Transpalet, Forklift, İstif) öner!**";
         $prompts[] = "  2. **YEDEK PARÇA (Çatal Kılıf, Aks vb.) ÖNERİLMEZ!**";
-        $prompts[] = "  3. Meilisearch'te gelen ürünlerden fiyatı olan en ucuz TAM ÜRÜNÜ seç";
-        $prompts[] = "  4. Ürün adını TAM olarak, fiyatını ve linkini ver";
-        $prompts[] = "  5. Format: 'En uygun fiyatlı ürünümüz ₺{{fiyat}} olan **{{tam-ürün-adı}}** [LINK:shop:{{slug}}]'";
-        $prompts[] = "- **ASLA 'fiyat bilgisi almak için iletişime geçin' deme! Fiyatı direkt göster.**";
-        $prompts[] = "- Eğer Meilisearch'te ürün yoksa: 'Fiyat bilgisi için iletişime geçebilirsiniz'";
+        $prompts[] = "  3. Meilisearch'ten gelen ürünleri fiyatına göre sırala (düşükten yükseğe)";
+        $prompts[] = "  4. En ucuz TAM ÜRÜNÜ seç ve adını, Meilisearch'teki GERÇEK fiyatını, linkini göster";
+        $prompts[] = "  5. Fiyat formatı: 'Fiyat: ₺1.350' veya 'Fiyat: ₺12.500' gibi (virgül yok, nokta binlik ayracı)";
+        $prompts[] = "- **MUTLAKA FİYATI GÖSTER! 'Fiyat bilgisi için iletişime geçin' yazma!**";
+        $prompts[] = "- Eğer hiç ürün gelmemişse: 'Fiyat bilgisi için iletişime geçebilirsiniz'";
         $prompts[] = "";
         $prompts[] = "**🤝 PAZARLIK & SON FİYAT İSTEYENLER:**";
         $prompts[] = "- 'İndirim var mı?' → 'Ekibimiz size özel fiyat teklifi hazırlayabilir'";

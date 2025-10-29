@@ -61,8 +61,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // 4. TEMA - Dil'den sonra
         $middleware->appendToGroup('web', \App\Http\Middleware\CheckThemeStatus::class);
         
-        // 5. MissingPageRedirector
-        $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
+        // 5. MissingPageRedirector - DISABLED: Custom tenant-aware 404 page kullanılıyor
+        // $middleware->appendToGroup('web', \Spatie\MissingPageRedirector\RedirectsMissingPages::class);
 
         // 5.5. Security Headers - Performance & Security Best Practices
         $middleware->appendToGroup('web', \App\Http\Middleware\SecurityHeaders::class);

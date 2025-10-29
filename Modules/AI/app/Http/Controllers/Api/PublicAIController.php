@@ -602,19 +602,14 @@ class PublicAIController extends Controller
                 if (tenant('id') == 2 || tenant('id') == 3) { // iXtif tenants
                     $lowerMessage = mb_strtolower($validated['message']);
                     $isPriceQuery = preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
-
-                    // Fiyat sorgusu ise, Meilisearch'e geniş arama yap (tüm ürünler gelsin)
-                    if ($isPriceQuery) {
-                        $searchQuery = ''; // Boş = tüm ürünler
-                    }
                 }
 
                 // Normal search (ürün başlığı/kategori araması)
                 $smartSearchResults = $productSearchService->searchProducts($searchQuery);
                 $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
 
-                // 🆕 iXTİF ÖZEL: Fiyat sorgusunda ürün bulunamadıysa, DB'den direkt getir
-                if ($isPriceQuery && empty($smartSearchResults['products'])) {
+                // 🆕 iXTİF ÖZEL: Fiyat sorgusunda direkt DB'den getir (Meilisearch'te fiyat sync sorunu var)
+                if ($isPriceQuery) {
                     \Log::info('🔍 iXtif Price Query - Fetching from DB', [
                         'query' => $validated['message'],
                         'tenant_id' => tenant('id')

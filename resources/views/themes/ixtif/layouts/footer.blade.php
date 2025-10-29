@@ -512,6 +512,22 @@
 {{-- AI Chat Floating Widget (JS/CSS now in header) --}}
 <x-ai.floating-widget button-text="AI Destek" theme="blue" />
 
+{{-- PWA Service Worker Registration --}}
+<script>
+    // Register Service Worker for PWA installability
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then((registration) => {
+                    console.log('[PWA] Service Worker registered:', registration.scope);
+                })
+                .catch((error) => {
+                    console.error('[PWA] Service Worker registration failed:', error);
+                });
+        });
+    }
+</script>
+
     </div> {{-- Close relative z-10 wrapper --}}
 </body>
 </html>

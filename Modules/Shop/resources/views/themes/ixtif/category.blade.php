@@ -299,4 +299,34 @@
             }
         }
     </script>
+
+    {{-- AI Chat Context - Kategori Sayfası Bilgisi --}}
+    <script>
+        // Alpine yüklenene kadar bekle
+        document.addEventListener('alpine:init', () => {
+            // AI Chat store'a bu kategori bilgisini gönder
+            if (typeof Alpine !== 'undefined' && Alpine.store('aiChat')) {
+                Alpine.store('aiChat').updateContext({
+                    category_id: {{ $category->id }},
+                    product_id: null, // Kategori sayfası, tek ürün yok
+                    page_slug: '{{ $category->slug }}',
+                });
+
+                console.log('✅ AI Chat Context Updated (Category):', {
+                    category_id: {{ $category->id }},
+                    category_title: '{{ addslashes($category->getTranslated('title', app()->getLocale())) }}',
+                });
+            }
+        });
+
+        // Eğer Alpine zaten yüklüyse direkt güncelle
+        if (typeof Alpine !== 'undefined' && Alpine.store('aiChat')) {
+            Alpine.store('aiChat').updateContext({
+                category_id: {{ $category->id }},
+                product_id: null,
+                page_slug: '{{ $category->slug }}',
+            });
+        }
+    </script>
+
 @endsection

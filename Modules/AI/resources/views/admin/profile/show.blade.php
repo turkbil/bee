@@ -960,9 +960,10 @@ function generateBrandStory() {
     }
 
     // ✨ SERVER-SENT EVENTS ile REAL-TIME STREAMING
-    const streamUrl = '{{ route("admin.ai.profile.generate-story-stream") }}?v=' + Date.now();
+    const tenantId = {{ $profile->tenant_id ?? 'null' }};
+    const streamUrl = '{{ route("admin.ai.profile.generate-story-stream") }}?tenant_id=' + tenantId + '&v=' + Date.now();
     console.log('🔗 Stream URL (with cache bust):', streamUrl);
-    
+
     const eventSource = new EventSource(streamUrl);
     
     let isStreamStarted = false;
@@ -1149,11 +1150,12 @@ function regenerateBrandStory() {
     
     // ✨ STREAMING kullanarak yeniden oluştur
     console.log('🔄 Regeneration -> STREAMING ENDPOINT kullanılıyor');
-    
+
     // Streaming endpoint'i çağır (regenerate parametresi ile)
-    const streamUrl = '{{ route("admin.ai.profile.generate-story-stream") }}?regenerate=true&v=' + Date.now();
+    const tenantId = {{ $profile->tenant_id ?? 'null' }};
+    const streamUrl = '{{ route("admin.ai.profile.generate-story-stream") }}?tenant_id=' + tenantId + '&regenerate=true&v=' + Date.now();
     console.log('🔗 Regeneration Stream URL:', streamUrl);
-    
+
     const eventSource = new EventSource(streamUrl);
     
     let wordBuffer = null;

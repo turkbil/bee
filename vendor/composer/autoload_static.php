@@ -1567,6 +1567,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Services\\LanguageCleanupService' => __DIR__ . '/../..' . '/app/Services/LanguageCleanupService.php',
         'App\\Services\\LocaleValidationService' => __DIR__ . '/../..' . '/app/Services/LocaleValidationService.php',
         'App\\Services\\LogoService' => __DIR__ . '/../..' . '/app/Services/LogoService.php',
+        'App\\Services\\MarkdownService' => __DIR__ . '/../..' . '/app/Services/MarkdownService.php',
         'App\\Services\\Media\\SafeFileNamer' => __DIR__ . '/../..' . '/app/Services/Media/SafeFileNamer.php',
         'App\\Services\\Media\\TenantImageService' => __DIR__ . '/../..' . '/app/Services/Media/TenantImageService.php',
         'App\\Services\\Media\\TenantPathGenerator' => __DIR__ . '/../..' . '/app/Services/Media/TenantPathGenerator.php',

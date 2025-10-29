@@ -38,7 +38,7 @@ class SecurityHeaders
         // Content Security Policy - Marketing & Analytics Platforms
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://connect.facebook.net https://www.facebook.com https://snap.licdn.com https://www.linkedin.com https://www.clarity.ms https://scripts.clarity.ms https://analytics.tiktok.com https://mc.yandex.ru https://mc.yandex.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://code.jquery.com https://www.googletagmanager.com https://www.google-analytics.com https://googleads.g.doubleclick.net https://connect.facebook.net https://www.facebook.com https://snap.licdn.com https://www.linkedin.com https://www.clarity.ms https://scripts.clarity.ms https://analytics.tiktok.com https://mc.yandex.ru https://mc.yandex.com https://instant.page",
             "worker-src 'self' blob:",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://rsms.re https://rsms.me https://fonts.googleapis.com https://www.googletagmanager.com",
             "img-src 'self' data: https: blob: https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com https://px.ads.linkedin.com https://www.clarity.ms https://analytics.tiktok.com https://mc.yandex.ru",

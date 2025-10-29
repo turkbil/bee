@@ -31,6 +31,16 @@
     {{-- Apple Touch Icon (iOS/Safari) - Uses favicon as fallback --}}
     <link rel="apple-touch-icon" href="/favicon.ico">
 
+    {{-- Theme Color for Mobile Browser Bar (Tenant-aware) --}}
+    @php
+        $themeColor = setting('site_theme_color') ?: '#000000';
+        $themeColorLight = setting('site_theme_color_light') ?: '#ffffff';
+        $themeColorDark = setting('site_theme_color_dark') ?: '#1a202c';
+    @endphp
+    <meta name="theme-color" content="{{ $themeColor }}">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="{{ $themeColorLight }}">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="{{ $themeColorDark }}">
+
     {{-- Performance: DNS Prefetch & Preconnect --}}
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
@@ -59,6 +69,9 @@
         <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=8.0.1">
         <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1">
     @endif
+
+    {{-- Back to Top Button Styles --}}
+    <link rel="stylesheet" href="{{ asset('css/back-to-top.css') }}">
 
     {{-- Livewire Styles --}}
     @livewireStyles

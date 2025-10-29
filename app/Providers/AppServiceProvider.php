@@ -107,6 +107,26 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // 🛡️ CONFIG CACHE FALLBACK - Production safety mechanism
+        // PROBLEM: Eğer `php artisan config:clear` tek başına çalıştırılırsa APP_KEY kaybolur → 404 hata
+        // SOLUTION: Config cache yoksa otomatik oluştur (silent fix)
+        if (!app()->configurationIsCached() && app()->environment('production')) {
+            try {
+                // Otomatik config cache oluştur
+                Artisan::call('config:cache');
+
+                \Illuminate\Support\Facades\Log::info('🛡️ AUTO CONFIG CACHE RECOVERY', [
+                    'reason' => 'Config cache not found in production',
+                    'timestamp' => now()
+                ]);
+            } catch (\Exception $e) {
+                // Hata olsa bile boot'u engelleme
+                \Illuminate\Support\Facades\Log::error('⚠️ AUTO CONFIG CACHE FAILED', [
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
         // 🔧 Livewire Upload Rules - Runtime override based on authenticated user
         // Must be in boot() to access auth() helper
         $maxSize = (auth()->check() && auth()->user()->id === 1) ? (1024 * 1024) : 12288;

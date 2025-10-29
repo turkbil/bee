@@ -1254,11 +1254,32 @@ $(document).on('click', '#confirmRegenerateStory', function() {
 // Hikaye hata modal'ını göster fonksiyonu
 function showStoryErrorModal(message) {
     // Modal içeriğini güncelle
-    document.getElementById('storyErrorMessage').textContent = message;
-    
-    // Modal'ı göster
-    const modal = new bootstrap.Modal(document.getElementById('storyErrorModal'));
-    modal.show();
+    const messageEl = document.getElementById('storyErrorMessage');
+    if (messageEl) {
+        messageEl.textContent = message;
+    }
+
+    // Modal'ı göster - Bootstrap 5 native API kullan
+    const modalEl = document.getElementById('storyErrorModal');
+    if (modalEl) {
+        // Bootstrap Modal varsa kullan
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+        // Yoksa Tabler.io modal kullan
+        else if (typeof tata !== 'undefined') {
+            tata.error('Hata', message);
+        }
+        // Hiçbiri yoksa alert
+        else {
+            alert(message);
+        }
+    } else {
+        // Modal elementi yoksa alert göster
+        console.error('❌ Modal element bulunamadı:', message);
+        alert(message);
+    }
 }
 
 // Başarı mesajı göster fonksiyonu

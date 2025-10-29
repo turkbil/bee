@@ -46,49 +46,48 @@ class ModulePermissionMiddleware
         // Eğer 'manage' rotası ve update izni isteniyorsa, ID parametresine göre gerçek izin tipini belirle
         if (strpos($request->path(), 'manage') !== false && $permissionType === 'update') {
             $id = $request->route('id');
-            
+
             // ID yoksa, bu bir create işlemidir
             if ($id === null || $id === '') {
                 $permissionType = 'create';
             }
         }
-        
+
+        // ✅ FIX: Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok
+        // Tenant kontrolünden ÖNCE kontrol edilmeli, çünkü root tenant context olmadan da çalışabilir
+        if ($user->hasCachedRole('root')) {
+            return $next($request);
+        }
+
         // Modül tenant için aktif mi kontrol et
         if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {
             $moduleService = app(\App\Services\ModuleAccessService::class);
             $module = $moduleService->getModuleByName($moduleName);
-            
+
             if (!$module) {
                 Log::error("ModulePermissionMiddleware: Module not found: {$moduleName}");
                 return redirect()->route('errors.403');
             }
-            
+
             $isModuleAssigned = $moduleService->isModuleAssignedToTenant($module->module_id, tenant()->id);
             if (!$isModuleAssigned) {
                 Log::warning("Kullanıcı {$user->id} ({$user->email}) tenant'a atanmamış modüle erişmeye çalışıyor: {$moduleName}");
                 return redirect()->route('errors.403');
             }
         }
-        
+
         // İzin adını oluştur (örn. view user-management)
         $permissionName = "{$moduleName}.{$permissionType}";
-        
+
         // PERFORMANCE: Cache permission existence check for 1 hour
         $cacheKey = "permission_exists_{$permissionName}_web";
         $permissionExists = cache()->remember($cacheKey, 3600, function() use ($permissionName) {
             return Permission::where('name', $permissionName)->where('guard_name', 'web')->exists();
         });
-        
+
         if (!$permissionExists) {
             Log::error("Permission not found: {$permissionName}");
             return redirect()->route('errors.403');
-        }
-        
-        // Log kaldırıldı
-        
-        // Root yetkisine sahip kullanıcı için hiçbir kısıtlama yok - AMA TENANT'A ATANMAMIŞ MODÜL KONTROLÜ VAR
-        if ($user->hasCachedRole('root')) {
-            return $next($request);
         }
         
         // Admin ise belirli kısıtlamalar uygula

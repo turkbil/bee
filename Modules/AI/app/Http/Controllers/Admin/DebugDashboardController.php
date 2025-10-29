@@ -457,6 +457,22 @@ class DebugDashboardController extends Controller
             $avgProcessingTime = $legacyQuery->avg('execution_time_ms') ?? 0;
         }
 
+        // Error rate hesaplama (debug logs'tan)
+        $errorQuery = DB::table('ai_tenant_debug_logs')
+            ->where('created_at', '>=', $startDate);
+
+        if ($tenantId) {
+            $errorQuery->where('tenant_id', $tenantId);
+        }
+
+        if ($feature) {
+            $errorQuery->where('feature_slug', $feature);
+        }
+
+        $totalDebugLogs = $errorQuery->count();
+        $errorCount = $errorQuery->where('has_error', 1)->count();
+        $errorRate = $totalDebugLogs > 0 ? round(($errorCount / $totalDebugLogs) * 100, 2) : 0;
+
         return [
             'total_requests' => $totalRequests, // GERÇEK REQUEST SAYISI
             'avg_execution_time' => round($avgProcessingTime, 2), // GERÇEK PROCESSING TIME
@@ -465,7 +481,7 @@ class DebugDashboardController extends Controller
             'total_credits' => $totalCredits, // KREDİ KULLANIMI
             'input_tokens' => $totalInputTokens,
             'output_tokens' => $totalOutputTokens,
-            'error_rate' => $totalConversations > 0 ? round((collect($allConversations)->where('status', 'failed')->count() / $totalConversations) * 100, 2) : 0,
+            'error_rate' => $errorRate,
             'provider_stats' => $providerStats
         ];
     }
@@ -550,9 +566,8 @@ class DebugDashboardController extends Controller
     {
         // YENİ SİSTEM: Gerçek AI kullanım verilerini ai_credit_usage tablosundan al
         // Bu tablo chat paneli de dahil tüm AI kullanımlarını içerir
-        
+
         $query = DB::table('ai_credit_usage')
-            ->leftJoin('tenants', 'ai_credit_usage.tenant_id', '=', 'tenants.id')
             ->leftJoin('users', 'ai_credit_usage.user_id', '=', 'users.id')
             ->select([
                 'ai_credit_usage.id',
@@ -569,7 +584,6 @@ class DebugDashboardController extends Controller
                 'ai_credit_usage.conversation_id',
                 'ai_credit_usage.metadata',
                 DB::raw('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(ai_credit_usage.metadata, "$.request_type")), "chat") as request_type'),
-                'tenants.title as tenant_name',
                 'users.name as user_name',
                 // Legacy format için uyumluluk alanları ekle
                 DB::raw('COALESCE(JSON_EXTRACT(ai_credit_usage.metadata, "$.prompts_used"), 1) as actually_used_prompts'),
@@ -590,12 +604,22 @@ class DebugDashboardController extends Controller
         }
 
         $results = $query->get();
+
+        // Tenant bilgisini sonradan ekle (cross-database JOIN yerine)
+        if ($results->isNotEmpty()) {
+            $tenantIds = $results->pluck('tenant_id')->unique()->filter();
+            $tenants = \App\Models\Tenant::whereIn('id', $tenantIds)->pluck('title', 'id');
+
+            $results->transform(function ($item) use ($tenants) {
+                $item->tenant_name = $tenants->get($item->tenant_id) ?? 'N/A';
+                return $item;
+            });
+        }
         
         // Eğer hiç veri yoksa, fallback olarak eski tablo ile deneme yap
         if ($results->isEmpty()) {
             $query = DB::table('ai_tenant_debug_logs')
-                ->leftJoin('tenants', 'ai_tenant_debug_logs.tenant_id', '=', 'tenants.id')
-                ->select('ai_tenant_debug_logs.*', 'tenants.title as tenant_name')
+                ->select('ai_tenant_debug_logs.*')
                 ->orderBy('ai_tenant_debug_logs.created_at', 'desc')
                 ->limit($limit);
 
@@ -608,6 +632,17 @@ class DebugDashboardController extends Controller
             }
 
             $results = $query->get();
+
+            // Tenant bilgisini sonradan ekle
+            if ($results->isNotEmpty()) {
+                $tenantIds = $results->pluck('tenant_id')->unique()->filter();
+                $tenants = \App\Models\Tenant::whereIn('id', $tenantIds)->pluck('title', 'id');
+
+                $results->transform(function ($item) use ($tenants) {
+                    $item->tenant_name = $tenants->get($item->tenant_id) ?? 'N/A';
+                    return $item;
+                });
+            }
         }
 
         return $results;
@@ -1283,15 +1318,15 @@ class DebugDashboardController extends Controller
         }
 
         return [
-            'daily_usage' => $tokenQuery->selectRaw('DATE(used_at) as date, SUM(input_tokens + output_tokens) as tokens')
+            'daily_usage' => (clone $tokenQuery)->selectRaw('DATE(used_at) as date, SUM(input_tokens + output_tokens) as tokens')
                 ->groupBy('date')
                 ->orderBy('date')
                 ->get()->toArray(),
-            'peak_hours' => $tokenQuery->selectRaw('HOUR(used_at) as hour, SUM(input_tokens + output_tokens) as tokens')
+            'peak_hours' => (clone $tokenQuery)->selectRaw('HOUR(used_at) as hour, SUM(input_tokens + output_tokens) as tokens')
                 ->groupBy('hour')
                 ->orderBy('tokens', 'desc')
                 ->get()->toArray(),
-            'cost_trends' => $tokenQuery->selectRaw('DATE(used_at) as date, SUM(credits_used) as cost')
+            'cost_trends' => (clone $tokenQuery)->selectRaw('DATE(used_at) as date, SUM(credits_used) as cost')
                 ->groupBy('date')
                 ->orderBy('date')
                 ->get()->toArray()

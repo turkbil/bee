@@ -112,8 +112,8 @@ readonly class BlogRepository implements BlogRepositoryInterface
 
             $query->where(function ($subQuery) use ($searchTerm, $locales) {
                 foreach ($locales as $locale) {
-                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.{$locale}')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
                 }
             });
         }
@@ -149,8 +149,8 @@ readonly class BlogRepository implements BlogRepositoryInterface
         return $this->model->with(['tags'])
             ->where(function ($query) use ($searchTerm, $locales) {
             foreach ($locales as $locale) {
-                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) LIKE ?", [$searchTerm])
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.{$locale}')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
             }
         })->active()->get();
     }

@@ -134,8 +134,8 @@ readonly class ShopBrandRepository implements ShopBrandRepositoryInterface
             ->where(function (Builder $query) use ($searchTerm, $locales): void {
                 foreach ($locales as $locale) {
                     $query
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
                 }
             })
             ->active()
@@ -275,8 +275,8 @@ readonly class ShopBrandRepository implements ShopBrandRepositoryInterface
         return $query->where(function (Builder $searchQuery) use ($locales, $searchTerm): void {
             foreach ($locales as $locale) {
                 $searchQuery
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(description, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
             }
         });
     }

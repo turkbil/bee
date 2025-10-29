@@ -116,7 +116,7 @@ readonly class MenuRepository implements MenuRepositoryInterface
             $query->where(function ($subQuery) use ($searchTerm, $locales) {
                 $subQuery->where('slug', 'like', $searchTerm);
                 foreach ($locales as $locale) {
-                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
                 }
             });
         }
@@ -158,7 +158,7 @@ readonly class MenuRepository implements MenuRepositoryInterface
         return $this->model->where(function ($query) use ($searchTerm, $locales) {
             $query->where('slug', 'like', $searchTerm);
             foreach ($locales as $locale) {
-                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) LIKE ?", [$searchTerm]);
+                $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(name, '$.{$locale}')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
             }
         })->active()->get();
     }

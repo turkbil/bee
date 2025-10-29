@@ -549,6 +549,23 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
+        // ULTRA DEBUG: Direct response test
+        $testMessage = $request->input('message');
+        if (str_contains(strtolower($testMessage), 'ultra_debug')) {
+            return response()->json([
+                'success' => true,
+                'DEBUG' => 'CONTROLLER IS RUNNING - NEW CODE ACTIVE',
+                'timestamp' => now()->toDateTimeString(),
+                'message' => $testMessage
+            ]);
+        }
+
+        // DEBUG: Verify code is loaded
+        \Log::info('shopAssistantChat BASLADI - NEW CODE LOADED', [
+            'message' => $request->input('message'),
+            'time' => date('Y-m-d H:i:s')
+        ]);
+
         try {
             // Validate input (Tenant context check için exists rule'ları kaldırıldı)
             $validated = $request->validate([

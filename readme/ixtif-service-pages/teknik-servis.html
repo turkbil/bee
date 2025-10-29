@@ -1,0 +1,263 @@
+<!-- TEKNİK SERVİS SAYFASI - CLEAN & MODERN DESIGN -->
+
+<!-- Hero Section -->
+<div class="py-16 md:py-24">
+    <div class="text-center max-w-4xl mx-auto">
+        <div class="inline-block mb-6">
+            <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-orange-500/30 transform hover:scale-110 hover:rotate-3 transition-all duration-500" x-data x-init="$el.classList.add('animate-float')">
+                <i class="fa-light fa-wrench text-white text-5xl"></i>
+            </div>
+        </div>
+
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight text-gray-900 dark:text-white" style="font-weight: 900;">
+            <span class="gradient-animate block py-2">TEKNİK SERVİS</span>
+        </h1>
+
+        <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+            Ekipmanlarınızın <strong>kesintisiz çalışması</strong> için profesyonel servis ve bakım hizmeti. 7/24 acil müdahale, uzman teknisyen kadrosu.
+        </p>
+    </div>
+</div>
+
+<!-- Servis Hizmetleri -->
+<div class="py-16">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Servis Hizmetlerimiz
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+            Ekipmanlarınız için kapsamlı servis çözümleri
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Hizmet 1 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-orange-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-calendar-check text-orange-600 dark:text-orange-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Periyodik Bakım</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Planlı bakım programıyla ekipmanlarınızın ömrünü uzatın. Arıza önleme odaklı yaklaşım.
+            </p>
+        </div>
+
+        <!-- Hizmet 2 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-red-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-sirens text-red-600 dark:text-red-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Acil Arıza Müdahale</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                7/24 acil servis hattı. Arıza durumunda hızlı müdahale, minimum duruş süresi garantisi.
+            </p>
+        </div>
+
+        <!-- Hizmet 3 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-blue-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-location-dot text-blue-600 dark:text-blue-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Saha Servisi</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Ekipmanlarınız yerinde onarılır. Mobil servis araçlarımızla lokasyonunuza geliyoruz.
+            </p>
+        </div>
+
+        <!-- Hizmet 4 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-green-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-green-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-file-magnifying-glass text-green-600 dark:text-green-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Teknik Kontrol</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Detaylı teknik muayene ve performans analizi. Arıza öncesi tespit ve önleme.
+            </p>
+        </div>
+
+        <!-- Hizmet 5 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-purple-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-purple-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-arrow-up-right-from-square text-purple-600 dark:text-purple-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Modernizasyon</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Eski ekipmanlarınızı yeni teknolojiye uyarlıyoruz. Verimlilik artışı sağlıyoruz.
+            </p>
+        </div>
+
+        <!-- Hizmet 6 -->
+        <div class="group bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2" x-data="{ hover: false }" @mouseenter="hover = true" @mouseleave="hover = false">
+            <div class="w-16 h-16 bg-pink-50 dark:bg-slate-700/50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-pink-100 dark:group-hover:bg-slate-600/50 transition-all" :class="{ 'scale-110 rotate-6': hover }">
+                <i class="fa-light fa-clipboard-list text-pink-600 dark:text-pink-400 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Raporlama & Takip</h3>
+            <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                Yapılan tüm işlemler detaylı raporlanır. Ekipman geçmişi dijital olarak saklanır.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Servis Avantajları -->
+<div class="py-20 bg-gradient-to-br from-orange-50 to-red-50 dark:from-slate-900 dark:to-slate-800 rounded-3xl">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Neden Bizim Servisimiz?
+        </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Sertifikalı Teknisyenler</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Üretici onaylı, sertifikalı uzman teknisyen kadromuz tüm markalara hizmet verir.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Orijinal Yedek Parça</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Geniş yedek parça stoğumuzla hızlı onarım. Orijinal ve garantili parçalar kullanırız.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Hızlı Yanıt Süresi</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Acil durumlarda hızlı müdahale. Servis çağrısı sonrası kısa sürede yerindeyiz.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Yedek Ekipman Desteği</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Onarım sırasında yedek ekipman sağlanır. İş süreçleriniz kesintisiz devam eder.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">Şeffaf Fiyatlandırma</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Net fiyat, gizli maliyet yok. İşlem öncesi detaylı fiyat teklifi sunulur.
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+            <div class="w-12 h-12 bg-orange-100 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-orange-600 dark:text-orange-400 text-xl"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-2">İşçilik Garantisi</h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                    Yapılan tüm işlemler garantili. Kaliteli hizmetten eminiz.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Servis Verdiğimiz Markalar -->
+<div class="py-20">
+    <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-4">
+            Servis Verdiğimiz Ekipmanlar
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-400">
+            Tüm marka ve modellere profesyonel servis hizmeti
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
+            <div class="w-16 h-16 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-light fa-forklift text-blue-600 dark:text-blue-400 text-3xl"></i>
+            </div>
+            <div class="font-bold text-gray-900 dark:text-white">Forklift</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Tüm Markalar</div>
+        </div>
+
+        <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
+            <div class="w-16 h-16 bg-green-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-light fa-dolly text-green-600 dark:text-green-400 text-3xl"></i>
+            </div>
+            <div class="font-bold text-gray-900 dark:text-white">Transpalet</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manuel & Elektrikli</div>
+        </div>
+
+        <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
+            <div class="w-16 h-16 bg-purple-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-light fa-layer-group text-purple-600 dark:text-purple-400 text-3xl"></i>
+            </div>
+            <div class="font-bold text-gray-900 dark:text-white">İstif Makinesi</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Stacker Servisi</div>
+        </div>
+
+        <div class="text-center p-6 bg-white dark:bg-slate-800 rounded-xl shadow hover:shadow-lg transition-all">
+            <div class="w-16 h-16 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-light fa-warehouse text-orange-600 dark:text-orange-400 text-3xl"></i>
+            </div>
+            <div class="font-bold text-gray-900 dark:text-white">Reach Truck</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">Özel Sistemler</div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-16 text-center">
+    <div class="bg-gradient-to-r from-orange-600 to-red-600 rounded-3xl p-12 shadow-2xl">
+        <h2 class="text-3xl md:text-4xl font-black text-white mb-6">
+            Teknik Servis Talebi Oluştur
+        </h2>
+        <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Ekipmanınızda arıza mı var? Periyodik bakım zamanı mı geldi? Hemen bize ulaşın, uzman ekibimiz yardımcı olsun.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/iletisim" class="bg-white hover:bg-gray-100 text-orange-600 px-8 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                <i class="fa-light fa-tools mr-2"></i>Servis Randevusu Al
+            </a>
+            <a href="https://wa.me/{{ settings('contact_whatsapp_1', '905010056758') }}?text=Teknik%20Servis%20Hakkında%20Bilgi%20Almak%20İstiyorum" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-full font-bold text-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105">
+                <i class="fa-brands fa-whatsapp mr-2"></i>Acil Servis Hattı
+            </a>
+        </div>
+        <div class="mt-6 text-white/80 text-sm">
+            <i class="fa-solid fa-phone mr-2"></i>7/24 Acil Servis: {{ settings('contact_phone_2', '0501 005 67 58') }}
+        </div>
+    </div>
+</div>
+
+<!-- Alpine.js Float Animation -->
+<style>
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+</style>

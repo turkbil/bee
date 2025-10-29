@@ -117,6 +117,20 @@
             "Composer\\Config::disableProcessTimeout",
             "@php -r \"echo 'CMS Geliştirme Ortamı Başlatılıyor...\\n';\";",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74,#10b981,#f59e0b,#8b5cf6,#ef4444\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" \"php -S localhost:8001 -t ../phpmyadmin 2>/dev/null || echo 'PHPMyAdmin yok'\" \"cd ../domains && python web_viewer.py 8002 2>/dev/null || echo 'Domains projesi yok'\" \"php -S localhost:8003 -t ../yeni-proje 2>/dev/null || echo 'Yeni proje yok'\" \"php -S localhost:8004 -t ../diger-proje 2>/dev/null || echo 'Diğer proje yok'\" --names=server,queue,logs,vite,phpmyadmin,domains,yeni,diger"
+        ],
+        "config-refresh": [
+            "@php artisan config:clear",
+            "@php artisan config:cache",
+            "@php artisan route:cache",
+            "@php artisan view:cache",
+            "@php -r \"echo '✅ Tüm cache başarıyla yenilendi!\\n';\""
+        ],
+        "cache-production": [
+            "@php artisan config:cache",
+            "@php artisan route:cache",
+            "@php artisan view:cache",
+            "@php artisan event:cache",
+            "@php -r \"echo '✅ Production cache oluşturuldu!\\n';\""
         ]
     },
     "extra": {

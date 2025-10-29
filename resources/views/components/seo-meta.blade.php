@@ -1,9 +1,9 @@
 <title>{{ $metaTags['title'] }}</title>
-@if($metaTags['description'])
+@if($metaTags['description'] ?? null)
 <meta name="description" content="{{ $metaTags['description'] }}">
 @endif
 {{-- Author Meta Tag (E-E-A-T için kritik - 2025 SEO) --}}
-@if(isset($metaTags['author']) && $metaTags['author'])
+@if(isset($metaTags['author']) && $metaTags['author'] ?? null)
 <meta name="author" content="{{ $metaTags['author'] }}">
 @endif
 <meta name="theme-color" content="{{ setting('site_theme_color', '#000000') }}" media="(prefers-color-scheme: dark)">
@@ -11,12 +11,12 @@
 <meta name="color-scheme" content="light dark">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
-@if($metaTags['robots'])
+@if($metaTags['robots'] ?? null)
 <meta name="robots" content="{{ $metaTags['robots'] }}">
 @else
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 @endif
-@if($metaTags['canonical_url'])
+@if($metaTags['canonical_url'] ?? null)
 <link rel="canonical" href="{{ $metaTags['canonical_url'] }}">
 @endif
 {{-- Sitemap Link (2025 SEO Best Practice) --}}
@@ -28,50 +28,50 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="{{ setting('site_name') ?: setting('site_title') }}">
-@if($metaTags['og_titles'])
-<meta property="og:title" content="{{ $metaTags['og_titles'] }}">
+@if($metaTags['og_title'] ?? null)
+<meta property="og:title" content="{{ $metaTags['og_title'] }}">
 @endif
-@if($metaTags['og_descriptions'])
-<meta property="og:description" content="{{ $metaTags['og_descriptions'] }}">
+@if($metaTags['og_description'] ?? null)
+<meta property="og:description" content="{{ $metaTags['og_description'] }}">
 @endif
-@if($metaTags['og_image'])
+@if($metaTags['og_image'] ?? null)
 <meta property="og:image" content="{{ $metaTags['og_image'] }}">
 <meta property="og:image:secure_url" content="{{ str_replace('http:', 'https:', $metaTags['og_image']) }}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/{{ pathinfo($metaTags['og_image'], PATHINFO_EXTENSION) }}">
 @endif
-@if($metaTags['og_type'])
+@if($metaTags['og_type'] ?? null)
 <meta property="og:type" content="{{ $metaTags['og_type'] }}">
 @endif
-@if(isset($metaTags['article_published_time']) && $metaTags['article_published_time'])
+@if(isset($metaTags['article_published_time']) && $metaTags['article_published_time'] ?? null)
 <meta property="article:published_time" content="{{ $metaTags['article_published_time'] }}">
 @endif
-@if(isset($metaTags['article_modified_time']) && $metaTags['article_modified_time'])
+@if(isset($metaTags['article_modified_time']) && $metaTags['article_modified_time'] ?? null)
 <meta property="article:modified_time" content="{{ $metaTags['article_modified_time'] }}">
 @endif
-@if(isset($metaTags['article_author']) && $metaTags['article_author'])
+@if(isset($metaTags['article_author']) && $metaTags['article_author'] ?? null)
 <meta property="article:author" content="{{ $metaTags['article_author'] }}">
 @endif
-@if($metaTags['og_locale'])
+@if($metaTags['og_locale'] ?? null)
 <meta property="og:locale" content="{{ $metaTags['og_locale'] }}">
 @endif
-@if($metaTags['og_site_name'])
+@if($metaTags['og_site_name'] ?? null)
 <meta property="og:site_name" content="{{ $metaTags['og_site_name'] }}">
 @else
 <meta property="og:site_name" content="{{ setting('site_title') }}">
 @endif
 <meta property="og:url" content="{{ url()->current() }}">
-@if($metaTags['twitter_card'])
+@if($metaTags['twitter_card'] ?? null)
 <meta name="twitter:card" content="{{ $metaTags['twitter_card'] }}">
 @endif
-@if($metaTags['twitter_title'])
+@if($metaTags['twitter_title'] ?? null)
 <meta name="twitter:title" content="{{ $metaTags['twitter_title'] }}">
 @endif
-@if($metaTags['twitter_description'])
+@if($metaTags['twitter_description'] ?? null)
 <meta name="twitter:description" content="{{ $metaTags['twitter_description'] }}">
 @endif
-@if($metaTags['twitter_image'])
+@if($metaTags['twitter_image'] ?? null)
 <meta name="twitter:image" content="{{ $metaTags['twitter_image'] }}">
 <meta name="twitter:image:alt" content="{{ $metaTags['twitter_title'] ?? $metaTags['title'] }}">
 @endif

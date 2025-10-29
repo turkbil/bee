@@ -127,14 +127,14 @@ class SearchPageController extends Controller
                 ? route('search.show', ['query' => $searchQuery])
                 : route('search.query'),
 
-            // Robots: Arama sayfaları noindex (duplicate content önleme)
-            'robots' => 'noindex, follow',
+            // Robots: Popüler aramalar index'lenebilir, diğer aramalar noindex
+            'robots' => $searchQuery && $totalResults > 0 ? 'index, follow' : 'noindex, follow',
 
             // Open Graph
-            'og_titles' => $searchQuery
+            'og_title' => $searchQuery
                 ? "'{$searchQuery}' - {$siteName}"
                 : "Arama - {$siteName}",
-            'og_descriptions' => $searchQuery && $totalResults > 0
+            'og_description' => $searchQuery && $totalResults > 0
                 ? "{$totalResults} sonuç listeleniyor."
                 : "Site içi arama",
             'og_image' => null, // Arama sayfası için özel görsel yok
@@ -186,6 +186,24 @@ class SearchPageController extends Controller
      */
     public function tags()
     {
+        // SEO Meta Tags for Popular Searches Page
+        $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name');
+        $metaTags = [
+            'title' => "Popüler Aramalar - {$siteName}",
+            'description' => "En çok aranan kelimeler ve popüler arama terimleri. Site içi arama yapın.",
+            'canonical_url' => route('search.tags'),
+            'robots' => 'index, follow', // ✅ Popüler aramalar INDEX edilebilir!
+            'og_title' => "Popüler Aramalar - {$siteName}",
+            'og_description' => "En çok aranan kelimeler ve popüler arama terimleri.",
+            'og_type' => 'website',
+            'og_url' => route('search.tags'),
+            'og_site_name' => $siteName,
+            'og_locale' => str_replace('-', '_', app()->getLocale()),
+            'twitter_card' => 'summary',
+            'twitter_title' => "Popüler Aramalar - {$siteName}",
+            'twitter_description' => "En çok aranan kelimeler.",
+        ];
+        view()->share('metaTags', $metaTags);
         // Get all visible search queries with their counts
         $searchTags = \Modules\Search\App\Models\SearchQuery::query()
             ->where('is_hidden', false)
@@ -195,6 +213,7 @@ class SearchPageController extends Controller
             ->where('query', 'NOT LIKE', '%{%}%')
             ->selectRaw('
                 query,
+                MAX(slug) as slug,
                 COUNT(*) as search_count,
                 SUM(results_count) as total_results,
                 MAX(is_popular) as is_popular
@@ -248,7 +267,7 @@ class SearchPageController extends Controller
             ->whereNotNull('query')
             ->where('query', '!=', '')
             ->where('query', 'NOT LIKE', '%{%}%')
-            ->selectRaw('query, MAX(created_at) as last_searched')
+            ->selectRaw('query, MAX(slug) as slug, MAX(created_at) as last_searched')
             ->groupBy('query')
             ->orderByDesc('last_searched')
             ->limit(20)

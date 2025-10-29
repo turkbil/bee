@@ -40,12 +40,12 @@ if (!function_exists('ai_use_credits')) {
                 // Tenant context yok (admin panel) - kullanıcının default tenant'ını bul
                 if (!$tenantId && auth()->check()) {
                     $user = auth()->user();
-                    $tenantId = $user->tenant_id ?? null;
-                    
+                    $tenantId = $user->tenant_id ? (string) $user->tenant_id : null;
+
                     // Hala tenant yok - ilk tenant'ı al (development için)
                     if (!$tenantId) {
                         $firstTenant = Tenant::first();
-                        $tenantId = $firstTenant?->id;
+                        $tenantId = $firstTenant?->id ? (string) $firstTenant->id : null;
                     }
                 }
                 
@@ -212,17 +212,17 @@ if (!function_exists('ai_get_credit_balance')) {
         try {
             // Admin paneli için - kullanıcının default tenant'ını al
             if (!$tenantId) {
-                $tenantId = tenant('id') ?: null;
+                $tenantId = (string) (tenant('id') ?: null);
                 
                 // Tenant context yok (admin panel) - kullanıcının default tenant'ını bul
                 if (!$tenantId && auth()->check()) {
                     $user = auth()->user();
-                    $tenantId = $user->tenant_id ?? null;
-                    
+                    $tenantId = $user->tenant_id ? (string) $user->tenant_id : null;
+
                     // Hala tenant yok - ilk tenant'ı al (development için)
                     if (!$tenantId) {
                         $firstTenant = Tenant::first();
-                        $tenantId = $firstTenant?->id;
+                        $tenantId = $firstTenant?->id ? (string) $firstTenant->id : null;
                     }
                 }
                 

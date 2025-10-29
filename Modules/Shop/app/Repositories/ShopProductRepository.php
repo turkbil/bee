@@ -197,11 +197,11 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
                     ->orWhere('model_number', '=', $term)
                     ->orWhere('barcode', '=', $term);
 
-                // ✅ JSON field aramaları
+                // ✅ JSON field aramaları - Türkçe karakter uyumlu
                 foreach ($locales as $locale) {
-                    $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
+                    $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm]);
                 }
             })
             ->active()
@@ -347,11 +347,11 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
                 ->orWhere('model_number', '=', $term) // Exact match
                 ->orWhere('barcode', '=', $term); // Exact match
 
-            // ✅ JSON field aramaları (title, short_description)
+            // ✅ JSON field aramaları (title, short_description) - Türkçe karakter uyumlu
             foreach ($locales as $locale) {
                 $searchQuery
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm])
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm]);
             }
         });
     }

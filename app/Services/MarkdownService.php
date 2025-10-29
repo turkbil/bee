@@ -496,16 +496,22 @@ class MarkdownService
      */
     protected function extractTrailingQuestionsFromPriceParagraphs(string $html): string
     {
-        // Pattern: <p>Fiyat: $X Soru metni?</p>
-        // Result: <p>Fiyat: $X</p><p>Soru metni?</p>
+        // Pattern: <p>Fiyat: $X ... herhangi text ...</p>
+        // Fiyattan sonra HERHANGI bir text varsa onu ayır
+        // Result: <p>Fiyat: $X</p><p>... herhangi text ...</p>
 
         $html = preg_replace_callback(
-            '/<p>(Fiyat:[^?!<]+)([^<]*[?!][^<]*)<\/p>/us',
+            '/<p>(Fiyat:\s*[^<]*?\$[\d.,]+)\s+([^<]+)<\/p>/us',
             function ($matches) {
                 $price = trim($matches[1]);
-                $question = trim($matches[2]);
+                $trailing = trim($matches[2]);
 
-                return "<p>{$price}</p><p>{$question}</p>";
+                // Trailing text boş değilse ayır
+                if (!empty($trailing)) {
+                    return "<p>{$price}</p><p>{$trailing}</p>";
+                }
+
+                return "<p>{$price}</p>";
             },
             $html
         );

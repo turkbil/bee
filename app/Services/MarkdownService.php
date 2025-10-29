@@ -48,6 +48,14 @@ class MarkdownService
         // Problem: "Fiyat: $X ⭐ Ürün 2" → "Fiyat: $X\n\n⭐ Ürün 2"
         $markdown = $this->separateMultipleProducts($markdown);
 
+        // 🔧 FIX 0.5: Bold text içindeki tek satır atlamalarını kaldır
+        // Problem: "**İXTİF F4 201 - 2.\nTon Transpalet**" → Paragraf bozuluyor
+        $markdown = $this->removeNewlinesFromBoldText($markdown);
+
+        // 🔧 FIX 0.6: Orphan punctuation'ı bir önceki satıra ekle
+        // Problem: "...istersiniz\n? 😊" → "...istersiniz? 😊"
+        $markdown = $this->fixOrphanPunctuation($markdown);
+
         // 🔧 FIX 1: AI tire ile başlayan satırları markdown list formatına çevir (ÖNCE!)
         // AI yazdığı: "[LINK] - özellik1 - özellik2 - özellik3"
         // Markdown: "[LINK]\n\n- özellik1\n- özellik2\n- özellik3"
@@ -79,6 +87,66 @@ class MarkdownService
 
         // ⭐'dan sonra doğrudan [LINK] veya ** geliyorsa arada boşluk olsun
         $markdown = preg_replace('/⭐\s*(\[LINK|\*\*)/u', "⭐ $1", $markdown);
+
+        return $markdown;
+    }
+
+    /**
+     * Bold text içindeki tek satır atlamalarını kaldır
+     * "**Text 1\nText 2**" → "**Text 1 Text 2**"
+     *
+     * @param string $markdown
+     * @return string
+     */
+    protected function removeNewlinesFromBoldText(string $markdown): string
+    {
+        // Pattern: **...içinde tek \n olan...**
+        // Problem: "**İXTİF F4 201 - 2.\nTon Li-Ion Transpalet**"
+        // Sonuç: "**İXTİF F4 201 - 2. Ton Li-Ion Transpalet**"
+
+        $markdown = preg_replace_callback(
+            '/\*\*([^*]+?)\*\*/us',
+            function ($matches) {
+                $content = $matches[1];
+
+                // Tek satır atlamaları boşluğa çevir (çift satır atlamaları koru)
+                // "\n\n" → placeholder, "\n" → " ", placeholder → "\n\n"
+                $content = str_replace("\n\n", "<<<DOUBLE_NEWLINE>>>", $content);
+                $content = str_replace("\n", " ", $content);
+                $content = str_replace("<<<DOUBLE_NEWLINE>>>", "\n\n", $content);
+
+                // Fazla boşlukları temizle
+                $content = preg_replace('/\s+/', ' ', $content);
+
+                return "**{$content}**";
+            },
+            $markdown
+        );
+
+        return $markdown;
+    }
+
+    /**
+     * Orphan punctuation'ı bir önceki satıra ekle
+     * "...text\n? emoji" → "...text? emoji"
+     *
+     * @param string $markdown
+     * @return string
+     */
+    protected function fixOrphanPunctuation(string $markdown): string
+    {
+        // Pattern: Satır sonu + yeni satır(lar) + noktalama ile başlayan satır
+        // Problem: "...istersiniz\n\n? 😊"
+        // Sonuç: "...istersiniz? 😊"
+
+        // ? ile başlayan satırlar (tek veya çift newline)
+        $markdown = preg_replace('/([^\n])\n+\s*(\?[^\n]*)/u', '$1 $2', $markdown);
+
+        // ! ile başlayan satırlar (tek veya çift newline)
+        $markdown = preg_replace('/([^\n])\n+\s*(\![^\n]*)/u', '$1 $2', $markdown);
+
+        // . ile başlayan satırlar (ama "..." değil, tek veya çift newline)
+        $markdown = preg_replace('/([^\n.])\n+\s*(\.[^\.])/u', '$1 $2', $markdown);
 
         return $markdown;
     }
@@ -251,8 +319,24 @@ class MarkdownService
      */
     protected function cleanHtml(string $html): string
     {
-        // 🔧 FIX: DOM tabanlı HTML düzeltme (daha güvenilir)
+        // 🔧 FIX 1: DOM tabanlı HTML düzeltme (daha güvenilir)
         $html = $this->fixHtmlStructureWithDom($html);
+
+        // 🔧 FIX 2: Unparsed markdown linkleri düzelt
+        // "[**Text**](url)" → "<a>Text</a>"
+        $html = $this->fixUnparsedMarkdownLinks($html);
+
+        // 🔧 FIX 3: <li> içindeki "Fiyat:" text'ini ayır
+        $html = $this->extractPriceFromListItems($html);
+
+        // 🔧 FIX 4: <li> sonundaki soru/mesaj text'ini dışarı taşı
+        $html = $this->extractTrailingQuestionsFromListItems($html);
+
+        // 🔧 FIX 4.5: Fiyat paragrafındaki soru/mesaj text'ini ayır
+        $html = $this->extractTrailingQuestionsFromPriceParagraphs($html);
+
+        // 🔧 FIX 4.6: Orphan punctuation paragraflarını birleştir
+        $html = $this->mergeOrphanPunctuationParagraphs($html);
 
         // Link'lere target="_blank" ve class ekle
         $html = preg_replace_callback(
@@ -289,6 +373,167 @@ class MarkdownService
             },
             $html
         );
+
+        // 🔧 FIX 5: Boş veya ardışık <ul> taglarını temizle
+        $html = $this->cleanupEmptyAndConsecutiveTags($html);
+
+        return $html;
+    }
+
+    /**
+     * Boş veya ardışık tagları temizle
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function cleanupEmptyAndConsecutiveTags(string $html): string
+    {
+        // Boş <ul>, <ol>, <p> taglarını temizle
+        $html = preg_replace('/<ul>\s*<\/ul>/is', '', $html);
+        $html = preg_replace('/<ol>\s*<\/ol>/is', '', $html);
+        $html = preg_replace('/<p>\s*<\/p>/is', '', $html);
+        $html = preg_replace('/<li>\s*<\/li>/is', '', $html);
+
+        // Ardışık <ul> taglarını birleştir: </ul><ul> → (boş)
+        $html = preg_replace('/<\/ul>\s*<ul>/is', '', $html);
+        $html = preg_replace('/<\/ol>\s*<ol>/is', '', $html);
+
+        // Fazla boşlukları temizle
+        $html = preg_replace('/\s+/', ' ', $html);
+
+        return trim($html);
+    }
+
+    /**
+     * Unparsed markdown linkleri düzelt
+     * "[**Text**](url)" → "<a><strong>Text</strong></a>"
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function fixUnparsedMarkdownLinks(string $html): string
+    {
+        // Pattern: [**Text**](url) veya [Text](url)
+        $html = preg_replace_callback(
+            '/\[(\*\*)?([^\]]+?)(\*\*)?\]\(([^)]+)\)/u',
+            function ($matches) {
+                $boldStart = $matches[1] ?? '';
+                $text = $matches[2];
+                $boldEnd = $matches[3] ?? '';
+                $url = $matches[4];
+
+                // Bold var mı?
+                if ($boldStart && $boldEnd) {
+                    return "<a href=\"{$url}\"><strong>{$text}</strong></a>";
+                }
+
+                return "<a href=\"{$url}\">{$text}</a>";
+            },
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
+     * <li> içindeki "Fiyat:" text'ini ayır ve ayrı paragraf yap
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function extractPriceFromListItems(string $html): string
+    {
+        // Pattern: <li>...text... Fiyat: $X.XXX</li>
+        // Result: <li>...text...</li></ul><p>Fiyat: $X.XXX</p><ul>
+
+        $html = preg_replace_callback(
+            '/<li>(.+?)\s+(Fiyat:[^<]+)<\/li>/us',
+            function ($matches) {
+                $content = trim($matches[1]);
+                $price = trim($matches[2]);
+
+                // <li>'yi kapat, fiyatı <p>'ye al, yeni <ul> aç
+                return "<li>{$content}</li></ul><p>{$price}</p><ul>";
+            },
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
+     * <li> sonundaki soru/mesaj text'ini dışarı taşı
+     * "Fiyat: X Hangi model hakkında..." → Soruyu <p>'ye taşı
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function extractTrailingQuestionsFromListItems(string $html): string
+    {
+        // Pattern: <li>...Fiyat: $X Soru metni?</li>
+        // Result: <li>...Fiyat: $X</li></ul><p>Soru metni?</p><ul>
+
+        $html = preg_replace_callback(
+            '/<li>(.+?Fiyat:[^?!]+)([^<]*[?!][^<]*)<\/li>/us',
+            function ($matches) {
+                $content = trim($matches[1]);
+                $question = trim($matches[2]);
+
+                return "<li>{$content}</li></ul><p>{$question}</p><ul>";
+            },
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
+     * Fiyat paragrafındaki soru/mesaj text'ini ayır
+     * "<p>Fiyat: X Hangi model...?</p>" → "<p>Fiyat: X</p><p>Hangi model...?</p>"
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function extractTrailingQuestionsFromPriceParagraphs(string $html): string
+    {
+        // Pattern: <p>Fiyat: $X Soru metni?</p>
+        // Result: <p>Fiyat: $X</p><p>Soru metni?</p>
+
+        $html = preg_replace_callback(
+            '/<p>(Fiyat:[^?!<]+)([^<]*[?!][^<]*)<\/p>/us',
+            function ($matches) {
+                $price = trim($matches[1]);
+                $question = trim($matches[2]);
+
+                return "<p>{$price}</p><p>{$question}</p>";
+            },
+            $html
+        );
+
+        return $html;
+    }
+
+    /**
+     * Orphan punctuation paragraflarını bir önceki paragrafla birleştir
+     * "<p>text</p><p>? emoji</p>" → "<p>text? emoji</p>"
+     *
+     * @param string $html
+     * @return string
+     */
+    protected function mergeOrphanPunctuationParagraphs(string $html): string
+    {
+        // Pattern: </p> + boşluk + <p> + noktalama
+        // Problem: "<p>...istersiniz</p><p>? 😊</p>"
+        // Sonuç: "<p>...istersiniz? 😊</p>"
+
+        // ? ile başlayan paragraflar
+        $html = preg_replace('/<\/p>\s*<p>\s*(\?[^<]*)<\/p>/u', ' $1</p>', $html);
+
+        // ! ile başlayan paragraflar
+        $html = preg_replace('/<\/p>\s*<p>\s*(\![^<]*)<\/p>/u', ' $1</p>', $html);
+
+        // . ile başlayan paragraflar (ama "..." değil)
+        $html = preg_replace('/<\/p>\s*<p>\s*(\.[^\.<][^<]*)<\/p>/u', ' $1</p>', $html);
 
         return $html;
     }

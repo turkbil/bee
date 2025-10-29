@@ -249,77 +249,57 @@
                                                 wire:keydown.enter="updateProductField({{ $product->product_id }}, 'base_price', $event.target.value)"
                                                 class="form-control form-control-sm text-end quick-edit-input"
                                                 style="width: 90px;"
-                                                placeholder="0.00"
-                                                @if($product->price_on_request) disabled @endif>
+                                                placeholder="0.00">
                                             <select
                                                 wire:change="updateProductField({{ $product->product_id }}, 'currency', $event.target.value)"
                                                 class="form-select form-select-sm quick-edit-select"
-                                                style="width: 75px;"
-                                                @if($product->price_on_request) disabled @endif>
+                                                style="width: 75px;">
                                                 <option value="TRY" {{ ($product->currency ?? 'TRY') === 'TRY' ? 'selected' : '' }}>TRY</option>
                                                 <option value="USD" {{ $product->currency === 'USD' ? 'selected' : '' }}>USD</option>
                                                 <option value="EUR" {{ $product->currency === 'EUR' ? 'selected' : '' }}>EUR</option>
                                             </select>
                                         </div>
                                     @elseif ($editingPriceId === $product->product_id)
-                                        <div class="d-flex flex-column gap-2 align-items-end" x-data
+                                        <div class="d-flex align-items-center justify-content-end gap-2" x-data
                                             @click.outside="$wire.updatePriceInline()">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="form-check form-switch mb-0">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        wire:model.live="newPriceOnRequest"
-                                                        id="priceOnRequest-{{ $product->product_id }}">
-                                                    <label class="form-check-label small text-nowrap" for="priceOnRequest-{{ $product->product_id }}">
-                                                        Fiyat Sorunuz
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <input type="number" step="0.01" wire:model.defer="newPrice"
-                                                    class="form-control form-control-sm text-end"
-                                                    style="width: 100px;"
-                                                    placeholder="0.00"
-                                                    wire:keydown.enter="updatePriceInline"
-                                                    wire:keydown.escape="cancelPriceEdit"
-                                                    :disabled="$wire.newPriceOnRequest"
-                                                    x-init="!$wire.newPriceOnRequest && $nextTick(() => $el.focus())">
-                                                <select wire:model.defer="newCurrency" class="form-select form-select-sm"
-                                                    style="width: 80px;"
-                                                    :disabled="$wire.newPriceOnRequest">
-                                                    <option value="TRY">TRY</option>
-                                                    <option value="USD">USD</option>
-                                                    <option value="EUR">EUR</option>
-                                                </select>
-                                                <button class="btn px-2 py-1 btn-outline-success btn-sm"
-                                                    wire:click="updatePriceInline">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                                <button class="btn px-2 py-1 btn-outline-danger btn-sm"
-                                                    wire:click="cancelPriceEdit">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
+                                            <input type="number" step="0.01" wire:model.defer="newPrice"
+                                                class="form-control form-control-sm text-end"
+                                                style="width: 100px;"
+                                                placeholder="0.00"
+                                                wire:keydown.enter="updatePriceInline"
+                                                wire:keydown.escape="cancelPriceEdit"
+                                                x-init="$nextTick(() => $el.focus())">
+                                            <select wire:model.defer="newCurrency" class="form-select form-select-sm"
+                                                style="width: 80px;">
+                                                <option value="TRY">TRY</option>
+                                                <option value="USD">USD</option>
+                                                <option value="EUR">EUR</option>
+                                            </select>
+                                            <button class="btn px-2 py-1 btn-outline-success btn-sm"
+                                                wire:click="updatePriceInline">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn px-2 py-1 btn-outline-danger btn-sm"
+                                                wire:click="cancelPriceEdit">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     @else
                                         <div class="d-flex align-items-center justify-content-end gap-2">
-                                            @if ($product->price_on_request)
-                                                <span class="badge bg-secondary editable-price">{{ __('shop::admin.price_on_request') }}</span>
-                                            @else
+                                            @if ($product->base_price && $product->base_price > 0)
                                                 <div class="d-flex flex-column align-items-end">
-                                                    @if ($product->base_price)
-                                                        <span class="fw-semibold editable-price">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
-                                                        @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
-                                                            <small class="text-muted text-decoration-line-through">
-                                                                {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
-                                                            </small>
-                                                        @endif
-                                                    @else
-                                                        <span class="text-muted editable-price">—</span>
+                                                    <span class="fw-semibold editable-price">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
+                                                    @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
+                                                        <small class="text-muted text-decoration-line-through">
+                                                            {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
+                                                        </small>
                                                     @endif
                                                 </div>
+                                            @else
+                                                <span class="badge bg-secondary editable-price">{{ __('shop::admin.price_on_request') }}</span>
                                             @endif
                                             <button class="btn btn-sm px-2 py-1 edit-icon"
-                                                wire:click="startEditingPrice({{ $product->product_id }}, '{{ $product->base_price }}', '{{ $product->currency ?? 'TRY' }}', {{ $product->price_on_request ? 'true' : 'false' }})">
+                                                wire:click="startEditingPrice({{ $product->product_id }}, '{{ $product->base_price }}', '{{ $product->currency ?? 'TRY' }}')">
                                                 <i class="fas fa-pen"></i>
                                             </button>
                                         </div>
@@ -547,77 +527,57 @@
                                                         wire:keydown.enter="updateProductField({{ $variant->product_id }}, 'base_price', $event.target.value)"
                                                         class="form-control form-control-sm text-end quick-edit-input"
                                                         style="width: 90px;"
-                                                        placeholder="0.00"
-                                                        @if($variant->price_on_request) disabled @endif>
+                                                        placeholder="0.00">
                                                     <select
                                                         wire:change="updateProductField({{ $variant->product_id }}, 'currency', $event.target.value)"
                                                         class="form-select form-select-sm quick-edit-select"
-                                                        style="width: 75px;"
-                                                        @if($variant->price_on_request) disabled @endif>
+                                                        style="width: 75px;">
                                                         <option value="TRY" {{ ($variant->currency ?? 'TRY') === 'TRY' ? 'selected' : '' }}>TRY</option>
                                                         <option value="USD" {{ $variant->currency === 'USD' ? 'selected' : '' }}>USD</option>
                                                         <option value="EUR" {{ $variant->currency === 'EUR' ? 'selected' : '' }}>EUR</option>
                                                     </select>
                                                 </div>
                                             @elseif ($editingPriceId === $variant->product_id)
-                                                <div class="d-flex flex-column gap-2 align-items-end" x-data
+                                                <div class="d-flex align-items-center justify-content-end gap-2" x-data
                                                     @click.outside="$wire.updatePriceInline()">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <div class="form-check form-switch mb-0">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                wire:model.live="newPriceOnRequest"
-                                                                id="priceOnRequest-{{ $variant->product_id }}">
-                                                            <label class="form-check-label small text-nowrap" for="priceOnRequest-{{ $variant->product_id }}">
-                                                                Fiyat Sorunuz
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <input type="number" step="0.01" wire:model.defer="newPrice"
-                                                            class="form-control form-control-sm text-end"
-                                                            style="width: 100px;"
-                                                            placeholder="0.00"
-                                                            wire:keydown.enter="updatePriceInline"
-                                                            wire:keydown.escape="cancelPriceEdit"
-                                                            :disabled="$wire.newPriceOnRequest"
-                                                            x-init="!$wire.newPriceOnRequest && $nextTick(() => $el.focus())">
-                                                        <select wire:model.defer="newCurrency" class="form-select form-select-sm"
-                                                            style="width: 80px;"
-                                                            :disabled="$wire.newPriceOnRequest">
-                                                            <option value="TRY">TRY</option>
-                                                            <option value="USD">USD</option>
-                                                            <option value="EUR">EUR</option>
-                                                        </select>
-                                                        <button class="btn px-2 py-1 btn-outline-success btn-sm"
-                                                            wire:click="updatePriceInline">
-                                                            <i class="fas fa-check"></i>
-                                                        </button>
-                                                        <button class="btn px-2 py-1 btn-outline-danger btn-sm"
-                                                            wire:click="cancelPriceEdit">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </div>
+                                                    <input type="number" step="0.01" wire:model.defer="newPrice"
+                                                        class="form-control form-control-sm text-end"
+                                                        style="width: 100px;"
+                                                        placeholder="0.00"
+                                                        wire:keydown.enter="updatePriceInline"
+                                                        wire:keydown.escape="cancelPriceEdit"
+                                                        x-init="$nextTick(() => $el.focus())">
+                                                    <select wire:model.defer="newCurrency" class="form-select form-select-sm"
+                                                        style="width: 80px;">
+                                                        <option value="TRY">TRY</option>
+                                                        <option value="USD">USD</option>
+                                                        <option value="EUR">EUR</option>
+                                                    </select>
+                                                    <button class="btn px-2 py-1 btn-outline-success btn-sm"
+                                                        wire:click="updatePriceInline">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                    <button class="btn px-2 py-1 btn-outline-danger btn-sm"
+                                                        wire:click="cancelPriceEdit">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center justify-content-end gap-2">
-                                                    @if ($variant->price_on_request)
-                                                        <span class="badge bg-secondary editable-price">{{ __('shop::admin.price_on_request') }}</span>
-                                                    @else
+                                                    @if ($variant->base_price && $variant->base_price > 0)
                                                         <div class="d-flex flex-column align-items-end">
-                                                            @if ($variant->base_price)
-                                                                <span class="fw-semibold editable-price">{{ formatPrice($variant->base_price, $variant->currency ?? 'TRY') }}</span>
-                                                                @if ($variant->compare_at_price && $variant->compare_at_price > $variant->base_price)
-                                                                    <small class="text-muted text-decoration-line-through">
-                                                                        {{ formatPrice($variant->compare_at_price, $variant->currency ?? 'TRY') }}
-                                                                    </small>
-                                                                @endif
-                                                            @else
-                                                                <span class="text-muted editable-price">—</span>
+                                                            <span class="fw-semibold editable-price">{{ formatPrice($variant->base_price, $variant->currency ?? 'TRY') }}</span>
+                                                            @if ($variant->compare_at_price && $variant->compare_at_price > $variant->base_price)
+                                                                <small class="text-muted text-decoration-line-through">
+                                                                    {{ formatPrice($variant->compare_at_price, $variant->currency ?? 'TRY') }}
+                                                                </small>
                                                             @endif
                                                         </div>
+                                                    @else
+                                                        <span class="badge bg-secondary editable-price">{{ __('shop::admin.price_on_request') }}</span>
                                                     @endif
                                                     <button class="btn btn-sm px-2 py-1 edit-icon"
-                                                        wire:click="startEditingPrice({{ $variant->product_id }}, '{{ $variant->base_price }}', '{{ $variant->currency ?? 'TRY' }}', {{ $variant->price_on_request ? 'true' : 'false' }})">
+                                                        wire:click="startEditingPrice({{ $variant->product_id }}, '{{ $variant->base_price }}', '{{ $variant->currency ?? 'TRY' }}')">
                                                         <i class="fas fa-pen"></i>
                                                     </button>
                                                 </div>

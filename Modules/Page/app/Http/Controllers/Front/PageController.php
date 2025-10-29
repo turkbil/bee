@@ -46,16 +46,58 @@ class PageController extends Controller
         // SEO meta tags'i ayarla
         view()->share('currentModel', $page);
 
+        // Homepage products'ları çek (homepage_sort_order'a göre sıralı)
+        $products = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
+            ->where('is_active', true)
+            ->with(['category', 'brand', 'media'])
+            ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
+            ->orderBy('product_id', 'desc')
+            ->get();
+
+        // Frontend için format dönüşümü
+        $locale = app()->getLocale();
+        $homepageProducts = $products->map(function ($product) use ($locale) {
+            $featuredImage = $product->hasMedia('featured_image')
+                ? $product->getFirstMedia('featured_image')->getUrl()
+                : null;
+
+            return [
+                'id' => $product->product_id,
+                'title' => $product->getTranslated('title', $locale),
+                'description' => $product->getTranslated('short_description', $locale) ?? '',
+                'category' => $product->category ? $product->category->getTranslated('title', $locale) : 'Ürün',
+                'category_icon' => 'fa-solid fa-box',
+                'sku' => $product->sku ?? '',
+                'price' => $product->base_price && $product->base_price > 0
+                    ? formatPrice($product->base_price, $product->currency ?? 'TRY')
+                    : null,
+                'views' => $product->view_count ?? 0,
+                'image' => $featuredImage,
+                'url' => route('shop.show', ['slug' => $product->getTranslated('slug', $locale)]),
+                'featured' => (bool) $product->is_featured,
+                'bestseller' => (bool) $product->is_bestseller,
+                'is_favorite' => false,
+            ];
+        });
+
         try {
             // ThemeService zaten tenant()->theme'den tema çekiyor (dinamik)
             $viewPath = $this->themeService->getThemeViewPath('show', 'page');
-            return view($viewPath, ['item' => $page, 'is_homepage' => true]);
+            return view($viewPath, [
+                'item' => $page,
+                'is_homepage' => true,
+                'homepageProducts' => $homepageProducts
+            ]);
         } catch (\Exception $e) {
             // Hatayı logla
             Log::error("Theme Error: " . $e->getMessage());
 
             // Fallback view'a yönlendir
-            return view('page::front.show', ['item' => $page, 'is_homepage' => true]);
+            return view('page::front.show', [
+                'item' => $page,
+                'is_homepage' => true,
+                'homepageProducts' => $homepageProducts
+            ]);
         }
 
     }

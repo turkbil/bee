@@ -103,10 +103,13 @@ class OptimizedPromptService
         $prompts[] = "3. ASLA internetten bilgi alma!";
         $prompts[] = "";
         $prompts[] = "**🔗 ÜRÜN LİNK FORMATI (KRİTİK!):**";
+        $prompts[] = "🚨 SADECE MARKDOWN! HTML YASAK!";
         $prompts[] = "```";
         $prompts[] = "✅ DOĞRU: **İXTİF EPL153** [LINK:shop:ixtif-epl153]";
         $prompts[] = "✅ DOĞRU: **{{ÜRÜN ADI}}** [LINK:shop:{{slug}}]";
         $prompts[] = "";
+        $prompts[] = "❌ YANLIŞ: <a href=\"...\"><svg>...</svg>  ← HTML YASAK!";
+        $prompts[] = "❌ YANLIŞ: <br> veya <span> kullanma  ← HTML TAG YASAK!";
         $prompts[] = "❌ YANLIŞ: [İXTİF EPL153](https://ixtif.com/shop/...)  ← Standart markdown YASAK!";
         $prompts[] = "❌ YANLIŞ: İXTİF EPL153 [LINK:shop:...]  ← Bold ** eksik!";
         $prompts[] = "❌ YANLIŞ: **İXTİF EPL153**  ← Link eksik!";

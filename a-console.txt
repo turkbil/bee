@@ -1,1 +1,52 @@
-
+ai-word-buffer.js?v=1761705678:306 ✅ AIWordBuffer class globally available
+multi-modal-manager.js?v=1761705678:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761705678:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761705678:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761705678:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761705678:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761705678:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761705678:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761705678:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761705678:13 ⏰ Load Time: 2025-10-29T02:41:18.792Z
+ai-seo-integration.js?v=1761705678:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761705678:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761705678:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761705678:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761705678:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1761705678:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761705678:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761705678:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761705678:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+profile:3340 ✅ Alpine.js Global Store initialized (Livewire bundled)
+simple-translation-modal.js?v=1761705678:839 ⚡ Livewire initialized
+ai-content-system.js?v=1761705678:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761705678:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761705678:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761705678:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761705678:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761705678:558 🔒 attachButtonListeners SKIP - already attached
+profile:3433 🔍 Sayfa yüklendi - otomatik hikaye kontrolü
+profile:3440 🔍 Element kontrolleri: Object
+profile:3452 🔍 Visibility kontrol: Object
+profile:3458 ✅ Sayfa açılış - otomatik hikaye oluşturma DEVRE DIŞI (streaming test için)
+profile:4024 🚀 Enterprise Streaming Translation System Ready!
+profile:4037 📝 Streaming translation not available - Using standard translation mode
+ai-seo-integration.js?v=1761705678:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1761705678:558 🔒 attachButtonListeners SKIP - already attached
+profile:3377 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+profile:3492 🔗 Stream URL (with cache bust): https://ixtif.com/admin/ai/profile/generate-story-stream?v=1761705681074
+profile:3501 📡 EventSource oluşturuldu, bağlantı kuruluyor...
+profile:3502 🔄 CACHE BUST VERSION: 1761705681074
+profile/generate-story-stream?v=1761705681074:1  Failed to load resource: the server responded with a status of 500 ()
+profile:26 ❌ EventSource hatası: Event
+console.error @ profile:26
+profile:3492 🔗 Stream URL (with cache bust): https://ixtif.com/admin/ai/profile/generate-story-stream?v=1761705686966
+profile:3501 📡 EventSource oluşturuldu, bağlantı kuruluyor...
+profile:3502 🔄 CACHE BUST VERSION: 1761705686966
+profile/generate-story-stream?v=1761705686966:1  Failed to load resource: the server responded with a status of 500 ()
+profile:26 ❌ EventSource hatası: Event
+console.error @ profile:26

@@ -549,23 +549,6 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
-        // ULTRA DEBUG: Direct response test
-        $testMessage = $request->input('message');
-        if (str_contains(strtolower($testMessage), 'ultra_debug')) {
-            return response()->json([
-                'success' => true,
-                'DEBUG' => 'CONTROLLER IS RUNNING - NEW CODE ACTIVE',
-                'timestamp' => now()->toDateTimeString(),
-                'message' => $testMessage
-            ]);
-        }
-
-        // DEBUG: Verify code is loaded
-        \Log::info('shopAssistantChat BASLADI - NEW CODE LOADED', [
-            'message' => $request->input('message'),
-            'time' => date('Y-m-d H:i:s')
-        ]);
-
         try {
             // Validate input (Tenant context check için exists rule'ları kaldırıldı)
             $validated = $request->validate([
@@ -614,13 +597,20 @@ class PublicAIController extends Controller
             try {
                 // 🆕 iXTİF ÖZEL: Fiyat sorgusu detection (en ucuz, en pahalı)
                 $isPriceQuery = false;
+                $searchQuery = $validated['message'];
+
                 if (tenant('id') == 2 || tenant('id') == 3) { // iXtif tenants
                     $lowerMessage = mb_strtolower($validated['message']);
                     $isPriceQuery = preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
+
+                    // Fiyat sorgusu ise, Meilisearch'e geniş arama yap (tüm ürünler gelsin)
+                    if ($isPriceQuery) {
+                        $searchQuery = ''; // Boş = tüm ürünler
+                    }
                 }
 
                 // Normal search (ürün başlığı/kategori araması)
-                $smartSearchResults = $productSearchService->searchProducts($validated['message']);
+                $smartSearchResults = $productSearchService->searchProducts($searchQuery);
                 $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
 
                 // 🆕 iXTİF ÖZEL: Fiyat sorgusunda ürün bulunamadıysa, DB'den direkt getir

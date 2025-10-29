@@ -213,12 +213,41 @@ class AIProfileController extends Controller
     public function generateStoryStream(Request $request)
     {
         \Log::info('🚀 STREAMING ENDPOINT ÇAĞRILDI - generateStoryStream()');
-        
+
         // AI hikaye oluşturma uzun sürebilir - timeout arttır
         set_time_limit(300); // 5 dakika
-        
+
         try {
-            $profile = AITenantProfile::currentOrCreate();
+            // ✅ FIX: Admin panelde tenant ID'yi request veya session'dan al
+            $tenantId = $request->input('tenant_id') ?? session('admin_selected_tenant_id') ?? resolve_tenant_id();
+
+            if (!$tenantId) {
+                return response()->stream(function () {
+                    echo "data: " . json_encode([
+                        'type' => 'error',
+                        'message' => 'Tenant ID bulunamadı. Lütfen bir tenant seçin.'
+                    ]) . "\n\n";
+                    flush();
+                }, 200, [
+                    'Content-Type' => 'text/event-stream',
+                    'Cache-Control' => 'no-cache',
+                    'Connection' => 'keep-alive',
+                ]);
+            }
+
+            $profile = AITenantProfile::where('tenant_id', $tenantId)->firstOrCreate(
+                ['tenant_id' => $tenantId],
+                [
+                    'company_info' => [],
+                    'sector_details' => [],
+                    'success_stories' => [],
+                    'ai_behavior_rules' => [],
+                    'founder_info' => [],
+                    'additional_info' => [],
+                    'is_active' => true,
+                    'is_completed' => false
+                ]
+            );
             
             // Temel profil bilgisi kontrolü - marka adı ve sektör zorunlu
             $brandName = $profile->company_info['brand_name'] ?? null;

@@ -706,6 +706,16 @@ class AIProfileController extends Controller
                     'sports_specific_services' => 'sector_details',         // Spor/Fitness
                     'automotive_specific_services' => 'sector_details',     // Otomotiv
                     'legal_specific_services' => 'sector_details',          // Hukuk/Danışmanlık
+
+                    // Forklift Satışı sektörü - Endüstriyel ekipman
+                    'forklift_main_services' => 'sector_details',           // Ana hizmetler
+                    'equipment_types' => 'sector_details',                  // Ekipman türleri
+                    'equipment_capacity' => 'sector_details',               // Kapasite aralığı
+                    'target_industries' => 'sector_details',                // Hedef sektörler
+                    'equipment_brands' => 'sector_details',                 // Markalar
+                    'service_coverage' => 'sector_details',                 // Hizmet bölgesi
+                    'warranty_support' => 'sector_details',                 // Garanti ve destek
+                    'payment_financing' => 'sector_details',                // Ödeme seçenekleri
                     
                     // Sektöre özel detaylı hizmet soruları (Step 3)
                     'tech_specific_services' => 'sector_details',           // Teknoloji detay

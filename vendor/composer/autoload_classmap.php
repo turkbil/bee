@@ -233,6 +233,7 @@ return array(
     'App\\Services\\LanguageCleanupService' => $baseDir . '/app/Services/LanguageCleanupService.php',
     'App\\Services\\LocaleValidationService' => $baseDir . '/app/Services/LocaleValidationService.php',
     'App\\Services\\LogoService' => $baseDir . '/app/Services/LogoService.php',
+    'App\\Services\\MarkdownService' => $baseDir . '/app/Services/MarkdownService.php',
     'App\\Services\\Media\\SafeFileNamer' => $baseDir . '/app/Services/Media/SafeFileNamer.php',
     'App\\Services\\Media\\TenantImageService' => $baseDir . '/app/Services/Media/TenantImageService.php',
     'App\\Services\\Media\\TenantPathGenerator' => $baseDir . '/app/Services/Media/TenantPathGenerator.php',

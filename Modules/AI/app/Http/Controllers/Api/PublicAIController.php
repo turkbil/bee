@@ -18,6 +18,7 @@ use Modules\AI\App\Models\AICreditUsage;
 use App\Services\AI\Context\ModuleContextOrchestrator;
 use Modules\AI\App\Models\AIConversation;
 use Modules\AI\App\Models\AIMessage;
+use App\Services\MarkdownService;
 
 /**
  * 🌐 PUBLIC AI CONTROLLER V2 - Frontend API Entegrasyonu
@@ -928,6 +929,10 @@ class PublicAIController extends Controller
             // AI bazen WhatsApp linkini ürün linki ile karıştırıyor, düzeltelim
             $finalMessage = $aiResponse['content'] ?? '';
             $finalMessage = $this->fixWhatsAppLinks($finalMessage);
+
+            // 📝 MARKDOWN TO HTML - Backend parsing (güvenli ve tutarlı)
+            $markdownService = app(MarkdownService::class);
+            $finalMessage = $markdownService->parse($finalMessage);
 
             return response()->json([
                 'success' => true,

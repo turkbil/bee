@@ -24,8 +24,17 @@
             $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
             $shopIndexUrl = $localePrefix . '/' . $indexSlug;
 
+            // ✅ Varyant fotoğrafları - Yoksa parent'tan al
             $featuredImage = $item->getFirstMedia('featured_image');
             $galleryImages = $item->getMedia('gallery');
+
+            // ✅ Fallback: Varyant fotoğrafı yoksa parent ürünün fotoğrafını kullan
+            if (!$featuredImage && $parentProduct) {
+                $featuredImage = $parentProduct->getFirstMedia('featured_image');
+            }
+            if ($galleryImages->isEmpty() && $parentProduct) {
+                $galleryImages = $parentProduct->getMedia('gallery');
+            }
 
             $resolveLocalized = static function ($data) use ($currentLocale, $defaultLocale) {
                 if (!is_array($data)) {

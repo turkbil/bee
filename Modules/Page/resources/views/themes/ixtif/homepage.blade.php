@@ -96,21 +96,9 @@
         <div class="text-center mb-12">
         </div>
 
-        @php
-            $featuredProducts = \Modules\Shop\app\Models\ShopProduct::with(['category', 'brand', 'media'])
-                ->where('is_active', true)
-                ->where('show_on_homepage', true)
-                ->whereNotNull('published_at')
-                ->whereNull('parent_product_id')
-                ->orderBy('sort_order', 'asc')
-                ->orderByDesc('published_at')
-                ->take(9)
-                ->get();
-        @endphp
-
-        <!-- Product Grid -->
+        <!-- Product Grid: Controller'dan gelen $homepageProducts collection'ını kullan -->
         <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            @foreach($featuredProducts as $index => $product)
+            @foreach($homepageProducts as $index => $product)
             @php
                 $productTitle = $product->getTranslated('title', app()->getLocale());
                 $productImage = $product->getFirstMediaUrl('featured_image');

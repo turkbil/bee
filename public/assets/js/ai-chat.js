@@ -394,25 +394,15 @@ window.aiChatRenderMarkdown = function(content) {
     // Format: **Ürün Adı** [LINK:shop:litef-ept15] → Simple link
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
-
-        // Simple clean link (no icons, minimal styling)
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300
-                   font-medium underline transition-colors">
-            ${linkText.trim()}
-        </a>`;
+        // Single-line template to prevent <br> injection
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium underline transition-colors">${linkText.trim()}</a>`;
     });
 
     // 0B. Category SLUG format: [LINK:shop:category:SLUG] (CLEAN, NO ICONS)
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
-
-        // Simple clean link (no icons, green color for categories)
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300
-                   font-medium underline transition-colors">
-            ${linkText.trim()}
-        </a>`;
+        // Single-line template to prevent <br> injection
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium underline transition-colors">${linkText.trim()}</a>`;
     });
 
     // 0C. BACKWARD COMPATIBILITY: [LINK:shop:TYPE:ID] → /shop/TYPE/ID (OLD ID-BASED FORMAT)
@@ -481,17 +471,8 @@ window.aiChatRenderMarkdown = function(content) {
             borderColor = 'border-pink-200 dark:border-pink-700 hover:border-pink-500 dark:hover:border-pink-500';
         }
 
-        return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border ${borderColor}
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${icon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        // Single-line template to prevent <br> injection
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border ${borderColor} rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${icon}<span class="no-underline">${linkText.trim()}</span>${arrowIcon}</a>`;
     });
 
     // BACKWARD COMPATIBILITY: Eski [LINK_ID] formatı
@@ -508,18 +489,8 @@ window.aiChatRenderMarkdown = function(content) {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>`;
 
-        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-gray-200 dark:border-gray-700
-                   hover:border-blue-500 dark:hover:border-blue-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${shopIcon}
-            <span class="no-underline">${productName.trim()}</span>
-            ${arrowIcon}
-        </a>`;
+        // Single-line template to prevent <br> injection
+        return `<a href="${productUrl}" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-2 px-3 py-2 my-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg transition-all duration-200 text-sm font-medium no-underline text-gray-900 dark:text-gray-100">${shopIcon}<span class="no-underline">${productName.trim()}</span>${arrowIcon}</a>`;
     });
 
     // ═══════════════════════════════════════════════════════════════════

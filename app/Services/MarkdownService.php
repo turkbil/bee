@@ -44,6 +44,10 @@ class MarkdownService
      */
     public function parse(string $markdown): string
     {
+        // 🔧 FIX 0: Çoklu ürün - Her ⭐ yeni satırda başlamalı
+        // Problem: "Fiyat: $X ⭐ Ürün 2" → "Fiyat: $X\n\n⭐ Ürün 2"
+        $markdown = $this->separateMultipleProducts($markdown);
+
         // 🔧 FIX 1: AI tire ile başlayan satırları markdown list formatına çevir (ÖNCE!)
         // AI yazdığı: "[LINK] - özellik1 - özellik2 - özellik3"
         // Markdown: "[LINK]\n\n- özellik1\n- özellik2\n- özellik3"
@@ -59,6 +63,24 @@ class MarkdownService
         $html = $this->cleanHtml($html);
 
         return $html;
+    }
+
+    /**
+     * Çoklu ürün gösteriminde her ⭐'yı yeni satıra al
+     *
+     * @param string $markdown
+     * @return string
+     */
+    protected function separateMultipleProducts(string $markdown): string
+    {
+        // ⭐ öncesinde 2 satır boşluk yoksa ekle
+        // "... text ⭐ Ürün" → "... text\n\n⭐ Ürün"
+        $markdown = preg_replace('/([^\n])\s*⭐/u', "$1\n\n⭐", $markdown);
+
+        // ⭐'dan sonra doğrudan [LINK] veya ** geliyorsa arada boşluk olsun
+        $markdown = preg_replace('/⭐\s*(\[LINK|\*\*)/u', "⭐ $1", $markdown);
+
+        return $markdown;
     }
 
     /**
@@ -229,7 +251,35 @@ class MarkdownService
      */
     protected function cleanHtml(string $html): string
     {
-        // 🔧 FIX: Liste içinde "Fiyat:" varsa oradan sonrasını ayır
+        // 🔧 FIX 1: <ul> içinde direkt <a> link varsa <li> içine al
+        // Problem: <ul><a href="...">Link</a><li>... → <ul><li><a href="...">Link</a></li><li>...
+        $html = preg_replace('/<ul>(\s*)<a /is', '<ul>$1<li><a ', $html);
+        $html = preg_replace('/<\/a>(\s*)<li>/is', '</a></li>$1<li>', $html);
+
+        // 🔧 FIX 2: <ul> içinde direkt text varsa (li olmadan) → <p> yap
+        // Problem: <ul>Text burada</ul> → <p>Text burada</p>
+        $html = preg_replace_callback(
+            '/<ul>(.*?)<\/ul>/is',
+            function ($matches) {
+                $content = $matches[1];
+                // <li> içinde olmayan text'i bul
+                $cleaned = preg_replace_callback(
+                    '/([^>])([^<]+)(?=<(?!\/li))/is',
+                    function ($m) {
+                        // Eğer bu text <li> içinde değilse, <p> yap
+                        if (!preg_match('/<li[^>]*>.*?' . preg_quote($m[2], '/') . '.*?<\/li>/is', $m[0])) {
+                            return $m[1] . '</ul><p>' . trim($m[2]) . '</p><ul>';
+                        }
+                        return $m[0];
+                    },
+                    $content
+                );
+                return '<ul>' . $cleaned . '</ul>';
+            },
+            $html
+        );
+
+        // 🔧 FIX 3: Liste içinde "Fiyat:" varsa oradan sonrasını ayır
         // Problem: <li>Özellik Fiyat: $X Açıklama</li> → <li>Özellik</li></ul><p>Fiyat: $X Açıklama</p>
         $html = preg_replace_callback(
             '/<li>(.*?Fiyat:[^<]*)/is',
@@ -253,8 +303,10 @@ class MarkdownService
             $html
         );
 
-        // Boş <ul></ul> taglerini temizle
+        // 🔧 FIX 4: Boş tagları temizle
         $html = preg_replace('/<ul>\s*<\/ul>/is', '', $html);
+        $html = preg_replace('/<p>\s*<\/p>/is', '', $html);
+        $html = preg_replace('/<li>\s*<\/li>/is', '', $html);
 
         // Link'lere target="_blank" ve class ekle
         $html = preg_replace_callback(

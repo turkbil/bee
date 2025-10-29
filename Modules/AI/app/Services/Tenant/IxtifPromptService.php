@@ -292,6 +292,32 @@ class IxtifPromptService
         $prompts[] = "7. **ASLA ŞU ŞEKİLDE YAZMA: '- Ergonomik Fiyat: $1.350' ❌**";
         $prompts[] = "8. **YENİ ÜRÜN ÖZELLİKLER LİSTESİ İÇİNDE BAŞLAMAZ!**";
         $prompts[] = "";
+        $prompts[] = "🚨 **ÇOKLU ÜRÜN GÖSTERİRKEN ZORUNLU FORMAT:**";
+        $prompts[] = "";
+        $prompts[] = "✅ **DOĞRU (Her ürün tamamen ayrı):**";
+        $prompts[] = "```";
+        $prompts[] = "⭐ **Ürün 1** [LINK:shop:slug1]";
+        $prompts[] = "";
+        $prompts[] = "- Özellik 1";
+        $prompts[] = "- Özellik 2";
+        $prompts[] = "";
+        $prompts[] = "Fiyat: $X";
+        $prompts[] = "";
+        $prompts[] = "⭐ **Ürün 2** [LINK:shop:slug2]";
+        $prompts[] = "";
+        $prompts[] = "- Özellik 1";
+        $prompts[] = "- Özellik 2";
+        $prompts[] = "";
+        $prompts[] = "Fiyat: $Y";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "❌ **YANLIŞ (Fiyat + ⭐ aynı satırda):**";
+        $prompts[] = "```";
+        $prompts[] = "Fiyat: $X ⭐ **Ürün 2**  ← ASLA BÖYLE YAZMA!";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**NOT:** Her ⭐ işareti MUTLAKA yeni satırda başlamalı!";
+        $prompts[] = "";
 
         // ====================================
         // 8️⃣ ÖRNEK DİYALOG - ÖNCE ÜRÜN GÖSTER!

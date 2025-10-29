@@ -531,7 +531,6 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                             ->name('generate-story');
                         
                         Route::get('/generate-story-stream', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'generateStoryStream'])
-                            ->middleware('module.permission:ai,create')
                             ->name('generate-story-stream');
                         
                         Route::post('/save-field', [\Modules\AI\App\Http\Controllers\Admin\Profile\AIProfileController::class, 'saveField'])

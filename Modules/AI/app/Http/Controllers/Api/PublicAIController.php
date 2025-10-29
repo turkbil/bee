@@ -595,8 +595,58 @@ class PublicAIController extends Controller
             $productSearchService = app(\App\Services\AI\ProductSearchService::class);
 
             try {
+                // 🆕 iXTİF ÖZEL: Fiyat sorgusu detection (en ucuz, en pahalı)
+                $isPriceQuery = false;
+                if (tenant('id') == 2 || tenant('id') == 3) { // iXtif tenants
+                    $lowerMessage = mb_strtolower($validated['message']);
+                    $isPriceQuery = preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
+                }
+
+                // Normal search (ürün başlığı/kategori araması)
                 $smartSearchResults = $productSearchService->searchProducts($validated['message']);
                 $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
+
+                // 🆕 iXTİF ÖZEL: Fiyat sorgusunda ürün bulunamadıysa, DB'den direkt getir
+                if ($isPriceQuery && empty($smartSearchResults['products'])) {
+                    \Log::info('🔍 iXtif Price Query - Fetching from DB', [
+                        'query' => $validated['message'],
+                        'tenant_id' => tenant('id')
+                    ]);
+
+                    // Yedek Parça kategorisini atla (ID: 44 - Çatal Kılıf)
+                    $isCheapest = preg_match('/(en\s+ucuz|en\s+uygun)/i', mb_strtolower($validated['message']));
+
+                    $query = \Modules\Shop\App\Models\ShopProduct::whereNotNull('base_price')
+                        ->where('base_price', '>', 0)
+                        ->where('category_id', '!=', 44); // Yedek parça HARİÇ
+
+                    if ($isCheapest) {
+                        $query->orderBy('base_price', 'asc');
+                    } else {
+                        $query->orderBy('base_price', 'desc');
+                    }
+
+                    $products = $query->limit(5)->get();
+
+                    // Format products for AI
+                    $formattedProducts = $products->map(function($p) {
+                        return [
+                            'title' => $p->getTranslated('title', app()->getLocale()),
+                            'slug' => $p->getTranslated('slug', app()->getLocale()),
+                            'base_price' => $p->base_price,
+                            'current_stock' => $p->current_stock ?? 0,
+                            'show_on_homepage' => $p->show_on_homepage ?? 0,
+                            'category_id' => $p->category_id,
+                        ];
+                    })->toArray();
+
+                    $smartSearchResults = [
+                        'products' => $formattedProducts,
+                        'count' => count($formattedProducts),
+                        'search_layer' => 'ixtif_price_query',
+                        'tenant_id' => tenant('id')
+                    ];
+                }
 
                 \Log::info('🔍 Smart Search Results', [
                     'products_found' => $smartSearchResults['count'] ?? 0,

@@ -42,13 +42,6 @@ class ThemeService
                 // Tenant tema cache - Repository ile uyumlu
                 $cacheKey = "theme:tenant_{$t->id}";
 
-                // DEBUG: Log tenant info
-                \Log::info('ThemeService: Tenant detected', [
-                    'tenant_id' => $t->id,
-                    'theme_id' => $t->theme_id ?? 'NULL',
-                    'has_theme_id' => isset($t->theme_id)
-                ]);
-
                 $theme = $cache->remember($cacheKey, now()->addHours(1), function() use ($t) {
                     // theme_id kullan (theme değil)
                     if (isset($t->theme_id) && $t->theme_id) {
@@ -56,15 +49,9 @@ class ThemeService
                                       ->where('is_active', true)
                                       ->first();
 
-                        \Log::info('ThemeService: Tenant theme loaded', [
-                            'theme_id' => $t->theme_id,
-                            'theme_name' => $selectedTheme ? $selectedTheme->name : 'NOT_FOUND'
-                        ]);
-
                         return $selectedTheme;
                     }
 
-                    \Log::warning('ThemeService: Tenant has NO theme_id, falling back to default');
                     return null;
                 });
 

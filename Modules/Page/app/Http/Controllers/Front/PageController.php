@@ -55,22 +55,8 @@ class PageController extends Controller
             ->get();
 
         try {
-            // DEBUG: Tema kontrolü
-            $activeTheme = $this->themeService->getActiveTheme();
-            Log::info('PageController Homepage Theme Debug', [
-                'tenant_id' => tenant() ? tenant()->id : 'NULL',
-                'tenant_theme_id' => tenant() ? (tenant()->theme_id ?? 'NULL') : 'NULL',
-                'active_theme_id' => $activeTheme ? $activeTheme->theme_id : 'NULL',
-                'active_theme_name' => $activeTheme ? $activeTheme->name : 'NULL'
-            ]);
-
             // ThemeService ile homepage view'ını al
             $viewPath = $this->themeService->getThemeViewPath('homepage', 'page');
-
-            Log::info('PageController View Path', [
-                'view_path' => $viewPath,
-                'products_count' => $homepageProducts->count()
-            ]);
 
             return view($viewPath, [
                 'item' => $page,

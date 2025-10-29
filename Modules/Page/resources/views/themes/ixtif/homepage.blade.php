@@ -143,13 +143,17 @@
                     </a>
 
                     <!-- Price -->
-                    @if(!$product->price_on_request && $product->base_price && $product->base_price > 0)
                     <div class="pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500">
-                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                            {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
-                        </div>
+                        @if($product->base_price && $product->base_price > 0)
+                            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+                                {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
+                            </div>
+                        @else
+                            <div class="text-base md:text-lg font-semibold text-gray-600 dark:text-gray-300">
+                                Fiyat Talep Üzerine
+                            </div>
+                        @endif
                     </div>
-                    @endif
                 </div>
             </div>
             @endforeach

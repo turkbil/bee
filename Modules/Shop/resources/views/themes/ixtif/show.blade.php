@@ -1488,15 +1488,15 @@
             // AI Chat store'a bu ürün bilgisini gönder
             if (typeof Alpine !== 'undefined' && Alpine.store('aiChat')) {
                 Alpine.store('aiChat').updateContext({
-                    product_id: {{ $product->id }},
-                    category_id: {{ $product->category_id ?? 'null' }},
-                    page_slug: '{{ $product->slug }}',
+                    product_id: {{ $item->id }},
+                    category_id: {{ $item->category_id ?? 'null' }},
+                    page_slug: '{{ $item->getTranslated('slug', app()->getLocale()) }}',
                 });
 
                 console.log('✅ AI Chat Context Updated:', {
-                    product_id: {{ $product->id }},
-                    product_title: '{{ addslashes($product->getTranslated('title', app()->getLocale())) }}',
-                    category_id: {{ $product->category_id ?? 'null' }},
+                    product_id: {{ $item->id }},
+                    product_title: @json($item->getTranslated('title', app()->getLocale())),
+                    category_id: {{ $item->category_id ?? 'null' }},
                 });
             }
         });
@@ -1504,9 +1504,9 @@
         // Eğer Alpine zaten yüklüyse direkt güncelle
         if (typeof Alpine !== 'undefined' && Alpine.store('aiChat')) {
             Alpine.store('aiChat').updateContext({
-                product_id: {{ $product->id }},
-                category_id: {{ $product->category_id ?? 'null' }},
-                page_slug: '{{ $product->slug }}',
+                product_id: {{ $item->id }},
+                category_id: {{ $item->category_id ?? 'null' }},
+                page_slug: '{{ $item->getTranslated('slug', app()->getLocale()) }}',
             });
         }
     </script>

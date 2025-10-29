@@ -12,6 +12,10 @@ use Livewire\Livewire;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Database\Events\MigrationsEnded;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Artisan;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -195,6 +199,9 @@ class AppServiceProvider extends ServiceProvider
         // 🚀 OTOMATIK QUEUE WORKER BAŞLATMA SİSTEMİ
         // TEMP DISABLED FOR DEBUGGING
         // $this->ensureQueueWorkerRunning();
+
+        // 🔗 OTOMATIK STORAGE LINK DÜZELTME - Migration sonrası
+        $this->registerMigrationHooks();
     }
     
     protected function registerViewComposers(): void
@@ -391,5 +398,52 @@ class AppServiceProvider extends ServiceProvider
         // macOS/Linux için process kontrol
         $result = shell_exec("ps -p {$pid} -o pid=");
         return !empty(trim($result));
+    }
+
+    /**
+     * 🔗 OTOMATIK STORAGE LINK DÜZELTME SİSTEMİ
+     * Migration bittikten sonra otomatik storage:link çalıştır
+     *
+     * NEDEN GEREKLİ:
+     * - Migration sonrası symlink'ler root:root owner ile oluşabilir
+     * - Nginx disable_symlinks if_not_owner → 403 Forbidden hatası
+     * - Bu hook otomatik olarak owner'ları düzeltir
+     *
+     * NOT: Sadece console (artisan) komutlarında çalışır
+     */
+    protected function registerMigrationHooks(): void
+    {
+        // Migration bittikten SONRA otomatik storage:link çalıştır
+        Event::listen(MigrationsEnded::class, function (MigrationsEnded $event) {
+            // Sadece console'da çalış (web request'lerinde değil)
+            if (!app()->runningInConsole()) {
+                return;
+            }
+
+            try {
+                // Otomatik storage link düzeltme
+                Artisan::call('storage:link');
+
+                // Log kaydı
+                \Illuminate\Support\Facades\Log::info('🔗 AUTO STORAGE LINK FIX', [
+                    'trigger' => 'MigrationsEnded event',
+                    'timestamp' => now(),
+                    'output' => Artisan::output()
+                ]);
+
+                // Console'a bilgi ver
+                echo "\n";
+                echo "🔗 OTOMATIK STORAGE LINK DÜZELTME:\n";
+                echo Artisan::output();
+                echo "\n";
+
+            } catch (\Exception $e) {
+                // Hata olsa bile migration'ı engelleme
+                \Illuminate\Support\Facades\Log::warning('⚠️ AUTO STORAGE LINK FIX FAILED', [
+                    'error' => $e->getMessage(),
+                    'timestamp' => now()
+                ]);
+            }
+        });
     }
 }

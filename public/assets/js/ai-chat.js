@@ -390,62 +390,28 @@ window.aiChatRenderMarkdown = function(content) {
     // Process links BEFORE list parsing to prevent "2. **Text** [LINK]" from creating malformed HTML
     // This ensures links are standalone elements, not wrapped inside list items
 
-    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug
-    // Format: **Ürün Adı** [LINK:shop:litef-ept15] → /shop/litef-ept15
+    // 0A. NEW FORMAT: [LINK:shop:SLUG] → /shop/slug (CLEAN, NO ICONS)
+    // Format: **Ürün Adı** [LINK:shop:litef-ept15] → Simple link
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/${slug}`;
 
-        // Minimal shopping icon
-        const shopIcon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-        </svg>`;
-
-        // Minimal arrow icon
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>`;
-
+        // Simple clean link (no icons, minimal styling)
         return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-gray-200 dark:border-gray-700
-                   hover:border-blue-500 dark:hover:border-blue-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${shopIcon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
+            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300
+                   font-medium underline transition-colors">
+            ${linkText.trim()}
         </a>`;
     });
 
-    // 0B. Category SLUG format: [LINK:shop:category:SLUG]
-    // IMPORTANT: ONLY processes **bold** text before [LINK:...] to prevent entire sentence being linked
-    // Supports uppercase, Turkish chars
+    // 0B. Category SLUG format: [LINK:shop:category:SLUG] (CLEAN, NO ICONS)
     html = html.replace(/\*\*([^*]+)\*\*\s*\[LINK:shop:category:([\w\-İıĞğÜüŞşÖöÇç]+)\]/gi, function(match, linkText, slug) {
         const url = `/shop/category/${slug}`;
 
-        // Minimal category icon
-        const icon = `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>`;
-
-        // Minimal arrow icon
-        const arrowIcon = `<svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>`;
-
+        // Simple clean link (no icons, green color for categories)
         return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-            class="group inline-flex items-center gap-2 px-3 py-2 my-1
-                   bg-white dark:bg-gray-800
-                   border border-green-200 dark:border-green-700
-                   hover:border-green-500 dark:hover:border-green-500
-                   rounded-lg transition-all duration-200
-                   text-sm font-medium no-underline
-                   text-gray-900 dark:text-gray-100">
-            ${icon}
-            <span class="no-underline">${linkText.trim()}</span>
-            ${arrowIcon}
+            class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300
+                   font-medium underline transition-colors">
+            ${linkText.trim()}
         </a>`;
     });
 

@@ -309,12 +309,12 @@
                 Alpine.store('aiChat').updateContext({
                     category_id: {{ $category->id }},
                     product_id: null, // Kategori sayfası, tek ürün yok
-                    page_slug: '{{ $category->slug }}',
+                    page_slug: '{{ $category->getTranslated('slug', app()->getLocale()) }}',
                 });
 
                 console.log('✅ AI Chat Context Updated (Category):', {
                     category_id: {{ $category->id }},
-                    category_title: '{{ addslashes($category->getTranslated('title', app()->getLocale())) }}',
+                    category_title: @json($category->getTranslated('title', app()->getLocale())),
                 });
             }
         });
@@ -324,7 +324,7 @@
             Alpine.store('aiChat').updateContext({
                 category_id: {{ $category->id }},
                 product_id: null,
-                page_slug: '{{ $category->slug }}',
+                page_slug: '{{ $category->getTranslated('slug', app()->getLocale()) }}',
             });
         }
     </script>

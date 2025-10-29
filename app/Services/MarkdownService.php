@@ -92,8 +92,32 @@ class MarkdownService
                     $items = preg_split('/\s+-\s+/', $content, -1, PREG_SPLIT_NO_EMPTY);
 
                     if (count($items) > 1) {
+                        // Son item'da "Fiyat:" veya "⭐" varsa ayır
+                        $lastItem = array_pop($items);
+                        $priceText = "";
+
+                        // "Fiyat:" ve sonrasını ayır
+                        if (preg_match('/(.+?)\s+(Fiyat:.*)$/us', $lastItem, $priceMatch)) {
+                            $items[] = trim($priceMatch[1]); // Özellik
+                            $priceText = "\n\n" . trim($priceMatch[2]); // Fiyat ayrı satır
+                        } else {
+                            $items[] = $lastItem;
+                        }
+
+                        // Her item'dan "⭐" sonrasını temizle (yeni ürün başlıyorsa)
+                        $items = array_map(function($item) {
+                            // "Fiyat: X ⭐" gibi durumlar için
+                            if (preg_match('/^(.*?)\s*⭐/us', $item, $match)) {
+                                return trim($match[1]);
+                            }
+                            return $item;
+                        }, $items);
+
+                        // Boş item'ları temizle
+                        $items = array_filter($items, fn($item) => !empty(trim($item)));
+
                         // Markdown list formatına çevir
-                        $list = "\n\n" . implode("\n", array_map(fn($item) => "- " . trim($item), $items)) . "\n";
+                        $list = "\n\n" . implode("\n", array_map(fn($item) => "- " . trim($item), $items)) . $priceText . "\n";
                         return $link . $list;
                     }
                 }
@@ -205,6 +229,33 @@ class MarkdownService
      */
     protected function cleanHtml(string $html): string
     {
+        // 🔧 FIX: Liste içinde "Fiyat:" varsa oradan sonrasını ayır
+        // Problem: <li>Özellik Fiyat: $X Açıklama</li> → <li>Özellik</li></ul><p>Fiyat: $X Açıklama</p>
+        $html = preg_replace_callback(
+            '/<li>(.*?Fiyat:[^<]*)/is',
+            function ($matches) {
+                $content = $matches[1];
+                // "Fiyat:" öncesini ve sonrasını ayır
+                if (preg_match('/^(.*?)\s*(Fiyat:.*)$/is', $content, $parts)) {
+                    $beforePrice = trim($parts[1]);
+                    $afterPrice = trim($parts[2]);
+
+                    // Eğer "Fiyat:" öncesi varsa liste item olarak kalsın
+                    if (!empty($beforePrice)) {
+                        return "<li>{$beforePrice}</li></ul>\n<p>{$afterPrice}</p>\n<ul>";
+                    } else {
+                        // "Fiyat:" ile başlıyorsa direkt paragrafa al
+                        return "</ul>\n<p>{$afterPrice}</p>\n<ul>";
+                    }
+                }
+                return $matches[0];
+            },
+            $html
+        );
+
+        // Boş <ul></ul> taglerini temizle
+        $html = preg_replace('/<ul>\s*<\/ul>/is', '', $html);
+
         // Link'lere target="_blank" ve class ekle
         $html = preg_replace_callback(
             '/<a href="([^"]+)">/',

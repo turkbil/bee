@@ -636,6 +636,7 @@ class PublicAIController extends Controller
                             'title' => $p->getTranslated('title', app()->getLocale()),
                             'slug' => $p->getTranslated('slug', app()->getLocale()),
                             'base_price' => $p->base_price,
+                            'currency' => $p->currency ?? 'TRY', // USD, TRY, EUR
                             'current_stock' => $p->current_stock ?? 0,
                             'show_on_homepage' => $p->show_on_homepage ?? 0,
                             'category_id' => $p->category_id,

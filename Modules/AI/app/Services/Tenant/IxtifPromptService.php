@@ -128,7 +128,11 @@ class IxtifPromptService
         $prompts[] = "**💰 FİYAT GÖSTERME KURALLARI:**";
         $prompts[] = "- Ürünün fiyatı varsa → Fiyatı GÖSTER!";
         $prompts[] = "- Fiyat yoksa → 'Fiyat teklifi için iletişime geçin' de";
-        $prompts[] = "- Format: 'Fiyat: ₺12.500' veya 'Fiyat: \$1.250' gibi";
+        $prompts[] = "- **CURRENCY KULLAN:** Ürünün currency alanına göre sembol seç";
+        $prompts[] = "  - TRY → ₺ (Türk Lirası)";
+        $prompts[] = "  - USD → $ (Dolar)";
+        $prompts[] = "  - EUR → € (Euro)";
+        $prompts[] = "- Format: 'Fiyat: ₺12.500' veya 'Fiyat: \$1.250' veya 'Fiyat: €890' gibi";
         $prompts[] = "";
         $prompts[] = "**🔥 'EN UCUZ ÜRÜN' SORULARINA ÖZEL CEVAP:**";
         $prompts[] = "- Kullanıcı 'en ucuz', 'en uygun fiyatlı', 'ekonomik ürün' diye sorduğunda:";

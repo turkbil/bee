@@ -148,35 +148,6 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // 🛡️ CONFIG CACHE FALLBACK - Missing APP_KEY otomatik düzeltme
-        $exceptions->renderable(function (\Illuminate\Encryption\MissingAppKeyException $e, $request) {
-            // Config cache yoksa otomatik oluştur ve retry et
-            if (!file_exists(base_path('bootstrap/cache/config.php'))) {
-                try {
-                    // Artisan komutu ile config cache oluştur
-                    shell_exec('cd ' . base_path() . ' && php artisan config:cache 2>&1');
-
-                    // Log kaydı
-                    @file_put_contents(
-                        storage_path('logs/auto-config-recovery.log'),
-                        date('Y-m-d H:i:s') . " - AUTO CONFIG CACHE RECOVERY - Missing APP_KEY fixed\n",
-                        FILE_APPEND
-                    );
-
-                    // Kullanıcıyı bilgilendir ve yönlendir
-                    return response()->view('errors.config-recovered', [
-                        'message' => 'System configuration recovered. Please refresh the page.'
-                    ], 200)->header('Refresh', '2; url=' . $request->fullUrl());
-
-                } catch (\Exception $ex) {
-                    // Hata durumunda detaylı mesaj göster
-                    return response()->view('errors.config-failed', [
-                        'error' => $ex->getMessage()
-                    ], 500);
-                }
-            }
-        });
-
         $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
             if ($e->getStatusCode() == 503) {
                 return response()->view('errors.offline', ['domain' => $request->getHost()], 503);

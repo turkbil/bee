@@ -103,13 +103,11 @@ class PageController extends Controller
     public function clearCache()
     {
         try {
-            // Tüm cache türlerini temizle
-            Cache::flush();
-            Artisan::call('cache:clear');
-            Artisan::call('config:clear');
-            Artisan::call('route:clear');
+            // ⚠️ SAFE CACHE CLEAR - config:clear KALDIRILDI (sistem çöker!)
+            // View ve Response cache temizle (kullanıcı değişikliklerini görmek için yeterli)
+
             Artisan::call('view:clear');
-            
+
             // Response Cache temizle
             if (class_exists('Spatie\ResponseCache\Facades\ResponseCache')) {
                 ResponseCache::clear();

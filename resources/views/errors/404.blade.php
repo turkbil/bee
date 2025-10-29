@@ -49,38 +49,16 @@
             // Ana Sayfa (her zaman var)
             $quickLinks[] = [
                 'url' => url('/'),
-                'icon' => 'fas fa-home',
-                'color' => 'text-blue-500',
                 'label' => __('Ana Sayfa')
             ];
 
-            // Modül icon/renk/label mapping (yeni modül eklenince buraya ekle)
-            $moduleMap = [
-                'Shop' => [
-                    'icon' => 'fas fa-shopping-cart',
-                    'color' => 'text-green-500',
-                    'label' => __('Ürünler')
-                ],
-                'Blog' => [
-                    'icon' => 'fas fa-newspaper',
-                    'color' => 'text-purple-500',
-                    'label' => __('Blog')
-                ],
-                'Portfolio' => [
-                    'icon' => 'fas fa-briefcase',
-                    'color' => 'text-orange-500',
-                    'label' => __('Portfolyo')
-                ],
-                'Announcement' => [
-                    'icon' => 'fas fa-bullhorn',
-                    'color' => 'text-yellow-500',
-                    'label' => __('Duyurular')
-                ],
-                'Page' => [
-                    'icon' => 'fas fa-file-alt',
-                    'color' => 'text-indigo-500',
-                    'label' => __('Sayfalar')
-                ],
+            // Modül label mapping (sadece gösterilecek modüller)
+            $moduleLabels = [
+                'Shop' => __('Ürünler'),
+                'Blog' => __('Blog'),
+                'Portfolio' => __('Portfolyo'),
+                'Announcement' => __('Duyurular'),
+                'Page' => __('Sayfalar'),
             ];
 
             // Tenant'ın aktif modüllerini module_tenants'dan çek
@@ -90,15 +68,13 @@
                 foreach ($activeModules as $module) {
                     $moduleName = $module->getName();
 
-                    // Mapping'de varsa ekle
-                    if (isset($moduleMap[$moduleName])) {
+                    // Label varsa ekle
+                    if (isset($moduleLabels[$moduleName])) {
                         try {
                             $slug = \App\Services\ModuleSlugService::getSlug($moduleName, 'index');
                             $quickLinks[] = [
                                 'url' => url($slug),
-                                'icon' => $moduleMap[$moduleName]['icon'],
-                                'color' => $moduleMap[$moduleName]['color'],
-                                'label' => $moduleMap[$moduleName]['label']
+                                'label' => $moduleLabels[$moduleName]
                             ];
                         } catch (\Exception $e) {
                             // Slug yoksa skip
@@ -109,16 +85,13 @@
             } catch (\Exception $e) {
                 // Hata varsa sadece Ana Sayfa göster
             }
-
-            // Max 4 link göster (responsive design için)
-            $quickLinks = array_slice($quickLinks, 0, 4);
         @endphp
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {{-- Simple Link List --}}
+        <div class="flex flex-wrap justify-center gap-4 mb-8">
             @foreach($quickLinks as $link)
-            <a href="{{ $link['url'] }}" class="group p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <i class="{{ $link['icon'] }} text-3xl {{ $link['color'] }} mb-2"></i>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $link['label'] }}</p>
+            <a href="{{ $link['url'] }}" class="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all shadow-sm">
+                {{ $link['label'] }}
             </a>
             @endforeach
         </div>

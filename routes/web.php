@@ -88,19 +88,32 @@ Route::get('/manifest.json', function () {
         'icons' => []
     ];
 
-    // Logo varsa icon olarak ekle
-    $siteLogo = setting('site_logo');
-    if ($siteLogo) {
-        $logoUrl = cdn($siteLogo);
-        $manifest['icons'][] = [
-            'src' => $logoUrl,
-            'sizes' => '512x512',
-            'type' => 'image/png',
-            'purpose' => 'any maskable'
+    // LogoService'den logo al (header/homepage ile aynı kaynak)
+    $logoService = app(\App\Services\LogoService::class);
+    $logoUrl = $logoService->getSchemaLogoUrl(); // Önce light logo, yoksa dark logo
+
+    if ($logoUrl) {
+        // PWA standartları - Farklı boyutlar
+        $iconSizes = [
+            ['size' => '192x192', 'purpose' => 'any'],
+            ['size' => '512x512', 'purpose' => 'any'],
+            ['size' => '192x192', 'purpose' => 'maskable'],
+            ['size' => '512x512', 'purpose' => 'maskable']
         ];
+
+        foreach ($iconSizes as $icon) {
+            $manifest['icons'][] = [
+                'src' => $logoUrl,
+                'sizes' => $icon['size'],
+                'type' => 'image/png',
+                'purpose' => $icon['purpose']
+            ];
+        }
     }
 
-    return response()->json($manifest);
+    // 1 yıl cache (manifest nadiren değişir)
+    return response()->json($manifest)
+        ->header('Cache-Control', 'public, max-age=31536000, immutable');
 })->name('manifest');
 
 // Test SEO component

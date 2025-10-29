@@ -620,8 +620,13 @@ class PublicAIController extends Controller
 
                     $query = \Modules\Shop\App\Models\ShopProduct::whereNotNull('base_price')
                         ->where('base_price', '>', 0)
-                        ->where('category_id', '!=', 44); // Yedek parça HARİÇ
+                        ->where('category_id', '!=', 44) // Yedek parça HARİÇ
+                        // SIRALAMA ÖNCELİĞİ: Homepage → Stok → Sort Order → Fiyat
+                        ->orderByRaw('show_on_homepage DESC, homepage_sort_order ASC')
+                        ->orderBy('current_stock', 'desc')
+                        ->orderBy('sort_order', 'asc');
 
+                    // Fiyat sıralaması en sonda
                     if ($isCheapest) {
                         $query->orderBy('base_price', 'asc');
                     } else {
@@ -639,6 +644,8 @@ class PublicAIController extends Controller
                             'currency' => $p->currency ?? 'TRY', // USD, TRY, EUR
                             'current_stock' => $p->current_stock ?? 0,
                             'show_on_homepage' => $p->show_on_homepage ?? 0,
+                            'homepage_sort_order' => $p->homepage_sort_order ?? 999, // Homepage sıralaması
+                            'sort_order' => $p->sort_order ?? 0, // Kategori içi sıralama
                             'category_id' => $p->category_id,
                         ];
                     })->toArray();

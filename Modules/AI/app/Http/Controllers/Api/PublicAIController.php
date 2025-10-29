@@ -930,6 +930,10 @@ class PublicAIController extends Controller
             $finalMessage = $aiResponse['content'] ?? '';
             $finalMessage = $this->fixWhatsAppLinks($finalMessage);
 
+            // 📝 Format List Items - Convert inline list to proper markdown list
+            // AI bazen "için: - item1 - item2" şeklinde yazar, "için:\n- item1\n- item2" yapmalıyız
+            $finalMessage = $this->formatListItems($finalMessage);
+
             // 📝 MARKDOWN TO HTML - Backend parsing (güvenli ve tutarlı)
             $markdownService = app(MarkdownService::class);
             $finalMessage = $markdownService->parse($finalMessage);
@@ -2241,6 +2245,29 @@ class PublicAIController extends Controller
         $fixed = preg_replace($pattern2, $replacement2, $fixed);
 
         return $fixed;
+    }
+
+    /**
+     * 📝 Format List Items - Convert inline list to proper markdown list
+     *
+     * AI bazen liste itemlarını tek satırda yazar:
+     * "Bilgi için: - Kapasite? - Manuel mi? - Nerede kullanacaksınız?"
+     *
+     * Bunu şöyle çevir:
+     * "Bilgi için:\n- Kapasite?\n- Manuel mi?\n- Nerede kullanacaksınız?"
+     *
+     * Böylece MarkdownService düzgün <ul><li> oluşturur.
+     *
+     * @param string $content AI response content
+     * @return string Formatted content with proper line breaks for lists
+     */
+    private function formatListItems(string $content): string
+    {
+        // Pattern: "text: - item" → "text:\n- item"
+        // Closing paren da ekle: "item?) - next" → "item?)\n- next"
+        $content = preg_replace('/([:\?\!\.\)])(\s+)-\s+/', "$1\n- ", $content);
+
+        return $content;
     }
 
     /**

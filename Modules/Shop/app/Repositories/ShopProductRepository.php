@@ -199,9 +199,9 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
 
                 // ✅ JSON field aramaları - Türkçe karakter uyumlu
                 foreach ($locales as $locale) {
-                    $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm])
-                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm]);
+                    $query->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                        ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(body, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
                 }
             })
             ->active()
@@ -350,8 +350,8 @@ readonly class ShopProductRepository implements ShopProductRepositoryInterface
             // ✅ JSON field aramaları (title, short_description) - Türkçe karakter uyumlu
             foreach ($locales as $locale) {
                 $searchQuery
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm])
-                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) COLLATE utf8mb4_turkish_ci LIKE ?", [$searchTerm]);
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(short_description, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
             }
         });
     }

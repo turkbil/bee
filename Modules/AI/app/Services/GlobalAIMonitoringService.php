@@ -142,7 +142,7 @@ readonly class GlobalAIMonitoringService
         $feature = AIFeature::where('slug', $featureSlug)->first();
         
         return $this->recordAIUsage([
-            'tenant_id' => tenant('id') ?? '1',
+            'tenant_id' => (string) (tenant('id') ?? '1'),
             'user_id' => auth()->id() ?? 1,
             'feature_slug' => $featureSlug,
             'input_tokens' => $tokenData['input_tokens'] ?? 0,
@@ -161,7 +161,7 @@ readonly class GlobalAIMonitoringService
      */
     public function getComprehensiveAnalytics(?string $tenantId = null, array $filters = []): array
     {
-        $tenantId = $tenantId ?: tenant('id');
+        $tenantId = $tenantId ?: (string) tenant('id');
         $cacheKey = "ai_analytics_{$tenantId}_" . md5(json_encode($filters));
         
         return Cache::remember($cacheKey, 300, function () use ($tenantId, $filters) {
@@ -195,7 +195,7 @@ readonly class GlobalAIMonitoringService
      */
     public function getRealTimeMetrics(?string $tenantId = null): array
     {
-        $tenantId = $tenantId ?: tenant('id');
+        $tenantId = $tenantId ?: (string) tenant('id');
         
         // Son 24 saatlik veriler
         $last24Hours = AICreditUsage::where('tenant_id', $tenantId)
@@ -232,7 +232,7 @@ readonly class GlobalAIMonitoringService
      */
     public function getDebugData(?string $tenantId = null, int $limit = 100): array
     {
-        $tenantId = $tenantId ?: tenant('id');
+        $tenantId = $tenantId ?: (string) tenant('id');
         
         $recentUsage = AICreditUsage::where('tenant_id', $tenantId)
             ->with(['user', 'tenant'])
@@ -242,7 +242,7 @@ readonly class GlobalAIMonitoringService
             
         return [
             'recent_usage' => $recentUsage->map(function ($usage) {
-                $metadata = json_decode($usage->metadata ?? '{}', true);
+                $metadata = is_array($usage->metadata) ? $usage->metadata : json_decode($usage->metadata ?? '{}', true);
                 return [
                     'id' => $usage->id,
                     'timestamp' => $usage->used_at->format('d.m.Y H:i:s'),
@@ -276,7 +276,7 @@ readonly class GlobalAIMonitoringService
     private function validateUsageData(array $data): array
     {
         return [
-            'tenant_id' => $data['tenant_id'] ?? tenant('id') ?? '1',
+            'tenant_id' => $data['tenant_id'] ?? (string) (tenant('id') ?? '1'),
             'user_id' => $data['user_id'] ?? auth()->id() ?? 1,
             'conversation_id' => $data['conversation_id'] ?? null,
             'feature_slug' => $data['feature_slug'] ?? 'general',

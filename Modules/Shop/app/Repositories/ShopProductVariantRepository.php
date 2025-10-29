@@ -252,7 +252,7 @@ readonly class ShopProductVariantRepository implements ShopProductVariantReposit
 
             $query->where(function (Builder $subQuery) use ($searchTerm, $locales) {
                 foreach ($locales as $locale) {
-                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) LIKE ?", [$searchTerm]);
+                    $subQuery->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.\"{$locale}\"')) COLLATE utf8mb4_unicode_ci LIKE ?", [$searchTerm]);
                 }
 
                 $subQuery->orWhere('sku', 'LIKE', $searchTerm)

@@ -680,6 +680,12 @@
                                             $currentLocale,
                                         );
                                         $variantImage = $variant->getFirstMedia('featured_image');
+
+                                        // ✅ Fallback: Varyant fotoğrafı yoksa parent ürün (ana ürün) fotoğrafını kullan
+                                        if (!$variantImage) {
+                                            $variantImage = $item->getFirstMedia('featured_image');
+                                        }
+
                                         $variantImageUrl = $variantImage
                                             ? ($variantImage->hasGeneratedConversion('thumb')
                                                 ? $variantImage->getUrl('thumb')

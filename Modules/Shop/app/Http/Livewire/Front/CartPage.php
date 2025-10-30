@@ -42,13 +42,13 @@ class CartPage extends Component
         try {
             $cartService->updateQuantity($cartItemId, $quantity);
             $this->loadCart();
-            $this->emit('cartUpdated');
+            $this->dispatch('cartUpdated');
 
-            $this->dispatchBrowserEvent('cart-updated', [
+            $this->dispatch('cart-updated', [
                 'message' => 'Sepet güncellendi',
             ]);
         } catch (\Exception $e) {
-            $this->dispatchBrowserEvent('cart-error', [
+            $this->dispatch('cart-error', [
                 'message' => 'Hata: ' . $e->getMessage(),
             ]);
         }
@@ -77,13 +77,13 @@ class CartPage extends Component
         try {
             $cartService->removeItem($cartItemId);
             $this->loadCart();
-            $this->emit('cartUpdated');
+            $this->dispatch('cartUpdated');
 
-            $this->dispatchBrowserEvent('cart-item-removed', [
+            $this->dispatch('cart-item-removed', [
                 'message' => 'Ürün sepetten çıkarıldı',
             ]);
         } catch (\Exception $e) {
-            $this->dispatchBrowserEvent('cart-error', [
+            $this->dispatch('cart-error', [
                 'message' => 'Hata: ' . $e->getMessage(),
             ]);
         }
@@ -96,13 +96,13 @@ class CartPage extends Component
         try {
             $cartService->clearCart();
             $this->loadCart();
-            $this->emit('cartUpdated');
+            $this->dispatch('cartUpdated');
 
-            $this->dispatchBrowserEvent('cart-cleared', [
+            $this->dispatch('cart-cleared', [
                 'message' => 'Sepet boşaltıldı',
             ]);
         } catch (\Exception $e) {
-            $this->dispatchBrowserEvent('cart-error', [
+            $this->dispatch('cart-error', [
                 'message' => 'Hata: ' . $e->getMessage(),
             ]);
         }

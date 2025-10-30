@@ -52,9 +52,9 @@ class AddToCartButton extends Component
                 $this->variantId
             );
 
-            $this->emit('cartUpdated');
+            $this->dispatch('cartUpdated');
 
-            $this->dispatchBrowserEvent('product-added-to-cart', [
+            $this->dispatch('product-added-to-cart', [
                 'message' => 'Ürün sepete eklendi!',
                 'productId' => $this->productId,
             ]);
@@ -64,7 +64,7 @@ class AddToCartButton extends Component
                 $this->quantity = 1;
             }
         } catch (\Exception $e) {
-            $this->dispatchBrowserEvent('cart-error', [
+            $this->dispatch('cart-error', [
                 'message' => 'Hata: ' . $e->getMessage(),
             ]);
         } finally {

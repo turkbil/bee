@@ -35,9 +35,9 @@ class CartWidget extends Component
         $cartService->removeItem($cartItemId);
 
         $this->refreshCart();
-        $this->emit('cartUpdated');
+        $this->dispatch('cartUpdated');
 
-        $this->dispatchBrowserEvent('cart-item-removed', [
+        $this->dispatch('cart-item-removed', [
             'message' => 'Ürün sepetten çıkarıldı',
         ]);
     }

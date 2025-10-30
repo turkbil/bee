@@ -27,6 +27,13 @@
         $productBasePrice = $product['price'] ?? 0;
         $productTryPrice = $product['try_price'] ?? null;
         $productExchangeRate = $product['exchange_rate'] ?? 1;
+
+        // Old price (discount) data
+        $productCompareAtPrice = $product['compare_at_price'] ?? null;
+        $productDiscountPercentage = null;
+        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
+            $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
+        }
     } else {
         // Shop format (ShopProduct model)
         $productId = $product->product_id;
@@ -56,6 +63,19 @@
         $productTryPrice = $productCurrencyCode !== 'TRY'
             ? number_format($productBasePrice * $productExchangeRate, 0, ',', '.')
             : null;
+
+        // Old price (discount) data
+        $productCompareAtPrice = $product->compare_at_price ?? null;
+        $productDiscountPercentage = null;
+        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
+            $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
+        }
+        $productFormattedComparePrice = null;
+        if ($productCompareAtPrice) {
+            $productFormattedComparePrice = $currencyRelation
+                ? $currencyRelation->formatPrice($productCompareAtPrice)
+                : number_format($productCompareAtPrice, 0, ',', '.') . ' ₺';
+        }
     }
 
     // Layout classes
@@ -76,29 +96,8 @@
 @endphp
 
 <div x-data="{
-    showTryPrice: false,
-    cardHovered: false,
-    autoShowTimer: null,
-    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }},
-    isUSD: {{ $productCurrencyCode !== 'TRY' ? 'true' : 'false' }},
-    init() {
-        // Her card hover'da otomatik TRY göster (1 saniye)
-        this.$watch('cardHovered', value => {
-            if (value && this.hasTryPrice && this.isUSD) {
-                this.showTryPrice = true;
-                this.autoShowTimer = setTimeout(() => {
-                    this.showTryPrice = false;
-                }, 1000);
-            } else {
-                // Card'dan çıkınca timer'ı temizle
-                if (this.autoShowTimer) {
-                    clearTimeout(this.autoShowTimer);
-                    this.autoShowTimer = null;
-                }
-            }
-        });
-    }
-}" @mouseenter="cardHovered = true" @mouseleave="cardHovered = false; showTryPrice = false" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
+    priceHovered: false
+}" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
 
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
@@ -138,39 +137,59 @@
 
             {{-- Price & Actions --}}
             <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500 flex items-center justify-between gap-3' }}">
-                {{-- Price with Transform Effect (USD ⇄ TRY) --}}
+                {{-- Price with Transform Effect (USD ⇄ TRY) + Old Price --}}
                 <div class="flex-1 min-w-0">
+                    {{-- Discount Badge (Foto üstünde) - sadece %10+ indirim varsa --}}
+                    @if($productDiscountPercentage && $productDiscountPercentage >= 10)
+                        <div class="absolute top-3 left-3 z-10 bg-gradient-to-br from-orange-600 to-red-600 text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                            -%{{ $productDiscountPercentage }}
+                        </div>
+                    @endif
+
                     @if($productTryPrice && $productCurrencyCode !== 'TRY')
+                        {{-- Old Price (üstü çizili) - varsa --}}
+                        @if(isset($productFormattedComparePrice))
+                            <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400 line-through mb-1">
+                                {{ $productFormattedComparePrice }}
+                            </div>
+                        @endif
+
                         <div class="relative h-8 flex items-center"
-                             x-data="{ hovering: false }"
-                             @mouseenter="hovering = true"
-                             @mouseleave="hovering = false">
+                             @mouseenter="priceHovered = true"
+                             @mouseleave="priceHovered = false">
                             {{-- USD Price (default) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-300 whitespace-nowrap"
-                                 x-show="!hovering"
-                                 x-transition:enter="transition ease-in duration-200"
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-200 whitespace-nowrap"
+                                 x-show="!priceHovered"
+                                 x-transition:enter="transition ease-in duration-150"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-out duration-200"
+                                 x-transition:leave="transition ease-out duration-150"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95">
                                 {{ $productFormattedPrice }}
                             </div>
 
                             {{-- TRY Price (hover) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-300 whitespace-nowrap"
-                                 x-show="hovering"
-                                 x-transition:enter="transition ease-in duration-200"
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 whitespace-nowrap scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                                 x-show="priceHovered"
+                                 x-transition:enter="transition ease-in duration-150"
                                  x-transition:enter-start="opacity-0 scale-95"
-                                 x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-out duration-200"
-                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:enter-end="opacity-100 scale-105"
+                                 x-transition:leave="transition ease-out duration-150"
+                                 x-transition:leave-start="opacity-100 scale-105"
                                  x-transition:leave-end="opacity-0 scale-95"
                                  style="display: none;">
                                 {{ $productTryPrice }} ₺
                             </div>
                         </div>
                     @else
+                        {{-- Old Price (üstü çizili) - varsa --}}
+                        @if(isset($productFormattedComparePrice))
+                            <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400 line-through mb-1">
+                                {{ $productFormattedComparePrice }}
+                            </div>
+                        @endif
+
                         {{-- TRY Only Price --}}
                         <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 whitespace-nowrap h-8 flex items-center">
                             {{ $productFormattedPrice }}
@@ -193,7 +212,7 @@
                     @if($isPriceOnRequest)
                         {{-- Price Quote Button --}}
                         <a href="{{ $productUrl }}"
-                           class="flex-shrink-0 bg-gradient-to-br from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95">
+                           class="flex-shrink-0 bg-gradient-to-br from-orange-700 to-red-700 hover:from-orange-800 hover:to-red-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95">
                             <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-12">
                                 <i class="fa-solid fa-file-invoice-dollar text-base"></i>
                             </span>
@@ -221,8 +240,8 @@
                                 }, 500);
                             "
                             :disabled="loading || success"
-                            class="flex-shrink-0 bg-gradient-to-br from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
-                            :class="{ 'animate-pulse': loading, 'bg-green-600': success }">
+                            class="flex-shrink-0 bg-gradient-to-br from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
+                            :class="{ 'animate-pulse': loading, '!bg-gradient-to-br !from-green-600 !to-emerald-600': success }">
                             <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110">
                                 <i class="fa-solid text-base transition-all duration-300"
                                    :class="{
@@ -231,8 +250,8 @@
                                        'fa-cart-plus': !loading && !success
                                    }"></i>
                             </span>
-                            <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-medium pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
-                                <span class="whitespace-pre-line" x-text="loading ? 'Eklen-\niyor' : (success ? 'Eklen-\ndi!' : 'Sepete\nEkle')"></span>
+                            <span class="max-w-0 overflow-hidden group-hover:max-w-[3.5rem] transition-all duration-300 text-[11px] font-semibold pl-0 group-hover:pl-2 leading-tight flex items-center whitespace-nowrap">
+                                <span x-text="loading ? 'Ekle' : (success ? 'Tamam!' : 'Ekle')"></span>
                             </span>
                         </button>
                     @endif

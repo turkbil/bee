@@ -30,8 +30,11 @@
                         <div class="flex flex-col md:flex-row gap-6">
                             {{-- Product Image --}}
                             <div class="flex-shrink-0">
-                                @if($item->product->firstMedia())
-                                    <img src="{{ thumb($item->product->firstMedia(), 120, 120, ['scale' => 1]) }}"
+                                @php
+                                    $featuredMedia = $item->product->getMedia('featured_image')->first();
+                                @endphp
+                                @if($featuredMedia)
+                                    <img src="{{ thumb($featuredMedia, 120, 120, ['scale' => 1]) }}"
                                          alt="{{ $item->product->getTranslated('title', app()->getLocale()) }}"
                                          class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg"
                                          loading="lazy">

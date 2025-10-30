@@ -441,6 +441,70 @@
 
                         </div>
 
+                        {{-- Hizmetler (Dropdown Menu) --}}
+                        <div class="relative dropdown-menu py-2" x-data="{ open: false }" @mouseenter="activeMegaMenu = null">
+                            <button @click="open = !open"
+                                    @mouseenter="open = true"
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
+                                <i :class="open ? 'fa-solid' : 'fa-light'" class="fa-screwdriver-wrench transition-all duration-300"></i>
+                                <span>Hizmetler</span>
+                                <i class="fa-solid fa-chevron-down text-xs transition-transform"
+                                   :class="{ 'rotate-180': open }"></i>
+                            </button>
+
+                            <div x-show="open"
+                                 @click.away="open = false"
+                                 @mouseleave="open = false"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
+                                 class="absolute top-full mt-2 w-56 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl py-2 z-50"
+                                 x-cloak>
+                                <a href="/hizmetler/kiralama"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                    <i class="fa-solid fa-hand-holding-box w-5 text-center"></i>
+                                    <span>Kiralama</span>
+                                </a>
+                                <a href="/hizmetler/satin-alma"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                    <i class="fa-solid fa-cart-shopping w-5 text-center"></i>
+                                    <span>Satın Alma</span>
+                                </a>
+                                <a href="/hizmetler/ikinci-el"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                    <i class="fa-solid fa-recycle w-5 text-center"></i>
+                                    <span>İkinci El</span>
+                                </a>
+                                <a href="/hizmetler/bakim-anlaşmalari"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                    <i class="fa-solid fa-file-contract w-5 text-center"></i>
+                                    <span>Bakım Anlaşmaları</span>
+                                </a>
+                                <a href="/hizmetler/teknik-servis"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                    <i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i>
+                                    <span>Teknik Servis</span>
+                                </a>
+                                <a href="/hizmetler/yedek-parca"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                                    <span>Yedek Parça</span>
+                                </a>
+
+                                {{-- Ana Hizmetler Sayfası --}}
+                                <div class="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                                    <a href="/hizmetler"
+                                       class="flex items-center justify-center gap-2 mx-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold rounded-lg transition text-sm">
+                                        <span>Tüm Hizmetler</span>
+                                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Kurumsal (Hibrit Mega Menu) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'hakkimizda'">
@@ -1019,6 +1083,86 @@
 
                 {{-- Ayırıcı --}}
                 <div class="border-t-2 border-gray-300 dark:border-gray-700 my-3"></div>
+
+                {{-- Hizmetler Accordion --}}
+                <div class="mb-2">
+                    <button @click="expandedCategory = expandedCategory === 'hizmetler' ? null : 'hizmetler'"
+                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
+                            <span>Hizmetler</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
+                           :class="{ 'rotate-180': expandedCategory === 'hizmetler' }"></i>
+                    </button>
+
+                    {{-- Hizmetler İçerik (2 Kolon) --}}
+                    <div x-show="expandedCategory === 'hizmetler'"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 -translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-2"
+                         class="mt-2 bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Sol Kolon --}}
+                            <div class="space-y-2">
+                                <a href="/hizmetler/kiralama"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-hand-holding-box text-sm"></i>
+                                    <span>Kiralama</span>
+                                </a>
+                                <a href="/hizmetler/satin-alma"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-cart-shopping text-sm"></i>
+                                    <span>Satın Alma</span>
+                                </a>
+                                <a href="/hizmetler/ikinci-el"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-recycle text-sm"></i>
+                                    <span>İkinci El</span>
+                                </a>
+                            </div>
+
+                            {{-- Sağ Kolon --}}
+                            <div class="space-y-2">
+                                <a href="/hizmetler/bakim-anlaşmalari"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-file-contract text-sm"></i>
+                                    <span>Bakım Anlaşmaları</span>
+                                </a>
+                                <a href="/hizmetler/teknik-servis"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
+                                    <span>Teknik Servis</span>
+                                </a>
+                                <a href="/hizmetler/yedek-parca"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-gear text-sm"></i>
+                                    <span>Yedek Parça</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        {{-- Tüm Hizmetler Butonu --}}
+                        <div class="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+                            <a href="/hizmetler"
+                               @click="mobileMenuOpen = false"
+                               class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold rounded-lg transition text-sm">
+                                <span>Tüm Hizmetler</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 {{-- Kurumsal Accordion --}}
                 <div class="mb-2">

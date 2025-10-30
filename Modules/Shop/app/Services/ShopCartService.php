@@ -59,6 +59,11 @@ class ShopCartService
         $cart = $this->getCurrentCart();
         $product = ShopProduct::findOrFail($productId);
 
+        // Fiyatsız ürünler sepete eklenemez
+        if (!$product->base_price || $product->base_price <= 0) {
+            throw new \Exception('Bu ürünün fiyat bilgisi bulunmamaktadır. Lütfen bizimle iletişime geçin.');
+        }
+
         return DB::transaction(function () use ($cart, $product, $quantity, $variantId, $customizationOptions) {
             // Aynı ürün zaten varsa adet artır
             $existingItem = $cart->items()
@@ -204,7 +209,17 @@ class ShopCartService
 
         foreach ($items as $item) {
             if (!$item->product) {
-                continue; // Ürün silinmişse skip
+                // Ürün silinmişse cart item'ı da sil
+                $item->delete();
+                $needsRecalculation = true;
+                continue;
+            }
+
+            // Fiyatsız ürünler sepetten çıkarılmalı
+            if (!$item->product->base_price || $item->product->base_price <= 0) {
+                $item->delete();
+                $needsRecalculation = true;
+                continue;
             }
 
             // Güncel fiyatı al
@@ -228,21 +243,16 @@ class ShopCartService
      */
     protected function getProductPrice(ShopProduct $product, ?int $variantId = null): float
     {
-        // Fiyat talep ediliyorsa
-        if ($product->price_on_request) {
-            return 0.0;
-        }
-
         // Varyant varsa varyant fiyatı
         if ($variantId) {
             $variant = ShopProductVariant::find($variantId);
-            if ($variant && $variant->price) {
+            if ($variant && $variant->price && $variant->price > 0) {
                 return (float) $variant->price;
             }
         }
 
-        // Temel fiyat
-        return (float) $product->base_price;
+        // Temel fiyat (0 ise sepete eklenmemeli zaten)
+        return (float) ($product->base_price ?? 0);
     }
 
     /**

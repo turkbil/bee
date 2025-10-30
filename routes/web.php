@@ -12,8 +12,7 @@ use Modules\Search\App\Http\Controllers\SearchPageController;
 
 // 🛒 CART & CHECKOUT ROUTES - ABSOLUTE PRIORITY
 Route::get('/shop/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');
-Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPage::class)->name('shop.checkout');
-Route::get('/shop/checkout-new', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout.new');
+Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
 
 // DESIGN LIBRARY STATIC FILES - MUST BE FIRST, BEFORE ADMIN & CATCHALL ROUTES
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');

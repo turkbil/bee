@@ -152,7 +152,6 @@ class ProductCacheService
             'short_description' => $product->short_description,
             'body' => $product->body,
             'base_price' => $product->base_price,
-            'price_on_request' => $product->price_on_request,
             'category_id' => $product->category_id,
             'brand_id' => $product->brand_id,
             'technical_specs' => $product->technical_specs,
@@ -188,7 +187,6 @@ class ProductCacheService
             'features' => $product->features ?? [],
             'tags' => $product->tags ?? [],
             'base_price' => $product->base_price,
-            'price_on_request' => $product->price_on_request,
         ];
     }
 

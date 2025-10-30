@@ -11,8 +11,9 @@
 4. **Veritabanı tablosunu truncate** - ASLA!
 5. **Manuel SQL DELETE/DROP komutları** - ASLA!
 6. **Tenant database silme** - ASLA!
-7. **Sunucuda ayarlarıyla bir işlem için defalarca sor, sunucu ayarlarını rastgele değiştirme** 
-8. **Sunucuyu apacheyi restart kafana göre yapma. Özellikle onaylar iste. Gerekmedikçe de yapma.**
+7. **`php artisan config:clear` TEK BAŞINA** - SİSTEM ÇÖKER! (Detay aşağıda)
+8. **Sunucuda ayarlarıyla bir işlem için defalarca sor, sunucu ayarlarını rastgele değiştirme**
+9. **Sunucuyu apacheyi restart kafana göre yapma. Özellikle onaylar iste. Gerekmedikçe de yapma.**
 
 #### ⚠️ KULLANICI İZNİ GEREKIR:
 - **Veritabanına INSERT/UPDATE**: Önce kullanıcıya sor, onay al
@@ -271,7 +272,14 @@ echo "✅ Cache temizlendi, build tamamlandı!"
 
 **🚨 ASLA YAPMA: `php artisan config:clear` TEK BAŞINA!**
 
-**Problem:** Config cache olmadan Laravel her istekte `.env` parse eder → Bir hata olursa site çöker (404)
+**Problem:** Config cache olmadan Laravel her istekte `.env` parse eder → Sistem çöker!
+
+**❌ Neler olur:**
+- **Tenant sistemi ÇÖKER**: `config('tenancy.central_domains')` → `null`
+- **Database ÇÖKER**: `config('database.connections.mysql')` → `null`, `root@localhost` kullanır (yetki yok!)
+- **Site 404 verir**: Tenant bulunamaz hatası
+- **API çöker**: Tüm tenant request'ler başarısız
+- **Session/Cache ÇÖKER**: Redis config'i yüklenmez
 
 #### ✅ DOĞRU KULLANIM:
 
@@ -312,6 +320,26 @@ php artisan view:cache
 - View cache yoksa → Her istekte Blade compile eder
 
 **UNUTMA:** Cache olmadan production = 💣 bomba!
+
+#### 🚨 NEDEN `config:clear` TEK BAŞINA ÇALIŞMAZ?
+
+**Temel Problem: Laravel 11 Mimari Kısıtlaması**
+
+Laravel 11'de `env()` fonksiyonu sadece config dosyalarında çalışır, application code'da çalışmaz. Bu yüzden:
+
+1. **Config cache yoksa** → `config('database.connections.mysql')` = `null`
+2. **Laravel fallback yapar** → `root@localhost` kullanır
+3. **Service provider'lar boot olurken DB sorgusu atar** → Access denied!
+4. **Sistem çöker** → 500 Internal Server Error
+
+**Örnekler:**
+- `AIProviderManager::__construct()` → DB'den provider'ları yükler
+- `SilentFallbackService::boot()` → DB'den ayarları okur
+- `InitializeTenancy::handle()` → `config('tenancy.central_domains')` = null → Tenant routing bozulur
+
+**Sonuç:** Config cache olmadan config cache oluşturamazsın! (Catch-22)
+
+**ÇÖZÜM:** Sadece `composer config-refresh` kullan - hem clear hem cache yapar, atomik işlem garantisi verir.
 
 ---
 

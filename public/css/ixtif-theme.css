@@ -9,6 +9,13 @@
  */
 
 /* ========================================
+   Alpine.js Cloak - FOUC Prevention
+   ======================================== */
+[x-cloak] {
+    display: none !important;
+}
+
+/* ========================================
    RTL/LTR Direction Support
    ======================================== */
 [dir="rtl"] {
@@ -137,22 +144,8 @@ html {
 /* ========================================
    Header Sticky Animation
    ======================================== */
-header {
-    will-change: transform;
-    backface-visibility: hidden;
-}
-
-#main-header {
-    transform: translateY(0);
-}
-
-#main-header.scrolled {
-    transform: translateY(calc(var(--top-bar-height, 52px) * -1));
-}
-
-#main-header.scrolled #main-nav {
-    /* Shadow kaldırıldı - temiz tasarım için */
-}
+/* REMOVED: Alpine.js handles topbar hide/show with x-show and x-transition
+   No CSS transforms needed - header stays in place, topbar disappears on scroll */
 
 /* ========================================
    Top Bar Animated Gradient (Dark Mode)
@@ -280,37 +273,4 @@ body.dark-mode-active::after {
 
 .animate-gradient {
     animation: gradient 3s ease infinite;
-}
-
-/* ========================================
-   Product Image Drop Shadows
-   ======================================== */
-
-/* Light Mode: Koyu gölge (siyah) */
-.drop-shadow-product-light {
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15))
-            drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* Dark Mode: ÇOK hafif gölge (neredeyse yok) */
-.dark .drop-shadow-product-dark {
-    filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.04))
-            drop-shadow(0 1px 3px rgba(255, 255, 255, 0.03));
-}
-
-/* ========================================
-   Body Background - Light & Dark Mode
-   No Alpine.js dependency - Pure CSS
-   ======================================== */
-
-/* Light Mode: Soft gradient background */
-body {
-    background: linear-gradient(to bottom right, rgb(255, 255, 255), rgb(248, 250, 252), rgb(243, 244, 246));
-    color: rgb(17, 24, 39);
-}
-
-/* Dark Mode: Professional dark gradient background */
-.dark body {
-    background: linear-gradient(to bottom right, rgb(15, 23, 42), rgb(30, 41, 59), rgb(15, 23, 42));
-    color: rgb(243, 244, 246);
 }

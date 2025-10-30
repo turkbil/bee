@@ -444,7 +444,7 @@
         </section>
 
         {{-- 📋 TOC BAR - Header ile beraber hareket edecek --}}
-        <nav id="toc-bar" class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 shadow-sm z-40">
+        <nav id="toc-bar" class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 shadow-sm z-40 transition-all duration-300">
             <div class="container mx-auto px-6">
                 <div class="flex items-center gap-2 overflow-x-auto py-1.5 scrollbar-hide">
                     <a href="#description"
@@ -1112,7 +1112,7 @@
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky (MOBİLDE GİZLİ!) --}}
             <div class="hidden lg:block lg:col-span-1 order-first lg:order-last relative">
-                <aside id="sticky-sidebar" class="space-y-8 transition-all duration-200" style="will-change: transform; z-index: 1;">
+                <aside id="sticky-sidebar" class="space-y-8">
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
@@ -1510,5 +1510,29 @@
             });
         }
     </script>
+
+    {{-- Smooth Scroll for TOC Links --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll for TOC links
+            document.querySelectorAll('a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{-- Topbar kaybolma ixtif-theme.js'de (header.classList.add('scrolled')) --}}
 
 @endsection

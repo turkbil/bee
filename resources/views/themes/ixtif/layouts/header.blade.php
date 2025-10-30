@@ -195,15 +195,31 @@
         activeMegaMenu: null,
         searchOpen: false,
         activeCategory: 'first',
-        init() {}
+        scrolled: false,
+        init() {
+            // Scroll listener for hiding topbar
+            window.addEventListener('scroll', () => {
+                this.scrolled = window.scrollY > 10;
+            });
+        }
     }"
-    class="sticky top-0 left-0 right-0 z-50"
+    class="sticky top-0 left-0 right-0 z-50 transition-all duration-300"
+    :class="{ 'header-scrolled': scrolled }"
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
     @keydown.escape.window="searchOpen = false; activeMegaMenu = null"
     @close-megamenu.window="activeMegaMenu = null">
 
         {{-- Top Info Bar - Scroll'da kaybolacak --}}
-        <div id="top-bar" class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden" @mouseenter="activeMegaMenu = null">
+        <div id="top-bar"
+             x-show="!scrolled"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 -translate-y-full"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-full"
+             class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden"
+             @mouseenter="activeMegaMenu = null">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center justify-between text-sm py-3">
                     <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
@@ -360,9 +376,13 @@
         {{-- Main Menu Bar - Sticky olarak kalacak --}}
         <nav id="main-nav" class="relative bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                <div id="nav-container" class="flex items-center justify-between">
+                <div id="nav-container" class="flex items-center justify-between transition-all duration-300"
+                     :class="scrolled ? 'min-h-[80px]' : ''">
                     {{-- Logo - Sabit Genişlik Container --}}
-                    <div class="flex items-center gap-3 py-4" style="width: 200px;" @mouseenter="activeMegaMenu = null">
+                    <div class="flex items-center gap-3 transition-all duration-300"
+                         :class="scrolled ? 'py-3' : 'py-4'"
+                         style="width: 200px;"
+                         @mouseenter="activeMegaMenu = null">
                         <a href="{{ url('/') }}" class="flex items-center gap-3 justify-start w-full">
                             @php
                                 // LogoService kullan - daha temiz ve bakımı kolay

@@ -23,6 +23,7 @@ class ShopCurrency extends BaseModel
         'is_active',
         'is_default',
         'is_auto_update',
+        'last_updated_at',
         'decimal_places',
         'format',
     ];
@@ -33,6 +34,7 @@ class ShopCurrency extends BaseModel
         'is_active' => 'boolean',
         'is_default' => 'boolean',
         'is_auto_update' => 'boolean',
+        'last_updated_at' => 'datetime',
         'decimal_places' => 'integer',
     ];
 

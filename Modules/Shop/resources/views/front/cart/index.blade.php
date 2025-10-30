@@ -63,7 +63,7 @@
                                     </div>
 
                                     {{-- Remove Button --}}
-                                    <form action="{{ route('shop.cart.remove', $item->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('shop.cart.remove', $item->cart_item_id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -81,7 +81,7 @@
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm text-gray-600 dark:text-gray-400">Adet:</span>
                                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                                            <form action="{{ route('shop.cart.update', $item->id) }}" method="POST" class="inline">
+                                            <form action="{{ route('shop.cart.update', $item->cart_item_id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="quantity" value="{{ max(1, $item->quantity - 1) }}">
@@ -94,7 +94,7 @@
                                             <span class="w-12 text-center font-semibold text-gray-900 dark:text-white">
                                                 {{ $item->quantity }}
                                             </span>
-                                            <form action="{{ route('shop.cart.update', $item->id) }}" method="POST" class="inline">
+                                            <form action="{{ route('shop.cart.update', $item->cart_item_id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('PATCH')
                                                 <input type="hidden" name="quantity" value="{{ $item->quantity + 1 }}">

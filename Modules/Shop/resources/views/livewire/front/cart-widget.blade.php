@@ -110,7 +110,7 @@
                         Toplam:
                     </span>
                     <span class="text-lg font-bold text-gray-900 dark:text-white">
-                        {{ $cart && $cart->currency ? $cart->currency->formatPrice($total) : number_format($total, 2) . ' ₺' }}
+                        {{ $formattedTotal }}
                     </span>
                 </div>
 

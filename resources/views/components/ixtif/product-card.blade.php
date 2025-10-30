@@ -30,6 +30,7 @@
 
         // Old price (discount) data
         $productCompareAtPrice = $product['compare_at_price'] ?? null;
+        $productFormattedComparePrice = $product['formatted_compare_price'] ?? null;
         $productDiscountPercentage = null;
         if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);

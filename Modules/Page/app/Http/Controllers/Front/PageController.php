@@ -68,6 +68,15 @@ class PageController extends Controller
                     ? number_format($product->base_price * $exchangeRate, 0, ',', '.')
                     : null;
 
+                // Old price (compare_at_price) formatting
+                $compareAtPrice = $product->compare_at_price;
+                $formattedComparePrice = null;
+                if ($compareAtPrice && $compareAtPrice > $product->base_price) {
+                    $formattedComparePrice = $currencyRelation
+                        ? $currencyRelation->formatPrice($compareAtPrice)
+                        : number_format($compareAtPrice, 0, ',', '.') . ' ₺';
+                }
+
                 return [
                     'id' => $product->product_id,
                     'title' => $product->getTranslated('title', app()->getLocale()),
@@ -84,6 +93,8 @@ class PageController extends Controller
                     'bestseller' => $product->is_bestseller ?? false,
                     'exchange_rate' => $exchangeRate,
                     'try_price' => $tryPrice,
+                    'compare_at_price' => $compareAtPrice,
+                    'formatted_compare_price' => $formattedComparePrice,
                 ];
             });
 

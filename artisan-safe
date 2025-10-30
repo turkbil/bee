@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# SAFE ARTISAN WRAPPER
+# Bu script artisan komutlarını her zaman doğru kullanıcı (tuufi.com_) ile çalıştırır
+# Root olarak çalıştırılsa bile cache dosyaları doğru permission'a sahip olur
+#
+
+# Proje root directory
+PROJECT_ROOT="/var/www/vhosts/tuufi.com/httpdocs"
+cd "$PROJECT_ROOT" || exit 1
+
+# Web sunucusu kullanıcısı
+WEB_USER="tuufi.com_"
+
+# Mevcut kullanıcı kim?
+CURRENT_USER=$(whoami)
+
+# Eğer root veya başka bir kullanıcı ise, tuufi.com_ olarak çalıştır
+if [ "$CURRENT_USER" != "$WEB_USER" ]; then
+    echo "🔒 Running as $WEB_USER (safe mode)..."
+    exec sudo -u "$WEB_USER" php artisan "$@"
+else
+    # Zaten doğru kullanıcı, direkt çalıştır
+    exec php artisan "$@"
+fi

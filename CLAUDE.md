@@ -11,9 +11,8 @@
 4. **Veritabanı tablosunu truncate** - ASLA!
 5. **Manuel SQL DELETE/DROP komutları** - ASLA!
 6. **Tenant database silme** - ASLA!
-7. **`php artisan config:clear` TEK BAŞINA** - SİSTEM ÇÖKER! (Detay aşağıda)
-8. **Sunucuda ayarlarıyla bir işlem için defalarca sor, sunucu ayarlarını rastgele değiştirme**
-9. **Sunucuyu apacheyi restart kafana göre yapma. Özellikle onaylar iste. Gerekmedikçe de yapma.**
+7. **Sunucuda ayarlarıyla bir işlem için defalarca sor, sunucu ayarlarını rastgele değiştirme**
+8. **Sunucuyu apacheyi restart kafana göre yapma. Özellikle onaylar iste. Gerekmedikçe de yapma.**
 
 #### ⚠️ KULLANICI İZNİ GEREKIR:
 - **Veritabanına INSERT/UPDATE**: Önce kullanıcıya sor, onay al
@@ -111,6 +110,114 @@ Her renk seçiminde **kontrast oranı minimum 4.5:1** olmalı!
 5. Tekrar test et
 
 **UNUTMA:** Eğer kullanıcı "okunmuyor" derse → **SEN HATA YAPTIN!** Özür dile ve hemen düzelt.
+
+---
+
+### 🔐 DOSYA İZİNLERİ (PERMİSSİON) KURALLARI
+
+**🚨 KRİTİK: ROOT DOSYA OLUŞTURMA = WEB SUNUCUSU ERİŞEMEZ!**
+
+**Sorun:** Root olarak dosya oluşturursam, nginx/PHP-FPM okuyamaz → 500 Error!
+
+#### ❌ YANLIŞ:
+```bash
+# Root kullanıcısı ile dosya oluşturma
+Write/Edit tool kullan → Dosya root:root olarak oluşur
+# Klasör: 700 (drwx------) → nginx giremez!
+# Dosya: 644 ama root:root → PHP-FPM okuyamaz!
+# Sonuç: HTTP 500 Error
+```
+
+#### ✅ DOĞRU WORKFLOW:
+
+**1. Dosya/Klasör Oluşturma:**
+```bash
+# Her dosya oluşturduktan HEMEN SONRA:
+sudo chown tuufi.com_:psaserv /path/to/file.php
+sudo chmod 644 /path/to/file.php
+
+# Klasör oluşturduysan:
+sudo chmod 755 /path/to/directory/
+```
+
+**2. Toplu İzin Düzeltme:**
+```bash
+# Modül klasörü için
+sudo chown -R tuufi.com_:psaserv Modules/YourModule/
+sudo find Modules/YourModule/ -type f -exec chmod 644 {} \;
+sudo find Modules/YourModule/ -type d -exec chmod 755 {} \;
+```
+
+**3. OPcache Reset + Test:**
+```bash
+# Her izin değişikliğinden sonra ZORUNLU
+curl -s -k https://ixtif.com/public/opcache-reset.php > /dev/null
+sleep 2
+curl -s -k -I "https://ixtif.com/" 2>&1 | grep "HTTP"
+# HTTP/2 200 olmalı!
+```
+
+#### 🎯 Doğru İzinler:
+
+**Owner:**
+- ✅ `tuufi.com_:psaserv` (web sunucusu kullanıcısı)
+- ❌ `root:root` (nginx erişemez!)
+- ❌ `root:psaserv` (nginx hala okuyamaz!)
+
+**Dosya İzinleri:**
+- ✅ `644` (-rw-r--r--) → PHP dosyaları, view'lar
+- ✅ `755` (drwxr-xr-x) → Klasörler
+- ❌ `700` (drwx------) → Sadece root erişir, nginx giremez!
+- ❌ `600` (-rw-------) → Sadece owner okur, grup okuyamaz!
+
+#### 📋 Her Dosya Oluşturma Checklist:
+
+**Write/Edit tool kullandıktan HEMEN sonra:**
+1. ✅ `sudo chown tuufi.com_:psaserv file.php`
+2. ✅ `sudo chmod 644 file.php`
+3. ✅ Klasör varsa: `sudo chmod 755 directory/`
+4. ✅ OPcache reset: `curl opcache-reset.php`
+5. ✅ Test: `curl -I domain.com` → HTTP/2 200 kontrolü
+6. ✅ `ls -la` ile owner/permission doğrula
+
+#### ⚠️ Özellikle Dikkat:
+
+**Livewire Component'ler:**
+- PHP-FPM bu dosyaları include edecek
+- Permission hatası → 500 Error
+- Klasör 700 → "Permission denied" (nginx giremez)
+- Root:root owner → "Permission denied" (PHP-FPM okuyamaz)
+
+**Özellikle Risk Taşıyan Klasörler:**
+- `Modules/*/app/Http/Livewire/`
+- `Modules/*/app/Repositories/`
+- `Modules/*/resources/views/`
+- `app/Services/`
+
+**Storage/Cache (Dokunma!):**
+- `storage/` klasörü zaten tuufi.com_:psaserv
+- `bootstrap/cache/` zaten doğru
+- Bu klasörlere manuel chown yapma!
+
+#### 🔍 Hızlı Kontrol:
+```bash
+# Dosya owner/permission kontrol
+ls -la Modules/Shop/app/Http/Livewire/Front/
+# Beklenen:
+# drwxr-xr-x ... tuufi.com_ psaserv ... Front/
+# -rw-r--r-- ... tuufi.com_ psaserv ... CartWidget.php
+
+# Yanlışsa hemen düzelt!
+```
+
+#### 🚨 UNUTMA:
+**Her dosya oluşturma/düzenleme işleminden sonra → chown + chmod + OPcache reset!**
+
+**Aksi halde:**
+- 500 Internal Server Error
+- "Permission denied" log'ları
+- Livewire component'ler yüklenmez
+- Site çöker!
 
 ---
 
@@ -245,12 +352,6 @@ npm run prod
 echo "✅ Cache temizlendi, build tamamlandı!"
 ```
 
-**🚨 KRİTİK UYARI: Config Cache ASLA Temizleme!**
-- ❌ **ASLA kullanma**: `php artisan cache:clear` (config cache'i siler, site çöker!)
-- ❌ **ASLA kullanma**: `php artisan config:clear` (tek başına sistem bozar!)
-- ✅ **Kullan**: `composer config-refresh` (gerekirse, ama nadiren!)
-- ✅ **Kullan**: Sadece `view:clear` + `responsecache:clear`
-
 #### ⚠️ KRİTİK:
 - **ONAY BEKLEME!** Her view/tailwind değişikliğinde direkt yap
 - **Todo'ya ekle**: "🎨 Cache+Build" (kullanıcı takip etsin)
@@ -267,81 +368,6 @@ echo "✅ Cache temizlendi, build tamamlandı!"
 - **Sadece PHP logic** değişirse gerekli değil
 - **Backend/Controller** değişikliklerinde gerekli değil
 - **Sadece txt/md** dosyası değişirse gerekli değil
-
-### ⚡ PRODUCTION CACHE KURALLARI (KRİTİK!)
-
-**🚨 ASLA YAPMA: `php artisan config:clear` TEK BAŞINA!**
-
-**Problem:** Config cache olmadan Laravel her istekte `.env` parse eder → Sistem çöker!
-
-**❌ Neler olur:**
-- **Tenant sistemi ÇÖKER**: `config('tenancy.central_domains')` → `null`
-- **Database ÇÖKER**: `config('database.connections.mysql')` → `null`, `root@localhost` kullanır (yetki yok!)
-- **Site 404 verir**: Tenant bulunamaz hatası
-- **API çöker**: Tüm tenant request'ler başarısız
-- **Session/Cache ÇÖKER**: Redis config'i yüklenmez
-
-#### ✅ DOĞRU KULLANIM:
-
-**Composer Script ile (ÖNERİLEN):**
-```bash
-# Cache yenileme (tek komut)
-composer config-refresh
-
-# Production cache oluşturma
-composer cache-production
-```
-
-**Manuel kullanım (gerekirse):**
-```bash
-# ❌ ASLA TEK BAŞINA YAPMA:
-php artisan config:clear
-
-# ✅ DAIMA BİRLİKTE YAP:
-php artisan config:clear && php artisan config:cache
-
-# ✅ TAM CACHE YENİLEME:
-php artisan config:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-#### 🛡️ HATIRLATMA:
-
-**Her config değişikliğinden sonra:**
-1. `.env` veya `config/*.php` değiştirdiysen
-2. `composer config-refresh` veya `php artisan config:cache` yap
-3. OPcache varsa reset et: `curl https://domain.com/public/opcache-reset.php`
-
-**Production'da cache ZORUNLU:**
-- Config cache yoksa → DB bağlantısı patlayabilir
-- Route cache yoksa → Performans düşer
-- View cache yoksa → Her istekte Blade compile eder
-
-**UNUTMA:** Cache olmadan production = 💣 bomba!
-
-#### 🚨 NEDEN `config:clear` TEK BAŞINA ÇALIŞMAZ?
-
-**Temel Problem: Laravel 11 Mimari Kısıtlaması**
-
-Laravel 11'de `env()` fonksiyonu sadece config dosyalarında çalışır, application code'da çalışmaz. Bu yüzden:
-
-1. **Config cache yoksa** → `config('database.connections.mysql')` = `null`
-2. **Laravel fallback yapar** → `root@localhost` kullanır
-3. **Service provider'lar boot olurken DB sorgusu atar** → Access denied!
-4. **Sistem çöker** → 500 Internal Server Error
-
-**Örnekler:**
-- `AIProviderManager::__construct()` → DB'den provider'ları yükler
-- `SilentFallbackService::boot()` → DB'den ayarları okur
-- `InitializeTenancy::handle()` → `config('tenancy.central_domains')` = null → Tenant routing bozulur
-
-**Sonuç:** Config cache olmadan config cache oluşturamazsın! (Catch-22)
-
-**ÇÖZÜM:** Sadece `composer config-refresh` kullan - hem clear hem cache yapar, atomik işlem garantisi verir.
-
----
 
 ### 🔐 OTOMATİK GIT CHECKPOINT
 

@@ -138,7 +138,30 @@
 @endphp
 
 <div x-data="{
-    priceHovered: false
+    priceHovered: false,
+    showTryPrice: false,
+    priceTimer: null,
+    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }},
+    init() {
+        // Otomatik döngü başlat (sadece TRY fiyatı varsa)
+        if (this.hasTryPrice) {
+            this.startPriceCycle();
+        }
+    },
+    startPriceCycle() {
+        this.priceTimer = setInterval(() => {
+            if (!this.showTryPrice) {
+                // USD gösteriliyor → TRY'ye geç (1 saniye)
+                this.showTryPrice = true;
+                setTimeout(() => {
+                    this.showTryPrice = false;
+                }, 1000);
+            }
+        }, 3000); // Her 3 saniyede bir döngü (2s USD + 1s TRY)
+    },
+    destroy() {
+        if (this.priceTimer) clearInterval(this.priceTimer);
+    }
 }" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
 
     <div class="{{ $layoutClasses }}">
@@ -202,28 +225,26 @@
                             </div>
                         @endif
 
-                        <div class="relative h-8 flex items-center"
-                             @mouseenter="priceHovered = true"
-                             @mouseleave="priceHovered = false">
+                        <div class="relative h-8 flex items-center">
                             {{-- USD Price (default) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-200 whitespace-nowrap"
-                                 x-show="!priceHovered"
-                                 x-transition:enter="transition ease-in duration-150"
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-300 whitespace-nowrap"
+                                 x-show="!showTryPrice"
+                                 x-transition:enter="transition ease-in duration-200"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-out duration-150"
+                                 x-transition:leave="transition ease-out duration-200"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95">
                                 {{ $productFormattedPrice }}
                             </div>
 
-                            {{-- TRY Price (hover) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 whitespace-nowrap scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                                 x-show="priceHovered"
-                                 x-transition:enter="transition ease-in duration-150"
+                            {{-- TRY Price (otomatik gösterim) --}}
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-300 whitespace-nowrap scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                                 x-show="showTryPrice"
+                                 x-transition:enter="transition ease-in duration-200"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-105"
-                                 x-transition:leave="transition ease-out duration-150"
+                                 x-transition:leave="transition ease-out duration-200"
                                  x-transition:leave-start="opacity-100 scale-105"
                                  x-transition:leave-end="opacity-0 scale-95"
                                  style="display: none;">

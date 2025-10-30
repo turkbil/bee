@@ -267,12 +267,16 @@
                                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
                                         İlçe *
                                     </label>
-                                    <input
+                                    <select
                                         wire:model="district"
-                                        type="text"
                                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                                        placeholder="İlçe adını yazın"
-                                        required>
+                                        required
+                                        @if(empty($districts)) disabled @endif>
+                                        <option value="">{{ empty($districts) ? 'Önce il seçin' : 'İlçe Seçin' }}</option>
+                                        @foreach($districts as $districtId => $districtName)
+                                            <option value="{{ $districtName }}">{{ $districtName }}</option>
+                                        @endforeach
+                                    </select>
                                     @error('district') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
                             </div>

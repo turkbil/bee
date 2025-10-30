@@ -64,9 +64,20 @@ class AddressManager extends Component
             ->toArray();
     }
 
-    public function updatedCity($cityId)
+    public function updatedCity($cityName)
     {
         // İl seçilince ilçeleri yükle (geozone_counties)
+        // Önce city name'den city ID bul
+        $cityId = \DB::connection('mysql')
+            ->table('geozone_cities')
+            ->where('name', $cityName)
+            ->value('id');
+
+        if (!$cityId) {
+            $this->districts = [];
+            return;
+        }
+
         $this->districts = \DB::connection('mysql')
             ->table('geozone_counties')
             ->where('city_id', $cityId)

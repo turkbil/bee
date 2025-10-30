@@ -11,6 +11,9 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
+use Modules\Shop\App\Http\Livewire\Front\CartWidget;
+use Modules\Shop\App\Http\Livewire\Front\CartPage;
+use Modules\Shop\App\Http\Livewire\Front\AddToCartButton;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -52,6 +55,7 @@ class ShopServiceProvider extends ServiceProvider
         }
         $this->loadViewsFrom(module_path('Shop', 'resources/views'), 'shop');
 
+        // Admin Livewire Components
         Livewire::component('shop-product-component', ShopProductComponent::class);
         Livewire::component('shop-product-manage-component', ShopProductManageComponent::class);
         Livewire::component('shop-category-component', ShopCategoryComponent::class);
@@ -59,6 +63,11 @@ class ShopServiceProvider extends ServiceProvider
         Livewire::component('shop-brand-component', ShopBrandComponent::class);
         Livewire::component('shop-brand-manage-component', ShopBrandManageComponent::class);
         Livewire::component('homepage-products-component', HomepageProductsComponent::class);
+
+        // Front Livewire Components (Cart System)
+        Livewire::component('shop::front.cart-widget', CartWidget::class);
+        Livewire::component('shop::front.cart-page', CartPage::class);
+        Livewire::component('shop::front.add-to-cart-button', AddToCartButton::class);
     }
 
     /**
@@ -100,6 +109,7 @@ class ShopServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Shop\App\Services\ShopProductService::class);
         $this->app->singleton(\Modules\Shop\App\Services\ShopBrandService::class);
         $this->app->singleton(\Modules\Shop\App\Services\ShopProductVariantService::class);
+        $this->app->singleton(\Modules\Shop\App\Services\ShopCartService::class);
     }
 
     /**

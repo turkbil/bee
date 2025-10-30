@@ -11,7 +11,7 @@
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
-    bottom: 80px; /* Mobile bottom bar üzerinde */
+    bottom: 30px; /* Daha aşağıda - cookie banner'dan uzak */
     left: 20px; /* SOL ALT KÖŞE - AI robot sağda */
     width: 50px;
     height: 50px;
@@ -26,7 +26,7 @@
     visibility: hidden;
     transform: translateY(100px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 999; /* AI chat altında (1000) */
+    z-index: 900; /* Cookie banner (9999+) ve AI chat (1000) altında */
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     border: 2px solid rgba(255, 255, 255, 0.2);
 }
@@ -88,7 +88,7 @@
     .back-to-top {
         width: 45px;
         height: 45px;
-        bottom: 70px; /* Mobile bar için space */
+        bottom: 25px; /* Daha aşağıda - mobile bar üzerinde */
         left: 15px;
     }
 

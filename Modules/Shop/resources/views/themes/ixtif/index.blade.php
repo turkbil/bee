@@ -66,18 +66,22 @@
                                             <option class="text-gray-900 bg-white" value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Z'den A'ya</option>
                                         </select>
 
-                                        <!-- View Toggle - TEK BUTON ANIMASYONLU -->
+                                        <!-- View Toggle - HOMEPAGE STİLİ -->
                                         <button @click="toggleView()"
-                                                class="relative px-3 py-3 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20
-                                                       hover:bg-white/20 active:scale-95 transition-all duration-300 overflow-hidden">
+                                                class="relative w-14 h-14 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group overflow-hidden">
                                             <!-- Grid Icon -->
-                                            <i class="fa-solid fa-grip text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
-                                               :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'"></i>
+                                            <div class="absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                                 :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'">
+                                                <i class="fa-solid fa-grid-2 text-xl text-white group-hover:text-blue-300 transition-colors"></i>
+                                            </div>
                                             <!-- List Icon -->
-                                            <i class="fa-solid fa-list text-white absolute inset-0 flex items-center justify-center transition-all duration-500"
-                                               :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-180 scale-50'"></i>
-                                            <!-- Placeholder for size -->
-                                            <i class="fa-solid fa-grip opacity-0"></i>
+                                            <div class="absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                                 :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-90 scale-50'">
+                                                <i class="fa-solid fa-list text-xl text-white group-hover:text-blue-300 transition-colors"></i>
+                                            </div>
+                                            <!-- Hover Gradient Ring -->
+                                            <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                                 style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));"></div>
                                         </button>
                                     </div>
                                 </div>
@@ -117,19 +121,22 @@
                         <!-- Right: View Toggle Only (No Sort - Default sorting) -->
                         <div class="flex flex-col justify-end">
                             <div class="flex items-center justify-end">
-                                <!-- View Toggle -->
+                                <!-- View Toggle - HOMEPAGE STİLİ -->
                                 <button @click="toggleView()"
-                                        class="relative w-12 h-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700
-                                               hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-blue-400 dark:hover:border-blue-500
-                                               active:scale-95 transition-all duration-300 flex items-center justify-center">
-                                    <!-- Grid Icon (default visible) -->
-                                    <i class="fa-solid fa-grip text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400
-                                              absolute transition-all duration-300 text-2xl"
-                                       :class="view === 'grid' ? 'opacity-100 scale-100' : 'opacity-0 scale-75'"></i>
-                                    <!-- List Icon (default hidden) -->
-                                    <i class="fa-solid fa-list text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400
-                                              absolute transition-all duration-300 text-2xl opacity-0 scale-75"
-                                       :class="view === 'list' ? 'opacity-100 scale-100' : 'opacity-0 scale-75'"></i>
+                                        class="relative w-14 h-14 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group overflow-hidden">
+                                    <!-- Grid Icon -->
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                         :class="view === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'">
+                                        <i class="fa-solid fa-grid-2 text-xl text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"></i>
+                                    </div>
+                                    <!-- List Icon -->
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-500"
+                                         :class="view === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-90 scale-50'">
+                                        <i class="fa-solid fa-list text-xl text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"></i>
+                                    </div>
+                                    <!-- Hover Gradient Ring -->
+                                    <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                         style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));"></div>
                                 </button>
                             </div>
                         </div>
@@ -210,32 +217,35 @@
         <section class="py-12">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 @if($products->count() > 0)
-                    {{-- Loading Spinner (Initial Page Load) --}}
-                    <div x-show="!loaded" class="flex justify-center items-center py-32">
-                        <div class="flex flex-col items-center gap-4">
-                            <i class="fa-solid fa-spinner loading-spin text-5xl text-blue-600"></i>
-                            <p class="text-gray-600 dark:text-gray-400 font-medium">Yükleniyor...</p>
-                        </div>
-                    </div>
-
-                    {{-- Products Grid/List - iXtif Design --}}
+                    {{-- Products Grid/List - iXtif Design (Ultra hızlı transition) --}}
                     {{-- Grid: 2 → 3 → 4 sütun (responsive) | List: 1 → 2 sütun (responsive) --}}
-                    <div x-show="loaded"
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 scale-95"
-                         x-transition:enter-end="opacity-100 scale-100"
-                         class="grid gap-8 transition-all duration-300"
-                         :class="view === 'grid' ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1 lg:grid-cols-2'"
+                    {{-- Grid Mode Container --}}
+                    <div x-show="view === 'grid'"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
                          x-ref="productsGrid">
                         @foreach($products as $product)
-                            {{-- Grid Mode Card --}}
-                            <div x-show="view === 'grid'" x-cloak>
-                                <x-ixtif.product-card :product="$product" layout="vertical" :showAddToCart="true" />
-                            </div>
-                            {{-- List Mode Card --}}
-                            <div x-show="view === 'list'" x-cloak>
-                                <x-ixtif.product-card :product="$product" layout="horizontal" :showAddToCart="true" />
-                            </div>
+                            <x-ixtif.product-card :product="$product" layout="vertical" :showAddToCart="true" />
+                        @endforeach
+                    </div>
+
+                    {{-- List Mode Container --}}
+                    <div x-show="view === 'list'"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                         style="display: none;">
+                        @foreach($products as $product)
+                            <x-ixtif.product-card :product="$product" layout="horizontal" :showAddToCart="true" />
                         @endforeach
                     </div>
 
@@ -359,7 +369,6 @@
     <script>
         function shopIndexPage() {
             return {
-                loaded: false,
                 page: {{ $products->currentPage() }},
                 loading: false,
                 hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
@@ -367,11 +376,8 @@
                 view: localStorage.getItem('shopViewMode') || 'grid', // Persist view preference
 
                 init() {
-                    // Minimum 500ms göster (çok hızlı yüklense bile skeleton görünsün)
-                    setTimeout(() => {
-                        this.loaded = true;
-                        this.setupInfiniteScroll();
-                    }, 500);
+                    // Anasayfa gibi hızlı - direkt infinite scroll setup
+                    this.setupInfiniteScroll();
                 },
 
                 toggleView() {

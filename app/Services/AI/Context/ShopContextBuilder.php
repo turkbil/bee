@@ -151,7 +151,6 @@ class ShopContextBuilder
                     'shop_products.short_description',
                     'shop_products.category_id',
                     'shop_products.base_price',
-                    'shop_products.price_on_request',
                     'shop_products.faq_data'
                 ])
                 ->with('category:category_id,title,slug');
@@ -314,7 +313,6 @@ class ShopContextBuilder
             'price' => $this->formatPrice($product),
             'base_price' => $product->base_price,
             'compare_at_price' => $product->compare_at_price,
-            'price_on_request' => $product->price_on_request,
             'currency' => $product->currency,
 
             // Stock & inventory
@@ -443,27 +441,21 @@ class ShopContextBuilder
      */
     protected function formatPrice(ShopProduct $product): array
     {
-        if ($product->price_on_request) {
+        // Yeni mantık: base_price 0 veya null ise iletişime yönlendir
+        if (!$product->base_price || $product->base_price <= 0) {
             return [
                 'available' => false,
                 'on_request' => true,
-                'message' => 'Fiyat sorunuz i�in l�tfen ileti_ime ge�in',
+                'message' => 'Sizin için en iyi fiyatı verebilmemiz için iletişim numaranızı paylaşın veya bizi arayın',
             ];
         }
 
-        if ($product->base_price) {
-            return [
-                'available' => true,
-                'amount' => $product->base_price,
-                'formatted' => number_format($product->base_price, 2, ',', '.') . ' ' . ($product->currency ?? 'TRY'),
-                'compare_at' => $product->compare_at_price,
-            ];
-        }
-
+        // Fiyat varsa göster
         return [
-            'available' => false,
-            'on_request' => false,
-            'message' => 'Fiyat bilgisi mevcut deil',
+            'available' => true,
+            'amount' => $product->base_price,
+            'formatted' => number_format($product->base_price, 2, ',', '.') . ' ' . ($product->currency ?? 'TRY'),
+            'compare_at' => $product->compare_at_price,
         ];
     }
 

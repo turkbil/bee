@@ -507,7 +507,7 @@ class ProductSearchService
             ->where('category_id', $categoryId)
             ->select([
                 'product_id', 'sku', 'title', 'slug', 'short_description',
-                'category_id', 'base_price', 'price_on_request', 'technical_specs'
+                'category_id', 'base_price', 'technical_specs'
             ])
             ->with('category:category_id,title,slug');
 
@@ -542,7 +542,7 @@ class ProductSearchService
         $query = ShopProduct::where('is_active', true)
             ->select([
                 'product_id', 'sku', 'title', 'slug', 'short_description',
-                'category_id', 'base_price', 'price_on_request', 'technical_specs'
+                'category_id', 'base_price', 'technical_specs'
             ])
             ->with('category:category_id,title,slug');
 

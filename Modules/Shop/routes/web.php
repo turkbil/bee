@@ -3,22 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Shop\App\Http\Controllers\Front\ShopController;
 use Modules\Shop\App\Http\Controllers\Front\ShopQuoteController;
+use Modules\Shop\App\Http\Controllers\Front\CheckoutRedirectController;
 use Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController;
 
 // GOOGLE SHOPPING FEED - Moved to routes/web.php for higher priority
 
-// CART ROUTES (Sepet) - WILDCARD'DAN ÖNCE TANIMLANMALI!
-Route::prefix('shop')->group(function () {
-    // Cart Page - Sepet sayfası (Geçici olarak closure ile - middleware'siz)
-    Route::get('/cart', function () {
-        return response('<!DOCTYPE html><html><head><title>Test</title></head><body><h1>✅ Cart Page Çalışıyor!</h1></body></html>');
-    })->name('shop.cart');
-
-    // Checkout Page - Sipariş ver (şimdilik cart'a yönlendir)
-    Route::get('/checkout', function () {
-        return redirect()->route('shop.cart');
-    })->name('shop.checkout');
-});
+// CART & CHECKOUT ROUTES - routes/web.php'de tanımlı (higher priority)
 
 // DESIGN VERSION ROUTES (Test için farklı tasarımlar - Wildcard'dan önce tanımlanmalı!)
 Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])

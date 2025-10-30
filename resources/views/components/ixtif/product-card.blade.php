@@ -140,7 +140,30 @@
 <div x-data="{
     priceHovered: false,
     showTryPrice: false,
-    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }}
+    priceTimer: null,
+    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }},
+    init() {
+        // Otomatik döngü başlat (sadece TRY fiyatı varsa)
+        if (this.hasTryPrice) {
+            this.startPriceCycle();
+        }
+    },
+    startPriceCycle() {
+        this.priceTimer = setInterval(() => {
+            if (!this.priceHovered) {
+                // Hover edilmiyorsa → TRY'ye geç (1.5 saniye)
+                this.showTryPrice = true;
+                setTimeout(() => {
+                    if (!this.priceHovered) {
+                        this.showTryPrice = false;
+                    }
+                }, 1500);
+            }
+        }, 5500); // Her 5.5 saniyede bir döngü (4s USD + 1.5s TRY)
+    },
+    destroy() {
+        if (this.priceTimer) clearInterval(this.priceTimer);
+    }
 }" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
 
     <div class="{{ $layoutClasses }}">

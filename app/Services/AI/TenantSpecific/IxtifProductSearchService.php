@@ -285,7 +285,6 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
                 'short_description',
                 'category_id',
                 'base_price',
-                'price_on_request',
             ])
             ->take($limit)
             ->get();
@@ -331,7 +330,6 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
                 'short_description',
                 'category_id',
                 'base_price',
-                'price_on_request',
             ])
             ->take($limit)
             ->get();
@@ -370,7 +368,6 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
                 'short_description',
                 'category_id',
                 'base_price',
-                'price_on_request',
             ]);
 
         if ($sparePartCategories->isNotEmpty()) {
@@ -419,14 +416,6 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
      */
     protected function formatPrice(ShopProduct $product): array
     {
-        if ($product->price_on_request) {
-            return [
-                'available' => false,
-                'on_request' => true,
-                'message' => 'Fiyat sorunuz için lütfen iletişime geçin',
-            ];
-        }
-
         if ($product->base_price) {
             return [
                 'available' => true,

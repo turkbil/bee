@@ -13,6 +13,8 @@ class CartWidget extends Component
     public float $total = 0;
     public $items = [];
     public $cart = null;
+    public string $currencySymbol = '₺';
+    public string $formattedTotal = '0,00 ₺';
 
     protected $listeners = ['cartUpdated' => 'refreshCart'];
 
@@ -29,6 +31,17 @@ class CartWidget extends Component
         $this->itemCount = $cartService->getItemCount();
         $this->total = $cartService->getTotal();
         $this->items = $cartService->getItems();
+
+        // Currency bilgisini al
+        $cartCurrency = $this->cart->relationLoaded('currency') ? $this->cart->getRelation('currency') : null;
+
+        if ($cartCurrency) {
+            $this->currencySymbol = $cartCurrency->symbol;
+            $this->formattedTotal = $cartCurrency->formatPrice($this->total);
+        } else {
+            $this->currencySymbol = '₺';
+            $this->formattedTotal = number_format($this->total, 2, ',', '.') . ' ₺';
+        }
     }
 
     public function removeItem(int $cartItemId)

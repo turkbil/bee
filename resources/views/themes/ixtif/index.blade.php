@@ -283,9 +283,12 @@
 
                                 <!-- Price & CTA -->
                                 <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
-                                    <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
-                                         x-text="product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'"></div>
-                                    <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all">
+                                    <template x-if="product.price && product.price > 0">
+                                        <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
+                                             x-text="product.price + ' ₺'"></div>
+                                    </template>
+                                    <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all"
+                                         :class="product.price && product.price > 0 ? '' : 'ml-auto'">
                                         <span>Özet</span>
                                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                                     </div>
@@ -372,9 +375,11 @@
                                         </div>
 
                                         <div class="pt-6">
-                                            <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-6">
-                                                ${product.price ? product.price + ' ₺' : 'Fiyat Sorunuz'}
-                                            </div>
+                                            ${product.price && product.price > 0 ? `
+                                                <div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-6">
+                                                    ${product.price} ₺
+                                                </div>
+                                            ` : ''}
                                             <a href="${product.url}"
                                                class="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-xl transition-all">
                                                 <span>Detaylı İncele</span>

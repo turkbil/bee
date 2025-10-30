@@ -42,6 +42,35 @@ class CartWidget extends Component
         ]);
     }
 
+    public function increaseQuantity(int $cartItemId)
+    {
+        $cartService = app(ShopCartService::class);
+        $item = $cartService->getItems()->firstWhere('cart_item_id', $cartItemId);
+
+        if ($item) {
+            $cartService->updateQuantity($cartItemId, $item->quantity + 1);
+        }
+
+        $this->refreshCart();
+        $this->dispatch('cartUpdated');
+    }
+
+    public function decreaseQuantity(int $cartItemId)
+    {
+        $cartService = app(ShopCartService::class);
+        $item = $cartService->getItems()->firstWhere('cart_item_id', $cartItemId);
+
+        if ($item && $item->quantity > 1) {
+            $cartService->updateQuantity($cartItemId, $item->quantity - 1);
+        } elseif ($item && $item->quantity === 1) {
+            // Miktar 1 ise, sil
+            $cartService->removeItem($cartItemId);
+        }
+
+        $this->refreshCart();
+        $this->dispatch('cartUpdated');
+    }
+
     public function render()
     {
         return view('shop::livewire.front.cart-widget');

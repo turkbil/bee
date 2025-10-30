@@ -58,9 +58,25 @@
                                     <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
                                         {{ $item->product->getTranslated('title', app()->getLocale()) }}
                                     </h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ $item->quantity }} adet × {{ number_format($item->final_price, 2) }} ₺
-                                    </p>
+
+                                    {{-- Quantity Controls --}}
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <button wire:click="decreaseQuantity({{ $item->cart_item_id }})"
+                                                class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors">
+                                            <i class="fa-solid fa-minus text-xs"></i>
+                                        </button>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white min-w-[2rem] text-center">
+                                            {{ $item->quantity }}
+                                        </span>
+                                        <button wire:click="increaseQuantity({{ $item->cart_item_id }})"
+                                                class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded text-gray-700 dark:text-gray-300 transition-colors">
+                                            <i class="fa-solid fa-plus text-xs"></i>
+                                        </button>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                                            × {{ number_format($item->final_price, 2) }} ₺
+                                        </span>
+                                    </div>
+
                                     <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1">
                                         {{ number_format($item->subtotal, 2) }} ₺
                                     </p>

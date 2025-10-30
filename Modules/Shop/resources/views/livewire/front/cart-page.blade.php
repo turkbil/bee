@@ -38,10 +38,11 @@
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
                          wire:key="cart-item-{{ $item->cart_item_id }}">
                         <div class="flex flex-col md:flex-row gap-6">
-                            {{-- Product Image --}}
+                            {{-- Product Image / Category Icon --}}
                             <div class="flex-shrink-0">
                                 @php
                                     $featuredMedia = $item->product->getMedia('featured_image')->first();
+                                    $categoryIcon = $item->product->category->icon_class ?? 'fa-light fa-box';
                                 @endphp
                                 @if($featuredMedia)
                                     <img src="{{ thumb($featuredMedia, 120, 120, ['scale' => 1]) }}"
@@ -49,8 +50,8 @@
                                          class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg"
                                          loading="lazy">
                                 @else
-                                    <div class="w-24 h-24 md:w-32 md:h-32 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                        <i class="fa-solid fa-image text-3xl text-gray-300 dark:text-gray-600"></i>
+                                    <div class="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 rounded-lg flex items-center justify-center">
+                                        <i class="{{ $categoryIcon }} text-4xl md:text-5xl text-blue-400 dark:text-blue-400"></i>
                                     </div>
                                 @endif
                             </div>
@@ -161,9 +162,9 @@
                     </div>
 
                     {{-- Action Buttons --}}
-                    <div class="space-y-3">
+                    <div class="space-y-3 mb-6">
                         <a href="{{ route('shop.checkout') }}"
-                           class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors">
+                           class="block w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-lg text-center transition-all transform hover:scale-105 shadow-lg">
                             <i class="fa-solid fa-credit-card mr-2"></i>
                             Sipariş Ver
                         </a>
@@ -172,6 +173,97 @@
                             <i class="fa-solid fa-shopping-bag mr-2"></i>
                             Alışverişe Devam
                         </a>
+                        <button wire:click="clearCart"
+                                wire:confirm="Sepeti tamamen boşaltmak istediğinize emin misiniz?"
+                                wire:loading.attr="disabled"
+                                class="w-full text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-sm font-semibold py-2 transition-colors disabled:opacity-50">
+                            <span wire:loading.remove wire:target="clearCart">
+                                <i class="fa-solid fa-trash mr-1"></i>
+                                Sepeti Boşalt
+                            </span>
+                            <span wire:loading wire:target="clearCart">
+                                <i class="fa-solid fa-spinner fa-spin mr-1"></i>
+                                Boşaltılıyor...
+                            </span>
+                        </button>
+                    </div>
+
+                    {{-- Güven Sembolleri --}}
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4 text-center">
+                            Güvenli Alışveriş Garantisi
+                        </h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-lock text-green-600 dark:text-green-400 text-lg"></i>
+                                </div>
+                                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">SSL</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400">Güvenli</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-shield-check text-blue-600 dark:text-blue-400 text-lg"></i>
+                                </div>
+                                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">Ödeme</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400">Korumalı</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mb-2">
+                                    <i class="fa-solid fa-rotate-left text-purple-600 dark:text-purple-400 text-lg"></i>
+                                </div>
+                                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">14 Gün</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400">İade</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Sticky WhatsApp Yardım Butonu --}}
+                <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
+                    <a href="https://wa.me/05010056758?text=Sepet%20hakk%C4%B1nda%20soru%20sormak%20istiyorum"
+                       target="_blank"
+                       class="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 relative">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span class="absolute right-full mr-3 bg-gray-900 text-white text-xs font-semibold px-3 py-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            WhatsApp Destek
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- GDPR/KVKK Bildirim Banner (Alta Taşındı) --}}
+        <div class="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-5 shadow-sm">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0">
+                    <div class="w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-shield-check text-white text-xl"></i>
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                        Gizlilik ve Veri Güvenliği
+                    </h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
+                        Sepet bilgileriniz güvenli olarak saklanmaktadır. Kişisel verileriniz
+                        <a href="/page/gizlilik-politikasi" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-semibold">Gizlilik Politikamız</a>
+                        ve <a href="/page/kvkk-aydinlatma" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-semibold">KVKK Aydınlatma Metni</a>
+                        kapsamında işlenmekte olup, yasal saklama süreleri boyunca korunmaktadır.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-cookie-bite text-blue-600 dark:text-blue-400"></i>
+                            <span>Sepet için çerez kullanılmaktadır</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-green-600 dark:text-green-400"></i>
+                            <span>Sepet 30 gün saklanır</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-lock text-purple-600 dark:text-purple-400"></i>
+                            <span>SSL ile şifrelenmiştir</span>
+                        </div>
                     </div>
                 </div>
             </div>

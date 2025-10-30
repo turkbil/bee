@@ -304,8 +304,8 @@
                                        'fa-cart-plus': !loading && !success
                                    }"></i>
                             </span>
-                            <span class="max-w-0 overflow-hidden group-hover:max-w-[4rem] transition-all duration-300 text-[10px] font-semibold pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
-                                <span class="whitespace-pre-line" x-text="loading ? 'Ekle' : (success ? 'Tamam!' : 'Sepete\nEkle')"></span>
+                            <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-medium pl-0 group-hover:pl-2 leading-[1.2] flex items-center text-center">
+                                <span class="whitespace-pre-line block" x-html="loading ? 'Ekle' : (success ? 'Tamam!' : 'Sepete<br>Ekle')"></span>
                             </span>
                         </button>
                     @endif

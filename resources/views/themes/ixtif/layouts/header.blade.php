@@ -442,19 +442,19 @@
                         </div>
 
                         {{-- Hizmetler (Dropdown Menu) --}}
-                        <div class="relative dropdown-menu py-2" x-data="{ open: false }" @mouseenter="activeMegaMenu = null">
-                            <button @click="open = !open"
-                                    @mouseenter="open = true"
-                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
-                                <i :class="open ? 'fa-solid' : 'fa-light'" class="fa-screwdriver-wrench transition-all duration-300"></i>
+                        <div class="relative mega-menu-item py-2"
+                             @mouseenter="activeMegaMenu = 'hizmetler'">
+                            <a href="/hizmetler"
+                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
+                                <i :class="activeMegaMenu === 'hizmetler' ? 'fa-solid' : 'fa-light'" class="fa-screwdriver-wrench transition-all duration-300"></i>
                                 <span>Hizmetler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
-                                   :class="{ 'rotate-180': open }"></i>
-                            </button>
+                                   :class="{ 'rotate-180': activeMegaMenu === 'hizmetler' }"></i>
+                            </a>
 
-                            <div x-show="open"
-                                 @click.away="open = false"
-                                 @mouseleave="open = false"
+                            <div x-show="activeMegaMenu === 'hizmetler'"
+                                 @mouseenter="activeMegaMenu = 'hizmetler'"
+                                 @mouseleave="activeMegaMenu = null"
                                  x-transition:enter="transition ease-out duration-200"
                                  x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
                                  x-transition:enter-end="opacity-100 scale-100 translate-y-0"

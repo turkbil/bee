@@ -1,12 +1,1 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0;url='https://ixtif.com/shop/cart'" />
 
-        <title>Redirecting to https://ixtif.com/shop/cart</title>
-    </head>
-    <body>
-        Redirecting to <a href="https://ixtif.com/shop/cart">https://ixtif.com/shop/cart</a>.
-    </body>
-</html>

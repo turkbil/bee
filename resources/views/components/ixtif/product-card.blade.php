@@ -213,7 +213,12 @@
                         </div>
                     @endif
 
-                    @if($productTryPrice && $productCurrencyCode !== 'TRY')
+                    @if($productBasePrice <= 0)
+                        {{-- Fiyatsız Ürün: "Teklif Alın" --}}
+                        <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 whitespace-nowrap h-8 flex items-center">
+                            Teklif Alın
+                        </div>
+                    @elseif($productTryPrice && $productCurrencyCode !== 'TRY')
                         {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
                             <div class="relative inline-block mb-1">

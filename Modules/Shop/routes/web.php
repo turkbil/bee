@@ -7,6 +7,18 @@ use Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController;
 
 // GOOGLE SHOPPING FEED - Moved to routes/web.php for higher priority
 
+// CART ROUTES (Sepet) - WILDCARD'DAN ÖNCE TANIMLANMALI!
+Route::middleware(['web', 'tenant', 'locale.site'])
+    ->group(function () {
+        // Cart Page - Sepet sayfası
+        Route::get('/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');
+
+        // Checkout Page - Sipariş ver (şimdilik cart'a yönlendir)
+        Route::get('/checkout', function () {
+            return redirect()->route('shop.cart');
+        })->name('shop.checkout');
+    });
+
 // DESIGN VERSION ROUTES (Test için farklı tasarımlar - Wildcard'dan önce tanımlanmalı!)
 Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
     ->prefix('shop')
@@ -55,16 +67,4 @@ Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
 
         // Shop Product Detail - WILDCARD (en sonda olmalı!)
         Route::get('/{slug}', [ShopController::class, 'show'])->name('shop.show');
-    });
-
-// CART ROUTES (Sepet)
-Route::middleware(['web', 'tenant', 'locale.site'])
-    ->group(function () {
-        // Cart Page - Sepet sayfası
-        Route::get('/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');
-
-        // Checkout Page - Sipariş ver (şimdilik cart'a yönlendir)
-        Route::get('/checkout', function () {
-            return redirect()->route('shop.cart');
-        })->name('shop.checkout');
     });

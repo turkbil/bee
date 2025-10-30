@@ -8,8 +8,9 @@
 @if($viewMode === 'grid')
 <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
     {{-- Product Image --}}
-    <a href="{{ $productUrl }}"
-       class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+    <div class="relative">
+        <a href="{{ $productUrl }}"
+           class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
         @if($product->hasMedia('featured_image'))
             <div class="w-full h-full p-4 md:p-6 flex items-center justify-center">
                 <img src="{{ thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) }}"
@@ -40,7 +41,21 @@
                 @endif
             </div>
         @endif
-    </a>
+        </a>
+
+        {{-- Add to Cart Button - Hover'da görünür --}}
+        @if(!$product->price_on_request && $product->base_price > 0)
+            <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300">
+                @livewire('shop::front.add-to-cart-button', [
+                    'productId' => $product->product_id,
+                    'quantity' => 1,
+                    'buttonText' => '',
+                    'buttonClass' => 'w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center',
+                    'showQuantity' => false
+                ], key('cart-btn-grid-'.$product->product_id))
+            </div>
+        @endif
+    </div>
 
     {{-- Content Section --}}
     <div class="p-4 md:p-4 lg:p-5 space-y-2.5 md:space-y-3 lg:space-y-3.5">
@@ -144,11 +159,24 @@
                 @endif
             </div>
 
-            {{-- Price --}}
+            {{-- Price & Add to Cart --}}
             @if($product->base_price && $product->base_price > 0)
                 <div class="mt-4 md:mt-6 pt-4 border-t border-gray-200/60 dark:border-gray-700/60">
-                    <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                        {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+                            {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
+                        </div>
+
+                        {{-- Add to Cart Button --}}
+                        @if(!$product->price_on_request)
+                            @livewire('shop::front.add-to-cart-button', [
+                                'productId' => $product->product_id,
+                                'quantity' => 1,
+                                'buttonText' => 'Sepete Ekle',
+                                'buttonClass' => 'inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg hover:shadow-xl transition-all whitespace-nowrap',
+                                'showQuantity' => false
+                            ], key('cart-btn-list-'.$product->product_id))
+                        @endif
                     </div>
                 </div>
             @endif

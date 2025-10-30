@@ -462,7 +462,7 @@
                                  x-transition:leave="transition ease-in duration-200"
                                  x-transition:leave-start="opacity-100 translate-y-0"
                                  x-transition:leave-end="opacity-0 -translate-y-3"
-                                 class="absolute top-full left-0 mt-2 w-64 bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden z-50"
+                                 class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-900 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden z-50"
                                  x-cloak>
                                 <a href="/hizmetler/kiralama"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
@@ -1088,15 +1088,19 @@
 
                 {{-- Hizmetler Accordion --}}
                 <div class="mb-2">
-                    <button @click="expandedCategory = expandedCategory === 'hizmetler' ? null : 'hizmetler'"
-                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
-                        <span class="flex items-center gap-2">
+                    <div class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
+                        <a href="/hizmetler"
+                           @click="mobileMenuOpen = false"
+                           class="flex items-center gap-2 flex-1">
                             <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
                             <span>Hizmetler</span>
-                        </span>
-                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
-                           :class="{ 'rotate-180': expandedCategory === 'hizmetler' }"></i>
-                    </button>
+                        </a>
+                        <button @click.stop="expandedCategory = expandedCategory === 'hizmetler' ? null : 'hizmetler'"
+                                class="p-2 -mr-2">
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
+                               :class="{ 'rotate-180': expandedCategory === 'hizmetler' }"></i>
+                        </button>
+                    </div>
 
                     {{-- Hizmetler İçerik (2 Kolon) --}}
                     <div x-show="expandedCategory === 'hizmetler'"

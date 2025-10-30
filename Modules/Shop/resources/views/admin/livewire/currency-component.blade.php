@@ -100,6 +100,11 @@
                                         <i class="fas fa-hand-paper"></i> Manuel
                                     </span>
                                 @endif
+                                @if($currency->last_updated_at)
+                                    <small class="text-muted" title="{{ $currency->last_updated_at->format('d.m.Y H:i:s') }}">
+                                        <i class="fas fa-clock"></i> {{ $currency->last_updated_at->diffForHumans() }}
+                                    </small>
+                                @endif
                             </div>
                         </td>
                         <td class="text-center">

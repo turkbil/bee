@@ -62,6 +62,7 @@ class UpdateCurrencyRatesCommand extends Command
                 $newRate = $tcmbRates[$currency->code];
 
                 $currency->exchange_rate = $newRate;
+                $currency->last_updated_at = now();
                 $currency->save();
 
                 $change = $newRate - $oldRate;

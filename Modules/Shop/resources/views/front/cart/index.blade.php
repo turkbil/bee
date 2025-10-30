@@ -108,11 +108,22 @@
 
                                     {{-- Price Info --}}
                                     <div class="text-right">
+                                        @php
+                                            // Currency kontrolü - USD ise TRY'ye çevir
+                                            $unitPriceTRY = $item->unit_price;
+                                            $subtotalTRY = $item->subtotal;
+
+                                            if ($item->currency && $item->currency->code !== 'TRY') {
+                                                $exchangeRate = $item->currency->exchange_rate ?? 1;
+                                                $unitPriceTRY = $item->unit_price * $exchangeRate;
+                                                $subtotalTRY = $item->subtotal * $exchangeRate;
+                                            }
+                                        @endphp
                                         <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                                            Birim: {{ number_format($item->unit_price, 2, ',', '.') }} ₺
+                                            Birim: {{ number_format($unitPriceTRY, 2, ',', '.') }} ₺
                                         </div>
                                         <div class="text-xl font-bold text-blue-600 dark:text-blue-400">
-                                            {{ number_format($item->subtotal, 2, ',', '.') }} ₺
+                                            {{ number_format($subtotalTRY, 2, ',', '.') }} ₺
                                         </div>
                                     </div>
                                 </div>

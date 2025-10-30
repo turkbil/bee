@@ -7202,6 +7202,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Shop\\App\\Exceptions\\ShopProtectionException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopProtectionException.php',
         'Modules\\Shop\\App\\Exceptions\\ShopValidationException' => __DIR__ . '/../..' . '/Modules/Shop/app/Exceptions/ShopValidationException.php',
         'Modules\\Shop\\App\\Http\\Controllers\\Api\\ShopApiController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/Api/ShopApiController.php',
+        'Modules\\Shop\\App\\Http\\Controllers\\Front\\CartController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/Front/CartController.php',
         'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/Front/ShopController.php',
         'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopPreviewController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/Front/ShopPreviewController.php',
         'Modules\\Shop\\App\\Http\\Controllers\\GoogleShoppingFeedController' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Controllers/GoogleShoppingFeedController.php',

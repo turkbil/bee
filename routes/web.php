@@ -10,8 +10,10 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
-// 🛒 CART ROUTE - ABSOLUTE PRIORITY (must be before everything)
+// 🛒 CART ROUTES - ABSOLUTE PRIORITY (must be before everything)
 Route::get('/shop/cart', [\Modules\Shop\App\Http\Controllers\Front\CartController::class, 'index'])->name('shop.cart');
+Route::patch('/shop/cart/{itemId}', [\Modules\Shop\App\Http\Controllers\Front\CartController::class, 'update'])->name('shop.cart.update');
+Route::delete('/shop/cart/{itemId}', [\Modules\Shop\App\Http\Controllers\Front\CartController::class, 'remove'])->name('shop.cart.remove');
 
 // DESIGN LIBRARY STATIC FILES - MUST BE FIRST, BEFORE ADMIN & CATCHALL ROUTES
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');

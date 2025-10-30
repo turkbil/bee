@@ -50,7 +50,7 @@
                                 <div class="flex items-start justify-between gap-4 mb-3">
                                     <div class="flex-1 min-w-0">
                                         <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate">
-                                            <a href="{{ route('shop.show', $item->product->slug) }}"
+                                            <a href="{{ route('shop.show', $item->product->getTranslated('slug', app()->getLocale())) }}"
                                                class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                                 {{ $item->product->getTranslated('title', app()->getLocale()) }}
                                             </a>

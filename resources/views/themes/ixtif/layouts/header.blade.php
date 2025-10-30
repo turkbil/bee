@@ -484,7 +484,7 @@
                                     <i class="fa-solid fa-gears w-5 text-center"></i>
                                     <span>Yedek Parça</span>
                                 </a>
-                                <a href="/bakim-anlasmalalari"
+                                <a href="/bakim-anlasmalari"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-file-contract w-5 text-center"></i>
                                     <span>Bakım Anlaşmaları</span>
@@ -1143,7 +1143,7 @@
                                     <i class="fa-solid fa-gears text-sm"></i>
                                     <span>Yedek Parça</span>
                                 </a>
-                                <a href="/bakim-anlasmalalari"
+                                <a href="/bakim-anlasmalari"
                                    @click="mobileMenuOpen = false"
                                    class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
                                     <i class="fa-solid fa-file-contract text-sm"></i>

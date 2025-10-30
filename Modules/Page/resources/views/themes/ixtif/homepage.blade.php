@@ -167,7 +167,7 @@
         <!-- Service Cards Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- 1. Satın Alma -->
-            <a href="{{ route('shop.index') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <a href="{{ href('Page', 'show', 'satin-alma') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-4 md:p-6 lg:p-8">
                     <i class="fa-light fa-shopping-cart text-4xl md:text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-3 md:mb-4 group-hover:animate-slide-x"></i>
                     <h3 class="text-lg md:text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Satın Alma</h3>
@@ -180,7 +180,7 @@
             </a>
 
             <!-- 2. Kiralama -->
-            <a href="{{ href('Page', 'show', 'iletisim') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <a href="{{ href('Page', 'show', 'kiralama') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-4 md:p-6 lg:p-8">
                     <i class="fa-light fa-calendar-days text-4xl md:text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-3 md:mb-4 group-hover:animate-swing"></i>
                     <h3 class="text-lg md:text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2">Kiralama</h3>
@@ -193,7 +193,7 @@
             </a>
 
             <!-- 3. Yedek Parça -->
-            <a href="{{ href('Page', 'show', 'iletisim') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <a href="{{ href('Page', 'show', 'yedek-parca') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-4 md:p-6 lg:p-8">
                     <i class="fa-light fa-gear text-4xl md:text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-3 md:mb-4 group-hover:animate-spin transition-all"></i>
                     <h3 class="text-lg md:text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Yedek Parça</h3>
@@ -206,7 +206,7 @@
             </a>
 
             <!-- 4. Teknik Servis -->
-            <a href="{{ href('Page', 'show', 'iletisim') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
+            <a href="{{ href('Page', 'show', 'teknik-servis') }}" class="group relative h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden transition-all duration-500 border-2 border-gray-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/20 hover:shadow-xl">
                 <div class="relative h-full flex flex-col justify-end p-4 md:p-6 lg:p-8">
                     <i class="fa-light fa-wrench text-4xl md:text-5xl lg:text-6xl text-blue-400 dark:text-blue-300 mb-3 md:mb-4 group-hover:animate-rotate-wiggle"></i>
                     <h3 class="text-lg md:text-xl lg:text-3xl font-bold text-gray-800 dark:text-white mb-2 whitespace-nowrap">Teknik Servis</h3>

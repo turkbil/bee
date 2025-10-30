@@ -90,16 +90,40 @@
                         </td>
                         <td>
                             <div class="d-flex flex-column gap-1">
-                                <span class="badge bg-secondary-lt">1 {{ $currency->code }} = {{ number_format($currency->exchange_rate, 4) }} TRY</span>
+                                {{-- Kur değeri: Manuel ise input, Auto ise sadece badge --}}
                                 @if($currency->is_auto_update)
-                                    <span class="badge bg-success-lt" title="TCMB'den otomatik güncelleniyor">
+                                    <span class="badge bg-secondary-lt">1 {{ $currency->code }} = {{ number_format($currency->exchange_rate, 4) }} TRY</span>
+                                @else
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text">1 {{ $currency->code }} =</span>
+                                        <input type="number"
+                                               step="0.0001"
+                                               class="form-control"
+                                               value="{{ number_format($currency->exchange_rate, 4, '.', '') }}"
+                                               wire:change="updateRate({{ $currency->currency_id }}, $event.target.value)"
+                                               title="Manuel kur girin">
+                                        <span class="input-group-text">TRY</span>
+                                    </div>
+                                @endif
+
+                                {{-- Auto/Manuel Toggle Badge (Tıklanabilir) --}}
+                                @if($currency->is_auto_update)
+                                    <span class="badge bg-success-lt"
+                                          style="cursor: pointer;"
+                                          wire:click="toggleAutoUpdate({{ $currency->currency_id }})"
+                                          title="Manuel moda geçmek için tıkla">
                                         <i class="fas fa-sync-alt"></i> Auto Update
                                     </span>
                                 @else
-                                    <span class="badge bg-azure-lt" title="Manuel kur girişi">
+                                    <span class="badge bg-azure-lt"
+                                          style="cursor: pointer;"
+                                          wire:click="toggleAutoUpdate({{ $currency->currency_id }})"
+                                          title="Otomatik moda geçmek için tıkla">
                                         <i class="fas fa-hand-paper"></i> Manuel
                                     </span>
                                 @endif
+
+                                {{-- Son güncelleme zamanı --}}
                                 @if($currency->last_updated_at)
                                     <small class="text-muted" title="{{ $currency->last_updated_at->format('d.m.Y H:i:s') }}">
                                         <i class="fas fa-clock"></i> {{ $currency->last_updated_at->diffForHumans() }}

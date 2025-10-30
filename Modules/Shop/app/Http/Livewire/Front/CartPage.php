@@ -31,9 +31,26 @@ class CartPage extends Component
         $this->cart = $cartService->getCurrentCart();
         $this->items = $cartService->getItems();
         $this->itemCount = (int) ($this->cart->items_count ?? 0);
-        $this->subtotal = (float) ($this->cart->subtotal ?? 0);
-        $this->taxAmount = (float) ($this->cart->tax_amount ?? 0);
-        $this->total = (float) ($this->cart->total ?? 0);
+
+        // TRY cinsinden toplam hesapla (her item için currency check)
+        $subtotalTRY = 0;
+        $taxAmountTRY = 0;
+
+        foreach ($this->items as $item) {
+            $exchangeRate = 1;
+
+            // USD veya başka currency ise TRY'ye çevir
+            if ($item->currency && $item->currency->code !== 'TRY') {
+                $exchangeRate = $item->currency->exchange_rate ?? 1;
+            }
+
+            $subtotalTRY += ($item->subtotal ?? 0) * $exchangeRate;
+            $taxAmountTRY += ($item->tax_amount ?? 0) * $exchangeRate;
+        }
+
+        $this->subtotal = $subtotalTRY;
+        $this->taxAmount = $taxAmountTRY;
+        $this->total = $subtotalTRY + $taxAmountTRY;
     }
 
     public function updateQuantity(int $cartItemId, int $quantity)
@@ -112,6 +129,6 @@ class CartPage extends Component
     public function render()
     {
         return view('shop::livewire.front.cart-page')
-            ->layout('themes.ixtif.layouts.minimal');
+            ->layout('themes.ixtif.layouts.app');
     }
 }

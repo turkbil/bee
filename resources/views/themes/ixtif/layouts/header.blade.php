@@ -432,7 +432,11 @@
                         {{-- Ürünler (Mega Menu + Tabs) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'products'">
-                            <a href="{{ route('shop.index') }}" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                            <a href="{{ route('shop.index') }}"
+                               class="flex items-center gap-2 font-semibold transition group py-4"
+                               :class="activeMegaMenu === 'products'
+                                   ? 'text-blue-600 dark:text-blue-400'
+                                   : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'">
                                 <i :class="activeMegaMenu === 'products' ? 'fa-solid' : 'fa-light'" class="fa-box-open transition-all duration-300"></i>
                                 <span>Ürünler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -446,7 +450,10 @@
                              @mouseenter="activeMegaMenu = 'hizmetler'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/hizmetler"
-                               class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
+                               class="flex items-center gap-2 font-semibold transition py-4"
+                               :class="activeMegaMenu === 'hizmetler'
+                                   ? 'text-blue-600 dark:text-blue-400'
+                                   : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'">
                                 <i :class="activeMegaMenu === 'hizmetler' ? 'fa-solid' : 'fa-light'" class="fa-screwdriver-wrench transition-all duration-300"></i>
                                 <span>Hizmetler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -514,7 +521,10 @@
                         {{-- Kurumsal (Hibrit Mega Menu) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'hakkimizda'">
-                            <button class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition group py-4">
+                            <button class="flex items-center gap-2 font-semibold transition group py-4"
+                                    :class="activeMegaMenu === 'hakkimizda'
+                                        ? 'text-blue-600 dark:text-blue-400'
+                                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'">
                                 <i :class="activeMegaMenu === 'hakkimizda' ? 'fa-solid' : 'fa-light'" class="fa-building transition-all duration-300"></i>
                                 <span>Kurumsal</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -524,9 +534,12 @@
                         </div>
 
                         {{-- İletişim --}}
-                        <div class="py-2" @mouseenter="activeMegaMenu = null">
+                        <div class="py-2"
+                             x-data="{ hovering: false }"
+                             @mouseenter="activeMegaMenu = null; hovering = true"
+                             @mouseleave="hovering = false">
                             <a href="/iletisim" class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
-                                <i class="fa-light fa-envelope transition-all duration-300"></i>
+                                <i :class="hovering ? 'fa-solid' : 'fa-light'" class="fa-envelope transition-all duration-300"></i>
                                 <span>İletişim</span>
                             </a>
                         </div>

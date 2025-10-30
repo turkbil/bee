@@ -5,8 +5,7 @@
     "keywords": [],
     "priority": 0,
     "providers": [
-        "Modules\\AI\\Providers\\AIServiceProvider",
-        "Modules\\AI\\Providers\\RouteServiceProvider"
+        "Modules\\AI\\Providers\\AIServiceProvider"
     ],
     "files": []
 }

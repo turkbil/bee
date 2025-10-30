@@ -87,8 +87,15 @@ class AIServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(RouteServiceProvider::class);
+        // KALICI FİX: Singleton check ile duplicate loading önlenir
+        // EventServiceProvider sadece bir kez register edilir
+        if (!$this->app->providerIsLoaded(EventServiceProvider::class)) {
+            $this->app->register(EventServiceProvider::class);
+        }
+
+        if (!$this->app->providerIsLoaded(RouteServiceProvider::class)) {
+            $this->app->register(RouteServiceProvider::class);
+        }
         
         // PERFORMANCE: Single AI module active check for both services
         $aiModuleActive = $this->isAIModuleActive();

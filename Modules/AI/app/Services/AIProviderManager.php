@@ -5,27 +5,43 @@ namespace Modules\AI\App\Services;
 use Modules\AI\App\Models\AIProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class AIProviderManager
 {
     protected $defaultProvider;
     protected $providers;
+    protected $loaded = false;
 
     public function __construct()
     {
-        $this->loadProviders();
+        // LAZY LOADING: Database sorgusunu sadece gerektiğinde yap
+        // Boot sırasında database sorgusu atma!
     }
 
     /**
-     * Provider'ları yükle
+     * Provider'ları yükle (lazy loading)
      */
     protected function loadProviders()
     {
-        $this->providers = Cache::remember('ai_providers', 3600, function () {
-            return AIProvider::getActive();
-        });
+        if ($this->loaded) {
+            return;
+        }
 
-        $this->defaultProvider = $this->providers->where('is_default', true)->first();
+        try {
+            $this->providers = Cache::remember('ai_providers', 3600, function () {
+                return AIProvider::getActive();
+            });
+
+            $this->defaultProvider = $this->providers->where('is_default', true)->first();
+            $this->loaded = true;
+        } catch (\Exception $e) {
+            // Boot sırasında database yoksa sessizce geç
+            Log::debug('AIProviderManager: Database not ready yet');
+            $this->providers = collect([]);
+            $this->defaultProvider = null;
+            $this->loaded = false;
+        }
     }
 
     /**
@@ -33,6 +49,7 @@ class AIProviderManager
      */
     public function getDefaultProvider()
     {
+        $this->loadProviders();
         return $this->defaultProvider;
     }
 
@@ -41,6 +58,7 @@ class AIProviderManager
      */
     public function getProvider($name)
     {
+        $this->loadProviders();
         return $this->providers->where('name', $name)->first();
     }
 
@@ -49,6 +67,7 @@ class AIProviderManager
      */
     public function getActiveProviders()
     {
+        $this->loadProviders();
         return $this->providers;
     }
 

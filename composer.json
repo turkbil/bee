@@ -123,14 +123,16 @@
             "@php artisan config:cache",
             "@php artisan route:cache",
             "@php artisan view:cache",
-            "@php -r \"echo '✅ Tüm cache başarıyla yenilendi!\\n';\""
+            "bash -c 'sudo chown tuufi.com_:psaserv bootstrap/cache/*.php 2>/dev/null || true'",
+            "bash -c 'sudo chmod 644 bootstrap/cache/*.php 2>/dev/null || true'",
+            "@php -r \"echo '✅ Tüm cache başarıyla yenilendi! (Auto-fixed permissions)\\n';\""
         ],
         "cache-production": [
-            "@php artisan config:cache",
-            "@php artisan route:cache",
-            "@php artisan view:cache",
-            "@php artisan event:cache",
-            "@php -r \"echo '✅ Production cache oluşturuldu!\\n';\""
+            "./artisan-safe config:cache",
+            "./artisan-safe route:cache",
+            "./artisan-safe view:cache",
+            "./artisan-safe event:cache",
+            "@php -r \"echo '✅ Production cache oluşturuldu! (Safe mode)\\n';\""
         ]
     },
     "extra": {

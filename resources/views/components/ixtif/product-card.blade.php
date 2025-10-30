@@ -151,13 +151,13 @@
     startPriceCycle() {
         this.priceTimer = setInterval(() => {
             if (!this.showTryPrice) {
-                // USD gösteriliyor → TRY'ye geç (1 saniye)
+                // USD gösteriliyor → TRY'ye geç (2 saniye)
                 this.showTryPrice = true;
                 setTimeout(() => {
                     this.showTryPrice = false;
-                }, 1000);
+                }, 2000);
             }
-        }, 3000); // Her 3 saniyede bir döngü (2s USD + 1s TRY)
+        }, 6000); // Her 6 saniyede bir döngü (4s USD + 2s TRY)
     },
     destroy() {
         if (this.priceTimer) clearInterval(this.priceTimer);

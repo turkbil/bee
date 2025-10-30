@@ -1109,12 +1109,8 @@
                     {{-- Product Info Card --}}
                     <div
                         class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl p-6">
-                        @if ($title)
-                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $title }}</h1>
-                        @endif
-
                         @if ($shortDescription)
-                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 leading-relaxed">
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-4 leading-relaxed">
                                 {{ $shortDescription }}</p>
                         @endif
 

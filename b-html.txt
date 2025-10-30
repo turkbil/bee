@@ -1,593 +1,126 @@
-<div x-data="{
-    chat: $store.aiChat,
-    message: '',
-    autoOpenTimer: null,
-    expanded: false,
-
-    init() {
-        // Auto-open after 10 seconds if user hasn't interacted
-        // BUT only on desktop (NOT on mobile/tablet: sm/xs/md breakpoints)
-        // AND only if user hasn't manually closed the widget before
-        this.autoOpenTimer = setTimeout(() =&gt; {
-            const isMobile = window.innerWidth &lt; 1024; // lg breakpoint (1024px)
-            const userHasClosed = localStorage.getItem('user_closed_ai_chat') === 'true';
-
-            if (this.chat?.floatingOpen === false &amp;&amp; !this.chat?.hasConversation &amp;&amp; !isMobile &amp;&amp; !userHasClosed) {
-                console.log('🤖 Auto-opening AI chat (desktop only)...');
-                this.chat?.openFloating?.();
-            }
-        }, 10000);
-
-        // Watch for conversation changes - auto expand if messages exist
-        this.$watch('chat?.hasConversation', value =&gt; {
-            if (value) this.expanded = true;
-        });
-    },
-
-    destroy() {
-        // Clear timer on component destroy
-        if (this.autoOpenTimer) {
-            clearTimeout(this.autoOpenTimer);
-        }
-    },
-
-    submitMessage() {
-        if (this.message.trim()) {
-            this.chat.sendMessage(this.message);
-            this.message = '';
-            this.expanded = true; // Expand when sending message
-        }
-    }
-}" class="fixed bottom-6 right-6 z-50">
-
+ <div wire:id="dSokqVfABsgee4IZwR3t" class="container mx-auto px-4 py-8 md:py-12">
     
-    <div x-show="!chat?.floatingOpen" x-transition:enter="transition-opacity ease-out duration-500" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" style="transition-delay: 0.5s; display: none;" class="absolute bottom-0 right-0">
-    <button @click="chat?.toggleFloating?.(); clearTimeout(autoOpenTimer); localStorage.removeItem('user_closed_ai_chat');" x-data="{
-            // Desktop messages (longer)
-            desktopMessages: [
-                'Merhaba! Nasıl yardımcı olabilirim? 👋',
-                'Ürünler hakkında her şeyi sorabilirsiniz',
-                'Size en uygun modeli bulabilirim',
-                'Sorularınızı anında yanıtlıyorum ⚡',
-                'Akıllı ürün karşılaştırması yapabilirim',
-                'Teknik detayları kolayca açıklıyorum',
-                'İhtiyacınıza göre öneri sunuyorum',
-                '7/24 anlık destek burada 🤖',
-                'Tüm özellikleri size anlatayım',
-                'Merak ettiklerinizi öğrenin',
-                'Ürün seçiminde yardımcı oluyorum',
-                'Karmaşık bilgileri basitleştiriyorum',
-                'Size özel çözüm öneriyorum',
-                'Her sorunuza hızlı cevap veriyorum',
-                'Doğru ürünü bulmak çok kolay',
-                'Akıllı asistan olarak buradayım',
-                'Soru sormaktan çekinmeyin',
-                'Anında bilgi alın',
-                'İhtiyacınızı anlıyor ve yönlendiriyorum',
-                'Hadi konuşalım! 💬'
-            ],
-            // Mobile messages (shorter, concise, natural Turkish)
-            mobileMessages: [
-                'Merhaba! 👋',
-                'Size yardımcı olabilirim',
-                'Sorularınızı bekliyorum',
-                'Ürünler hakkında bilgi verebilirim',
-                'Hızlı yanıt alabilirsiniz ⚡',
-                '7/24 bilgi alabilirsiniz 🤖',
-                'Merak ettiklerinizi sorun',
-                'Hemen yazabilirsiniz',
-                'Konuşmaya başlayalım! 💬'
-            ],
-            currentIndex: 0,
-            currentMessage: 'Merhaba! 👋',
-            bubbleVisible: true,
-
-            init() {
-                // Set initial message based on screen size
-                this.updateMessage();
-
-                // Animation cycle optimized for mobile:
-                // - Bubble shows: 1.5s
-                // - Fade out: 300ms
-                // - Robot shows: 1.5s (no bubble)
-                // - Fade in next bubble: 300ms
-                // Total: 3.6s per cycle
-                setInterval(() =&gt; {
-                    // Show bubble for 1.5s
-                    this.bubbleVisible = true;
-
-                    // Hide bubble after 1.5s
-                    setTimeout(() =&gt; {
-                        this.bubbleVisible = false;
-
-                        // Change message while hidden (after fade-out)
-                        setTimeout(() =&gt; {
-                            this.currentIndex = (this.currentIndex + 1) % this.getMessages().length;
-                            this.updateMessage();
-                        }, 300);
-                    }, 1500);
-                }, 3300); // 1.5s visible + 300ms fade + 1.5s robot visible
-            },
-
-            getMessages() {
-                return window.innerWidth &lt; 1024 ? this.mobileMessages : this.desktopMessages;
-            },
-
-            updateMessage() {
-                this.currentMessage = this.getMessages()[this.currentIndex];
-            }
-        }" class="relative group" aria-label="Sohbeti Aç">
-        
-        <div :class="{ 'opacity-0 pointer-events-none': chat?.floatingOpen || !bubbleVisible }" class="absolute z-[101] transition-opacity duration-300 max-lg:hidden top-[-70px] right-[-10px] opacity-0 pointer-events-none" style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));">
-            
-            <div x-text="currentMessage" class="bg-white px-5 py-3 rounded-full text-sm font-bold whitespace-nowrap" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Sorularınızı anında yanıtlıyorum ⚡</div>
-
-            
-            <div class="absolute w-0 h-0 bottom-[-10px] right-[39px]" style="
-                    border-left: 11px solid transparent;
-                    border-right: 11px solid transparent;
-                    border-top: 11px solid white;
-                "></div>
-        </div>
-
-        
-        <div class="relative w-20 h-20 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center group-hover:scale-110 v1-classic-button" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); z-index: 1;">
-
-            
-            <div :class="{ 'opacity-0 pointer-events-none': chat?.floatingOpen || !bubbleVisible }" class="lg:hidden absolute inset-0 z-[2] transition-opacity duration-300 w-20 h-20 rounded-full flex items-center justify-center text-center bg-white shadow-2xl opacity-0 pointer-events-none" style="filter: drop-shadow(0 6px 25px rgba(0,0,0,0.3));">
-                <p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Sorularınızı anında yanıtlıyorum ⚡</p>
-            </div>
-                
-                <svg class="w-12 h-12 transition-transform group-hover:scale-110 group-hover:rotate-6" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="white">
-                    <path d="m181 301c-8.284 0-15 6.716-15 15v30c0 8.284 6.716 15 15 15s15-6.716 15-15v-30c0-8.284-6.716-15-15-15z"></path>
-                    <path d="m331 361c8.284 0 15-6.716 15-15v-30c0-8.284-6.716-15-15-15s-15 6.716-15 15v30c0 8.284 6.716 15 15 15z"></path>
-                    <path d="m272 106h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
-                    <path d="m512 176v-111c0-35.841-29.159-65-65-65h-186c-35.841 0-65 29.159-65 65v116h-20c-54.827 0-100.809 38.57-112.255 90h-2.745v-92.58c17.459-6.192 30-22.865 30-42.42 0-24.813-20.187-45-45-45s-45 20.187-45 45c0 19.555 12.541 36.228 30 42.42v94.821c-17.977 5.901-31 22.833-31 42.759v60c0 24.813 20.187 45 45 45h18.527c11.069 51.929 57.291 91 112.473 91h160c55.182 0 101.404-39.071 112.473-91h18.527c24.813 0 45-20.187 45-45v-60c0-24.813-20.187-45-45-45h-18.751c-2.331-10.48-6.115-20.577-11.247-30h9.998c35.841 0 65-29.159 65-65zm-286-111c0-19.299 15.701-35 35-35h186c19.299 0 35 15.701 35 35v111c0 19.299-15.701 35-35 35h-176c-2.329 0-4.625.542-6.708 1.583l-38.292 19.146zm-180 56c8.271 0 15 6.729 15 15s-6.729 15-15 15-15-6.729-15-15 6.729-15 15-15zm-16 255v-60c0-8.271 6.729-15 15-15h16v90h-16c-8.271 0-15-6.729-15-15zm452-60v60c0 8.271-6.729 15-15 15h-16v-90h16c8.271 0 15 6.729 15 15zm-61-20v101c0 46.869-38.131 85-85 85h-160c-46.869 0-85-38.131-85-85v-101c0-46.869 38.131-85 85-85h20v45c0 11.132 11.742 18.4 21.708 13.416l56.833-28.416h126.241c13.038 15.344 20.218 34.804 20.218 55z"></path>
-                    <path d="m272 166h164c8.284 0 15-6.716 15-15s-6.716-15-15-15h-164c-8.284 0-15 6.716-15 15s6.716 15 15 15z"></path>
-                    <path d="m211 406c0 8.284 6.716 15 15 15h60c8.284 0 15-6.716 15-15s-6.716-15-15-15h-60c-8.284 0-15 6.716-15 15z"></path>
-                </svg>
-
-            
-            <span class="absolute top-0 right-0 w-4 h-4 bg-green-400 rounded-full animate-ping"></span>
-            <span class="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full"></span>
-        </div>
-
-        
-        <span x-show="chat?.unreadCount &gt; 0 &amp;&amp; !chat?.floatingOpen" x-text="chat?.unreadCount || 0" class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-bounce shadow-lg" style="display: none;">0</span>
-    </button>
+    <div x-data="{ show: false, message: '' }" @cart-updated.window="show = true; message = $event.detail.message; setTimeout(() =&gt; show = false, 3000)" @cart-item-removed.window="show = true; message = $event.detail.message; setTimeout(() =&gt; show = false, 3000)" @cart-error.window="show = true; message = $event.detail.message; setTimeout(() =&gt; show = false, 5000)" x-show="show" x-transition="" class="mb-6 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg flex items-center gap-3" data-has-alpine-state="true">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span x-text="message"></span>
     </div>
 
     
-    <div x-show="chat?.floatingOpen" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95" :style="{
-            height: (expanded || chat?.hasConversation) ? '600px' : '420px',
-            transition: 'height 0.4s ease-in-out',
-            maxHeight: 'calc(100vh - 120px)'
-        }" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-96 flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700" style="height: 600px; transition: height 0.4s ease-in-out; max-height: calc(-120px + 100vh);">
-        
-        <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg" x-text="chat?.assistantName || ''">iXtif Yapay Zeka Asistanı</h3>
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                        <p class="text-xs text-white/80">Online</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                
-                <button @click="chat?.closeFloating?.(); localStorage.setItem('user_closed_ai_chat', 'true');" class="p-2 hover:bg-white/10 rounded-lg transition" title="Kapat">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
-        
-        <div x-show="!chat?.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2" class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700" x-data="{
-                suggestions: [
-                    'Ürün özellikleri',
-                    'Stok durumu',
-                    'Fiyat bilgisi',
-                    'Hızlı öneri',
-                    'Karşılaştırma',
-                    'En iyiler'
-                ],
-                currentSuggestion: 0,
-                init() {
-                    setInterval(() =&gt; {
-                        this.currentSuggestion = (this.currentSuggestion + 1) % this.suggestions.length;
-                    }, 2000);
-                }
-            }" style="display: none;">
-            <div class="text-center">
-                
-                <div class="relative inline-block mb-4">
-                    
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-20 h-20 bg-blue-400 rounded-full opacity-20 animate-ping-slow"></div>
-                    </div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-16 h-16 bg-blue-500 rounded-full opacity-30 animate-pulse-slow"></div>
-                    </div>
-
-                    
-                    <div class="relative inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full shadow-lg animate-bounce-subtle">
-                        <svg class="w-8 h-8 text-white animate-wiggle-subtle" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path>
-                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                
-                <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 animate-fade-in-up">
-                    Merhaba! 👋
-                </h4>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 animate-fade-in-up animation-delay-100">
-                    Size nasıl yardımcı olabilirim?
-                </p>
-
-                
-                <div class="h-6 flex items-center justify-center">
-                    <p x-data="{
-                            currentText: 'Ürün özellikleri',
-                            fading: false,
-                            suggestionsList: [
-                                'Ürün özellikleri',
-                                'Stok durumu',
-                                'Fiyat bilgisi',
-                                'Hızlı öneri',
-                                'Karşılaştırma',
-                                'En iyiler'
-                            ],
-                            currentIndex: 0,
-                            init() {
-                                setInterval(() =&gt; {
-                                    // Fade out
-                                    this.fading = true;
-
-                                    // Change text after fade out completes
-                                    setTimeout(() =&gt; {
-                                        this.currentIndex = (this.currentIndex + 1) % this.suggestionsList.length;
-                                        this.currentText = this.suggestionsList[this.currentIndex];
-
-                                        // Fade in
-                                        setTimeout(() =&gt; {
-                                            this.fading = false;
-                                        }, 50);
-                                    }, 250);
-                                }, 2500);
-                            }
-                        }" :class="{ 'opacity-0': fading, 'opacity-100': !fading }" class="text-sm text-gray-600 dark:text-gray-300 text-center transition-opacity duration-250 opacity-0" x-text="currentText">Stok durumu</p>
-                </div>
-            </div>
-        </div>
-
-        
-        <div x-show="chat?.hasConversation" x-transition:enter="transition-all ease-out duration-400" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition-all ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" data-ai-chat-messages="" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50 dark:bg-gray-900">
-            
-            <template x-for="(msg, index) in (chat?.messages || [])" :key="index">
-                <div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content" x-html="window.aiChatRenderMarkdown(msg.content)"></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })"></p>
-                    </div>
-                </div>
-            </template><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">merhaba</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:40</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Merhaba! Size nasıl yardımcı olabilirim? 😊</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:40</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">transpalet alacagım ucuz</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:40</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Tabii, size yardımcı olabilirim! 😊 Size en uygun transpaleti bulabilmem için: - Kaç ton taşıma kapasitesi istiyorsunuz? (2 ton, 3 ton?) - Manuel mi yoksa elektrikli mi tercih edersiniz? - Nerede kullanacaksınız? (Soğuk depo gibi özel alan var mı?)</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:41</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">en uygun fiyatlı</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:41</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Hangi özelliklerde bir transpalet aradığınızı öğrenmek isterim. - Kaç ton taşıma kapasitesi istiyorsunuz? - Manuel mi yoksa elektrikli mi tercih edersiniz? - Kullanım alanı nedir? Bu bilgilerle en uygun fiyatlı seçenekleri sunabilirim.</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:41</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-end">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-white [&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="user"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">fiyatı en uygun olsun yeterli</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-white opacity-80" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:41</p>
-                    </div>
-                </div><div :class="{
-                        'flex justify-end': msg.role === 'user',
-                        'flex justify-start': msg.role !== 'user'
-                    }" class="flex justify-start">
-                    <div :class="{
-                            'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700': msg.role === 'user',
-                            'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700': msg.role === 'assistant',
-                            'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700': msg.role === 'system',
-                            'bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-700': msg.isError
-                        }" class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                        <div :class="{
-                                'text-white [&amp;_*]:!text-white': msg.role === 'user',
-                                'text-gray-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'assistant',
-                                'text-yellow-800 dark:text-white dark:[&amp;_*]:!text-white': msg.role === 'system',
-                                'text-red-800 dark:text-white dark:[&amp;_*]:!text-white': msg.isError
-                            }" :data-role="msg.role" class="text-sm prose prose-sm max-w-none dark:prose-invert ai-floating-message-content text-gray-800 dark:text-white dark:[&amp;_*]:!text-white" x-html="window.aiChatRenderMarkdown(msg.content)" data-role="assistant"><p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Anladım! Uygun fiyatlı transpalet seçeneklerini inceleyelim. Ancak, hangi tonajda bir transpalet aradığınızı belirtirseniz daha iyi yardımcı olabilirim.</p>
-<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">Genel olarak, uygun fiyatlı transpaletlerimiz şunlardır: - <a href="/shop/ixtif-epl154-15-ton-li-ion-palet-transpaleti" target="_blank" rel="noopener noreferrer" <br="" class="my-1">            class="group inline-flex items-center gap-2 px-3 py-2 my-1<br class="my-1">                   bg-white dark:bg-gray-800<br class="my-1">                   border border-gray-200 dark:border-gray-700<br class="my-1">                   hover:border-blue-500 dark:hover:border-blue-500<br class="my-1">                   rounded-lg transition-all duration-200<br class="my-1">                   text-sm font-medium no-underline<br class="my-1">                   text-gray-900 dark:text-gray-100"&gt;<br class="my-1">            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg><br class="my-1">            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path><br class="my-1">        <br class="my-1">            <span class="no-underline">İXTİF EPL154 - 1.5 Ton Li-Ion Palet Transpaleti</span><br class="my-1">            <svg class="w-4 h-4 flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg><br class="my-1">            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path><br class="my-1">        <br class="my-1">        </a> - 1.5 ton kapasiteli - 24V-30Ah çıkarılabilir Li-Ion bataryalı - Kompakt gövde ve entegre şarj cihazı ile dar alanlarda güvenli kullanım Fiyat bilgisi talep üzerine, detaylı bilgi almak için iletişime geçebilirsiniz. 💬 <strong class="font-bold text-gray-900 dark:text-white">WhatsApp:</strong> [0501 005 67 58](https://wa.me/905010056758) 📞 <strong class="font-bold text-gray-900 dark:text-white">Telefon:</strong> 0216 755 3 555 Başka bir konuda yardımcı olabilir miyim?</p></div>
-                        <p :class="{
-                                'text-white opacity-80': msg.role === 'user',
-                                'text-gray-500 dark:text-gray-400': msg.role === 'assistant',
-                                'text-yellow-700 dark:text-yellow-300': msg.role === 'system',
-                                'text-red-700 dark:text-red-300': msg.isError
-                            }" class="text-xs mt-1 text-gray-500 dark:text-gray-400" x-text="new Date(msg.created_at).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })">03:41</p>
-                    </div>
-                </div>
-
-            
-            <div x-show="chat?.isTyping" class="flex justify-start" style="display: none;">
-                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
-                    <div class="flex gap-1">
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
-                        <span class="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="px-6 py-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-            
-            <div x-show="chat?.error" class="mb-3 p-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg" style="display: none;">
-                <span x-text="chat?.error || ''"></span>
-            </div>
-
-            
-            <form @submit.prevent="submitMessage()" class="flex gap-2" x-data="{ inputFocused: false }" data-gtm-form-interact-id="0">
-                <div class="flex-1 relative">
-                    
-                    <div x-show="inputFocused &amp;&amp; !chat?.isLoading" class="absolute inset-0 bg-blue-400 rounded-full opacity-20 animate-pulse-glow pointer-events-none" style="display: none;"></div>
-
-                    <input type="text" x-model="message" @focus="expanded = true; inputFocused = true" @blur="inputFocused = false" placeholder="Mesajınızı yazın..." :disabled="chat?.isLoading" class="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-transparent disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed transition-all duration-300 relative z-10" :class="{ 'animate-input-invite': !expanded &amp;&amp; !chat?.hasConversation }" autocomplete="off" data-gtm-form-interact-field-id="0">
-                </div>
-                <button type="submit" :disabled="!message.trim() || chat?.isLoading" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors shadow-sm" disabled="disabled">
-                    <svg class="w-5 h-5" :class="{ 'animate-spin': chat?.isLoading }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path x-show="!chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        <path x-show="chat?.isLoading" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" style="display: none;"></path>
-                    </svg>
-                </button>
-            </form>
-
-            
-            <div class="mt-2">
-                <p style="font-size: 11px !important; line-height: 1.4 !important; opacity: 0.9 !important;" class="text-gray-800 dark:text-white">
-                    Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
-                    <a href="#" @click.prevent="$refs.aiDisclaimerModal.classList.remove('hidden')" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors ml-1">
-                        Devamını Oku
-                    </a>
-                </p>
-            </div>
-
-            
-            <div x-ref="aiDisclaimerModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4" @click.self="$refs.aiDisclaimerModal.classList.add('hidden')">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
-                    
-                    <button @click="$refs.aiDisclaimerModal.classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-
-                    
-                    <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                            Önemli Bilgilendirme
-                        </h3>
-                    </div>
-
-                    <div class="space-y-3 text-sm text-gray-700 dark:text-gray-300 mb-6">
-                        <p>
-                            Bu yapay zeka destekli sohbet asistanı, iXtif yazılım mühendisleri tarafından iXtif için özel olarak hazırlanmıştır.
-                        </p>
-
-                        <p>
-                            Bu yapay zeka asistanı şu anda <strong>öğrenme aşamasındadır</strong> ve kendini sürekli geliştirmektedir.
-                        </p>
-                        <p>
-                            Verdiği yanıtlar her zaman doğru olmayabilir veya eksik bilgiler içerebilir.
-                        </p>
-                        <p>
-                            En doğru ve güncel bilgi için lütfen <strong>firmamız yetkilileriyle doğrudan iletişime</strong> geçiniz.
-                        </p>
-
-                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 mt-4">
-                            <a href="tel:+902167553555" class="flex items-center justify-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                </svg>
-                                <strong class="text-lg">0216 755 3 555</strong>
-                            </a>
-                        </div>
-
-                        <p>
-                            Anlayışınız için teşekkür ederiz.
-                        </p>
-                    </div>
-
-                    
-                    <button @click="$refs.aiDisclaimerModal.classList.add('hidden')" class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
-                        Anladım
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            <i class="fa-solid fa-shopping-cart mr-3"></i>
+            Alışveriş Sepeti
+        </h1>
+        <p class="text-gray-600 dark:text-gray-400">
+            Sepetinizdeki 5 ürün
+        </p>
     </div>
+
+    <!--[if BLOCK]><![endif]-->        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 space-y-4">
+                <!--[if BLOCK]><![endif]-->                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow" wire:key="cart-item-18">
+                        <div class="flex flex-col md:flex-row gap-6">
+                            
+                            <div class="flex-shrink-0">
+                                                                <!--[if BLOCK]><![endif]-->                                    <img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F82%2Flep4ns74ctsp2gydkwetkw7xs1y01psfss4tf5u6.png&amp;w=120&amp;h=120&amp;s=1&amp;f=webp&amp;c=1" alt="İXTİF F4 - 1.5 Ton Li-Ion Transpalet" class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg" loading="lazy">
+                                <!--[if ENDBLOCK]><![endif]-->
+                            </div>
+
+                            
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-4 mb-3">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate">
+                                            <a href="https://ixtif.com/shop/ixtif-f4-15-ton-li-ion-transpalet" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                                İXTİF F4 - 1.5 Ton Li-Ion Transpalet
+                                            </a>
+                                        </h3>
+                                        <!--[if BLOCK]><![endif]-->                                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                SKU: F4-1500
+                                            </p>
+                                        <!--[if ENDBLOCK]><![endif]-->
+                                    </div>
+
+                                    
+                                    <button wire:click="removeItem(18)" wire:loading.attr="disabled" class="flex-shrink-0 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors disabled:opacity-50" title="Ürünü Kaldır">
+                                        <i class="fa-solid fa-trash-can text-lg" wire:loading.remove="" wire:target="removeItem(18)"></i>
+                                        <i class="fa-solid fa-spinner fa-spin text-lg" wire:loading="" wire:target="removeItem(18)" style="display: none;"></i>
+                                    </button>
+                                </div>
+
+                                
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                    
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Adet:</span>
+                                        <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+                                            <button wire:click="decreaseQuantity(18)" wire:loading.attr="disabled" class="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50">
+                                                <i class="fa-solid fa-minus"></i>
+                                            </button>
+                                            <span class="w-12 text-center font-semibold text-gray-900 dark:text-white">
+                                                5
+                                            </span>
+                                            <button wire:click="increaseQuantity(18)" wire:loading.attr="disabled" class="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors disabled:opacity-50">
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div class="text-right">
+                                                                                <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                                            Birim: 56.666,93 ₺
+                                        </div>
+                                        <div class="text-xl font-bold text-blue-600 dark:text-blue-400">
+                                            283.334,63 ₺
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <!--[if ENDBLOCK]><![endif]-->
+            </div>
+
+            
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sticky top-24">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                        Sipariş Özeti
+                    </h2>
+
+                    
+                    <div class="space-y-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                            <span>Ara Toplam:</span>
+                            <span class="font-semibold">283.334,63 ₺</span>
+                        </div>
+                        <div class="flex items-center justify-between text-gray-600 dark:text-gray-400">
+                            <span>KDV (%20):</span>
+                            <span class="font-semibold">56.666,93 ₺</span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="flex items-center justify-between text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                        <span>Toplam:</span>
+                        <span class="text-blue-600 dark:text-blue-400">340.001,55 ₺</span>
+                    </div>
+
+                    
+                    <div class="space-y-3">
+                        <a href="https://ixtif.com/shop/checkout" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors">
+                            <i class="fa-solid fa-credit-card mr-2"></i>
+                            Sipariş Ver
+                        </a>
+                        <a href="https://ixtif.com/shop" class="block w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold py-3 px-6 rounded-lg text-center transition-colors">
+                            <i class="fa-solid fa-shopping-bag mr-2"></i>
+                            Alışverişe Devam
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!--[if ENDBLOCK]><![endif]-->
 </div>

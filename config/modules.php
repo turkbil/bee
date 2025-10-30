@@ -1,5 +1,7 @@
 <?php
 
+use Nwidart\Modules\Activators\FileActivator;
+
 return [
 
     /*
@@ -11,6 +13,55 @@ return [
     | Modül-specific ayarlar için: config/{module-name}.php
     |
     */
+
+    // ========================================
+    // NWIDART/LARAVEL-MODULES PAKETİ AYARLARI (KRİTİK!)
+    // ========================================
+
+    /*
+     * Module namespace
+     */
+    'namespace' => 'Modules',
+
+    /*
+     * Module paths
+     */
+    'paths' => [
+        'modules' => base_path('Modules'),
+        'assets' => public_path('modules'),
+        'migration' => base_path('database/migrations'),
+        'app_folder' => 'app/',
+        'generator' => [
+            'config' => ['path' => 'config', 'generate' => true],
+            'provider' => ['path' => 'app/Providers', 'generate' => true],
+            'route-provider' => ['path' => 'app/Providers', 'generate' => true],
+        ],
+    ],
+
+    /*
+     * Module activators - Config cache için ZORUNLU!
+     */
+    'activators' => [
+        'file' => [
+            'class' => FileActivator::class,
+            'statuses-file' => base_path('modules_statuses.json'),
+        ],
+    ],
+
+    /*
+     * Default activator
+     */
+    'activator' => 'file',
+
+    /*
+     * Auto-discover features
+     */
+    'auto-discover' => [
+        'migrations' => true,
+        'translations' => false,
+        'config' => true,
+        'providers' => false,
+    ],
 
     // ========================================
     // DİL SİSTEMİ

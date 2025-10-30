@@ -5868,6 +5868,7 @@ return array(
     'Modules\\Shop\\App\\Exceptions\\ShopProtectionException' => $baseDir . '/Modules/Shop/app/Exceptions/ShopProtectionException.php',
     'Modules\\Shop\\App\\Exceptions\\ShopValidationException' => $baseDir . '/Modules/Shop/app/Exceptions/ShopValidationException.php',
     'Modules\\Shop\\App\\Http\\Controllers\\Api\\ShopApiController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Api/ShopApiController.php',
+    'Modules\\Shop\\App\\Http\\Controllers\\Front\\CartController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Front/CartController.php',
     'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Front/ShopController.php',
     'Modules\\Shop\\App\\Http\\Controllers\\Front\\ShopPreviewController' => $baseDir . '/Modules/Shop/app/Http/Controllers/Front/ShopPreviewController.php',
     'Modules\\Shop\\App\\Http\\Controllers\\GoogleShoppingFeedController' => $baseDir . '/Modules/Shop/app/Http/Controllers/GoogleShoppingFeedController.php',

@@ -2,6 +2,14 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8 md:py-12">
+    {{-- Success Message --}}
+    @if(session('success'))
+        <div class="mb-6 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg flex items-center gap-3">
+            <i class="fa-solid fa-circle-check text-xl"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
     {{-- Page Header --}}
     <div class="mb-8">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
@@ -52,11 +60,16 @@
                                     </div>
 
                                     {{-- Remove Button --}}
-                                    <button wire:click="removeItem({{ $item->id }})"
-                                            class="flex-shrink-0 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-                                            title="Ürünü Kaldır">
-                                        <i class="fa-solid fa-trash-can text-lg"></i>
-                                    </button>
+                                    <form action="{{ route('shop.cart.remove', $item->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="flex-shrink-0 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+                                                title="Ürünü Kaldır"
+                                                onclick="return confirm('Bu ürünü sepetten kaldırmak istediğinize emin misiniz?')">
+                                            <i class="fa-solid fa-trash-can text-lg"></i>
+                                        </button>
+                                    </form>
                                 </div>
 
                                 {{-- Price & Quantity --}}
@@ -65,18 +78,28 @@
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm text-gray-600 dark:text-gray-400">Adet:</span>
                                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                                            <button wire:click="decreaseQuantity({{ $item->id }})"
-                                                    class="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
-                                                    {{ $item->quantity <= 1 ? 'disabled' : '' }}>
-                                                <i class="fa-solid fa-minus"></i>
-                                            </button>
+                                            <form action="{{ route('shop.cart.update', $item->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="quantity" value="{{ max(1, $item->quantity - 1) }}">
+                                                <button type="submit"
+                                                        class="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors"
+                                                        {{ $item->quantity <= 1 ? 'disabled' : '' }}>
+                                                    <i class="fa-solid fa-minus"></i>
+                                                </button>
+                                            </form>
                                             <span class="w-12 text-center font-semibold text-gray-900 dark:text-white">
                                                 {{ $item->quantity }}
                                             </span>
-                                            <button wire:click="increaseQuantity({{ $item->id }})"
-                                                    class="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </button>
+                                            <form action="{{ route('shop.cart.update', $item->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="quantity" value="{{ $item->quantity + 1 }}">
+                                                <button type="submit"
+                                                        class="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-colors">
+                                                    <i class="fa-solid fa-plus"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
 

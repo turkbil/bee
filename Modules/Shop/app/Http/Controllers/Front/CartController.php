@@ -24,4 +24,22 @@ class CartController
             'taxAmount' => (float) ($cart->tax_amount ?? 0),
         ]);
     }
+
+    public function update(int $itemId, Request $request, ShopCartService $cartService)
+    {
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1|max:999',
+        ]);
+
+        $cartService->updateItemQuantity($itemId, (int) $validated['quantity']);
+
+        return redirect()->route('shop.cart')->with('success', 'Sepet güncellendi');
+    }
+
+    public function remove(int $itemId, ShopCartService $cartService)
+    {
+        $cartService->removeItem($itemId);
+
+        return redirect()->route('shop.cart')->with('success', 'Ürün sepetten kaldırıldı');
+    }
 }

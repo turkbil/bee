@@ -49,10 +49,27 @@ class PageController extends Controller
         // Homepage products'ları çek (homepage_sort_order'a göre sıralı)
         $homepageProducts = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
             ->where('is_active', true)
-            ->with(['category', 'brand', 'media'])
+            ->with(['category', 'brand', 'media', 'currency'])
             ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
             ->orderBy('product_id', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->product_id,
+                    'title' => $product->getTranslated('title', app()->getLocale()),
+                    'description' => strip_tags($product->getTranslated('short_description', app()->getLocale()) ?? ''),
+                    'url' => \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product),
+                    'price' => $product->base_price,
+                    'currency' => $product->currency ?? 'TRY',
+                    'currency_symbol' => $product->currency ? $product->currency->symbol : '₺',
+                    'formatted_price' => $product->currency ? $product->currency->formatPrice($product->base_price) : number_format($product->base_price, 0, ',', '.') . ' ₺',
+                    'image' => $product->hasMedia('featured_image') ? thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) : null,
+                    'category' => $product->category ? $product->category->getTranslated('title', app()->getLocale()) : null,
+                    'category_icon' => $product->category->icon_class ?? 'fa-light fa-box',
+                    'featured' => $product->is_featured ?? false,
+                    'bestseller' => $product->is_bestseller ?? false,
+                ];
+            });
 
         try {
             // ThemeService ile homepage view'ını al

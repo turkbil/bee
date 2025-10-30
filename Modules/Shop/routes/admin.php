@@ -10,6 +10,8 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopFieldTemplateComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopFieldTemplateManageComponent;
+use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyComponent;
+use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyManageComponent;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -69,6 +71,19 @@ Route::middleware(['admin', 'tenant'])
                             ->name('index');
 
                         Route::get('/manage/{id?}', ShopFieldTemplateManageComponent::class)
+                            ->middleware('module.permission:shop,update')
+                            ->name('manage');
+                    });
+
+                // Currency Management
+                Route::prefix('currencies')
+                    ->name('currencies.')
+                    ->group(function () {
+                        Route::get('/', ShopCurrencyComponent::class)
+                            ->middleware('module.permission:shop,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', ShopCurrencyManageComponent::class)
                             ->middleware('module.permission:shop,update')
                             ->name('manage');
                     });

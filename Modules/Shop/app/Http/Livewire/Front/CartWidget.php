@@ -12,6 +12,7 @@ class CartWidget extends Component
     public int $itemCount = 0;
     public float $total = 0;
     public $items = [];
+    public $cart = null;
 
     protected $listeners = ['cartUpdated' => 'refreshCart'];
 
@@ -24,6 +25,7 @@ class CartWidget extends Component
     {
         $cartService = app(ShopCartService::class);
 
+        $this->cart = $cartService->getCurrentCart();
         $this->itemCount = $cartService->getItemCount();
         $this->total = $cartService->getTotal();
         $this->items = $cartService->getItems();

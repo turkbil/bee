@@ -39,6 +39,7 @@ class ShopCart extends BaseModel
         'ip_address',
         'user_agent',
         'currency',
+        'currency_id',
         'metadata',
         'last_activity_at',
     ];
@@ -65,6 +66,14 @@ class ShopCart extends BaseModel
     public function items(): HasMany
     {
         return $this->hasMany(ShopCartItem::class, 'cart_id', 'cart_id');
+    }
+
+    /**
+     * Sepet para birimi
+     */
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(ShopCurrency::class, 'currency_id', 'currency_id');
     }
 
     /**

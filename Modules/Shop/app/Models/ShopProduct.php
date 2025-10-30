@@ -46,6 +46,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'compare_at_price',
         'cost_price',
         'currency',
+        'currency_id',
         'deposit_required',
         'deposit_amount',
         'deposit_percentage',
@@ -287,6 +288,11 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
     public function brand(): BelongsTo
     {
         return $this->belongsTo(ShopBrand::class, 'brand_id', 'brand_id');
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(ShopCurrency::class, 'currency_id', 'currency_id');
     }
 
     public function variants()

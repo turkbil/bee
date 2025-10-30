@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 class ShopCartService
 {
     /**
-     * Mevcut sepeti al veya oluştur
+     * Mevcut sepeti al veya oluştur (fiyatları otomatik günceller)
      */
     public function getCurrentCart(): ShopCart
     {
@@ -40,6 +40,9 @@ class ShopCartService
         if (!$cart->relationLoaded('currency')) {
             $cart->load('currency');
         }
+
+        // Sepet fiyatlarını güncelle (ürün fiyatı + döviz kuru değişikliği)
+        $this->refreshCartPrices($cart);
 
         return $cart;
     }
@@ -179,6 +182,7 @@ class ShopCartService
 
     /**
      * Sepetteki tüm ürünler
+     * (getCurrentCart() zaten fiyatları günceller)
      */
     public function getItems()
     {
@@ -186,6 +190,37 @@ class ShopCartService
             ->items()
             ->with(['product.media', 'product.currency', 'variant', 'currency'])
             ->get();
+    }
+
+    /**
+     * Sepetteki tüm ürün fiyatlarını güncelle
+     * (Ürün fiyatı veya döviz kuru değiştiğinde otomatik yansıt)
+     */
+    public function refreshCartPrices(ShopCart $cart): void
+    {
+        $items = $cart->items()->with(['product', 'variant'])->get();
+
+        $needsRecalculation = false;
+
+        foreach ($items as $item) {
+            if (!$item->product) {
+                continue; // Ürün silinmişse skip
+            }
+
+            // Güncel fiyatı al
+            $currentPrice = $this->getProductPrice($item->product, $item->product_variant_id);
+
+            // Fiyat değiştiyse güncelle
+            if ($item->unit_price != $currentPrice) {
+                $item->updatePrice($currentPrice, $item->discount_amount);
+                $needsRecalculation = true;
+            }
+        }
+
+        // Eğer herhangi bir fiyat değiştiyse sepet toplamlarını yeniden hesapla
+        if ($needsRecalculation) {
+            $cart->recalculateTotals();
+        }
     }
 
     /**

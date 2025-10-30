@@ -72,10 +72,24 @@ function clearSystemCache(button) {
 window.clearSystemCache = clearSystemCache;
 
 /**
- * Sticky Header Scroll Handler
- * REMOVED: Alpine.js now handles scroll detection in header.blade.php
- * No need for duplicate scroll listener
+ * Topbar Height Calculator
+ * Topbar yüksekliğini hesaplayıp CSS variable olarak set eder
  */
+document.addEventListener('DOMContentLoaded', function() {
+    const topBar = document.getElementById('top-bar');
+
+    if (topBar) {
+        // Topbar height'ı hesapla ve CSS variable olarak ekle
+        const topBarHeight = topBar.offsetHeight;
+        document.documentElement.style.setProperty('--top-bar-height', topBarHeight + 'px');
+
+        // Resize olduğunda yeniden hesapla
+        window.addEventListener('resize', function() {
+            const newHeight = topBar.offsetHeight;
+            document.documentElement.style.setProperty('--top-bar-height', newHeight + 'px');
+        });
+    }
+});
 
 /**
  * Font Ayarlarını Temizle

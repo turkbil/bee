@@ -43,8 +43,8 @@
         {{-- Standard Page Layout --}}
         <div class="min-h-screen">
             {{-- Glassmorphism Subheader --}}
-            <section class="bg-gray-50/95 dark:bg-gray-800/95 backdrop-blur-md border-y border-gray-200 dark:border-gray-700">
-                <div class="container mx-auto py-6">
+            <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-8 md:py-12 px-4 md:px-6 shadow-2xl">
+                <div class="container mx-auto">
                     <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
                         <!-- Left: Title & Breadcrumb -->
                         <div class="flex flex-col justify-between">

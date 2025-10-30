@@ -209,15 +209,8 @@
     @keydown.escape.window="searchOpen = false; activeMegaMenu = null"
     @close-megamenu.window="activeMegaMenu = null">
 
-        {{-- Top Info Bar - Scroll'da kaybolacak --}}
+        {{-- Top Info Bar - CSS ile yukarı kayacak --}}
         <div id="top-bar"
-             x-show="!scrolled"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 -translate-y-full"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-300"
-             x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 -translate-y-full"
              class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden"
              @mouseenter="activeMegaMenu = null">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">

@@ -8,6 +8,7 @@ use Modules\Shop\App\Models\ShopCart;
 use Modules\Shop\App\Models\ShopCartItem;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopProductVariant;
+use Modules\Shop\App\Models\ShopCurrency;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
@@ -23,7 +24,20 @@ class ShopCartService
         // TODO: Kullanıcı girişi varsa customer_id kullan
         // $customerId = auth()->guard('customer')->id();
 
-        return ShopCart::findOrCreateForSession($sessionId);
+        $cart = ShopCart::with('currency')->findOrCreateForSession($sessionId);
+
+        // Eğer sepette currency_id yoksa, default currency'yi ayarla
+        if (!$cart->currency_id) {
+            $defaultCurrency = ShopCurrency::getDefault();
+            if ($defaultCurrency) {
+                $cart->currency_id = $defaultCurrency->currency_id;
+                $cart->currency = $defaultCurrency->code;
+                $cart->save();
+                $cart->load('currency'); // Reload currency relationship
+            }
+        }
+
+        return $cart;
     }
 
     /**
@@ -66,6 +80,7 @@ class ShopCartService
                     'tax_rate' => $taxRate,
                     'tax_amount' => ($unitPrice * $quantity) * ($taxRate / 100),
                     'total' => 0,
+                    'currency_id' => $product->currency_id, // Ürünün currency'sini kaydet
                     'customization_options' => $customizationOptions,
                     'in_stock' => true,
                 ]);
@@ -165,7 +180,7 @@ class ShopCartService
     {
         return $this->getCurrentCart()
             ->items()
-            ->with(['product.media', 'variant'])
+            ->with(['product.media', 'product.currency', 'variant', 'currency'])
             ->get();
     }
 

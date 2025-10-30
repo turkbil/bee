@@ -12,13 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('shop_carts', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('status');
-            $table->softDeletes()->after('last_activity_at');
+            if (!Schema::hasColumn('shop_carts', 'is_active')) {
+                $table->boolean('is_active')->default(true)->after('status');
+            }
+            if (!Schema::hasColumn('shop_carts', 'deleted_at')) {
+                $table->softDeletes()->after('last_activity_at');
+            }
         });
 
         Schema::table('shop_cart_items', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('cart_id');
-            $table->softDeletes()->after('updated_at');
+            if (!Schema::hasColumn('shop_cart_items', 'is_active')) {
+                $table->boolean('is_active')->default(true)->after('cart_id');
+            }
+            if (!Schema::hasColumn('shop_cart_items', 'deleted_at')) {
+                $table->softDeletes()->after('updated_at');
+            }
         });
     }
 

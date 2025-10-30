@@ -73,12 +73,12 @@
                                             <i class="fa-solid fa-plus text-xs"></i>
                                         </button>
                                         <span class="text-xs text-gray-500 dark:text-gray-400">
-                                            × {{ number_format($item->final_price, 2) }} ₺
+                                            × {{ $item->currency ? $item->currency->formatPrice($item->final_price) : number_format($item->final_price, 2) . ' ₺' }}
                                         </span>
                                     </div>
 
                                     <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1">
-                                        {{ number_format($item->subtotal, 2) }} ₺
+                                        {{ $item->currency ? $item->currency->formatPrice($item->subtotal) : number_format($item->subtotal, 2) . ' ₺' }}
                                     </p>
                                 </div>
 
@@ -110,7 +110,7 @@
                         Toplam:
                     </span>
                     <span class="text-lg font-bold text-gray-900 dark:text-white">
-                        {{ number_format($total, 2) }} ₺
+                        {{ $cart && $cart->currency ? $cart->currency->formatPrice($total) : number_format($total, 2) . ' ₺' }}
                     </span>
                 </div>
 

@@ -27,6 +27,7 @@ class ShopCartItem extends BaseModel
         'tax_amount',
         'tax_rate',
         'total',
+        'currency_id',
         'customization_options',
         'special_instructions',
         'in_stock',
@@ -71,6 +72,14 @@ class ShopCartItem extends BaseModel
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ShopProductVariant::class, 'product_variant_id', 'variant_id');
+    }
+
+    /**
+     * Para birimi ilişkisi
+     */
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(ShopCurrency::class, 'currency_id', 'currency_id');
     }
 
     /**

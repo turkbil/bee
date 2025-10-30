@@ -261,14 +261,14 @@
                     @endphp
 
                     @if($hasNoPrice)
-                        {{-- Sorunuz Var mı? Button (Fiyatsız ürünler için) --}}
+                        {{-- Sizi Arayalım Button (Fiyatsız ürünler için) --}}
                         <a href="{{ $productUrl }}"
-                           class="flex-shrink-0 bg-gradient-to-br from-orange-700 to-red-700 hover:from-orange-800 hover:to-red-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95">
-                            <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-12">
-                                <i class="fa-solid fa-comment-question text-base"></i>
+                           class="flex-shrink-0 bg-gradient-to-br from-green-700 to-emerald-700 hover:from-green-800 hover:to-emerald-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 active:scale-95">
+                            <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
+                                <i class="fa-solid fa-phone text-base"></i>
                             </span>
-                            <span class="max-w-0 overflow-hidden group-hover:max-w-[6rem] transition-all duration-300 text-[10px] font-light pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
-                                <span class="whitespace-pre-line">Sorunuz{{ "\n" }}Var mı?</span>
+                            <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-semibold pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
+                                <span class="whitespace-pre-line">Sizi{{ "\n" }}Arayalım</span>
                             </span>
                         </a>
                     @else

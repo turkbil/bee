@@ -640,6 +640,9 @@
                             </div>
                         </div>
 
+                        {{-- SHOPPING CART WIDGET --}}
+                        @livewire('shop::front.cart-widget')
+
                         {{-- AUTH CONTROL VIA LIVEWIRE --}}
                         @livewire('auth.header-menu')
 

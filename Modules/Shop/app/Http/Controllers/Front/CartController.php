@@ -15,13 +15,31 @@ class CartController
         $cart = $cartService->getCurrentCart();
         $items = $cartService->getItems();
 
+        // TRY cinsinden toplam hesapla (her item için currency check)
+        $subtotalTRY = 0;
+        $taxAmountTRY = 0;
+
+        foreach ($items as $item) {
+            $exchangeRate = 1;
+
+            // USD veya başka currency ise TRY'ye çevir
+            if ($item->currency && $item->currency->code !== 'TRY') {
+                $exchangeRate = $item->currency->exchange_rate ?? 1;
+            }
+
+            $subtotalTRY += ($item->subtotal ?? 0) * $exchangeRate;
+            $taxAmountTRY += ($item->tax_amount ?? 0) * $exchangeRate;
+        }
+
+        $totalTRY = $subtotalTRY + $taxAmountTRY;
+
         return view('shop::front.cart.index', [
             'cart' => $cart,
             'items' => $items,
             'itemCount' => $cartService->getItemCount(),
-            'total' => $cartService->getTotal(),
-            'subtotal' => (float) ($cart->subtotal ?? 0),
-            'taxAmount' => (float) ($cart->tax_amount ?? 0),
+            'total' => $totalTRY,
+            'subtotal' => $subtotalTRY,
+            'taxAmount' => $taxAmountTRY,
         ]);
     }
 

@@ -148,6 +148,7 @@ class ShopCurrencyComponent extends Component
                 $newRate = $tcmbRates[$currency->code];
 
                 $currency->exchange_rate = $newRate;
+                $currency->last_updated_at = now();
                 $currency->save();
 
                 $updatedCount++;
@@ -155,6 +156,7 @@ class ShopCurrencyComponent extends Component
                 \Log::info("Currency auto-updated from TCMB: {$currency->code}", [
                     'old_rate' => $oldRate,
                     'new_rate' => $newRate,
+                    'updated_at' => $currency->last_updated_at,
                 ]);
             }
         }

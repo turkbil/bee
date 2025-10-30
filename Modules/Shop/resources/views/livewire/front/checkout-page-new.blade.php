@@ -227,8 +227,8 @@
                         <div class="space-y-3 mb-6 max-h-64 overflow-y-auto">
                             @forelse($items as $item)
                                 <div class="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
-                                    @if($item->product->firstMedia())
-                                        <img src="{{ thumb($item->product->firstMedia(), 60, 60) }}"
+                                    @if($item->product->getMedia('gallery')->first())
+                                        <img src="{{ thumb($item->product->getMedia('gallery')->first(), 60, 60) }}"
                                             alt="{{ $item->product->getTranslated('title', app()->getLocale()) }}"
                                             class="w-12 h-12 object-cover rounded">
                                     @else

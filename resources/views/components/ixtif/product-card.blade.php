@@ -7,6 +7,29 @@
 ])
 
 @php
+    // Yuvarlama Fonksiyonu: Compare at price'ı sadece 00 veya 50'ye yuvarla
+    // function_exists() ile sadece bir kez tanımla (multiple card'larda redeclare hatası önlenir)
+    if (!function_exists('roundComparePrice')) {
+        function roundComparePrice($price) {
+            if (!$price) return null;
+
+            $lastTwo = $price % 100;
+
+            if ($lastTwo <= 24) {
+                // 00'a yuvarla (aşağı)
+                return floor($price / 100) * 100;
+            }
+            elseif ($lastTwo <= 74) {
+                // 50'ye yuvarla
+                return floor($price / 100) * 100 + 50;
+            }
+            else {
+                // 00'a yuvarla (yukarı)
+                return ceil($price / 100) * 100;
+            }
+        }
+    }
+
     // Detect if product is array (homepage) or model (shop)
     $isArray = is_array($product);
 
@@ -30,7 +53,18 @@
 
         // Old price (discount) data
         $productCompareAtPrice = $product['compare_at_price'] ?? null;
-        $productFormattedComparePrice = $product['formatted_compare_price'] ?? null;
+
+        // Yuvarlama uygula (00 veya 50)
+        if ($productCompareAtPrice) {
+            $productCompareAtPrice = roundComparePrice($productCompareAtPrice);
+        }
+
+        $productFormattedComparePrice = null;
+        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
+            $productFormattedComparePrice = $product['currency_symbol'] ?? '₺';
+            $productFormattedComparePrice = number_format($productCompareAtPrice, 0, ',', '.') . ' ' . $productFormattedComparePrice;
+        }
+
         $productDiscountPercentage = null;
         if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
@@ -67,12 +101,19 @@
 
         // Old price (discount) data
         $productCompareAtPrice = $product->compare_at_price ?? null;
+
+        // Yuvarlama uygula (00 veya 50)
+        if ($productCompareAtPrice) {
+            $productCompareAtPrice = roundComparePrice($productCompareAtPrice);
+        }
+
         $productDiscountPercentage = null;
         if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
         }
+
         $productFormattedComparePrice = null;
-        if ($productCompareAtPrice) {
+        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productFormattedComparePrice = $currencyRelation
                 ? $currencyRelation->formatPrice($productCompareAtPrice)
                 : number_format($productCompareAtPrice, 0, ',', '.') . ' ₺';
@@ -148,10 +189,16 @@
                     @endif
 
                     @if($productTryPrice && $productCurrencyCode !== 'TRY')
-                        {{-- Old Price (üstü çizili) - varsa --}}
+                        {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
-                            <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400 line-through mb-1">
-                                {{ $productFormattedComparePrice }}
+                            <div class="relative inline-block mb-1">
+                                <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500 font-medium">
+                                    {{ $productFormattedComparePrice }}
+                                </span>
+                                {{-- Çapraz çizgi (diagonal line) --}}
+                                <span class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-500 to-transparent transform rotate-[-8deg] opacity-70"></span>
+                                </span>
                             </div>
                         @endif
 
@@ -184,10 +231,16 @@
                             </div>
                         </div>
                     @else
-                        {{-- Old Price (üstü çizili) - varsa --}}
+                        {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
-                            <div class="text-xs md:text-sm text-gray-500 dark:text-gray-400 line-through mb-1">
-                                {{ $productFormattedComparePrice }}
+                            <div class="relative inline-block mb-1">
+                                <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500 font-medium">
+                                    {{ $productFormattedComparePrice }}
+                                </span>
+                                {{-- Çapraz çizgi (diagonal line) --}}
+                                <span class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-500 to-transparent transform rotate-[-8deg] opacity-70"></span>
+                                </span>
                             </div>
                         @endif
 

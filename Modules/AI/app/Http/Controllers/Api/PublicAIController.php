@@ -1814,14 +1814,23 @@ class PublicAIController extends Controller
             }
 
             // Get messages
+            $markdownService = app(MarkdownService::class);
+
             $messages = $conversation->messages()
                 ->orderBy('created_at', 'asc')
                 ->get()
-                ->map(function ($message) {
+                ->map(function ($message) use ($markdownService) {
+                    // 📝 MARKDOWN TO HTML - Parse assistant messages (AI responses)
+                    // User messages don't need markdown parsing
+                    $content = $message->content;
+                    if ($message->role === 'assistant') {
+                        $content = $markdownService->parse($content);
+                    }
+
                     return [
                         'id' => $message->id,
                         'role' => $message->role,
-                        'content' => $message->content,
+                        'content' => $content,
                         'created_at' => $message->created_at->toIso8601String(),
                     ];
                 });

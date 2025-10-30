@@ -144,40 +144,8 @@ html {
 /* ========================================
    Header Sticky Animation
    ======================================== */
-header {
-    will-change: transform;
-    backface-visibility: hidden;
-    transition: all 700ms cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-#top-bar {
-    will-change: transform, opacity;
-    overflow: hidden;
-}
-
-#toc-bar {
-    will-change: transform, opacity, position, top;
-    overflow: hidden;
-    z-index: 40;
-}
-
-#sticky-sidebar {
-    will-change: position, top, opacity;
-    z-index: 30;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-#main-header {
-    transform: translateY(0);
-}
-
-#main-header.scrolled {
-    transform: translateY(calc(var(--top-bar-height, 52px) * -1));
-}
-
-#main-header.scrolled #main-nav {
-    /* Shadow kaldırıldı - temiz tasarım için */
-}
+/* REMOVED: Alpine.js handles topbar hide/show with x-show and x-transition
+   No CSS transforms needed - header stays in place, topbar disappears on scroll */
 
 /* ========================================
    Top Bar Animated Gradient (Dark Mode)

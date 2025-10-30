@@ -137,50 +137,49 @@
             </div>
         </section>
 
-        {{-- 📑 TABLE OF CONTENTS --}}
-        <div id="toc-bar"
-            class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky z-50 transition-transform duration-300">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-2">
-                <div class="flex items-center">
-                    <div
-                        class="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
-                        <div class="flex gap-2" id="toc-buttons">
-                            @if ($parentProduct)
-                                <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($parentProduct, $currentLocale) }}"
-                                    data-target="parent"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-arrow-left mr-1.5"></i>Ana Ürün
-                                </a>
-                            @endif
-                            @if ($galleryImages->count() > 0)
-                                <a href="#gallery" data-target="gallery"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-images mr-1.5"></i>Galeri
-                                </a>
-                            @endif
-                            @if ($siblingVariants->count() > 0)
-                                <a href="#variants" data-target="variants"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-layer-group mr-1.5"></i>Varyantlar
-                                </a>
-                            @endif
-                            @if (!empty($useCases))
-                                <a href="#usecases" data-target="usecases"
-                                    class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-600 dark:hover:text-white transition-all whitespace-nowrap">
-                                    <i class="fa-solid fa-bullseye mr-1.5"></i>Kullanım
-                                </a>
-                            @endif
-                            <a href="#contact" data-target="contact"
-                                class="toc-link inline-flex items-center px-3 py-2 text-xs font-medium bg-blue-600 dark:bg-blue-600 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-700 transition-all whitespace-nowrap">
-                                <i class="fa-solid fa-envelope mr-1.5"></i>Teklif Al
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col xl:flex-row gap-8">
+                {{-- SAĞ SIDEBAR: TOC (Sticky - sadece XL+ ekranlarda görünür) --}}
+                <aside class="hidden xl:block xl:order-2 w-64 flex-shrink-0">
+                    <nav id="sticky-sidebar" class="sticky top-24 space-y-2">
+                        @if ($parentProduct)
+                            <a href="{{ \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($parentProduct, $currentLocale) }}"
+                                class="toc-link flex items-center gap-3 px-4 py-3 text-sm font-medium bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all border-l-4 border-purple-500">
+                                <i class="fa-solid fa-arrow-left"></i>
+                                <span>Ana Ürün</span>
+                            </a>
+                        @endif
+                        @if ($galleryImages->count() > 0)
+                            <a href="#gallery"
+                                class="toc-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all border-l-4 border-transparent hover:border-blue-500">
+                                <i class="fa-solid fa-images"></i>
+                                <span>Galeri</span>
+                            </a>
+                        @endif
+                        @if ($siblingVariants->count() > 0)
+                            <a href="#variants"
+                                class="toc-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all border-l-4 border-transparent hover:border-blue-500">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span>Varyantlar</span>
+                            </a>
+                        @endif
+                        @if (!empty($useCases))
+                            <a href="#usecases"
+                                class="toc-link flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-400 transition-all border-l-4 border-transparent hover:border-blue-500">
+                                <i class="fa-solid fa-bullseye"></i>
+                                <span>Kullanım Alanları</span>
+                            </a>
+                        @endif
+                        <a href="#contact"
+                            class="toc-link flex items-center gap-3 px-4 py-3 text-sm font-medium bg-blue-600 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-700 transition-all border-l-4 border-blue-800">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Teklif Al</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                {{-- ANA İÇERİK --}}
+                <div class="flex-1 xl:order-1 min-w-0">
             {{-- 🎨 GALLERY --}}
             @if ($galleryImages->count() > 0)
                 <section id="gallery" class="py-16">
@@ -396,8 +395,9 @@
                 </section>
             @endif
 
-        </div>
-    </div>
+                </div>{{-- /Ana İçerik --}}
+            </div>{{-- /flex container --}}
+        </div>{{-- /container --}}
 
     {{-- Footer --}}
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -682,3 +682,23 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for sidebar links
+    document.querySelectorAll('.toc-link[href^="#"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush

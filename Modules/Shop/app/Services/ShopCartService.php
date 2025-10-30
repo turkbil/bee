@@ -24,7 +24,7 @@ class ShopCartService
         // TODO: Kullanıcı girişi varsa customer_id kullan
         // $customerId = auth()->guard('customer')->id();
 
-        $cart = ShopCart::with('currency')->findOrCreateForSession($sessionId);
+        $cart = ShopCart::findOrCreateForSession($sessionId);
 
         // Eğer sepette currency_id yoksa, default currency'yi ayarla
         if (!$cart->currency_id) {
@@ -33,8 +33,12 @@ class ShopCartService
                 $cart->currency_id = $defaultCurrency->currency_id;
                 $cart->currency = $defaultCurrency->code;
                 $cart->save();
-                $cart->load('currency'); // Reload currency relationship
             }
+        }
+
+        // Currency relation'ı yükle
+        if (!$cart->relationLoaded('currency')) {
+            $cart->load('currency');
         }
 
         return $cart;

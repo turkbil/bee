@@ -140,28 +140,7 @@
 <div x-data="{
     priceHovered: false,
     showTryPrice: false,
-    priceTimer: null,
-    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }},
-    init() {
-        // Otomatik döngü başlat (sadece TRY fiyatı varsa)
-        if (this.hasTryPrice) {
-            this.startPriceCycle();
-        }
-    },
-    startPriceCycle() {
-        this.priceTimer = setInterval(() => {
-            if (!this.showTryPrice) {
-                // USD gösteriliyor → TRY'ye geç (2 saniye)
-                this.showTryPrice = true;
-                setTimeout(() => {
-                    this.showTryPrice = false;
-                }, 2000);
-            }
-        }, 6000); // Her 6 saniyede bir döngü (4s USD + 2s TRY)
-    },
-    destroy() {
-        if (this.priceTimer) clearInterval(this.priceTimer);
-    }
+    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }}
 }" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
 
     <div class="{{ $layoutClasses }}">
@@ -225,26 +204,28 @@
                             </div>
                         @endif
 
-                        <div class="relative h-8 flex items-center">
+                        <div class="relative h-8 flex items-center cursor-pointer"
+                             @mouseenter="priceHovered = true; showTryPrice = true"
+                             @mouseleave="priceHovered = false; showTryPrice = false">
                             {{-- USD Price (default) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-300 whitespace-nowrap"
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-150 whitespace-nowrap"
                                  x-show="!showTryPrice"
-                                 x-transition:enter="transition ease-in duration-200"
+                                 x-transition:enter="transition ease-in duration-150"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-out duration-200"
+                                 x-transition:leave="transition ease-out duration-150"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95">
                                 {{ $productFormattedPrice }}
                             </div>
 
-                            {{-- TRY Price (otomatik gösterim) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-300 whitespace-nowrap scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                            {{-- TRY Price (hover ile gösterim) --}}
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 whitespace-nowrap scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                                  x-show="showTryPrice"
-                                 x-transition:enter="transition ease-in duration-200"
+                                 x-transition:enter="transition ease-in duration-150"
                                  x-transition:enter-start="opacity-0 scale-95"
                                  x-transition:enter-end="opacity-100 scale-105"
-                                 x-transition:leave="transition ease-out duration-200"
+                                 x-transition:leave="transition ease-out duration-150"
                                  x-transition:leave-start="opacity-100 scale-105"
                                  x-transition:leave-end="opacity-0 scale-95"
                                  style="display: none;">
@@ -275,27 +256,19 @@
                 {{-- Add to Cart Button / Price Quote Button --}}
                 @if($showAddToCart)
                     @php
-                        // Fiyat 0 veya price_on_request kontrolü
-                        $isPriceOnRequest = false;
-                        if (!$isArray) {
-                            // Model (shop) - price_on_request field kontrolü VEYA fiyat yoksa
-                            $isPriceOnRequest = (isset($product->price_on_request) && $product->price_on_request)
-                                             || (!isset($product->base_price) || $product->base_price <= 0);
-                        } else {
-                            // Array (homepage) - fiyat 0 ise
-                            $isPriceOnRequest = (!isset($product['price']) || $product['price'] <= 0);
-                        }
+                        // Fiyatsız ürün kontrolü (Sadece fiyat 0 veya negatifse)
+                        $hasNoPrice = ($productBasePrice <= 0);
                     @endphp
 
-                    @if($isPriceOnRequest)
-                        {{-- Price Quote Button --}}
+                    @if($hasNoPrice)
+                        {{-- Sorunuz Var mı? Button (Fiyatsız ürünler için) --}}
                         <a href="{{ $productUrl }}"
                            class="flex-shrink-0 bg-gradient-to-br from-orange-700 to-red-700 hover:from-orange-800 hover:to-red-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50 active:scale-95">
                             <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-12">
-                                <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+                                <i class="fa-solid fa-comment-question text-base"></i>
                             </span>
-                            <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-light pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
-                                <span class="whitespace-pre-line">Fiyat{{ "\n" }}Teklifi</span>
+                            <span class="max-w-0 overflow-hidden group-hover:max-w-[6rem] transition-all duration-300 text-[10px] font-light pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
+                                <span class="whitespace-pre-line">Sorunuz{{ "\n" }}Var mı?</span>
                             </span>
                         </a>
                     @else

@@ -38,7 +38,7 @@ class ShopCart extends BaseModel
         'recovery_email_count',
         'ip_address',
         'user_agent',
-        'currency',
+        'currency_code', // Renamed from 'currency' to avoid relation conflict
         'currency_id',
         'metadata',
         'last_activity_at',
@@ -137,7 +137,7 @@ class ShopCart extends BaseModel
                 'status' => 'active',
             ],
             [
-                'currency' => 'TRY',
+                'currency_code' => 'TRY',
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
                 'last_activity_at' => now(),
@@ -156,7 +156,7 @@ class ShopCart extends BaseModel
                 'status' => 'active',
             ],
             [
-                'currency' => 'TRY',
+                'currency_code' => 'TRY',
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
                 'last_activity_at' => now(),

@@ -17,6 +17,21 @@
                     @disabled(empty($selectedItems))>
                 <i class="fas fa-trash"></i> Delete Selected
             </button>
+
+            {{-- TCMB Auto Update Button --}}
+            <button class="btn btn-success"
+                    wire:click="updateFromTCMB"
+                    wire:loading.attr="disabled"
+                    wire:loading.class="btn-loading"
+                    title="TCMB'den güncel kurları otomatik çek">
+                <span wire:loading.remove wire:target="updateFromTCMB">
+                    <i class="fas fa-sync-alt"></i> TCMB'den Güncelle
+                </span>
+                <span wire:loading wire:target="updateFromTCMB">
+                    <span class="spinner-border spinner-border-sm me-2"></span> Güncelleniyor...
+                </span>
+            </button>
+
             <a href="{{ route('admin.shop.currencies.manage') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> New Currency
             </a>
@@ -74,7 +89,18 @@
                             @endif
                         </td>
                         <td>
-                            <span class="badge bg-secondary-lt">1 {{ $currency->code }} = {{ number_format($currency->exchange_rate, 4) }} TRY</span>
+                            <div class="d-flex flex-column gap-1">
+                                <span class="badge bg-secondary-lt">1 {{ $currency->code }} = {{ number_format($currency->exchange_rate, 4) }} TRY</span>
+                                @if($currency->is_auto_update)
+                                    <span class="badge bg-success-lt" title="TCMB'den otomatik güncelleniyor">
+                                        <i class="fas fa-sync-alt"></i> Auto Update
+                                    </span>
+                                @else
+                                    <span class="badge bg-azure-lt" title="Manuel kur girişi">
+                                        <i class="fas fa-hand-paper"></i> Manuel
+                                    </span>
+                                @endif
+                            </div>
                         </td>
                         <td class="text-center">
                             @if($currency->is_default)

@@ -50,7 +50,7 @@
                                 {{-- Price --}}
                                 <div class="mt-3">
                                     <span class="text-xl font-bold text-gray-900 dark:text-white">
-                                        {{ number_format($item->final_price, 2) }} ₺
+                                        {{ number_format($item->final_price, 0, ',', '.') }} ₺
                                     </span>
                                     <span class="text-sm text-gray-500 dark:text-gray-400">
                                         / adet
@@ -94,7 +94,7 @@
                                             Ara Toplam:
                                         </span>
                                         <span class="text-xl font-bold text-gray-900 dark:text-white">
-                                            {{ number_format($item->subtotal, 2) }} ₺
+                                            {{ number_format($item->subtotal, 0, ',', '.') }} ₺
                                         </span>
                                     </div>
                                 </div>
@@ -125,12 +125,12 @@
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between text-gray-600 dark:text-gray-400">
                             <span>Ara Toplam:</span>
-                            <span class="font-semibold">{{ number_format($subtotal, 2) }} ₺</span>
+                            <span class="font-semibold">{{ number_format($subtotal, 0, ',', '.') }} ₺</span>
                         </div>
 
                         <div class="flex justify-between text-gray-600 dark:text-gray-400">
                             <span>KDV (%20):</span>
-                            <span class="font-semibold">{{ number_format($taxAmount, 2) }} ₺</span>
+                            <span class="font-semibold">{{ number_format($taxAmount, 0, ',', '.') }} ₺</span>
                         </div>
 
                         <div class="flex justify-between text-gray-600 dark:text-gray-400">
@@ -142,7 +142,7 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam:</span>
                                 <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                    {{ number_format($total, 2) }} ₺
+                                    {{ number_format($total, 0, ',', '.') }} ₺
                                 </span>
                             </div>
                         </div>

@@ -31,7 +31,7 @@ class ShopCartService
             $defaultCurrency = ShopCurrency::getDefault();
             if ($defaultCurrency) {
                 $cart->currency_id = $defaultCurrency->currency_id;
-                $cart->currency = $defaultCurrency->code;
+                $cart->currency_code = $defaultCurrency->code;
                 $cart->save();
             }
         }
@@ -65,7 +65,7 @@ class ShopCartService
 
             if ($existingItem) {
                 $existingItem->increaseQuantity($quantity);
-                $existingItem->save();
+                // increaseQuantity() zaten save() yapıyor, gereksiz ikinci save kaldırıldı
                 $item = $existingItem;
             } else {
                 // Yeni ürün ekle

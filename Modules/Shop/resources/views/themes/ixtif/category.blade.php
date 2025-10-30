@@ -148,11 +148,11 @@
                         @foreach($products as $product)
                             {{-- Grid Mode Card --}}
                             <div x-show="view === 'grid'" x-cloak>
-                                @include('shop::themes.ixtif.partials.product-card', ['product' => $product, 'viewMode' => 'grid'])
+                                <x-ixtif.product-card :product="$product" layout="vertical" :showAddToCart="true" />
                             </div>
                             {{-- List Mode Card --}}
                             <div x-show="view === 'list'" x-cloak>
-                                @include('shop::themes.ixtif.partials.product-card', ['product' => $product, 'viewMode' => 'list'])
+                                <x-ixtif.product-card :product="$product" layout="horizontal" :showAddToCart="true" />
                             </div>
                         @endforeach
                     </div>

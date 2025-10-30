@@ -60,8 +60,8 @@
                             <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
                         </div>
                         <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Profesyonel Ekip</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Uzman danışmanlık</div>
+                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Profesyonel Ekip</div>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Uzman danışmanlık</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-4 xl:hidden">
@@ -91,50 +91,71 @@
 </section>
 
 <!-- Featured Products Section -->
-<section class="w-full py-8 relative overflow-hidden">
+<section class="w-full py-8 relative overflow-hidden" x-data="{ viewMode: 'grid' }">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-        <div class="text-center mb-12">
+
+        {{-- Section Header with View Toggle --}}
+        <div class="flex items-center justify-between mb-12">
+            {{-- Title --}}
+            <div class="flex items-center gap-4">
+                <div class="w-1.5 h-12 bg-gradient-to-b from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                    Güçlü Çözümler, Güvenli İşler
+                </h2>
+            </div>
+
+            {{-- Animated View Toggle Button --}}
+            <button
+                @click="viewMode = viewMode === 'grid' ? 'list' : 'grid'"
+                class="relative w-14 h-14 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group overflow-hidden">
+
+                {{-- Grid Icon --}}
+                <div class="absolute inset-0 flex items-center justify-center transition-all duration-500"
+                     :class="viewMode === 'grid' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'">
+                    <i class="fa-solid fa-grid-2 text-xl text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"></i>
+                </div>
+
+                {{-- List Icon --}}
+                <div class="absolute inset-0 flex items-center justify-center transition-all duration-500"
+                     :class="viewMode === 'list' ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 rotate-90 scale-50'">
+                    <i class="fa-solid fa-list text-xl text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"></i>
+                </div>
+
+                {{-- Hover Gradient Ring --}}
+                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                     style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));"></div>
+            </button>
         </div>
 
-        <!-- Product Grid: Controller'dan gelen $homepageProducts collection'ını kullan -->
-        <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        {{-- Products Container --}}
+        <div x-show="viewMode === 'grid'"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @foreach($homepageProducts as $index => $product)
-            <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $index === 8 ? 'hidden lg:block xl:hidden' : '' }}">
-                <!-- Product Image -->
-                <a href="{{ $product['url'] }}" class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-                    @if($product['image'])
-                        <img src="{{ $product['image'] }}"
-                             alt="{{ $product['title'] }}"
-                             class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark">
-                    @else
-                        <i class="{{ $product['category_icon'] }} text-6xl text-blue-400 dark:text-blue-400"></i>
-                    @endif
-                </a>
+                <x-ixtif.product-card
+                    :product="$product"
+                    layout="vertical"
+                    :showAddToCart="true"
+                    :index="$index"
+                />
+            @endforeach
+        </div>
 
-                <!-- Content Section -->
-                <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
-                    <!-- Category -->
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-wider">
-                            {{ $product['category'] ?? 'Genel' }}
-                        </span>
-                    </div>
-
-                    <!-- Title -->
-                    <a href="{{ $product['url'] }}">
-                        <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
-                            {{ $product['title'] }}
-                        </h3>
-                    </a>
-
-                    <!-- Price -->
-                    <div class="pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500">
-                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                            {{ $product['formatted_price'] }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div x-show="viewMode === 'list'"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+             style="display: none;">
+            @foreach($homepageProducts as $index => $product)
+                <x-ixtif.product-card
+                    :product="$product"
+                    layout="horizontal"
+                    :showAddToCart="true"
+                    :index="$index"
+                />
             @endforeach
         </div>
     </div>

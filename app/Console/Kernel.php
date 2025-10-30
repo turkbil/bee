@@ -88,18 +88,18 @@ class Kernel extends ConsoleKernel
                 $output = null;
                 $return_var = null;
                 exec('php artisan horizon:status 2>/dev/null', $output, $return_var);
-                
+
                 if ($return_var !== 0 || empty($output)) {
                     // Horizon durmuş - Otomatik restart
                     \Log::warning('🚨 HORIZON DOWN DETECTED - Auto restarting...');
-                    
+
                     // Stuck processes'leri temizle
                     exec('pkill -f "horizon" 2>/dev/null');
                     sleep(2);
-                    
+
                     // Horizon'u background'da başlat
                     exec('cd ' . base_path() . ' && php artisan horizon > /dev/null 2>&1 &');
-                    
+
                     \Log::info('✅ HORIZON AUTO-RESTARTED successfully');
                 } else {
                     \Log::debug('✅ Horizon health check passed');
@@ -108,6 +108,13 @@ class Kernel extends ConsoleKernel
                 \Log::error('❌ Horizon monitoring failed: ' . $e->getMessage());
             }
         })->everyFiveMinutes()->name('horizon-auto-restart');
+
+        // CURRENCY RATES AUTO UPDATE - TCMB Daily Update (Every day at 15:30 after TCMB publishes)
+        $schedule->command('currency:update-rates')
+                 ->dailyAt('15:30')
+                 ->withoutOverlapping()
+                 ->runInBackground()
+                 ->appendOutputTo(storage_path('logs/currency-updates.log'));
     }
 
     /**

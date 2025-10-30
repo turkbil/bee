@@ -29,19 +29,31 @@ class CartWidget extends Component
 
         $this->cart = $cartService->getCurrentCart();
         $this->itemCount = $cartService->getItemCount();
-        $this->total = $cartService->getTotal();
-        $this->items = $cartService->getItems();
 
-        // Currency bilgisini al
-        $cartCurrency = $this->cart->relationLoaded('currency') ? $this->cart->getRelation('currency') : null;
+        // Tüm item'ları TRY'ye çevir ve toplamı hesapla
+        $this->items = $cartService->getItems()->map(function ($item) {
+            // USD ise TRY'ye çevir
+            if ($item->currency && $item->currency->code !== 'TRY') {
+                $exchangeRate = $item->currency->exchange_rate;
+                $item->final_price_try = $item->final_price * $exchangeRate;
+                $item->subtotal_try = $item->subtotal * $exchangeRate;
+                $item->tax_amount_try = $item->tax_amount * $exchangeRate;
+                $item->total_try = $item->total * $exchangeRate;
+            } else {
+                // TRY ise olduğu gibi
+                $item->final_price_try = $item->final_price;
+                $item->subtotal_try = $item->subtotal;
+                $item->tax_amount_try = $item->tax_amount;
+                $item->total_try = $item->total;
+            }
 
-        if ($cartCurrency) {
-            $this->currencySymbol = $cartCurrency->symbol;
-            $this->formattedTotal = $cartCurrency->formatPrice($this->total);
-        } else {
-            $this->currencySymbol = '₺';
-            $this->formattedTotal = number_format($this->total, 2, ',', '.') . ' ₺';
-        }
+            return $item;
+        });
+
+        // Toplam KDV dahil TRY
+        $this->total = $this->items->sum('total_try');
+        $this->currencySymbol = '₺';
+        $this->formattedTotal = number_format($this->total, 0, ',', '.') . ' ₺';
     }
 
     public function removeItem(int $cartItemId)
@@ -84,6 +96,31 @@ class CartWidget extends Component
 
         $this->refreshCart();
         $this->dispatch('cartUpdated');
+    }
+
+    /**
+     * Sepete ürün ekle
+     */
+    public function addToCart(int $productId, int $quantity = 1)
+    {
+        try {
+            $cartService = app(ShopCartService::class);
+            $cartService->addItem($productId, $quantity);
+
+            $this->refreshCart();
+            $this->dispatch('cartUpdated');
+
+            $this->dispatch('product-added-to-cart', [
+                'message' => 'Ürün sepete eklendi',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Add to cart failed: ' . $e->getMessage());
+
+            $this->dispatch('cart-error', [
+                'message' => 'Ürün sepete eklenirken hata oluştu',
+            ]);
+        }
     }
 
     public function render()

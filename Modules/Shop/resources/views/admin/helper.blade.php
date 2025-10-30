@@ -40,6 +40,18 @@
                             </a>
                         @endhasmoduleaccess
 
+                        @hasmoduleaccess('shop', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.shop.currencies.index') }}">
+                                <i class="icon-menu fas fa-coins"></i>Currencies / Kurlar
+                            </a>
+                        @endhasmoduleaccess
+
+                        @hasmoduleaccess('shop', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.shop.carts') }}">
+                                <i class="icon-menu fas fa-shopping-cart"></i>Shopping Carts / Sepetler
+                            </a>
+                        @endhasmoduleaccess
+
                         <h6 class="dropdown-menu-header card-header-light">
                             <span class="dropdown-header">{{ __('shop::admin.page_settings') }}</span>
                         </h6>

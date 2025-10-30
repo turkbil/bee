@@ -11,6 +11,7 @@
     ob_start();
     @endphp
 
+    {{ $slot ?? '' }}
     @yield('content')
     @yield('module_content')
 

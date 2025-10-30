@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Shop\App\Http\Livewire\Admin;
 
-use App\Traits\WithBulkActions;
+use Modules\Shop\App\Http\Livewire\Traits\WithBulkActions;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;

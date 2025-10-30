@@ -524,15 +524,37 @@
 {{-- PWA Service Worker Registration --}}
 <script>
     // Register Service Worker for PWA installability
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+    if ('serviceWorker' in navigator && document.readyState === 'complete') {
+        try {
             navigator.serviceWorker.register('/sw.js')
                 .then((registration) => {
                     console.log('[PWA] Service Worker registered:', registration.scope);
                 })
                 .catch((error) => {
-                    console.error('[PWA] Service Worker registration failed:', error);
+                    // Suppress error from console (likely ad blocker or missing sw.js)
+                    if (error.name !== 'InvalidStateError') {
+                        console.error('[PWA] Service Worker registration failed:', error);
+                    }
                 });
+        } catch (e) {
+            // Suppress InvalidStateError silently
+        }
+    } else if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            try {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('[PWA] Service Worker registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        // Suppress error from console
+                        if (error.name !== 'InvalidStateError') {
+                            console.error('[PWA] Service Worker registration failed:', error);
+                        }
+                    });
+            } catch (e) {
+                // Suppress InvalidStateError silently
+            }
         });
     }
 </script>

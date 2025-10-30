@@ -49,14 +49,24 @@ class PageController extends Controller
         // Homepage products'ları çek (homepage_sort_order'a göre sıralı)
         $homepageProducts = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
             ->where('is_active', true)
-            ->with(['category', 'brand', 'media', 'currency'])
+            ->with(['category', 'brand', 'media'])
             ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
             ->orderBy('product_id', 'desc')
             ->get()
             ->map(function ($product) {
-                // Currency relation'ı al (field ile çakışma olmasın diye)
-                $currencyRelation = $product->relationLoaded('currency') ? $product->getRelation('currency') : null;
+                // Currency field (string) ve currency() relation çakışıyor
+                // Manuel olarak currency_id'den ShopCurrency'yi çekelim
+                $currencyRelation = null;
+                if ($product->currency_id) {
+                    $currencyRelation = \Modules\Shop\App\Models\ShopCurrency::find($product->currency_id);
+                }
                 $currencyCode = $product->getAttribute('currency') ?? 'TRY';
+
+                // TRY conversion için exchange rate hesapla
+                $exchangeRate = $currencyRelation ? $currencyRelation->exchange_rate : 1;
+                $tryPrice = ($currencyCode !== 'TRY' && $exchangeRate > 0)
+                    ? number_format($product->base_price * $exchangeRate, 0, ',', '.')
+                    : null;
 
                 return [
                     'id' => $product->product_id,
@@ -72,6 +82,8 @@ class PageController extends Controller
                     'category_icon' => $product->category->icon_class ?? 'fa-light fa-box',
                     'featured' => $product->is_featured ?? false,
                     'bestseller' => $product->is_bestseller ?? false,
+                    'exchange_rate' => $exchangeRate,
+                    'try_price' => $tryPrice,
                 ];
             });
 

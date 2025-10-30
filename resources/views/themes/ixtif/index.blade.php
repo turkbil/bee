@@ -290,7 +290,7 @@
                                 <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
                                     <template x-if="product.price && product.price > 0">
                                         <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"
-                                             x-text="product.price + ' ₺'"></div>
+                                             x-text="product.formatted_price"></div>
                                     </template>
                                     <div class="flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition-all"
                                          :class="product.price && product.price > 0 ? '' : 'ml-auto'">

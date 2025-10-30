@@ -230,4 +230,198 @@ class ShopCartService
     {
         return $this->getCurrentCart()->cart_id;
     }
+
+    // ============================================
+    // ADMIN PANEL METHODS
+    // ============================================
+
+    /**
+     * Get paginated carts with filters (ADMIN)
+     */
+    public function getPaginatedCartsForAdmin(array $filters, int $perPage = 15)
+    {
+        $query = ShopCart::query()
+            ->with(['items.product', 'currency']);
+
+        // Search filter
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('session_id', 'LIKE', "%{$search}%")
+                    ->orWhere('cart_id', 'LIKE', "%{$search}%")
+                    ->orWhere('ip_address', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // Status filter
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Date range filter
+        if (!empty($filters['date_from'])) {
+            $query->where('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->where('created_at', '<=', $filters['date_to']);
+        }
+
+        // Sorting
+        $sortField = $filters['sortField'] ?? 'cart_id';
+        $sortDirection = $filters['sortDirection'] ?? 'desc';
+        $query->orderBy($sortField, $sortDirection);
+
+        return $query->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * Delete cart (ADMIN)
+     */
+    public function deleteCartAdmin(int $cartId): array
+    {
+        try {
+            $cart = ShopCart::findOrFail($cartId);
+
+            // Delete cart items first
+            $cart->items()->delete();
+
+            // Delete cart
+            $cart->delete();
+
+            \Log::info('Cart deleted', [
+                'cart_id' => $cartId,
+                'user_id' => auth()->id(),
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Cart deleted successfully',
+            ];
+        } catch (\Exception $e) {
+            \Log::error('Cart deletion failed', [
+                'cart_id' => $cartId,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Failed to delete cart: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Bulk delete carts (ADMIN)
+     */
+    public function bulkDeleteCartsAdmin(array $cartIds): int
+    {
+        if (empty($cartIds)) {
+            return 0;
+        }
+
+        try {
+            // Delete cart items first
+            ShopCart::whereIn('cart_id', $cartIds)
+                ->get()
+                ->each(function ($cart) {
+                    $cart->items()->delete();
+                });
+
+            // Delete carts
+            $deletedCount = ShopCart::whereIn('cart_id', $cartIds)->delete();
+
+            \Log::info('Bulk cart delete', [
+                'deleted_count' => $deletedCount,
+                'user_id' => auth()->id(),
+            ]);
+
+            return $deletedCount;
+        } catch (\Exception $e) {
+            \Log::error('Bulk cart delete failed', [
+                'error' => $e->getMessage(),
+                'cart_ids' => $cartIds,
+                'user_id' => auth()->id(),
+            ]);
+
+            return 0;
+        }
+    }
+
+    /**
+     * Mark cart as abandoned (ADMIN)
+     */
+    public function markAsAbandonedAdmin(int $cartId): array
+    {
+        try {
+            $cart = ShopCart::findOrFail($cartId);
+
+            $cart->update([
+                'status' => 'abandoned',
+                'abandoned_at' => now(),
+            ]);
+
+            \Log::info('Cart marked as abandoned', [
+                'cart_id' => $cartId,
+                'user_id' => auth()->id(),
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Cart marked as abandoned',
+            ];
+        } catch (\Exception $e) {
+            \Log::error('Cart mark as abandoned failed', [
+                'cart_id' => $cartId,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Failed to mark cart as abandoned',
+            ];
+        }
+    }
+
+    /**
+     * Clean old carts (ADMIN)
+     */
+    public function cleanOldCartsAdmin(int $daysOld = 30): int
+    {
+        $cutoffDate = now()->subDays($daysOld);
+
+        try {
+            $oldCarts = ShopCart::where('status', 'abandoned')
+                ->where('updated_at', '<', $cutoffDate)
+                ->get();
+
+            // Delete items first
+            foreach ($oldCarts as $cart) {
+                $cart->items()->delete();
+            }
+
+            // Delete carts
+            $deletedCount = ShopCart::where('status', 'abandoned')
+                ->where('updated_at', '<', $cutoffDate)
+                ->delete();
+
+            \Log::info('Old carts cleaned', [
+                'deleted_count' => $deletedCount,
+                'days_old' => $daysOld,
+                'user_id' => auth()->id(),
+            ]);
+
+            return $deletedCount;
+        } catch (\Exception $e) {
+            \Log::error('Clean old carts failed', [
+                'error' => $e->getMessage(),
+                'days_old' => $daysOld,
+                'user_id' => auth()->id(),
+            ]);
+
+            return 0;
+        }
+    }
 }

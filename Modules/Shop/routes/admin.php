@@ -12,6 +12,7 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopFieldTemplateComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopFieldTemplateManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyManageComponent;
+use Modules\Shop\App\Http\Livewire\Admin\ShopCartComponent;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -87,5 +88,10 @@ Route::middleware(['admin', 'tenant'])
                             ->middleware('module.permission:shop,update')
                             ->name('manage');
                     });
+
+                // Cart Management
+                Route::get('/carts', ShopCartComponent::class)
+                    ->middleware('module.permission:shop,view')
+                    ->name('carts');
             });
     });

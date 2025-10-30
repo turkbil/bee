@@ -307,6 +307,17 @@
                         <div class="flex flex-col gap-4">
                             {{-- CTA Buttons - MOBİL: 3'lü grid | DESKTOP: Normal flex --}}
                             <div class="grid grid-cols-3 lg:flex gap-2 lg:gap-4">
+                                {{-- Sepete Ekle Butonu --}}
+                                @if(!$item->price_on_request && $item->base_price > 0)
+                                    @livewire('shop::front.add-to-cart-button', [
+                                        'productId' => $item->product_id,
+                                        'quantity' => 1,
+                                        'buttonText' => 'Sepete Ekle',
+                                        'buttonClass' => 'inline-flex items-center justify-center gap-2 lg:gap-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 lg:px-8 py-4 rounded-2xl font-bold text-base lg:text-lg shadow-lg hover:shadow-2xl transition-all',
+                                        'showQuantity' => false
+                                    ])
+                                @endif
+
                                 {{-- Teklif Al --}}
                                 <a href="#contact"
                                     class="inline-flex items-center justify-center gap-2 lg:gap-3 bg-white text-purple-600 px-3 lg:px-8 py-4 rounded-2xl font-bold text-base lg:text-lg hover:shadow-2xl transition-all group relative"

@@ -256,6 +256,11 @@
 
                                 <!-- Quick Actions -->
                                 <div class="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                                    <button @click.prevent="addToCart(product.id)"
+                                            class="w-10 h-10 bg-blue-600 text-white rounded-lg shadow-lg hover:scale-110 hover:bg-blue-700 transition-all"
+                                            title="Sepete Ekle">
+                                        <i class="fa-solid fa-shopping-cart"></i>
+                                    </button>
                                     <button @click.prevent="toggleFavorite(product.id)"
                                             class="w-10 h-10 bg-white text-gray-900 rounded-lg shadow-lg hover:scale-110 transition-transform">
                                         <i class="fa-solid fa-heart" :class="{'text-red-500': product.is_favorite}"></i>
@@ -403,6 +408,45 @@
                         // Fallback: Direct link
                         window.location.href = product.url;
                     }
+                },
+
+                addToCart(productId) {
+                    // Livewire event dispatch
+                    window.Livewire.emit('cartUpdated');
+
+                    // AJAX call to add item to cart
+                    fetch('/api/cart/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            quantity: 1
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Trigger cart update event
+                            window.Livewire.emit('cartUpdated');
+
+                            // Show success notification
+                            console.log('✅ Ürün sepete eklendi!');
+
+                            // Optional: Toast notification
+                            if (typeof window.dispatchEvent !== 'undefined') {
+                                window.dispatchEvent(new CustomEvent('product-added-to-cart', {
+                                    detail: { message: 'Ürün sepete eklendi!' }
+                                }));
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Sepete eklenirken hata:', error);
+                        alert('Ürün sepete eklenirken bir hata oluştu.');
+                    });
                 }
             }
         }

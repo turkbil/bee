@@ -1,5 +1,5 @@
 <div class="container mx-auto px-4 py-8 md:py-12">
-    {{-- Success/Error Messages (Fixed position - header'ın üstünde) --}}
+    {{-- Success/Error Messages (Fixed position - header altında) --}}
     <div x-data="{ show: false, message: '', isError: false }"
          @cart-updated.window="show = true; message = $event.detail.message; isError = false; setTimeout(() => show = false, 3000)"
          @cart-item-removed.window="show = true; message = $event.detail.message; isError = false; setTimeout(() => show = false, 3000)"
@@ -14,7 +14,7 @@
          x-transition:leave-end="opacity-0"
          style="display: none; z-index: 9999;"
          :class="isError ? 'bg-red-100 dark:bg-red-900/30 border-red-400 dark:border-red-700 text-red-700 dark:text-red-300' : 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300'"
-         class="fixed top-20 right-4 max-w-md border px-4 py-3 rounded-lg flex items-center gap-3 shadow-lg">
+         class="fixed top-32 right-4 max-w-md border px-4 py-3 rounded-lg flex items-center gap-3 shadow-lg">
         <i :class="isError ? 'fa-circle-xmark' : 'fa-circle-check'" class="fa-solid text-xl"></i>
         <span x-text="message" class="flex-1"></span>
     </div>

@@ -289,9 +289,8 @@
                         @endif
 
                         {{-- Fiyat Gösterimi --}}
-                        <div class="mb-8">
-                            @if($item->base_price && $item->base_price > 0)
-                                {{-- Fiyat varsa göster (price_on_request'e bakmadan) --}}
+                        @if($item->base_price && $item->base_price > 0)
+                            <div class="mb-8">
                                 <div class="inline-flex flex-col gap-2">
                                     <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400">
                                         {{ formatPrice($item->base_price, $item->currency ?? 'TRY') }}
@@ -302,14 +301,8 @@
                                         </div>
                                     @endif
                                 </div>
-                            @elseif($item->price_on_request || !$item->base_price)
-                                {{-- Fiyat yoksa veya "price_on_request" işaretliyse --}}
-                                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-4 rounded-2xl">
-                                    <i class="fa-solid fa-tag text-2xl"></i>
-                                    <span class="text-2xl font-bold">Fiyat Sorunuz</span>
-                                </div>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
 
                         <div class="flex flex-col gap-4">
                             {{-- CTA Buttons - MOBİL: 3'lü grid | DESKTOP: Normal flex --}}
@@ -1128,17 +1121,21 @@
                         {{-- CTA Section - V6 SaaS Modern Style --}}
                         <div class="mb-6">
                             {{-- Fiyat Kutusu --}}
-                            <div class="rounded-xl p-6 mb-4"
-                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                @if($item->stock_tracking && $item->current_stock > 0)
-                                    <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-md text-xs text-white mb-2">
-                                        <span class="w-1.5 h-1.5 bg-green-400"></span>
-                                        Stokta Var
-                                    </div>
-                                @endif
-                                <div class="text-2xl font-bold text-white mb-1">Fiyat Teklifi Alın</div>
-                                <div class="text-sm text-white">Size özel fiyat sunuyoruz</div>
-                            </div>
+                            @if($item->base_price && $item->base_price > 0)
+                                <div class="rounded-xl p-6 mb-4"
+                                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    @if($item->stock_tracking && $item->current_stock > 0)
+                                        <div class="inline-flex items-center gap-2 bg-white/20 px-3 py-1 rounded-md text-xs text-white mb-2">
+                                            <span class="w-1.5 h-1.5 bg-green-400"></span>
+                                            Stokta Var
+                                        </div>
+                                    @endif
+                                    <div class="text-2xl font-bold text-white mb-1">{{ formatPrice($item->base_price, $item->currency ?? 'TRY') }}</div>
+                                    @if($item->compare_at_price && $item->compare_at_price > $item->base_price)
+                                        <div class="text-sm text-white/80 line-through">{{ formatPrice($item->compare_at_price, $item->currency ?? 'TRY') }}</div>
+                                    @endif
+                                </div>
+                            @endif
 
                             {{-- CTA Buttons - MOBILE: 3'lü grid sadece ikonlar | DESKTOP: Normal --}}
 

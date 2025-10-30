@@ -111,6 +111,53 @@ class ShopCurrencyComponent extends Component
     }
 
     /**
+     * Auto/Manuel toggle (tek tıkla geçiş)
+     */
+    public function toggleAutoUpdate(int $currencyId): void
+    {
+        $currency = ShopCurrency::findOrFail($currencyId);
+        $currency->is_auto_update = !$currency->is_auto_update;
+        $currency->save();
+
+        $mode = $currency->is_auto_update ? 'Otomatik' : 'Manuel';
+
+        $this->dispatch('toast', [
+            'title' => '✅ Güncellendi',
+            'message' => "{$currency->code} artık {$mode} modda",
+            'type' => 'success',
+        ]);
+    }
+
+    /**
+     * Manuel kur güncelle (inline edit)
+     */
+    public function updateRate(int $currencyId, float $newRate): void
+    {
+        $currency = ShopCurrency::findOrFail($currencyId);
+
+        if ($currency->is_auto_update) {
+            $this->dispatch('toast', [
+                'title' => '⚠️ Uyarı',
+                'message' => 'Otomatik kurlar manuel değiştirilemez. Önce Manuel moda geçirin.',
+                'type' => 'warning',
+            ]);
+
+            return;
+        }
+
+        $oldRate = $currency->exchange_rate;
+        $currency->exchange_rate = $newRate;
+        $currency->last_updated_at = now();
+        $currency->save();
+
+        $this->dispatch('toast', [
+            'title' => '✅ Kur Güncellendi',
+            'message' => "{$currency->code}: ₺{$oldRate} → ₺{$newRate}",
+            'type' => 'success',
+        ]);
+    }
+
+    /**
      * TCMB'den kurları otomatik güncelle (sadece is_auto_update=true olanlar)
      */
     public function updateFromTCMB(): void

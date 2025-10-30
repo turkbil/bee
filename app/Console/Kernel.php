@@ -109,13 +109,8 @@ class Kernel extends ConsoleKernel
             }
         })->everyFiveMinutes()->name('horizon-auto-restart');
 
-        // CURRENCY RATES AUTO UPDATE - TCMB Daily Update (Every day at 15:30 after TCMB publishes)
-        // TEST MODE: Her dakika çalışır (production'da dailyAt('15:30') kullan)
-        $schedule->command('currency:update-rates')
-                 ->everyMinute()
-                 ->withoutOverlapping()
-                 ->runInBackground()
-                 ->appendOutputTo(storage_path('logs/currency-updates.log'));
+        // CURRENCY RATES AUTO UPDATE - Artık ShopServiceProvider'da tanımlı
+        // Bu satırlar ShopServiceProvider::registerCommandSchedules() metoduna taşındı
     }
 
     /**

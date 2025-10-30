@@ -133,10 +133,34 @@ class ShopServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+
+            // CURRENCY RATES AUTO UPDATE - TCMB Daily Update
+            // Günde 2 kez: Mesai başında ve sonunda
+            // Her tenant için ayrı çalışır
+
+            // Mesai başı - Sabah 09:00
+            $schedule->command('tenants:run currency:update-rates')
+                     ->dailyAt('09:00')
+                     ->withoutOverlapping()
+                     ->runInBackground()
+                     ->appendOutputTo(storage_path('logs/currency-updates.log'));
+
+            // Mesai sonu - Akşam 17:00
+            $schedule->command('tenants:run currency:update-rates')
+                     ->dailyAt('17:00')
+                     ->withoutOverlapping()
+                     ->runInBackground()
+                     ->appendOutputTo(storage_path('logs/currency-updates.log'));
+
+            // TEST MODE: Her dakika test etmek için uncomment et
+            // $schedule->command('tenants:run currency:update-rates')
+            //          ->everyMinute()
+            //          ->withoutOverlapping()
+            //          ->runInBackground()
+            //          ->appendOutputTo(storage_path('logs/currency-updates.log'));
+        });
     }
 
     /**

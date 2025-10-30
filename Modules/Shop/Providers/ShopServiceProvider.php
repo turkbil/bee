@@ -17,6 +17,8 @@ use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
 use Modules\Shop\App\Http\Livewire\Front\CartWidget;
 use Modules\Shop\App\Http\Livewire\Front\CartPage;
 use Modules\Shop\App\Http\Livewire\Front\AddToCartButton;
+use Modules\Shop\App\Http\Livewire\Front\AddressManager;
+use Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -74,6 +76,10 @@ class ShopServiceProvider extends ServiceProvider
         Livewire::component('shop::front.cart-widget', CartWidget::class);
         Livewire::component('shop::front.cart-page', CartPage::class);
         Livewire::component('shop::front.add-to-cart-button', AddToCartButton::class);
+
+        // Front Livewire Components (Checkout System)
+        Livewire::component('shop::front.address-manager', AddressManager::class);
+        Livewire::component('shop::front.checkout-page-new', CheckoutPageNew::class);
     }
 
     /**

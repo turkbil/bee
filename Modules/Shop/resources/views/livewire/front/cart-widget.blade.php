@@ -1,8 +1,8 @@
 <div x-data="{ open: false }" @click.away="open = false" @close-cart.window="open = false" class="relative">
     {{-- Cart Icon Button --}}
     <button @click="open = !open"
-            class="relative flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-        <i class="fa-solid fa-shopping-cart text-lg text-gray-700 dark:text-gray-300"></i>
+            class="group relative flex items-center gap-2 px-3 py-2 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 transition">
+        <i class="fa-solid fa-shopping-cart text-lg text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition"></i>
 
         @if($itemCount > 0)
             <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
@@ -10,7 +10,7 @@
             </span>
         @endif
 
-        <span class="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-300">
+        <span class="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
             Sepet
         </span>
     </button>
@@ -44,14 +44,20 @@
                     @foreach($items as $item)
                         <div class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                             <div class="flex gap-3">
-                                {{-- Product Image --}}
+                                {{-- Product Image / Category Icon --}}
                                 @php
                                     $media = $item->product->getFirstMedia('featured_image') ?? $item->product->getFirstMedia('gallery');
-                                    $imageUrl = $media ? thumb($media, 80, 80) : asset('images/no-image.jpg');
+                                    $categoryIcon = $item->product->category->icon_class ?? 'fa-light fa-box';
                                 @endphp
-                                <img src="{{ $imageUrl }}"
-                                     alt="{{ $item->product->getTranslated('title', app()->getLocale()) }}"
-                                     class="w-16 h-16 object-cover rounded-lg">
+                                @if($media)
+                                    <img src="{{ thumb($media, 80, 80) }}"
+                                         alt="{{ $item->product->getTranslated('title', app()->getLocale()) }}"
+                                         class="w-16 h-16 object-cover rounded-lg">
+                                @else
+                                    <div class="w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 rounded-lg">
+                                        <i class="{{ $categoryIcon }} text-3xl text-blue-400 dark:text-blue-400"></i>
+                                    </div>
+                                @endif
 
                                 {{-- Product Info --}}
                                 <div class="flex-1 min-w-0">

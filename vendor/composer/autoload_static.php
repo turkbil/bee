@@ -333,6 +333,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         ),
         'E' => 
         array (
+            'Epigra\\TrGeoZones\\' => 18,
             'Egulias\\EmailValidator\\' => 23,
         ),
         'D' => 
@@ -1230,6 +1231,10 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Facade\\IgnitionContracts\\' => 
         array (
             0 => __DIR__ . '/..' . '/facade/ignition-contracts/src',
+        ),
+        'Epigra\\TrGeoZones\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/epigra/trgeozones/src',
         ),
         'Egulias\\EmailValidator\\' => 
         array (
@@ -2343,6 +2348,20 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Egulias\\EmailValidator\\Warning\\QuotedString' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/QuotedString.php',
         'Egulias\\EmailValidator\\Warning\\TLD' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/TLD.php',
         'Egulias\\EmailValidator\\Warning\\Warning' => __DIR__ . '/..' . '/egulias/email-validator/src/Warning/Warning.php',
+        'Epigra\\TrGeoZones\\Console\\ExcelMigrator' => __DIR__ . '/..' . '/epigra/trgeozones/src/Console/ExcelMigrator.php',
+        'Epigra\\TrGeoZones\\Database\\Seeders\\GeozoneCitiesTableSeeder' => __DIR__ . '/..' . '/epigra/trgeozones/src/Database/Seeders/GeozoneCitiesTableSeeder.php',
+        'Epigra\\TrGeoZones\\Database\\Seeders\\GeozoneCountiesTableSeeder' => __DIR__ . '/..' . '/epigra/trgeozones/src/Database/Seeders/GeozoneCountiesTableSeeder.php',
+        'Epigra\\TrGeoZones\\Database\\Seeders\\GeozoneCountriesTableSeeder' => __DIR__ . '/..' . '/epigra/trgeozones/src/Database/Seeders/GeozoneCountriesTableSeeder.php',
+        'Epigra\\TrGeoZones\\Database\\Seeders\\GeozoneDistrictsTableSeeder' => __DIR__ . '/..' . '/epigra/trgeozones/src/Database/Seeders/GeozoneDistrictsTableSeeder.php',
+        'Epigra\\TrGeoZones\\Database\\Seeders\\GeozoneNeighbourhoodsTableSeeder' => __DIR__ . '/..' . '/epigra/trgeozones/src/Database/Seeders/GeozoneNeighbourhoodsTableSeeder.php',
+        'Epigra\\TrGeoZones\\Database\\Seeders\\TrGeoZonesDatabaseSeeder' => __DIR__ . '/..' . '/epigra/trgeozones/src/Database/Seeders/TrGeoZonesDatabaseSeeder.php',
+        'Epigra\\TrGeoZones\\Imports\\CityImport' => __DIR__ . '/..' . '/epigra/trgeozones/src/Imports/CityImport.php',
+        'Epigra\\TrGeoZones\\Models\\City' => __DIR__ . '/..' . '/epigra/trgeozones/src/Models/City.php',
+        'Epigra\\TrGeoZones\\Models\\Country' => __DIR__ . '/..' . '/epigra/trgeozones/src/Models/Country.php',
+        'Epigra\\TrGeoZones\\Models\\County' => __DIR__ . '/..' . '/epigra/trgeozones/src/Models/County.php',
+        'Epigra\\TrGeoZones\\Models\\District' => __DIR__ . '/..' . '/epigra/trgeozones/src/Models/District.php',
+        'Epigra\\TrGeoZones\\Models\\Neighbourhood' => __DIR__ . '/..' . '/epigra/trgeozones/src/Models/Neighbourhood.php',
+        'Epigra\\TrGeoZones\\Providers\\TrGeoZonesServiceProvider' => __DIR__ . '/..' . '/epigra/trgeozones/src/Providers/TrGeoZonesServiceProvider.php',
         'Facade\\IgnitionContracts\\BaseSolution' => __DIR__ . '/..' . '/facade/ignition-contracts/src/BaseSolution.php',
         'Facade\\IgnitionContracts\\HasSolutionsForThrowable' => __DIR__ . '/..' . '/facade/ignition-contracts/src/HasSolutionsForThrowable.php',
         'Facade\\IgnitionContracts\\ProvidesSolution' => __DIR__ . '/..' . '/facade/ignition-contracts/src/ProvidesSolution.php',
@@ -7422,9 +7441,11 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopProductComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopProductComponent.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Admin\\ShopProductManageComponent' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Admin/ShopProductManageComponent.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\AddToCartButton' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/AddToCartButton.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Front\\AddressManager' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/AddressManager.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\CartPage' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CartPage.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\CartWidget' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CartWidget.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\CheckoutPage' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CheckoutPage.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Front\\CheckoutPageNew' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CheckoutPageNew.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Traits\\InlineEditTitle' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/InlineEditTitle.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Traits\\WithBulkActions' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/WithBulkActions.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Traits\\WithBulkActionsQueue' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/WithBulkActionsQueue.php',
@@ -7440,6 +7461,8 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Shop\\App\\Models\\ShopCartItem' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopCartItem.php',
         'Modules\\Shop\\App\\Models\\ShopCategory' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopCategory.php',
         'Modules\\Shop\\App\\Models\\ShopCurrency' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopCurrency.php',
+        'Modules\\Shop\\App\\Models\\ShopCustomer' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopCustomer.php',
+        'Modules\\Shop\\App\\Models\\ShopCustomerAddress' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopCustomerAddress.php',
         'Modules\\Shop\\App\\Models\\ShopOrder' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopOrder.php',
         'Modules\\Shop\\App\\Models\\ShopOrderItem' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopOrderItem.php',
         'Modules\\Shop\\App\\Models\\ShopProduct' => __DIR__ . '/../..' . '/Modules/Shop/app/Models/ShopProduct.php',

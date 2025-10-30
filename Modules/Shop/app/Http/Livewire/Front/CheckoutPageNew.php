@@ -102,11 +102,17 @@ class CheckoutPageNew extends Component
     {
         // Kayıtlı kullanıcı var mı?
         if (Auth::check()) {
+            // User name'i ad/soyad olarak ayır
+            $fullName = Auth::user()->name ?? '';
+            $nameParts = explode(' ', trim($fullName), 2);
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+
             $this->customer = ShopCustomer::firstOrCreate(
                 ['user_id' => Auth::id()],
                 [
-                    'first_name' => Auth::user()->name ?? '',
-                    'last_name' => '',
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
                     'email' => Auth::user()->email,
                     'phone' => '',
                     'customer_type' => 'individual',

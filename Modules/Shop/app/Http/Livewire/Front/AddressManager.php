@@ -55,15 +55,24 @@ class AddressManager extends Component
 
     public function loadCities()
     {
-        // Cities central database'den çekiliyor (tenant'larda değil)
-        $this->cities = \DB::connection('mysql')->table('cities')->pluck('name', 'id')->toArray();
+        // Geozone cities central database'den çekiliyor
+        $this->cities = \DB::connection('mysql')
+            ->table('geozone_cities')
+            ->where('country_id', 1) // Türkiye
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function updatedCity($cityId)
     {
-        // İlçeler - şimdilik free text, gerekirse districts tablosu eklenebilir
-        // Bu method district dropdown için hazır (gelecekte kullanılabilir)
-        $this->districts = [];
+        // İl seçilince ilçeleri yükle (geozone_counties)
+        $this->districts = \DB::connection('mysql')
+            ->table('geozone_counties')
+            ->where('city_id', $cityId)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public function loadAddresses()

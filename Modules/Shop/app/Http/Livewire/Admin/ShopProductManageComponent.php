@@ -39,6 +39,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
         'base_price' => null,
         'compare_at_price' => null,
         'currency' => 'TRY',
+        'currency_id' => null,
         'sort_order' => 0,
         'show_on_homepage' => false,
     ];
@@ -90,6 +91,18 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
     public function activeBrands()
     {
         return $this->brandService->getActiveBrands();
+    }
+
+    /**
+     * Get active currencies for dropdown
+     */
+    #[Computed]
+    public function activeCurrencies()
+    {
+        return \Modules\Shop\App\Models\ShopCurrency::where('is_active', true)
+            ->orderBy('is_default', 'desc')
+            ->orderBy('code', 'asc')
+            ->get();
     }
 
     // Livewire Listeners - Universal component'lerden gelen event'ler
@@ -266,6 +279,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
                 'base_price' => $product->base_price,
                 'compare_at_price' => $product->compare_at_price,
                 'currency' => $product->currency,
+                'currency_id' => $product->currency_id,
                 'is_active' => (bool) $product->is_active,
             ]);
 
@@ -337,7 +351,8 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
             'inputs.sku' => 'required|string|max:191',
             'inputs.product_type' => 'required|in:physical,digital,service',
             'inputs.condition' => 'required|in:new,used,refurbished',
-            'inputs.currency' => 'required|string|size:3',
+            'inputs.currency_id' => 'nullable|exists:shop_currencies,currency_id',
+            'inputs.currency' => 'nullable|string|size:3',
             'inputs.price_on_request' => 'boolean',
             'inputs.base_price' => 'nullable|numeric|min:0',
             'inputs.compare_at_price' => 'nullable|numeric|min:0',

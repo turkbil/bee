@@ -205,19 +205,31 @@
 
                                         <div class="col-12 col-md-4">
                                             <div class="form-floating">
-                                                <select wire:model="inputs.currency"
-                                                    class="form-control @error('inputs.currency') is-invalid @enderror"
+                                                <select wire:model.live="inputs.currency_id"
+                                                    class="form-control @error('inputs.currency_id') is-invalid @enderror"
                                                     id="currency_select">
-                                                    <option value="TRY">TRY - Türk Lirası</option>
-                                                    <option value="USD">USD - Dolar</option>
-                                                    <option value="EUR">EUR - Euro</option>
+                                                    <option value="">-- {{ __('admin.select') }} --</option>
+                                                    @foreach($this->activeCurrencies as $currency)
+                                                        <option value="{{ $currency->currency_id }}">
+                                                            {{ $currency->code }} ({{ $currency->symbol }}) - {{ $currency->getTranslatedName(app()->getLocale()) }}
+                                                            @if($currency->is_default)
+                                                                ★
+                                                            @endif
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                                 <label for="currency_select">
                                                     {{ __('shop::admin.currency') }}
                                                 </label>
-                                                @error('inputs.currency')
+                                                @error('inputs.currency_id')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
+                                                @if($this->activeCurrencies->isEmpty())
+                                                    <small class="form-hint text-danger">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                        No active currencies found. Please add currencies first.
+                                                    </small>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

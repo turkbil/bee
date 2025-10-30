@@ -453,7 +453,7 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'hizmetler' }"></i>
                             </a>
 
-                            {{-- Ortalı Dropdown --}}
+                            {{-- Ortalı Dropdown (Ürünler ile aynı seviye: -mt-2) --}}
                             <div x-show="activeMegaMenu === 'hizmetler'"
                                  @mouseenter="activeMegaMenu = 'hizmetler'"
                                  x-transition:enter="transition ease-out duration-300"
@@ -462,7 +462,7 @@
                                  x-transition:leave="transition ease-in duration-200"
                                  x-transition:leave-start="opacity-100 translate-y-0"
                                  x-transition:leave-end="opacity-0 -translate-y-3"
-                                 class="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-80 rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg z-50"
+                                 class="absolute top-full left-1/2 -translate-x-1/2 -mt-2 w-80 rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg z-50"
                                  x-cloak>
                                 <div class="bg-white dark:bg-gray-800 rounded-xl p-5">
                                     <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-5">

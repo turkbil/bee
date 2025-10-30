@@ -99,30 +99,15 @@
         <!-- Product Grid: Controller'dan gelen $homepageProducts collection'ını kullan -->
         <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @foreach($homepageProducts as $index => $product)
-            @php
-                $productTitle = $product->getTranslated('title', app()->getLocale());
-                $productImage = $product->getFirstMediaUrl('featured_image');
-                $productSlug = $product->getTranslated('slug', app()->getLocale());
-
-                // Slug varsa slug ile, yoksa ID ile route oluştur
-                if($productSlug) {
-                    $productUrl = route('shop.show', $productSlug);
-                } else {
-                    $productUrl = route('shop.show.by-id', $product->id);
-                }
-            @endphp
             <div class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $index === 8 ? 'hidden lg:block xl:hidden' : '' }}">
                 <!-- Product Image -->
-                <a href="{{ $productUrl }}" class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-                    @if($productImage)
-                        <img src="{{ $productImage }}"
-                             alt="{{ $productTitle }}"
+                <a href="{{ $product['url'] }}" class="block aspect-square rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+                    @if($product['image'])
+                        <img src="{{ $product['image'] }}"
+                             alt="{{ $product['title'] }}"
                              class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark">
                     @else
-                        @php
-                            $categoryIcon = $product->category?->icon_class ?? 'fa-light fa-box';
-                        @endphp
-                        <i class="{{ $categoryIcon }} text-6xl text-blue-400 dark:text-blue-400"></i>
+                        <i class="{{ $product['category_icon'] }} text-6xl text-blue-400 dark:text-blue-400"></i>
                     @endif
                 </a>
 
@@ -131,28 +116,22 @@
                     <!-- Category -->
                     <div class="flex items-center gap-2 mb-2">
                         <span class="text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-wider">
-                            {{ $product->category?->getTranslated('title', app()->getLocale()) ?? 'Genel' }}
+                            {{ $product['category'] ?? 'Genel' }}
                         </span>
                     </div>
 
                     <!-- Title -->
-                    <a href="{{ $productUrl }}">
+                    <a href="{{ $product['url'] }}">
                         <h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-950 dark:text-gray-50 leading-relaxed line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
-                            {{ $productTitle }}
+                            {{ $product['title'] }}
                         </h3>
                     </a>
 
                     <!-- Price -->
                     <div class="pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500">
-                        @if($product->base_price && $product->base_price > 0)
-                            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
-                                {{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}
-                            </div>
-                        @else
-                            <div class="text-base md:text-lg font-semibold text-gray-600 dark:text-gray-300">
-                                Fiyat Talep Üzerine
-                            </div>
-                        @endif
+                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300">
+                            {{ $product['formatted_price'] }}
+                        </div>
                     </div>
                 </div>
             </div>

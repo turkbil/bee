@@ -54,15 +54,19 @@ class PageController extends Controller
             ->orderBy('product_id', 'desc')
             ->get()
             ->map(function ($product) {
+                // Currency relation'ı al (field ile çakışma olmasın diye)
+                $currencyRelation = $product->relationLoaded('currency') ? $product->getRelation('currency') : null;
+                $currencyCode = $product->getAttribute('currency') ?? 'TRY';
+
                 return [
                     'id' => $product->product_id,
                     'title' => $product->getTranslated('title', app()->getLocale()),
                     'description' => strip_tags($product->getTranslated('short_description', app()->getLocale()) ?? ''),
                     'url' => \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product),
                     'price' => $product->base_price,
-                    'currency' => $product->currency ?? 'TRY',
-                    'currency_symbol' => $product->currency ? $product->currency->symbol : '₺',
-                    'formatted_price' => $product->currency ? $product->currency->formatPrice($product->base_price) : number_format($product->base_price, 0, ',', '.') . ' ₺',
+                    'currency' => $currencyCode,
+                    'currency_symbol' => $currencyRelation ? $currencyRelation->symbol : '₺',
+                    'formatted_price' => $currencyRelation ? $currencyRelation->formatPrice($product->base_price) : number_format($product->base_price, 0, ',', '.') . ' ₺',
                     'image' => $product->hasMedia('featured_image') ? thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) : null,
                     'category' => $product->category ? $product->category->getTranslated('title', app()->getLocale()) : null,
                     'category_icon' => $product->category->icon_class ?? 'fa-light fa-box',

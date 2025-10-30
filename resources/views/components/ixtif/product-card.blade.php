@@ -277,10 +277,13 @@
                     @php
                         // Fiyat 0 veya price_on_request kontrolü
                         $isPriceOnRequest = false;
-                        if (!$isArray && isset($product->price_on_request)) {
-                            $isPriceOnRequest = $product->price_on_request;
-                        } elseif ($isArray && isset($product['price']) && $product['price'] == 0) {
-                            $isPriceOnRequest = true;
+                        if (!$isArray) {
+                            // Model (shop) - price_on_request field kontrolü VEYA fiyat yoksa
+                            $isPriceOnRequest = (isset($product->price_on_request) && $product->price_on_request)
+                                             || (!isset($product->base_price) || $product->base_price <= 0);
+                        } else {
+                            // Array (homepage) - fiyat 0 ise
+                            $isPriceOnRequest = (!isset($product['price']) || $product['price'] <= 0);
                         }
                     @endphp
 

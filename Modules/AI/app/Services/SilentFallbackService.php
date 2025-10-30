@@ -153,11 +153,25 @@ readonly class SilentFallbackService
     private function getModelsByProvider(array $providerNames): array
     {
         $candidates = [];
-        
+
+        // SAFE MODE: Boot sırasında database sorgusu atma
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('ai_providers')) {
+                return [];
+            }
+        } catch (\Exception $e) {
+            return [];
+        }
+
         foreach ($providerNames as $providerName) {
-            $provider = AIProvider::where('name', $providerName)
-                                ->where('is_active', true)
-                                ->first();
+            try {
+                $provider = AIProvider::where('name', $providerName)
+                                    ->where('is_active', true)
+                                    ->first();
+            } catch (\Exception $e) {
+                // Database bağlantı hatası varsa geç
+                continue;
+            }
                                 
             if (!$provider || !$provider->isAvailable()) {
                 continue;

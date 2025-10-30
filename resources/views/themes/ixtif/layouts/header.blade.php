@@ -453,7 +453,7 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'hizmetler' }"></i>
                             </a>
 
-                            {{-- Ortalı Dropdown (Ürünler ile aynı seviye: -mt-2) --}}
+                            {{-- Basit Dropdown (Temiz ve Kompakt) --}}
                             <div x-show="activeMegaMenu === 'hizmetler'"
                                  @mouseenter="activeMegaMenu = 'hizmetler'"
                                  x-transition:enter="transition ease-out duration-300"
@@ -462,52 +462,52 @@
                                  x-transition:leave="transition ease-in duration-200"
                                  x-transition:leave-start="opacity-100 translate-y-0"
                                  x-transition:leave-end="opacity-0 -translate-y-3"
-                                 class="absolute top-full left-1/2 -translate-x-1/2 -mt-2 w-80 rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg z-50"
+                                 class="absolute top-full left-1/2 -translate-x-1/2 -mt-2 w-72 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl z-50 overflow-hidden"
                                  x-cloak>
-                                <div class="bg-white dark:bg-gray-800 rounded-xl p-5">
-                                    <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-5">
-                                        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300">
-                                            <ul class="space-y-2">
-                                                <li>
-                                                    <a href="/satin-alma"
-                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Satın Alma
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="/kiralama"
-                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Kiralama
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="/teknik-servis"
-                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Teknik Servis
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="/yedek-parca"
-                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Yedek Parça
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="/bakim-anlasmalari"
-                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Bakım Anlaşmaları
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="/ikinci-el"
-                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                                        <i class="fa-solid fa-chevron-right text-xs"></i>İkinci El
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ul class="py-2">
+                                    <li>
+                                        <a href="/satin-alma"
+                                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            <span>Satın Alma</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/kiralama"
+                                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            <span>Kiralama</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/teknik-servis"
+                                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            <span>Teknik Servis</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/yedek-parca"
+                                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            <span>Yedek Parça</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/bakim-anlasmalari"
+                                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            <span>Bakım Anlaşmaları</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/ikinci-el"
+                                           class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                            <span>İkinci El</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 

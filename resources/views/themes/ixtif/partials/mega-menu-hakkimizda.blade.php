@@ -38,17 +38,19 @@
                                 <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Hakkımızda</div>
                             </div>
                         </div>
-                        <ul class="space-y-2">
+                        <ul class="space-y-1">
                             <li>
                                 <a href="{{ href('Page', 'show', 'hakkimizda') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Hakkımızda
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Hakkımızda</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'kariyer') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Kariyer
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Kariyer</span>
                                 </a>
                             </li>
                         </ul>
@@ -65,29 +67,33 @@
                                 <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Alışveriş Bilgileri</div>
                             </div>
                         </div>
-                        <ul class="space-y-2">
+                        <ul class="space-y-1">
                             <li>
                                 <a href="{{ href('Page', 'show', 'odeme-yontemleri') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Ödeme Yöntemleri
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Ödeme Yöntemleri</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'teslimat-kargo') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Teslimat & Kargo
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Teslimat & Kargo</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'guvenli-alisveris') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Güvenli Alışveriş
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Güvenli Alışveriş</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'sikca-sorulan-sorular') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Sıkça Sorulan Sorular
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Sıkça Sorulan Sorular</span>
                                 </a>
                             </li>
                         </ul>
@@ -104,23 +110,26 @@
                                 <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">İptal & İade</div>
                             </div>
                         </div>
-                        <ul class="space-y-2">
+                        <ul class="space-y-1">
                             <li>
                                 <a href="{{ href('Page', 'show', 'iptal-iade') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>İptal & İade
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>İptal & İade</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'cayma-hakki') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Cayma Hakkı
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Cayma Hakkı</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'mesafeli-satis') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Mesafeli Satış Sözleşmesi
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Mesafeli Satış Sözleşmesi</span>
                                 </a>
                             </li>
                         </ul>
@@ -137,29 +146,33 @@
                                 <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold">Mevzuat & Politikalar</div>
                             </div>
                         </div>
-                        <ul class="space-y-2">
+                        <ul class="space-y-1">
                             <li>
                                 <a href="{{ href('Page', 'show', 'gizlilik-politikasi') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Gizlilik Politikası
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Gizlilik Politikası</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'kullanim-kosullari') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Kullanım Koşulları
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Kullanım Koşulları</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'kvkk-aydinlatma') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>KVKK Aydınlatma
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>KVKK Aydınlatma</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ href('Page', 'show', 'cerez-politikasi') }}"
-                                   class="text-sm text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
-                                    <i class="fa-solid fa-chevron-right text-xs"></i>Çerez Politikası
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>Çerez Politikası</span>
                                 </a>
                             </li>
                         </ul>

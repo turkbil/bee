@@ -1385,6 +1385,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Console\\Commands\\TestTranspaletAI' => __DIR__ . '/../..' . '/app/Console/Commands/TestTranspaletAI.php',
         'App\\Console\\Commands\\TrackTenantResources' => __DIR__ . '/../..' . '/app/Console/Commands/TrackTenantResources.php',
         'App\\Console\\Commands\\TranslatePageCommand' => __DIR__ . '/../..' . '/app/Console/Commands/TranslatePageCommand.php',
+        'App\\Console\\Commands\\UpdateCurrencyRatesCommand' => __DIR__ . '/../..' . '/app/Console/Commands/UpdateCurrencyRatesCommand.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Contracts\\AI\\AIIntegrationInterface' => __DIR__ . '/../..' . '/app/Contracts/AI/AIIntegrationInterface.php',
         'App\\Contracts\\AI\\AIProviderInterface' => __DIR__ . '/../..' . '/app/Contracts/AI/AIProviderInterface.php',

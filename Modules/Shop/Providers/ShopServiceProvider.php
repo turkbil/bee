@@ -10,6 +10,9 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCategoryManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
+use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyComponent;
+use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyManageComponent;
+use Modules\Shop\App\Http\Livewire\Admin\ShopCartComponent;
 use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
 use Modules\Shop\App\Http\Livewire\Front\CartWidget;
 use Modules\Shop\App\Http\Livewire\Front\CartPage;
@@ -62,6 +65,9 @@ class ShopServiceProvider extends ServiceProvider
         Livewire::component('shop-category-manage-component', ShopCategoryManageComponent::class);
         Livewire::component('shop-brand-component', ShopBrandComponent::class);
         Livewire::component('shop-brand-manage-component', ShopBrandManageComponent::class);
+        Livewire::component('shop-currency-component', ShopCurrencyComponent::class);
+        Livewire::component('shop-currency-manage-component', ShopCurrencyManageComponent::class);
+        Livewire::component('shop-cart-component', ShopCartComponent::class);
         Livewire::component('homepage-products-component', HomepageProductsComponent::class);
 
         // Front Livewire Components (Cart System)

@@ -51,6 +51,7 @@ return array(
     'App\\Console\\Commands\\TestTranspaletAI' => $baseDir . '/app/Console/Commands/TestTranspaletAI.php',
     'App\\Console\\Commands\\TrackTenantResources' => $baseDir . '/app/Console/Commands/TrackTenantResources.php',
     'App\\Console\\Commands\\TranslatePageCommand' => $baseDir . '/app/Console/Commands/TranslatePageCommand.php',
+    'App\\Console\\Commands\\UpdateCurrencyRatesCommand' => $baseDir . '/app/Console/Commands/UpdateCurrencyRatesCommand.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Contracts\\AI\\AIIntegrationInterface' => $baseDir . '/app/Contracts/AI/AIIntegrationInterface.php',
     'App\\Contracts\\AI\\AIProviderInterface' => $baseDir . '/app/Contracts/AI/AIProviderInterface.php',

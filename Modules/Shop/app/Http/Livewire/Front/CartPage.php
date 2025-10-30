@@ -112,6 +112,6 @@ class CartPage extends Component
     public function render()
     {
         return view('shop::livewire.front.cart-page')
-            ->layout('themes.ixtif.layouts.app');
+            ->layout('themes.ixtif.layouts.minimal');
     }
 }

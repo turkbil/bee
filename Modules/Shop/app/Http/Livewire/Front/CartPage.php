@@ -62,13 +62,10 @@ class CartPage extends Component
             $this->loadCart();
             $this->dispatch('cartUpdated');
 
-            $this->dispatch('cart-updated', [
-                'message' => 'Sepet güncellendi',
-            ]);
+            // Livewire 3 dispatch syntax - parametre direkt gönder
+            $this->dispatch('cart-updated', message: 'Sepet güncellendi');
         } catch (\Exception $e) {
-            $this->dispatch('cart-error', [
-                'message' => 'Hata: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('cart-error', message: 'Hata: ' . $e->getMessage());
         }
     }
 
@@ -97,13 +94,9 @@ class CartPage extends Component
             $this->loadCart();
             $this->dispatch('cartUpdated');
 
-            $this->dispatch('cart-item-removed', [
-                'message' => 'Ürün sepetten çıkarıldı',
-            ]);
+            $this->dispatch('cart-item-removed', message: 'Ürün sepetten çıkarıldı');
         } catch (\Exception $e) {
-            $this->dispatch('cart-error', [
-                'message' => 'Hata: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('cart-error', message: 'Hata: ' . $e->getMessage());
         }
     }
 
@@ -116,13 +109,9 @@ class CartPage extends Component
             $this->loadCart();
             $this->dispatch('cartUpdated');
 
-            $this->dispatch('cart-cleared', [
-                'message' => 'Sepet boşaltıldı',
-            ]);
+            $this->dispatch('cart-cleared', message: 'Sepet boşaltıldı');
         } catch (\Exception $e) {
-            $this->dispatch('cart-error', [
-                'message' => 'Hata: ' . $e->getMessage(),
-            ]);
+            $this->dispatch('cart-error', message: 'Hata: ' . $e->getMessage());
         }
     }
 

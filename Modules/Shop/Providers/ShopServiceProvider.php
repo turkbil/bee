@@ -137,12 +137,12 @@ class ShopServiceProvider extends ServiceProvider
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
 
             // CURRENCY RATES AUTO UPDATE - TCMB Daily Update
-            // Günde 2 kez: Mesai başında ve sonunda
+            // Günde 2 kez: Mesai içinde sabah ve akşam
             // Her tenant için ayrı çalışır
 
-            // Mesai başı - Sabah 09:00
+            // Mesai başı - Sabah 10:00 (TCMB açıldıktan sonra)
             $schedule->command('tenants:run currency:update-rates')
-                     ->dailyAt('09:00')
+                     ->dailyAt('10:00')
                      ->withoutOverlapping()
                      ->runInBackground()
                      ->appendOutputTo(storage_path('logs/currency-updates.log'));

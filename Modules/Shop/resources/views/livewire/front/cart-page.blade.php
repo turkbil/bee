@@ -1,15 +1,22 @@
 <div class="container mx-auto px-4 py-8 md:py-12">
-    {{-- Success/Error Messages --}}
-    <div x-data="{ show: false, message: '' }"
-         @cart-updated.window="show = true; message = $event.detail.message; setTimeout(() => show = false, 3000)"
-         @cart-item-removed.window="show = true; message = $event.detail.message; setTimeout(() => show = false, 3000)"
-         @cart-error.window="show = true; message = $event.detail.message; setTimeout(() => show = false, 5000)"
+    {{-- Success/Error Messages (Fixed position - sayfayı kaydırmaz) --}}
+    <div x-data="{ show: false, message: '', isError: false }"
+         @cart-updated.window="show = true; message = $event.detail.message; isError = false; setTimeout(() => show = false, 3000)"
+         @cart-item-removed.window="show = true; message = $event.detail.message; isError = false; setTimeout(() => show = false, 3000)"
+         @cart-cleared.window="show = true; message = $event.detail.message; isError = false; setTimeout(() => show = false, 3000)"
+         @cart-error.window="show = true; message = $event.detail.message; isError = true; setTimeout(() => show = false, 5000)"
          x-show="show"
-         x-transition
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-2"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
          style="display: none;"
-         class="mb-6 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg flex items-center gap-3">
-        <i class="fa-solid fa-circle-check text-xl"></i>
-        <span x-text="message"></span>
+         :class="isError ? 'bg-red-100 dark:bg-red-900/30 border-red-400 dark:border-red-700 text-red-700 dark:text-red-300' : 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300'"
+         class="fixed top-20 right-4 z-50 max-w-md border px-4 py-3 rounded-lg flex items-center gap-3 shadow-lg">
+        <i :class="isError ? 'fa-circle-xmark' : 'fa-circle-check'" class="fa-solid text-xl"></i>
+        <span x-text="message" class="flex-1"></span>
     </div>
 
     {{-- Page Header --}}

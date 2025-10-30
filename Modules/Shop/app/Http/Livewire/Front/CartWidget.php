@@ -23,6 +23,14 @@ class CartWidget extends Component
         $this->refreshCart();
     }
 
+    /**
+     * Her sayfa yüklendiğinde/değiştiğinde çalışır
+     */
+    public function hydrate()
+    {
+        $this->refreshCart();
+    }
+
     public function refreshCart()
     {
         $cartService = app(ShopCartService::class);
@@ -54,6 +62,22 @@ class CartWidget extends Component
         $this->total = $this->items->sum('total_try');
         $this->currencySymbol = '₺';
         $this->formattedTotal = number_format($this->total, 0, ',', '.') . ' ₺';
+
+        // 🛒 AI Chat için sepet verilerini event ile gönder
+        $this->dispatch('cart-data-updated', [
+            'items' => $this->items->map(function ($item) {
+                return [
+                    'product_id' => $item->product_id,
+                    'title' => $item->product->getTranslated('title', app()->getLocale()) ?? 'Ürün',
+                    'quantity' => $item->quantity,
+                    'price' => $item->final_price_try,
+                    'total' => $item->total_try,
+                    'currency' => 'TRY',
+                ];
+            })->toArray(),
+            'total' => $this->total,
+            'itemCount' => $this->itemCount,
+        ]);
     }
 
     public function removeItem(int $cartItemId)

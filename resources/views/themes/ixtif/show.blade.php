@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="tr" x-data="{ darkMode: false }">
+<html lang="tr"
+      x-data="{ darkMode: localStorage.getItem('darkMode') || 'light' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      :class="{ 'dark': darkMode === 'dark' }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>İXtif - Türkiye'nin İstif Pazarı</title>
+
+    {{-- Theme Flash Fix: Minimal inline script - Prevents flash before Alpine.js loads --}}
+    <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
 
     {{-- Tailwind CSS CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>

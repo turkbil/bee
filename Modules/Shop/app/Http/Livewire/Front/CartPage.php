@@ -20,6 +20,7 @@ class CartPage extends Component
 
     public function mount()
     {
+        $this->items = collect(); // Initialize as empty collection
         $this->loadCart();
     }
 
@@ -29,10 +30,10 @@ class CartPage extends Component
 
         $this->cart = $cartService->getCurrentCart();
         $this->items = $cartService->getItems();
-        $this->itemCount = $this->cart->items_count;
-        $this->subtotal = (float) $this->cart->subtotal;
-        $this->taxAmount = (float) $this->cart->tax_amount;
-        $this->total = (float) $this->cart->total;
+        $this->itemCount = (int) ($this->cart->items_count ?? 0);
+        $this->subtotal = (float) ($this->cart->subtotal ?? 0);
+        $this->taxAmount = (float) ($this->cart->tax_amount ?? 0);
+        $this->total = (float) ($this->cart->total ?? 0);
     }
 
     public function updateQuantity(int $cartItemId, int $quantity)

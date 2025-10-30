@@ -22,6 +22,7 @@ class ShopCurrency extends BaseModel
         'exchange_rate',
         'is_active',
         'is_default',
+        'is_auto_update',
         'decimal_places',
         'format',
     ];
@@ -31,6 +32,7 @@ class ShopCurrency extends BaseModel
         'exchange_rate' => 'decimal:4',
         'is_active' => 'boolean',
         'is_default' => 'boolean',
+        'is_auto_update' => 'boolean',
         'decimal_places' => 'integer',
     ];
 
@@ -96,5 +98,13 @@ class ShopCurrency extends BaseModel
     public function scopeDefault($query)
     {
         return $query->where('is_default', true);
+    }
+
+    /**
+     * Scope: Otomatik güncellenen currency'ler
+     */
+    public function scopeAutoUpdate($query)
+    {
+        return $query->where('is_auto_update', true);
     }
 }

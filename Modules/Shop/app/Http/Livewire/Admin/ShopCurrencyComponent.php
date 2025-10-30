@@ -10,6 +10,7 @@ use Livewire\WithPagination;
 use Modules\Shop\App\Http\Livewire\Traits\WithBulkActions;
 use Modules\Shop\App\Models\ShopCurrency;
 use Modules\Shop\App\Services\ShopCurrencyService;
+use Modules\Shop\App\Services\TcmbExchangeRateService;
 
 #[Layout('admin.layout')]
 class ShopCurrencyComponent extends Component
@@ -107,6 +108,70 @@ class ShopCurrencyComponent extends Component
 
         $this->refreshSelectedItems();
         $this->resetPage();
+    }
+
+    /**
+     * TCMB'den kurları otomatik güncelle (sadece is_auto_update=true olanlar)
+     */
+    public function updateFromTCMB(): void
+    {
+        $tcmbService = app(TcmbExchangeRateService::class);
+        $result = $tcmbService->fetchRates();
+
+        if (!$result['success']) {
+            $this->dispatch('toast', [
+                'title' => 'TCMB Hata',
+                'message' => $result['message'],
+                'type' => 'error',
+            ]);
+
+            return;
+        }
+
+        $updatedCount = 0;
+        $skippedCount = 0;
+        $tcmbRates = $result['rates'];
+
+        // SADECE otomatik güncelleme aktif olanları çek
+        $currencies = ShopCurrency::whereIn('code', array_keys($tcmbRates))
+            ->where('is_auto_update', true)
+            ->get();
+
+        // Manuel kurları kontrol et
+        $manualCurrencies = ShopCurrency::whereIn('code', array_keys($tcmbRates))
+            ->where('is_auto_update', false)
+            ->get();
+
+        foreach ($currencies as $currency) {
+            if (isset($tcmbRates[$currency->code])) {
+                $oldRate = $currency->exchange_rate;
+                $newRate = $tcmbRates[$currency->code];
+
+                $currency->exchange_rate = $newRate;
+                $currency->save();
+
+                $updatedCount++;
+
+                \Log::info("Currency auto-updated from TCMB: {$currency->code}", [
+                    'old_rate' => $oldRate,
+                    'new_rate' => $newRate,
+                ]);
+            }
+        }
+
+        $skippedCount = $manualCurrencies->count();
+
+        $message = "$updatedCount para birimi güncellendi";
+        if ($skippedCount > 0) {
+            $message .= " ($skippedCount manuel kur korundu)";
+        }
+        $message .= ". (USD: ₺" . number_format($tcmbRates['USD'] ?? 0, 2) . ")";
+
+        $this->dispatch('toast', [
+            'title' => '✅ TCMB Güncellendi',
+            'message' => $message,
+            'type' => 'success',
+        ]);
     }
 
     public function render(): \Illuminate\Contracts\View\View

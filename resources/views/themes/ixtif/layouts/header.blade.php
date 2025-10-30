@@ -441,7 +441,7 @@
 
                         </div>
 
-                        {{-- Hizmetler (Dropdown Menu) --}}
+                        {{-- Hizmetler (Ortalı Dropdown) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'hizmetler'"
                              @mouseleave="activeMegaMenu = null">
@@ -453,7 +453,7 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'hizmetler' }"></i>
                             </a>
 
-                            {{-- Dropdown Content --}}
+                            {{-- Ortalı Dropdown --}}
                             <div x-show="activeMegaMenu === 'hizmetler'"
                                  @mouseenter="activeMegaMenu = 'hizmetler'"
                                  x-transition:enter="transition ease-out duration-300"
@@ -462,46 +462,51 @@
                                  x-transition:leave="transition ease-in duration-200"
                                  x-transition:leave-start="opacity-100 translate-y-0"
                                  x-transition:leave-end="opacity-0 -translate-y-3"
-                                 class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-900 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden z-50"
+                                 class="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-80 rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg z-50"
                                  x-cloak>
-                                <a href="/satin-alma"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-cart-shopping w-5 text-center"></i>
-                                    <span>Satın Alma</span>
-                                </a>
-                                <a href="/kiralama"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-clock w-5 text-center"></i>
-                                    <span>Kiralama</span>
-                                </a>
-                                <a href="/teknik-servis"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-wrench w-5 text-center"></i>
-                                    <span>Teknik Servis</span>
-                                </a>
-                                <a href="/yedek-parca"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-gears w-5 text-center"></i>
-                                    <span>Yedek Parça</span>
-                                </a>
-                                <a href="/bakim-anlasmalari"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-file-contract w-5 text-center"></i>
-                                    <span>Bakım Anlaşmaları</span>
-                                </a>
-                                <a href="/ikinci-el"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-recycle w-5 text-center"></i>
-                                    <span>İkinci El</span>
-                                </a>
-
-                                {{-- Ana Hizmetler Sayfası --}}
-                                <div class="p-2 bg-gray-50 dark:bg-gray-800/50">
-                                    <a href="/hizmetler"
-                                       class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold rounded-lg transition text-sm">
-                                        <span>Tüm Hizmetler</span>
-                                        <i class="fa-solid fa-arrow-right text-xs"></i>
-                                    </a>
+                                <div class="bg-white dark:bg-gray-800 rounded-xl p-5">
+                                    <div class="bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900/50 dark:to-slate-900/50 rounded-xl p-5">
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-2xl transition-all duration-300">
+                                            <ul class="space-y-2">
+                                                <li>
+                                                    <a href="/satin-alma"
+                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Satın Alma
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/kiralama"
+                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Kiralama
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/teknik-servis"
+                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Teknik Servis
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/yedek-parca"
+                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Yedek Parça
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/bakim-anlasmalari"
+                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>Bakım Anlaşmaları
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/ikinci-el"
+                                                       class="text-sm text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                                        <i class="fa-solid fa-chevron-right text-xs"></i>İkinci El
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -977,34 +982,32 @@
                 {{-- Ürünler Mega Menu --}}
                 <div x-show="activeMegaMenu === 'products'"
                      @mouseenter="activeMegaMenu = 'products'"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 -translate-y-3"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
-                    <div x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 -translate-y-3"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                            @include('themes.ixtif.partials.mega-menu-products')
-                        </div>
+                    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                        @include('themes.ixtif.partials.mega-menu-products')
                     </div>
                 </div>
 
                 {{-- Hakkımızda Hibrit Mega Menu --}}
                 <div x-show="activeMegaMenu === 'hakkimizda'"
                      @mouseenter="activeMegaMenu = 'hakkimizda'"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 -translate-y-3"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-3"
                      class="absolute left-0 right-0 top-full z-50 -mt-2"
                      x-cloak>
-                    <div x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 -translate-y-3"
-                         x-transition:enter-end="opacity-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-3">
-                        <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                            @include('themes.ixtif.partials.mega-menu-hakkimizda')
-                        </div>
+                    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                        @include('themes.ixtif.partials.mega-menu-hakkimizda')
                     </div>
                 </div>
 

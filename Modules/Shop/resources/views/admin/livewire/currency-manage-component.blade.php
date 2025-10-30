@@ -85,17 +85,28 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label required">Exchange Rate (to TRY)</label>
+                        <label class="form-label required">
+                            Exchange Rate (to TRY)
+                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top"
+                                  data-bs-content="Manuel kur girişi yapabilir veya ana sayfadan TCMB'den otomatik çekebilirsiniz.">
+                                ?
+                            </span>
+                        </label>
                         <input type="number"
                                class="form-control @error('exchangeRate') is-invalid @enderror"
                                wire:model.lazy="exchangeRate"
                                step="0.0001"
                                min="0.0001"
-                               placeholder="1.0000">
+                               placeholder="42.0000">
                         @error('exchangeRate')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="form-hint">1 {{ $code ?: 'XXX' }} = {{ $exchangeRate }} TRY</small>
+                        <small class="form-hint text-muted">
+                            <i class="fas fa-info-circle"></i>
+                            1 {{ $code ?: 'XXX' }} = <span class="fw-bold text-primary">{{ $exchangeRate }}</span> TRY
+                            <br>
+                            <span class="text-success">💡 İpucu:</span> Ana sayfadan <strong>"TCMB'den Güncelle"</strong> butonuyla otomatik çekebilirsiniz.
+                        </small>
                     </div>
 
                     <div class="col-md-6 mb-3">
@@ -128,7 +139,7 @@
                 <hr class="my-4">
 
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" wire:model="isActive">
                             <span class="form-check-label">Active</span>
@@ -136,12 +147,24 @@
                         <small class="form-hint d-block">Active currencies can be used in the system</small>
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" wire:model="isDefault">
                             <span class="form-check-label">Set as Default Currency</span>
                         </label>
                         <small class="form-hint d-block">Default currency for new products and carts</small>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" wire:model="isAutoUpdate">
+                            <span class="form-check-label">
+                                <i class="fas fa-sync-alt text-success"></i> TCMB Auto Update
+                            </span>
+                        </label>
+                        <small class="form-hint d-block text-success">
+                            <strong>Otomatik güncelleme:</strong> Bu para birimi TCMB'den günlük kurları çekecek
+                        </small>
                     </div>
                 </div>
             </div>
@@ -175,6 +198,11 @@
                                     <i class="fas fa-star"></i> Default
                                 </span>
                             @endif
+                            @if($isAutoUpdate)
+                                <span class="badge bg-success">
+                                    <i class="fas fa-sync-alt"></i> Auto Update
+                                </span>
+                            @endif
                         </div>
 
                         <hr>
@@ -197,6 +225,33 @@
                             <li><strong>TRY (₺)</strong> - Turkish Lira</li>
                             <li><strong>JPY (¥)</strong> - Japanese Yen</li>
                         </ul>
+                    </div>
+                </div>
+
+                {{-- TCMB Info Card --}}
+                <div class="card bg-success-lt mt-3">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">
+                            <i class="fas fa-sync-alt"></i> TCMB Otomatik Güncelleme
+                        </h4>
+                        <p class="mb-2 small">
+                            <strong>Türkiye Cumhuriyet Merkez Bankası</strong> (TCMB) güncel döviz kurlarını otomatik çekebilirsiniz.
+                        </p>
+                        <hr class="my-2">
+                        <div class="small">
+                            <div class="mb-1">
+                                <i class="fas fa-check text-success"></i> Güncel piyasa kurları
+                            </div>
+                            <div class="mb-1">
+                                <i class="fas fa-check text-success"></i> Tek tıkla otomatik güncelleme
+                            </div>
+                            <div class="mb-2">
+                                <i class="fas fa-check text-success"></i> Manuel düzenleme yine mümkün
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.shop.currencies.index') }}" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-arrow-right"></i> Kur Listesine Git
+                        </a>
                     </div>
                 </div>
             </div>

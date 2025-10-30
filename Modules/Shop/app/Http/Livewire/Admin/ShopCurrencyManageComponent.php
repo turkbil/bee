@@ -20,6 +20,7 @@ class ShopCurrencyManageComponent extends Component
     public string $exchangeRate = '1.0000';
     public bool $isActive = true;
     public bool $isDefault = false;
+    public bool $isAutoUpdate = false;
     public int $decimalPlaces = 2;
     public string $format = 'symbol_after';
 
@@ -38,6 +39,7 @@ class ShopCurrencyManageComponent extends Component
             'exchangeRate' => 'required|numeric|min:0.0001',
             'isActive' => 'boolean',
             'isDefault' => 'boolean',
+            'isAutoUpdate' => 'boolean',
             'decimalPlaces' => 'required|integer|min:0|max:4',
             'format' => 'required|in:symbol_before,symbol_after',
         ];
@@ -60,6 +62,7 @@ class ShopCurrencyManageComponent extends Component
             $this->exchangeRate = (string) $currency->exchange_rate;
             $this->isActive = $currency->is_active;
             $this->isDefault = $currency->is_default;
+            $this->isAutoUpdate = $currency->is_auto_update;
             $this->decimalPlaces = $currency->decimal_places;
             $this->format = $currency->format;
         }
@@ -77,6 +80,7 @@ class ShopCurrencyManageComponent extends Component
             'exchange_rate' => (float) $this->exchangeRate,
             'is_active' => $this->isActive,
             'is_default' => $this->isDefault,
+            'is_auto_update' => $this->isAutoUpdate,
             'decimal_places' => $this->decimalPlaces,
             'format' => $this->format,
         ];

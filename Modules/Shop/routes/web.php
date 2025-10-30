@@ -8,7 +8,8 @@ use Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController;
 // GOOGLE SHOPPING FEED - Moved to routes/web.php for higher priority
 
 // CART ROUTES (Sepet) - WILDCARD'DAN ÖNCE TANIMLANMALI!
-Route::middleware(['web', 'tenant', 'locale.site'])
+Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
+    ->prefix('shop')
     ->group(function () {
         // Cart Page - Sepet sayfası
         Route::get('/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');

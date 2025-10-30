@@ -114,8 +114,15 @@ class ShopCartItem extends BaseModel
      */
     public function recalculate(): void
     {
+        // Subtotal hesapla
         $this->subtotal = $this->final_price * $this->quantity;
+
+        // Tax amount'u yeniden hesapla (quantity'ye göre)
+        $this->tax_amount = $this->subtotal * ($this->tax_rate / 100);
+
+        // Total hesapla
         $this->total = $this->subtotal + $this->tax_amount;
+
         $this->save();
     }
 

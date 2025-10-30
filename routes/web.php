@@ -10,6 +10,9 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
+// 🛒 CART ROUTE - ABSOLUTE PRIORITY (must be before everything)
+Route::get('/shop/cart', [\Modules\Shop\App\Http\Controllers\Front\CartController::class, 'index'])->name('shop.cart');
+
 // DESIGN LIBRARY STATIC FILES - MUST BE FIRST, BEFORE ADMIN & CATCHALL ROUTES
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
 Route::get('design/{file}', [App\Http\Controllers\DesignLibraryController::class, 'show'])->where('file', '.*')->name('designs.show');

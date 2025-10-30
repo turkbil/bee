@@ -443,7 +443,8 @@
 
                         {{-- Hizmetler (Dropdown Menu) --}}
                         <div class="relative mega-menu-item py-2"
-                             @mouseenter="activeMegaMenu = 'hizmetler'">
+                             @mouseenter="activeMegaMenu = 'hizmetler'"
+                             @mouseleave="activeMegaMenu = null">
                             <a href="/hizmetler"
                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition py-4">
                                 <i :class="activeMegaMenu === 'hizmetler' ? 'fa-solid' : 'fa-light'" class="fa-screwdriver-wrench transition-all duration-300"></i>
@@ -452,52 +453,52 @@
                                    :class="{ 'rotate-180': activeMegaMenu === 'hizmetler' }"></i>
                             </a>
 
+                            {{-- Dropdown Content --}}
                             <div x-show="activeMegaMenu === 'hizmetler'"
                                  @mouseenter="activeMegaMenu = 'hizmetler'"
-                                 @mouseleave="activeMegaMenu = null"
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
-                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                 x-transition:leave="transition ease-in duration-150"
-                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                                 x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
-                                 class="absolute top-full mt-2 w-56 bg-white dark:bg-slate-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-xl py-2 z-50"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 -translate-y-3"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 -translate-y-3"
+                                 class="absolute top-full left-0 mt-2 w-64 bg-white/95 dark:bg-slate-900/90 backdrop-blur-lg rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden z-50"
                                  x-cloak>
                                 <a href="/hizmetler/kiralama"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-hand-holding-box w-5 text-center"></i>
                                     <span>Kiralama</span>
                                 </a>
                                 <a href="/hizmetler/satin-alma"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-cart-shopping w-5 text-center"></i>
                                     <span>Satın Alma</span>
                                 </a>
                                 <a href="/hizmetler/ikinci-el"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-recycle w-5 text-center"></i>
                                     <span>İkinci El</span>
                                 </a>
                                 <a href="/hizmetler/bakim-anlaşmalari"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-file-contract w-5 text-center"></i>
                                     <span>Bakım Anlaşmaları</span>
                                 </a>
                                 <a href="/hizmetler/teknik-servis"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 last:border-b-0 transition">
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i>
                                     <span>Teknik Servis</span>
                                 </a>
                                 <a href="/hizmetler/yedek-parca"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-gear w-5 text-center"></i>
                                     <span>Yedek Parça</span>
                                 </a>
 
                                 {{-- Ana Hizmetler Sayfası --}}
-                                <div class="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
+                                <div class="p-2 bg-gray-50 dark:bg-gray-800/50">
                                     <a href="/hizmetler"
-                                       class="flex items-center justify-center gap-2 mx-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold rounded-lg transition text-sm">
+                                       class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold rounded-lg transition text-sm">
                                         <span>Tüm Hizmetler</span>
                                         <i class="fa-solid fa-arrow-right text-xs"></i>
                                     </a>
@@ -1003,6 +1004,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </nav>
 

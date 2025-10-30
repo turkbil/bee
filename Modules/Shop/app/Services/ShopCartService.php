@@ -147,7 +147,7 @@ class ShopCartService
      */
     public function getItemCount(): int
     {
-        return $this->getCurrentCart()->items_count;
+        return (int) ($this->getCurrentCart()->items_count ?? 0);
     }
 
     /**
@@ -155,7 +155,7 @@ class ShopCartService
      */
     public function getTotal(): float
     {
-        return (float) $this->getCurrentCart()->total;
+        return (float) ($this->getCurrentCart()->total ?? 0);
     }
 
     /**

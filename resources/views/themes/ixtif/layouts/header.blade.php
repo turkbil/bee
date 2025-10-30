@@ -464,35 +464,35 @@
                                  x-transition:leave-end="opacity-0 -translate-y-3"
                                  class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-900 backdrop-blur-xl rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden z-50"
                                  x-cloak>
-                                <a href="/hizmetler/kiralama"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-hand-holding-box w-5 text-center"></i>
-                                    <span>Kiralama</span>
-                                </a>
-                                <a href="/hizmetler/satin-alma"
+                                <a href="/satin-alma"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-cart-shopping w-5 text-center"></i>
                                     <span>Satın Alma</span>
                                 </a>
-                                <a href="/hizmetler/ikinci-el"
+                                <a href="/kiralama"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-recycle w-5 text-center"></i>
-                                    <span>İkinci El</span>
+                                    <i class="fa-solid fa-clock w-5 text-center"></i>
+                                    <span>Kiralama</span>
                                 </a>
-                                <a href="/hizmetler/bakim-anlaşmalari"
+                                <a href="/teknik-servis"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
+                                    <i class="fa-solid fa-wrench w-5 text-center"></i>
+                                    <span>Teknik Servis</span>
+                                </a>
+                                <a href="/yedek-parca"
+                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
+                                    <i class="fa-solid fa-gears w-5 text-center"></i>
+                                    <span>Yedek Parça</span>
+                                </a>
+                                <a href="/bakim-anlaşmalari"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
                                     <i class="fa-solid fa-file-contract w-5 text-center"></i>
                                     <span>Bakım Anlaşmaları</span>
                                 </a>
-                                <a href="/hizmetler/teknik-servis"
+                                <a href="/ikinci-el"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-screwdriver-wrench w-5 text-center"></i>
-                                    <span>Teknik Servis</span>
-                                </a>
-                                <a href="/hizmetler/yedek-parca"
-                                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 border-b border-gray-200 dark:border-gray-700 transition">
-                                    <i class="fa-solid fa-gear w-5 text-center"></i>
-                                    <span>Yedek Parça</span>
+                                    <i class="fa-solid fa-recycle w-5 text-center"></i>
+                                    <span>İkinci El</span>
                                 </a>
 
                                 {{-- Ana Hizmetler Sayfası --}}
@@ -1115,45 +1115,45 @@
                         <div class="grid grid-cols-2 gap-2">
                             {{-- Sol Kolon --}}
                             <div class="space-y-2">
-                                <a href="/hizmetler/kiralama"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-hand-holding-box text-sm"></i>
-                                    <span>Kiralama</span>
-                                </a>
-                                <a href="/hizmetler/satin-alma"
+                                <a href="/satin-alma"
                                    @click="mobileMenuOpen = false"
                                    class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
                                     <i class="fa-solid fa-cart-shopping text-sm"></i>
                                     <span>Satın Alma</span>
                                 </a>
-                                <a href="/hizmetler/ikinci-el"
+                                <a href="/kiralama"
                                    @click="mobileMenuOpen = false"
                                    class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-recycle text-sm"></i>
-                                    <span>İkinci El</span>
+                                    <i class="fa-solid fa-clock text-sm"></i>
+                                    <span>Kiralama</span>
+                                </a>
+                                <a href="/teknik-servis"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-wrench text-sm"></i>
+                                    <span>Teknik Servis</span>
                                 </a>
                             </div>
 
                             {{-- Sağ Kolon --}}
                             <div class="space-y-2">
-                                <a href="/hizmetler/bakim-anlaşmalari"
+                                <a href="/yedek-parca"
+                                   @click="mobileMenuOpen = false"
+                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
+                                    <i class="fa-solid fa-gears text-sm"></i>
+                                    <span>Yedek Parça</span>
+                                </a>
+                                <a href="/bakim-anlaşmalari"
                                    @click="mobileMenuOpen = false"
                                    class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
                                     <i class="fa-solid fa-file-contract text-sm"></i>
                                     <span>Bakım Anlaşmaları</span>
                                 </a>
-                                <a href="/hizmetler/teknik-servis"
+                                <a href="/ikinci-el"
                                    @click="mobileMenuOpen = false"
                                    class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
-                                    <span>Teknik Servis</span>
-                                </a>
-                                <a href="/hizmetler/yedek-parca"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-gear text-sm"></i>
-                                    <span>Yedek Parça</span>
+                                    <i class="fa-solid fa-recycle text-sm"></i>
+                                    <span>İkinci El</span>
                                 </a>
                             </div>
                         </div>

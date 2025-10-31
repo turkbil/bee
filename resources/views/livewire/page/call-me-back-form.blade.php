@@ -1,13 +1,5 @@
 <div>
-    {{-- Sizi Arayalım Formu - Gradient Borders & Animations --}}
-
-    {{-- Bilgilendirme Metni --}}
-    <div class="mb-8 text-center">
-        <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-            Formu doldurun, <span class="font-semibold text-gray-900 dark:text-white">temsilcilerimiz sizi arayacaktır.</span>
-        </p>
-    </div>
-
+    {{-- Sizi Arayalım Formu - Clean & Professional --}}
     <form wire:submit.prevent="submit" class="space-y-6">
 
         {{-- İsim --}}
@@ -36,9 +28,9 @@
 
         {{-- Submit Button --}}
         <div class="relative group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
+            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-500"></div>
             <button type="submit"
-                class="relative w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] text-lg"
+                class="relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] text-lg"
                 wire:loading.attr="disabled"
                 wire:loading.class="opacity-75 cursor-not-allowed">
                 <span wire:loading.remove class="flex items-center justify-center gap-2">

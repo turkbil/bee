@@ -51,7 +51,7 @@ class CheckoutPageNew extends Component
 
     // Modal States (Hepsiburada Pattern)
     public $showShippingModal = false;
-    public $showBillingAddressModal = false;
+    public $showBillingModal = false; // Fatura bilgileri modal
 
     protected $listeners = [
         'cartUpdated' => 'loadCart',

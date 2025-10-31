@@ -1,5 +1,13 @@
 <div>
     {{-- Sizi Arayalım Formu - Gradient Borders & Animations --}}
+
+    {{-- Bilgilendirme Metni --}}
+    <div class="mb-8 text-center">
+        <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+            Formu doldurun, <span class="font-semibold text-gray-900 dark:text-white">temsilcilerimiz sizi arayacaktır.</span>
+        </p>
+    </div>
+
     <form wire:submit.prevent="submit" class="space-y-6">
 
         {{-- İsim --}}
@@ -34,8 +42,8 @@
                 wire:loading.attr="disabled"
                 wire:loading.class="opacity-75 cursor-not-allowed">
                 <span wire:loading.remove class="flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-phone-volume"></i>
-                    Hemen Arayın
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Bilgileri Gönder
                 </span>
                 <span wire:loading class="flex items-center justify-center gap-2">
                     <i class="fa-solid fa-spinner fa-spin"></i>

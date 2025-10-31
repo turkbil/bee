@@ -48,6 +48,8 @@ class CheckoutPageNew extends Component
     public $subtotal = 0;
     public $taxAmount = 0;
     public $total = 0;
+    public $creditCardFee = 0; // Kredi kartı komisyonu (%4,29)
+    public $grandTotal = 0; // Komisyon dahil son toplam
     public $itemCount = 0;
 
     // Modal States (Hepsiburada Pattern)
@@ -130,6 +132,10 @@ class CheckoutPageNew extends Component
         $taxRate = config('shop.tax_rate', 20) / 100;
         $this->taxAmount = $this->subtotal * $taxRate;
         $this->total = $this->subtotal + $this->taxAmount;
+
+        // Kredi kartı komisyonu (%4,29)
+        $this->creditCardFee = $this->total * 0.0429;
+        $this->grandTotal = $this->total + $this->creditCardFee;
     }
 
     public function loadOrCreateCustomer()
@@ -354,7 +360,9 @@ class CheckoutPageNew extends Component
                 'notes' => $shippingAddress->delivery_notes,
                 'subtotal' => $this->subtotal,
                 'tax_amount' => $this->taxAmount,
-                'total' => $this->total,
+                'shipping_cost' => 0, // Kargo ücreti yok
+                'discount_amount' => 0, // İndirim yok
+                'total_amount' => $this->grandTotal, // Kredi kartı komisyonu dahil
                 'status' => 'pending',
                 'payment_status' => 'pending',
 

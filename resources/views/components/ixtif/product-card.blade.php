@@ -229,7 +229,13 @@
 
                     @if($productBasePrice <= 0)
                         {{-- Fiyatsız Ürün: "Teklif Alın" --}}
-                        <a href="{{ url('/sizi-arayalim') }}" class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 whitespace-nowrap h-8 flex items-center no-underline hover:scale-105 transition-transform duration-200">
+                        <a href="{{ url('/sizi-arayalim') }}"
+                           @click="
+                               localStorage.setItem('callMeBack_productId', '{{ $product->product_id ?? '' }}');
+                               localStorage.setItem('callMeBack_productName', '{{ addslashes($product->getTranslated('title', app()->getLocale()) ?? '') }}');
+                               localStorage.setItem('callMeBack_fromUrl', '{{ url()->current() }}');
+                           "
+                           class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 whitespace-nowrap h-8 flex items-center no-underline hover:scale-105 transition-transform duration-200">
                             Teklif Alın
                         </a>
                     @elseif($productTryPrice && $productCurrencyCode !== 'TRY')
@@ -305,6 +311,11 @@
                     @if($hasNoPrice)
                         {{-- Sizi Arayalım Button (Fiyatsız ürünler için) --}}
                         <a href="{{ url('/sizi-arayalim') }}"
+                           @click="
+                               localStorage.setItem('callMeBack_productId', '{{ $product->product_id ?? '' }}');
+                               localStorage.setItem('callMeBack_productName', '{{ addslashes($product->getTranslated('title', app()->getLocale()) ?? '') }}');
+                               localStorage.setItem('callMeBack_fromUrl', '{{ url()->current() }}');
+                           "
                            class="flex-shrink-0 bg-gradient-to-br from-green-700 to-emerald-700 hover:from-green-800 hover:to-emerald-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 active:scale-95">
                             <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
                                 <i class="fa-solid fa-phone text-base"></i>

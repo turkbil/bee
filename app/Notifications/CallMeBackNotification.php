@@ -19,15 +19,19 @@ class CallMeBackNotification extends Notification
     public array $customerData;
     public string $referrer;
     public string $landingPage;
+    public ?int $productId;
+    public ?string $productName;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(array $customerData, string $referrer = '', string $landingPage = '')
+    public function __construct(array $customerData, string $referrer = '', string $landingPage = '', ?int $productId = null, ?string $productName = null)
     {
         $this->customerData = $customerData;
         $this->referrer = $referrer;
         $this->landingPage = $landingPage;
+        $this->productId = $productId;
+        $this->productName = $productName;
     }
 
     /**
@@ -66,6 +70,12 @@ class CallMeBackNotification extends Notification
             $message->line('• E-posta: ' . $this->customerData['email']);
         }
 
+        if (!empty($this->productName)) {
+            $message->line('')
+                ->line('**İlgilendiği Ürün:**')
+                ->line($this->productName);
+        }
+
         if (!empty($this->referrer)) {
             $message->line('')
                 ->line('**Nereden Geldi:**')
@@ -84,17 +94,37 @@ class CallMeBackNotification extends Notification
      */
     public function toTelegram(object $notifiable): TelegramMessage
     {
+        // Markdown escape helper - Sadece Telegram Markdown'da sorun yaratan karakterler
+        $escape = function($text) {
+            return str_replace(['_', '*', '[', ']', '`', '\\'],
+                               ['\\_', '\\*', '\\[', '\\]', '\\`', '\\\\'],
+                               $text);
+        };
+
         $message = "📞 *SİZİ ARAYALIM TALEBİ*\n\n";
         $message .= "👤 *Müşteri Bilgileri:*\n";
-        $message .= "• Ad Soyad: " . $this->customerData['name'] . "\n";
-        $message .= "• Telefon: " . $this->customerData['phone'] . "\n";
+        $message .= "• Ad Soyad: " . $escape($this->customerData['name']) . "\n";
+
+        // Telefon numarasını formatla: 5XX XXX XX XX
+        $phone = preg_replace('/\D/', '', $this->customerData['phone']);
+        if (strlen($phone) === 10) {
+            $formattedPhone = substr($phone, 0, 3) . ' ' . substr($phone, 3, 3) . ' ' . substr($phone, 6, 2) . ' ' . substr($phone, 8, 2);
+            $message .= "• Telefon: +90 " . $formattedPhone . "\n";
+        } else {
+            $message .= "• Telefon: " . $phone . "\n";
+        }
 
         if (!empty($this->customerData['email'])) {
-            $message .= "• E-posta: " . $this->customerData['email'] . "\n";
+            $message .= "• E-posta: " . $escape($this->customerData['email']) . "\n";
+        }
+
+        // Ürün bilgisi varsa ekle
+        if (!empty($this->productName)) {
+            $message .= "\n📦 *İlgilendiği Ürün:*\n" . $escape($this->productName) . "\n";
         }
 
         if (!empty($this->referrer)) {
-            $message .= "\n🔗 *Nereden geldi:*\n" . $this->referrer . "\n";
+            $message .= "\n🔗 *Nereden geldi:*\n" . $escape($this->referrer) . "\n";
         }
 
         if (!empty($this->landingPage)) {
@@ -105,7 +135,7 @@ class CallMeBackNotification extends Notification
             ->content($message)
             ->options([
                 'parse_mode' => 'Markdown',
-                'disable_web_page_preview' => true,
+                'disable_web_page_preview' => false,
             ]);
     }
 

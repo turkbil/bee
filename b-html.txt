@@ -1,136 +1,223 @@
-# Error - Internal Server Error
-Call to undefined function App\Livewire\Page\get_setting()
+<div wire:snapshot="{&quot;data&quot;:{&quot;cart&quot;:[null,{&quot;class&quot;:&quot;Modules\\Shop\\App\\Models\\ShopCart&quot;,&quot;key&quot;:13,&quot;s&quot;:&quot;mdl&quot;}],&quot;items&quot;:[null,{&quot;keys&quot;:[36,37,38,39,40],&quot;class&quot;:&quot;Illuminate\\Database\\Eloquent\\Collection&quot;,&quot;modelClass&quot;:&quot;Modules\\Shop\\App\\Models\\ShopCartItem&quot;,&quot;s&quot;:&quot;elcln&quot;}],&quot;customer&quot;:[null,{&quot;class&quot;:&quot;Modules\\Shop\\App\\Models\\ShopCustomer&quot;,&quot;key&quot;:1,&quot;s&quot;:&quot;mdl&quot;}],&quot;customerId&quot;:1,&quot;contact_first_name&quot;:&quot;Nurullah Okatan&quot;,&quot;contact_last_name&quot;:&quot;&quot;,&quot;contact_email&quot;:&quot;nurullah@nurullah.net&quot;,&quot;contact_phone&quot;:&quot;&quot;,&quot;billing_type&quot;:&quot;individual&quot;,&quot;billing_tax_number&quot;:null,&quot;billing_company_name&quot;:null,&quot;billing_tax_office&quot;:null,&quot;billing_contact_first_name&quot;:&quot;&quot;,&quot;billing_contact_last_name&quot;:&quot;&quot;,&quot;billing_address_id&quot;:1,&quot;billing_same_as_shipping&quot;:false,&quot;shipping_address_id&quot;:null,&quot;agree_all&quot;:false,&quot;subtotal&quot;:2711617.3,&quot;taxAmount&quot;:542323.46,&quot;total&quot;:3253940.76,&quot;itemCount&quot;:5,&quot;showShippingModal&quot;:false,&quot;showBillingModal&quot;:false,&quot;showBillingAddressModal&quot;:false},&quot;memo&quot;:{&quot;id&quot;:&quot;5yE6Yk70Ou1tHK0MxTWE&quot;,&quot;name&quot;:&quot;shop::front.checkout-page-new&quot;,&quot;path&quot;:&quot;shop\/checkout&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;7478aea446d535f110afef7beb10af5727c4332c1cb1483f18df1dc93fd6b70d&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;cartUpdated&quot;,&quot;addressSelected&quot;]}" wire:id="5yE6Yk70Ou1tHK0MxTWE" class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Sipariş Tamamla</h1>
 
-PHP 8.3.27
-Laravel 12.32.5
-ixtif.com
+        
+        <div class="grid lg:grid-cols-3 gap-6">
 
-## Stack Trace
+            
+            <div class="lg:col-span-2 space-y-4">
 
-0 - app/Livewire/Page/CallMeBackForm.php:79
-1 - app/Livewire/Page/CallMeBackForm.php:47
-2 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
-3 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
-4 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
-5 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
-6 - vendor/livewire/livewire/src/Wrapped.php:23
-7 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:474
-8 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:101
-9 - vendor/livewire/livewire/src/LivewireManager.php:102
-10 - vendor/livewire/volt/src/LivewireManager.php:35
-11 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
-12 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
-13 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
-14 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
-15 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
-16 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-17 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-18 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-19 - app/Http/Middleware/LivewireJsonSanitizer.php:43
-20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-21 - app/Http/Middleware/RootOnlyDebugbar.php:35
-22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-23 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
-24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-25 - app/Http/Middleware/DatabasePoolMiddleware.php:58
-26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-27 - app/Http/Middleware/SecurityHeaders.php:18
-28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-29 - app/Http/Middleware/CheckThemeStatus.php:40
-30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-31 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
-32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-33 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
-34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-35 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
-36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-37 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
-38 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-39 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
-40 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
-41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-42 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
-43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-44 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
-45 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-46 - app/Http/Middleware/InitializeTenancy.php:97
-47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-48 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-49 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-50 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
-51 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
-52 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
-53 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
-54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-55 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
-56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-57 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-58 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-59 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
-60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-61 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
-62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-63 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
-64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-65 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
-66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-67 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
-68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-69 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
-70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-71 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
-72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-73 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
-74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-75 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-76 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
-77 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
-78 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
-79 - public/index.php:17
+                
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-user mr-2 text-blue-500 dark:text-blue-400"></i>
+                        İletişim Bilgileri
+                    </h2>
 
-## Request
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
+                                Ad <span class="text-red-500 dark:text-red-400">*</span>
+                            </label>
+                            <input type="text" wire:model="contact_first_name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all">
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
 
-POST /livewire/update
+                        <div>
+                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
+                                Soyad <span class="text-red-500 dark:text-red-400">*</span>
+                            </label>
+                            <input type="text" wire:model="contact_last_name" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all">
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
 
-## Headers
+                        <div>
+                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
+                                Telefon <span class="text-red-500 dark:text-red-400">*</span>
+                            </label>
+                            <input type="tel" wire:model="contact_phone" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all" placeholder="05XX XXX XX XX">
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
 
-* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; _ym_uid=176118900044921329; _ym_d=1761189000; _fbp=fb.1.1761456765935.67835112351166348; _gcl_gs=2.1.k1$i1761579402$u82105166; _gcl_ag=2.1.k0AAAABB3MeVvvvOukZuQZJ60i3EbMtiWzG$i1761579406$bJgaPCLyV8LMbENvyse5B; last_activity_read=1761696431; _ym_isad=2; _ym_visorc=w; _clck=1ok4nj5%5E2%5Eg0m%5E0%5E2125; _gcl_au=1.1.612840818.1761453196.2000998123.1761874759.1761874758; _clsk=1xld4e9%5E1761875575631%5E339%5E1%5Eb.clarity.ms%2Fcollect; _ga_5DDRPR03QM=GS2.1.s1761821774$o66$g1$t1761875580$j33$l0$h0; XSRF-TOKEN=eyJpdiI6IlNpMTVJalVEZXU3TWcrcG9BajlpcFE9PSIsInZhbHVlIjoiZmtNVzRRdlVwUmxNZFR3Qm4xczZSRUU0NG16TW8zcW9BaGttZkZpc0JMRVVXNWlzUmNKd1JBV1dBMjhCd0JSQXl3OE1oeWJNcEE0V1VTZnNjYjcrT1ljelV5RDZMcCt5ckY2OUZHR0QyL1JhTmZyZHpCTnNZNTR4VlBZMjR6ZDkiLCJtYWMiOiJmZDRlMThlMTAyMjI1NzVjYzI4OTczMjJhZWRkMTJiZmEyY2MwOTg3Y2U1MjdlNDFlOWRiNTkwNGQxYTU5Nzg5IiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6Ikt6WEZMaytpMDJPa1pXYXFyeEVJM3c9PSIsInZhbHVlIjoia0RXWG5MZUhGTnNSQ0tuZEtkRXNLcWwxaGhOM20wN3NnbFNxYXVIc3M5REh6TEs4VDBseHFqcFZ0NHNKUTU0bVFSd2VIeGZSTjNtUTdqZzQyZ3ZnYUlGZVlLMkt6WWNvKzZyN3psWllQOEdnMzVYbEcvU0tCY05tdzA4UmZmdWgiLCJtYWMiOiJmNWFmYWVlODNmOWQxNTMyYzcxMjA4ODY2ZWQ3ODliNGE5ZWNlNjgzZDg2ZTBmYTdlNmFlOGQ2ZWM3MDE3ODU2IiwidGFnIjoiIn0%3D
-* **priority**: u=1, i
-* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
-* **accept-encoding**: gzip, deflate, br, zstd
-* **referer**: https://ixtif.com/sizi-arayalim
-* **sec-fetch-dest**: empty
-* **sec-fetch-mode**: cors
-* **sec-fetch-site**: same-origin
-* **origin**: https://ixtif.com
-* **accept**: */*
-* **sec-ch-ua-mobile**: ?0
-* **x-livewire**: 
-* **content-type**: application/json
-* **dnt**: 1
-* **sec-ch-ua**: "Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"
-* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
-* **sec-ch-ua-platform**: "macOS"
-* **content-length**: 546
-* **connection**: close
-* **x-accel-internal**: /internal-nginx-static-location
-* **x-real-ip**: 92.44.119.135
-* **host**: ixtif.com
+                
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
+                            Teslimat Adresi
+                        </h2>
+                        <button wire:click="openShippingModal" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                        </button>
+                    </div>
 
-## Route Context
+                    
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        
+                        <!--[if BLOCK]><![endif]-->                            <p class="text-xs text-orange-600 dark:text-orange-400">
+                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
+                                Teslimat adresi seçilmedi
+                            </p>
+                        <!--[if ENDBLOCK]><![endif]-->
+                    </div>
 
-controller: Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
-route name: livewire.update
-middleware: web
+                    
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                </div>
 
-## Route Parameters
+                
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-file-invoice mr-2 text-blue-500 dark:text-blue-400"></i>
+                            Fatura Bilgileri
+                        </h2>
+                        <button wire:click="openBillingModal" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                        </button>
+                    </div>
 
-No route parameter data available.
+                    
+                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                        <!--[if BLOCK]><![endif]-->                            <p class="flex items-center">
+                                <i class="fa-solid fa-user text-xs mr-2 text-gray-500 dark:text-gray-500"></i>
+                                <span class="font-medium text-gray-900 dark:text-white">Nurullah Okatan </span>
+                                <span class="ml-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded">Bireysel</span>
+                            </p>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        <!--[if ENDBLOCK]><![endif]-->
+                    </div>
 
-## Database Queries
+                    
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                </div>
 
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (4.14 ms)
-* mysql - select * from `sessions` where `id` = 'KPkT84BAg74Q1uQ6HpkwtPA76NcGkJizAj5rL9Zo' limit 1 (1.57 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (1.41 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (3.6 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (1.6 ms)
+                
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-500 dark:text-blue-400"></i>
+                            Fatura Adresi
+                        </h2>
+                        <!--[if BLOCK]><![endif]-->                            <button wire:click="openBillingAddressModal" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+                                <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                            </button>
+                        <!--[if ENDBLOCK]><![endif]-->
+                    </div>
+
+                    
+                    <div class="mb-3">
+                        <label class="flex items-center cursor-pointer group">
+                            <input type="checkbox" wire:model.live="billing_same_as_shipping" class="w-4 h-4 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Teslimat adresi ile aynı
+                            </span>
+                        </label>
+                    </div>
+
+                    
+                    <!--[if BLOCK]><![endif]-->                        
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            
+                            <!--[if BLOCK]><![endif]-->                                <p class="font-medium text-gray-900 dark:text-white mb-1">
+                                    <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-blue-500 dark:text-blue-400"></i>
+                                    Nurullah Okatan - İstanbul
+                                </p>
+                                <p class="text-xs ml-5">
+                                    KARLIKTEPE MAH. ÇAMLIK SOK.
+MANZARA ADALAR RESİDENCE NO:1 B: BLOK NO: 89<!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                                </p>
+                                <p class="text-xs ml-5">Kartal / İstanbul </p>
+                            <!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    <!--[if ENDBLOCK]><![endif]-->
+
+                    
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                </div>
+
+            </div>
+
+            
+            <div class="lg:col-span-1">
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 sticky top-6">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                        <i class="fa-solid fa-receipt mr-2 text-blue-500 dark:text-blue-400"></i>
+                        Sipariş Özeti
+                    </h2>
+
+                    
+                    <div class="space-y-3 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                        
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600 dark:text-gray-400">
+                                <i class="fa-solid fa-box text-xs mr-1"></i>
+                                Ürün Sayısı
+                            </span>
+                            <span class="font-medium text-gray-900 dark:text-white">5 Adet</span>
+                        </div>
+
+                        
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600 dark:text-gray-400">Ara Toplam</span>
+                            <span class="font-medium text-gray-900 dark:text-white">
+                                2.711.617
+                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
+                            </span>
+                        </div>
+
+                        
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600 dark:text-gray-400">KDV (%20)</span>
+                            <span class="font-medium text-gray-900 dark:text-white">
+                                542.323
+                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    
+                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                        <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam</span>
+                        <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                            3.253.941
+                            <i class="fa-solid fa-turkish-lira text-lg ml-1"></i>
+                        </span>
+                    </div>
+
+                    
+                    <div class="mb-4">
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" wire:model="agree_all" class="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
+                            <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">
+                                <a href="/cayma-hakki" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
+                                <span class="text-red-500 dark:text-red-400 font-bold">*</span>
+                            </span>
+                        </label>
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>
+
+                    
+                    <button wire:click="submitOrder" class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 dark:from-blue-500 dark:via-blue-600 dark:to-purple-500 hover:from-blue-700 hover:via-blue-800 hover:to-purple-700 dark:hover:from-blue-600 dark:hover:via-blue-700 dark:hover:to-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-sm">
+                        <i class="fa-solid fa-check-circle mr-2"></i>
+                        Siparişi Tamamla
+                    </button>
+
+                    
+                    <div class="mt-3 text-center">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center">
+                            <i class="fa-solid fa-lock text-green-600 dark:text-green-400 text-xs mr-1"></i>
+                            256-bit SSL Güvenli Ödeme
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

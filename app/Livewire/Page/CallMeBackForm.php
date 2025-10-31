@@ -6,7 +6,6 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\CallMeBackNotification;
-use Modules\SettingManagement\App\Models\Settings;
 
 class CallMeBackForm extends Component
 {
@@ -14,6 +13,12 @@ class CallMeBackForm extends Component
     public $name = '';
     public $phone = '';
     public $email = '';
+
+    // Page Context (captured on mount or query params)
+    public $pageUrl = '';
+    public $referrerUrl = '';
+    public $productId = null;
+    public $productName = null;
 
     // Modal State
     public $showModal = false;
@@ -31,6 +36,25 @@ class CallMeBackForm extends Component
         'email.email' => 'Geçerli bir e-posta adresi giriniz',
     ];
 
+    public function mount()
+    {
+        // localStorage'dan gelecek (JavaScript tarafında set edilecek)
+        // Bu değerler Livewire'a JavaScript'ten gönderilecek
+
+        // Fallback: Normal referer header
+        $this->pageUrl = url()->current();
+        $this->referrerUrl = request()->headers->get('referer', '');
+    }
+
+    // JavaScript'ten localStorage verilerini al
+    public function setContextFromLocalStorage($productId, $productName, $fromUrl)
+    {
+        $this->productId = $productId;
+        $this->productName = $productName;
+        $this->pageUrl = $fromUrl;
+        $this->referrerUrl = $fromUrl;
+    }
+
     public function submit()
     {
         $this->validate();
@@ -40,8 +64,10 @@ class CallMeBackForm extends Component
                 'name' => $this->name,
                 'phone' => $this->phone,
                 'email' => $this->email,
-                'referrer' => request()->headers->get('referer'),
-                'landing_page' => url()->current(),
+                'referrer' => $this->referrerUrl,
+                'landing_page' => $this->pageUrl,
+                'product_id' => $this->productId,
+                'product_name' => $this->productName,
             ];
 
             // NotificationHub ile bildirim gönder (Telegram + WhatsApp + Email)
@@ -76,10 +102,8 @@ class CallMeBackForm extends Component
     private function sendNotifications(array $data)
     {
         try {
-            // Admin email fallback chain: settings → domain-based
-            $adminEmail = get_setting('contact_email')
-                ?? get_setting('email')
-                ?? 'info@' . parse_url(url('/'), PHP_URL_HOST);
+            // Admin email fallback chain: config → domain-based
+            $adminEmail = config('mail.from.address') ?? 'info@' . parse_url(url('/'), PHP_URL_HOST);
 
             // Send notification via Laravel Notification system (Mail + Telegram)
             Notification::route('mail', $adminEmail)
@@ -91,7 +115,9 @@ class CallMeBackForm extends Component
                         'email' => $data['email'],
                     ],
                     $data['referrer'] ?? '',
-                    $data['landing_page'] ?? ''
+                    $data['landing_page'] ?? '',
+                    $data['product_id'] ?? null,
+                    $data['product_name'] ?? null
                 ));
 
             Log::info('Call Me Back Notification Sent', [

@@ -15,7 +15,7 @@
                         İletişim Bilgileri
                     </h2>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
                                 Ad <span class="text-red-500 dark:text-red-400">*</span>
@@ -32,15 +32,6 @@
                             <input type="text" wire:model="contact_last_name"
                                 class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all">
                             @error('contact_last_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                E-posta <span class="text-red-500 dark:text-red-400">*</span>
-                            </label>
-                            <input type="email" wire:model="contact_email"
-                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all">
-                            @error('contact_email') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
@@ -105,11 +96,12 @@
 
                     {{-- Modal: Fatura Bilgileri Düzenleme --}}
                     @if($showBillingModal ?? false)
-                        <div class="fixed inset-0 z-50 overflow-y-auto" wire:click.self="closeBillingModal">
-                            <div class="flex items-center justify-center min-h-screen p-4">
-                                <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity"></div>
+                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4" wire:click.self="closeBillingModal">
+                            {{-- Backdrop --}}
+                            <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80" wire:click="closeBillingModal"></div>
 
-                                <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6">
+                            {{-- Modal Content --}}
+                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-10">
                                     <div class="flex items-center justify-between mb-6">
                                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Fatura Bilgileri</h3>
                                         <button wire:click="closeBillingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
@@ -198,7 +190,6 @@
                                             Kaydet
                                         </button>
                                     </div>
-                                </div>
                             </div>
                         </div>
                     @endif
@@ -247,11 +238,12 @@
 
                     {{-- Modal: Teslimat Adresi Düzenleme --}}
                     @if($showShippingModal ?? false)
-                        <div class="fixed inset-0 z-50 overflow-y-auto" wire:click.self="closeShippingModal">
-                            <div class="flex items-center justify-center min-h-screen p-4">
-                                <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity"></div>
+                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4" wire:click.self="closeShippingModal">
+                            {{-- Backdrop --}}
+                            <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80" wire:click="closeShippingModal"></div>
 
-                                <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6">
+                            {{-- Modal Content --}}
+                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-10">
                                     <div class="flex items-center justify-between mb-6">
                                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teslimat Adresi</h3>
                                         <button wire:click="closeShippingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
@@ -279,7 +271,6 @@
                                             Kaydet
                                         </button>
                                     </div>
-                                </div>
                             </div>
                         </div>
                     @endif
@@ -310,8 +301,8 @@
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-gray-600 dark:text-gray-400">Ara Toplam</span>
                             <span class="font-medium text-gray-900 dark:text-white">
-                                <i class="fa-solid fa-turkish-lira text-xs mr-0.5"></i>
-                                {{ number_format($subtotal, 2, ',', '.') }}
+                                {{ number_format(round($subtotal), 0, ',', '.') }}
+                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
                             </span>
                         </div>
 
@@ -319,8 +310,8 @@
                         <div class="flex justify-between items-center text-sm">
                             <span class="text-gray-600 dark:text-gray-400">KDV (%20)</span>
                             <span class="font-medium text-gray-900 dark:text-white">
-                                <i class="fa-solid fa-turkish-lira text-xs mr-0.5"></i>
-                                {{ number_format($taxAmount, 2, ',', '.') }}
+                                {{ number_format(round($taxAmount), 0, ',', '.') }}
+                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
                             </span>
                         </div>
 
@@ -330,8 +321,8 @@
                     <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
                         <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam</span>
                         <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                            <i class="fa-solid fa-turkish-lira text-lg mr-1"></i>
-                            {{ number_format($total, 2, ',', '.') }}
+                            {{ number_format(round($total), 0, ',', '.') }}
+                            <i class="fa-solid fa-turkish-lira text-lg ml-1"></i>
                         </span>
                     </div>
 
@@ -341,8 +332,8 @@
                             <input type="checkbox" wire:model="agree_all"
                                 class="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
                             <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">
-                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
-                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
+                                <a href="/on-bilgilendirme-formu" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="/mesafeli-satis-sozlesmesi" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
                                 <span class="text-red-500 dark:text-red-400 font-bold">*</span>
                             </span>
                         </label>

@@ -96,12 +96,12 @@
 
                     {{-- Modal: Fatura Bilgileri Düzenleme --}}
                     @if($showBillingModal ?? false)
-                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4" wire:click.self="closeBillingModal">
+                        <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeBillingModal">
                             {{-- Backdrop --}}
-                            <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80" wire:click="closeBillingModal"></div>
+                            <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeBillingModal"></div>
 
                             {{-- Modal Content --}}
-                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-10">
+                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-[10000] my-8">
                                     <div class="flex items-center justify-between mb-6">
                                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Fatura Bilgileri</h3>
                                         <button wire:click="closeBillingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
@@ -238,12 +238,12 @@
 
                     {{-- Modal: Teslimat Adresi Düzenleme --}}
                     @if($showShippingModal ?? false)
-                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4" wire:click.self="closeShippingModal">
+                        <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeShippingModal">
                             {{-- Backdrop --}}
-                            <div class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80" wire:click="closeShippingModal"></div>
+                            <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeShippingModal"></div>
 
                             {{-- Modal Content --}}
-                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-10">
+                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-[10000] my-8">
                                     <div class="flex items-center justify-between mb-6">
                                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teslimat Adresi</h3>
                                         <button wire:click="closeShippingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">

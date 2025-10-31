@@ -286,17 +286,54 @@
                                         </div>
                                     @else
                                         <div class="d-flex align-items-center justify-content-end gap-2">
-                                            @if ($product->base_price && $product->base_price > 0)
-                                                <div class="d-flex flex-column align-items-end">
+                                            @if ($product->price_display_mode === 'show' && $product->base_price && $product->base_price > 0)
+                                                @php
+                                                    // ✨ OTOMATIK İNDİRİM SİSTEMİ (Admin Panel)
+                                                    $compareAtPrice = $product->compare_at_price;
+                                                    $discountPercentage = null;
+
+                                                    // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
+                                                    if (!$compareAtPrice || $compareAtPrice <= $product->base_price) {
+                                                        // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
+                                                        $discountPercentage = (($product->product_id % 4) * 5 + 5);
+
+                                                        // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
+                                                        $compareAtPrice = $product->base_price / (1 - ($discountPercentage / 100));
+
+                                                        // Yuvarlama (00 veya 50)
+                                                        $lastTwo = $compareAtPrice % 100;
+                                                        if ($lastTwo <= 24) {
+                                                            $compareAtPrice = floor($compareAtPrice / 100) * 100;
+                                                        } elseif ($lastTwo <= 74) {
+                                                            $compareAtPrice = floor($compareAtPrice / 100) * 100 + 50;
+                                                        } else {
+                                                            $compareAtPrice = ceil($compareAtPrice / 100) * 100;
+                                                        }
+                                                    } else {
+                                                        // Manuel compare_at_price var, gerçek indirim yüzdesini hesapla
+                                                        $discountPercentage = round((($compareAtPrice - $product->base_price) / $compareAtPrice) * 100);
+                                                    }
+                                                @endphp
+
+                                                <div class="d-flex flex-column align-items-end position-relative">
+                                                    {{-- İndirim Badge (sadece %5+ indirim varsa) --}}
+                                                    @if($discountPercentage && $discountPercentage >= 5)
+                                                        <span class="badge bg-danger position-absolute" style="top: -8px; right: -8px; font-size: 0.7rem;">
+                                                            -%{{ $discountPercentage }}
+                                                        </span>
+                                                    @endif
+
                                                     <span class="fw-semibold editable-price">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
-                                                    @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
+                                                    @if ($compareAtPrice && $compareAtPrice > $product->base_price)
                                                         <small class="text-muted text-decoration-line-through">
-                                                            {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
+                                                            {{ formatPrice($compareAtPrice, $product->currency ?? 'TRY') }}
                                                         </small>
                                                     @endif
                                                 </div>
-                                            @else
+                                            @elseif ($product->price_display_mode === 'request')
                                                 <span class="badge bg-secondary editable-price">{{ __('shop::admin.price_on_request') }}</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark editable-price">{{ __('shop::admin.price_hidden') }}</span>
                                             @endif
                                             <button class="btn btn-sm px-2 py-1 edit-icon"
                                                 wire:click="startEditingPrice({{ $product->product_id }}, '{{ $product->base_price }}', '{{ $product->currency ?? 'TRY' }}')">
@@ -564,17 +601,54 @@
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center justify-content-end gap-2">
-                                                    @if ($variant->base_price && $variant->base_price > 0)
-                                                        <div class="d-flex flex-column align-items-end">
+                                                    @if ($variant->price_display_mode === 'show' && $variant->base_price && $variant->base_price > 0)
+                                                        @php
+                                                            // ✨ OTOMATIK İNDİRİM SİSTEMİ (Variant - Admin Panel)
+                                                            $variantCompareAtPrice = $variant->compare_at_price;
+                                                            $variantDiscountPercentage = null;
+
+                                                            // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
+                                                            if (!$variantCompareAtPrice || $variantCompareAtPrice <= $variant->base_price) {
+                                                                // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
+                                                                $variantDiscountPercentage = (($variant->product_id % 4) * 5 + 5);
+
+                                                                // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
+                                                                $variantCompareAtPrice = $variant->base_price / (1 - ($variantDiscountPercentage / 100));
+
+                                                                // Yuvarlama (00 veya 50)
+                                                                $lastTwo = $variantCompareAtPrice % 100;
+                                                                if ($lastTwo <= 24) {
+                                                                    $variantCompareAtPrice = floor($variantCompareAtPrice / 100) * 100;
+                                                                } elseif ($lastTwo <= 74) {
+                                                                    $variantCompareAtPrice = floor($variantCompareAtPrice / 100) * 100 + 50;
+                                                                } else {
+                                                                    $variantCompareAtPrice = ceil($variantCompareAtPrice / 100) * 100;
+                                                                }
+                                                            } else {
+                                                                // Manuel compare_at_price var, gerçek indirim yüzdesini hesapla
+                                                                $variantDiscountPercentage = round((($variantCompareAtPrice - $variant->base_price) / $variantCompareAtPrice) * 100);
+                                                            }
+                                                        @endphp
+
+                                                        <div class="d-flex flex-column align-items-end position-relative">
+                                                            {{-- İndirim Badge (sadece %5+ indirim varsa) --}}
+                                                            @if($variantDiscountPercentage && $variantDiscountPercentage >= 5)
+                                                                <span class="badge bg-danger position-absolute" style="top: -8px; right: -8px; font-size: 0.7rem;">
+                                                                    -%{{ $variantDiscountPercentage }}
+                                                                </span>
+                                                            @endif
+
                                                             <span class="fw-semibold editable-price">{{ formatPrice($variant->base_price, $variant->currency ?? 'TRY') }}</span>
-                                                            @if ($variant->compare_at_price && $variant->compare_at_price > $variant->base_price)
+                                                            @if ($variantCompareAtPrice && $variantCompareAtPrice > $variant->base_price)
                                                                 <small class="text-muted text-decoration-line-through">
-                                                                    {{ formatPrice($variant->compare_at_price, $variant->currency ?? 'TRY') }}
+                                                                    {{ formatPrice($variantCompareAtPrice, $variant->currency ?? 'TRY') }}
                                                                 </small>
                                                             @endif
                                                         </div>
-                                                    @else
+                                                    @elseif ($variant->price_display_mode === 'request')
                                                         <span class="badge bg-secondary editable-price">{{ __('shop::admin.price_on_request') }}</span>
+                                                    @else
+                                                        <span class="badge bg-warning text-dark editable-price">{{ __('shop::admin.price_hidden') }}</span>
                                                     @endif
                                                     <button class="btn btn-sm px-2 py-1 edit-icon"
                                                         wire:click="startEditingPrice({{ $variant->product_id }}, '{{ $variant->base_price }}', '{{ $variant->currency ?? 'TRY' }}')">

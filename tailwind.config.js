@@ -188,6 +188,15 @@ module.exports = {
                     900: '#0c4a6e',
                 }
             },
+            keyframes: {
+                gradient: {
+                    '0%, 100%': { backgroundPosition: '0% 50%' },
+                    '50%': { backgroundPosition: '100% 50%' },
+                }
+            },
+            animation: {
+                gradient: 'gradient 3s ease infinite',
+            },
             // iXtif Theme Container (Standard Widths)
             spacing: {
                 'ixtif-container-padding': 'clamp(1rem, 2vw, 0px)', // Responsive padding: mobile 1rem, tablet+ 0

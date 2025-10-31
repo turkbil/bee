@@ -73,10 +73,13 @@ class PageController extends Controller
 
                 // ✨ OTOMATIK İNDİRİM SİSTEMİ
                 // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
+                $autoDiscountPercentage = null;
                 if (!$compareAtPrice || $compareAtPrice <= $product->base_price) {
-                    // %15-30 arası random artış (her ürün farklı indirim oranı)
-                    $increasePercentage = rand(15, 30) / 100;
-                    $compareAtPrice = $product->base_price * (1 + $increasePercentage);
+                    // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
+                    $autoDiscountPercentage = (($product->product_id % 4) * 5 + 5);
+
+                    // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
+                    $compareAtPrice = $product->base_price / (1 - ($autoDiscountPercentage / 100));
                 }
 
                 // Format compare price
@@ -101,10 +104,12 @@ class PageController extends Controller
                     'category_icon' => $product->category->icon_class ?? 'fa-light fa-box',
                     'featured' => $product->is_featured ?? false,
                     'bestseller' => $product->is_bestseller ?? false,
+                    'badges' => $product->badges ?? [], // Badge sistemi
                     'exchange_rate' => $exchangeRate,
                     'try_price' => $tryPrice,
                     'compare_at_price' => $compareAtPrice,
                     'formatted_compare_price' => $formattedComparePrice,
+                    'auto_discount_percentage' => $autoDiscountPercentage, // SABİT: 5, 10, 15, 20
                 ];
             });
 

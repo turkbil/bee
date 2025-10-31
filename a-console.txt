@@ -1,1 +1,152 @@
+multi-modal-manager.js?v=1761880670:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1761880670:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1761880670:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1761880670:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1761880670:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1761880670:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1761880670:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1761880670:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1761880670:13 ⏰ Load Time: 2025-10-31T03:17:51.676Z
+ai-seo-integration.js?v=1761880670:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1761880670:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1761880670:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1761880670:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1761880670:564 🔍 Bulunan buton sayısı: 1
+ai-seo-integration.js?v=1761880670:568 🔍 Buton DEBUG: {classes: 'btn btn-primary ai-seo-recommendations-btn', originalHTML: '\n                        <i class="fas fa-magic me…        Yapay Zeka Önerileri\n                    ', originalText: 'Yapay Zeka Önerileri'}
+ai-seo-integration.js?v=1761880670:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1761880670:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1761880670:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1761880670:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+monaco-editor-universal.js?v=1761880670:28 🎯 Monaco Editor Universal System başlatılıyor...
+monaco-editor-universal.js?v=1761880670:324 ✅ Monaco Editor Universal System hazır!
+universal-seo-functions.js?v=1761880670:21 🎯 Universal SEO Functions başlatılıyor...
+universal-seo-functions.js?v=1761880670:372 ✅ Universal SEO Functions yüklendi!
+universal-language-functions.js?v=1761880670:21 🎯 Universal Language Functions başlatılıyor...
+universal-language-functions.js?v=1761880670:145 ✅ Universal Language Functions yüklendi!
+universal-ai-content-functions.js?v=1761880670:21 🎯 Universal AI Content Functions başlatılıyor...
+universal-ai-content-functions.js?v=1761880670:146 ✅ Universal AI Content Functions yüklendi!
+streaming-translation.js:33 ✅ Streaming translation is supported
+streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
+streaming-translation.js:15 🚀 Streaming Translation System initializing...
+streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
+241:4112 ✅ Alpine.js Global Store initialized (Livewire bundled)
+241:5312 🎯 Badge Manager INIT
+241:5313 📦 Initial badges: Proxy(Array) {0: {…}}
+241:5314 📊 Badge count: 1
+241:5388 🎯 customCategoryManager INIT
+241:5389 📦 $wire: Proxy(Object) {}
+241:5390 📦 customJsonFields: Proxy(Array) {}
+241:5391 📋 templates: Proxy(Array) {}
+simple-translation-modal.js?v=1761880670:839 ⚡ Livewire initialized
+241:4463 📊 Sortable Init: {total: 3, visible: 3}
+241:4538 ✅ Gallery sortable initialized
+ai-content-system.js?v=1761880670:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1761880670:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1761880670:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1761880670:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1761880670:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1761880670:558 🔒 attachButtonListeners SKIP - already attached
+241:4178 📋 Unified Tab System başlatılıyor, storage key: shop_active_tab
+241:4197 🔄 Tab restore işlemi başlıyor...
+241:4200 📋 Kaydedilmiş tab: null
+241:4251 📋 Kaydedilmiş tab yok, ilk tab aktif
+241:4353 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1761880670:1469 ✅ Dil değiştirildi: tr
+241:5260 🔍 UNIVERSAL SEO TAB - DEBUG START
+241:5264 📊 SEO Input sayısı: 12
+241:5270   SEO Input 0: {wireModel: 'seoDataCache.tr.seo_title', value: 'İXTİF F4 201: Kompakt Güçlü Transpalet...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+241:5270   SEO Input 1: {wireModel: 'seoDataCache.tr.seo_description', value: 'İXTİF F4 201, 48V gücüyle 2. tona kadar yük taşır....', hasValue: true, id: 'no-id', tag: 'TEXTAREA'}
+241:5270   SEO Input 2: {wireModel: 'seoDataCache.tr.schema_type', value: 'WebPage...', hasValue: true, id: 'schema_type_tr', tag: 'SELECT'}
+241:5270   SEO Input 3: {wireModel: 'seoDataCache.tr.priority_score', value: '5...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+241:5270   SEO Input 4: {wireModel: 'seoDataCache.tr.og_title', value: 'İXTİF F4 201: Kompakt ve Güçlü Çözüm...', hasValue: true, id: 'no-id', tag: 'INPUT'}
+241:5270   SEO Input 5: {wireModel: 'seoDataCache.tr.og_description', value: 'İXTİF F4 201 ile dar alanlarda güvenli ve etkili t...', hasValue: true, id: 'no-id', tag: 'TEXTAREA'}
+241:5270   SEO Input 6: {wireModel: 'seoDataCache.tr.robots_meta.index', value: 'on...', hasValue: true, id: 'robots_index_tr', tag: 'INPUT'}
+241:5270   SEO Input 7: {wireModel: 'seoDataCache.tr.robots_meta.follow', value: 'on...', hasValue: true, id: 'robots_follow_tr', tag: 'INPUT'}
+241:5270   SEO Input 8: {wireModel: 'seoDataCache.tr.robots_meta.archive', value: 'on...', hasValue: true, id: 'robots_archive_tr', tag: 'INPUT'}
+241:5270   SEO Input 9: {wireModel: 'seoDataCache.tr.robots_meta.snippet', value: 'on...', hasValue: true, id: 'robots_snippet_tr', tag: 'INPUT'}
+241:5270   SEO Input 10: {wireModel: 'seoDataCache.tr.author_name', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+241:5270   SEO Input 11: {wireModel: 'seoDataCache.tr.author_url', value: '🔴 BOŞ', hasValue: false, id: 'no-id', tag: 'INPUT'}
+241:5282 ✅ Livewire Component bulundu
+241:5283 📦 seoDataCache: Proxy(Object) {tr: {…}}
+241:5284 🌍 currentLanguage: tr
+241:5285 📋 availableLanguages: Proxy(Array) {0: 'tr'}
+241:5286 🆔 modelId: 241
+241:5287 🏷️ modelType: shop_product
+241:5288 📦 modelClass: Modules\Shop\App\Models\ShopProduct
+241:5298 💡 TIP: Konsola "debugSeoTab()" yaz
+241:5303 🔍 UNIVERSAL SEO TAB - DEBUG END
+241:5819 📋 Universal Language System yüklendi
+241:5820 🌍 Current Language: tr
+241:5821 🌍 Livewire Current Language: tr
+241:5822 🔍 Available Languages: ['tr']
+universal-language-functions.js?v=1761880670:73 🔧 İlk yükleme: Dil içeriği düzenleniyor: tr
+universal-language-functions.js?v=1761880670:30 🌍 Dil içeriği değiştiriliyor: tr
+universal-language-functions.js?v=1761880670:64 ✅ Dil içeriği değiştirildi: tr
+241:5846 🎯 TR dili için sosyal medya alanları dolu, switch aktifleştiriliyor
+241:5874 ✅ Universal AI Content System hazır!
+universal-seo-functions.js?v=1761880670:336 ✅ Universal SEO event listeners kuruldu
+universal-language-functions.js?v=1761880670:129 ✅ Universal Language event listeners kuruldu
+manage.js?v=1761880670:115 🔧 Language switching sistemi kuruluyor...
+manage.js?v=1761880670:118 🔍 Bulunan language button sayısı: 1
+manage.js?v=1761880670:121   0: undefined - class: btn btn-link p-2 language-switch-btn text-muted
+manage.js?v=1761880670:443 🔎 RESTORE KONTROL - sayfa başladı
+manage.js?v=1761880670:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
+manage.js?v=1761880670:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
+manage.js?v=1761880670:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
+manage.js?v=1761880670:1347 🔍 Bulunan seo-no-enter input sayısı: 4
+manage.js?v=1761880670:1353   Input 0: {tag: 'INPUT', name: 'yok', placeholder: 'İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet', wireModel: 'seoDataCache.tr.seo_title', value: 'İXTİF F4 201: Kompakt Güçlü Transpalet...', …}
+manage.js?v=1761880670:1353   Input 1: {tag: 'TEXTAREA', name: 'yok', placeholder: '48V sistem gücüyle 2.0 ton kapasite sunan, l2=400 …le 2 ton yükte dinamik hız ve tırmanma, Tak‑çıkar', wireModel: 'seoDataCache.tr.seo_description', value: 'İXTİF F4 201, 48V gücüyle 2. tona kadar yük taşır....', …}
+manage.js?v=1761880670:1353   Input 2: {tag: 'INPUT', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel başlık", wireModel: 'seoDataCache.tr.og_title', value: 'İXTİF F4 201: Kompakt ve Güçlü Çözüm...', …}
+manage.js?v=1761880670:1353   Input 3: {tag: 'TEXTAREA', name: 'yok', placeholder: "Facebook/LinkedIn'de görünecek özel açıklama", wireModel: 'seoDataCache.tr.og_description', value: 'İXTİF F4 201 ile dar alanlarda güvenli ve etkili t...', …}
+manage.js?v=1761880670:1407 ✅ 4 SEO input için Enter tuşu engelleme aktif
+241:6169 🚀 Enterprise Streaming Translation System Ready!
+241:6182 📝 Streaming translation not available - Using standard translation mode
+241:5318 🔄 After nextTick badges: Proxy(Array) {0: {…}}
+241:5319 📊 After nextTick count: 1
+monaco-editor-universal.js?v=1761880670:59 ✅ Monaco loader yüklendi
+universal-seo-functions.js?v=1761880670:200 📱 Social media switches initialized
+manage.js?v=1761880670:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1761880670:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
+ai-seo-integration.js?v=1761880670:558 🔒 attachButtonListeners SKIP - already attached
+monaco-editor-universal.js?v=1761880670:100 ✅ Monaco Editor hazır
+ai-seo-integration.js?v=1761880670:558 🔒 attachButtonListeners SKIP - already attached
+manage.js?v=1761880670:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: []
+manage.js?v=1761880670:586 🌍 SEO Counter - Dinamik diller tespit edildi: []
+241:4149 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+manage.js?v=1761880670:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
+manage.js?v=1761880670:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
+manage.js?v=1761880670:371 💾 Save button tıklandı
+manage.js?v=1761880670:383 🔍🔍 AKTİF DİL TESPİTİ:
+manage.js?v=1761880670:384   - .text-primary button: null
+manage.js?v=1761880670:385   - Bulunan dil: tr
+manage.js?v=1761880670:386   - window.currentLanguage: tr
+manage.js?v=1761880670:390 🔍 Tüm dil button'ları:
+manage.js?v=1761880670:395   0: undefined - aktif:false, disabled:false
+manage.js?v=1761880670:408 🔍🔍 Aktif tab detayları:
+manage.js?v=1761880670:409   - Tab ID: #0
+manage.js?v=1761880670:410   - Tab metni: Ürün Bilgileri
+manage.js?v=1761880670:411   - SEO tab mı?: false
+manage.js?v=1761880670:412   - Element: <a href=​"#0" class=​"nav-link active" data-bs-toggle=​"tab" data-tab-key=​"0" style=​"border-radius:​ 0.25rem 0.25rem 0px 0px !important;​" data-tab-event-attached=​"true" aria-selected=​"true" role=​"tab">​…​</a>​flex
+manage.js?v=1761880670:417 🎯 Kaydet ve Devam Et - GEÇİCİ state korunacak
+manage.js?v=1761880670:418   - Aktif dil: tr
+manage.js?v=1761880670:419   - Aktif tab: #0
+manage.js?v=1761880670:425 ✅ Geçici state window object'e kaydedildi
+manage.js?v=1761880670:426 📋 KURAL: Sayfa tamamen yenilenirse bu veriler kaybolacak
+www.googletagmanager.com/:1 Refused to send form data to 'https://www.facebook.com/tr/' because it violates the following Content Security Policy directive: "form-action 'self'".
 
+241:4197 🔄 Tab restore işlemi başlıyor...
+241:4200 📋 Kaydedilmiş tab: null
+241:4251 📋 Kaydedilmiş tab yok, ilk tab aktif
+241:4353 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1761880670:1469 ✅ Dil değiştirildi: tr
+241:4197 🔄 Tab restore işlemi başlıyor...
+241:4200 📋 Kaydedilmiş tab: null
+241:4251 📋 Kaydedilmiş tab yok, ilk tab aktif
+241:4353 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1761880670:1469 ✅ Dil değiştirildi: tr
+241:4197 🔄 Tab restore işlemi başlıyor...
+241:4200 📋 Kaydedilmiş tab: null
+241:4251 📋 Kaydedilmiş tab yok, ilk tab aktif
+241:4353 🔄 Tab restore sonrası dil senkronizasyon: tr
+manage.js?v=1761880670:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1761880670:376 ✅ Save debounce reset edildi

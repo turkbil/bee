@@ -47,6 +47,7 @@ return [
     'compare_at_price' => 'Liste Fiyatı',
     'price' => 'Fiyat',
     'price_on_request' => 'Fiyat sorunuz',
+    'price_hidden' => 'Fiyat gizli',
     'price_show' => 'Fiyatı Göster',
     'currency' => 'Para Birimi',
     'short_description' => 'Kısa Açıklama',

@@ -54,20 +54,23 @@
         // Old price (discount) data
         $productCompareAtPrice = $product['compare_at_price'] ?? null;
 
+        // ✨ OTOMATIK İNDİRİM SİSTEMİ - Badge için SABİT yüzde (5, 10, 15, 20)
+        $productDiscountPercentage = $product['auto_discount_percentage'] ?? null;
+
         // Yuvarlama uygula (00 veya 50)
         if ($productCompareAtPrice) {
             $productCompareAtPrice = roundComparePrice($productCompareAtPrice);
+        }
+
+        // Manuel compare_at_price varsa, gerçek indirim yüzdesini hesapla
+        if (!$productDiscountPercentage && $productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
+            $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
         }
 
         $productFormattedComparePrice = null;
         if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productFormattedComparePrice = $product['currency_symbol'] ?? '₺';
             $productFormattedComparePrice = number_format($productCompareAtPrice, 0, ',', '.') . ' ' . $productFormattedComparePrice;
-        }
-
-        $productDiscountPercentage = null;
-        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
-            $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
         }
     } else {
         // Shop format (ShopProduct model)
@@ -116,13 +119,25 @@
         // Old price (discount) data
         $productCompareAtPrice = $product->compare_at_price ?? null;
 
+        // ✨ OTOMATIK İNDİRİM SİSTEMİ (Model formatı için)
+        $productDiscountPercentage = null;
+
+        // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
+        if (!$productCompareAtPrice || $productCompareAtPrice <= $productBasePrice) {
+            // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
+            $productDiscountPercentage = (($productId % 4) * 5 + 5);
+
+            // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
+            $productCompareAtPrice = $productBasePrice / (1 - ($productDiscountPercentage / 100));
+        }
+
         // Yuvarlama uygula (00 veya 50)
         if ($productCompareAtPrice) {
             $productCompareAtPrice = roundComparePrice($productCompareAtPrice);
         }
 
-        $productDiscountPercentage = null;
-        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
+        // Manuel compare_at_price varsa, gerçek indirim yüzdesini hesapla
+        if (!$productDiscountPercentage && $productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
         }
 
@@ -149,6 +164,65 @@
 
     // Grid responsive visibility (sadece homepage için)
     $visibilityClass = ($index === 8) ? 'hidden lg:block xl:hidden' : '';
+
+    // Badge sistemi - hem array hem model format destekli
+    $productBadges = [];
+
+    if ($isArray) {
+        // Array formatı (homepage) - badges field'ını direkt al
+        if (isset($product['badges']) && is_array($product['badges'])) {
+            $productBadges = array_filter($product['badges'], function($badge) {
+                return isset($badge['is_active']) && $badge['is_active'];
+            });
+            // Priority'ye göre sırala
+            usort($productBadges, function($a, $b) {
+                return ($a['priority'] ?? 999) <=> ($b['priority'] ?? 999);
+            });
+        }
+    } else {
+        // Model formatı (shop) - badge'leri filtrele (aktif olanlar)
+        if (isset($product->badges) && is_array($product->badges)) {
+            $productBadges = array_filter($product->badges, function($badge) {
+                return isset($badge['is_active']) && $badge['is_active'];
+            });
+            // Priority'ye göre sırala
+            usort($productBadges, function($a, $b) {
+                return ($a['priority'] ?? 999) <=> ($b['priority'] ?? 999);
+            });
+        }
+    }
+
+    // Badge renk gradient map
+    $badgeGradients = [
+        'green' => 'from-emerald-600 to-green-600',
+        'red' => 'from-red-600 to-rose-600',
+        'orange' => 'from-orange-600 to-amber-600',
+        'blue' => 'from-blue-600 to-cyan-600',
+        'yellow' => 'from-yellow-500 to-amber-500',
+        'purple' => 'from-purple-600 to-fuchsia-600',
+        'emerald' => 'from-emerald-500 to-teal-600',
+        'indigo' => 'from-indigo-600 to-blue-600',
+        'cyan' => 'from-cyan-600 to-blue-500',
+        'gray' => 'from-gray-600 to-slate-600',
+    ];
+
+    // Badge label helper
+    $getBadgeLabel = function($badge) {
+        $labels = [
+            'new_arrival' => 'Yeni',
+            'discount' => '%' . ($badge['value'] ?? '0') . ' İndirim',
+            'limited_stock' => 'Son ' . ($badge['value'] ?? '0') . ' Adet',
+            'free_shipping' => 'Ücretsiz Kargo',
+            'bestseller' => 'Çok Satan',
+            'featured' => 'Öne Çıkan',
+            'eco_friendly' => 'Çevre Dostu',
+            'warranty' => ($badge['value'] ?? '0') . ' Ay Garanti',
+            'pre_order' => 'Ön Sipariş',
+            'imported' => 'İthal',
+            'custom' => $badge['label']['tr'] ?? 'Özel',
+        ];
+        return $labels[$badge['type']] ?? ($badge['label']['tr'] ?? 'Badge');
+    };
 @endphp
 
 <div x-data="{
@@ -182,30 +256,84 @@
 
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
-        <a href="{{ $productUrl }}" class="block {{ $imageContainerClasses }} rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-            @if($productImage)
-                <img src="{{ $productImage }}"
-                     alt="{{ $productTitle }}"
-                     class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark"
-                     loading="lazy">
-            @else
-                <i class="{{ $productCategoryIcon }} text-4xl md:text-6xl text-blue-400 dark:text-blue-400"></i>
+        <div class="relative {{ $imageContainerClasses }}">
+            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+                @if($productImage)
+                    <img src="{{ $productImage }}"
+                         alt="{{ $productTitle }}"
+                         class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark"
+                         loading="lazy">
+                @else
+                    <i class="{{ $productCategoryIcon }} text-4xl md:text-6xl text-blue-400 dark:text-blue-400"></i>
+                @endif
+            </a>
+
+            {{-- Badges Container (Foto üstünde - sadece vertical layout) --}}
+            @if($layout === 'vertical')
+                <div class="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
+                    {{-- Discount Badge - sadece %5+ indirim varsa --}}
+                    @if($productDiscountPercentage && $productDiscountPercentage >= 5)
+                        <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                            -%{{ $productDiscountPercentage }}
+                        </div>
+                    @endif
+
+                    {{-- Custom Badges --}}
+                    @foreach($productBadges as $index => $badge)
+                        @php
+                            $badgeColor = $badge['color'] ?? 'gray';
+                            $badgeGradient = $badgeGradients[$badgeColor] ?? 'from-gray-600 to-slate-600';
+                            // İlk custom badge animasyonlu (priority 1 veya ilk sıradaki)
+                            $isFirstBadge = $index === 0;
+                            $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
+                        @endphp
+                        <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                            {{ $getBadgeLabel($badge) }}
+                        </div>
+                    @endforeach
+                </div>
             @endif
-        </a>
+        </div>
 
         {{-- Content Section --}}
         <div class="{{ $contentClasses }}">
-            {{-- Category Badge with Icon --}}
-            <div class="flex items-center gap-2 {{ $layout === 'horizontal' ? 'mb-2' : 'mb-4' }}">
+            {{-- Category Badge with Icon + Custom Badges (Vertical: sağda, Horizontal: solda) --}}
+            <div class="flex items-center gap-2 {{ $layout === 'horizontal' ? 'mb-2' : 'mb-4 justify-between' }}">
                 <span class="flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
                     <i class="{{ $productCategoryIcon }} text-sm"></i>
                     {{ $productCategory }}
                 </span>
 
-                @if($productFeatured)
-                    <span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full font-bold">
-                        ⭐ Öne Çıkan
-                    </span>
+                {{-- Badges (Horizontal layout: sağda | Vertical: görsel üzerinde) --}}
+                @if($layout === 'horizontal')
+                    <div class="flex items-center gap-2 flex-wrap justify-end">
+                        {{-- Discount Badge - sadece %5+ indirim varsa --}}
+                        @if($productDiscountPercentage && $productDiscountPercentage >= 5)
+                            <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                                -%{{ $productDiscountPercentage }}
+                            </div>
+                        @endif
+
+                        {{-- Custom Badges --}}
+                        @foreach($productBadges as $index => $badge)
+                            @php
+                                $badgeColor = $badge['color'] ?? 'gray';
+                                $badgeGradient = $badgeGradients[$badgeColor] ?? 'from-gray-600 to-slate-600';
+                                // İlk custom badge animasyonlu (priority 1 veya ilk sıradaki)
+                                $isFirstBadge = $index === 0;
+                                $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
+                            @endphp
+                            <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                                {{ $getBadgeLabel($badge) }}
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    @if($productFeatured)
+                        <span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full font-bold">
+                            ⭐ Öne Çıkan
+                        </span>
+                    @endif
                 @endif
             </div>
 
@@ -220,13 +348,6 @@
             <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500 flex items-center justify-between gap-3' }}">
                 {{-- Price with Transform Effect (USD ⇄ TRY) + Old Price --}}
                 <div class="flex-1 min-w-0">
-                    {{-- Discount Badge (Foto üstünde) - sadece %10+ indirim varsa --}}
-                    @if($productDiscountPercentage && $productDiscountPercentage >= 10)
-                        <div class="absolute top-3 left-3 z-10 bg-gradient-to-br from-orange-600 to-red-600 text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
-                            -%{{ $productDiscountPercentage }}
-                        </div>
-                    @endif
-
                     @if($productBasePrice <= 0)
                         {{-- Fiyatsız Ürün: "Teklif Alın" --}}
                         <a href="{{ url('/sizi-arayalim') }}"
@@ -241,7 +362,7 @@
                     @elseif($productTryPrice && $productCurrencyCode !== 'TRY')
                         {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
-                            <div class="relative inline-block mb-1">
+                            <div class="relative inline-block mb-2">
                                 <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500 font-medium">
                                     {{ $productFormattedComparePrice }}
                                 </span>
@@ -252,7 +373,7 @@
                             </div>
                         @endif
 
-                        <div class="relative h-8 flex items-center cursor-pointer"
+                        <div class="relative h-8 w-fit flex items-center cursor-pointer"
                              @mouseenter="priceHovered = true; showTryPrice = true"
                              @mouseleave="priceHovered = false; showTryPrice = false">
                             {{-- USD Price (default) --}}
@@ -268,7 +389,7 @@
                             </div>
 
                             {{-- TRY Price (hover ile gösterim) --}}
-                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 whitespace-nowrap scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                            <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] whitespace-nowrap"
                                  x-show="showTryPrice"
                                  x-transition:enter="transition ease-in duration-150"
                                  x-transition:enter-start="opacity-0 scale-95"
@@ -283,7 +404,7 @@
                     @else
                         {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
-                            <div class="relative inline-block mb-1">
+                            <div class="relative inline-block mb-2">
                                 <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500 font-medium">
                                     {{ $productFormattedComparePrice }}
                                 </span>
@@ -295,7 +416,7 @@
                         @endif
 
                         {{-- TRY Only Price --}}
-                        <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 whitespace-nowrap h-8 flex items-center">
+                        <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 h-8 flex items-center whitespace-nowrap">
                             {{ $productFormattedPrice }}
                         </div>
                     @endif
@@ -344,10 +465,10 @@
                                 }, 500);
                             "
                             :disabled="loading || success"
-                            class="flex-shrink-0 bg-gradient-to-br from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/50 active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
-                            :class="{ 'animate-pulse': loading, '!bg-gradient-to-br !from-green-600 !to-emerald-600': success }">
-                            <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-110">
-                                <i class="fa-solid text-base transition-all duration-300"
+                            class="flex-shrink-0 border-2 border-blue-600 dark:border-blue-400 hover:border-blue-700 dark:hover:border-blue-300 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            :class="{ 'animate-pulse': loading, '!border-green-600 !text-green-600 !bg-green-50 dark:!bg-green-900/20': success }">
+                            <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                                <i class="fa-solid text-lg transition-all duration-300"
                                    :class="{
                                        'fa-spinner fa-spin': loading,
                                        'fa-check scale-125': success,

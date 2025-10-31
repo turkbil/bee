@@ -256,26 +256,6 @@
                                                     @error('billing_tax_office') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
-
-                                            <div class="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                                        Yetkili Kişi Adı <span class="text-red-500 dark:text-red-400">*</span>
-                                                    </label>
-                                                    <input type="text" wire:model="billing_contact_first_name"
-                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
-                                                    @error('billing_contact_first_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                </div>
-
-                                                <div>
-                                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                                        Yetkili Kişi Soyadı <span class="text-red-500 dark:text-red-400">*</span>
-                                                    </label>
-                                                    <input type="text" wire:model="billing_contact_last_name"
-                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
-                                                    @error('billing_contact_last_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                </div>
-                                            </div>
                                         </div>
                                     @endif
 
@@ -446,9 +426,16 @@
 
                         {{-- Kredi Kartı Komisyonu --}}
                         <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400">
-                                <i class="fa-solid fa-credit-card text-xs mr-1"></i>
-                                Kredi Kartı Komisyonu (%4,29)
+                            <span class="text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-credit-card text-xs"></i>
+                                <span>Kredi Kartı Komisyonu (%4,29)</span>
+                                <a href="https://www.iyzico.com/isim-icin/sanal-pos"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+                                   title="Komisyon detayları için tıklayın">
+                                    <i class="fa-solid fa-circle-info text-xs"></i>
+                                </a>
                             </span>
                             <span class="font-medium text-gray-900 dark:text-white">
                                 {{ number_format(round($creditCardFee), 0, ',', '.') }}

@@ -97,7 +97,6 @@ class CheckoutPageNew extends Component
 
         // Sepet boşsa sepet sayfasına yönlendir
         if (!$this->items || $this->items->count() === 0) {
-            session()->flash('error', 'Sepetiniz boş. Lütfen ürün ekleyin.');
             return redirect()->route('shop.cart');
         }
 
@@ -134,6 +133,9 @@ class CheckoutPageNew extends Component
         // Kredi kartı komisyonu (%4,99)
         $this->creditCardFee = $this->total * 0.0499;
         $this->grandTotal = $this->total + $this->creditCardFee;
+
+        // Widget'ı güncelle (sayfa yüklendiğinde widget senkronize olsun)
+        $this->dispatch('cartUpdated');
     }
 
     public function loadOrCreateCustomer()

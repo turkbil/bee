@@ -219,7 +219,6 @@ class CheckoutPageNew extends Component
         $rules = [
             'contact_first_name' => 'required|string|max:255',
             'contact_last_name' => 'required|string|max:255',
-            'contact_email' => 'required|email|max:255',
             'contact_phone' => 'required|string|max:20',
             'billing_address_id' => 'required',
             'shipping_address_id' => 'required',
@@ -239,7 +238,6 @@ class CheckoutPageNew extends Component
         $this->validate($rules, [
             'contact_first_name.required' => 'Ad zorunludur',
             'contact_last_name.required' => 'Soyad zorunludur',
-            'contact_email.required' => 'E-posta zorunludur',
             'contact_phone.required' => 'Telefon zorunludur',
             'billing_address_id.required' => 'Fatura adresi seçmelisiniz',
             'shipping_address_id.required' => 'Teslimat adresi seçmelisiniz',

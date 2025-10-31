@@ -54,7 +54,7 @@ class CheckoutPageNew extends Component
 
     // Modal States (Hepsiburada Pattern)
     public $showShippingModal = false;
-    public $showBillingModal = false;
+    public $showBillingAddressModal = false;
 
     protected $listeners = [
         'cartUpdated' => 'loadCart',
@@ -189,18 +189,11 @@ class CheckoutPageNew extends Component
     {
         if ($addressType === 'billing') {
             $this->billing_address_id = $addressId;
-            $this->showBillingModal = false; // Modal'ı kapat
+            $this->showBillingAddressModal = false; // Modal'ı kapat
         } elseif ($addressType === 'shipping') {
             $this->shipping_address_id = $addressId;
             $this->showShippingModal = false; // Modal'ı kapat
         }
-    }
-
-    public function saveBillingInfo()
-    {
-        // Fatura bilgilerini kaydet ve modal'ı kapat
-        $this->showBillingModal = false;
-        session()->flash('address_success', 'Fatura bilgileri kaydedildi');
     }
 
     public function submitOrder()

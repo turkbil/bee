@@ -19,22 +19,14 @@ class AddressManager extends Component
     public $showEditModal = false;
     public $editingAddressId = null;
 
-    // Form fields
-    public $title;
-    public $first_name;
-    public $last_name;
-    public $phone;
-    public $email;
-    public $company_name;
-    public $tax_office;
-    public $tax_number;
-    public $address_line_1;
-    public $address_line_2;
-    public $neighborhood;
-    public $district;
-    public $city;
-    public $postal_code;
-    public $delivery_notes;
+    // Form fields (SADECE KONUM BİLGİSİ)
+    public $title; // ZORUNLU - "Ev Adresim", "İş Adresi"
+    public $phone; // OPSİYONEL - Teslimat için farklı telefon
+    public $address_line_1; // ZORUNLU - Bina, site, sokak
+    public $city; // ZORUNLU - İl
+    public $district; // ZORUNLU - İlçe
+    public $postal_code; // OPSİYONEL
+    public $delivery_notes; // OPSİYONEL - Teslimat notları
     public $is_default = false;
 
     // İl/İlçe listesi
@@ -144,22 +136,20 @@ class AddressManager extends Component
         $this->showSelectModal = false;
 
         // Parent component'e bildir
-        $this->emit('addressSelected', $addressId, $this->addressType);
+        $this->dispatch('addressSelected', addressId: $addressId, addressType: $this->addressType);
     }
 
     public function saveAddress()
     {
         $this->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
+            'title' => 'required|string|max:255',
             'address_line_1' => 'required|string|max:500',
             'city' => 'required|string|max:100',
             'district' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'postal_code' => 'nullable|string|max:10',
         ], [
-            'first_name.required' => 'Ad zorunludur',
-            'last_name.required' => 'Soyad zorunludur',
-            'phone.required' => 'Telefon zorunludur',
+            'title.required' => 'Adres adı zorunludur (Örn: Ev, İş)',
             'address_line_1.required' => 'Adres zorunludur',
             'city.required' => 'Şehir zorunludur',
             'district.required' => 'İlçe zorunludur',
@@ -168,18 +158,11 @@ class AddressManager extends Component
         $data = [
             'customer_id' => $this->customerId,
             'address_type' => $this->addressType,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
+            'title' => $this->title,
             'phone' => $this->phone,
-            'email' => $this->email,
-            'company_name' => $this->company_name,
-            'tax_office' => $this->tax_office,
-            'tax_number' => $this->tax_number,
             'address_line_1' => $this->address_line_1,
-            'address_line_2' => $this->address_line_2,
-            'neighborhood' => $this->neighborhood,
-            'district' => $this->district,
             'city' => $this->city,
+            'district' => $this->district,
             'postal_code' => $this->postal_code,
             'delivery_notes' => $this->delivery_notes,
         ];
@@ -241,43 +224,37 @@ class AddressManager extends Component
 
     private function fillForm($address)
     {
-        $this->first_name = $address->first_name;
-        $this->last_name = $address->last_name;
+        $this->title = $address->title;
         $this->phone = $address->phone;
-        $this->email = $address->email;
-        $this->company_name = $address->company_name;
-        $this->tax_office = $address->tax_office;
-        $this->tax_number = $address->tax_number;
         $this->address_line_1 = $address->address_line_1;
-        $this->address_line_2 = $address->address_line_2;
-        $this->neighborhood = $address->neighborhood;
-        $this->district = $address->district;
         $this->city = $address->city;
+        $this->district = $address->district;
         $this->postal_code = $address->postal_code;
         $this->delivery_notes = $address->delivery_notes;
         $this->is_default = $this->addressType === 'billing'
             ? $address->is_default_billing
             : $address->is_default_shipping;
+
+        // İl varsa ilçeleri yükle
+        if ($this->city) {
+            $this->updatedCity($this->city);
+        }
     }
 
     private function resetForm()
     {
         $this->editingAddressId = null;
-        $this->first_name = '';
-        $this->last_name = '';
+        $this->title = '';
         $this->phone = '';
-        $this->email = '';
-        $this->company_name = '';
-        $this->tax_office = '';
-        $this->tax_number = '';
         $this->address_line_1 = '';
-        $this->address_line_2 = '';
-        $this->neighborhood = '';
-        $this->district = '';
         $this->city = '';
+        $this->district = '';
         $this->postal_code = '';
         $this->delivery_notes = '';
         $this->is_default = false;
+
+        // İlçe listesini sıfırla
+        $this->districts = [];
     }
 
     public function render()

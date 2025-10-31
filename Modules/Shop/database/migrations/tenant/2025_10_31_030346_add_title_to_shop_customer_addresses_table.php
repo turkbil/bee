@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('shop_customer_addresses', function (Blueprint $table) {
+            // Title field for address nickname ("Ev Adresim", "İş Adresi", etc.)
+            $table->string('title')->nullable()->after('address_id')->comment('Adres başlığı (Ev, İş, vb.)');
+
+            // Phone and email are now nullable (already collected in checkout contact info)
+            $table->string('phone')->nullable()->change();
+            $table->string('email')->nullable()->change();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('shop_customer_addresses', function (Blueprint $table) {
+            $table->dropColumn('title');
+
+            // Revert phone to required
+            $table->string('phone')->nullable(false)->change();
+        });
+    }
+};

@@ -426,16 +426,9 @@
 
                         {{-- Kredi Kartı Komisyonu --}}
                         <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-credit-card text-xs"></i>
-                                <span>Kredi Kartı Komisyonu (%4,29)</span>
-                                <a href="https://www.iyzico.com/isim-icin/sanal-pos"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   class="text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
-                                   title="Komisyon detayları için tıklayın">
-                                    <i class="fa-solid fa-circle-info text-xs"></i>
-                                </a>
+                            <span class="text-gray-600 dark:text-gray-400">
+                                <i class="fa-solid fa-credit-card text-xs mr-1"></i>
+                                Kredi Kartı Komisyonu (%4,99)
                             </span>
                             <span class="font-medium text-gray-900 dark:text-white">
                                 {{ number_format(round($creditCardFee), 0, ',', '.') }}

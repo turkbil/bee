@@ -131,8 +131,8 @@ class CheckoutPageNew extends Component
         $this->taxAmount = $this->subtotal * $taxRate;
         $this->total = $this->subtotal + $this->taxAmount;
 
-        // Kredi kartı komisyonu (%4,29)
-        $this->creditCardFee = $this->total * 0.0429;
+        // Kredi kartı komisyonu (%4,99)
+        $this->creditCardFee = $this->total * 0.0499;
         $this->grandTotal = $this->total + $this->creditCardFee;
     }
 

@@ -39,6 +39,8 @@ class CallMeBackForm extends Component
                 'name' => $this->name,
                 'phone' => $this->phone,
                 'email' => $this->email,
+                'referrer' => request()->headers->get('referer'),
+                'landing_page' => url()->current(),
             ];
 
             // NotificationHub ile bildirim gönder (Telegram + WhatsApp + Email)
@@ -77,6 +79,9 @@ class CallMeBackForm extends Component
 
             // Build inquiry message
             $inquiry = "📞 Sizi Arayalım Talebi\n\nGeri arama talebi";
+            if (!empty($data['referrer'])) {
+                $inquiry .= "\n\n🔗 Nereden geldi: " . $data['referrer'];
+            }
 
             // Send via NotificationHub (Telegram + WhatsApp + Email)
             $results = $notificationHub->sendCustomerLead(
@@ -89,9 +94,10 @@ class CallMeBackForm extends Component
                 [], // Suggested products (boş - bu form product-specific değil)
                 [
                     'site' => tenant('domain') ?? parse_url(url('/'), PHP_URL_HOST),
-                    'page_url' => url()->current(),
+                    'page_url' => $data['landing_page'],
                     'device' => request()->userAgent(),
                     'form_type' => 'Sizi Arayalım',
+                    'referrer' => $data['referrer'],
                 ]
             );
 

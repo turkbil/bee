@@ -1,36 +1,48 @@
 <div>
-    {{-- Sizi Arayalım Formu - Minimal --}}
-    <form wire:submit.prevent="submit" class="space-y-5">
+    {{-- Sizi Arayalım Formu - Gradient Borders & Animations --}}
+    <form wire:submit.prevent="submit" class="space-y-6">
 
         {{-- İsim --}}
-        <div>
+        <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
             <input type="text" wire:model="name" placeholder="Adınız Soyadınız *"
-                class="w-full px-6 py-5 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all">
-            @error('name') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
+                class="relative w-full px-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-blue-300 dark:hover:border-blue-600">
+            @error('name') <span class="text-red-500 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</span> @enderror
         </div>
 
         {{-- Telefon --}}
-        <div>
+        <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-green-600 to-teal-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
             <input type="tel" wire:model="phone" placeholder="Telefon Numaranız *"
-                class="w-full px-6 py-5 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all">
-            @error('phone') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
+                class="relative w-full px-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-green-300 dark:hover:border-green-600">
+            @error('phone') <span class="text-red-500 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</span> @enderror
         </div>
 
         {{-- Email --}}
-        <div>
+        <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
             <input type="email" wire:model="email" placeholder="E-posta Adresiniz *"
-                class="w-full px-6 py-5 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all">
-            @error('email') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
+                class="relative w-full px-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-purple-300 dark:hover:border-purple-600">
+            @error('email') <span class="text-red-500 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</span> @enderror
         </div>
 
         {{-- Submit Button --}}
-        <button type="submit"
-            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-5 px-6 rounded-2xl transition-all shadow-lg hover:shadow-xl text-lg"
-            wire:loading.attr="disabled"
-            wire:loading.class="opacity-75 cursor-not-allowed">
-            <span wire:loading.remove>Hemen Arayın</span>
-            <span wire:loading>Gönderiliyor...</span>
-        </button>
+        <div class="relative group">
+            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
+            <button type="submit"
+                class="relative w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] text-lg"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-75 cursor-not-allowed">
+                <span wire:loading.remove class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    Hemen Arayın
+                </span>
+                <span wire:loading class="flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Gönderiliyor...
+                </span>
+            </button>
+        </div>
 
     </form>
 
@@ -46,7 +58,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0">
 
-            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative"
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full p-8 relative transform"
                  @click.away="$wire.closeModal()"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-90"
@@ -57,14 +69,14 @@
 
                 {{-- Close Button --}}
                 <button wire:click="closeModal"
-                    class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:rotate-90 transition-all duration-300">
                     <i class="fa-solid fa-times text-lg"></i>
                 </button>
 
                 @if($modalType === 'success')
                     {{-- Success Modal --}}
                     <div class="text-center">
-                        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                             <i class="fa-solid fa-check text-4xl text-white"></i>
                         </div>
                         <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
@@ -74,14 +86,14 @@
                             En kısa sürede sizi arayacağız.
                         </p>
                         <button wire:click="closeModal"
-                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-xl transition-all hover:scale-105 active:scale-95">
                             Tamam
                         </button>
                     </div>
                 @else
                     {{-- Error Modal --}}
                     <div class="text-center">
-                        <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
                             <i class="fa-solid fa-exclamation text-4xl text-white"></i>
                         </div>
                         <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
@@ -91,7 +103,7 @@
                             Lütfen daha sonra tekrar deneyin.
                         </p>
                         <button wire:click="closeModal"
-                            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl transition-all hover:scale-105 active:scale-95">
                             Kapat
                         </button>
                     </div>

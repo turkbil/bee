@@ -435,13 +435,34 @@
                             </span>
                         </div>
 
+                        {{-- Ara Toplam (KDV Dahil) --}}
+                        <div class="flex justify-between items-center text-sm pt-2 border-t border-gray-200 dark:border-gray-700">
+                            <span class="text-gray-700 dark:text-gray-300 font-medium">Ara Toplam (KDV Dahil)</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">
+                                {{ number_format(round($total), 0, ',', '.') }}
+                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
+                            </span>
+                        </div>
+
+                        {{-- Kredi Kartı Komisyonu --}}
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600 dark:text-gray-400">
+                                <i class="fa-solid fa-credit-card text-xs mr-1"></i>
+                                Kredi Kartı Komisyonu (%4,29)
+                            </span>
+                            <span class="font-medium text-gray-900 dark:text-white">
+                                {{ number_format(round($creditCardFee), 0, ',', '.') }}
+                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
+                            </span>
+                        </div>
+
                     </div>
 
-                    {{-- Toplam --}}
+                    {{-- GENEL TOPLAM --}}
                     <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                        <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam</span>
+                        <span class="text-lg font-bold text-gray-900 dark:text-white">TOPLAM</span>
                         <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                            {{ number_format(round($total), 0, ',', '.') }}
+                            {{ number_format(round($grandTotal), 0, ',', '.') }}
                             <i class="fa-solid fa-turkish-lira text-lg ml-1"></i>
                         </span>
                     </div>

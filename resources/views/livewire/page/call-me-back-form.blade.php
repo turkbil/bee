@@ -1,4 +1,20 @@
-<div>
+<div x-data="{
+    init() {
+        // localStorage'dan ürün bilgilerini oku ve Livewire'a gönder
+        const productId = localStorage.getItem('callMeBack_productId');
+        const productName = localStorage.getItem('callMeBack_productName');
+        const fromUrl = localStorage.getItem('callMeBack_fromUrl');
+
+        if (productId || productName || fromUrl) {
+            $wire.setContextFromLocalStorage(productId, productName, fromUrl);
+
+            // localStorage'ı temizle (tek kullanımlık)
+            localStorage.removeItem('callMeBack_productId');
+            localStorage.removeItem('callMeBack_productName');
+            localStorage.removeItem('callMeBack_fromUrl');
+        }
+    }
+}">
     {{-- Sizi Arayalım Formu - Clean & Professional --}}
     <form wire:submit.prevent="submit" class="space-y-6">
 

@@ -9,23 +9,6 @@
 
     <div class="card-body">
 
-        {{-- Anasayfa Göster Checkbox --}}
-        <div class="mb-4">
-            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                <input type="checkbox" id="show_on_homepage" name="show_on_homepage"
-                    wire:model="inputs.show_on_homepage" value="1" />
-                <div class="state p-success p-on ms-2">
-                    <label>Anasayfada Göster</label>
-                </div>
-                <div class="state p-danger p-off ms-2">
-                    <label>Anasayfada Gösterme</label>
-                </div>
-            </div>
-            <small class="text-muted ms-4">Bu ürün anasayfa ürün listesinde gösterilsin mi?</small>
-        </div>
-
-        <hr class="my-4">
-
         {{-- Badge Listesi --}}
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">Ürün Etiketleri (Badges)</h5>
@@ -144,7 +127,7 @@
 <script>
 function badgeManager() {
     return {
-        badges: @entangle('inputs.badges').defer || [],
+        badges: @entangle('inputs.badges') || [],
 
         addBadge() {
             if (!this.badges) this.badges = [];

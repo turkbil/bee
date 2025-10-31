@@ -42,6 +42,7 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
         'currency_id' => null,
         'sort_order' => 0,
         'show_on_homepage' => false,
+        'badges' => [],
     ];
 
     // Custom JSON Fields (Tenant-defined categories)
@@ -275,12 +276,15 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
                 'sku' => $product->sku,
                 'product_type' => $product->product_type,
                 'condition' => $product->condition,
-                'price_on_request' => (bool) $product->price_on_request,
+                'price_display_mode' => $product->price_display_mode ?? 'show',
                 'base_price' => $product->base_price,
                 'compare_at_price' => $product->compare_at_price,
                 'currency' => $product->currency,
                 'currency_id' => $product->currency_id,
                 'is_active' => (bool) $product->is_active,
+                'show_on_homepage' => (bool) $product->show_on_homepage,
+                'sort_order' => $product->sort_order ?? 0,
+                'badges' => is_array($product->badges) ? $product->badges : [],
             ]);
 
             // Çoklu dil alanları - FALLBACK KAPALI (input boş kalır, backend'de fallback)
@@ -353,9 +357,16 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
             'inputs.condition' => 'required|in:new,used,refurbished',
             'inputs.currency_id' => 'nullable|exists:shop_currencies,currency_id',
             'inputs.currency' => 'nullable|string|size:3',
-            'inputs.price_on_request' => 'boolean',
+            'inputs.price_display_mode' => 'required|in:show,hide,request',
             'inputs.base_price' => 'nullable|numeric|min:0',
             'inputs.compare_at_price' => 'nullable|numeric|min:0',
+            'inputs.show_on_homepage' => 'boolean',
+            'inputs.sort_order' => 'nullable|integer|min:0',
+            'inputs.badges' => 'nullable|array',
+            'inputs.badges.*.type' => 'required|string',
+            'inputs.badges.*.color' => 'required|string',
+            'inputs.badges.*.priority' => 'nullable|integer',
+            'inputs.badges.*.is_active' => 'boolean',
         ];
 
         // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel

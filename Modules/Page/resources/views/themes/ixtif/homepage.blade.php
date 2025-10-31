@@ -100,7 +100,7 @@
             <div class="flex items-center gap-4">
                 <div class="w-1.5 h-12 bg-gradient-to-b from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                    Güçlü Çözümler, Güvenli İşler
+                    Efsane Kasım İndirimleri İXTİF'te Başladı! 🔥
                 </h2>
             </div>
 

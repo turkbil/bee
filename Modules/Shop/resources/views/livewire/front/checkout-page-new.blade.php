@@ -332,8 +332,8 @@
                             <input type="checkbox" wire:model="agree_all"
                                 class="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
                             <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">
-                                <a href="/on-bilgilendirme-formu" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
-                                <a href="/mesafeli-satis-sozlesmesi" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
+                                <a href="/cayma-hakki" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
                                 <span class="text-red-500 dark:text-red-400 font-bold">*</span>
                             </span>
                         </label>

@@ -243,6 +243,7 @@
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0"
                          class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                         x-ref="productsListGrid"
                          style="display: none;">
                         @foreach($products as $product)
                             <x-ixtif.product-card :product="$product" layout="horizontal" :showAddToCart="true" />
@@ -430,8 +431,7 @@
 
                         const response = await fetch(url.toString(), {
                             headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json'
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         });
 
@@ -441,13 +441,20 @@
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
 
-                        // Yeni ürünleri grid'e ekle
-                        const newProducts = doc.querySelectorAll('[x-ref="productsGrid"] > div');
-                        const grid = this.$refs.productsGrid;
-
-                        newProducts.forEach(product => {
-                            grid.appendChild(product.cloneNode(true));
-                        });
+                        // Aktif view mode'a göre doğru grid'i seç ve yeni ürünleri ekle
+                        if (this.view === 'grid') {
+                            const newProducts = doc.querySelectorAll('[x-ref="productsGrid"] > *');
+                            const grid = this.$refs.productsGrid;
+                            newProducts.forEach(product => {
+                                grid.appendChild(product.cloneNode(true));
+                            });
+                        } else {
+                            const newProducts = doc.querySelectorAll('[x-ref="productsListGrid"] > *');
+                            const grid = this.$refs.productsListGrid;
+                            newProducts.forEach(product => {
+                                grid.appendChild(product.cloneNode(true));
+                            });
+                        }
 
                         // Daha sayfa var mı kontrol et
                         if (this.page >= this.lastPage) {

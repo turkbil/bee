@@ -182,11 +182,31 @@ class CheckoutPageNew extends Component
         }
     }
 
+    public function openBillingModal()
+    {
+        $this->showBillingModal = true;
+    }
+
+    public function closeBillingModal()
+    {
+        $this->showBillingModal = false;
+    }
+
+    public function openShippingModal()
+    {
+        $this->showShippingModal = true;
+    }
+
+    public function closeShippingModal()
+    {
+        $this->showShippingModal = false;
+    }
+
     public function handleAddressSelected($addressId, $addressType)
     {
         if ($addressType === 'billing') {
             $this->billing_address_id = $addressId;
-            $this->showBillingAddressModal = false; // Modal'ı kapat
+            $this->showBillingModal = false; // Modal'ı kapat
         } elseif ($addressType === 'shipping') {
             $this->shipping_address_id = $addressId;
             $this->showShippingModal = false; // Modal'ı kapat

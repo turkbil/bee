@@ -32,8 +32,8 @@ class ShopController extends Controller
 
         // Build products query
         $productsQuery = ShopProduct::query()
-            ->with(['category', 'brand', 'media', 'parentProduct', 'childProducts' => function ($q) {
-                $q->active()->published()->orderBy('variant_type')->orderBy('product_id');
+            ->with(['category', 'brand', 'media', 'currency', 'parentProduct', 'childProducts' => function ($q) {
+                $q->with('currency')->active()->published()->orderBy('variant_type')->orderBy('product_id');
             }])
             // SADECE MASTER PRODUCTLAR (varyantlar değil) - Admin panelle tutarlılık
             ->whereNull('parent_product_id')
@@ -72,7 +72,6 @@ class ShopController extends Controller
         if ($selectedCategory && $selectedCategory->category_id === $yedekParcaCategoryId) {
             // Yedek Parça: Alfabetik sıralama
             $products = $productsQuery
-                ->with(['category', 'brand', 'media'])
                 ->orderByRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) ASC")
                 ->paginate(config('shop.pagination.front_per_shop', 12));
         } else {
@@ -82,7 +81,6 @@ class ShopController extends Controller
             // 3. category.sort_order (kategori sıralaması)
             // 4. product.sort_order (ürün sıralaması)
             $products = $productsQuery
-                ->with(['category', 'brand', 'media'])
                 ->leftJoin('shop_categories', 'shop_products.category_id', '=', 'shop_categories.category_id')
                 ->select('shop_products.*')
                 ->orderByDesc('shop_products.show_on_homepage')

@@ -80,11 +80,8 @@
         $productCategory = $product->category ? $product->category->getTranslated('title', app()->getLocale()) : 'Genel';
         $productCategoryIcon = $product->category->icon_class ?? 'fa-light fa-box';
 
-        // Currency-aware price formatting
-        $currencyRelation = null;
-        if ($product->currency_id) {
-            $currencyRelation = \Modules\Shop\App\Models\ShopCurrency::find($product->currency_id);
-        }
+        // Currency-aware price formatting (use eager loaded relation to avoid N+1)
+        $currencyRelation = $product->currency ?? null;
         $productFormattedPrice = $currencyRelation
             ? $currencyRelation->formatPrice($product->base_price)
             : number_format($product->base_price, 0, ',', '.') . ' ₺';

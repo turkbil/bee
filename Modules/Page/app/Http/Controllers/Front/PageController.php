@@ -68,8 +68,18 @@ class PageController extends Controller
                     ? number_format($product->base_price * $exchangeRate, 0, ',', '.')
                     : null;
 
-                // Old price (compare_at_price) formatting
+                // Old price (compare_at_price) - Otomatik hesaplama
                 $compareAtPrice = $product->compare_at_price;
+
+                // ✨ OTOMATIK İNDİRİM SİSTEMİ
+                // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
+                if (!$compareAtPrice || $compareAtPrice <= $product->base_price) {
+                    // %15-30 arası random artış (her ürün farklı indirim oranı)
+                    $increasePercentage = rand(15, 30) / 100;
+                    $compareAtPrice = $product->base_price * (1 + $increasePercentage);
+                }
+
+                // Format compare price
                 $formattedComparePrice = null;
                 if ($compareAtPrice && $compareAtPrice > $product->base_price) {
                     $formattedComparePrice = $currencyRelation

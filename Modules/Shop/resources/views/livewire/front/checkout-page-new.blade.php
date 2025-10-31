@@ -96,6 +96,7 @@
 
                     {{-- Modal: Fatura Bilgileri Düzenleme --}}
                     @if($showBillingModal ?? false)
+                        @teleport('body')
                         <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeBillingModal">
                             {{-- Backdrop --}}
                             <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeBillingModal"></div>
@@ -192,6 +193,7 @@
                                     </div>
                             </div>
                         </div>
+                        @endteleport
                     @endif
                 </div>
 
@@ -238,6 +240,7 @@
 
                     {{-- Modal: Teslimat Adresi Düzenleme --}}
                     @if($showShippingModal ?? false)
+                        @teleport('body')
                         <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeShippingModal">
                             {{-- Backdrop --}}
                             <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeShippingModal"></div>
@@ -273,6 +276,7 @@
                                     </div>
                             </div>
                         </div>
+                        @endteleport
                     @endif
                 </div>
 

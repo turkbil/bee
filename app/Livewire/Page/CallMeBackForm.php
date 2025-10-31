@@ -4,7 +4,9 @@ namespace App\Livewire\Page;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
-use App\Services\NotificationHub;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\CallMeBackNotification;
+use Modules\SettingManagement\App\Models\Settings;
 
 class CallMeBackForm extends Component
 {
@@ -74,42 +76,35 @@ class CallMeBackForm extends Component
     private function sendNotifications(array $data)
     {
         try {
-            $notificationHub = new NotificationHub();
+            // Admin email fallback chain: settings → domain-based
+            $adminEmail = get_setting('contact_email')
+                ?? get_setting('email')
+                ?? 'info@' . parse_url(url('/'), PHP_URL_HOST);
 
-            // Build inquiry message
-            $inquiry = "📞 Sizi Arayalım Talebi\n\nGeri arama talebi";
-            if (!empty($data['referrer'])) {
-                $inquiry .= "\n\n🔗 Nereden geldi: " . $data['referrer'];
-            }
+            // Send notification via Laravel Notification system (Mail + Telegram)
+            Notification::route('mail', $adminEmail)
+                ->route('telegram', config('services.telegram-bot-api.chat_id'))
+                ->notify(new CallMeBackNotification(
+                    [
+                        'name' => $data['name'],
+                        'phone' => $data['phone'],
+                        'email' => $data['email'],
+                    ],
+                    $data['referrer'] ?? '',
+                    $data['landing_page'] ?? ''
+                ));
 
-            // Send via NotificationHub (Telegram + WhatsApp + Email)
-            $results = $notificationHub->sendCustomerLead(
-                [
-                    'name' => $data['name'],
-                    'phone' => $data['phone'],
-                    'email' => $data['email'],
-                ],
-                $inquiry,
-                [], // Suggested products (boş - bu form product-specific değil)
-                [
-                    'site' => tenant('domain') ?? parse_url(url('/'), PHP_URL_HOST),
-                    'page_url' => $data['landing_page'],
-                    'device' => request()->userAgent(),
-                    'form_type' => 'Sizi Arayalım',
-                    'referrer' => $data['referrer'],
-                ]
-            );
-
-            Log::info('Call Me Back Notifications Sent', [
-                'telegram' => $results['telegram'],
-                'whatsapp' => $results['whatsapp'],
-                'email' => $results['email'],
-                'total_sent' => $results['sent_count'],
+            Log::info('Call Me Back Notification Sent', [
+                'customer_name' => $data['name'],
+                'customer_phone' => $data['phone'],
+                'admin_email' => $adminEmail,
+                'telegram_chat_id' => config('services.telegram-bot-api.chat_id'),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Call Me Back Notification Failed', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
         }

@@ -81,7 +81,24 @@
         $productCategoryIcon = $product->category->icon_class ?? 'fa-light fa-box';
 
         // Currency-aware price formatting (use eager loaded relation to avoid N+1)
-        $currencyRelation = $product->currency ?? null;
+        // NOTE: $product->currency is a STRING column ('USD'), not the relation!
+        // We need to get the relation via getRelation() if loaded, otherwise load it
+        $currencyRelation = null;
+        if ($product->currency_id) {
+            // Try to get loaded relation first (performance)
+            if (method_exists($product, 'relationLoaded') && $product->relationLoaded('currency')) {
+                $rel = $product->getRelation('currency');
+                if ($rel instanceof \Modules\Shop\App\Models\ShopCurrency) {
+                    $currencyRelation = $rel;
+                }
+            }
+
+            // Fallback: Load it now if not loaded (N+1 but ensures it works)
+            if (!$currencyRelation) {
+                $currencyRelation = \Modules\Shop\App\Models\ShopCurrency::find($product->currency_id);
+            }
+        }
+
         $productFormattedPrice = $currencyRelation
             ? $currencyRelation->formatPrice($product->base_price)
             : number_format($product->base_price, 0, ',', '.') . ' ₺';

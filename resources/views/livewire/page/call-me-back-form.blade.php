@@ -22,8 +22,9 @@
                     </div>
                     <div class="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
                 </div>
-                <input type="tel" wire:model="phone" placeholder="5XX XXX XX XX"
+                <input type="tel" wire:model.defer="phone" placeholder="5XX XXX XX XX"
                     x-data="{
+                        phoneValue: '',
                         formatPhone(event) {
                             let value = event.target.value.replace(/\D/g, '');
                             if (value.length > 10) value = value.slice(0, 10);
@@ -35,10 +36,11 @@
                             if (value.length > 8) formatted += ' ' + value.substring(8, 10);
 
                             event.target.value = formatted;
-                            $wire.set('phone', value);
+                            this.phoneValue = value;
                         }
                     }"
                     @input="formatPhone($event)"
+                    @blur="$wire.phone = phoneValue"
                     class="relative w-full pl-32 pr-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-green-300 dark:hover:border-green-600 font-mono">
             </div>
             @error('phone') <span class="text-red-500 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</span> @enderror

@@ -46,7 +46,90 @@
                     </div>
                 </div>
 
-                {{-- 2. Fatura Bilgileri (Vergi Bilgileri) --}}
+                {{-- 2. Teslimat Adresi (ÖNCE GELMELI) --}}
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
+                            Teslimat Adresi
+                        </h2>
+                        <button wire:click="openShippingModal"
+                            class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                        </button>
+                    </div>
+
+                    {{-- Özet Gösterimi --}}
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        @php
+                            $shippingAddr = $shipping_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($shipping_address_id) : null;
+                        @endphp
+
+                        @if($shippingAddr)
+                            <p class="font-medium text-gray-900 dark:text-white mb-1">
+                                <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-red-500 dark:text-red-400"></i>
+                                {{ $shippingAddr->title ?? 'Teslimat Adresi' }}
+                            </p>
+                            <p class="text-xs ml-5">
+                                {{ $shippingAddr->address_line_1 }}@if($shippingAddr->address_line_2), {{ $shippingAddr->address_line_2 }}@endif
+                            </p>
+                            <p class="text-xs ml-5">{{ $shippingAddr->district }} / {{ $shippingAddr->city }} {{ $shippingAddr->postal_code }}</p>
+                            @if($shippingAddr->phone)
+                                <p class="text-xs ml-5 mt-1">
+                                    <i class="fa-solid fa-phone text-xs mr-1"></i> {{ $shippingAddr->phone }}
+                                </p>
+                            @endif
+                        @else
+                            <p class="text-xs text-orange-600 dark:text-orange-400">
+                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
+                                Teslimat adresi seçilmedi
+                            </p>
+                        @endif
+                    </div>
+
+                    {{-- Modal: Teslimat Adresi Düzenleme --}}
+                    @if($showShippingModal ?? false)
+                        @teleport('body')
+                        <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeShippingModal">
+                            {{-- Backdrop --}}
+                            <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeShippingModal"></div>
+
+                            {{-- Modal Content --}}
+                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-[10000] my-8">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teslimat Adresi</h3>
+                                        <button wire:click="closeShippingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                                            <i class="fa-solid fa-times text-2xl"></i>
+                                        </button>
+                                    </div>
+
+                                    {{-- Teslimat Adresi Seçimi --}}
+                                    <div class="mb-6">
+                                        <livewire:shop::front.address-manager
+                                            :customerId="$customerId"
+                                            addressType="shipping"
+                                            :selectedAddressId="$shipping_address_id"
+                                            :key="'shipping-'.$customerId" />
+                                    </div>
+
+                                    {{-- Modal Butonlar --}}
+                                    <div class="flex justify-end gap-3">
+                                        <button wire:click="closeShippingModal"
+                                            class="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                            İptal
+                                        </button>
+                                        <button wire:click="closeShippingModal"
+                                            class="px-6 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                                            Kaydet
+                                        </button>
+                                    </div>
+                            </div>
+                        </div>
+                        @endteleport
+                    @endif
+                </div>
+
+                {{-- 3. Fatura Bilgileri (Vergi Bilgileri) --}}
                 <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -127,6 +210,21 @@
                                         </div>
                                     </div>
 
+                                    {{-- Bireysel İçin TCKN --}}
+                                    @if($billing_type === 'individual')
+                                        <div class="space-y-4 mb-6">
+                                            <div>
+                                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
+                                                    TC Kimlik No
+                                                    <span class="text-xs text-gray-500 dark:text-gray-400">(Opsiyonel - Fatura için)</span>
+                                                </label>
+                                                <input type="text" wire:model="billing_tax_number" maxlength="11" placeholder="XXXXXXXXXXX"
+                                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
+                                                @error('billing_tax_number') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     {{-- Kurumsal İçin Ek Alanlar --}}
                                     @if($billing_type === 'corporate')
                                         <div class="space-y-4 mb-6">
@@ -158,6 +256,26 @@
                                                     @error('billing_tax_office') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                                                 </div>
                                             </div>
+
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
+                                                        Yetkili Kişi Adı <span class="text-red-500 dark:text-red-400">*</span>
+                                                    </label>
+                                                    <input type="text" wire:model="billing_contact_first_name"
+                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
+                                                    @error('billing_contact_first_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                                </div>
+
+                                                <div>
+                                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
+                                                        Yetkili Kişi Soyadı <span class="text-red-500 dark:text-red-400">*</span>
+                                                    </label>
+                                                    <input type="text" wire:model="billing_contact_last_name"
+                                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
+                                                    @error('billing_contact_last_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
                                         </div>
                                     @endif
 
@@ -168,89 +286,6 @@
                                             İptal
                                         </button>
                                         <button wire:click="closeBillingModal"
-                                            class="px-6 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
-                                            Kaydet
-                                        </button>
-                                    </div>
-                            </div>
-                        </div>
-                        @endteleport
-                    @endif
-                </div>
-
-                {{-- 3. Teslimat Adresi (Collapsed - Özet + Modal) --}}
-                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
-                            Teslimat Adresi
-                        </h2>
-                        <button wire:click="openShippingModal"
-                            class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
-                        </button>
-                    </div>
-
-                    {{-- Özet Gösterimi --}}
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        @php
-                            $shippingAddr = $shipping_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($shipping_address_id) : null;
-                        @endphp
-
-                        @if($shippingAddr)
-                            <p class="font-medium text-gray-900 dark:text-white mb-1">
-                                <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-red-500 dark:text-red-400"></i>
-                                {{ $shippingAddr->title ?? 'Teslimat Adresi' }}
-                            </p>
-                            <p class="text-xs ml-5">
-                                {{ $shippingAddr->address_line_1 }}@if($shippingAddr->address_line_2), {{ $shippingAddr->address_line_2 }}@endif
-                            </p>
-                            <p class="text-xs ml-5">{{ $shippingAddr->district }} / {{ $shippingAddr->city }} {{ $shippingAddr->postal_code }}</p>
-                            @if($shippingAddr->phone)
-                                <p class="text-xs ml-5 mt-1">
-                                    <i class="fa-solid fa-phone text-xs mr-1"></i> {{ $shippingAddr->phone }}
-                                </p>
-                            @endif
-                        @else
-                            <p class="text-xs text-orange-600 dark:text-orange-400">
-                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
-                                Teslimat adresi seçilmedi
-                            </p>
-                        @endif
-                    </div>
-
-                    {{-- Modal: Teslimat Adresi Düzenleme --}}
-                    @if($showShippingModal ?? false)
-                        @teleport('body')
-                        <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeShippingModal">
-                            {{-- Backdrop --}}
-                            <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeShippingModal"></div>
-
-                            {{-- Modal Content --}}
-                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-[10000] my-8">
-                                    <div class="flex items-center justify-between mb-6">
-                                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teslimat Adresi</h3>
-                                        <button wire:click="closeShippingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                                            <i class="fa-solid fa-times text-2xl"></i>
-                                        </button>
-                                    </div>
-
-                                    {{-- Teslimat Adresi Seçimi --}}
-                                    <div class="mb-6">
-                                        <livewire:shop::front.address-manager
-                                            :customerId="$customerId"
-                                            addressType="shipping"
-                                            :selectedAddressId="$shipping_address_id"
-                                            :key="'shipping-'.$customerId" />
-                                    </div>
-
-                                    {{-- Modal Butonlar --}}
-                                    <div class="flex justify-end gap-3">
-                                        <button wire:click="closeShippingModal"
-                                            class="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-                                            İptal
-                                        </button>
-                                        <button wire:click="closeShippingModal"
                                             class="px-6 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
                                             Kaydet
                                         </button>

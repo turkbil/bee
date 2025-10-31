@@ -118,14 +118,14 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                        TC Kimlik No <span class="text-red-500">*</span>
+                                        TC Kimlik No <span class="text-gray-400 text-xs">(Opsiyonel)</span>
                                     </label>
                                     <input type="text" wire:model="billing_tax_number"
                                         class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="XXXXXXXXXXX (11 haneli)" maxlength="11"
+                                        placeholder="XXXXXXXXXXX (11 haneli - opsiyonel)" maxlength="11"
                                         pattern="[0-9]{11}">
                                     @error('billing_tax_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">11 haneli TC Kimlik Numaranızı giriniz</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Dilerseniz TC Kimlik No girebilirsiniz (Hepsiburada gibi)</p>
                                 </div>
                             </div>
                         @endif

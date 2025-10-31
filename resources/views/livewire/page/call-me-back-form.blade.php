@@ -1,93 +1,37 @@
 <div>
-    {{-- Sizi Arayalım Formu --}}
-    <form wire:submit.prevent="submit" class="space-y-6">
+    {{-- Sizi Arayalım Formu - Minimal --}}
+    <form wire:submit.prevent="submit" class="space-y-5">
+
         {{-- İsim --}}
         <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-user text-blue-600 dark:text-blue-400"></i>
-                Ad Soyad *
-            </label>
-            <input type="text" wire:model="name" placeholder="Adınız ve Soyadınız"
-                class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all">
-            @error('name') <span class="text-red-600 text-sm flex items-center gap-1 mt-1"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
+            <input type="text" wire:model="name" placeholder="Adınız Soyadınız *"
+                class="w-full px-6 py-5 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all">
+            @error('name') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
         </div>
 
-        {{-- Telefon & Email --}}
-        <div class="grid md:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-phone text-green-600 dark:text-green-400"></i>
-                    Telefon *
-                </label>
-                <input type="tel" wire:model="phone" placeholder="0 (5XX) XXX XX XX"
-                    class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all">
-                @error('phone') <span class="text-red-600 text-sm flex items-center gap-1 mt-1"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-envelope text-purple-600 dark:text-purple-400"></i>
-                    E-posta *
-                </label>
-                <input type="email" wire:model="email" placeholder="ornek@email.com"
-                    class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all">
-                @error('email') <span class="text-red-600 text-sm flex items-center gap-1 mt-1"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
-            </div>
-        </div>
-
-        {{-- Şirket (Opsiyonel) --}}
+        {{-- Telefon --}}
         <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-building text-orange-600 dark:text-orange-400"></i>
-                Şirket <span class="text-gray-400 text-xs font-normal">(Opsiyonel)</span>
-            </label>
-            <input type="text" wire:model="company" placeholder="Şirket Adınız"
-                class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all">
+            <input type="tel" wire:model="phone" placeholder="Telefon Numaranız *"
+                class="w-full px-6 py-5 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all">
+            @error('phone') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
         </div>
 
-        {{-- Mesaj (Opsiyonel) --}}
+        {{-- Email --}}
         <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-comment-dots text-teal-600 dark:text-teal-400"></i>
-                Mesajınız <span class="text-gray-400 text-xs font-normal">(Opsiyonel)</span>
-            </label>
-            <textarea rows="4" wire:model="message" placeholder="Bize ne hakkında bilgi vermemizi istersiniz? Hangi ürün/hizmet ile ilgileniyorsunuz?"
-                class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all resize-none"></textarea>
-        </div>
-
-        {{-- KVKK Checkbox --}}
-        <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 p-5 rounded-xl border border-blue-200 dark:border-gray-600">
-            <label class="flex items-start gap-3 cursor-pointer group">
-                <input type="checkbox" wire:model="terms_accepted"
-                    class="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                <span class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    <strong>Kişisel Verilerin Korunması:</strong> Kişisel verilerimin işlenmesine, saklanmasına ve iletişim amacıyla kullanılmasına izin veriyorum.
-                    <a href="/page/kvkk" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-semibold">KVKK Metni</a>
-                </span>
-            </label>
-            @error('terms_accepted') <span class="text-red-600 text-sm flex items-center gap-1 mt-3"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
+            <input type="email" wire:model="email" placeholder="E-posta Adresiniz *"
+                class="w-full px-6 py-5 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all">
+            @error('email') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
         </div>
 
         {{-- Submit Button --}}
         <button type="submit"
-            class="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
+            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-5 px-6 rounded-2xl transition-all shadow-lg hover:shadow-xl text-lg"
             wire:loading.attr="disabled"
             wire:loading.class="opacity-75 cursor-not-allowed">
-            <span wire:loading.remove class="flex items-center gap-2">
-                <i class="fa-solid fa-phone-volume text-lg"></i>
-                <span>Hemen Arayın</span>
-            </span>
-            <span wire:loading class="flex items-center gap-2">
-                <i class="fa-solid fa-spinner fa-spin text-lg"></i>
-                <span>Gönderiliyor...</span>
-            </span>
+            <span wire:loading.remove>Hemen Arayın</span>
+            <span wire:loading>Gönderiliyor...</span>
         </button>
 
-        {{-- İnfo Text --}}
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-shield-check text-green-600 dark:text-green-400"></i>
-            Bilgileriniz güvende! En kısa sürede sizi arayacağız.
-        </p>
     </form>
 
     {{-- Success/Error Modal --}}
@@ -120,49 +64,35 @@
                 @if($modalType === 'success')
                     {{-- Success Modal --}}
                     <div class="text-center">
-                        <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                            <i class="fa-solid fa-check text-5xl text-white"></i>
+                        <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-check text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                             Talebiniz Alındı!
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed text-lg">
-                            <strong>En kısa sürede sizi arayacağız!</strong><br>
-                            Tercih ettiğiniz zaman diliminde iletişime geçeceğiz.
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            En kısa sürede sizi arayacağız.
                         </p>
-                        <div class="bg-green-50 dark:bg-green-900/20 rounded-2xl p-4 mb-6">
-                            <p class="text-sm text-green-800 dark:text-green-300 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-info-circle"></i>
-                                Telegram ve WhatsApp üzerinden de bilgilendirme yapıldı.
-                            </p>
-                        </div>
                         <button wire:click="closeModal"
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl">
-                            <i class="fa-solid fa-check-circle mr-2"></i>Tamam
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                            Tamam
                         </button>
                     </div>
                 @else
                     {{-- Error Modal --}}
                     <div class="text-center">
-                        <div class="w-24 h-24 bg-gradient-to-br from-red-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                            <i class="fa-solid fa-exclamation text-5xl text-white"></i>
+                        <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-exclamation text-4xl text-white"></i>
                         </div>
-                        <h3 class="text-3xl font-bold text-gray-900 dark:text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-pink-600">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">
                             Bir Hata Oluştu
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                            Talebiniz gönderilirken bir sorun yaşandı.<br>
-                            Lütfen daha sonra tekrar deneyin veya doğrudan bizi arayın.
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">
+                            Lütfen daha sonra tekrar deneyin.
                         </p>
-                        <div class="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 mb-6">
-                            <p class="text-sm text-red-800 dark:text-red-300 flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-phone"></i>
-                                <a href="tel:+908503042424" class="font-semibold hover:underline">0 850 304 24 24</a>
-                            </p>
-                        </div>
                         <button wire:click="closeModal"
-                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl">
-                            <i class="fa-solid fa-times-circle mr-2"></i>Kapat
+                            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                            Kapat
                         </button>
                     </div>
                 @endif

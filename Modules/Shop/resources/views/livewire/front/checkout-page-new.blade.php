@@ -62,7 +62,7 @@
                             <i class="fa-solid fa-file-invoice mr-2 text-blue-500 dark:text-blue-400"></i>
                             Fatura Bilgileri
                         </h2>
-                        <button wire:click="$set('showBillingModal', true)"
+                        <button wire:click="openBillingModal"
                             class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
                             <i class="fa-solid fa-edit mr-1"></i> Düzenle
                         </button>
@@ -105,14 +105,14 @@
 
                     {{-- Modal: Fatura Bilgileri Düzenleme --}}
                     @if($showBillingModal ?? false)
-                        <div class="fixed inset-0 z-50 overflow-y-auto" wire:click.self="$set('showBillingModal', false)">
+                        <div class="fixed inset-0 z-50 overflow-y-auto" wire:click.self="closeBillingModal">
                             <div class="flex items-center justify-center min-h-screen p-4">
                                 <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity"></div>
 
                                 <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6">
                                     <div class="flex items-center justify-between mb-6">
                                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Fatura Bilgileri</h3>
-                                        <button wire:click="$set('showBillingModal', false)" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                                        <button wire:click="closeBillingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                                             <i class="fa-solid fa-times text-2xl"></i>
                                         </button>
                                     </div>
@@ -189,11 +189,11 @@
 
                                     {{-- Modal Butonlar --}}
                                     <div class="flex justify-end gap-3">
-                                        <button wire:click="$set('showBillingModal', false)"
+                                        <button wire:click="closeBillingModal"
                                             class="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                                             İptal
                                         </button>
-                                        <button wire:click="$set('showBillingModal', false)"
+                                        <button wire:click="closeBillingModal"
                                             class="px-6 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
                                             Kaydet
                                         </button>
@@ -211,7 +211,7 @@
                             <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
                             Teslimat Adresi
                         </h2>
-                        <button wire:click="$set('showShippingModal', true)"
+                        <button wire:click="openShippingModal"
                             class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
                             <i class="fa-solid fa-edit mr-1"></i> Düzenle
                         </button>
@@ -247,14 +247,14 @@
 
                     {{-- Modal: Teslimat Adresi Düzenleme --}}
                     @if($showShippingModal ?? false)
-                        <div class="fixed inset-0 z-50 overflow-y-auto" wire:click.self="$set('showShippingModal', false)">
+                        <div class="fixed inset-0 z-50 overflow-y-auto" wire:click.self="closeShippingModal">
                             <div class="flex items-center justify-center min-h-screen p-4">
                                 <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-900/75 transition-opacity"></div>
 
                                 <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full p-6">
                                     <div class="flex items-center justify-between mb-6">
                                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Teslimat Adresi</h3>
-                                        <button wire:click="$set('showShippingModal', false)" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                                        <button wire:click="closeShippingModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                                             <i class="fa-solid fa-times text-2xl"></i>
                                         </button>
                                     </div>
@@ -270,11 +270,11 @@
 
                                     {{-- Modal Butonlar --}}
                                     <div class="flex justify-end gap-3">
-                                        <button wire:click="$set('showShippingModal', false)"
+                                        <button wire:click="closeShippingModal"
                                             class="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                                             İptal
                                         </button>
-                                        <button wire:click="$set('showShippingModal', false)"
+                                        <button wire:click="closeShippingModal"
                                             class="px-6 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
                                             Kaydet
                                         </button>
@@ -283,34 +283,6 @@
                             </div>
                         </div>
                     @endif
-                </div>
-
-                {{-- 4. Sipariş Tamamla (Tek Checkbox + Buton) --}}
-                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-                    {{-- Tek Checkbox (Combined Agreement) --}}
-                    <div class="mb-6">
-                        <label class="flex items-start cursor-pointer group">
-                            <input type="checkbox" wire:model="agree_all"
-                                class="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
-                            <span class="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
-                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
-                                <span class="text-red-500 dark:text-red-400 font-bold">*</span>
-                            </span>
-                        </label>
-                        @error('agree_all')
-                            <span class="text-red-500 dark:text-red-400 text-xs block ml-8 mt-2">
-                                <i class="fa-solid fa-exclamation-circle mr-1"></i>{{ $message }}
-                            </span>
-                        @enderror
-                    </div>
-
-                    {{-- Sipariş Tamamla Butonu --}}
-                    <button wire:click="submitOrder"
-                        class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 dark:from-blue-500 dark:via-blue-600 dark:to-purple-500 hover:from-blue-700 hover:via-blue-800 hover:to-purple-700 dark:hover:from-blue-600 dark:hover:via-blue-700 dark:hover:to-purple-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]">
-                        <i class="fa-solid fa-check-circle mr-2"></i>
-                        Siparişi Tamamla
-                    </button>
                 </div>
 
             </div>
@@ -352,18 +324,10 @@
                             </span>
                         </div>
 
-                        {{-- Kargo --}}
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400">
-                                <i class="fa-solid fa-truck text-xs mr-1"></i>
-                                Kargo
-                            </span>
-                            <span class="font-medium text-green-600 dark:text-green-400">Ücretsiz</span>
-                        </div>
                     </div>
 
                     {{-- Toplam --}}
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
                         <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam</span>
                         <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
                             <i class="fa-solid fa-turkish-lira text-lg mr-1"></i>
@@ -371,12 +335,36 @@
                         </span>
                     </div>
 
-                    {{-- Güvenli Ödeme Rozeti --}}
-                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-center">
-                        <i class="fa-solid fa-shield-alt text-green-600 dark:text-green-400 text-2xl mb-2"></i>
-                        <p class="text-xs text-green-700 dark:text-green-400 font-medium">
-                            Güvenli Ödeme<br>
-                            256-bit SSL Şifreleme
+                    {{-- Tek Checkbox (Combined Agreement) --}}
+                    <div class="mb-4">
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" wire:model="agree_all"
+                                class="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
+                            <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">
+                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
+                                <span class="text-red-500 dark:text-red-400 font-bold">*</span>
+                            </span>
+                        </label>
+                        @error('agree_all')
+                            <span class="text-red-500 dark:text-red-400 text-xs block ml-6 mt-1">
+                                <i class="fa-solid fa-exclamation-circle mr-1"></i>{{ $message }}
+                            </span>
+                        @enderror
+                    </div>
+
+                    {{-- Sipariş Tamamla Butonu --}}
+                    <button wire:click="submitOrder"
+                        class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 dark:from-blue-500 dark:via-blue-600 dark:to-purple-500 hover:from-blue-700 hover:via-blue-800 hover:to-purple-700 dark:hover:from-blue-600 dark:hover:via-blue-700 dark:hover:to-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-sm">
+                        <i class="fa-solid fa-check-circle mr-2"></i>
+                        Siparişi Tamamla
+                    </button>
+
+                    {{-- Güvenli Ödeme (Küçük) --}}
+                    <div class="mt-3 text-center">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center">
+                            <i class="fa-solid fa-lock text-green-600 dark:text-green-400 text-xs mr-1"></i>
+                            256-bit SSL Güvenli Ödeme
                         </p>
                     </div>
                 </div>

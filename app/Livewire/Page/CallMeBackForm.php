@@ -14,7 +14,6 @@ class CallMeBackForm extends Component
     public $email = '';
     public $company = '';
     public $message = '';
-    public $preferred_time = 'anytime'; // anytime, morning, afternoon, evening
     public $terms_accepted = false;
 
     // Modal State
@@ -27,7 +26,6 @@ class CallMeBackForm extends Component
         'email' => 'required|email|max:255',
         'company' => 'nullable|string|max:255',
         'message' => 'nullable|string|max:1000',
-        'preferred_time' => 'required|in:anytime,morning,afternoon,evening',
         'terms_accepted' => 'accepted',
     ];
 
@@ -36,7 +34,6 @@ class CallMeBackForm extends Component
         'phone.required' => 'Telefon zorunludur',
         'email.required' => 'E-posta zorunludur',
         'email.email' => 'Geçerli bir e-posta adresi giriniz',
-        'preferred_time.required' => 'Tercih edilen zaman dilimini seçiniz',
         'terms_accepted.accepted' => 'Kişisel verilerin işlenmesini kabul etmelisiniz',
     ];
 
@@ -51,7 +48,6 @@ class CallMeBackForm extends Component
                 'email' => $this->email,
                 'company' => $this->company,
                 'message' => $this->message,
-                'preferred_time' => $this->preferred_time,
             ];
 
             // NotificationHub ile bildirim gönder (Telegram + WhatsApp + Email)
@@ -71,7 +67,7 @@ class CallMeBackForm extends Component
 
             // Form resetle
             $this->reset([
-                'name', 'phone', 'email', 'company', 'message', 'preferred_time', 'terms_accepted'
+                'name', 'phone', 'email', 'company', 'message', 'terms_accepted'
             ]);
 
         } catch (\Exception $e) {
@@ -91,21 +87,12 @@ class CallMeBackForm extends Component
         try {
             $notificationHub = new NotificationHub();
 
-            // Preferred time Türkçe karşılığı
-            $preferredTimeMap = [
-                'anytime' => 'Farketmez',
-                'morning' => 'Sabah (09:00-12:00)',
-                'afternoon' => 'Öğleden Sonra (12:00-17:00)',
-                'evening' => 'Akşam (17:00-20:00)',
-            ];
-
-            $preferredTimeText = $preferredTimeMap[$data['preferred_time']] ?? 'Farketmez';
-
             // Build inquiry message
             $inquiry = "📞 Sizi Arayalım Talebi\n\n";
-            $inquiry .= "Tercih Edilen Zaman: {$preferredTimeText}\n";
             if (!empty($data['message'])) {
-                $inquiry .= "\nMesaj: {$data['message']}";
+                $inquiry .= "Mesaj: {$data['message']}";
+            } else {
+                $inquiry .= "Geri arama talebi";
             }
 
             // Send via NotificationHub (Telegram + WhatsApp + Email)

@@ -45,55 +45,6 @@
                 class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-all">
         </div>
 
-        {{-- Tercih Edilen Zaman --}}
-        <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-clock text-indigo-600 dark:text-indigo-400"></i>
-                Sizi Ne Zaman Arayalım? *
-            </label>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <label class="relative cursor-pointer">
-                    <input type="radio" wire:model="preferred_time" value="anytime" class="peer sr-only">
-                    <div class="px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-center transition-all
-                                peer-checked:border-indigo-600 peer-checked:bg-indigo-50 dark:peer-checked:bg-indigo-900/20 peer-checked:text-indigo-700 dark:peer-checked:text-indigo-300">
-                        <i class="fa-solid fa-infinity mb-1 block text-lg"></i>
-                        <span class="text-sm font-medium">Farketmez</span>
-                    </div>
-                </label>
-
-                <label class="relative cursor-pointer">
-                    <input type="radio" wire:model="preferred_time" value="morning" class="peer sr-only">
-                    <div class="px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-center transition-all
-                                peer-checked:border-yellow-600 peer-checked:bg-yellow-50 dark:peer-checked:bg-yellow-900/20 peer-checked:text-yellow-700 dark:peer-checked:text-yellow-300">
-                        <i class="fa-solid fa-sunrise mb-1 block text-lg"></i>
-                        <span class="text-sm font-medium">Sabah</span>
-                        <small class="block text-xs opacity-75">09-12</small>
-                    </div>
-                </label>
-
-                <label class="relative cursor-pointer">
-                    <input type="radio" wire:model="preferred_time" value="afternoon" class="peer sr-only">
-                    <div class="px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-center transition-all
-                                peer-checked:border-orange-600 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/20 peer-checked:text-orange-700 dark:peer-checked:text-orange-300">
-                        <i class="fa-solid fa-sun mb-1 block text-lg"></i>
-                        <span class="text-sm font-medium">Öğleden Sonra</span>
-                        <small class="block text-xs opacity-75">12-17</small>
-                    </div>
-                </label>
-
-                <label class="relative cursor-pointer">
-                    <input type="radio" wire:model="preferred_time" value="evening" class="peer sr-only">
-                    <div class="px-4 py-3 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-xl text-center transition-all
-                                peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 peer-checked:text-blue-700 dark:peer-checked:text-blue-300">
-                        <i class="fa-solid fa-moon mb-1 block text-lg"></i>
-                        <span class="text-sm font-medium">Akşam</span>
-                        <small class="block text-xs opacity-75">17-20</small>
-                    </div>
-                </label>
-            </div>
-            @error('preferred_time') <span class="text-red-600 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-exclamation-circle"></i>{{ $message }}</span> @enderror
-        </div>
-
         {{-- Mesaj (Opsiyonel) --}}
         <div>
             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">

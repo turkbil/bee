@@ -34,7 +34,7 @@ class CheckoutPageNew extends Component
 
     // Fatura adresi
     public $billing_address_id;
-    public $billing_same_as_shipping = false; // Fatura adresi = Teslimat adresi
+    public $billing_same_as_shipping = true; // Varsayılan: Fatura adresi = Teslimat adresi
 
     // Teslimat adresi
     public $shipping_address_id;

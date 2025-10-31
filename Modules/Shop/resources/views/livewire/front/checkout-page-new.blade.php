@@ -56,119 +56,103 @@
                         </div>
                     </div>
 
-                    {{-- 2. Fatura Bilgileri --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
+                    {{-- 2. Fatura Bilgileri (Kompakt) --}}
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                            <i class="fa-solid fa-file-invoice mr-2 text-blue-500"></i>
                             Fatura Bilgileri
                         </h2>
 
-                        {{-- Fatura Tipi Seçimi (Profesyonel Kart Tasarım) --}}
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                        {{-- Fatura Tipi Seçimi (Kompakt) --}}
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Fatura Tipi <span class="text-red-500">*</span>
                             </label>
-                            <div class="grid grid-cols-2 gap-4">
-                                {{-- Bireysel Kart --}}
+                            <div class="grid grid-cols-2 gap-2">
+                                {{-- Bireysel Kart (Kompakt) --}}
                                 <label class="relative cursor-pointer">
                                     <input type="radio" wire:model.live="billing_type" value="individual"
                                         class="peer sr-only">
-                                    <div class="h-full border-2 rounded-lg p-4 transition-all peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div class="flex items-center gap-2">
-                                                <i class="fa-solid fa-user text-lg text-gray-600 dark:text-gray-400"></i>
-                                                <span class="font-semibold text-gray-900 dark:text-white">Bireysel</span>
+                                    <div class="border-2 rounded-lg p-2 transition-all peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 border-gray-300 dark:border-gray-600 hover:border-blue-400">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-1">
+                                                <i class="fa-solid fa-user text-sm text-gray-600 dark:text-gray-400"></i>
+                                                <span class="font-medium text-sm text-gray-900 dark:text-white">Bireysel</span>
                                             </div>
-                                            <div class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 peer-checked:border-blue-600 peer-checked:bg-blue-600 flex items-center justify-center transition-all">
+                                            <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-gray-600 peer-checked:border-blue-600 peer-checked:bg-blue-600 flex items-center justify-center">
                                                 <i class="fa-solid fa-check text-xs text-white opacity-0 peer-checked:opacity-100"></i>
                                             </div>
                                         </div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">TC Kimlik No ile fatura</p>
                                     </div>
                                 </label>
 
-                                {{-- Kurumsal Kart --}}
+                                {{-- Kurumsal Kart (Kompakt) --}}
                                 <label class="relative cursor-pointer">
                                     <input type="radio" wire:model.live="billing_type" value="corporate"
                                         class="peer sr-only">
-                                    <div class="h-full border-2 rounded-lg p-4 transition-all peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div class="flex items-center gap-2">
-                                                <i class="fa-solid fa-building text-lg text-gray-600 dark:text-gray-400"></i>
-                                                <span class="font-semibold text-gray-900 dark:text-white">Kurumsal</span>
+                                    <div class="border-2 rounded-lg p-2 transition-all peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 border-gray-300 dark:border-gray-600 hover:border-blue-400">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-1">
+                                                <i class="fa-solid fa-building text-sm text-gray-600 dark:text-gray-400"></i>
+                                                <span class="font-medium text-sm text-gray-900 dark:text-white">Kurumsal</span>
                                             </div>
-                                            <div class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 peer-checked:border-blue-600 peer-checked:bg-blue-600 flex items-center justify-center transition-all">
+                                            <div class="w-4 h-4 rounded-full border-2 border-gray-300 dark:border-gray-600 peer-checked:border-blue-600 peer-checked:bg-blue-600 flex items-center justify-center">
                                                 <i class="fa-solid fa-check text-xs text-white opacity-0 peer-checked:opacity-100"></i>
                                             </div>
                                         </div>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Şirket + VKN ile fatura</p>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
-                        {{-- Bireysel Fatura Form --}}
+                        {{-- Bireysel Fatura Form (Kompakt) --}}
                         @if($billing_type === 'individual')
-                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border-l-4 border-blue-500">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <i class="fa-solid fa-user text-blue-600"></i>
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">Bireysel Fatura Bilgileri</h3>
-                                </div>
+                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border-l-2 border-blue-500">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                         TC Kimlik No <span class="text-gray-400 text-xs">(Opsiyonel)</span>
                                     </label>
                                     <input type="text" wire:model="billing_tax_number"
-                                        class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="XXXXXXXXXXX (11 haneli - opsiyonel)" maxlength="11"
-                                        pattern="[0-9]{11}">
-                                    @error('billing_tax_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Dilerseniz TC Kimlik No girebilirsiniz (Hepsiburada gibi)</p>
+                                        class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm"
+                                        placeholder="11 haneli (opsiyonel)" maxlength="11">
+                                    @error('billing_tax_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         @endif
 
-                        {{-- Kurumsal Fatura Form --}}
+                        {{-- Kurumsal Fatura Form (Kompakt) --}}
                         @if($billing_type === 'corporate')
-                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border-l-4 border-blue-500">
-                                <div class="flex items-center gap-2 mb-3">
-                                    <i class="fa-solid fa-building text-blue-600"></i>
-                                    <h3 class="font-semibold text-gray-900 dark:text-white">Kurumsal Fatura Bilgileri</h3>
-                                </div>
-                                <div class="space-y-4">
+                            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border-l-2 border-blue-500">
+                                <div class="space-y-2">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                             Şirket Unvanı <span class="text-red-500">*</span>
                                         </label>
                                         <input type="text" wire:model="billing_company_name"
-                                            class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="Örnek: ABC Teknoloji A.Ş.">
-                                        @error('billing_company_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                            class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm"
+                                            placeholder="ABC Teknoloji A.Ş.">
+                                        @error('billing_company_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                     </div>
 
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-2 gap-2">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                                 Vergi Dairesi <span class="text-red-500">*</span>
                                             </label>
                                             <input type="text" wire:model="billing_tax_office"
-                                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="Örnek: Kadıköy">
-                                            @error('billing_tax_office') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm"
+                                                placeholder="Kadıköy">
+                                            @error('billing_tax_office') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </div>
 
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                                Vergi Kimlik No (VKN) <span class="text-red-500">*</span>
+                                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                                VKN <span class="text-red-500">*</span>
                                             </label>
                                             <input type="text" wire:model="billing_tax_number"
-                                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                placeholder="XXXXXXXXXX (10 haneli)" maxlength="10"
-                                                pattern="[0-9]{10}">
-                                            @error('billing_tax_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">10 haneli Vergi Kimlik Numaranızı giriniz</p>
+                                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 text-sm"
+                                                placeholder="10 haneli" maxlength="10">
+                                            @error('billing_tax_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -266,30 +250,36 @@
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-8">
                         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Sipariş Özeti</h2>
 
-                        {{-- Ürünler --}}
-                        <div class="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                        {{-- Ürünler (Minimal) --}}
+                        <div class="space-y-2 mb-4">
                             @forelse($items as $item)
-                                <div class="flex items-center gap-3 pb-3 border-b border-gray-200 dark:border-gray-700">
-                                    @if($item->product->getMedia('gallery')->first())
-                                        <img src="{{ thumb($item->product->getMedia('gallery')->first(), 60, 60) }}"
-                                            alt="{{ $item->product->getTranslated('title', app()->getLocale()) }}"
-                                            class="w-12 h-12 object-cover rounded">
+                                @php
+                                    $firstMedia = $item->product->getMedia('gallery')->first();
+                                    $productTitle = $item->product->getTranslated('title', app()->getLocale());
+                                @endphp
+                                <div class="flex items-center gap-2 py-2 border-b border-gray-100 dark:border-gray-700">
+                                    {{-- Ürün Görseli --}}
+                                    @if($firstMedia)
+                                        <img src="{{ thumb($firstMedia, 50, 50, ['scale' => 1]) }}"
+                                            alt="{{ $productTitle }}"
+                                            class="w-12 h-12 object-cover rounded border border-gray-200 dark:border-gray-600"
+                                            loading="lazy">
                                     @else
-                                        <div class="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
-                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                            </svg>
+                                        <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-image text-gray-400 text-lg"></i>
                                         </div>
                                     @endif
-                                    <div class="flex-1">
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $item->product->getTranslated('title', app()->getLocale()) }}
+
+                                    {{-- Ürün Bilgisi --}}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                            {{ $productTitle }}
                                         </p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Adet: {{ $item->quantity }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $item->quantity }} adet</p>
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Sepetiniz boş</p>
+                                <p class="text-gray-500 dark:text-gray-400 text-center py-4 text-sm">Sepetiniz boş</p>
                             @endforelse
                         </div>
 

@@ -58,6 +58,29 @@ class CheckoutPageNew extends Component
         'addressSelected' => 'handleAddressSelected',
     ];
 
+    // İletişim bilgileri değiştiğinde customer'ı güncelle
+    public function updated($propertyName)
+    {
+        // Sadece iletişim bilgileri değiştiğinde güncelle
+        if (in_array($propertyName, ['contact_first_name', 'contact_last_name', 'contact_phone'])) {
+            $this->updateCustomerInfo();
+        }
+    }
+
+    private function updateCustomerInfo()
+    {
+        if (!$this->customer) {
+            return;
+        }
+
+        // Customer bilgilerini güncelle
+        $this->customer->update([
+            'first_name' => $this->contact_first_name,
+            'last_name' => $this->contact_last_name,
+            'phone' => $this->contact_phone,
+        ]);
+    }
+
     public function mount()
     {
         $this->loadCart();
@@ -146,12 +169,30 @@ class CheckoutPageNew extends Component
             // Varsayılan adresleri yükle
             $this->loadDefaultAddresses();
         } else if (Auth::check()) {
-            // Müşteri yok ama kullanıcı login - Form'a user bilgilerini doldur
+            // Müşteri yok ama kullanıcı login - Customer oluştur
             $fullName = Auth::user()->name ?? '';
             $nameParts = explode(' ', trim($fullName), 2);
-            $this->contact_first_name = $nameParts[0] ?? '';
-            $this->contact_last_name = $nameParts[1] ?? '';
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+
+            // Customer oluştur (telefon boş olabilir, ilk sipariş sırasında doldurulur)
+            $this->customer = ShopCustomer::create([
+                'user_id' => Auth::id(),
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => Auth::user()->email,
+                'phone' => '', // Boş, kullanıcı girecek
+                'customer_type' => 'individual',
+                'billing_type' => 'individual',
+            ]);
+
+            $this->customerId = $this->customer->customer_id;
+
+            // Form'a bilgileri doldur
+            $this->contact_first_name = $firstName;
+            $this->contact_last_name = $lastName;
             $this->contact_email = Auth::user()->email;
+            // Telefon boş kalacak, kullanıcı girecek
         }
     }
 

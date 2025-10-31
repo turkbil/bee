@@ -34,11 +34,10 @@ class CheckoutPageNew extends Component
 
     // Fatura adresi
     public $billing_address_id;
-    public $billing_same_as_contact = false;
+    public $billing_same_as_shipping = false; // Fatura adresi = Teslimat adresi
 
     // Teslimat adresi
     public $shipping_address_id;
-    public $shipping_same_as_billing = false;
 
     // Agreements (Simplified - Single Checkbox)
     public $agree_all = false; // Combines KVKK, distance selling, preliminary info
@@ -51,7 +50,8 @@ class CheckoutPageNew extends Component
 
     // Modal States (Hepsiburada Pattern)
     public $showShippingModal = false;
-    public $showBillingModal = false; // Fatura bilgileri modal
+    public $showBillingModal = false; // Fatura bilgileri (vergi) modal
+    public $showBillingAddressModal = false; // Fatura adresi modal
 
     protected $listeners = [
         'cartUpdated' => 'loadCart',
@@ -64,6 +64,14 @@ class CheckoutPageNew extends Component
         // Sadece iletişim bilgileri değiştiğinde güncelle
         if (in_array($propertyName, ['contact_first_name', 'contact_last_name', 'contact_phone'])) {
             $this->updateCustomerInfo();
+        }
+
+        // Eğer "Fatura = Teslimat" checkbox'ı değişirse
+        if ($propertyName === 'billing_same_as_shipping') {
+            if ($this->billing_same_as_shipping && $this->shipping_address_id) {
+                // Checkbox true → Fatura adresini teslimat adresi yap
+                $this->billing_address_id = $this->shipping_address_id;
+            }
         }
     }
 
@@ -243,14 +251,29 @@ class CheckoutPageNew extends Component
         $this->showShippingModal = false;
     }
 
+    public function openBillingAddressModal()
+    {
+        $this->showBillingAddressModal = true;
+    }
+
+    public function closeBillingAddressModal()
+    {
+        $this->showBillingAddressModal = false;
+    }
+
     public function handleAddressSelected($addressId, $addressType)
     {
         if ($addressType === 'billing') {
             $this->billing_address_id = $addressId;
-            $this->showBillingModal = false; // Modal'ı kapat
+            $this->showBillingAddressModal = false; // Modal'ı kapat
         } elseif ($addressType === 'shipping') {
             $this->shipping_address_id = $addressId;
             $this->showShippingModal = false; // Modal'ı kapat
+
+            // Eğer "Fatura = Teslimat" seçiliyse, fatura adresini de güncelle
+            if ($this->billing_same_as_shipping) {
+                $this->billing_address_id = $addressId;
+            }
         }
     }
 

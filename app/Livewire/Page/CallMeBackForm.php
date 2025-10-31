@@ -20,13 +20,12 @@ class CallMeBackForm extends Component
     protected $rules = [
         'name' => 'required|string|max:255',
         'phone' => 'required|string|max:20',
-        'email' => 'required|email|max:255',
+        'email' => 'nullable|email|max:255',
     ];
 
     protected $messages = [
         'name.required' => 'Ad Soyad zorunludur',
         'phone.required' => 'Telefon zorunludur',
-        'email.required' => 'E-posta zorunludur',
         'email.email' => 'Geçerli bir e-posta adresi giriniz',
     ];
 

@@ -12,17 +12,49 @@
 
         {{-- Telefon --}}
         <div class="relative group">
-            <div class="absolute -inset-0.5 bg-gradient-to-r from-green-600 to-teal-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
-            <input type="tel" wire:model="phone" placeholder="Telefon Numaranız *"
-                class="relative w-full px-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-green-300 dark:hover:border-green-600">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
+            <div class="relative flex items-center">
+                {{-- Flag & Prefix --}}
+                <div class="absolute left-4 flex items-center gap-3 pointer-events-none z-10">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🇹🇷</span>
+                        <span class="text-gray-500 dark:text-gray-400 font-medium">+90</span>
+                    </div>
+                    <div class="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
+                </div>
+                <input type="tel" wire:model="phone" placeholder="5XX XXX XX XX"
+                    x-data="{
+                        formatPhone(event) {
+                            let value = event.target.value.replace(/\D/g, '');
+                            if (value.length > 10) value = value.slice(0, 10);
+
+                            let formatted = '';
+                            if (value.length > 0) formatted += value.substring(0, 3);
+                            if (value.length > 3) formatted += ' ' + value.substring(3, 6);
+                            if (value.length > 6) formatted += ' ' + value.substring(6, 8);
+                            if (value.length > 8) formatted += ' ' + value.substring(8, 10);
+
+                            event.target.value = formatted;
+                            $wire.set('phone', value);
+                        }
+                    }"
+                    @input="formatPhone($event)"
+                    class="relative w-full pl-32 pr-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-green-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-green-300 dark:hover:border-green-600 font-mono">
+            </div>
             @error('phone') <span class="text-red-500 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</span> @enderror
         </div>
 
         {{-- Email --}}
         <div class="relative group">
-            <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
-            <input type="email" wire:model="email" placeholder="E-posta Adresiniz *"
-                class="relative w-full px-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-purple-300 dark:hover:border-purple-600">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl opacity-0 group-hover:opacity-100 blur transition duration-500 group-focus-within:opacity-100"></div>
+            <div class="relative flex items-center">
+                {{-- Email Icon --}}
+                <div class="absolute left-5 pointer-events-none z-10">
+                    <i class="fa-regular fa-envelope text-xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+                <input type="email" wire:model="email" placeholder="E-posta Adresiniz (opsiyonel)"
+                    class="relative w-full pl-14 pr-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:border-transparent focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-300 hover:border-purple-300 dark:hover:border-purple-600">
+            </div>
             @error('email') <span class="text-red-500 text-sm flex items-center gap-1 mt-2"><i class="fa-solid fa-circle-exclamation"></i>{{ $message }}</span> @enderror
         </div>
 

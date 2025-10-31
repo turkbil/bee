@@ -9,7 +9,7 @@
             <div class="lg:col-span-2 space-y-4">
 
                 {{-- 1. İletişim Bilgileri (Her Zaman Açık) --}}
-                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                         <i class="fa-solid fa-user mr-2 text-blue-500 dark:text-blue-400"></i>
                         İletişim Bilgileri
@@ -46,8 +46,8 @@
                     </div>
                 </div>
 
-                {{-- 2. Fatura Bilgileri (Collapsed - Özet + Modal) --}}
-                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                {{-- 2. Fatura Bilgileri (Vergi Bilgileri) --}}
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                             <i class="fa-solid fa-file-invoice mr-2 text-blue-500 dark:text-blue-400"></i>
@@ -59,7 +59,7 @@
                         </button>
                     </div>
 
-                    {{-- Özet Gösterimi --}}
+                    {{-- Özet Gösterimi (Sadece Vergi Bilgileri) --}}
                     <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                         @if($billing_type === 'corporate' && $billing_company_name)
                             <p class="flex items-center">
@@ -68,7 +68,10 @@
                                 <span class="ml-2 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">Kurumsal</span>
                             </p>
                             @if($billing_tax_number)
-                                <p class="text-xs ml-5">VKN: {{ $billing_tax_number }}</p>
+                                <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">VKN: {{ $billing_tax_number }}</p>
+                            @endif
+                            @if($billing_tax_office)
+                                <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">Vergi Dairesi: {{ $billing_tax_office }}</p>
                             @endif
                         @else
                             <p class="flex items-center">
@@ -76,21 +79,9 @@
                                 <span class="font-medium text-gray-900 dark:text-white">{{ $contact_first_name }} {{ $contact_last_name }}</span>
                                 <span class="ml-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded">Bireysel</span>
                             </p>
-                        @endif
-
-                        @php
-                            $billingAddr = $billing_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($billing_address_id) : null;
-                        @endphp
-
-                        @if($billingAddr)
-                            <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">
-                                {{ $billingAddr->address_line_1 }}, {{ $billingAddr->district }} / {{ $billingAddr->city }}
-                            </p>
-                        @else
-                            <p class="text-xs ml-5 text-orange-600 dark:text-orange-400">
-                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
-                                Fatura adresi seçilmedi
-                            </p>
+                            @if($billing_tax_number)
+                                <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">TC: {{ $billing_tax_number }}</p>
+                            @endif
                         @endif
                     </div>
 
@@ -170,16 +161,6 @@
                                         </div>
                                     @endif
 
-                                    {{-- Fatura Adresi Seçimi --}}
-                                    <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Fatura Adresi</label>
-                                        <livewire:shop::front.address-manager
-                                            :customerId="$customerId"
-                                            addressType="billing"
-                                            :selectedAddressId="$billing_address_id"
-                                            :key="'billing-'.$customerId" />
-                                    </div>
-
                                     {{-- Modal Butonlar --}}
                                     <div class="flex justify-end gap-3">
                                         <button wire:click="closeBillingModal"
@@ -198,7 +179,7 @@
                 </div>
 
                 {{-- 3. Teslimat Adresi (Collapsed - Özet + Modal) --}}
-                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                             <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
@@ -280,11 +261,111 @@
                     @endif
                 </div>
 
+                {{-- 4. Fatura Adresi --}}
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-500 dark:text-blue-400"></i>
+                            Fatura Adresi
+                        </h2>
+                        @if(!$billing_same_as_shipping)
+                            <button wire:click="openBillingAddressModal"
+                                class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+                                <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                            </button>
+                        @endif
+                    </div>
+
+                    {{-- Checkbox: Teslimat ile aynı --}}
+                    <div class="mb-3">
+                        <label class="flex items-center cursor-pointer group">
+                            <input type="checkbox" wire:model.live="billing_same_as_shipping"
+                                class="w-4 h-4 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                                Teslimat adresi ile aynı
+                            </span>
+                        </label>
+                    </div>
+
+                    {{-- Özet Gösterimi --}}
+                    @if($billing_same_as_shipping)
+                        {{-- Teslimat adresi ile aynı --}}
+                        <div class="text-xs text-green-600 dark:text-green-400 ml-6">
+                            <i class="fa-solid fa-check-circle mr-1"></i>
+                            Fatura adresi, teslimat adresi ile aynı
+                        </div>
+                    @else
+                        {{-- Farklı fatura adresi --}}
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            @php
+                                $billingAddr = $billing_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($billing_address_id) : null;
+                            @endphp
+
+                            @if($billingAddr)
+                                <p class="font-medium text-gray-900 dark:text-white mb-1">
+                                    <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-blue-500 dark:text-blue-400"></i>
+                                    {{ $billingAddr->title ?? 'Fatura Adresi' }}
+                                </p>
+                                <p class="text-xs ml-5">
+                                    {{ $billingAddr->address_line_1 }}@if($billingAddr->address_line_2), {{ $billingAddr->address_line_2 }}@endif
+                                </p>
+                                <p class="text-xs ml-5">{{ $billingAddr->district }} / {{ $billingAddr->city }} {{ $billingAddr->postal_code }}</p>
+                            @else
+                                <p class="text-xs text-orange-600 dark:text-orange-400">
+                                    <i class="fa-solid fa-exclamation-triangle mr-1"></i>
+                                    Fatura adresi seçilmedi
+                                </p>
+                            @endif
+                        </div>
+                    @endif
+
+                    {{-- Modal: Fatura Adresi Düzenleme --}}
+                    @if($showBillingAddressModal ?? false)
+                        @teleport('body')
+                        <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto" wire:click.self="closeBillingAddressModal">
+                            {{-- Backdrop --}}
+                            <div class="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm" wire:click="closeBillingAddressModal"></div>
+
+                            {{-- Modal Content --}}
+                            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 z-[10000] my-8">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Fatura Adresi</h3>
+                                        <button wire:click="closeBillingAddressModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                                            <i class="fa-solid fa-times text-2xl"></i>
+                                        </button>
+                                    </div>
+
+                                    {{-- Fatura Adresi Seçimi --}}
+                                    <div class="mb-6">
+                                        <livewire:shop::front.address-manager
+                                            :customerId="$customerId"
+                                            addressType="billing"
+                                            :selectedAddressId="$billing_address_id"
+                                            :key="'billing-addr-'.$customerId" />
+                                    </div>
+
+                                    {{-- Modal Butonlar --}}
+                                    <div class="flex justify-end gap-3">
+                                        <button wire:click="closeBillingAddressModal"
+                                            class="px-6 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                            İptal
+                                        </button>
+                                        <button wire:click="closeBillingAddressModal"
+                                            class="px-6 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors">
+                                            Kaydet
+                                        </button>
+                                    </div>
+                            </div>
+                        </div>
+                        @endteleport
+                    @endif
+                </div>
+
             </div>
 
             {{-- SAĞ TARAF: FİYAT ÖZETİ (1/3 Genişlik) --}}
             <div class="lg:col-span-1">
-                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 sticky top-6">
+                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 sticky top-6">
                     <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
                         <i class="fa-solid fa-receipt mr-2 text-blue-500 dark:text-blue-400"></i>
                         Sipariş Özeti

@@ -12,9 +12,6 @@ class CallMeBackForm extends Component
     public $name = '';
     public $phone = '';
     public $email = '';
-    public $company = '';
-    public $message = '';
-    public $terms_accepted = false;
 
     // Modal State
     public $showModal = false;
@@ -24,9 +21,6 @@ class CallMeBackForm extends Component
         'name' => 'required|string|max:255',
         'phone' => 'required|string|max:20',
         'email' => 'required|email|max:255',
-        'company' => 'nullable|string|max:255',
-        'message' => 'nullable|string|max:1000',
-        'terms_accepted' => 'accepted',
     ];
 
     protected $messages = [
@@ -34,7 +28,6 @@ class CallMeBackForm extends Component
         'phone.required' => 'Telefon zorunludur',
         'email.required' => 'E-posta zorunludur',
         'email.email' => 'Geçerli bir e-posta adresi giriniz',
-        'terms_accepted.accepted' => 'Kişisel verilerin işlenmesini kabul etmelisiniz',
     ];
 
     public function submit()
@@ -46,8 +39,6 @@ class CallMeBackForm extends Component
                 'name' => $this->name,
                 'phone' => $this->phone,
                 'email' => $this->email,
-                'company' => $this->company,
-                'message' => $this->message,
             ];
 
             // NotificationHub ile bildirim gönder (Telegram + WhatsApp + Email)
@@ -58,7 +49,6 @@ class CallMeBackForm extends Component
                 'customer_name' => $data['name'],
                 'customer_phone' => $data['phone'],
                 'customer_email' => $data['email'],
-                'preferred_time' => $data['preferred_time'],
             ]);
 
             // Success modal aç
@@ -66,9 +56,7 @@ class CallMeBackForm extends Component
             $this->modalType = 'success';
 
             // Form resetle
-            $this->reset([
-                'name', 'phone', 'email', 'company', 'message', 'terms_accepted'
-            ]);
+            $this->reset(['name', 'phone', 'email']);
 
         } catch (\Exception $e) {
             Log::error('Call Me Back Request Error', [
@@ -88,12 +76,7 @@ class CallMeBackForm extends Component
             $notificationHub = new NotificationHub();
 
             // Build inquiry message
-            $inquiry = "📞 Sizi Arayalım Talebi\n\n";
-            if (!empty($data['message'])) {
-                $inquiry .= "Mesaj: {$data['message']}";
-            } else {
-                $inquiry .= "Geri arama talebi";
-            }
+            $inquiry = "📞 Sizi Arayalım Talebi\n\nGeri arama talebi";
 
             // Send via NotificationHub (Telegram + WhatsApp + Email)
             $results = $notificationHub->sendCustomerLead(
@@ -101,7 +84,6 @@ class CallMeBackForm extends Component
                     'name' => $data['name'],
                     'phone' => $data['phone'],
                     'email' => $data['email'],
-                    'company' => $data['company'],
                 ],
                 $inquiry,
                 [], // Suggested products (boş - bu form product-specific değil)

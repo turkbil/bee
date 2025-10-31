@@ -180,113 +180,96 @@
                         </div>
                     </div>
 
-                    {{-- Form --}}
+                    {{-- Form - Minimal Hepsiburada Style --}}
                     <form wire:submit.prevent="saveAddress" class="px-6 py-4">
-                        <div class="space-y-4 max-h-96 overflow-y-auto">
-                            {{-- Ad Soyad --}}
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                        Ad *
-                                    </label>
-                                    <input
-                                        wire:model="first_name"
-                                        type="text"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                                        required>
-                                    @error('first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                        Soyad *
-                                    </label>
-                                    <input
-                                        wire:model="last_name"
-                                        type="text"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                                        required>
-                                    @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
+                        <div class="space-y-3">
+                            {{-- Adres Adı --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Bu adrese bir ad verin <span class="text-red-500">*</span>
+                                </label>
+                                <input wire:model="title" type="text"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="Örnek: Evim, İş yerim" required>
+                                @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
 
-                            {{-- Telefon Email --}}
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                        Telefon *
-                                    </label>
-                                    <input
-                                        wire:model="phone"
-                                        type="tel"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                                        required>
-                                    @error('phone') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                        Email
-                                    </label>
-                                    <input
-                                        wire:model="email"
-                                        type="email"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                                </div>
+                            {{-- Telefon (Opsiyonel) --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Telefon <span class="text-gray-400 text-xs">(Opsiyonel - Teslimat için farklı telefon)</span>
+                                </label>
+                                <input wire:model="phone" type="tel"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="05XX XXX XX XX">
                             </div>
 
                             {{-- Adres --}}
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                    Açık Adres *
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Adres <span class="text-red-500">*</span>
                                 </label>
-                                <textarea
-                                    wire:model="address_line_1"
-                                    rows="2"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                                    required></textarea>
-                                @error('address_line_1') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                <textarea wire:model="address_line_1" rows="2"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="Bina, site, iş yeri, kurum ismi vb." required></textarea>
+                                @error('address_line_1') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
 
                             {{-- İl İlçe --}}
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                        İl *
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        İl <span class="text-red-500">*</span>
                                     </label>
-                                    <select
-                                        wire:model="city"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                    <select wire:model.live="city"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
                                         required>
                                         <option value="">İl Seçin</option>
                                         @foreach($cities as $cityId => $cityName)
                                             <option value="{{ $cityName }}">{{ $cityName }}</option>
                                         @endforeach
                                     </select>
-                                    @error('city') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    @error('city') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                                        İlçe *
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        İlçe <span class="text-red-500">*</span>
                                     </label>
-                                    <select
-                                        wire:model="district"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                                        required
-                                        @if(empty($districts)) disabled @endif>
+                                    <select wire:model="district"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                        required @if(empty($districts)) disabled @endif>
                                         <option value="">{{ empty($districts) ? 'Önce il seçin' : 'İlçe Seçin' }}</option>
                                         @foreach($districts as $districtId => $districtName)
                                             <option value="{{ $districtName }}">{{ $districtName }}</option>
                                         @endforeach
                                     </select>
-                                    @error('district') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    @error('district') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+
+                            {{-- Posta Kodu + Teslimat Notu --}}
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Posta Kodu <span class="text-gray-400 text-xs">(Opsiyonel)</span>
+                                    </label>
+                                    <input wire:model="postal_code" type="text"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                        placeholder="34000">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Teslimat Notu <span class="text-gray-400 text-xs">(Opsiyonel)</span>
+                                    </label>
+                                    <input wire:model="delivery_notes" type="text"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                        placeholder="Kapıcıya bırakabilirsiniz">
                                 </div>
                             </div>
 
                             {{-- Varsayılan --}}
-                            <div class="flex items-center">
-                                <input
-                                    wire:model="is_default"
-                                    type="checkbox"
-                                    id="is_default"
+                            <div class="flex items-center pt-2">
+                                <input wire:model="is_default" type="checkbox" id="is_default"
                                     class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                 <label for="is_default" class="ml-2 text-sm text-gray-700 dark:text-gray-300">
                                     Varsayılan {{ $addressType === 'billing' ? 'fatura' : 'teslimat' }} adresi olarak kaydet
@@ -295,18 +278,14 @@
                         </div>
 
                         {{-- Footer --}}
-                        <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 mt-4 flex justify-end gap-3 -mx-6 -mb-4">
-                            <button
-                                type="button"
-                                wire:click="$set('showEditModal', false)"
-                                class="px-6 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg transition-colors">
+                        <div class="bg-gray-50 dark:bg-gray-900 px-6 py-3 mt-4 flex justify-end gap-2 -mx-6 -mb-4">
+                            <button type="button" wire:click="$set('showEditModal', false)"
+                                class="px-5 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg transition-colors text-sm">
                                 İptal
                             </button>
-                            <button
-                                type="submit"
-                                class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors">
-                                <i class="fa-solid fa-save mr-2"></i>
-                                Kaydet
+                            <button type="submit"
+                                class="px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors text-sm">
+                                <i class="fa-solid fa-save mr-1"></i> Kaydet
                             </button>
                         </div>
                     </form>

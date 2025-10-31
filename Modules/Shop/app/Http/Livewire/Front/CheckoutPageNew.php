@@ -144,6 +144,13 @@ class CheckoutPageNew extends Component
 
             // Varsayılan adresleri yükle
             $this->loadDefaultAddresses();
+        } else if (Auth::check()) {
+            // Müşteri yok ama kullanıcı login - Form'a user bilgilerini doldur
+            $fullName = Auth::user()->name ?? '';
+            $nameParts = explode(' ', trim($fullName), 2);
+            $this->contact_first_name = $nameParts[0] ?? '';
+            $this->contact_last_name = $nameParts[1] ?? '';
+            $this->contact_email = Auth::user()->email;
         }
     }
 
@@ -185,8 +192,8 @@ class CheckoutPageNew extends Component
 
     public function submitOrder()
     {
-        // Validation
-        $this->validate([
+        // Dynamic validation based on billing type
+        $rules = [
             'contact_first_name' => 'required|string|max:255',
             'contact_last_name' => 'required|string|max:255',
             'contact_email' => 'required|email|max:255',
@@ -196,7 +203,19 @@ class CheckoutPageNew extends Component
             'agree_kvkk' => 'accepted',
             'agree_distance_selling' => 'accepted',
             'agree_preliminary_info' => 'accepted',
-        ], [
+        ];
+
+        // Fatura tipi kontrolü
+        if ($this->billing_type === 'corporate') {
+            // Kurumsal: Firma adı + VKN + Vergi dairesi ZORUNLU
+            $rules['billing_company_name'] = 'required|string|max:255';
+            $rules['billing_tax_office'] = 'required|string|max:255';
+            $rules['billing_tax_number'] = 'required|string|size:10'; // VKN 10 haneli
+        }
+        // Bireysel: TCKN OPSİYONEL (Hepsiburada gibi)
+        // billing_tax_number opsiyonel, isterse boş bırakabilir
+
+        $this->validate($rules, [
             'contact_first_name.required' => 'Ad zorunludur',
             'contact_last_name.required' => 'Soyad zorunludur',
             'contact_email.required' => 'E-posta zorunludur',
@@ -206,6 +225,10 @@ class CheckoutPageNew extends Component
             'agree_kvkk.accepted' => 'KVKK\'yı kabul etmelisiniz',
             'agree_distance_selling.accepted' => 'Mesafeli Satış Sözleşmesi\'ni kabul etmelisiniz',
             'agree_preliminary_info.accepted' => 'Ön Bilgilendirme Formu\'nu kabul etmelisiniz',
+            'billing_company_name.required' => 'Şirket ünvanı zorunludur',
+            'billing_tax_office.required' => 'Vergi dairesi zorunludur',
+            'billing_tax_number.required' => 'Vergi kimlik numarası zorunludur',
+            'billing_tax_number.size' => 'VKN 10 haneli olmalıdır',
         ]);
 
         DB::beginTransaction();

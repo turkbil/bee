@@ -40,11 +40,8 @@ class CheckoutPageNew extends Component
     public $shipping_address_id;
     public $shipping_same_as_billing = false;
 
-    // Agreements
-    public $agree_kvkk = false;
-    public $agree_distance_selling = false;
-    public $agree_preliminary_info = false;
-    public $agree_marketing = false;
+    // Agreements (Simplified - Single Checkbox)
+    public $agree_all = false; // Combines KVKK, distance selling, preliminary info
 
     // Summary
     public $subtotal = 0;
@@ -206,9 +203,7 @@ class CheckoutPageNew extends Component
             'contact_phone' => 'required|string|max:20',
             'billing_address_id' => 'required',
             'shipping_address_id' => 'required',
-            'agree_kvkk' => 'accepted',
-            'agree_distance_selling' => 'accepted',
-            'agree_preliminary_info' => 'accepted',
+            'agree_all' => 'accepted', // Single combined agreement
         ];
 
         // Fatura tipi kontrolü
@@ -228,9 +223,7 @@ class CheckoutPageNew extends Component
             'contact_phone.required' => 'Telefon zorunludur',
             'billing_address_id.required' => 'Fatura adresi seçmelisiniz',
             'shipping_address_id.required' => 'Teslimat adresi seçmelisiniz',
-            'agree_kvkk.accepted' => 'KVKK\'yı kabul etmelisiniz',
-            'agree_distance_selling.accepted' => 'Mesafeli Satış Sözleşmesi\'ni kabul etmelisiniz',
-            'agree_preliminary_info.accepted' => 'Ön Bilgilendirme Formu\'nu kabul etmelisiniz',
+            'agree_all.accepted' => 'Ön Bilgilendirme Formu ve Mesafeli Satış Sözleşmesi\'ni kabul etmelisiniz',
             'billing_company_name.required' => 'Şirket ünvanı zorunludur',
             'billing_tax_office.required' => 'Vergi dairesi zorunludur',
             'billing_tax_number.required' => 'Vergi kimlik numarası zorunludur',
@@ -274,10 +267,10 @@ class CheckoutPageNew extends Component
                 'status' => 'pending',
                 'payment_status' => 'pending',
 
-                'agreed_kvkk' => $this->agree_kvkk,
-                'agreed_distance_selling' => $this->agree_distance_selling,
-                'agreed_preliminary_info' => $this->agree_preliminary_info,
-                'agreed_marketing' => $this->agree_marketing,
+                'agreed_kvkk' => $this->agree_all,
+                'agreed_distance_selling' => $this->agree_all,
+                'agreed_preliminary_info' => $this->agree_all,
+                'agreed_marketing' => false, // Marketing removed from combined checkbox
             ]);
 
             // Sipariş kalemlerini oluştur
@@ -329,7 +322,7 @@ class CheckoutPageNew extends Component
             'tax_number' => $this->billing_tax_number,
             'company_name' => $this->billing_company_name,
             'tax_office' => $this->billing_tax_office,
-            'accepts_marketing' => $this->agree_marketing,
+            'accepts_marketing' => false, // Marketing removed from simplified checkout
         ];
 
         if ($this->customer) {

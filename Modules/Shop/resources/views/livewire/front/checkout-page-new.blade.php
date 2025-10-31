@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900 py-8">
+<div class="min-h-screen py-8">
     <div class="container mx-auto px-4">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Sipariş Tamamla</h1>
 

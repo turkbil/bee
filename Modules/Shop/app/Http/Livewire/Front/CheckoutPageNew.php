@@ -31,8 +31,6 @@ class CheckoutPageNew extends Component
     public $billing_tax_number = ''; // TC (11 haneli) veya VKN (10 haneli)
     public $billing_company_name = '';
     public $billing_tax_office = '';
-    public $billing_contact_first_name = ''; // Kurumsal için yetkili kişi adı
-    public $billing_contact_last_name = ''; // Kurumsal için yetkili kişi soyadı
 
     // Fatura adresi
     public $billing_address_id;
@@ -299,12 +297,10 @@ class CheckoutPageNew extends Component
 
         // Fatura tipi kontrolü
         if ($this->billing_type === 'corporate') {
-            // Kurumsal: Firma adı + VKN + Vergi dairesi + Yetkili kişi ZORUNLU
+            // Kurumsal: Firma adı + VKN + Vergi dairesi ZORUNLU
             $rules['billing_company_name'] = 'required|string|max:255';
             $rules['billing_tax_office'] = 'required|string|max:255';
             $rules['billing_tax_number'] = 'required|string|size:10'; // VKN 10 haneli
-            $rules['billing_contact_first_name'] = 'required|string|max:255';
-            $rules['billing_contact_last_name'] = 'required|string|max:255';
         } else {
             // Bireysel: TCKN OPSİYONEL ama girilirse 11 haneli olmalı
             if (!empty($this->billing_tax_number)) {
@@ -323,8 +319,6 @@ class CheckoutPageNew extends Component
             'billing_tax_office.required' => 'Vergi dairesi zorunludur',
             'billing_tax_number.required' => 'Vergi kimlik numarası zorunludur',
             'billing_tax_number.size' => 'Kurumsal için VKN 10 haneli, Bireysel için TCKN 11 haneli olmalıdır',
-            'billing_contact_first_name.required' => 'Yetkili kişi adı zorunludur',
-            'billing_contact_last_name.required' => 'Yetkili kişi soyadı zorunludur',
         ]);
 
         DB::beginTransaction();

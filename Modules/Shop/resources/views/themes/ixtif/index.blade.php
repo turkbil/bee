@@ -389,7 +389,7 @@
                 setupInfiniteScroll() {
                     const options = {
                         root: null,
-                        rootMargin: '800px', // Sayfa sonundan 800px önce tetiklenir
+                        rootMargin: '2000px', // Sayfa sonundan 2000px önce tetiklenir (kullanıcı ortadayken)
                         threshold: 0.1
                     };
 
@@ -407,10 +407,10 @@
                         observer.observe(grid);
                     }
 
-                    // Scroll event fallback
+                    // Scroll event fallback - çok agresif
                     window.addEventListener('scroll', () => {
                         const scrollPosition = window.innerHeight + window.scrollY;
-                        const threshold = document.documentElement.scrollHeight - 1200; // Sayfa sonundan 1200px önce tetiklenir
+                        const threshold = document.documentElement.scrollHeight - 2500; // Sayfa sonundan 2500px önce tetiklenir
 
                         if (scrollPosition >= threshold && this.hasMore && !this.loading) {
                             this.loadMore();

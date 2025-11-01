@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Alan Analizi - Shop System V4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        .report-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+        .header h1 {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .header .subtitle {
+            color: #6c757d;
+            font-size: 18px;
+        }
+        
+        /* PDF Kartları */
+        .pdf-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        .pdf-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .pdf-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .pdf-title h3 {
+            margin: 0;
+            color: #495057;
+        }
+        .pdf-score {
+            font-size: 32px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        .score-high { background: #d4edda; color: #155724; }
+        .score-medium { background: #fff3cd; color: #856404; }
+        .score-low { background: #f8d7da; color: #721c24; }
+        
+        /* Alan Tabloları */
+        .field-table {
+            margin-top: 20px;
+        }
+        .field-table table {
+            font-size: 14px;
+        }
+        .field-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .field-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Alan durumu badge'leri */
+        .badge-exists { background: #28a745; }
+        .badge-missing { background: #dc3545; }
+        .badge-partial { background: #ffc107; color: #000; }
+        .badge-v4-new { background: #17a2b8; }
+        
+        /* Karşılaştırma tablosu */
+        .comparison-table {
+            margin-top: 40px;
+        }
+        .comparison-table table {
+            background: white;
+        }
+        .comparison-table th {
+            background: #495057;
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+            border: none;
+        }
+        .comparison-table td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+        .comparison-table .field-name {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        /* İkon durumları */
+        .icon-yes { color: #28a745; font-size: 20px; }
+        .icon-no { color: #dc3545; font-size: 20px; }
+        .icon-partial { color: #ffc107; font-size: 20px; }
+        
+        /* Summary boxes */
+        .summary-box {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid;
+        }
+        .summary-good { border-left-color: #28a745; }
+        .summary-warning { border-left-color: #ffc107; }
+        .summary-error { border-left-color: #dc3545; }
+        .summary-info { border-left-color: #17a2b8; }
+        
+        .summary-box h4 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .summary-box ul {
+            margin-bottom: 0;
+            padding-left: 25px;
+        }
+        .summary-box li {
+            margin-bottom: 8px;
+        }
+        
+        /* Recommendation boxes */
+        .recommendation {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .recommendation h5 {
+            color: #0066cc;
+            margin-bottom: 10px;
+        }
+        
+        /* Navigation tabs */
+        .nav-tabs {
+            border-bottom: 3px solid #667eea;
+            margin-bottom: 30px;
+        }
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            font-weight: 600;
+            border: none;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+        .nav-tabs .nav-link:hover {
+            border-bottom-color: #b8c1ec;
+        }
+        .nav-tabs .nav-link.active {
+            color: #667eea;
+            background: none;
+            border-bottom-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="report-container">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-file-pdf"></i> PDF ALAN ANALİZİ RAPORU</h1>
+                <p class="subtitle">3 Transpalet PDF'i Detaylı İnceleme - Shop System V4 İçin Öneri Listesi</p>
+                <p class="text-muted mb-0">
+                    <i class="fas fa-calendar"></i> Tarih: 2025-11-01 &nbsp;|&nbsp;
+                    <i class="fas fa-layer-group"></i> Kategori: Transpalet &nbsp;|&nbsp;
+                    <i class="fas fa-file"></i> PDF Sayısı: 3
+                </p>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#summary">
+                        <i class="fas fa-chart-pie"></i> Özet Rapor
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#pdf-details">
+                        <i class="fas fa-file-alt"></i> PDF Detayları
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#comparison">
+                        <i class="fas fa-balance-scale"></i> Karşılaştırma Matrisi
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#recommendations">
+                        <i class="fas fa-lightbulb"></i> V4 Önerileri
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content">
+                
+                <!-- ÖZET RAPOR -->
+                <div class="tab-pane fade show active" id="summary">
+                    <div class="row">
+                        <!-- Özet İstatistikler -->
+                        <div class="col-md-3">
+                            <div class="summary-box summary-good">
+                                <h4><i class="fas fa-check-circle"></i> Tam Dolu Alanlar</h4>
+                                <h2 class="text-center mb-0">24</h2>
+                                <p class="text-center text-muted mb-0">Alan (Her 3 PDF'de var)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="summary-box summary-warning">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Kısmi Dolu</h4>
+                                <h2 class="text-center mb-0">8</h2>
+                                <p class="text-center text-muted mb-0">Alan (Bazı PDF'lerde eksik)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="summary-box summary-error">
+                                <h4><i class="fas fa-times-circle"></i> Hiç Yok</h4>
+                                <h2 class="text-center mb-0">5</h2>
+                                <p class="text-center text-muted mb-0">Alan (Hiçbir PDF'de yok)</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="summary-box summary-info">
+                                <h4><i class="fas fa-plus-circle"></i> V4 Yeni</h4>
+                                <h2 class="text-center mb-0">12</h2>
+                                <p class="text-center text-muted mb-0">Alan (V4'te eklenmeli)</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kritik Bulgular -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="summary-box summary-error">
+                                <h4><i class="fas fa-exclamation-circle"></i> KRİTİK BULGULAR</h4>
+                                <ul>
+                                    <li><strong>EPL185 PDF'inde Marketing İçeriği Eksik:</strong> "Why Series?", "Platform Design", "Cost Saving" bölümleri yok</li>
+                                    <li><strong>8 Content Variation Sistemi Hiç Yok:</strong> Tüm PDF'lerde sadece tek bir anlatım var</li>
+                                    <li><strong>AI-Focused Keywords Yok:</strong> Mevcut keyword'ler insan odaklı, AI matching için yetersiz</li>
+                                    <li><strong>Primary Specs Standardizasyonu Yok:</strong> Her PDF farklı alanları vurguluyor</li>
+                                    <li><strong>One-Line Description Yok:</strong> Ürün kartları için kısa tanım mevcut değil</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kategori Bazlı Durum -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="summary-box summary-good">
+                                <h4><i class="fas fa-thumbs-up"></i> GÜVENLİ ALANLAR (Kesinlikle Var)</h4>
+                                <ul>
+                                    <li>✅ Teknik Özellikler Tablosu (VDI 2198)</li>
+                                    <li>✅ Kapasite, Ağırlık, Boyutlar</li>
+                                    <li>✅ Batarya Bilgileri (V/Ah)</li>
+                                    <li>✅ Performans Verileri (Hız, Eğim)</li>
+                                    <li>✅ Çatal Boyutları</li>
+                                    <li>✅ Opsiyon Listesi</li>
+                                    <li>✅ Teknik Çizimler</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="summary-box summary-warning">
+                                <h4><i class="fas fa-exclamation-triangle"></i> RİSKLİ ALANLAR (Eksik Olabilir)</h4>
+                                <ul>
+                                    <li>⚠️ Marketing Avantajları (EPL185'te yok)</li>
+                                    <li>⚠️ Platform Tasarım Açıklaması (EPL185'te yok)</li>
+                                    <li>⚠️ Maliyet Tasarrufu (EPL185'te yok)</li>
+                                    <li>⚠️ Kullanım Senaryoları (EPL185'te kısıtlı)</li>
+                                    <li>⚠️ Feature Açıklamaları (EPL185'te daha az)</li>
+                                    <li>⚠️ Container Shipping Data (EPL185'te yok)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PDF DETAYLARI -->
+                <div class="tab-pane fade" id="pdf-details">
+                    
+                    <!-- F4 PDF -->
+                    <div class="pdf-card">
+                        <div class="pdf-header">
+                            <div class="pdf-title">
+                                <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                                <div>
+                                    <h3>F4-EN-Brochure-4.pdf</h3>
+                                    <p class="text-muted mb-0">Model: F4 1.5 Ton | Sayfa: 5 | Boyut: 3.1 MB</p>
+                                </div>
+                            </div>
+                            <div class="pdf-score score-high">
+                                95/100
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-check-circle text-success"></i> Mevcut Alanlar (33)</h5>
+                                <div class="field-table">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50%;">Alan</th>
+                                                <th>Durum</th>
+                                                <th>Kalite</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Teknik Özellikler Tablosu</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Why F Series? Bölümü</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Platform Design Açıklaması</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Maliyet Tasarrufu</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kullanım Senaryoları</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Opsiyon Listesi (Detaylı)</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Batarya Varyasyonları (4 seçenek)</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Çatal Boyutları (12 seçenek)</td>
+                                                <td><span class="badge badge-exists">VAR</span></td>
+                                                <td><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-times-circle text-danger"></i> Eksik Alanlar (V4'te olmalı)</h5>
+                                <div class="field-table">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Alan</th>
+                                                <th>V4 Önemi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>8 Content Variation</td>
+                                                <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-danger">ZORUNLU</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>AI-Focused Keywords (3 kategori)</td>
+                                                <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-danger">ZORUNLU</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>One-Line Description (120-150 char)</td>
+                                                <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-danger">ZORUNLU</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Primary Specs (4 sabit alan)</td>
+                                                <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-warning text-dark">ÖNEMLİ</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Normalization Fields</td>
+                                                <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-warning text-dark">ÖNEMLİ</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- F4-201 PDF -->
+                    <div class="pdf-card">
+                        <div class="pdf-header">
+                            <div class="pdf-title">
+                                <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                                <div>
+                                    <h3>02_F4-201-brochure-CE.pdf</h3>
+                                    <p class="text-muted mb-0">Model: F4-201 2.0 Ton | Sayfa: 5 | Boyut: 5.8 MB</p>
+                                </div>
+                            </div>
+                            <div class="pdf-score score-high">
+                                90/100
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-check-circle text-success"></i> Mevcut Alanlar (31)</h5>
+                                <p class="text-muted small">F4 ile benzer ama birkaç alan daha az detaylı</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-times-circle text-danger"></i> Eksik Alanlar</h5>
+                                <p class="text-muted small">V4 yeni alanları + Kullanım senaryoları F4'ten daha az</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- EPL185 PDF -->
+                    <div class="pdf-card">
+                        <div class="pdf-header">
+                            <div class="pdf-title">
+                                <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                                <div>
+                                    <h3>EPL185.pdf</h3>
+                                    <p class="text-muted mb-0">Model: EPL185 1.8 Ton | Sayfa: 4 | Boyut: 2.5 MB</p>
+                                </div>
+                            </div>
+                            <div class="pdf-score score-medium">
+                                75/100
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-check-circle text-success"></i> Mevcut Alanlar (25)</h5>
+                                <p class="text-muted small">Teknik detaylar tam ama marketing içeriği eksik</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-exclamation-triangle text-warning"></i> Eksik Alanlar (13)</h5>
+                                <div class="field-table">
+                                    <table class="table table-sm table-bordered">
+                                        <tbody>
+                                            <tr>
+                                                <td>"Why F Series?" Bölümü</td>
+                                                <td><span class="badge badge-missing">YOK</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Platform Design Açıklaması</td>
+                                                <td><span class="badge badge-missing">YOK</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Maliyet Tasarrufu (Container data)</td>
+                                                <td><span class="badge badge-missing">YOK</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kullanım Senaryoları (Detaylı)</td>
+                                                <td><span class="badge badge-partial">KISMİ</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>8 Content Variation</td>
+                                                <td><span class="badge badge-missing">YOK</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>AI-Focused Keywords</td>
+                                                <td><span class="badge badge-missing">YOK</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>One-Line Description</td>
+                                                <td><span class="badge badge-missing">YOK</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- KARŞILAŞTIRMA MATRİSİ -->
+                <div class="tab-pane fade" id="comparison">
+                    <div class="comparison-table">
+                        <h3 class="mb-4"><i class="fas fa-table"></i> Alan Karşılaştırma Matrisi</h3>
+                        <p class="text-muted">Aynı kategorideki (Transpalet) 3 PDF'deki tüm alanların karşılaştırması</p>
+                        
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">Alan Adı</th>
+                                    <th style="width: 15%;">F4</th>
+                                    <th style="width: 15%;">F4-201</th>
+                                    <th style="width: 15%;">EPL185</th>
+                                    <th style="width: 25%;">V4 İçin Öneri</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- TEKNİK DETAYLAR GRUBU -->
+                                <tr class="table-secondary">
+                                    <td colspan="5"><strong><i class="fas fa-cog"></i> TEKNİK DETAYLAR (VDI 2198 Standardı)</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Teknik Özellikler Tablosu</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td><span class="badge bg-success">GÜVENLİ</span> Her PDF'de kesin var</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Kapasite (Q)</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 1500kg</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 2000kg</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 1800kg</td>
+                                    <td><span class="badge bg-success">GÜVENLİ</span> Karşılaştırma yapılabilir</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Ağırlık (Service Weight)</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 120kg</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 140kg</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 170kg</td>
+                                    <td><span class="badge bg-success">GÜVENLİ</span> Karşılaştırma yapılabilir</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Batarya (V/Ah)</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 24V/20Ah</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 48V/20Ah</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 48V/20Ah</td>
+                                    <td><span class="badge bg-success">GÜVENLİ</span> Karşılaştırma yapılabilir</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Maks. Eğim (%)</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 6/16%</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 8/16%</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 6/16%</td>
+                                    <td><span class="badge bg-success">GÜVENLİ</span> Karşılaştırma yapılabilir</td>
+                                </tr>
+                                
+                                <!-- OPSİYONLAR GRUBU -->
+                                <tr class="table-secondary">
+                                    <td colspan="5"><strong><i class="fas fa-puzzle-piece"></i> OPSİYONLAR & AKSESUARLAR</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Stabilizing Wheel</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td><span class="badge bg-warning text-dark">DİKKATLİ</span> Farklı anlatım, normalizasyon gerekli</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Batarya Seçenekleri</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 4 seçenek</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 2 seçenek</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 2 seçenek</td>
+                                    <td><span class="badge bg-warning text-dark">DİKKATLİ</span> Sayı karşılaştırması</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Çatal Varyasyonları</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 12 seçenek</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 14 seçenek</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 14 seçenek</td>
+                                    <td><span class="badge bg-warning text-dark">DİKKATLİ</span> Sayı karşılaştırması</td>
+                                </tr>
+                                
+                                <!-- MARKETING İÇERİĞİ GRUBU -->
+                                <tr class="table-secondary">
+                                    <td colspan="5"><strong><i class="fas fa-star"></i> MARKETING & COMPETITIVE ADVANTAGES</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">"Why F Series?" Bölümü</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge bg-danger">RİSKLİ</span> EPL185'te yok, "Veri Yok" göster</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Platform Design Açıklaması</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge bg-danger">RİSKLİ</span> EPL185'te yok</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Maliyet Tasarrufu (Container Shipping)</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 30-40%</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 50%</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge bg-danger">RİSKLİ</span> EPL185'te yok, "Üreticiye Sor" butonu</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Kullanım Senaryoları</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 4 senaryo</td>
+                                    <td class="text-center"><i class="fas fa-check-circle icon-yes"></i> 3 senaryo</td>
+                                    <td class="text-center"><i class="fas fa-exclamation-triangle icon-partial"></i> 2 senaryo</td>
+                                    <td><span class="badge bg-danger">RİSKLİ</span> EPL185'te kısıtlı</td>
+                                </tr>
+                                
+                                <!-- V4 YENİ ALANLAR -->
+                                <tr class="table-secondary">
+                                    <td colspan="5"><strong><i class="fas fa-plus-circle"></i> V4 YENİ ALANLAR (HİÇBİR PDF'DE YOK)</strong></td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">8 Content Variation</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-danger">ZORUNLU</span> AI üretmeli</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">AI-Focused Keywords (3 kategori)</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-danger">ZORUNLU</span> AI üretmeli</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">One-Line Description (120-150 char)</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-danger">ZORUNLU</span> Ürün kartları için</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Primary Specs (4 sabit alan)</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-warning text-dark">ÖNEMLİ</span> Karşılaştırma için</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Normalization Fields</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-warning text-dark">ÖNEMLİ</span> Alan eşleştirme için</td>
+                                </tr>
+                                <tr>
+                                    <td class="field-name">Content Quality Score</td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td class="text-center"><i class="fas fa-times-circle icon-no"></i></td>
+                                    <td><span class="badge badge-v4-new">V4 YENİ</span> <span class="badge bg-info">SEÇİMLİK</span> Kalite takibi için</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- V4 ÖNERİLERİ -->
+                <div class="tab-pane fade" id="recommendations">
+                    <h3 class="mb-4"><i class="fas fa-lightbulb"></i> Shop System V4 İçin Öneriler</h3>
+                    
+                    <!-- Öneri 1 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-check-circle"></i> ÖNERİ 1: 8 Content Variation Sistemi (ZORUNLU)</h5>
+                        <p><strong>Sorun:</strong> Mevcut sistemde her özellik tek bir şekilde anlatılıyor. AI matching, farklı kullanıcı sorguları, SEO varyasyonları için yetersiz.</p>
+                        <p><strong>Çözüm:</strong> Her özellik için 8 farklı anlatım üret:</p>
+                        <ul>
+                            <li><strong>technical:</strong> Teknik detay (ölçümler, sayılar)</li>
+                            <li><strong>benefit:</strong> Müşteriye faydası (sonuç odaklı)</li>
+                            <li><strong>slogan:</strong> 3-5 kelime akılda kalıcı</li>
+                            <li><strong>motto:</strong> 2-3 kelime güçlü ifade</li>
+                            <li><strong>short:</strong> 10-15 kelime özet</li>
+                            <li><strong>long:</strong> 50-80 kelime detaylı açıklama</li>
+                            <li><strong>comparison:</strong> Alternatiflerle karşılaştırma</li>
+                            <li><strong>keywords:</strong> Arama terimleri</li>
+                        </ul>
+                        <p><strong>Örnek (Li-Ion Battery):</strong></p>
+                        <pre class="bg-light p-3 rounded"><code>{
+  "li-ion-battery": {
+    "technical": "24V 20Ah Li-Ion batarya, 2000+ şarj döngüsü, BMS korumalı",
+    "benefit": "Tam gün çalış, şarj bekleme. Kurşun-aside göre %40 daha hafif",
+    "slogan": "Bir Şarj, Tam Gün İş!",
+    "motto": "Güç Hiç Bitmesin",
+    "short": "24V Li-Ion, 2000+ döngü, hafif",
+    "long": "24V 20Ah kapasiteli lityum iyon batarya sistemi...",
+    "comparison": "Li-Ion vs Kurşun-Asit: %40 daha hafif, 3x daha uzun ömür",
+    "keywords": "li-ion, lityum iyon, şarj süresi, batarya ömrü"
+  }
+}</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 2 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-check-circle"></i> ÖNERİ 2: AI-Focused Keywords (3 Kategori) (ZORUNLU)</h5>
+                        <p><strong>Sorun:</strong> Mevcut keyword'ler insan odaklı. AI bu keyword'lerle ürünü bulamıyor.</p>
+                        <p><strong>Çözüm:</strong> 3 kategori keyword sistemi:</p>
+                        <ul>
+                            <li><strong>primary:</strong> Ana arama terimleri (transpalet, elektrikli transpalet)</li>
+                            <li><strong>synonyms:</strong> Eş anlamlılar (palet taşıyıcı, palet kaldırıcı)</li>
+                            <li><strong>usage_jargon:</strong> Kullanım jargonu (palet jack, depo transpaleti)</li>
+                        </ul>
+                        <p><strong>Örnek:</strong></p>
+                        <pre class="bg-light p-3 rounded"><code>{
+  "keywords": {
+    "primary": ["transpalet", "elektrikli transpalet", "li-ion transpalet", "1.5 ton transpalet"],
+    "synonyms": ["palet taşıyıcı", "elektrikli palet kaldırıcı", "akülü transpalet"],
+    "usage_jargon": ["palet jack", "transpalet makinesi", "depo transpaleti", "lojistik transpaleti"]
+  }
+}</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 3 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-check-circle"></i> ÖNERİ 3: One-Line Description (ZORUNLU)</h5>
+                        <p><strong>Sorun:</strong> Ürün kartlarında başlık altında kısa açıklama yok. Kullanıcı ürünü anlamıyor.</p>
+                        <p><strong>Çözüm:</strong> 120-150 karakter kısa tanım ekle.</p>
+                        <p><strong>Örnek:</strong></p>
+                        <pre class="bg-light p-3 rounded"><code>"one_line_description": "1.5 ton kapasiteli, Li-Ion bataryalı, hafif ve kompakt transpalet. Dar koridorlarda yüksek manevra kabiliyeti."</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 4 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-info-circle"></i> ÖNERİ 4: Primary Specs (4 Sabit Alan) (ÖNEMLİ)</h5>
+                        <p><strong>Sorun:</strong> Karşılaştırma sayfasında hangi 4 özellik gösterilecek? Her PDF farklı alanları vurguluyor.</p>
+                        <p><strong>Çözüm:</strong> Kategori bazlı 4 sabit alan belirle.</p>
+                        <p><strong>Transpalet için:</strong></p>
+                        <pre class="bg-light p-3 rounded"><code>{
+  "primary_specs": {
+    "capacity": "1500 kg",
+    "battery": "24V/20Ah Li-Ion",
+    "weight": "120 kg",
+    "fork_length": "1150 mm"
+  }
+}</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 5 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-info-circle"></i> ÖNERİ 5: Normalization Fields (ÖNEMLİ)</h5>
+                        <p><strong>Sorun:</strong> Aynı özellik farklı PDF'lerde farklı isimlerle ("Stabilizing wheel" vs "Castor wheels" vs "Floating wheels")</p>
+                        <p><strong>Çözüm:</strong> Normalizasyon alanları ekle:</p>
+                        <pre class="bg-light p-3 rounded"><code>{
+  "stabilizing_wheel": {
+    "value": true,
+    "original_text": "Industrial floating stabilizing wheels",
+    "_normalized_field": "has_stabilizing_wheel",
+    "_normalized_value": true,
+    "_aliases": ["castor wheels", "floating wheels", "stabilizing wheels"],
+    "_comparison_label": "Stabilize Tekerlek"
+  }
+}</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 6 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-info-circle"></i> ÖNERİ 6: PDF Content Quality Score (SEÇİMLİK)</h5>
+                        <p><strong>Sorun:</strong> Hangi PDF'ler kaliteli, hangiler eksik? Takip sistemi yok.</p>
+                        <p><strong>Çözüm:</strong> Her PDF için içerik skoru hesapla:</p>
+                        <pre class="bg-light p-3 rounded"><code>{
+  "content_quality_score": {
+    "total": 85,
+    "breakdown": {
+      "technical_table": 20,
+      "why_series": 15,
+      "use_cases": 15,
+      "cost_saving": 10,
+      "platform_design": 10,
+      "options": 10,
+      "features": 5
+    },
+    "missing_fields": ["competitive_advantages"],
+    "warnings": ["Maliyet tasarrufu verisi eksik"]
+  }
+}</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 7 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-exclamation-triangle"></i> ÖNERİ 7: Eksik Veri Handling (KRİTİK)</h5>
+                        <p><strong>Sorun:</strong> EPL185 gibi PDF'lerde marketing içeriği eksik. Karşılaştırmada boş alanlar oluşuyor.</p>
+                        <p><strong>Çözüm:</strong> 3 katmanlı handling sistemi:</p>
+                        <ul>
+                            <li><strong>Katman 1 (Teknik):</strong> Her zaman dolu, güvenle karşılaştır</li>
+                            <li><strong>Katman 2 (Opsiyonlar):</strong> Çoğunda dolu, eksik alanları işaretle</li>
+                            <li><strong>Katman 3 (Marketing):</strong> Eksik olabilir, "Veri Yok" + "Üreticiye Sor" butonu</li>
+                        </ul>
+                        <pre class="bg-light p-3 rounded"><code>// EPL185'te eksik alan:
+{
+  "cost_saving": null,
+  "_missing": true,
+  "_missing_reason": "PDF'de bu bölüm yok",
+  "_user_action": "contact_supplier"
+}</code></pre>
+                    </div>
+                    
+                    <!-- Öneri 8 -->
+                    <div class="recommendation">
+                        <h5><i class="fas fa-exclamation-triangle"></i> ÖNERİ 8: FAQ Minimum 12-15 (Kategorize)</h5>
+                        <p><strong>Sorun:</strong> Mevcut FAQ'ler yetersiz ve kategorize değil.</p>
+                        <p><strong>Çözüm:</strong> Minimum 12-15 FAQ, 4 kategoride:</p>
+                        <ul>
+                            <li><strong>Teknik (4-5 soru):</strong> Kapasite, batarya, performans</li>
+                            <li><strong>Kullanım (3-4 soru):</strong> Hangi uygulamalar, nasıl kullanılır</li>
+                            <li><strong>Bakım (2-3 soru):</strong> Bakım periyodu, servis</li>
+                            <li><strong>Satın Alma (2-3 soru):</strong> Fiyat, garanti, teslimat</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Sonuç -->
+                    <div class="alert alert-success mt-4">
+                        <h4><i class="fas fa-check-circle"></i> SONUÇ</h4>
+                        <p><strong>Kesinlikle Olmalı (ZORUNLU):</strong></p>
+                        <ul>
+                            <li>✅ 8 Content Variation</li>
+                            <li>✅ AI-Focused Keywords (3 kategori)</li>
+                            <li>✅ One-Line Description</li>
+                        </ul>
+                        <p><strong>Olması İyi (ÖNEMLİ):</strong></p>
+                        <ul>
+                            <li>⚠️ Primary Specs (4 sabit alan)</li>
+                            <li>⚠️ Normalization Fields</li>
+                            <li>⚠️ Eksik Veri Handling</li>
+                        </ul>
+                        <p><strong>Seçimlik (BONUS):</strong></p>
+                        <ul>
+                            <li>💡 PDF Content Quality Score</li>
+                            <li>💡 FAQ Kategorize</li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

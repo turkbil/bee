@@ -374,16 +374,48 @@
                 loading: false,
                 hasMore: {{ $products->hasMorePages() ? 'true' : 'false' }},
                 lastPage: {{ $products->lastPage() }},
-                view: localStorage.getItem('shopViewMode') || 'grid', // Persist view preference
+                view: null,
+
+                // Cookie helper functions
+                getCookie(name) {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                    return null;
+                },
+
+                setCookie(name, value, days = 365) {
+                    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+                    document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+                },
+
+                getDefaultView() {
+                    return window.innerWidth < 1024 ? 'list' : 'grid';
+                },
 
                 init() {
+                    // Priority: Cookie > localStorage > Responsive Default
+                    const cookieValue = this.getCookie('viewMode');
+                    const localValue = localStorage.getItem('viewMode');
+
+                    if (cookieValue) {
+                        this.view = cookieValue;
+                        localStorage.setItem('viewMode', cookieValue);
+                    } else if (localValue) {
+                        this.view = localValue;
+                        this.setCookie('viewMode', localValue);
+                    } else {
+                        this.view = this.getDefaultView();
+                    }
+
                     // Anasayfa gibi hızlı - direkt infinite scroll setup
                     this.setupInfiniteScroll();
                 },
 
                 toggleView() {
                     this.view = this.view === 'grid' ? 'list' : 'grid';
-                    localStorage.setItem('shopViewMode', this.view); // Save preference
+                    localStorage.setItem('viewMode', this.view);
+                    this.setCookie('viewMode', this.view);
                 },
 
                 setupInfiniteScroll() {

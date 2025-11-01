@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Transpalet Karşılaştırma - Dinamik Örnek</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .comparison-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Ürün seçim bölümü */
+        .product-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .product-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .product-checkbox:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .product-checkbox.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .product-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        .product-checkbox img {
+            width: 80px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+        
+        /* Karşılaştırma tablosu */
+        .comparison-table {
+            display: none;
+        }
+        .comparison-table.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Katman bölümleri */
+        .layer-section {
+            margin-bottom: 40px;
+        }
+        .layer-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid;
+        }
+        .layer-safe { border-bottom-color: #28a745; }
+        .layer-optional { border-bottom-color: #17a2b8; }
+        .layer-marketing { border-bottom-color: #ffc107; }
+        
+        .badge-safe { background: #28a745; }
+        .badge-optional { background: #17a2b8; }
+        .badge-marketing { background: #ffc107; color: #000; }
+        
+        /* Tablo stilleri */
+        .table-comparison {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table-comparison thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .table-comparison thead th {
+            padding: 20px;
+            font-weight: 600;
+            border: none;
+        }
+        .table-comparison tbody tr {
+            transition: all 0.3s;
+        }
+        .table-comparison tbody tr:hover {
+            background: #f8f9fa;
+        }
+        .table-comparison tbody th {
+            background: #f8f9fa;
+            font-weight: 600;
+            width: 200px;
+            padding: 15px;
+        }
+        .table-comparison tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        /* Kategori başlıkları */
+        .category-row {
+            background: #e9ecef !important;
+        }
+        .category-row td {
+            font-weight: bold;
+            font-size: 16px;
+            padding: 15px !important;
+        }
+        
+        /* En iyi değer işareti */
+        .best-value {
+            background: #fff3cd !important;
+            position: relative;
+        }
+        .best-value::after {
+            content: '⭐';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+        
+        /* Eksik veri */
+        .no-data {
+            color: #6c757d;
+            font-style: italic;
+            position: relative;
+        }
+        .no-data .btn-ask {
+            font-size: 12px;
+            padding: 4px 12px;
+            margin-top: 5px;
+        }
+        
+        /* Ürün başlıkları */
+        .product-header {
+            text-align: center;
+        }
+        .product-header img {
+            width: 120px;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .product-header h5 {
+            margin: 10px 0 5px 0;
+            color: white;
+        }
+        .product-header .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .product-header .badge {
+            margin: 5px 2px;
+        }
+        
+        /* Karşılaştır butonu */
+        .btn-compare {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-compare:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .btn-compare:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Alert kutuları */
+        .alert-custom {
+            border-left: 4px solid;
+            border-radius: 8px;
+        }
+        
+        /* Sticky bottom bar */
+        .sticky-compare-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            padding: 15px;
+            z-index: 1000;
+            display: none;
+            animation: slideUp 0.3s;
+        }
+        .sticky-compare-bar.active {
+            display: block;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        
+        .btn-remove-product {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-remove-product:hover {
+            transform: scale(1.2);
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="comparison-container">
+            <!-- Başlık -->
+            <div class="text-center mb-4">
+                <h1 class="mb-2">🔍 Transpalet Karşılaştırma Sistemi</h1>
+                <p class="text-muted">Aynı kategorideki ürünleri karşılaştırın - Dinamik veri örneği</p>
+            </div>
+            
+            <!-- Ürün Seçici -->
+            <div class="product-selector">
+                <h4 class="mb-3"><i class="fas fa-check-square"></i> Karşılaştırmak İstediğiniz Ürünleri Seçin (2-4 ürün)</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="product-checkbox" data-product="f4">
+                            <input type="checkbox" class="product-check" value="f4">
+                            <div class="flex-grow-1">
+                                <strong>F4 1.5 Ton</strong>
+                                <div class="text-muted small">24V/20Ah Li-Ion</div>
+                                <div class="text-success"><strong>1,350 TL</strong></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="product-checkbox" data-product="f4201">
+                            <input type="checkbox" class="product-check" value="f4201">
+                            <div class="flex-grow-1">
+                                <strong>F4-201 2.0 Ton</strong>
+                                <div class="text-muted small">48V/20Ah Li-Ion</div>
+                                <div class="text-success"><strong>2,350 TL</strong></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="product-checkbox" data-product="epl185">
+                            <input type="checkbox" class="product-check" value="epl185">
+                            <div class="flex-grow-1">
+                                <strong>EPL185 1.8 Ton</strong>
+                                <div class="text-muted small">48V/20Ah Li-Ion</div>
+                                <div class="text-muted"><strong>İletişime Geçin</strong></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <button class="btn-compare" id="btnCompare" disabled>
+                        <i class="fas fa-balance-scale"></i> Karşılaştır (<span id="selectedCount">0</span>)
+                    </button>
+                    <div class="mt-2 text-muted small" id="selectionHint">En az 2 ürün seçmelisiniz</div>
+                </div>
+            </div>
+            
+            <!-- Karşılaştırma Tablosu -->
+            <div class="comparison-table" id="comparisonTable">
+                
+                <!-- KATMAN 1: GÜVENLİ TEKNİK DETAYLAR -->
+                <div class="layer-section">
+                    <div class="layer-header layer-safe">
+                        <h3 class="mb-0"><i class="fas fa-check-circle text-success"></i> Teknik Özellikler</h3>
+                        <span class="badge badge-safe">✓ Doğrulanmış Veriler</span>
+                    </div>
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle"></i> 
+                        Bu veriler VDI 2198 standartlarına uygun teknik tablolardan alınmıştır. Tüm ürünlerde mevcuttur.
+                    </p>
+                    
+                    <table class="table table-bordered table-comparison">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Özellik</th>
+                                <th class="product-col" data-product="f4" style="display:none;">
+                                    <div class="product-header">
+                                        <h5>F4 1.5 Ton</h5>
+                                        <div class="price">1,350 TL</div>
+                                        <span class="badge bg-success">En Hafif</span>
+                                        <button class="btn-remove-product" data-product="f4" title="Kaldır">×</button>
+                                    </div>
+                                </th>
+                                <th class="product-col" data-product="f4201" style="display:none;">
+                                    <div class="product-header">
+                                        <h5>F4-201 2.0 Ton</h5>
+                                        <div class="price">2,350 TL</div>
+                                        <span class="badge bg-warning text-dark">En Güçlü</span>
+                                        <button class="btn-remove-product" data-product="f4201" title="Kaldır">×</button>
+                                    </div>
+                                </th>
+                                <th class="product-col" data-product="epl185" style="display:none;">
+                                    <div class="product-header">
+                                        <h5>EPL185 1.8 Ton</h5>
+                                        <div class="price text-white">İletişime Geçin</div>
+                                        <span class="badge bg-info">Yüksek Eğim</span>
+                                        <button class="btn-remove-product" data-product="epl185" title="Kaldır">×</button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Temel Özellikler -->
+                            <tr class="category-row">
+                                <td colspan="4"><i class="fas fa-cog"></i> Temel Özellikler</td>
+                            </tr>
+                            <tr>
+                                <th>Kapasite</th>
+                                <td class="product-col" data-product="f4" style="display:none;">1500 kg</td>
+                                <td class="product-col best-value" data-product="f4201" style="display:none;">2000 kg</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">1800 kg</td>
+                            </tr>
+                            <tr>
+                                <th>Ağırlık</th>
+                                <td class="product-col best-value" data-product="f4" style="display:none;">120 kg</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">140 kg</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">170 kg</td>
+                            </tr>
+                            <tr>
+                                <th>Fiyat</th>
+                                <td class="product-col best-value" data-product="f4" style="display:none;">1,350 TL</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">2,350 TL</td>
+                                <td class="product-col" data-product="epl185" style="display:none;"><span class="text-muted">İletişime Geçin</span></td>
+                            </tr>
+                            
+                            <!-- Batarya -->
+                            <tr class="category-row">
+                                <td colspan="4"><i class="fas fa-battery-full"></i> Batarya & Enerji</td>
+                            </tr>
+                            <tr>
+                                <th>Batarya Voltajı</th>
+                                <td class="product-col" data-product="f4" style="display:none;">24V</td>
+                                <td class="product-col best-value" data-product="f4201" style="display:none;">48V</td>
+                                <td class="product-col best-value" data-product="epl185" style="display:none;">48V</td>
+                            </tr>
+                            <tr>
+                                <th>Batarya Kapasitesi</th>
+                                <td class="product-col" data-product="f4" style="display:none;">20Ah</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">20Ah (2x24V)</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">20Ah (30Ah opsiyonel)</td>
+                            </tr>
+                            <tr>
+                                <th>Batarya Tipi</th>
+                                <td class="product-col" data-product="f4" style="display:none;">Li-Ion (Çıkarılabilir)</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">Li-Ion (Plug-in&out)</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">Li-Ion (Metal koruma)</td>
+                            </tr>
+                            
+                            <!-- Performans -->
+                            <tr class="category-row">
+                                <td colspan="4"><i class="fas fa-tachometer-alt"></i> Performans</td>
+                            </tr>
+                            <tr>
+                                <th>Seyir Hızı (yüklü)</th>
+                                <td class="product-col" data-product="f4" style="display:none;">4 km/h</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">4.5 km/h</td>
+                                <td class="product-col best-value" data-product="epl185" style="display:none;">5 km/h</td>
+                            </tr>
+                            <tr>
+                                <th>Maks. Eğim (yüklü)</th>
+                                <td class="product-col" data-product="f4" style="display:none;">6%</td>
+                                <td class="product-col best-value" data-product="f4201" style="display:none;">8%</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">6%</td>
+                            </tr>
+                            <tr>
+                                <th>Dönüş Yarıçapı</th>
+                                <td class="product-col" data-product="f4" style="display:none;">1360 mm</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">1360 mm</td>
+                                <td class="product-col best-value" data-product="epl185" style="display:none;">1330 mm</td>
+                            </tr>
+                            
+                            <!-- Boyutlar -->
+                            <tr class="category-row">
+                                <td colspan="4"><i class="fas fa-ruler-combined"></i> Boyutlar</td>
+                            </tr>
+                            <tr>
+                                <th>Çatal Uzunluğu</th>
+                                <td class="product-col" data-product="f4" style="display:none;">1150 mm</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">1150 mm</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">1150 mm</td>
+                            </tr>
+                            <tr>
+                                <th>Genel Uzunluk</th>
+                                <td class="product-col" data-product="f4" style="display:none;">1550 mm</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">1550 mm</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">1550 mm</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- KATMAN 2: OPSIYONLAR -->
+                <div class="layer-section">
+                    <div class="layer-header layer-optional">
+                        <h3 class="mb-0"><i class="fas fa-puzzle-piece text-info"></i> Opsiyonlar & Aksesuarlar</h3>
+                        <span class="badge badge-optional">ⓘ Kısmi Veri</span>
+                    </div>
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle"></i> 
+                        Bu özellikler opsiyonel olarak sunulmaktadır. Her üründe aynı detay seviyesinde olmayabilir.
+                    </p>
+                    
+                    <table class="table table-bordered table-comparison">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Özellik</th>
+                                <th class="product-col" data-product="f4" style="display:none;">F4</th>
+                                <th class="product-col" data-product="f4201" style="display:none;">F4-201</th>
+                                <th class="product-col" data-product="epl185" style="display:none;">EPL185</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Stabilize Tekerlek</th>
+                                <td class="product-col" data-product="f4" style="display:none;">✅ Opsiyonel<br><small class="text-muted">Big loads için</small></td>
+                                <td class="product-col" data-product="f4201" style="display:none;">✅ Opsiyonel<br><small class="text-muted">Büyük yükler için</small></td>
+                                <td class="product-col best-value" data-product="epl185" style="display:none;">✅ Opsiyonel<br><small class="text-muted">Floating design</small></td>
+                            </tr>
+                            <tr>
+                                <th>Çatal Boyutu Varyasyonları</th>
+                                <td class="product-col" data-product="f4" style="display:none;">12 farklı seçenek<br><small class="text-muted">900-1500mm</small></td>
+                                <td class="product-col best-value" data-product="f4201" style="display:none;">14 farklı seçenek<br><small class="text-muted">900-1500mm</small></td>
+                                <td class="product-col best-value" data-product="epl185" style="display:none;">14 farklı seçenek<br><small class="text-muted">900-1500mm</small></td>
+                            </tr>
+                            <tr>
+                                <th>Batarya Seçenekleri</th>
+                                <td class="product-col best-value" data-product="f4" style="display:none;">4 seçenek<br><small class="text-muted">20Ah×1, ×2, ×3, ×4</small></td>
+                                <td class="product-col" data-product="f4201" style="display:none;">2 seçenek<br><small class="text-muted">20Ah×2, ×4</small></td>
+                                <td class="product-col" data-product="epl185" style="display:none;">2 seçenek<br><small class="text-muted">20Ah, 30Ah</small></td>
+                            </tr>
+                            <tr>
+                                <th>Şarj Sistemi</th>
+                                <td class="product-col" data-product="f4" style="display:none;">24V-5A External<br><small class="text-muted">Opsiyonel: 10A</small></td>
+                                <td class="product-col" data-product="f4201" style="display:none;">24V-5A External x2<br><small class="text-muted">Opsiyonel: 10A x2</small></td>
+                                <td class="product-col best-value" data-product="epl185" style="display:none;">48V-10A Integrated<br><small class="text-muted">Hızlı şarj</small></td>
+                            </tr>
+                            <tr>
+                                <th>Turtle Speed (Yavaş Mod)</th>
+                                <td class="product-col" data-product="f4" style="display:none;">✅ Standart</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">✅ Standart</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">✅ Standart</td>
+                            </tr>
+                            <tr>
+                                <th>Buzzer (Sesli Uyarı)</th>
+                                <td class="product-col" data-product="f4" style="display:none;">✅ Standart</td>
+                                <td class="product-col" data-product="f4201" style="display:none;">✅ Standart</td>
+                                <td class="product-col" data-product="epl185" style="display:none;">✅ Standart</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- KATMAN 3: MARKETING AVANTAJLARI -->
+                <div class="layer-section">
+                    <div class="layer-header layer-marketing">
+                        <h3 class="mb-0"><i class="fas fa-star text-warning"></i> Rekabetçi Avantajlar</h3>
+                        <span class="badge badge-marketing">⚠ Eksik Olabilir</span>
+                    </div>
+                    <div class="alert alert-warning alert-custom" style="border-left-color: #ffc107;">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        <strong>Dikkat:</strong> Bu bölümdeki veriler tüm ürünler için mevcut olmayabilir. Eksik alanlar için üreticiyle iletişime geçebilirsiniz.
+                    </div>
+                    
+                    <table class="table table-bordered table-comparison">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px;">Avantaj</th>
+                                <th class="product-col" data-product="f4" style="display:none;">F4</th>
+                                <th class="product-col" data-product="f4201" style="display:none;">F4-201</th>
+                                <th class="product-col" data-product="epl185" style="display:none;">EPL185</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Maliyet Tasarrufu</th>
+                                <td class="product-col" data-product="f4" style="display:none;">
+                                    ✅ <strong>30-40% nakliye indirimi</strong><br>
+                                    <small class="text-muted">176 units/40' container (vs 108)</small>
+                                </td>
+                                <td class="product-col best-value" data-product="f4201" style="display:none;">
+                                    ✅ <strong>50% nakliye indirimi</strong><br>
+                                    <small class="text-muted">164 units/40' container (vs 108)</small>
+                                </td>
+                                <td class="product-col no-data" data-product="epl185" style="display:none;">
+                                    <i class="fas fa-question-circle"></i> <strong>Veri Mevcut Değil</strong><br>
+                                    <button class="btn btn-sm btn-outline-primary btn-ask">Üreticiye Sor</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Platform Tasarım</th>
+                                <td class="product-col best-value" data-product="f4" style="display:none;">
+                                    ✅ <strong>F Platform</strong><br>
+                                    <small class="text-muted">4 farklı chassis seçeneği</small>
+                                </td>
+                                <td class="product-col" data-product="f4201" style="display:none;">
+                                    ✅ <strong>F Platform</strong><br>
+                                    <small class="text-muted">Esnek konfigürasyon</small>
+                                </td>
+                                <td class="product-col no-data" data-product="epl185" style="display:none;">
+                                    <i class="fas fa-question-circle"></i> <strong>Veri Mevcut Değil</strong><br>
+                                    <button class="btn btn-sm btn-outline-primary btn-ask">Üreticiye Sor</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Kullanım Senaryoları</th>
+                                <td class="product-col best-value" data-product="f4" style="display:none;">
+                                    ✅ <strong>Çok yönlü</strong><br>
+                                    <small class="text-muted">• Standard usage<br>• Intensive usage<br>• Standard loads<br>• Big loads</small>
+                                </td>
+                                <td class="product-col" data-product="f4201" style="display:none;">
+                                    ✅ <strong>Yüksek performans</strong><br>
+                                    <small class="text-muted">• Productivity boost<br>• Big loads<br>• Frequent operation</small>
+                                </td>
+                                <td class="product-col" data-product="epl185" style="display:none;">
+                                    ⚠️ <strong>Sınırlı veri</strong><br>
+                                    <small class="text-muted">• Maximum stability<br>• Narrow spaces</small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Özel Teknolojiler</th>
+                                <td class="product-col" data-product="f4" style="display:none;">
+                                    • Removable storage compartment<br>
+                                    • Small size design (l2=400mm)
+                                </td>
+                                <td class="product-col best-value" data-product="f4201" style="display:none;">
+                                    • 48V sistem (güç artışı)<br>
+                                    • Square-tube tiller head<br>
+                                    • BLDC motor
+                                </td>
+                                <td class="product-col" data-product="epl185" style="display:none;">
+                                    • Floating battery cartridge<br>
+                                    • 10% gradeability (1300kg yükte)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Aksiyon Butonları -->
+                <div class="row mt-4">
+                    <div class="col-md-4 product-col" data-product="f4" style="display:none;">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success btn-lg">
+                                <i class="fas fa-shopping-cart"></i> F4 Satın Al (1,350 TL)
+                            </button>
+                            <button class="btn btn-outline-secondary">
+                                <i class="fas fa-info-circle"></i> Detaylı Bilgi
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 product-col" data-product="f4201" style="display:none;">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success btn-lg">
+                                <i class="fas fa-shopping-cart"></i> F4-201 Satın Al (2,350 TL)
+                            </button>
+                            <button class="btn btn-outline-secondary">
+                                <i class="fas fa-info-circle"></i> Detaylı Bilgi
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4 product-col" data-product="epl185" style="display:none;">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary btn-lg">
+                                <i class="fas fa-envelope"></i> EPL185 Fiyat İste
+                            </button>
+                            <button class="btn btn-outline-secondary">
+                                <i class="fas fa-info-circle"></i> Detaylı Bilgi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Veri Kaynağı -->
+                <div class="mt-4 p-3 bg-light rounded">
+                    <small class="text-muted">
+                        <i class="fas fa-database"></i> <strong>Veri Kaynağı:</strong><br>
+                        • Teknik Özellikler: VDI 2198 standartlarına uygun üretici teknik tabloları<br>
+                        • Opsiyonlar: Ürün broşürleri ve opsiyon listeleri<br>
+                        • Rekabetçi Avantajlar: Üretici marketing dökümanları (tüm ürünlerde mevcut olmayabilir)
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Ürün seçim sistemi
+        const productCheckboxes = document.querySelectorAll('.product-check');
+        const btnCompare = document.getElementById('btnCompare');
+        const selectedCount = document.getElementById('selectedCount');
+        const selectionHint = document.getElementById('selectionHint');
+        const comparisonTable = document.getElementById('comparisonTable');
+        
+        let selectedProducts = [];
+        
+        productCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const productId = this.value;
+                const parentLabel = this.closest('.product-checkbox');
+                
+                if (this.checked) {
+                    selectedProducts.push(productId);
+                    parentLabel.classList.add('selected');
+                } else {
+                    selectedProducts = selectedProducts.filter(p => p !== productId);
+                    parentLabel.classList.remove('selected');
+                }
+                
+                updateUI();
+            });
+        });
+        
+        function updateUI() {
+            const count = selectedProducts.length;
+            selectedCount.textContent = count;
+            
+            if (count < 2) {
+                btnCompare.disabled = true;
+                selectionHint.textContent = 'En az 2 ürün seçmelisiniz';
+                selectionHint.className = 'mt-2 text-muted small';
+            } else if (count > 4) {
+                btnCompare.disabled = true;
+                selectionHint.textContent = 'En fazla 4 ürün seçebilirsiniz';
+                selectionHint.className = 'mt-2 text-danger small';
+            } else {
+                btnCompare.disabled = false;
+                selectionHint.textContent = `${count} ürün seçildi - Karşılaştırmaya hazır!`;
+                selectionHint.className = 'mt-2 text-success small';
+            }
+        }
+        
+        btnCompare.addEventListener('click', function() {
+            showComparison();
+        });
+        
+        function showComparison() {
+            // Tüm ürün kolonlarını gizle
+            document.querySelectorAll('.product-col').forEach(col => {
+                col.style.display = 'none';
+            });
+            
+            // Seçili ürün kolonlarını göster
+            selectedProducts.forEach(productId => {
+                document.querySelectorAll(`.product-col[data-product="${productId}"]`).forEach(col => {
+                    col.style.display = '';
+                });
+            });
+            
+            // Karşılaştırma tablosunu göster
+            comparisonTable.classList.add('active');
+            
+            // Scroll to comparison
+            comparisonTable.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Ürün kaldırma
+        document.querySelectorAll('.btn-remove-product').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const productId = this.dataset.product;
+                const checkbox = document.querySelector(`.product-check[value="${productId}"]`);
+                if (checkbox) {
+                    checkbox.checked = false;
+                    checkbox.dispatchEvent(new Event('change'));
+                    showComparison();
+                }
+            });
+        });
+        
+        // "Üreticiye Sor" butonları
+        document.querySelectorAll('.btn-ask').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Üreticiye yönlendiriliyorsunuz...\n\nGerçek sistemde bu butona tıklandığında:\n- İletişim formu açılır\n- Ürün bilgileri otomatik eklenir\n- Sorulan özellik belirtilir');
+            });
+        });
+    </script>
+</body>
+</html>

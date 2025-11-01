@@ -322,80 +322,24 @@
                 <p class="text-xl text-gray-400 mb-8">Kasım ayına özel fiyat avantajını kaçırmayın</p>
 
                 <!-- Countdown (Dynamic) -->
-                <div x-data="countdown()" x-init="init()" class="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
+                <div id="countdown" class="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
                     <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" x-text="days.toString().padStart(2, '0')">02</div>
+                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-days">01</div>
                         <div class="text-gray-400 text-sm">Gün</div>
                     </div>
                     <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" x-text="hours.toString().padStart(2, '0')">00</div>
+                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-hours">18</div>
                         <div class="text-gray-400 text-sm">Saat</div>
                     </div>
                     <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" x-text="minutes.toString().padStart(2, '0')">00</div>
+                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-minutes">45</div>
                         <div class="text-gray-400 text-sm">Dakika</div>
                     </div>
                     <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent pulse-subtle" x-text="seconds.toString().padStart(2, '0')">00</div>
+                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent pulse-subtle" id="countdown-seconds">23</div>
                         <div class="text-gray-400 text-sm">Saniye</div>
                     </div>
                 </div>
-
-                <script>
-                function countdown() {
-                    return {
-                        days: 2,
-                        hours: 0,
-                        minutes: 0,
-                        seconds: 0,
-                        endTime: null,
-
-                        init() {
-                            // localStorage'dan bitiş zamanını al veya yeni oluştur
-                            const stored = localStorage.getItem('campaignEndTime');
-                            if (stored) {
-                                this.endTime = parseInt(stored);
-                            } else {
-                                this.resetCountdown();
-                            }
-
-                            this.updateCountdown();
-                            setInterval(() => this.updateCountdown(), 1000);
-                        },
-
-                        resetCountdown() {
-                            // 2 gün (48 saat) sonrası için bitiş zamanı oluştur
-                            this.endTime = Date.now() + (2 * 24 * 60 * 60 * 1000);
-                            localStorage.setItem('campaignEndTime', this.endTime);
-                        },
-
-                        updateCountdown() {
-                            const now = Date.now();
-                            const diff = this.endTime - now;
-
-                            // Eğer kalan süre 2 saat veya daha azsa (7200000 ms = 2 saat)
-                            if (diff <= 7200000 && diff > 0) {
-                                // 2 saat kalınca sıfırla ve yeni 2 gün başlat
-                                this.resetCountdown();
-                                return;
-                            }
-
-                            // Eğer süre bittiyse (negatif) sıfırla
-                            if (diff < 0) {
-                                this.resetCountdown();
-                                return;
-                            }
-
-                            // Geri sayımı hesapla
-                            const totalSeconds = Math.floor(diff / 1000);
-                            this.days = Math.floor(totalSeconds / (24 * 60 * 60));
-                            this.hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
-                            this.minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
-                            this.seconds = totalSeconds % 60;
-                        }
-                    }
-                }
-                </script>
 
                 <!-- Price Comparison -->
                 <div class="bg-black/30 border border-yellow-600/30 rounded-2xl p-6 mb-8">
@@ -539,5 +483,85 @@
             <div class="text-sm text-gray-600">© 2025 İXTİF İç ve Dış Ticaret A.Ş. | Tüm hakları saklıdır.</div>
         </div>
     </footer>
+
+    <!-- Countdown Script -->
+    <script>
+    (function() {
+        let endTime = null;
+
+        function getRandomTime() {
+            // 1 gün 12 saat ile 2 gün arasında rastgele süre
+            const minHours = 36; // 1.5 gün
+            const maxHours = 48; // 2 gün
+            const randomHours = Math.floor(Math.random() * (maxHours - minHours + 1)) + minHours;
+
+            // Rastgele dakika (0-59)
+            const randomMinutes = Math.floor(Math.random() * 60);
+
+            // Rastgele saniye (0-59)
+            const randomSeconds = Math.floor(Math.random() * 60);
+
+            // Toplam milisaniye
+            const totalMs = (randomHours * 60 * 60 * 1000) +
+                           (randomMinutes * 60 * 1000) +
+                           (randomSeconds * 1000);
+
+            return Date.now() + totalMs;
+        }
+
+        function resetCountdown() {
+            endTime = getRandomTime();
+            localStorage.setItem('campaignEndTime', endTime);
+        }
+
+        function pad(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        function updateCountdown() {
+            const now = Date.now();
+            const diff = endTime - now;
+
+            // 2 saat kalınca sıfırla (7200000 ms = 2 saat)
+            if (diff <= 7200000 && diff > 0) {
+                resetCountdown();
+                return;
+            }
+
+            // Süre bittiyse sıfırla
+            if (diff < 0) {
+                resetCountdown();
+                return;
+            }
+
+            // Geri sayımı hesapla
+            const totalSeconds = Math.floor(diff / 1000);
+            const days = Math.floor(totalSeconds / (24 * 60 * 60));
+            const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+            const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+            const seconds = totalSeconds % 60;
+
+            // DOM güncelle
+            document.getElementById('countdown-days').textContent = pad(days);
+            document.getElementById('countdown-hours').textContent = pad(hours);
+            document.getElementById('countdown-minutes').textContent = pad(minutes);
+            document.getElementById('countdown-seconds').textContent = pad(seconds);
+        }
+
+        // Initialize
+        const stored = localStorage.getItem('campaignEndTime');
+        if (stored) {
+            endTime = parseInt(stored);
+        } else {
+            resetCountdown();
+        }
+
+        // İlk güncelleme
+        updateCountdown();
+
+        // Her saniye güncelle
+        setInterval(updateCountdown, 1000);
+    })();
+    </script>
 </body>
 </html>

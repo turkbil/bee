@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V4 Prompt Karar Formu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+        .header h1 {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        /* Soru Kartları */
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        .question-card h4 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .question-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* Seçenekler */
+        .option-group {
+            margin-top: 15px;
+        }
+        .option {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        .option.selected {
+            border-color: #667eea;
+            background: #e7f3ff;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        .option label {
+            cursor: pointer;
+            margin: 0;
+            flex-grow: 1;
+        }
+        
+        /* Örnek Kutuları */
+        .example-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .example-box strong {
+            color: #856404;
+        }
+        
+        /* Butonlar */
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-submit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Sonuç Ekranı */
+        .result-box {
+            display: none;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+        .result-box.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+        .progress {
+            height: 30px;
+            border-radius: 15px;
+        }
+        .progress-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-clipboard-list"></i> V4 SİSTEM KARAR FORMU</h1>
+                <p class="text-muted">Aşağıdaki 10 soruyu yanıtla, senin için özel prompt sistemini hazırlayalım</p>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar">
+                        <span id="progressText">0/10 Soru</span>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="decisionForm">
+                
+                <!-- SORU 1: 8 Farklı Anlatım Gerekli mi? -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">1</span>
+                        Her özellik için 8 farklı anlatım şekli gerekli mi?
+                    </h4>
+                    <p class="text-muted">Aynı özelliği farklı şekillerde anlatmak (teknik, fayda, slogan, kısa, uzun, karşılaştırma, vb.)</p>
+                    
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q1" value="hepsi" required>
+                            <div>
+                                <strong>Evet, hepsi gerekli (8 çeşit)</strong>
+                                <div class="text-muted small">Her özellik için 8 farklı şekilde yaz</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q1" value="secmeli">
+                            <div>
+                                <strong>Hayır, sadece önemli olanlar</strong>
+                                <div class="text-muted small">Sadece benim seçtiklerimi yaz (örn: teknik + fayda + kısa)</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q1" value="yok">
+                            <div>
+                                <strong>Hiç gerek yok</strong>
+                                <div class="text-muted small">Tek anlatım yeter</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 2: Hangi Anlatım Şekilleri Olmalı? -->
+                <div class="question-card" id="q2-container" style="display:none;">
+                    <h4>
+                        <span class="question-number">2</span>
+                        Hangi anlatım şekilleri MUTLAKA olmalı? (Birden fazla seçebilirsin)
+                    </h4>
+                    <p class="text-muted">İşaretle, sadece bunları yazalım</p>
+                    
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="technical">
+                            <div>
+                                <strong>TEKNİK</strong> - Sayılarla, ölçülerle anlat
+                                <div class="example-box">Örnek: "24V 20Ah Li-Ion batarya, 2000+ şarj döngüsü, BMS korumalı"</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="benefit">
+                            <div>
+                                <strong>FAYDA</strong> - Müşteriye ne kazandıracağını anlat
+                                <div class="example-box">Örnek: "Tam gün çalış, şarj bekleme. %40 daha hafif"</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="slogan">
+                            <div>
+                                <strong>SLOGAN</strong> - 3-5 kelime akılda kalıcı söz
+                                <div class="example-box">Örnek: "Bir Şarj, Tam Gün İş!"</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="motto">
+                            <div>
+                                <strong>MOTTO</strong> - 2-3 kelime güçlü söz
+                                <div class="example-box">Örnek: "Güç Hiç Bitmesin"</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="short">
+                            <div>
+                                <strong>KISA</strong> - 10-15 kelime özet
+                                <div class="example-box">Örnek: "24V Li-Ion, 2000+ döngü, hafif, BMS korumalı"</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="long">
+                            <div>
+                                <strong>UZUN</strong> - 50-80 kelime detaylı anlatım
+                                <div class="example-box">Örnek: "24V 20Ah kapasiteli lityum iyon batarya sistemi, geleneksel kurşun-asit bataryalara göre %40 daha hafif..."</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="comparison">
+                            <div>
+                                <strong>KARŞILAŞTIRMA</strong> - Rakiple kıyasla
+                                <div class="example-box">Örnek: "Li-Ion vs Kurşun-Asit: %40 daha hafif, 3x daha uzun ömür"</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="checkbox" name="q2" value="keywords">
+                            <div>
+                                <strong>ANAHTAR KELİMELER</strong> - 5-8 arama kelimesi
+                                <div class="example-box">Örnek: "li-ion, lityum iyon, şarj süresi, batarya ömrü"</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 3: Tek Satır Açıklama -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">3</span>
+                        Tek satır açıklama (120-150 karakter) gerekli mi?
+                    </h4>
+                    <p class="text-muted">Ürün kartlarında başlık altında gösterilecek kısa tanıtım cümlesi</p>
+                    
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q3" value="evet" required>
+                            <div>
+                                <strong>Evet, gerekli</strong>
+                                <div class="example-box">Örnek: "1.5 ton kapasiteli, Li-Ion bataryalı, hafif ve kompakt transpalet. Dar koridorlarda yüksek manevra kabiliyeti."</div>
+                            </div>
+                        </label>
+                        
+                        <label class="option">
+                            <input type="radio" name="q3" value="hayir">
+                            <div>
+                                <strong>Hayır, gerek yok</strong>
+                                <div class="text-muted small">Ürün başlığı yeter</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 4: Arama Kelimeleri -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">4</span>
+                        Arama kelimeleri nasıl organize edilsin?
+                    </h4>
+                    <p class="text-muted">3 kategori: Ana kelimeler, Eş anlamlılar, Kullanım terimleri</p>
+                    
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q4" value="3kategori" required>
+                            <div>
+                                <strong>3 Kategoriye Ayır</strong>
+                                <div class="example-box">
+                                    <strong>Ana:</strong> transpalet, elektrikli transpalet<br>
+                                    <strong>Eş anlamlı:</strong> palet taşıyıcı, palet kaldırıcı<br>
+                                    <strong>Kullanım:</strong> palet jack, depo transpaleti
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q4" value="tek">
+                            <div>
+                                <strong>Tek Liste Yeter</strong>
+                                <div class="text-muted small">Virgülle ayrılmış kelime listesi</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q4" value="yok">
+                            <div>
+                                <strong>Arama kelimelerine gerek yok</strong>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 5: Ana Özellikler -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">5</span>
+                        Ana özellikler (4 tane) kim belirlesin?
+                    </h4>
+                    <p class="text-muted">Karşılaştırmada vurgulanacak 4 ana özellik (kapasite, batarya, ağırlık, vb.)</p>
+                    
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q5" value="sen" required>
+                            <div>
+                                <strong>Ben belirleyeceğim</strong>
+                                <div class="text-muted small">Her kategori için hangi 4 özellik olacağını ben söylerim, AI ona göre PDF'den çeker</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q5" value="ai">
+                            <div>
+                                <strong>AI otomatik seçsin</strong>
+                                <div class="text-muted small">AI PDF'den en önemli 4 özelliği otomatik seçsin</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q5" value="yok">
+                            <div>
+                                <strong>Ana özelliklere gerek yok</strong>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 6: Sıkça Sorulan Sorular -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">6</span>
+                        Sıkça sorulan sorular kaç tane olsun?
+                    </h4>
+
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q6" value="12-15-kategorize" required>
+                            <div>
+                                <strong>12-15 Soru, Kategorilere Ayrılsın</strong>
+                                <div class="text-muted small">Teknik (4-5), Kullanım (3-4), Bakım (2-3), Satın Alma (2-3)</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q6" value="12-15-yalın">
+                            <div>
+                                <strong>12-15 Soru, Kategorisiz Liste</strong>
+                                <div class="text-muted small">Sadece sırayla soru-cevap</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q6" value="10-12">
+                            <div>
+                                <strong>10-12 Soru Yeter</strong>
+                                <div class="text-muted small">Şu anki sistem gibi</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 7: Alan Eşleştirme -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">7</span>
+                        Farklı PDF'lerdeki aynı özellikler eşleştirilsin mi?
+                    </h4>
+                    <p class="text-muted">Örnek: Bir PDF'de "Stabilizing wheel", diğerinde "Castor wheels" yazıyor. Bunlar aynı şey.</p>
+
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q7" value="evet" required>
+                            <div>
+                                <strong>Evet, eşleştirsin</strong>
+                                <div class="text-muted small">AI farklı isimleri tek başlık altında toplasın, karşılaştırma tutarlı olsun</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q7" value="hayir">
+                            <div>
+                                <strong>Hayır, PDF'deki gibi kalsın</strong>
+                                <div class="text-muted small">Her PDF'nin kendi isimlerini aynen kullan</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 8: Eksik Veri -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">8</span>
+                        PDF'de veri eksikse AI ne yapsın?
+                    </h4>
+                    <p class="text-muted">Örnek: Bazı PDF'lerde bazı bilgiler yok</p>
+
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q8" value="null" required>
+                            <div>
+                                <strong>"Boş" yaz, uyarı ver</strong>
+                                <div class="text-muted small">Database'de "null" olarak kaydedilir, karşılaştırmada "Veri Yok" gösterilir</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q8" value="varsay">
+                            <div>
+                                <strong>AI tahmin etsin (RİSKLİ!)</strong>
+                                <div class="text-muted small">Benzer ürünlerden tahmin yaparak yaz - yanlış olabilir!</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q8" value="bosbirak">
+                            <div>
+                                <strong>Boş bırak, uyarı da verme</strong>
+                                <div class="text-muted small">O alanı hiç oluşturma</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 9: Yazı Tonu -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">9</span>
+                        AI'nın yazı tarzı nasıl olsun?
+                    </h4>
+
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q9" value="profesyonel" required>
+                            <div>
+                                <strong>Profesyonel & Teknik</strong>
+                                <div class="text-muted small">İş dünyasına yönelik, ciddi, teknik detaylı</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q9" value="ikna">
+                            <div>
+                                <strong>İkna Edici & Satış Odaklı</strong>
+                                <div class="text-muted small">Avantajları vurgula, müşteri kazanmaya odaklan</div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q9" value="dengeli">
+                            <div>
+                                <strong>Dengeli (İkisi Karışık)</strong>
+                                <div class="text-muted small">Hem teknik bilgi, hem fayda anlat</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- SORU 10: Karşılaştırma -->
+                <div class="question-card">
+                    <h4>
+                        <span class="question-number">10</span>
+                        Ürün karşılaştırmasında neler olsun?
+                    </h4>
+
+                    <div class="option-group">
+                        <label class="option">
+                            <input type="radio" name="q10" value="2katman" required>
+                            <div>
+                                <strong>Sadece 2 Bölüm</strong>
+                                <div class="text-muted small">
+                                    1. Teknik Özellikler (kapasite, ağırlık, vb.)<br>
+                                    2. Opsiyonlar & Aksesuarlar
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="option">
+                            <input type="radio" name="q10" value="3katman">
+                            <div>
+                                <strong>3 Bölüm (Pazarlama dahil)</strong>
+                                <div class="text-muted small">
+                                    1. Teknik Özellikler<br>
+                                    2. Opsiyonlar<br>
+                                    3. Pazarlama/Avantajlar (bazı ürünlerde olmayabilir uyarısı ile)
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-check-circle"></i> Kararları Kaydet
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Sonuç Kutusu -->
+            <div class="result-box" id="resultBox">
+                <h3><i class="fas fa-check-circle"></i> Kararların Kaydedildi!</h3>
+                <p>Seçimlerine göre özel prompt hazırlanıyor...</p>
+                <div id="resultContent"></div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" onclick="copyResults()">
+                        <i class="fas fa-copy"></i> Sonuçları Kopyala
+                    </button>
+                    <button class="btn btn-secondary" onclick="location.reload()">
+                        <i class="fas fa-redo"></i> Yeniden Başla
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Form tracking
+        const form = document.getElementById('decisionForm');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const totalQuestions = 10;
+        
+        // Soru 1 değişince Soru 2'yi göster/gizle
+        document.querySelectorAll('input[name="q1"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const q2Container = document.getElementById('q2-container');
+                if (this.value === 'secmeli') {
+                    q2Container.style.display = 'block';
+                } else {
+                    q2Container.style.display = 'none';
+                }
+                updateProgress();
+            });
+        });
+        
+        // Option seçim efekti
+        document.querySelectorAll('.option input').forEach(input => {
+            input.addEventListener('change', function() {
+                // Radio için: Aynı gruptakileri temizle
+                if (this.type === 'radio') {
+                    document.querySelectorAll(`input[name="${this.name}"]`).forEach(radio => {
+                        radio.closest('.option').classList.remove('selected');
+                    });
+                }
+                
+                // Seçili olanı işaretle
+                if (this.checked) {
+                    this.closest('.option').classList.add('selected');
+                } else {
+                    this.closest('.option').classList.remove('selected');
+                }
+                
+                updateProgress();
+            });
+        });
+        
+        // Progress bar güncelle
+        function updateProgress() {
+            let answered = 0;
+            
+            // Radio sorular
+            ['q1', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'].forEach(q => {
+                if (document.querySelector(`input[name="${q}"]:checked`)) {
+                    answered++;
+                }
+            });
+            
+            const percentage = (answered / totalQuestions) * 100;
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = `${answered}/${totalQuestions} Soru`;
+        }
+        
+        // Form submit
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const results = {};
+            
+            // Radio butonları topla
+            ['q1', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'].forEach(q => {
+                results[q] = formData.get(q);
+            });
+            
+            // Checkbox'ları topla (Q2)
+            const q2Values = [];
+            document.querySelectorAll('input[name="q2"]:checked').forEach(cb => {
+                q2Values.push(cb.value);
+            });
+            if (q2Values.length > 0) {
+                results.q2 = q2Values;
+            }
+            
+            // Sonuç göster
+            displayResults(results);
+        });
+        
+        function displayResults(results) {
+            const resultBox = document.getElementById('resultBox');
+            const resultContent = document.getElementById('resultContent');
+            
+            let html = '<h5>Seçimleriniz:</h5><ul>';
+            
+            // Sonuçları listele
+            html += `<li><strong>8 Variation:</strong> ${results.q1}</li>`;
+            if (results.q2) {
+                html += `<li><strong>Seçili Variation'lar:</strong> ${results.q2.join(', ')}</li>`;
+            }
+            html += `<li><strong>One-Line Description:</strong> ${results.q3}</li>`;
+            html += `<li><strong>AI Keywords:</strong> ${results.q4}</li>`;
+            html += `<li><strong>Primary Specs:</strong> ${results.q5}</li>`;
+            html += `<li><strong>FAQ:</strong> ${results.q6}</li>`;
+            html += `<li><strong>Normalization:</strong> ${results.q7}</li>`;
+            html += `<li><strong>Eksik Veri:</strong> ${results.q8}</li>`;
+            html += `<li><strong>Yazı Tonu:</strong> ${results.q9}</li>`;
+            html += `<li><strong>Karşılaştırma:</strong> ${results.q10}</li>`;
+            html += '</ul>';
+            
+            resultContent.innerHTML = html;
+            resultBox.classList.add('show');
+            
+            // Scroll to result
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+            
+            // JSON olarak console'a yaz
+            console.log('KARAR JSON:', JSON.stringify(results, null, 2));
+        }
+        
+        function copyResults() {
+            const resultContent = document.getElementById('resultContent').innerText;
+            navigator.clipboard.writeText(resultContent).then(() => {
+                alert('Sonuçlar kopyalandı!');
+            });
+        }
+        
+        // İlk yüklemede progress'i güncelle
+        updateProgress();
+    </script>
+</body>
+</html>

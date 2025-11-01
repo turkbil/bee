@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transpalet Karşılaştırması - F4 vs F4-201 vs EPL153</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .product-header {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .product-header img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+        }
+        .product-header h4 {
+            font-size: 1rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-header .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+        .spec-row {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .spec-row:hover {
+            background: #f8f9fa;
+        }
+        .spec-label {
+            flex: 0 0 200px;
+            padding: 1rem;
+            font-weight: 600;
+            background: #f8f9fa;
+            border-right: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        .spec-value {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .best-value {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+        .best-value::after {
+            content: "✓";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #28a745;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .highlight-diff {
+            background: #fff3cd;
+        }
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 1rem;
+            border-top: 3px solid #0d6efd;
+            box-shadow: 0 -4px 6px rgba(0,0,0,0.1);
+        }
+        .action-buttons button {
+            width: 100%;
+        }
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .missing-data {
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center mb-3">
+                <i class="fas fa-pallet text-primary"></i>
+                Transpalet Karşılaştırması
+            </h1>
+            <p class="text-center text-muted">
+                Ürünleri yan yana karşılaştırın, size en uygun olanı seçin
+            </p>
+        </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="comparison-table">
+
+        <!-- Product Headers -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-info-circle me-2"></i> Ürün
+            </div>
+
+            <!-- F4 1.5 Ton -->
+            <div class="spec-value" style="flex-direction: column; background: #f8f9fa;">
+                <div class="product-header">
+                    <div class="badge bg-success mb-2">En Hafif</div>
+                    <h4>İXTİF F4 - 1.5 Ton Li-Ion Transpalet</h4>
+                    <p class="text-muted mb-2">SKU: F4-1500</p>
+                    <div class="price">1,350 TL</div>
+                </div>
+            </div>
+
+            <!-- F4-201 2.0 Ton -->
+            <div class="spec-value" style="flex-direction: column; background: #f8f9fa;">
+                <div class="product-header">
+                    <div class="badge bg-primary mb-2">En Güçlü</div>
+                    <h4>İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet</h4>
+                    <p class="text-muted mb-2">SKU: F4-201</p>
+                    <div class="price">2,350 TL</div>
+                </div>
+            </div>
+
+            <!-- EPL153 -->
+            <div class="spec-value" style="flex-direction: column; background: #f8f9fa;">
+                <div class="product-header">
+                    <div class="badge bg-warning mb-2">En Hızlı Kaldırma</div>
+                    <h4>İXTİF EPL153 - 1.5 Ton Li-Ion Transpalet</h4>
+                    <p class="text-muted mb-2">SKU: EPL153</p>
+                    <div class="price">İletişime Geçin</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category: Temel Özellikler -->
+        <div class="category-header">
+            <i class="fas fa-info-circle me-2"></i> Temel Özellikler
+        </div>
+
+        <!-- Kapasite -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-weight-hanging me-2 text-primary"></i>
+                Kapasite
+            </div>
+            <div class="spec-value">
+                1500 kg
+            </div>
+            <div class="spec-value best-value">
+                2000 kg
+            </div>
+            <div class="spec-value">
+                1.5 ton
+            </div>
+        </div>
+
+        <!-- Batarya Voltajı -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-battery-full me-2 text-success"></i>
+                Batarya Voltajı
+            </div>
+            <div class="spec-value">
+                24V / 20Ah<br>
+                <small class="text-muted">(2×24V opsiyon)</small>
+            </div>
+            <div class="spec-value best-value">
+                48V
+            </div>
+            <div class="spec-value">
+                24V
+            </div>
+        </div>
+
+        <!-- Batarya Tipi -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-leaf me-2 text-success"></i>
+                Batarya Tipi
+            </div>
+            <div class="spec-value">
+                Li-Ion
+            </div>
+            <div class="spec-value">
+                Li-Ion
+            </div>
+            <div class="spec-value">
+                Li-Ion
+            </div>
+        </div>
+
+        <!-- Ağırlık -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-balance-scale me-2 text-warning"></i>
+                Ağırlık (Servis)
+            </div>
+            <div class="spec-value best-value">
+                120 kg
+            </div>
+            <div class="spec-value">
+                140 kg
+            </div>
+            <div class="spec-value best-value">
+                120 kg
+            </div>
+        </div>
+
+        <!-- Category: Performans -->
+        <div class="category-header">
+            <i class="fas fa-tachometer-alt me-2"></i> Performans
+        </div>
+
+        <!-- Hız -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-running me-2 text-info"></i>
+                Hız (yüklü/yüksüz)
+            </div>
+            <div class="spec-value">
+                4.0 / 4.5 km/s
+            </div>
+            <div class="spec-value best-value">
+                5 km/h
+            </div>
+            <div class="spec-value best-value">
+                5.0 km/h
+            </div>
+        </div>
+
+        <!-- Kaldırma Yüksekliği -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-arrows-alt-v me-2 text-primary"></i>
+                Kaldırma Yüksekliği
+            </div>
+            <div class="spec-value">
+                105 mm
+            </div>
+            <div class="spec-value">
+                105 mm
+            </div>
+            <div class="spec-value best-value">
+                115 mm
+            </div>
+        </div>
+
+        <!-- Dönüş Yarıçapı -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-sync-alt me-2 text-secondary"></i>
+                Dönüş Yarıçapı
+            </div>
+            <div class="spec-value">
+                1360 mm
+            </div>
+            <div class="spec-value">
+                1360 mm
+            </div>
+            <div class="spec-value best-value">
+                1330 mm
+            </div>
+        </div>
+
+        <!-- Category: Çatal ve Tekerlekler -->
+        <div class="category-header">
+            <i class="fas fa-grip-horizontal me-2"></i> Çatal ve Tekerlekler
+        </div>
+
+        <!-- Çatal Ölçüleri -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-ruler-horizontal me-2 text-info"></i>
+                Çatal Ölçüleri
+            </div>
+            <div class="spec-value">
+                55 × 150 × 1150 mm
+            </div>
+            <div class="spec-value best-value">
+                1550mm
+            </div>
+            <div class="spec-value">
+                50×150×1150 mm
+            </div>
+        </div>
+
+        <!-- Ön Tekerlek -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-dot-circle me-2 text-secondary"></i>
+                Ön Tekerlek
+            </div>
+            <div class="spec-value">
+                210 × 70 mm
+            </div>
+            <div class="spec-value missing-data">
+                Bilgi yok
+            </div>
+            <div class="spec-value missing-data">
+                Bilgi yok
+            </div>
+        </div>
+
+        <!-- Category: Güvenlik -->
+        <div class="category-header">
+            <i class="fas fa-shield-alt me-2"></i> Güvenlik
+        </div>
+
+        <!-- Fren Sistemi -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-hand-paper me-2 text-danger"></i>
+                Fren Sistemi
+            </div>
+            <div class="spec-value">
+                Elektromanyetik
+            </div>
+            <div class="spec-value missing-data">
+                Bilgi yok
+            </div>
+            <div class="spec-value">
+                Elektromanyetik
+            </div>
+        </div>
+
+        <!-- Category: Fiyat Karşılaştırma -->
+        <div class="category-header">
+            <i class="fas fa-tags me-2"></i> Fiyat ve Değer
+        </div>
+
+        <!-- Fiyat -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-lira-sign me-2 text-success"></i>
+                Fiyat
+            </div>
+            <div class="spec-value best-value">
+                <strong>1,350 TL</strong>
+            </div>
+            <div class="spec-value">
+                2,350 TL
+            </div>
+            <div class="spec-value">
+                İletişime Geçin
+            </div>
+        </div>
+
+        <!-- Fiyat/Kapasite Oranı -->
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-calculator me-2 text-info"></i>
+                Fiyat/Kapasite Oranı
+            </div>
+            <div class="spec-value best-value">
+                <strong>0.9 TL/kg</strong><br>
+                <small class="text-muted">(1350 ÷ 1500)</small>
+            </div>
+            <div class="spec-value">
+                1.175 TL/kg<br>
+                <small class="text-muted">(2350 ÷ 2000)</small>
+            </div>
+            <div class="spec-value missing-data">
+                -
+            </div>
+        </div>
+
+        <!-- Kategori: Öne Çıkan Avantajlar -->
+        <div class="category-header">
+            <i class="fas fa-star me-2"></i> Öne Çıkan Avantajlar
+        </div>
+
+        <div class="spec-row">
+            <div class="spec-label">
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                En İyi Özellikler
+            </div>
+            <div class="spec-value" style="flex-direction: column; align-items: flex-start;">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-check text-success"></i> En hafif (120 kg)</li>
+                    <li><i class="fas fa-check text-success"></i> En uygun fiyat</li>
+                    <li><i class="fas fa-check text-success"></i> Çift batarya opsiyonu</li>
+                    <li><i class="fas fa-check text-success"></i> Detaylı tekerlek bilgisi</li>
+                </ul>
+            </div>
+            <div class="spec-value" style="flex-direction: column; align-items: flex-start;">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-check text-primary"></i> En yüksek kapasite (2 ton)</li>
+                    <li><i class="fas fa-check text-primary"></i> En güçlü batarya (48V)</li>
+                    <li><i class="fas fa-check text-primary"></i> En uzun çatal (1550mm)</li>
+                </ul>
+            </div>
+            <div class="spec-value" style="flex-direction: column; align-items: flex-start;">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-check text-warning"></i> En yüksek kaldırma (115mm)</li>
+                    <li><i class="fas fa-check text-warning"></i> En dar dönüş (1330mm)</li>
+                    <li><i class="fas fa-check text-warning"></i> En hızlı (5.0 km/h)</li>
+                    <li><i class="fas fa-check text-warning"></i> Hafif (120 kg)</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-success btn-lg mb-2">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    F4 1.5 Ton Seç
+                </button>
+                <p class="text-center small text-muted mb-0">
+                    Hafif, uygun fiyatlı, çok yönlü
+                </p>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-primary btn-lg mb-2">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    F4-201 2.0 Ton Seç
+                </button>
+                <p class="text-center small text-muted mb-0">
+                    Güçlü, yüksek kapasite, hızlı
+                </p>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-warning btn-lg mb-2">
+                    <i class="fas fa-phone me-2"></i>
+                    EPL153 İletişim
+                </button>
+                <p class="text-center small text-muted mb-0">
+                    Yüksek kaldırma, dar dönüş
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="alert alert-info mt-4">
+        <h5><i class="fas fa-lightbulb me-2"></i> Nasıl Seçerim?</h5>
+        <div class="row">
+            <div class="col-md-4">
+                <strong>F4 1.5 Ton için:</strong>
+                <ul class="small">
+                    <li>E-ticaret, market, küçük depolar</li>
+                    <li>Hafif-orta yük taşıma</li>
+                    <li>Bütçe dostu çözüm</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <strong>F4-201 2.0 Ton için:</strong>
+                <ul class="small">
+                    <li>Orta-büyük ölçekli depolar</li>
+                    <li>Ağır yük taşıma (2 ton'a kadar)</li>
+                    <li>Yoğun operasyonlar</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <strong>EPL153 1.5 Ton için:</strong>
+                <ul class="small">
+                    <li>Dar koridor uygulamaları</li>
+                    <li>Yüksek kaldırma gereksinimi</li>
+                    <li>Manevra öncelikli işler</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Note -->
+    <div class="card bg-dark text-white mt-4">
+        <div class="card-body">
+            <h5><i class="fas fa-database me-2"></i> Veri Kaynağı</h5>
+            <p class="mb-2"><strong>Database:</strong> tenant_ixtif.shop_products</p>
+            <p class="mb-2"><strong>Ürünler:</strong></p>
+            <ul class="small mb-0">
+                <li>F4 1.5 Ton (ID: 245, SKU: F4-1500)</li>
+                <li>F4-201 2.0 Ton (ID: 241, SKU: F4-201)</li>
+                <li>EPL153 1.5 Ton (ID: 118, SKU: EPL153)</li>
+            </ul>
+            <hr>
+            <p class="small mb-0">
+                <i class="fas fa-info-circle"></i>
+                Bu karşılaştırma gerçek veritabanı verilerinden otomatik oluşturulmuştur.
+                ✅ işaretli alanlar kategori bazında "en iyi" değerdir.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

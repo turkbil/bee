@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F4 Transpalet - Mevcut vs Yeni Sistem Karşılaştırması</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .section-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            margin: 20px 0 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .missing { background-color: #ffebee; border-left: 4px solid #f44336; }
+        .exists { background-color: #e8f5e9; border-left: 4px solid #4caf50; }
+        .different { background-color: #fff3e0; border-left: 4px solid #ff9800; }
+        .card { margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .badge-count { font-size: 1.2em; margin-left: 10px; }
+        h1 { color: #333; margin: 30px 0; }
+        .sticky-header { position: sticky; top: 0; z-index: 1000; background: white; padding: 15px 0; border-bottom: 2px solid #ddd; }
+        .icon-example { color: #667eea; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="sticky-header">
+            <h1 class="text-center">
+                <i class="fas fa-pallet icon-example"></i>
+                F4 1.5 Ton Lityum Akülü Transpalet - Sistem Karşılaştırması
+            </h1>
+        </div>
+
+        <div class="row mt-4">
+            <!-- MEVCUT SİSTEM (Boş - Henüz DB'de yok) -->
+            <div class="col-md-6">
+                <div class="alert alert-warning text-center">
+                    <h3><i class="fas fa-database"></i> MEVCUT SİSTEM</h3>
+                    <p class="mb-0"><strong>Veritabanında F4 ürünü henüz yok!</strong></p>
+                    <small>Bu karşılaştırma için örnek ürün verisi gösterilecek</small>
+                </div>
+
+                <!-- BAŞLIK -->
+                <div class="section-title">
+                    <i class="fas fa-heading"></i> BAŞLIK
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                    <small class="text-muted">Henüz ürün eklenmemiş</small>
+                </div>
+
+                <!-- PRIMARY SPECS -->
+                <div class="section-title">
+                    <i class="fas fa-star"></i> PRIMARY SPECS
+                    <span class="badge bg-danger badge-count">0</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- HIGHLIGHTED FEATURES -->
+                <div class="section-title">
+                    <i class="fas fa-lightbulb"></i> HIGHLIGHTED FEATURES
+                    <span class="badge bg-danger badge-count">0</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- TECHNICAL SPECS -->
+                <div class="section-title">
+                    <i class="fas fa-cogs"></i> TECHNICAL SPECS
+                    <span class="badge bg-danger badge-count">0 section, 0 property</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- USE CASES -->
+                <div class="section-title">
+                    <i class="fas fa-briefcase"></i> USE CASES
+                    <span class="badge bg-danger badge-count">0</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- FAQ -->
+                <div class="section-title">
+                    <i class="fas fa-question-circle"></i> FAQ
+                    <span class="badge bg-danger badge-count">0</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- TARGET INDUSTRIES -->
+                <div class="section-title">
+                    <i class="fas fa-building"></i> TARGET INDUSTRIES
+                    <span class="badge bg-danger badge-count">0</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- COMPETITIVE ADVANTAGES -->
+                <div class="section-title">
+                    <i class="fas fa-trophy"></i> COMPETITIVE ADVANTAGES
+                    <span class="badge bg-danger badge-count">0</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+
+                <!-- ANAHTAR KELİMELER -->
+                <div class="section-title">
+                    <i class="fas fa-key"></i> ANAHTAR KELİMELER (AI İçin)
+                    <span class="badge bg-danger badge-count">YOK</span>
+                </div>
+                <div class="card missing p-3">
+                    <p class="mb-0"><strong>YOK</strong></p>
+                </div>
+            </div>
+
+            <!-- YENİ SİSTEM (PDF'den) -->
+            <div class="col-md-6">
+                <div class="alert alert-success text-center">
+                    <h3><i class="fas fa-file-pdf"></i> YENİ SİSTEM (PDF'den)</h3>
+                    <p class="mb-0"><strong>F4-EN-Brochure-4.pdf</strong></p>
+                </div>
+
+                <!-- BAŞLIK -->
+                <div class="section-title">
+                    <i class="fas fa-heading"></i> BAŞLIK
+                </div>
+                <div class="card exists p-3">
+                    <h5 class="mb-2"><i class="fas fa-pallet icon-example"></i> F4 1.5 Ton Lityum Akülü Transpalet</h5>
+                    <div class="mt-2">
+                        <small class="text-muted d-block">Format: [Model] [Kapasite] [Enerji] [Kategori]</small>
+                        <small class="text-muted d-block">Slug: f4-15-ton-lityum-akulu-transpalet</small>
+                    </div>
+                </div>
+
+                <!-- PRIMARY SPECS -->
+                <div class="section-title">
+                    <i class="fas fa-star"></i> PRIMARY SPECS
+                    <span class="badge bg-success badge-count">4</span>
+                </div>
+                <div class="card exists p-3">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="border p-2 rounded">
+                                <i class="fas fa-weight-hanging icon-example"></i>
+                                <strong>Kapasite:</strong> 1500 kg
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border p-2 rounded">
+                                <i class="fas fa-battery-full icon-example"></i>
+                                <strong>Batarya:</strong> 24V 20Ah Li-Ion
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border p-2 rounded">
+                                <i class="fas fa-ruler-combined icon-example"></i>
+                                <strong>Çatal:</strong> 1150mm
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border p-2 rounded">
+                                <i class="fas fa-weight icon-example"></i>
+                                <strong>Ağırlık:</strong> 120 kg (Kompakt!)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HIGHLIGHTED FEATURES -->
+                <div class="section-title">
+                    <i class="fas fa-lightbulb"></i> HIGHLIGHTED FEATURES
+                    <span class="badge bg-success badge-count">6</span>
+                </div>
+                <div class="card exists p-3">
+                    <ul class="mb-0">
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Çok Yönlü Kullanım:</strong> Standart yükten ağır yüke kadar</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Kompakt Tasarım:</strong> 120 kg hafif, 400mm kısa gövde</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Çift Batarya Seçeneği:</strong> Tam zamanlı çalışma için 2x 24V/20Ah</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Taşınabilir Depolama:</strong> Çıkarılabilir saklama bölmesi</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Stabilizasyon Tekerleği:</strong> Ağır yüklerde denge (opsiyonel)</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Esnek Çatal Seçenekleri:</strong> 900-1500mm arası uzunluklar</li>
+                    </ul>
+                </div>
+
+                <!-- TECHNICAL SPECS -->
+                <div class="section-title">
+                    <i class="fas fa-cogs"></i> TECHNICAL SPECS
+                    <span class="badge bg-success badge-count">12 section, 65+ property</span>
+                </div>
+                <div class="card exists p-3">
+                    <div class="accordion" id="techSpecs">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#general">
+                                    <i class="fas fa-info-circle icon-example"></i> Genel Bilgiler (6 property)
+                                </button>
+                            </h2>
+                            <div id="general" class="accordion-collapse collapse" data-bs-parent="#techSpecs">
+                                <div class="accordion-body">
+                                    <small>
+                                        • Üretici: EP Equipment<br>
+                                        • Model: F4<br>
+                                        • Sürüş Tipi: Electric<br>
+                                        • Operatör: Pedestrian (Yürüyerek)<br>
+                                        • Versiyon: V2307.02<br>
+                                        • Sertifika: CE
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#capacity">
+                                    <i class="fas fa-weight-hanging icon-example"></i> Kapasite ve Ağırlıklar (6 property)
+                                </button>
+                            </h2>
+                            <div id="capacity" class="accordion-collapse collapse" data-bs-parent="#techSpecs">
+                                <div class="accordion-body">
+                                    <small>
+                                        • Yük Kapasitesi: 1500 kg<br>
+                                        • Yük Merkez Mesafesi: 600 mm<br>
+                                        • Servis Ağırlığı: 120 kg<br>
+                                        • Aks Yükü (Yüklü Ön/Arka): 480/1140 kg<br>
+                                        • Aks Yükü (Boş Ön/Arka): 90/30 kg<br>
+                                        • Yük Mesafesi (x): 950 mm
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dimensions">
+                                    <i class="fas fa-ruler-combined icon-example"></i> Boyutlar (14 property)
+                                </button>
+                            </h2>
+                            <div id="dimensions" class="accordion-collapse collapse" data-bs-parent="#techSpecs">
+                                <div class="accordion-body">
+                                    <small>
+                                        • Toplam Uzunluk: 1550 mm<br>
+                                        • Çatal Yüzüne Uzunluk: 400 mm (Çok kompakt!)<br>
+                                        • Genişlik: 590/695 mm<br>
+                                        • Çatal Boyutları: 55x150x1150 mm<br>
+                                        • Çatal Aralığı: 560/685 mm<br>
+                                        • Dönüş Yarıçapı: 1360 mm<br>
+                                        • Koridor Genişliği (1000x1200): 2160 mm<br>
+                                        • Koridor Genişliği (800x1200): 2025 mm<br>
+                                        • Zemin Açıklığı: 25 mm<br>
+                                        • Kaldırma Yüksekliği: 105 mm<br>
+                                        • İndirilmiş Yükseklik: 88 mm<br>
+                                        • Tutamaç Yüksekliği: 750-1190 mm<br>
+                                        • Aks Mesafesi: 1180 mm
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-2 mb-0">
+                            <small><i class="fas fa-info-circle"></i> Toplam 12 section gösteriliyor (Elektrik, Performans, Tekerlek, Fren, Kontrol, Güvenlik, Çevre, Bakım, Opsiyonlar...)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USE CASES -->
+                <div class="section-title">
+                    <i class="fas fa-briefcase"></i> USE CASES
+                    <span class="badge bg-success badge-count">8</span>
+                </div>
+                <div class="card exists p-3">
+                    <ul class="mb-0">
+                        <li><i class="fas fa-store icon-example"></i> Perakende mağaza arka alanlarında kompakt palet taşıma</li>
+                        <li><i class="fas fa-box icon-example"></i> E-ticaret depolarında hızlı sipariş hazırlama operasyonları</li>
+                        <li><i class="fas fa-warehouse icon-example"></i> Dar koridorlu küçük depolarda hafif-orta yük taşıma</li>
+                        <li><i class="fas fa-truck-loading icon-example"></i> Yükleme/boşaltma rampaları için hafif ve taşınabilir çözüm</li>
+                        <li><i class="fas fa-industry icon-example"></i> Üretim tesislerinde hat arası malzeme transferi</li>
+                        <li><i class="fas fa-snowflake icon-example"></i> Soğuk hava depolarında kompakt operasyon (Li-Ion soğuğa dayanıklı)</li>
+                        <li><i class="fas fa-pills icon-example"></i> İlaç/sağlık ürünleri depolarında temiz ve sessiz taşıma</li>
+                        <li><i class="fas fa-utensils icon-example"></i> Gıda depolarında hijyenik ve sıfır emisyonlu operasyon</li>
+                    </ul>
+                </div>
+
+                <!-- FAQ -->
+                <div class="section-title">
+                    <i class="fas fa-question-circle"></i> FAQ
+                    <span class="badge bg-success badge-count">12 (Minimum 10)</span>
+                </div>
+                <div class="card exists p-3">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    <i class="fas fa-battery-full icon-example"></i> F4 tam şarjda ne kadar süre çalışır?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <small>Standart 24V/20Ah Li-Ion batarya ile hafif-orta yük taşımada yaklaşık 4-6 saat çalışma süresi sağlar. Yoğun kullanım için 2x 24V/20Ah (çift batarya) seçeneği ile 8-10 saat kesintisiz operasyon mümkündür.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    <i class="fas fa-ruler icon-example"></i> Farklı çatal uzunlukları var mı?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    <small>Evet. F4, 900mm, 1000mm, 1150mm (standart), 1220mm, 1350mm ve 1500mm çatal uzunluklarında mevcuttur. Ayrıca 560mm ve 685mm olmak üzere iki farklı genişlik seçeneği vardır.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-2 mb-0">
+                            <small><i class="fas fa-info-circle"></i> Toplam 12 FAQ oluşturulacak (Kullanım, Teknik, Opsiyonlar, Bakım, Satın Alma kategorilerinde)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARGET INDUSTRIES -->
+                <div class="section-title">
+                    <i class="fas fa-building"></i> TARGET INDUSTRIES
+                    <span class="badge bg-success badge-count">18</span>
+                </div>
+                <div class="card exists p-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <ul class="small mb-0">
+                                <li>Perakende zincir mağazaları</li>
+                                <li>E-ticaret ve fulfillment</li>
+                                <li>Küçük-orta boy depolar</li>
+                                <li>Gıda ve içecek dağıtımı</li>
+                                <li>İlaç ve sağlık ürünleri</li>
+                                <li>Soğuk hava deposu</li>
+                                <li>Elektronik ürün depoları</li>
+                                <li>Tekstil ve hazır giyim</li>
+                                <li>Mobilya mağazaları</li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="small mb-0">
+                                <li>Market ve süpermarketler</li>
+                                <li>Küçük üretim tesisleri</li>
+                                <li>Ambalaj ve paketleme</li>
+                                <li>Matbaa ve basım</li>
+                                <li>Kozmetik ürün depoları</li>
+                                <li>Kitap ve kırtasiye</li>
+                                <li>Otomotiv yedek parça (küçük)</li>
+                                <li>Hızlı tüketim ürünleri (FMCG)</li>
+                                <li>Toptan ticaret depoları</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mt-2 mb-0">
+                        <small><i class="fas fa-exclamation-triangle"></i> <strong>Not:</strong> Kompakt tasarım ve hafif yapı odaklı sektörler seçildi</small>
+                    </div>
+                </div>
+
+                <!-- COMPETITIVE ADVANTAGES -->
+                <div class="section-title">
+                    <i class="fas fa-trophy"></i> COMPETITIVE ADVANTAGES
+                    <span class="badge bg-success badge-count">7</span>
+                </div>
+                <div class="card exists p-3">
+                    <ul class="mb-0">
+                        <li><i class="fas fa-chart-line text-success"></i> <strong>30-40% Daha Ucuz Nakliye:</strong> 40' konteyner 176 adet (rakip 108)</li>
+                        <li><i class="fas fa-feather text-success"></i> <strong>%40 Daha Hafif:</strong> 120 kg (rakipler ~200 kg)</li>
+                        <li><i class="fas fa-compress text-success"></i> <strong>%30 Daha Kompakt:</strong> 400mm kısa gövde (rakipler ~550mm)</li>
+                        <li><i class="fas fa-battery-full text-success"></i> <strong>Li-Ion Teknoloji:</strong> Kurşun aside göre 3x uzun ömür, sıfır bakım</li>
+                        <li><i class="fas fa-puzzle-piece text-success"></i> <strong>Modüler Platform:</strong> Tek batarya/çift batarya/stabilizasyon seçenekleri</li>
+                        <li><i class="fas fa-box-open text-success"></i> <strong>4'lü Kutu Paketleme:</strong> Toptan dağıtımda kolaylık</li>
+                        <li><i class="fas fa-wrench text-success"></i> <strong>Retrofit Uyumlu:</strong> Fabrika veya sonradan aksesuar takılabilir</li>
+                    </ul>
+                </div>
+
+                <!-- ANAHTAR KELİMELER -->
+                <div class="section-title">
+                    <i class="fas fa-key"></i> ANAHTAR KELİMELER (AI İçin)
+                    <span class="badge bg-success badge-count">3 Kategori</span>
+                </div>
+                <div class="card exists p-3">
+                    <div class="mb-3">
+                        <strong><i class="fas fa-tags icon-example"></i> Ana Kelimeler (8):</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-primary me-1">1.5 ton</span>
+                            <span class="badge bg-primary me-1">lityum</span>
+                            <span class="badge bg-primary me-1">akülü</span>
+                            <span class="badge bg-primary me-1">transpalet</span>
+                            <span class="badge bg-primary me-1">kompakt</span>
+                            <span class="badge bg-primary me-1">hafif</span>
+                            <span class="badge bg-primary me-1">F4</span>
+                            <span class="badge bg-primary me-1">palet taşıma</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong><i class="fas fa-equals icon-example"></i> Eş Anlamlılar (15):</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-secondary me-1">li-ion</span>
+                            <span class="badge bg-secondary me-1">lithium</span>
+                            <span class="badge bg-secondary me-1">akü</span>
+                            <span class="badge bg-secondary me-1">batarya</span>
+                            <span class="badge bg-secondary me-1">pil</span>
+                            <span class="badge bg-secondary me-1">elektrikli</span>
+                            <span class="badge bg-secondary me-1">1500 kg</span>
+                            <span class="badge bg-secondary me-1">1.5 t</span>
+                            <span class="badge bg-secondary me-1">küçük</span>
+                            <span class="badge bg-secondary me-1">mini</span>
+                            <span class="badge bg-secondary me-1">şarjlı</span>
+                            <span class="badge bg-secondary me-1">portif</span>
+                            <span class="badge bg-secondary me-1">palet jaki</span>
+                            <span class="badge bg-secondary me-1">palet arabası</span>
+                            <span class="badge bg-secondary me-1">manuel transpalet</span>
+                        </div>
+                    </div>
+                    <div>
+                        <strong><i class="fas fa-briefcase icon-example"></i> Kullanım Alanı + Jargon (12):</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-info me-1">depo</span>
+                            <span class="badge bg-info me-1">warehouse</span>
+                            <span class="badge bg-info me-1">dar koridor</span>
+                            <span class="badge bg-info me-1">e-ticaret</span>
+                            <span class="badge bg-info me-1">perakende</span>
+                            <span class="badge bg-info me-1">market</span>
+                            <span class="badge bg-info me-1">raf arası</span>
+                            <span class="badge bg-info me-1">palet</span>
+                            <span class="badge bg-info me-1">euro palet</span>
+                            <span class="badge bg-info me-1">lojistik</span>
+                            <span class="badge bg-info me-1">dağıtım</span>
+                            <span class="badge bg-info me-1">yük taşıma</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UZUN AÇIKLAMA (Body) -->
+                <div class="section-title">
+                    <i class="fas fa-file-alt"></i> UZUN AÇIKLAMA (Description)
+                    <span class="badge bg-success badge-count">500 kelime</span>
+                </div>
+                <div class="card exists p-3">
+                    <h6><i class="fas fa-book-open icon-example"></i> Hikaye + Profesyonel + İncelik</h6>
+                    <div class="border-start border-3 border-primary ps-3 mt-2">
+                        <p class="small mb-2"><strong>1. HİKAYE (Samimi, Dikkat Çekici):</strong></p>
+                        <p class="small text-muted fst-italic">
+                            "F4'ü depoya soktuğunuz anda farkı hissedeceksiniz. Rakiplerinizin 200 kg ağırlığındaki transpaletiyle
+                            boğuşurken, siz 120 kg'lık F4 ile dar koridorlarda dans eder gibi hareket edeceksiniz. 400mm kompakt
+                            gövdesi, rakiplerin giremediği dar alanlara kolayca girer..."
+                        </p>
+                        <hr class="my-2">
+                        <p class="small mb-2"><strong>2. PROFESYONEL (Teknik Detaylar):</strong></p>
+                        <p class="small text-muted">
+                            "F4, EP Equipment'ın platform F tasarımı üzerine kurulmuş modüler bir transpalet sistemidir.
+                            24V/20Ah Li-Ion batarya teknolojisi ile donatılmış olup, yoğun kullanım için 2x batarya konfigürasyonu
+                            seçeneği sunar. Polyurethane yük tekerlekleri (210x70mm) ve hassas mekanik direksiyon sistemi ile
+                            1360mm dönüş yarıçapında mükemmel manevra kabiliyeti sağlar..."
+                        </p>
+                        <hr class="my-2">
+                        <p class="small mb-2"><strong>3. İNCELİKLER (Nüanslar):</strong></p>
+                        <p class="small text-muted">
+                            "Stabilizasyon tekerleği opsiyonu, özellikle bozuk zeminlerde veya ağır yük taşımada kritik öneme sahiptir.
+                            4'lü kutu paketleme sistemi, 40' konteyner nakliye maliyetlerini %30-40 oranında düşürür. Çıkarılabilir
+                            depolama bölmesi, operatörün küçük malzemeleri kolayca taşımasını sağlar..."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 8 VARYASYON ÖRNEĞİ -->
+                <div class="section-title">
+                    <i class="fas fa-layer-group"></i> 8 İÇERİK VARYASYONU (Örnek: Li-Ion Batarya)
+                </div>
+                <div class="card exists p-3">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="20%">Tip</th>
+                                <th width="60%">İçerik</th>
+                                <th width="20%">İkon</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Teknik</strong></td>
+                                <td>24V 20Ah Li-Ion batarya, 4-6 saat operasyon</td>
+                                <td><i class="fas fa-battery-full text-success"></i> fa-battery-full</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Fayda</strong></td>
+                                <td>Tam gün çalış, şarj bekleme</td>
+                                <td><i class="fas fa-bolt text-warning"></i> fa-bolt</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Slogan</strong></td>
+                                <td>Bir Şarj, Tam Gün İş!</td>
+                                <td><i class="fas fa-star text-warning"></i> fa-star</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. Motto</strong></td>
+                                <td>Li-Ion teknoloji, sınırsız verimlilik</td>
+                                <td><i class="fas fa-crown text-warning"></i> fa-crown</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5. Kısa Bullet</strong></td>
+                                <td>4-6 saat kesintisiz, sıfır bakım</td>
+                                <td><i class="fas fa-check-circle text-success"></i> fa-check-circle</td>
+                            </tr>
+                            <tr>
+                                <td><strong>6. Uzun Açıklama</strong></td>
+                                <td>24V/20Ah Li-Ion batarya sistemi, tek şarjda 4-6 saat kesintisiz operasyon sağlar. Kurşun aside göre 3 kat daha uzun ömürlü, sıfır bakım gerektirir. Yoğun kullanım için 2x batarya seçeneği mevcuttur.</td>
+                                <td><i class="fas fa-info-circle text-info"></i> fa-info-circle</td>
+                            </tr>
+                            <tr>
+                                <td><strong>7. Karşılaştırma</strong></td>
+                                <td>Kurşun aside göre 3x uzun ömür, %50 daha hafif, sıfır bakım</td>
+                                <td><i class="fas fa-chart-line text-primary"></i> fa-chart-line</td>
+                            </tr>
+                            <tr>
+                                <td><strong>8. Anahtar Kelime</strong></td>
+                                <td>lityum, li-ion, akü, batarya, şarj, 24 volt, enerji, pil</td>
+                                <td><i class="fas fa-key text-secondary"></i> fa-key</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET KARŞILAŞTIRMA -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0"><i class="fas fa-balance-scale"></i> ÖZET KARŞILAŞTIRMA</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Özellik</th>
+                                    <th class="text-center">Mevcut Sistem</th>
+                                    <th class="text-center">Yeni Sistem (PDF)</th>
+                                    <th class="text-center">Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Başlık</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">YOK</span></td>
+                                    <td class="text-center"><span class="badge bg-success">VAR</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+1</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Primary Specs</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0</span></td>
+                                    <td class="text-center"><span class="badge bg-success">4</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+4</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Highlighted Features</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0</span></td>
+                                    <td class="text-center"><span class="badge bg-success">6</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+6</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Technical Specs</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0 section</span></td>
+                                    <td class="text-center"><span class="badge bg-success">12 section, 65+ property</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+12 section</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Use Cases</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0</span></td>
+                                    <td class="text-center"><span class="badge bg-success">8</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+8</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>FAQ</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0</span></td>
+                                    <td class="text-center"><span class="badge bg-success">12 (Min: 10)</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+12</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Target Industries</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0</span></td>
+                                    <td class="text-center"><span class="badge bg-success">18</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+18</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Competitive Advantages</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">0</span></td>
+                                    <td class="text-center"><span class="badge bg-success">7</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+7</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Anahtar Kelimeler (AI)</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">YOK</span></td>
+                                    <td class="text-center"><span class="badge bg-success">3 Kategori (Ana, Eş Anlamlı, Kullanım)</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">+3 Kategori</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>8 İçerik Varyasyonu</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">YOK</span></td>
+                                    <td class="text-center"><span class="badge bg-success">VAR (Her özellik için)</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">YENİ</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Uzun Açıklama (Body)</strong></td>
+                                    <td class="text-center"><span class="badge bg-danger">YOK</span></td>
+                                    <td class="text-center"><span class="badge bg-success">500 kelime (Hikaye+Profesyonel+İncelik)</span></td>
+                                    <td class="text-center"><span class="badge bg-warning">YENİ</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SON NOTLAR -->
+        <div class="alert alert-info mt-4">
+            <h5><i class="fas fa-info-circle"></i> ÖNEMLİ NOTLAR:</h5>
+            <ul class="mb-0">
+                <li><strong>FAQ Minimum:</strong> 10 soru zorunlu (SEO için kritik, Google'da arama sonuçlarına çıkmalı)</li>
+                <li><strong>Anahtar Kelimeler:</strong> AI sohbet asistanı için müşteri jargonları dahil (portif, frigo vb.)</li>
+                <li><strong>Sektörler:</strong> Her ürün bağımsız liste (F4 kompakt olduğu için küçük-orta depo odaklı 18 sektör)</li>
+                <li><strong>İkonlar:</strong> FontAwesome, kullanım opsiyonel ama her içeriğe atanıyor</li>
+                <li><strong>Sertifika İkonları:</strong> SADECE Certifications bölümünde kullanılır</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

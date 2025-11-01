@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F4 Transpalet: Mevcut vs V4 Sistem Karşılaştırması</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .score-badge {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+        }
+        .comparison-card {
+            height: 100%;
+            border-width: 2px;
+        }
+        .missing { background: #fff3cd; border-left: 4px solid #ffc107; }
+        .present { background: #d1e7dd; border-left: 4px solid #198754; }
+        .partial { background: #cfe2ff; border-left: 4px solid #0d6efd; }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            margin: -1rem -1rem 1rem -1rem;
+            border-radius: 0.375rem 0.375rem 0 0;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-pallet text-primary"></i>
+                        F4 Transpalet Karşılaştırması
+                    </h1>
+                    <p class="lead">Mevcut Sistem (DB) vs Shop System V4 Standardı</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h3><span class="badge bg-warning text-dark score-badge">59/100</span></h3>
+                            <p class="text-muted">Mevcut Sistem Skoru</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3><span class="badge bg-success score-badge">100/100</span></h3>
+                            <p class="text-muted">V4 Hedef Skoru</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. BAŞLIK -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-heading text-primary"></i> 1. Başlık Standardizasyonu <span class="badge bg-warning">6/10</span></h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card partial">
+                <div class="card-body">
+                    <h5 class="card-title text-warning"><i class="fas fa-database"></i> Mevcut (DB)</h5>
+                    <pre class="bg-white p-3 rounded">{"tr": "İXTİF F4 - 1.5 Ton Li-Ion Transpalet"}</pre>
+                    <div class="alert alert-warning mt-3">
+                        <strong>Sorunlar:</strong>
+                        <ul class="mb-0">
+                            <li>❌ "İXTİF" marka adı başlıkta (gereksiz)</li>
+                            <li>❌ "Li-Ion" İngilizce (Türkçe "Lityum Akülü" olmalı)</li>
+                            <li>✅ Model ve kapasite mevcut</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-check-circle"></i> V4 Standardı</h5>
+                    <div class="alert alert-info">
+                        <strong>Format:</strong> <code>[Model] [Kapasite] [Enerji] [Kategori] [- Özel]</code>
+                    </div>
+                    <pre class="bg-white p-3 rounded">{"tr": "F4 1.5 Ton Lityum Akülü Transpalet"}</pre>
+                    <div class="alert alert-success mt-3">
+                        <strong>Kurallar:</strong>
+                        <ul class="mb-0">
+                            <li>✅ Marka adı yok</li>
+                            <li>✅ Türkçe terimler</li>
+                            <li>✅ Standart sıralama</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 8 İÇERİK VARYASYONU -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-layer-group text-danger"></i> 2. 8 İçerik Varyasyonu <span class="badge bg-danger">1/10 - KRİTİK!</span></h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card missing">
+                <div class="card-body">
+                    <h5 class="card-title text-danger"><i class="fas fa-database"></i> Mevcut (DB)</h5>
+                    <p class="text-muted">Sadece tek anlatım var:</p>
+                    <div class="alert alert-secondary">
+                        <strong>features[0]:</strong><br>
+                        <i class="fas fa-battery-full"></i> "İki güç yuvalı tasarım: 2×24V 20Ah Li‑Ion ile vardiya boyu çalışma"
+                    </div>
+                    <div class="alert alert-danger">
+                        <strong>Eksikler:</strong>
+                        <ul class="mb-0">
+                            <li>❌ Fayda anlatımı yok</li>
+                            <li>❌ Slogan yok</li>
+                            <li>❌ Motto yok</li>
+                            <li>❌ Kısa bullet yok</li>
+                            <li>❌ Uzun açıklama yok</li>
+                            <li>❌ Karşılaştırma yok</li>
+                            <li>❌ Anahtar kelime yok</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-check-circle"></i> V4 Standardı (Çift Batarya Örneği)</h5>
+                    <table class="table table-sm table-bordered">
+                        <tr><th>1. Teknik</th><td>2×24V 20Ah Li-Ion, çıkarılabilir, sıcak takas</td></tr>
+                        <tr><th>2. Fayda</th><td>7/24 kesintisiz çalışma - bir batarya kullanılırken diğeri şarj olur</td></tr>
+                        <tr><th>3. Slogan</th><td>Dur-Kalk Yok, Sürekli İş!</td></tr>
+                        <tr><th>4. Motto</th><td>Çift batarya sistemi ile sonsuz çalışma</td></tr>
+                        <tr><th>5. Kısa</th><td>Çıkarılabilir, ikinci batarya, 7/24 operasyon</td></tr>
+                        <tr><th>6. Uzun</th><td>F4'ün çıkarılabilir batarya tasarımı, ikinci bir batarya ile 24 saat kesintisiz operasyon imkanı sağlar...</td></tr>
+                        <tr><th>7. Karşılaştırma</th><td>Sabit bataryalı modellere göre %100 daha uzun operasyon (12 saat vs 6 saat)</td></tr>
+                        <tr><th>8. Anahtar Kelime</th><td>çıkarılabilir, değiştirilebilir, yedek batarya, sıcak takas, kesintisiz</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. FAQ -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-question-circle text-warning"></i> 3. FAQ Sistemi <span class="badge bg-warning">7/10</span></h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card partial">
+                <div class="card-body">
+                    <h5 class="card-title text-warning"><i class="fas fa-database"></i> Mevcut (DB)</h5>
+                    <p><strong>12 soru var</strong> (min 10 gerekli ✅)</p>
+                    <div class="alert alert-info">
+                        <strong>Kategori Dağılımı:</strong>
+                        <ul>
+                            <li>Kullanım: ~4 soru (33%) ✅</li>
+                            <li>Teknik: ~5 soru (42%) ⚠️ Çok fazla!</li>
+                            <li>Seçenekler: ~1 soru (8%) ❌ Çok az!</li>
+                            <li>Bakım: ~1 soru (8%) ❌ Çok az!</li>
+                            <li>Satın Alma: ~1 soru (8%) ✅</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-3 rounded">
+                        <p class="mb-1"><strong>Örnek 1:</strong> "Tek akü ile tipik çalışma süresi ne kadar sağlanır?"</p>
+                        <p class="mb-1"><strong>Örnek 2:</strong> "Dar koridorlarda minimum dönüş alanı nedir?"</p>
+                        <p class="mb-0"><strong>Örnek 3:</strong> "Hangi palet ölçüleri ile uyumludur?"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-check-circle"></i> V4 Standardı</h5>
+                    <p><strong>Minimum 10 soru, dengeli dağılım:</strong></p>
+                    <div class="alert alert-success">
+                        <strong>Hedef Dağılım:</strong>
+                        <ul>
+                            <li>Kullanım: 30% (3 soru)</li>
+                            <li>Teknik: 25% (2-3 soru)</li>
+                            <li>Seçenekler: 20% (2 soru)</li>
+                            <li>Bakım: 15% (1-2 soru)</li>
+                            <li>Satın Alma: 10% (1 soru)</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-warning">
+                        <strong>Düzeltme Önerisi:</strong><br>
+                        Teknik sorulardan 2 tanesini Seçenekler ve Bakım kategorisine taşı.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. ANAHTAR KELİME -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-key text-danger"></i> 4. Anahtar Kelime Sistemi <span class="badge bg-danger">4/10</span></h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card missing">
+                <div class="card-body">
+                    <h5 class="card-title text-danger"><i class="fas fa-database"></i> Mevcut (DB)</h5>
+                    <p><strong>15 tag tek düz listede:</strong></p>
+                    <div class="bg-white p-3">
+                        <span class="badge bg-secondary m-1">yedek parça</span>
+                        <span class="badge bg-secondary m-1">endüstriyel</span>
+                        <span class="badge bg-secondary m-1">İXTİF</span>
+                        <span class="badge bg-secondary m-1">transpalet</span>
+                        <span class="badge bg-secondary m-1">24V</span>
+                        <span class="badge bg-secondary m-1">elektrikli</span>
+                        <span class="badge bg-secondary m-1">Li-Ion</span>
+                        <span class="badge bg-secondary m-1">batarya</span>
+                        <span class="badge bg-secondary m-1">depo ekipmanı</span>
+                        <span class="badge bg-secondary m-1">lojistik</span>
+                        <span class="badge bg-secondary m-1">malzeme taşıma</span>
+                    </div>
+                    <div class="alert alert-danger mt-3">
+                        <strong>Sorunlar:</strong>
+                        <ul class="mb-0">
+                            <li>❌ 3 kategori sistemi yok</li>
+                            <li>❌ "İXTİF" marka adı (gereksiz)</li>
+                            <li>❌ "yedek parça" F4 için irrelevant</li>
+                            <li>⚠️ Kullanım jargonları eksik (frigo, dar koridor vs.)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-check-circle"></i> V4 Standardı</h5>
+                    <div class="alert alert-primary">
+                        <strong>Primary (5-8):</strong>
+                        <div class="mt-2">
+                            <span class="badge bg-primary m-1">F4 transpalet</span>
+                            <span class="badge bg-primary m-1">1.5 ton</span>
+                            <span class="badge bg-primary m-1">lityum</span>
+                            <span class="badge bg-primary m-1">kompakt</span>
+                            <span class="badge bg-primary m-1">hafif</span>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Synonyms (10-15):</strong>
+                        <div class="mt-2">
+                            <span class="badge bg-info m-1">palet taşıyıcı</span>
+                            <span class="badge bg-info m-1">palet kaldırıcı</span>
+                            <span class="badge bg-info m-1">el transpaleti</span>
+                            <span class="badge bg-info m-1">akülü palet</span>
+                            <span class="badge bg-info m-1">lithium pallet truck</span>
+                            <span class="badge bg-info m-1">elektrikli transpalet</span>
+                            <span class="badge bg-info m-1">bataryalı palet</span>
+                        </div>
+                    </div>
+                    <div class="alert alert-success">
+                        <strong>Usage/Jargon (10-15):</strong>
+                        <div class="mt-2">
+                            <span class="badge bg-success m-1">soğuk hava deposu</span>
+                            <span class="badge bg-success m-1">frigo</span>
+                            <span class="badge bg-success m-1">dar koridor</span>
+                            <span class="badge bg-success m-1">market</span>
+                            <span class="badge bg-success m-1">e-ticaret</span>
+                            <span class="badge bg-success m-1">kargo</span>
+                            <span class="badge bg-success m-1">depo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. SEKTÖR LİSTESİ -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-industry text-success"></i> 5. Sektör/Endüstri Listesi <span class="badge bg-success">8/10</span></h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-database"></i> Mevcut (DB)</h5>
+                    <p><strong>20 sektör mevcut</strong> (15-30 gerekli ✅)</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-box-open"></i> E-ticaret</li>
+                                <li><i class="fas fa-warehouse"></i> 3PL</li>
+                                <li><i class="fas fa-store"></i> Perakende</li>
+                                <li><i class="fas fa-snowflake"></i> Soğuk Zincir</li>
+                                <li><i class="fas fa-pills"></i> İlaç</li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-tshirt"></i> Tekstil</li>
+                                <li><i class="fas fa-microchip"></i> Elektronik</li>
+                                <li><i class="fas fa-car"></i> Otomotiv</li>
+                                <li><i class="fas fa-couch"></i> Mobilya</li>
+                                <li><i class="fas fa-book"></i> Yayıncılık</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mt-3">
+                        <strong>Eksik:</strong> Relevance skorları (high/medium/low) yok
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-check-circle"></i> V4 Standardı</h5>
+                    <p><strong>Her sektör için relevance skoru:</strong></p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Sektör</th>
+                                <th>Relevance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class="fas fa-box-open"></i> E-ticaret</td>
+                                <td><span class="badge bg-success">HIGH</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-snowflake"></i> Soğuk Hava</td>
+                                <td><span class="badge bg-success">HIGH</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-pills"></i> İlaç</td>
+                                <td><span class="badge bg-warning">MEDIUM</span></td>
+                            </tr>
+                            <tr>
+                                <td><i class="fas fa-couch"></i> Mobilya</td>
+                                <td><span class="badge bg-secondary">LOW</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="alert alert-info">
+                        <strong>Relevance Mantığı:</strong><br>
+                        Kompakt (400mm) + Hafif (120kg) → Dar koridor sektörleri HIGH
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. TEKNİK ÖZELLİKLER -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3"><i class="fas fa-cog text-danger"></i> 6. Teknik Özellikler <span class="badge bg-danger">4/10</span></h2>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card missing">
+                <div class="card-body">
+                    <h5 class="card-title text-danger"><i class="fas fa-database"></i> Mevcut (DB)</h5>
+                    <p><strong>51 özellik tek düz JSON listede:</strong></p>
+                    <pre class="bg-white p-3 rounded small">
+{
+  "Model": "F4",
+  "Sürüş": "Elektrikli",
+  "Akü (V/Ah)": "24V / 20Ah",
+  "Kapasite (Q)": "1500 kg",
+  "Servis Freni": "Elektromanyetik",
+  "Ön Tekerlek": "210 × 70 mm",
+  ...
+  (46 özellik daha)
+}</pre>
+                    <div class="alert alert-danger">
+                        <strong>Sorunlar:</strong>
+                        <ul class="mb-0">
+                            <li>❌ Kategorizasyon yok</li>
+                            <li>❌ İkon sistemi yok</li>
+                            <li>❌ Accordion yapısı yok</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card comparison-card present">
+                <div class="card-body">
+                    <h5 class="card-title text-success"><i class="fas fa-check-circle"></i> V4 Standardı (12 Kategori)</h5>
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                    <i class="fas fa-info-circle me-2"></i> 1. Genel Özellikler
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Model: F4<br>
+                                    Kapasite: 1500 kg<br>
+                                    Enerji: Li-Ion Batarya
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                    <i class="fas fa-battery-full me-2"></i> 2. Batarya Sistemi
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    Tip: Li-Ion<br>
+                                    Voltaj: 24V<br>
+                                    Kapasite: 20Ah<br>
+                                    Çıkarılabilir: Evet
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button">
+                                    <i class="fas fa-ruler-combined me-2"></i> 3. Boyutlar + 9 kategori daha...
+                                </button>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÖZET TABLO -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg">
+                <div class="section-header">
+                    <h2 class="mb-0"><i class="fas fa-chart-bar"></i> Genel Değerlendirme Özeti</h2>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Kriter</th>
+                                <th class="text-center">Mevcut Puan</th>
+                                <th class="text-center">V4 Hedef</th>
+                                <th class="text-center">Fark</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. Başlık Standardizasyonu</td>
+                                <td class="text-center"><span class="badge bg-warning">6/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-danger">-4</span></td>
+                                <td>⚠️ Minor düzeltme</td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td><strong>2. 8 İçerik Varyasyonu</strong></td>
+                                <td class="text-center"><span class="badge bg-danger">1/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-danger">-9</span></td>
+                                <td><strong>❌ KRİTİK EKSIK!</strong></td>
+                            </tr>
+                            <tr>
+                                <td>3. FAQ Sistemi</td>
+                                <td class="text-center"><span class="badge bg-warning">7/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-warning">-3</span></td>
+                                <td>⚠️ Dağılım düzelt</td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td><strong>4. Anahtar Kelime (3 kat.)</strong></td>
+                                <td class="text-center"><span class="badge bg-danger">4/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-danger">-6</span></td>
+                                <td><strong>❌ Major eksik</strong></td>
+                            </tr>
+                            <tr>
+                                <td>5. Sektör Listesi</td>
+                                <td class="text-center"><span class="badge bg-success">8/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-warning">-2</span></td>
+                                <td>✅ Neredeyse tamam</td>
+                            </tr>
+                            <tr>
+                                <td>6. Ürün Açıklaması</td>
+                                <td class="text-center"><span class="badge bg-warning">5/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-warning">-5</span></td>
+                                <td>⚠️ Yapı değişmeli</td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td><strong>7. Teknik Özellikler</strong></td>
+                                <td class="text-center"><span class="badge bg-danger">4/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-danger">-6</span></td>
+                                <td><strong>❌ Accordion yok</strong></td>
+                            </tr>
+                            <tr>
+                                <td>8. Rekabet Avantajları</td>
+                                <td class="text-center"><span class="badge bg-warning">5/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-warning">-5</span></td>
+                                <td>⚠️ Karşılaştırma ekle</td>
+                            </tr>
+                            <tr class="table-success">
+                                <td>9. Kullanım Senaryoları</td>
+                                <td class="text-center"><span class="badge bg-success">9/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">-1</span></td>
+                                <td><strong>✅ Mükemmel!</strong></td>
+                            </tr>
+                            <tr class="table-success">
+                                <td>10. Yasak İçerikler</td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">10/10</span></td>
+                                <td class="text-center"><span class="badge bg-success">0</span></td>
+                                <td><strong>✅ Temiz!</strong></td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-dark">
+                            <tr>
+                                <th>TOPLAM</th>
+                                <th class="text-center"><span class="badge bg-warning fs-5">59/100</span></th>
+                                <th class="text-center"><span class="badge bg-success fs-5">100/100</span></th>
+                                <th class="text-center"><span class="badge bg-danger fs-5">-41</span></th>
+                                <th><strong>Major iyileştirme gerekli</strong></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="alert alert-danger mt-4">
+                        <h5><i class="fas fa-exclamation-triangle"></i> KRİTİK ÖNCELİKLER</h5>
+                        <ol>
+                            <li><strong>8 İçerik Varyasyonu</strong> - Tamamen eksik (9 puan fark)</li>
+                            <li><strong>Anahtar Kelime Kategorizasyonu</strong> - 3 kategori sistemi yok (6 puan fark)</li>
+                            <li><strong>Teknik Özellikler Accordion</strong> - Yapı yok (6 puan fark)</li>
+                        </ol>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <h5><i class="fas fa-tasks"></i> Aksiyon Planı</h5>
+                        <ul class="mb-0">
+                            <li><strong>Fase 1 (1-2 hafta):</strong> 8 Varyasyon sistemi kur</li>
+                            <li><strong>Fase 2 (1 hafta):</strong> Keyword kategorizasyon + Accordion</li>
+                            <li><strong>Fase 3 (3-5 gün):</strong> Minor düzeltmeler</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark text-white">
+                <div class="card-body text-center">
+                    <p class="mb-2"><strong>Rapor Tarihi:</strong> 2025-11-01</p>
+                    <p class="mb-2"><strong>Ürün:</strong> F4 1.5 Ton Li-Ion Transpalet (ID: 245)</p>
+                    <p class="mb-0"><strong>Kaynak:</strong> tenant_ixtif.shop_products</p>
+                    <hr>
+                    <p class="small mb-0">
+                        <i class="fas fa-folder-open"></i>
+                        Detaylı analiz: <code>/var/www/vhosts/tuufi.com/httpdocs/readme/shop-system-v4/F4-MEVCUT-ANALIZ.txt</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

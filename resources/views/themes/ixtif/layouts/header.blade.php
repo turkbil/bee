@@ -433,10 +433,8 @@
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'products'">
                             <a href="{{ route('shop.index') }}"
-                               class="flex items-center gap-2 font-semibold transition group py-4"
-                               :class="activeMegaMenu === 'products'
-                                   ? 'text-blue-600 dark:text-blue-400'
-                                   : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'">
+                               class="flex items-center gap-2 font-semibold transition group py-4 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                               :class="activeMegaMenu === 'products' ? 'text-blue-600 dark:text-blue-400' : ''">
                                 <i :class="activeMegaMenu === 'products' ? 'fa-solid' : 'fa-light'" class="fa-box-open transition-all duration-300"></i>
                                 <span>Ürünler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -450,10 +448,8 @@
                              @mouseenter="activeMegaMenu = 'hizmetler'"
                              @mouseleave="activeMegaMenu = null">
                             <a href="/hizmetler"
-                               class="flex items-center gap-2 font-semibold transition py-4"
-                               :class="activeMegaMenu === 'hizmetler'
-                                   ? 'text-blue-600 dark:text-blue-400'
-                                   : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'">
+                               class="flex items-center gap-2 font-semibold transition py-4 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                               :class="activeMegaMenu === 'hizmetler' ? 'text-blue-600 dark:text-blue-400' : ''">
                                 <i :class="activeMegaMenu === 'hizmetler' ? 'fa-solid' : 'fa-light'" class="fa-screwdriver-wrench transition-all duration-300"></i>
                                 <span>Hizmetler</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -521,10 +517,8 @@
                         {{-- Kurumsal (Hibrit Mega Menu) --}}
                         <div class="relative mega-menu-item py-2"
                              @mouseenter="activeMegaMenu = 'hakkimizda'">
-                            <button class="flex items-center gap-2 font-semibold transition group py-4"
-                                    :class="activeMegaMenu === 'hakkimizda'
-                                        ? 'text-blue-600 dark:text-blue-400'
-                                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'">
+                            <button class="flex items-center gap-2 font-semibold transition group py-4 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                                    :class="activeMegaMenu === 'hakkimizda' ? 'text-blue-600 dark:text-blue-400' : ''">
                                 <i :class="activeMegaMenu === 'hakkimizda' ? 'fa-solid' : 'fa-light'" class="fa-building transition-all duration-300"></i>
                                 <span>Kurumsal</span>
                                 <i class="fa-solid fa-chevron-down text-xs transition-transform"
@@ -599,7 +593,7 @@
                     <div class="flex items-center gap-2" @mouseenter="activeMegaMenu = null">
                         {{-- Search Button with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
-                            <button @click="searchOpen = !searchOpen; activeMegaMenu = null"
+                            <button @click="searchOpen = !searchOpen; activeMegaMenu = null; $nextTick(() => { if (searchOpen) { setTimeout(() => { const input = document.getElementById('header-search-input'); if (input) input.focus(); }, 250); } })"
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
                                     aria-label="Arama menüsünü aç/kapat"
@@ -706,10 +700,12 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
+                     @transitionend.once="if (searchOpen) { $nextTick(() => { const input = document.getElementById('header-search-input'); if (input) input.focus(); }); }"
                      class="relative z-30 bg-white dark:bg-slate-900 border-t border-gray-300 dark:border-white/20 shadow-lg">
                     <div class="container mx-auto px-4 sm:px-4 md:px-0 py-4">
                         {{-- Alpine.js + API Search (No Livewire overhead) --}}
-                        <div class="relative" x-data="{
+                        <div class="relative"
+                             x-data="{
                             query: '',
                             keywords: [],
                             products: [],
@@ -859,6 +855,8 @@
                         }" @click.away="closeDropdown()">
                             <div class="relative">
                                 <input type="search"
+                                       id="header-search-input"
+                                       x-ref="searchInput"
                                        x-model="query"
                                        @focus="handleFocus()"
                                        @input.debounce.300ms="search()"

@@ -91,7 +91,51 @@
 </section>
 
 <!-- Featured Products Section -->
-<section class="w-full py-8 relative overflow-hidden" x-data="{ viewMode: 'grid' }">
+<section class="w-full py-8 relative overflow-hidden" x-data="{
+    viewMode: null,
+
+    // Cookie helper functions
+    getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    },
+
+    setCookie(name, value, days = 365) {
+        const expires = new Date(Date.now() + days * 864e5).toUTCString();
+        document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax`;
+    },
+
+    getDefaultView() {
+        return window.innerWidth < 1024 ? 'list' : 'grid';
+    },
+
+    init() {
+        // Priority: Cookie > localStorage > Responsive Default
+        const cookieValue = this.getCookie('viewMode');
+        const localValue = localStorage.getItem('viewMode');
+
+        if (cookieValue) {
+            this.viewMode = cookieValue;
+            // Cookie varsa localStorage'ı da güncelle (senkronize)
+            localStorage.setItem('viewMode', cookieValue);
+        } else if (localValue) {
+            this.viewMode = localValue;
+            // localStorage varsa cookie'ye de yaz
+            this.setCookie('viewMode', localValue);
+        } else {
+            // Hiçbiri yoksa responsive default
+            this.viewMode = this.getDefaultView();
+        }
+
+        // viewMode değişikliklerini hem localStorage hem cookie'ye kaydet
+        this.$watch('viewMode', value => {
+            localStorage.setItem('viewMode', value);
+            this.setCookie('viewMode', value);
+        });
+    }
+}" x-init="init()">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
 
         {{-- Section Header with View Toggle --}}

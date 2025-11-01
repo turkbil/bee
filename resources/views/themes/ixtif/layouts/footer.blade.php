@@ -331,9 +331,21 @@
         </div>
 
         {{-- Copyright --}}
-        <div class="text-center text-gray-500 dark:text-gray-500 text-sm
-                    border-t border-gray-300 dark:border-white/10 pt-8">
-            {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($companyName ?? $siteTitle, app()->getLocale()) }}
+        <div class="text-center border-t border-gray-300 dark:border-white/10 pt-8 space-y-4">
+            {{-- Otomatik Copyright --}}
+            <div class="text-gray-500 dark:text-gray-500 text-sm">
+                {{ \App\Services\SeoMetaTagService::generateAutomaticCopyright($companyName ?? $siteTitle, app()->getLocale()) }}
+            </div>
+
+            {{-- iXtif Teknoloji Açıklama --}}
+            <div class="max-w-5xl mx-auto px-4">
+                <p class="text-xs leading-relaxed text-gray-600 dark:text-gray-400">
+                    Bu web sitesi, <strong class="text-gray-900 dark:text-white">iXtif</strong> Yazılım Mühendisleri tarafından <strong class="text-gray-900 dark:text-white">iXtif</strong> için özel olarak tasarlanmış ve geliştirilmiştir.
+                    Platformun yazılım mimarisi, veritabanı altyapısı ve entegre yapay zeka bileşenleri,
+                    <strong class="text-gray-900 dark:text-white">iXtif</strong>'in kendi mühendislik ekibi tarafından üretilmiş olup,
+                    yapay zeka sistemi her gün yeni verilerle öğrenmekte, gelişmekte ve iyileştirilmektedir.
+                </p>
+            </div>
         </div>
     </div>
 

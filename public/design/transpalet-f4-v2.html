@@ -90,30 +90,32 @@
                     <!-- Price Box -->
                     <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border-2 border-yellow-600 mb-8">
                         <div class="flex items-baseline gap-3 mb-4">
-                            <span class="text-gray-500 line-through text-2xl">$1,500</span>
-                            <span class="text-yellow-500 font-black text-lg bg-yellow-600/20 px-4 py-1 rounded-lg">-13%</span>
+                            <span class="text-gray-500 line-through text-2xl">$1,550</span>
+                            <span class="text-yellow-500 font-black text-lg bg-yellow-600/20 px-4 py-1 rounded-lg">-16%</span>
                         </div>
-                        <div class="flex items-baseline gap-3 mb-4">
+                        <div class="flex items-baseline gap-3">
                             <span class="text-6xl font-black gold-gradient bg-clip-text text-transparent">$1,300</span>
                             <span class="text-gray-400 text-xl">+ KDV</span>
                         </div>
-                        <div class="grid grid-cols-2 gap-3 text-sm">
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <i class="fas fa-check text-yellow-500"></i>
-                                <span>$200 tasarruf</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <i class="fas fa-shield-alt text-yellow-500"></i>
-                                <span>1 yıl garanti</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <i class="fas fa-tools text-yellow-500"></i>
-                                <span>Ücretsiz montaj</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-gray-400">
-                                <i class="fas fa-graduation-cap text-yellow-500"></i>
-                                <span>Operatör eğitimi</span>
-                            </div>
+                    </div>
+
+                    <!-- Countdown (Dynamic) -->
+                    <div id="countdown" class="grid grid-cols-4 gap-3 mb-8">
+                        <div class="bg-black/50 p-3 rounded-xl border border-yellow-600/30">
+                            <div class="text-3xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-days">01</div>
+                            <div class="text-gray-400 text-xs">Gün</div>
+                        </div>
+                        <div class="bg-black/50 p-3 rounded-xl border border-yellow-600/30">
+                            <div class="text-3xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-hours">18</div>
+                            <div class="text-gray-400 text-xs">Saat</div>
+                        </div>
+                        <div class="bg-black/50 p-3 rounded-xl border border-yellow-600/30">
+                            <div class="text-3xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-minutes">45</div>
+                            <div class="text-gray-400 text-xs">Dakika</div>
+                        </div>
+                        <div class="bg-black/50 p-3 rounded-xl border border-yellow-600/30">
+                            <div class="text-3xl font-black gold-gradient bg-clip-text text-transparent pulse-subtle" id="countdown-seconds">23</div>
+                            <div class="text-gray-400 text-xs">Saniye</div>
                         </div>
                     </div>
 
@@ -190,11 +192,9 @@
                     </div>
                     <h3 class="text-2xl font-bold mb-4 text-white">Hizmet Paketi</h3>
                     <ul class="space-y-3 text-gray-400">
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>1 yıl garanti</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Ücretsiz montaj</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Operatör eğitimi</li>
                         <li><i class="fas fa-check text-yellow-500 mr-2"></i>Teknik destek</li>
                         <li><i class="fas fa-check text-yellow-500 mr-2"></i>Bakım danışmanlığı</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Yedek parça desteği</li>
                     </ul>
                 </div>
             </div>
@@ -204,7 +204,7 @@
                 <div class="grid md:grid-cols-3 gap-6 items-center text-center">
                     <div>
                         <p class="text-gray-400 mb-2">Normal Fiyat</p>
-                        <p class="text-3xl font-black text-white line-through">$1,500</p>
+                        <p class="text-3xl font-black text-white line-through">$1,550</p>
                     </div>
                     <div>
                         <i class="fas fa-arrow-right text-yellow-500 text-4xl"></i>
@@ -212,7 +212,6 @@
                     <div>
                         <p class="text-yellow-500 mb-2 font-bold">Kampanya Fiyatı</p>
                         <p class="text-5xl font-black gold-gradient bg-clip-text text-transparent">$1,300</p>
-                        <p class="text-gray-400 font-bold mt-2">$200 Tasarruf!</p>
                     </div>
                 </div>
             </div>
@@ -305,32 +304,12 @@
                 <h2 class="text-5xl font-black mb-4 text-white">Kampanyadan Yararlanın</h2>
                 <p class="text-xl text-gray-400 mb-8">Kasım ayına özel fiyat avantajını kaçırmayın</p>
 
-                <!-- Countdown (Dynamic) -->
-                <div id="countdown" class="grid grid-cols-4 gap-4 max-w-2xl mx-auto mb-8">
-                    <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-days">01</div>
-                        <div class="text-gray-400 text-sm">Gün</div>
-                    </div>
-                    <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-hours">18</div>
-                        <div class="text-gray-400 text-sm">Saat</div>
-                    </div>
-                    <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-minutes">45</div>
-                        <div class="text-gray-400 text-sm">Dakika</div>
-                    </div>
-                    <div class="bg-black/50 p-4 rounded-xl border border-yellow-600/30">
-                        <div class="text-4xl font-black gold-gradient bg-clip-text text-transparent pulse-subtle" id="countdown-seconds">23</div>
-                        <div class="text-gray-400 text-sm">Saniye</div>
-                    </div>
-                </div>
-
                 <!-- Price Comparison -->
                 <div class="bg-black/30 border border-yellow-600/30 rounded-2xl p-6 mb-8">
                     <div class="flex items-center justify-center gap-6 flex-wrap">
                         <div class="text-center">
                             <p class="text-gray-500 mb-1 text-sm">Normal Fiyat</p>
-                            <p class="text-2xl line-through text-gray-600">$1,500</p>
+                            <p class="text-2xl line-through text-gray-600">$1,550</p>
                         </div>
                         <i class="fas fa-arrow-right text-yellow-500 text-3xl"></i>
                         <div class="text-center">
@@ -364,18 +343,6 @@
                                 <div class="text-gray-400 text-sm">info@ixtif.com</div>
                             </div>
                         </a>
-                    </div>
-                </div>
-
-                <!-- Features -->
-                <div class="mt-8 grid md:grid-cols-2 gap-4 text-sm max-w-md mx-auto">
-                    <div class="bg-yellow-600/10 border border-yellow-600/30 p-3 rounded-lg">
-                        <i class="fas fa-shield-alt text-yellow-500 mr-2"></i>
-                        <span class="text-white font-bold">1 Yıl Garanti</span>
-                    </div>
-                    <div class="bg-yellow-600/10 border border-yellow-600/30 p-3 rounded-lg">
-                        <i class="fas fa-tools text-yellow-500 mr-2"></i>
-                        <span class="text-white font-bold">Ücretsiz Montaj</span>
                     </div>
                 </div>
             </div>

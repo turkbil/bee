@@ -16,7 +16,7 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://wa.me/05010056758?text=Sipariş%20vermek%20istiyorum"
+                <a href="{{ whatsapp_link(null, 'Sipariş vermek istiyorum') }}"
                    target="_blank"
                    class="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-lg transition-all transform hover:scale-105">
                     <i class="fa-brands fa-whatsapp text-2xl"></i>

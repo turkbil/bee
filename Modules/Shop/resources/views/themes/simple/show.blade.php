@@ -1016,7 +1016,7 @@
                                         class="flex items-center justify-center gap-2 border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white hover:border-blue-400 dark:hover:border-blue-500 transition-all">
                                         <i class="fa-solid fa-phone"></i>Ara
                                     </a>
-                                    <a href="https://wa.me/905010056758" target="_blank"
+                                    <a href="{{ whatsapp_link() }}" target="_blank"
                                         class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-3 rounded-lg transition-colors">
                                         <i class="fa-brands fa-whatsapp"></i>WhatsApp
                                     </a>
@@ -1176,7 +1176,7 @@
                         </div>
                     </a>
 
-                    <a href="https://wa.me/905010056758" target="_blank"
+                    <a href="{{ whatsapp_link() }}" target="_blank"
                         class="group flex items-start gap-4 p-6 bg-white/10 backdrop-blur-sm hover:bg-green-500/50 rounded-2xl transition-all duration-300 border border-white/20 hover:border-green-400 hover:shadow-lg cursor-pointer">
                         <div
                             class="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-green-600 transition-all duration-300">

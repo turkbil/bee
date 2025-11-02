@@ -231,7 +231,7 @@
 
                         {{-- WhatsApp (Tıklanabilir) --}}
                         @if($contactWhatsapp)
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
+                            <a href="{{ whatsapp_link() }}" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
                                 <i class="fa-brands fa-whatsapp text-base"></i>
                                 <span>{{ $contactWhatsapp }}</span>
                             </a>

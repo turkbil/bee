@@ -50,7 +50,7 @@
             <i class="fa-solid fa-phone text-lg"></i>
             <span>0216 755 3 555</span>
           </a>
-          <a href="https://wa.me/905010056758" class="inline-flex items-center justify-center gap-3 px-8 py-4 border-2 border-gray-900 dark:border-white hover:bg-gray-900 dark:hover:bg-white text-gray-900 dark:text-white hover:text-white dark:hover:text-gray-900 font-bold rounded-xl transition-all duration-300 no-underline">
+          <a href="{{ whatsapp_link() }}" class="inline-flex items-center justify-center gap-3 px-8 py-4 border-2 border-gray-900 dark:border-white hover:bg-gray-900 dark:hover:bg-white text-gray-900 dark:text-white hover:text-white dark:hover:text-gray-900 font-bold rounded-xl transition-all duration-300 no-underline">
             <i class="fa-brands fa-whatsapp text-lg"></i>
             <span>WhatsApp</span>
           </a>
@@ -546,7 +546,7 @@
         <i class="fa-solid fa-phone-volume text-xl"></i>
         <span>0216 755 3 555</span>
       </a>
-      <a href="https://wa.me/905010056758" class="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white hover:bg-gray-100 text-gray-900 text-lg font-bold rounded-lg shadow-lg transition-all duration-300 no-underline">
+      <a href="{{ whatsapp_link() }}" class="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-white hover:bg-gray-100 text-gray-900 text-lg font-bold rounded-lg shadow-lg transition-all duration-300 no-underline">
         <i class="fa-brands fa-whatsapp text-2xl"></i>
         <span>WhatsApp</span>
       </a>

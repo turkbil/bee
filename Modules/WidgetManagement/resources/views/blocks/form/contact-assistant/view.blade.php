@@ -95,10 +95,10 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">WhatsApp</h3>
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"
+                            <a href="{{ whatsapp_link() }}"
                                target="_blank"
                                class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-lg font-semibold">
-                                0501 005 67 58
+                                {{ setting('contact_whatsapp_1', '0501 005 67 58') }}
                             </a>
                         </div>
                         <i class="fa-solid fa-arrow-right text-green-500 dark:text-green-400 group-hover:translate-x-2 transition-transform"></i>

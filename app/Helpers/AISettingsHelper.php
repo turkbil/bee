@@ -255,6 +255,40 @@ class AISettingsHelper
         $prompt[] = $ctaMapping[$tactics['cta_frequency']] ?? $ctaMapping['occasional'];
         $prompt[] = "";
 
+        // Price Policy
+        $pricePolicyMapping = [
+            'show_all' => 'Tüm ürünlerin fiyatlarını MUTLAKA göster. Context\'te base_price varsa kesinlikle yaz.',
+            'show_on_request' => 'Fiyatları sadece kullanıcı açıkça sorduğunda göster.',
+            'hide_all' => 'Hiçbir zaman fiyat gösterme, her zaman "Fiyat bilgisi için iletişime geçin" de.',
+            'smart' => 'Eğer context\'te base_price > 0 ise göster, yoksa "Bilgi için iletişime geçin" de.',
+        ];
+
+        $prompt[] = "=== FİYAT POLİTİKASI ===";
+        $prompt[] = $pricePolicyMapping[$tactics['price_policy']] ?? $pricePolicyMapping['smart'];
+        $prompt[] = "";
+        $prompt[] = "📋 FİYAT GÖSTERME KURALLARI:";
+        $prompt[] = "1. Context'te ürün bilgisinde 'base_price' ve 'currency' varsa:";
+        $prompt[] = "   ✅ Fiyatı MUTLAKA göster: 'Fiyat: {base_price} {currency}'";
+        $prompt[] = "   ✅ Örnek: 'Fiyat: 45.000 TRY' veya 'Fiyat: $1,200 USD'";
+        $prompt[] = "";
+        $prompt[] = "2. Context'te 'base_price' yoksa, null ise veya 0 ise:";
+        $prompt[] = "   ⚠️ 'Fiyat bilgisi için iletişime geçin' de";
+        $prompt[] = "";
+        $prompt[] = "3. Fiyat formatı (Türkçe standart):";
+        $prompt[] = "   → Binlik ayracı: nokta (.) → Örnek: 45.000";
+        $prompt[] = "   → Ondalık: virgül (,) → Örnek: 45.000,50";
+        $prompt[] = "   → Para birimi son: TRY, USD, EUR → Örnek: 45.000 TRY";
+        $prompt[] = "";
+        $prompt[] = "4. 🔍 KONTROL MUTLAKA YAP:";
+        $prompt[] = "   → Her ürün için context'i kontrol et";
+        $prompt[] = "   → base_price değeri > 0 mı?";
+        $prompt[] = "   → Varsa GÖSTERMELİSİN, yoksa 'iletişime geçin' de";
+        $prompt[] = "";
+        $prompt[] = "❌ ASLA YAPMA:";
+        $prompt[] = "   → Context'te fiyat varken 'Bilgi için iletişime geçin' YAZMA!";
+        $prompt[] = "   → Fiyat varsa mutlaka göster!";
+        $prompt[] = "";
+
         // Forbidden Topics
         $forbidden = self::getForbiddenTopics();
         if (!empty($forbidden)) {
@@ -282,14 +316,50 @@ class AISettingsHelper
         $prompt[] = "7. Her zaman profesyonel, yardımsever ve saygılı ol.";
         $prompt[] = "";
         $prompt[] = "=== LİNK KULLANIMI ===";
-        $prompt[] = "8. Ürün veya sayfa önerirken MUTLAKA markdown link formatı kullan: [Başlık](URL)";
+        $prompt[] = "8. Ürün veya sayfa önerirken MUTLAKA markdown link formatı kullan: [**Başlık**](URL)";
         $prompt[] = "9. İletişim bilgilerini verirken linkleri kullan:";
-        $prompt[] = "   - Telefon: [0555 123 4567](tel:05551234567)";
-        $prompt[] = "   - WhatsApp: [0555 123 4567](https://wa.me/905551234567)";
-        $prompt[] = "   - E-posta: [info@example.com](mailto:info@example.com)";
-        $prompt[] = "10. Örnek: 'Bu ürünü inceleyebilirsiniz: [Toyota Forklift 3 Ton](https://example.com/urun/toyota-forklift)'";
+        $prompt[] = "   ✅ Telefon: [0555 123 4567](tel:05551234567)";
+        $prompt[] = "   ✅ WhatsApp: [0555 123 4567](https://wa.me/905551234567)";
+        $prompt[] = "   ✅ E-posta: [info@example.com](mailto:info@example.com)";
+        $prompt[] = "10. Örnek: 'Bu ürünü inceleyebilirsiniz: [**Toyota Forklift 3 Ton**](https://example.com/urun/toyota-forklift)'";
         $prompt[] = "11. Linkleri kullanıcı tıkladığında otomatik açılacaktır.";
         $prompt[] = "12. Linksiz sadece bilgi verme, her zaman tıklanabilir link ver.";
+        $prompt[] = "";
+        $prompt[] = "⚠️ KRİTİK İLETİŞİM LİNK KURALLARI:";
+        $prompt[] = "   ❌ ASLA ürün sayfası URL'ini telefon/WhatsApp linki olarak kullanma!";
+        $prompt[] = "   ❌ YANLIŞ: [0501 005 67 58](https://domain.com/shop/product-slug)";
+        $prompt[] = "   ✅ DOĞRU: [0501 005 67 58](https://wa.me/905010056758)";
+        $prompt[] = "   ✅ DOĞRU: [0216 755 35 55](tel:+902167553555)";
+        $prompt[] = "   → Telefon için: tel: protokolü kullan";
+        $prompt[] = "   → WhatsApp için: https://wa.me/{numara} formatı kullan";
+        $prompt[] = "   → Ürün linki ile telefon linkini ASLA karıştırma!";
+        $prompt[] = "";
+        $prompt[] = "=== MARKDOWN FORMATTING KURALLARI (KRİTİK!) ===";
+        $prompt[] = "13. Liste itemleri MUTLAKA tek satırda olmalı:";
+        $prompt[] = "   ✅ DOĞRU: - 1500 kg kapasite (güçlü! 💪)";
+        $prompt[] = "   ❌ YANLIŞ: - 1500 kg kapasite (güçlü";
+        $prompt[] = "              ! 💪)";
+        $prompt[] = "";
+        $prompt[] = "14. Emoji ve noktalama işaretleri aynı satırda:";
+        $prompt[] = "   ✅ DOĞRU: (mükemmel! 💯)";
+        $prompt[] = "   ❌ YANLIŞ: (mükemmel";
+        $prompt[] = "              ! 💯)";
+        $prompt[] = "";
+        $prompt[] = "15. Liste sonrası boş satır bırak:";
+        $prompt[] = "   ✅ DOĞRU:";
+        $prompt[] = "   - Item 1";
+        $prompt[] = "   - Item 2";
+        $prompt[] = "   ";
+        $prompt[] = "   Fiyat: ...";
+        $prompt[] = "   ";
+        $prompt[] = "   ❌ YANLIŞ:";
+        $prompt[] = "   - Item 1";
+        $prompt[] = "   - Item 2";
+        $prompt[] = "   Fiyat: ... (boş satır yok!)";
+        $prompt[] = "";
+        $prompt[] = "16. Link formatı daima: [**Bold Text**](url)";
+        $prompt[] = "   ✅ DOĞRU: [**İXTİF EPL153**](/shop/slug)";
+        $prompt[] = "   ❌ YANLIŞ: **[İXTİF EPL153](/shop/slug)**";
 
         return implode("\n", $prompt);
     }

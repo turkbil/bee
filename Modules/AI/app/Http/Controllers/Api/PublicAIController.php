@@ -938,6 +938,39 @@ class PublicAIController extends Controller
             $markdownService = app(MarkdownService::class);
             $finalMessage = $markdownService->parse($finalMessage);
 
+            // 🔧 POST-PROCESSING: Fix HTML format issues
+            $postProcessor = app(\App\Services\AI\MarkdownPostProcessor::class);
+            $postProcessResult = $postProcessor->process($finalMessage);
+
+            if ($postProcessResult['has_changes']) {
+                \Log::info('🔧 Markdown post-processing applied', [
+                    'fixes' => $postProcessResult['fixes_applied'],
+                    'conversation_id' => $conversation->id,
+                ]);
+                $finalMessage = $postProcessResult['processed'];
+            }
+
+            // 🔍 VALIDATION: Check for AI hallucinations and errors
+            $validator = app(\App\Services\AI\AIResponseValidator::class);
+            $validationResult = $validator->validateAndFix($finalMessage, [
+                'smart_search_results' => $smartSearchResults ?? [],
+            ]);
+
+            if ($validationResult['has_errors']) {
+                \Log::warning('⚠️ AI Response validation errors detected', [
+                    'errors' => $validationResult['errors'],
+                    'conversation_id' => $conversation->id,
+                ]);
+                $finalMessage = $validationResult['fixed'];
+            }
+
+            if ($validationResult['has_warnings']) {
+                \Log::info('ℹ️ AI Response warnings', [
+                    'warnings' => $validationResult['warnings'],
+                    'conversation_id' => $conversation->id,
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => [

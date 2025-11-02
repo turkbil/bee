@@ -334,7 +334,7 @@
 
                                 {{-- WhatsApp --}}
                                 @if($contactWhatsapp)
-                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                                    <a href="{{ whatsapp_link() }}" target="_blank"
                                         class="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white border-2 border-green-500 hover:border-green-600 px-3 lg:px-4 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-2xl transition-all group relative"
                                         x-data="{ showTooltip: false }"
                                         @mouseenter="showTooltip = true"
@@ -1169,7 +1169,7 @@
 
                                     {{-- WhatsApp İkonu --}}
                                     @if($contactWhatsapp)
-                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                                        <a href="{{ whatsapp_link() }}" target="_blank"
                                             class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white py-4 rounded-lg transition-colors">
                                             <i class="fa-brands fa-whatsapp text-xl"></i>
                                         </a>
@@ -1204,7 +1204,7 @@
                                         </a>
                                     @endif
                                     @if($contactWhatsapp)
-                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                                        <a href="{{ whatsapp_link() }}" target="_blank"
                                             class="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-3 rounded-lg transition-colors">
                                             <i class="fa-brands fa-whatsapp"></i>WhatsApp
                                         </a>
@@ -1373,7 +1373,7 @@
                     @endif
 
                     @if($contactWhatsapp)
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}" target="_blank"
+                        <a href="{{ whatsapp_link() }}" target="_blank"
                             class="group flex items-start gap-4 p-6 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-3xl hover:scale-105 hover:shadow-2xl hover:bg-white/80 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer">
                             <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                                 <i class="fa-brands fa-whatsapp text-white text-2xl"></i>

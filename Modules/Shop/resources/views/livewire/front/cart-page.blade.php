@@ -221,7 +221,7 @@
 
                 {{-- Sticky WhatsApp Yardım Butonu --}}
                 <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3">
-                    <a href="https://wa.me/05010056758?text=Sepet%20hakk%C4%B1nda%20soru%20sormak%20istiyorum"
+                    <a href="{{ whatsapp_link(null, 'Sepet hakkında soru sormak istiyorum') }}"
                        target="_blank"
                        class="group bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all hover:scale-110 relative">
                         <i class="fa-brands fa-whatsapp text-2xl"></i>

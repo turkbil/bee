@@ -537,6 +537,42 @@ if (!function_exists('getFlagForLanguage')) {
     }
 }
 
+// 📞 WHATSAPP HELPER FUNCTION
+if (!function_exists('whatsapp_link')) {
+    /**
+     * WhatsApp link oluşturur - Uluslararası format (+90) ile
+     *
+     * @param string|null $phoneNumber Telefon numarası (boş ise settings'ten alır)
+     * @param string|null $message Ön tanımlı mesaj
+     * @return string WhatsApp link URL'i
+     */
+    function whatsapp_link(?string $phoneNumber = null, ?string $message = null): string
+    {
+        // Numara verilmemişse settings'ten al
+        if (empty($phoneNumber)) {
+            $phoneNumber = setting('contact_whatsapp_1', '905010056758');
+        }
+
+        // Sadece rakamları al (boşluk, tire, parantez vb. temizle)
+        $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+
+        // Eğer başında 0 varsa kaldırıp +90 ekle (Türkiye için)
+        if (substr($phoneNumber, 0, 1) === '0' && strlen($phoneNumber) === 11) {
+            $phoneNumber = '90' . substr($phoneNumber, 1);
+        }
+
+        // URL oluştur
+        $url = 'https://wa.me/' . $phoneNumber;
+
+        // Mesaj varsa ekle
+        if (!empty($message)) {
+            $url .= '?text=' . urlencode($message);
+        }
+
+        return $url;
+    }
+}
+
 // 💰 CLAUDE_AI.MD UYUMLU KREDİ SİSTEMİ
 if (!function_exists('ai_deduct_credits_properly')) {
     /**

@@ -10,9 +10,18 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
-// 🛒 CART & CHECKOUT ROUTES - ABSOLUTE PRIORITY
+// 🛒 SHOP PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
+// NOT: Bu route'lar Shop modülünde tanımlanabilirdi ama Livewire component'ler modül route'unda sorun yaşıyor
 Route::get('/shop/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');
 Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
+
+// PDF Export - Wildcard'dan önce tanımlanmalı
+Route::middleware([InitializeTenancy::class, 'site'])
+    ->get('/shop/pdf/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'exportPdf'])
+    ->name('shop.pdf');
+
+// 🎯 LANDING PAGES - Google Ads Campaign Routes
+require __DIR__.'/landing.php';
 
 // DESIGN LIBRARY STATIC FILES - MUST BE FIRST, BEFORE ADMIN & CATCHALL ROUTES
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
@@ -447,11 +456,6 @@ Route::middleware(['site'])->withoutMiddleware(\Spatie\ResponseCache\Middlewares
     
     return redirect()->back()->with('error', __('admin.invalid_language'));
 })->name('language.switch');
-
-// SHOP PDF EXPORT ROUTE - Dinamik route'lardan ÖNCE tanımlanmalı!
-Route::middleware([InitializeTenancy::class, 'site'])
-    ->get('/shop/pdf/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'exportPdf'])
-    ->name('shop.pdf');
 
 // Dinamik modül route'ları - sadece frontend içerik için
 Route::middleware([InitializeTenancy::class, 'site'])

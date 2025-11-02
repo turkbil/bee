@@ -8,10 +8,10 @@ use Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController;
 
 // GOOGLE SHOPPING FEED - Moved to routes/web.php for higher priority
 
-// CART & CHECKOUT ROUTES - routes/web.php'de tanımlı (higher priority)
+// CART, CHECKOUT, PDF ROUTES - routes/web.php'de tanımlı (wildcard'dan önce olmalı)
 
 // DESIGN VERSION ROUTES (Test için farklı tasarımlar - Wildcard'dan önce tanımlanmalı!)
-Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
+Route::middleware(['tenant', 'locale.site', 'frontend.auto.seo'])
     ->prefix('shop')
     ->group(function () {
         // V1 - Modern & Minimalist
@@ -34,7 +34,7 @@ Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
     });
 
 // NORMAL SHOP ROUTES
-Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
+Route::middleware(['tenant', 'locale.site', 'frontend.auto.seo'])
     ->prefix('shop')
     ->group(function () {
         // Shop Index - Tüm ürünler
@@ -52,9 +52,6 @@ Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
         // ID-based fallback routes (AI ID kullanırsa redirect)
         Route::get('/product/{id}', [ShopController::class, 'showById'])->name('shop.show.by-id')->where('id', '[0-9]+');
         Route::get('/category-by-id/{id}', [ShopController::class, 'categoryById'])->name('shop.category.by-id')->where('id', '[0-9]+');
-
-        // PDF Export - routes/web.php'de tanımlı (dinamik route'lardan önce)
-        // Route::get('/pdf/{slug}', [ShopController::class, 'exportPdf'])->name('shop.pdf');
 
         // Shop Product Detail - WILDCARD (en sonda olmalı!)
         Route::get('/{slug}', [ShopController::class, 'show'])->name('shop.show');

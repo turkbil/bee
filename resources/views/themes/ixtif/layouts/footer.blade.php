@@ -279,7 +279,7 @@
                     </li>
                     <li>
                         <div class="text-gray-400 dark:text-gray-500 text-xs mb-1">WhatsApp</div>
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contactWhatsapp) }}"
+                        <a href="{{ whatsapp_link() }}"
                            target="_blank"
                            class="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                             {{ $contactWhatsapp }}
@@ -303,7 +303,7 @@
                 ['icon' => 'instagram', 'url' => setting('social_instagram', 'https://instagram.com/ixtifcom'), 'gradient' => 'from-pink-500 to-rose-600'],
                 ['icon' => 'twitter', 'url' => setting('social_twitter', 'https://twitter.com/ixtifcom'), 'gradient' => 'from-blue-400 to-cyan-500'],
                 ['icon' => 'linkedin-in', 'url' => setting('social_linkedin', 'https://linkedin.com/company/ixtif'), 'gradient' => 'from-blue-600 to-blue-700'],
-                ['icon' => 'whatsapp', 'url' => 'https://wa.me/' . preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')), 'gradient' => 'from-green-500 to-green-600']
+                ['icon' => 'whatsapp', 'url' => whatsapp_link(), 'gradient' => 'from-green-500 to-green-600']
             ];
         @endphp
 
@@ -521,7 +521,7 @@
         </a>
 
         {{-- WhatsApp Button (SAĞ) --}}
-        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('contact_whatsapp_1', '905010056758')) }}"
+        <a href="{{ whatsapp_link() }}"
            class="flex items-center justify-center gap-2 py-3 text-white hover:bg-black/10 transition-all duration-300 border-l border-white/20"
            aria-label="WhatsApp İletişim">
             <i class="fab fa-whatsapp text-xl"></i>

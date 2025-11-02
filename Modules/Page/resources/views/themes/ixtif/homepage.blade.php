@@ -453,7 +453,7 @@
             <!-- 2. WhatsApp -->
             <div class="w-1/2 md:w-1/2 lg:w-1/4 relative">
                 <div class="hidden lg:block absolute right-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-transparent via-blue-500 dark:via-blue-400 to-transparent"></div>
-                <a href="https://wa.me/905010056758" target="_blank" class="group block">
+                <a href="{{ whatsapp_link() }}" target="_blank" class="group block">
                     <div class="p-4 md:p-8 text-center transition-all hover:bg-gray-50/30 dark:hover:bg-gray-800/30 rounded-lg min-h-[140px] md:min-h-[180px] flex flex-col items-center justify-center">
                         <div class="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 md:mb-6 transition-all duration-500 group-hover:rotate-12">
                             <i class="fa-brands fa-whatsapp text-5xl lg:text-6xl text-white transition-all duration-500"></i>

@@ -610,7 +610,15 @@ class PublicAIController extends Controller
 
                 if (tenant('id') == 2 || tenant('id') == 3) { // iXtif tenants
                     $lowerMessage = mb_strtolower($validated['message']);
-                    $isPriceQuery = preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
+                    // Fiyat kelimesi geçiyorsa veya en ucuz/pahalı sorgusu varsa
+                    $isPriceQuery = preg_match('/(fiyat|kaç\s*para|ne\s*kadar|maliyet|ücret|tutar|en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage);
+
+                    // Eğer fiyat sorgusu ise ve ürün adı varsa, o ürünü ara
+                    $searchForProduct = false;
+                    if ($isPriceQuery && !preg_match('/(en\s+ucuz|en\s+uygun|en\s+pahal[ıi])/i', $lowerMessage)) {
+                        // Spesifik ürün fiyatı soruluyor (örn: "F4 fiyatı", "CPD18TVL fiyatı")
+                        $searchForProduct = true;
+                    }
                 }
 
                 // Normal search (ürün başlığı/kategori araması)
@@ -621,7 +629,8 @@ class PublicAIController extends Controller
                 if ($isPriceQuery) {
                     \Log::info('🔍 iXtif Price Query - Fetching from DB', [
                         'query' => $validated['message'],
-                        'tenant_id' => tenant('id')
+                        'tenant_id' => tenant('id'),
+                        'searchForProduct' => $searchForProduct ?? false
                     ]);
 
                     // Yedek Parça kategorisini atla (ID: 44 - Çatal Kılıf)
@@ -629,7 +638,34 @@ class PublicAIController extends Controller
 
                     $query = \Modules\Shop\App\Models\ShopProduct::whereNotNull('base_price')
                         ->where('base_price', '>', 0)
-                        ->where('category_id', '!=', 44) // Yedek parça HARİÇ
+                        ->where('category_id', '!=', 44); // Yedek parça HARİÇ
+
+                    // Eğer spesifik ürün fiyatı soruluyorsa, ürün adını ara
+                    if ($searchForProduct) {
+                        // Mesajdan ürün kodlarını çıkar (F4, CPD18TVL, EFL181 gibi)
+                        preg_match_all('/\b([A-Z]{1,3}\d{1,3}[A-Z]*\d*[A-Z]*)\b/i', $validated['message'], $matches);
+
+                        if (!empty($matches[1])) {
+                            $query->where(function($q) use ($matches, $validated) {
+                                foreach ($matches[1] as $productCode) {
+                                    $q->orWhere('title', 'LIKE', '%' . $productCode . '%')
+                                      ->orWhere('sku', 'LIKE', '%' . $productCode . '%');
+                                }
+                                // Ayrıca tam mesajı da ara (örn: "transpalet" kelimesi)
+                                $keywords = ['transpalet', 'forklift', 'istif'];
+                                foreach ($keywords as $keyword) {
+                                    if (stripos($validated['message'], $keyword) !== false) {
+                                        $q->orWhere('title', 'LIKE', '%' . $keyword . '%');
+                                    }
+                                }
+                            });
+                        } else {
+                            // Ürün kodu bulunamadı, genel arama yap
+                            $query->where('title', 'LIKE', '%' . str_replace(['fiyat', 'fiyatı', 'kaç', 'para', 'ne kadar'], '', $validated['message']) . '%');
+                        }
+                    }
+
+                    $query
                         // SIRALAMA ÖNCELİĞİ: Homepage → Stok → Sort Order → Fiyat
                         ->orderByRaw('show_on_homepage DESC, homepage_sort_order ASC')
                         ->orderBy('current_stock', 'desc')

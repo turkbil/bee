@@ -38,7 +38,7 @@ class AIResponseValidator
         }
 
         // 2. Check for broken lists (emoji/punctuation split)
-        if (preg_match('/<\/ul>\s*<p>\s*[!?.,;:)\u{1F300}-\u{1F9FF}]/u', $fixed)) {
+        if (preg_match('/<\/ul>\s*<p>\s*[!?.,;:)😀-🙏💀-🛿]/u', $fixed)) {
             $warnings[] = [
                 'type' => 'broken_list',
                 'severity' => 'medium',
@@ -143,10 +143,16 @@ class AIResponseValidator
             // If product has price but response says "iletişime geçin"
             if (!empty($product['base_price']) && $product['base_price'] > 0) {
                 $productTitle = $product['title'] ?? '';
+
+                // If title is array (multilang), get string value
+                if (is_array($productTitle)) {
+                    $productTitle = $productTitle[app()->getLocale()] ?? reset($productTitle) ?? '';
+                }
+
                 $basePrice = $product['base_price'];
 
                 // Check if response contains "Bilgi için iletişime geçin" near this product
-                if (!empty($productTitle) && strpos($html, $productTitle) !== false) {
+                if (!empty($productTitle) && is_string($productTitle) && strpos($html, $productTitle) !== false) {
                     // Check if price is shown
                     $pricePattern = '/' . preg_quote($productTitle, '/') . '.*?(Fiyat:|' . number_format($basePrice, 0, ',', '.') . ')/is';
 

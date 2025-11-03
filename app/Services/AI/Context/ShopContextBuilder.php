@@ -441,8 +441,18 @@ class ShopContextBuilder
      */
     protected function formatPrice(ShopProduct $product): array
     {
+        \Log::info('🔍 formatPrice çağrıldı', [
+            'product_slug' => $product->slug,
+            'base_price' => $product->base_price,
+            'currency' => $product->currency,
+        ]);
+
         // Yeni mantık: base_price 0 veya null ise iletişime yönlendir
         if (!$product->base_price || $product->base_price <= 0) {
+            \Log::warning('⚠️ Fiyat yok, iletişime yönlendiriliyor', [
+                'product_slug' => $product->slug,
+            ]);
+
             return [
                 'available' => false,
                 'on_request' => true,
@@ -451,12 +461,35 @@ class ShopContextBuilder
         }
 
         // Fiyat varsa göster
-        return [
+        $priceData = [
             'available' => true,
             'amount' => $product->base_price,
             'formatted' => number_format($product->base_price, 2, ',', '.') . ' ' . ($product->currency ?? 'TRY'),
             'compare_at' => $product->compare_at_price,
         ];
+
+        // USD fiyatını hesapla (TRY ise)
+        if (($product->currency ?? 'TRY') === 'TRY') {
+            $usdCurrency = \Modules\Shop\App\Models\ShopCurrency::where('code', 'USD')
+                ->where('is_active', true)
+                ->first();
+
+            if ($usdCurrency && $usdCurrency->exchange_rate > 0) {
+                $priceInUsd = $product->base_price / $usdCurrency->exchange_rate;
+                $priceData['amount_usd'] = round($priceInUsd, 2);
+                $priceData['formatted_usd'] = '$' . number_format($priceInUsd, 0, ',', '.');
+
+                \Log::info('💱 USD fiyat hesaplandı', [
+                    'product' => $product->slug,
+                    'base_price_try' => $product->base_price,
+                    'exchange_rate' => $usdCurrency->exchange_rate,
+                    'amount_usd' => $priceData['amount_usd'],
+                    'formatted_usd' => $priceData['formatted_usd'],
+                ]);
+            }
+        }
+
+        return $priceData;
     }
 
     /**
@@ -569,5 +602,49 @@ class ShopContextBuilder
         }
 
         return $cleaned;
+    }
+
+    /**
+     * 🆕 PUBLIC: Format product data from array/model (for smart search integration)
+     *
+     * Smart search'den gelen ürün array'lerini veya model'leri formatlar.
+     * formatProduct() metodunu kullanır ama public erişim sağlar.
+     *
+     * @param array|ShopProduct $productData
+     * @return array|null
+     */
+    public function formatProductData($productData): ?array
+    {
+        // Eğer array ise, model'e çevir
+        if (is_array($productData)) {
+            $productId = $productData['product_id'] ?? $productData['id'] ?? null;
+            if (!$productId) {
+                \Log::warning('⚠️ formatProductData: product_id bulunamadı', [
+                    'data' => $productData,
+                ]);
+                return null;
+            }
+
+            // Model'i veritabanından çek
+            $product = ShopProduct::with(['category', 'childProducts', 'parentProduct'])
+                ->find($productId);
+
+            if (!$product) {
+                \Log::warning('⚠️ formatProductData: Ürün bulunamadı', [
+                    'product_id' => $productId,
+                ]);
+                return null;
+            }
+        } elseif ($productData instanceof ShopProduct) {
+            $product = $productData;
+        } else {
+            \Log::error('❌ formatProductData: Geçersiz veri tipi', [
+                'type' => gettype($productData),
+            ]);
+            return null;
+        }
+
+        // formatProduct() metodunu kullan (USD hesaplama dahil)
+        return $this->formatProduct($product);
     }
 }

@@ -28,8 +28,9 @@ class MarkdownPostProcessor
 
         // 1. Fix broken list items (emoji/punctuation split)
         // Pattern: </ul><p>!💯)</p> → !💯) should be in list
+        // Unicode range for emojis: \x{1F300}-\x{1F9FF}
         $html = preg_replace(
-            '/<\/ul>\s*<p>\s*([!?.,;:)\u{1F300}-\u{1F9FF}\s]+)\s*<\/p>/u',
+            '/<\/ul>\s*<p>\s*([!?.,;:)😀-🙏💀-🛿\s]+)\s*<\/p>/u',
             '$1</ul>',
             $html
         );
@@ -37,7 +38,7 @@ class MarkdownPostProcessor
         // 2. Fix split list items with emoji
         // Pattern: <li>Text (güçlü</li></ul><p>! 💪)</p> → merge back
         $html = preg_replace(
-            '/<li>([^<]+)<\/li>\s*<\/ul>\s*<p>\s*([!?.,;:)\u{1F300}-\u{1F9FF}\s]+)\s*<\/p>/u',
+            '/<li>([^<]+)<\/li>\s*<\/ul>\s*<p>\s*([!?.,;:)😀-🙏💀-🛿\s]+)\s*<\/p>/u',
             '<li>$1$2</li></ul>',
             $html
         );
@@ -53,7 +54,7 @@ class MarkdownPostProcessor
         // 4. Fix orphan paragraphs between lists
         // Pattern: </ul><p>! 💯)</p><ul> → merge to previous list
         $html = preg_replace(
-            '/<\/ul>\s*<p>\s*([!?.,;:)\u{1F300}-\u{1F9FF}\s]+)\s*<\/p>\s*<ul>/u',
+            '/<\/ul>\s*<p>\s*([!?.,;:)😀-🙏💀-🛿\s]+)\s*<\/p>\s*<ul>/u',
             '$1',
             $html
         );

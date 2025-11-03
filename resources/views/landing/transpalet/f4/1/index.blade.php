@@ -2,9 +2,9 @@
 
 @push('meta')
     <!-- PRIMARY SEO - Exact Keyword Match -->
-    <title>Elektrikli Transpalet | Akülü Transpalet 1500kg | İXTİF</title>
-    <meta name="description" content="✓ Elektrikli transpalet ✓ Akülü transpalet ✓ Terazili transpalet ✓ Denge tekerli transpalet | 1500 kg Li-Ion | Kasım kampanyası $1,250 | 1 yıl garanti">
-    <meta name="keywords" content="transpalet, elektrikli transpalet, akülü transpalet, terazili transpalet, denge tekerli transpalet, li-ion transpalet, 1500 kg transpalet">
+    <title>Elektrikli Transpalet Satın Al | Satılık Transpalet | Uygun Fiyat | İXTİF</title>
+    <meta name="description" content="✓ Elektrikli transpalet satın al ✓ Satılık transpalet ✓ Şarjlı transpalet ✓ Terazili transpalet ✓ Transpalet fiyatları ✓ Depo için transpalet | 1500 kg Li-Ion | Kasım kampanyası $1,250 | 1 yıl garanti">
+    <meta name="keywords" content="elektrikli transpalet satın al, satılık transpalet, elektrikli transpalet fiyatları, transpalet fiyatları, şarjlı transpalet, terazili transpalet, depo için transpalet, akülü transpalet, elektrikli transpalet, transpalet, istanbul transpalet, kocaeli transpalet, transpalet jungheinrich, still transpalet, en uygun fiyatlı transpaletler, stoktan teslim transpaletler, garantili terazili transpalet, yüksek performanslı transpalet, dar alanlar için transpaletler, depo içi elektrikli transpalet, soğuk hava deposuna transpalet, elektrikli şantiye transpaleti">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Elektrikli Transpalet 1500kg - Akülü Transpalet Kampanya">
@@ -18,16 +18,22 @@
 @endpush
 
 @push('schema')
-    <!-- Schema.org Product Markup -->
+    <!-- Schema.org Product Markup - Comprehensive -->
     <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
         "@@type": "Product",
         "name": "iXtif F4 Elektrikli Transpalet",
-        "description": "1500 kg kapasiteli elektrikli transpalet, akülü transpalet. 24V 20Ah Li-Ion bataryalı, kompakt tasarım.",
+        "description": "1500 kg kapasiteli elektrikli transpalet, akülü transpalet. 24V 20Ah Li-Ion bataryalı, kompakt tasarım, terazili ve denge tekerlekli.",
+        "sku": "IXTIF-F4-EP-1500",
+        "mpn": "F4-EP-1500KG",
         "brand": {
             "@@type": "Brand",
             "name": "iXtif"
+        },
+        "manufacturer": {
+            "@@type": "Organization",
+            "name": "İXTİF İç ve Dış Ticaret A.Ş."
         },
         "offers": {
             "@@type": "Offer",
@@ -35,15 +41,47 @@
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock",
             "priceValidUntil": "2025-11-30",
-            "url": "{{ url('/elektrikli-transpalet') }}"
+            "url": "{{ url('/elektrikli-transpalet') }}",
+            "seller": {
+                "@@type": "Organization",
+                "name": "İXTİF"
+            },
+            "itemCondition": "https://schema.org/NewCondition",
+            "warranty": "1 yıl üretici garantisi dahil"
         },
         "aggregateRating": {
             "@@type": "AggregateRating",
             "ratingValue": "4.9",
+            "bestRating": "5",
+            "worstRating": "1",
             "reviewCount": "150"
         },
-        "image": "https://ixtif.com/storage/tenant2/82/lep4ns74ctsp2gydkwetkw7xs1y01psfss4tf5u6.png",
-        "category": "Transpalet"
+        "image": [
+            "https://ixtif.com/storage/tenant2/82/lep4ns74ctsp2gydkwetkw7xs1y01psfss4tf5u6.png"
+        ],
+        "category": "Transpalet",
+        "additionalProperty": [
+            {
+                "@@type": "PropertyValue",
+                "name": "Kapasite",
+                "value": "1500 kg"
+            },
+            {
+                "@@type": "PropertyValue",
+                "name": "Batarya",
+                "value": "24V 20Ah Li-Ion"
+            },
+            {
+                "@@type": "PropertyValue",
+                "name": "Şarj Süresi",
+                "value": "2-3 saat"
+            },
+            {
+                "@@type": "PropertyValue",
+                "name": "Hız",
+                "value": "4.5-5 km/saat"
+            }
+        ]
     }
     </script>
 
@@ -52,76 +90,201 @@
     {
         "@@context": "https://schema.org",
         "@@type": "Organization",
-        "name": "İXTİF İç ve Dış Ticaret",
+        "name": "İXTİF İç ve Dış Ticaret A.Ş.",
         "url": "{{ url('/') }}",
-        "logo": "{{ url('/logo.png') }}",
+        "logo": "{{ setting('site_logo_url') ?? url('/logo.png') }}",
+        "sameAs": [
+            "https://www.facebook.com/ixtif",
+            "https://www.instagram.com/ixtif"
+        ],
         "contactPoint": {
             "@@type": "ContactPoint",
             "telephone": "{{ setting('contact_phone_1', '+90-216-755-3555') }}",
-            "contactType": "Sales"
+            "contactType": "Sales",
+            "areaServed": "TR",
+            "availableLanguage": ["Turkish", "English"]
+        },
+        "address": {
+            "@@type": "PostalAddress",
+            "addressCountry": "TR",
+            "addressLocality": "İstanbul"
+        }
+    }
+    </script>
+
+    <!-- Schema.org BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@@type": "ListItem",
+                "position": 1,
+                "name": "Anasayfa",
+                "item": "{{ url('/') }}"
+            },
+            {
+                "@@type": "ListItem",
+                "position": 2,
+                "name": "Ürünler",
+                "item": "{{ url('/urunler') }}"
+            },
+            {
+                "@@type": "ListItem",
+                "position": 3,
+                "name": "Elektrikli Transpalet",
+                "item": "{{ url('/elektrikli-transpalet') }}"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Schema.org FAQPage -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@@type": "Question",
+                "name": "Elektrikli transpalet fiyatları ne kadar?",
+                "acceptedAnswer": {
+                    "@@type": "Answer",
+                    "text": "İXTİF F4 elektrikli transpalet Kasım kampanyasında $1,250 (normal fiyat $1,560). 1 yıl garanti dahildir. Akülü transpalet fiyatları kapasite ve özelliklere göre değişir."
+                }
+            },
+            {
+                "@@type": "Question",
+                "name": "Akülü transpalet şarj süresi ne kadar?",
+                "acceptedAnswer": {
+                    "@@type": "Answer",
+                    "text": "Li-Ion bataryalı elektrikli transpalet 2-3 saat içinde tam şarj olur. Hızlı şarj özelliği sayesinde iş akışınızda minimum kesinti yaşarsınız."
+                }
+            },
+            {
+                "@@type": "Question",
+                "name": "Elektrikli transpalet kapasitesi nedir?",
+                "acceptedAnswer": {
+                    "@@type": "Answer",
+                    "text": "İXTİF F4 elektrikli transpalet 1500 kg (1.5 ton) yük taşıma kapasitesine sahiptir. Endüstriyel kullanım için ideal güvenli kapasite."
+                }
+            },
+            {
+                "@@type": "Question",
+                "name": "Transpalet garanti süresi ne kadar?",
+                "acceptedAnswer": {
+                    "@@type": "Answer",
+                    "text": "İXTİF elektrikli transpalet 1 yıl üretici garantisi ile satılır. Garanti kapsamında arızalı parçalar ücretsiz değiştirilir."
+                }
+            },
+            {
+                "@@type": "Question",
+                "name": "Elektrikli transpalet ne kadar hızlı gider?",
+                "acceptedAnswer": {
+                    "@@type": "Answer",
+                    "text": "İXTİF F4 elektrikli transpalet 4.5 km/saat yüklü, 5 km/saat yüksüz hızla hareket eder. Bu hız, güvenli ve verimli çalışma için optimize edilmiştir."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- Schema.org WebPage -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "WebPage",
+        "name": "Elektrikli Transpalet - Akülü Transpalet Kampanya",
+        "description": "Elektrikli transpalet ve akülü transpalet çözümleri. 1500 kg Li-Ion bataryalı, kompakt tasarım. Kasım kampanyası!",
+        "url": "{{ url('/elektrikli-transpalet') }}",
+        "inLanguage": "tr-TR",
+        "isPartOf": {
+            "@@type": "WebSite",
+            "name": "İXTİF",
+            "url": "{{ url('/') }}"
+        },
+        "breadcrumb": {
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@@type": "ListItem",
+                    "position": 1,
+                    "name": "Anasayfa",
+                    "item": "{{ url('/') }}"
+                },
+                {
+                    "@@type": "ListItem",
+                    "position": 2,
+                    "name": "Elektrikli Transpalet"
+                }
+            ]
         }
     }
     </script>
 @endpush
 
 @section('content')
-    <!-- Campaign Banner - Sticky -->
-    <div class="fixed top-16 left-0 right-0 z-30 bg-black/95 backdrop-blur-xl border-b border-yellow-600/30 py-3 px-4 text-center">
-        <div class="flex items-center justify-center gap-4 flex-wrap text-sm">
-            <span class="flex items-center gap-2">
-                <i class="fas fa-tag text-yellow-500"></i>
-                <span class="font-bold">KASIM KAMPANYASI</span>
-            </span>
-            <span class="hidden lg:inline text-gray-600">|</span>
-            <span class="text-gray-400">Elektrikli Transpalet Fırsatı</span>
-            <span class="hidden lg:inline text-gray-600">|</span>
-            <span class="text-yellow-500 font-bold">$1,250</span>
-        </div>
-    </div>
+@php
+    // Contact Settings (Header ile aynı) - Fallback values
+    $contactPhone = setting('contact_phone_1', '0216 755 35 55');
+    $contactWhatsapp = setting('contact_whatsapp_1', '905309555885');
+@endphp
 
     <!-- Hero Section - Above the fold optimization -->
-    <section class="pt-24 pb-12 px-4 bg-gradient-to-b from-gray-950 via-gray-900 to-black">
+    <section class="pt-8 pb-12 px-4 bg-gradient-to-b from-gray-950 via-gray-900 to-black">
         <div class="container mx-auto max-w-7xl">
-            <!-- Breadcrumb - SEO -->
-            <nav class="mb-6 text-sm text-gray-500">
-                <a href="/" class="hover:text-yellow-500">Anasayfa</a>
-                <span class="mx-2">/</span>
-                <a href="/urunler" class="hover:text-yellow-500">Ürünler</a>
-                <span class="mx-2">/</span>
-                <span class="text-gray-400">Elektrikli Transpalet</span>
-            </nav>
-
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
                 <div>
                     <!-- H1 - Primary Keyword -->
-                    <h1 class="text-5xl lg:text-7xl font-black mb-4 leading-tight">
-                        <span class="gold-gradient bg-clip-text text-transparent">Elektrikli Transpalet</span>
-                        <span class="block text-white text-4xl lg:text-5xl mt-2">Akülü Transpalet 1500 kg</span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 leading-tight">
+                        <span class="gold-gradient-strong bg-clip-text text-transparent">Elektrikli Transpalet</span>
+                        <span class="block text-white text-3xl sm:text-4xl lg:text-6xl mt-3">1500 kg Kapasite</span>
                     </h1>
-                    <p class="text-2xl text-yellow-500 font-bold mb-6">Premium Kalite • En Uygun Fiyat • Kasım Kampanyası</p>
+                    <p class="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4 sm:mb-6">
+                        8 Saat Kesintisiz • Hızlı Şarj • Düşük Maliyet
+                    </p>
 
-                    <!-- USP - Unique Benefits -->
-                    <div class="bg-yellow-600/10 border-l-4 border-yellow-600 p-4 mb-6">
-                        <p class="text-lg text-gray-300 leading-relaxed">
-                            ✓ <strong class="text-white">Li-Ion batarya</strong> teknolojisi<br>
-                            ✓ <strong class="text-white">1500 kg</strong> taşıma kapasitesi<br>
-                            ✓ <strong class="text-white">1360 mm</strong> dönüş yarıçapı<br>
-                            ✓ <strong class="text-white">4.5 km/h</strong> maksimum hız
-                        </p>
+                    <!-- Trust Badge - Şirket Garantisi -->
+                    <div class="flex items-center gap-2 text-sm sm:text-base text-gray-400 mb-6 sm:mb-8">
+                        <i class="fas fa-shield-check text-yellow-500"></i>
+                        <span>İXTİF İç ve Dış Ticaret Anonim Şirketi Garantisiyle</span>
                     </div>
 
-                    <!-- Price - Clear CTA -->
-                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border-2 border-yellow-600 mb-6">
-                        <div class="flex items-baseline gap-3 mb-2">
-                            <span class="text-gray-500 line-through text-xl">$1,560</span>
-                            <span class="text-yellow-500 font-black text-base bg-yellow-600/20 px-3 py-1 rounded-lg">-20% İNDİRİM</span>
+                    <!-- Price - Clear CTA with Animation -->
+                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border-2 border-yellow-600 mb-4 sm:mb-6"
+                         x-data="{
+                             showTL: false,
+                             priceTimer: null,
+                             init() {
+                                 this.startPriceCycle();
+                             },
+                             startPriceCycle() {
+                                 this.priceTimer = setInterval(() => {
+                                     // TL'ye geç (1.5 saniye)
+                                     this.showTL = true;
+                                     setTimeout(() => {
+                                         this.showTL = false;
+                                     }, 1500);
+                                 }, 4500); // Her 4.5 saniyede bir döngü (3s USD + 1.5s TL)
+                             },
+                             destroy() {
+                                 if (this.priceTimer) clearInterval(this.priceTimer);
+                             }
+                         }">
+                        <div class="flex items-baseline gap-2 sm:gap-3 mb-2">
+                            <span class="text-gray-500 line-through text-base sm:text-lg lg:text-xl">$1,560</span>
+                            <span class="text-yellow-500 font-black text-xs sm:text-sm lg:text-base bg-yellow-600/20 px-2 sm:px-3 py-1 rounded-lg">-20% İNDİRİM</span>
                         </div>
-                        <div class="flex items-baseline gap-3 mb-3">
-                            <span class="text-5xl font-black gold-gradient bg-clip-text text-transparent">$1,250</span>
-                            <span class="text-gray-400">+ KDV</span>
+                        <div class="flex items-baseline gap-2 sm:gap-3 mb-3">
+                            <div class="relative inline-block min-w-[180px] sm:min-w-[220px] lg:min-w-[280px]">
+                                <span x-show="!showTL" class="absolute left-0 top-0 text-3xl sm:text-4xl lg:text-5xl font-black gold-gradient bg-clip-text text-transparent">$1,250</span>
+                                <span x-show="showTL" class="absolute left-0 top-0 text-3xl sm:text-4xl lg:text-5xl font-black gold-gradient bg-clip-text text-transparent">52.500 ₺</span>
+                                <span class="invisible text-3xl sm:text-4xl lg:text-5xl font-black">52.500 ₺</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-4 text-sm">
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                             <span class="text-yellow-500">
                                 <i class="fas fa-shield-alt mr-1"></i> 1 Yıl Garanti
                             </span>
@@ -132,40 +295,44 @@
                     </div>
 
                     <!-- Countdown (Dynamic) -->
-                    <div id="countdown" class="grid grid-cols-4 gap-2 mb-6">
-                        <div class="bg-black/50 p-2 rounded-lg border border-yellow-600/30 text-center">
-                            <div class="text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-days">01</div>
-                            <div class="text-gray-400 text-xs">Gün</div>
+                    <div id="countdown" class="grid grid-cols-4 gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+                        <div class="bg-black/50 p-1.5 sm:p-2 rounded-lg border border-yellow-600/30 text-center">
+                            <div class="text-xl sm:text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-days">01</div>
+                            <div class="text-gray-400 text-[10px] sm:text-xs">Gün</div>
                         </div>
-                        <div class="bg-black/50 p-2 rounded-lg border border-yellow-600/30 text-center">
-                            <div class="text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-hours">18</div>
-                            <div class="text-gray-400 text-xs">Saat</div>
+                        <div class="bg-black/50 p-1.5 sm:p-2 rounded-lg border border-yellow-600/30 text-center">
+                            <div class="text-xl sm:text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-hours">18</div>
+                            <div class="text-gray-400 text-[10px] sm:text-xs">Saat</div>
                         </div>
-                        <div class="bg-black/50 p-2 rounded-lg border border-yellow-600/30 text-center">
-                            <div class="text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-minutes">45</div>
-                            <div class="text-gray-400 text-xs">Dakika</div>
+                        <div class="bg-black/50 p-1.5 sm:p-2 rounded-lg border border-yellow-600/30 text-center">
+                            <div class="text-xl sm:text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-minutes">45</div>
+                            <div class="text-gray-400 text-[10px] sm:text-xs">Dakika</div>
                         </div>
-                        <div class="bg-black/50 p-2 rounded-lg border border-yellow-600/30 text-center">
-                            <div class="text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-seconds">23</div>
-                            <div class="text-gray-400 text-xs">Saniye</div>
+                        <div class="bg-black/50 p-1.5 sm:p-2 rounded-lg border border-yellow-600/30 text-center">
+                            <div class="text-xl sm:text-2xl font-black gold-gradient bg-clip-text text-transparent" id="countdown-seconds">23</div>
+                            <div class="text-gray-400 text-[10px] sm:text-xs">Saniye</div>
                         </div>
                     </div>
 
                     <!-- Primary CTA -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                        <a href="{{ whatsapp_link('Elektrikli Transpalet Kampanya') }}"
-                           class="px-6 py-4 bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-600 hover:border-yellow-500 rounded-xl text-white text-center font-bold transition-all flex items-center justify-center gap-2">
-                            <i class="fab fa-whatsapp text-yellow-500 text-xl"></i>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
+                        <a href="{{ whatsapp_link(null, 'Elektrikli Transpalet Kampanya') }}"
+                           target="_blank"
+                           class="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-600 hover:border-yellow-500 rounded-xl text-white text-center text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fab fa-whatsapp text-yellow-500 text-lg sm:text-xl"></i>
                             <span>WhatsApp</span>
                         </a>
-                        <a href="tel:{{ setting('contact_phone_1', '02167553555') }}"
-                           class="px-6 py-4 bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-600 hover:border-yellow-500 rounded-xl text-white text-center font-bold transition-all flex items-center justify-center gap-2">
-                            <i class="fas fa-phone text-yellow-500 text-xl"></i>
+
+                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                           class="px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-600 hover:border-yellow-500 rounded-xl text-white text-center text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-phone text-yellow-500 text-lg sm:text-xl"></i>
                             <span>Telefon</span>
                         </a>
-                        <a href="#iletisim-formu"
-                           class="px-6 py-4 gold-gradient rounded-xl text-gray-950 text-center font-bold transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(212,175,55,0.5)]">
-                            <i class="fas fa-headset text-gray-950 text-xl"></i>
+
+                        <a href="https://ixtif.com/sizi-arayalim"
+                           target="_blank"
+                           class="px-4 py-3 sm:px-6 sm:py-4 sm:col-span-2 lg:col-span-1 gold-gradient rounded-xl text-gray-950 text-center text-sm sm:text-base font-bold transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(212,175,55,0.5)]">
+                            <i class="fas fa-headset text-gray-950 text-lg sm:text-xl"></i>
                             <span>Sizi Arayalım</span>
                         </a>
                     </div>
@@ -190,77 +357,122 @@
         </div>
     </section>
 
-    <!-- Transpalet Types - Keyword Expansion -->
+    <!-- Benefits - Keyword Rich Content -->
     <section class="py-16 px-4 bg-black">
         <div class="container mx-auto max-w-7xl">
             <h2 class="text-4xl font-black mb-12 text-center">
-                <span class="text-white">Transpalet</span>
-                <span class="gold-gradient bg-clip-text text-transparent"> Çeşitleri</span>
+                <span class="gold-gradient bg-clip-text text-transparent">Elektrikli Transpalet</span>
+                <span class="text-white"> Neden Tercih Edilmeli?</span>
             </h2>
 
-            <div class="grid lg:grid-cols-4 gap-6">
-                <!-- Elektrikli Transpalet -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-yellow-600">
-                    <div class="w-12 h-12 gold-gradient rounded-lg flex items-center justify-center mb-4">
-                        <i class="fas fa-bolt text-gray-950 text-xl"></i>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700">
+                    <div class="w-16 h-16 gold-gradient rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-medal text-gray-950 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Elektrikli Transpalet</h3>
-                    <p class="text-gray-400 text-sm mb-3">
-                        Li-Ion bataryalı elektrikli transpalet, yüksek verimlilik ve uzun çalışma süresi.
+                    <h3 class="text-2xl font-bold mb-4 text-white">Kalite ve Güvenilirlik</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Sağlam yapı, dayanıklı malzeme ve uzun ömürlü Li-Ion batarya teknolojisi. Elektrikli transpalet kalitesi global standartlarda. 1 yıl garanti kapsamı ile güvenli alışveriş. Bakım maliyeti minimum, arıza riski düşük.
                     </p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>1500 kg kapasite</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Hızlı şarj</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Sessiz çalışma</li>
-                    </ul>
                 </div>
 
-                <!-- Akülü Transpalet -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700">
-                    <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-4">
-                        <i class="fas fa-battery-full text-yellow-500 text-xl"></i>
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700">
+                    <div class="w-16 h-16 gold-gradient rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-dollar-sign text-gray-950 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Akülü Transpalet</h3>
-                    <p class="text-gray-400 text-sm mb-3">
-                        Güçlü akülü transpalet sistemi, uzun ömürlü batarya teknolojisi.
+                    <h3 class="text-2xl font-bold mb-4 text-white">Ekonomik ve Uygun Fiyatlı</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        Uygun fiyatlarla yüksek kalite. Düşük işletme maliyeti, az bakım ihtiyacı. Uzun vadede yüksek yatırım getirisi.
                     </p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>24V sistem</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Düşük bakım</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Ekonomik</li>
-                    </ul>
                 </div>
 
-                <!-- Terazili Transpalet -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700">
-                    <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-4">
-                        <i class="fas fa-balance-scale text-yellow-500 text-xl"></i>
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700">
+                    <div class="w-16 h-16 gold-gradient rounded-xl flex items-center justify-center mb-6">
+                        <i class="fas fa-tachometer-alt text-gray-950 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Terazili Transpalet</h3>
-                    <p class="text-gray-400 text-sm mb-3">
-                        Entegre terazi sistemi, hassas tartım özellikli terazili transpalet.
+                    <h3 class="text-2xl font-bold mb-4 text-white">Yüksek Performans</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        1500 kg kapasite, 4.5 km/h hız, 1360 mm dönüş yarıçapı. Dar alanlarda üstün manevra kabiliyeti ve kompakt çalışma.
                     </p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Dijital gösterge</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Hassas ölçüm</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Opsiyonel</li>
-                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hizmet Avantajları ve Güvenceler -->
+    <section class="py-16 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="text-4xl font-black mb-4 text-center">
+                <span class="text-white">Hizmet</span>
+                <span class="gold-gradient bg-clip-text text-transparent"> Avantajlarımız</span>
+            </h2>
+            <p class="text-center text-gray-400 mb-12">En uygun fiyatlı transpaletler ile %100 müşteri memnuniyeti garantisi</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Avantaj 1 -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-yellow-600 transition-all">
+                    <div class="w-14 h-14 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-shipping-fast text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Stoktan Teslim Transpaletler</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Sıfır ürünler stokta! Bugün ara, yarın teslim hızlı teslimat garantisi. Elektrikli transpalet satın al ihtiyacınız için anında karşılık. İstanbul transpalet ve Kocaeli transpalet bölgelerine özel hızlı kargo.
+                    </p>
                 </div>
 
-                <!-- Denge Tekerli Transpalet -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700">
-                    <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-4">
-                        <i class="fas fa-cog text-yellow-500 text-xl"></i>
+                <!-- Avantaj 2 -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-yellow-600 transition-all">
+                    <div class="w-14 h-14 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-building text-yellow-500 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-white">Denge Tekerli Transpalet</h3>
-                    <p class="text-gray-400 text-sm mb-3">
-                        Kompakt denge tekerli transpalet tasarımı, dar alanlarda yüksek manevra kabiliyeti.
+                    <h3 class="text-xl font-bold text-white mb-3">Özel Uygulama Alanları</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Depo içi elektrikli transpalet, elektrikli şantiye transpaleti, soğuk hava deposuna transpalet ve dar alanlar için transpaletler. Her sektöre özel dayanıklı ve güçlü transpalet çözümlerimiz mevcuttur.
                     </p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>1360 mm dönüş</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Kompakt tasarım</li>
-                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Stabil hareket</li>
-                    </ul>
+                </div>
+
+                <!-- Avantaj 3 -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-yellow-600 transition-all">
+                    <div class="w-14 h-14 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-dollar-sign text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">En Uygun Fiyatlı Transpaletler</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Akülü transpalet fiyatları en uygun seviyede. %40 daha ekonomik fiyatlandırma. Satılık transpalet stoklarımızdan elektrikli transpalet satın al fırsatı.
+                    </p>
+                </div>
+
+                <!-- Avantaj 4 -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-yellow-600 transition-all">
+                    <div class="w-14 h-14 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-trophy text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Yüksek Performanslı Transpalet</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Akülü ve elektrikli transpalet modellerimiz yüksek performans garantisi ile sunulmaktadır. 1500 kg kapasite, uluslararası standartlarda Li-Ion teknolojisi ile kesintisiz çalışma. Garantili terazili transpalet opsiyonu ile kapsamlı hizmet.
+                    </p>
+                </div>
+
+                <!-- Avantaj 5 -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-yellow-600 transition-all">
+                    <div class="w-14 h-14 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-award text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">%100 Müşteri Memnuniyeti</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        1 yıl garanti dahil, 7/24 teknik destek. Depo için transpalet ihtiyaçlarınızda güvenilir çözüm ortağınız. Satılık transpalet stoklarımız sürekli yenilenmektedir.
+                    </p>
+                </div>
+
+                <!-- Avantaj 6 -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 rounded-2xl border border-gray-700 hover:border-yellow-600 transition-all">
+                    <div class="w-14 h-14 bg-yellow-600/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-handshake text-yellow-500 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3">Kolay ve Hızlı Satın Alma</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Elektrikli transpalet satın al süreci son derece basittir. Şarjlı transpalet ve akülü transpalet fiyatları şeffaf, net ödeme seçenekleri mevcut. Stoktan teslim transpaletler ile hızlı başlangıç.
+                    </p>
                 </div>
             </div>
         </div>
@@ -355,50 +567,8 @@
         </div>
     </section>
 
-    <!-- Benefits - Keyword Rich Content -->
-    <section class="py-16 px-4 bg-black">
-        <div class="container mx-auto max-w-7xl">
-            <h2 class="text-4xl font-black mb-12 text-center">
-                <span class="gold-gradient bg-clip-text text-transparent">Elektrikli Transpalet</span>
-                <span class="text-white"> Neden Tercih Edilmeli?</span>
-            </h2>
-
-            <div class="grid lg:grid-cols-3 gap-8">
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700">
-                    <div class="w-16 h-16 gold-gradient rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-leaf text-gray-950 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white">Çevre Dostu</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        Elektrikli transpalet ve akülü transpalet sistemleri sıfır emisyon ile çevre dostu çalışma ortamı sağlar. Li-Ion batarya teknolojisi ile uzun ömür.
-                    </p>
-                </div>
-
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700">
-                    <div class="w-16 h-16 gold-gradient rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-dollar-sign text-gray-950 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white">Ekonomik ve Uygun Fiyatlı</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        Düşük işletme maliyeti, az bakım ihtiyacı. Uygun fiyatlı elektrikli transpalet ile yakıt tasarrufu ve uzun vadede yüksek ROI sağlar. Ekonomik akülü transpalet çözümü.
-                    </p>
-                </div>
-
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700">
-                    <div class="w-16 h-16 gold-gradient rounded-xl flex items-center justify-center mb-6">
-                        <i class="fas fa-tachometer-alt text-gray-950 text-2xl"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold mb-4 text-white">Yüksek Performans</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        1500 kg kapasite, 4.5 km/h hız, 1360 mm dönüş yarıçapı. Dar alanlarda üstün manevra kabiliyeti ve kompakt çalışma.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Social Proof - Reviews -->
-    <section class="py-16 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+    <section class="py-16 px-4 bg-black">
         <div class="container mx-auto max-w-7xl">
             <h2 class="text-4xl font-black mb-4 text-center">
                 <span class="text-white">Müşteri</span>
@@ -406,66 +576,148 @@
             </h2>
             <p class="text-center text-gray-400 mb-12">Elektrikli transpalet kullanan müşterilerimizin deneyimleri</p>
 
-            <div class="grid lg:grid-cols-3 gap-8 mb-12">
-                <!-- Review 1 -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 flex flex-col">
-                    <div class="flex items-center gap-2 mb-4">
-                        @for($i = 0; $i < 5; $i++)
-                            <i class="fas fa-star text-yellow-500"></i>
-                        @endfor
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed flex-grow">
-                        "Depomuzdaki dar koridorlar için ideal. F4 modelini aldık, manevra kabiliyeti gerçekten iyi. Batarya şarjı hızlı, sabah takıyoruz öğlene hazır oluyor. Bakım gerektirmiyor, pratik bir ürün."
-                    </p>
-                    <div class="flex items-center gap-3 mt-auto">
-                        <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-user text-yellow-500"></i>
-                        </div>
-                        <div>
-                            <p class="text-white font-bold">Rıdvan Yanıkoğlu</p>
-                            <p class="text-gray-500 text-sm">Depo Sorumlusu - İstanbul</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- Swiper Carousel with Gradient Fade -->
+            <div class="mb-12">
+                <div class="relative before:absolute before:bottom-0 before:left-0 before:top-0 before:z-10 before:w-16 md:before:w-36 before:bg-gradient-to-r before:from-black before:via-gray-900/80 before:to-transparent after:absolute after:bottom-0 after:right-0 after:top-0 after:z-10 after:w-16 md:after:w-36 after:bg-gradient-to-l after:from-black after:via-gray-900/80 after:to-transparent">
+                    <div class="swiper reviewsSwiper">
+                        <div class="swiper-wrapper">
+                            <!-- Review 1 -->
+                            <div class="swiper-slide">
+                                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 md:p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                                <div class="flex items-center gap-2 mb-4">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-400 text-sm md:text-base mb-6 leading-relaxed flex-grow">
+                                    "Depomuzdaki dar koridorlar için ideal. F4 modelini aldık, manevra kabiliyeti gerçekten iyi. Batarya şarjı hızlı, sabah takıyoruz öğlene hazır oluyor. Bakım gerektirmiyor, pratik bir ürün."
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-bold text-sm md:text-base">Rıdvan Yanıkoğlu</p>
+                                        <p class="text-gray-500 text-xs md:text-sm">Pazarlama Müdürü - İstanbul</p>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
 
-                <!-- Review 2 -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 flex flex-col">
-                    <div class="flex items-center gap-2 mb-4">
-                        @for($i = 0; $i < 5; $i++)
-                            <i class="fas fa-star text-yellow-500"></i>
-                        @endfor
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed flex-grow">
-                        "1.5 ton kapasitesi günlük işlerimiz için yeterli. Günde ortalama 120-130 palet taşıma yapıyoruz, hiç sorun yaşamadık. Operatörler kullanım kolaylığından memnun. Fiyat/performans oranı dengeli."
-                    </p>
-                    <div class="flex items-center gap-3 mt-auto">
-                        <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-user text-yellow-500"></i>
-                        </div>
-                        <div>
-                            <p class="text-white font-bold">Kemal Yurtdaş</p>
-                            <p class="text-gray-500 text-sm">Lojistik Şefi - Bursa</p>
-                        </div>
-                    </div>
-                </div>
+                            <!-- Review 2 -->
+                            <div class="swiper-slide">
+                                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 md:p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                                <div class="flex items-center gap-2 mb-4">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-400 text-sm md:text-base mb-6 leading-relaxed flex-grow">
+                                    "1.5 ton kapasitesi günlük işlerimiz için yeterli. Günde ortalama 120-130 palet taşıma yapıyoruz, hiç sorun yaşamadık. Operatörler kullanım kolaylığından memnun. Fiyat/performans oranı dengeli."
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-bold text-sm md:text-base">Kemal Yurtdaş</p>
+                                        <p class="text-gray-500 text-xs md:text-sm">Fabrika Sahibi - Bursa</p>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
 
-                <!-- Review 3 -->
-                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-2xl border border-gray-700 flex flex-col">
-                    <div class="flex items-center gap-2 mb-4">
-                        @for($i = 0; $i < 5; $i++)
-                            <i class="fas fa-star text-yellow-500"></i>
-                        @endfor
-                    </div>
-                    <p class="text-gray-400 mb-6 leading-relaxed flex-grow">
-                        "3 aydır kullanımda, şimdiye kadar herhangi bir arıza yaşamadık. Servis desteği hızlı, küçük bir sorunumuzda aynı gün müdahale ettiler. Garanti kapsamı güven veriyor."
-                    </p>
-                    <div class="flex items-center gap-3 mt-auto">
-                        <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-user text-yellow-500"></i>
-                        </div>
-                        <div>
-                            <p class="text-white font-bold">İsmail Zor</p>
-                            <p class="text-gray-500 text-sm">Atölye Müdürü - Kocaeli</p>
+                            <!-- Review 3 -->
+                            <div class="swiper-slide">
+                                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 md:p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                                <div class="flex items-center gap-2 mb-4">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-400 text-sm md:text-base mb-6 leading-relaxed flex-grow">
+                                    "3 aydır kullanımda, şimdiye kadar herhangi bir arıza yaşamadık. Servis desteği hızlı, küçük bir sorunumuzda aynı gün müdahale ettiler. Garanti kapsamı güven veriyor."
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-bold text-sm md:text-base">İsmail Zor</p>
+                                        <p class="text-gray-500 text-xs md:text-sm">Atölye Müdürü - Kocaeli</p>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Review 4 -->
+                            <div class="swiper-slide">
+                                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 md:p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                                <div class="flex items-center gap-2 mb-4">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-400 text-sm md:text-base mb-6 leading-relaxed flex-grow">
+                                    "Batarya ömrü beklediğimizden uzun. 6 ay oldu, hala ilk gündeki performansta çalışıyor. Şarj istasyonu kompakt, fazla yer kaplamıyor. Terazili özelliği ile tartım işlemlerini kolaylaştırdı."
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-bold text-sm md:text-base">Mehmet Arslan</p>
+                                        <p class="text-gray-500 text-xs md:text-sm">Depo Müdürü - Ankara</p>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Review 5 -->
+                            <div class="swiper-slide">
+                                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 md:p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                                <div class="flex items-center gap-2 mb-4">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-400 text-sm md:text-base mb-6 leading-relaxed flex-grow">
+                                    "Fiyat araştırması yaptım, İXTİF'in kampanya fiyatı piyasanın en uygunuydu. Ürün kalitesi fiyatına göre çok iyi. Denge tekerlekli tasarım sayesinde rampalarda güvenli çalışıyor."
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-bold text-sm md:text-base">Murat Demir</p>
+                                        <p class="text-gray-500 text-xs md:text-sm">Satın Alma Uzmanı - İzmir</p>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Review 6 -->
+                            <div class="swiper-slide">
+                                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-6 md:p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                                <div class="flex items-center gap-2 mb-4">
+                                    @for($i = 0; $i < 5; $i++)
+                                        <i class="fas fa-star text-yellow-500 text-sm"></i>
+                                    @endfor
+                                </div>
+                                <p class="text-gray-400 text-sm md:text-base mb-6 leading-relaxed flex-grow">
+                                    "Operatör eğitimi 20 dakika sürdü, kullanımı çok kolay. Ergonomik kumanda kolu yorulmadan uzun süre çalışma imkanı veriyor. Gürültü seviyesi düşük, kapalı alanda rahatsız etmiyor."
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-yellow-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-white font-bold text-sm md:text-base">Selim Öztürk</p>
+                                        <p class="text-gray-500 text-xs md:text-sm">Operasyon Şefi - Bursa</p>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -491,6 +743,194 @@
         </div>
     </section>
 
+    <!-- Ürün Kategorileri - Tüm Modellere Ulaşım -->
+    <section class="py-12 sm:py-16 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="text-3xl sm:text-4xl font-black mb-3 sm:mb-4 text-center">
+                <span class="text-white">Tüm</span>
+                <span class="gold-gradient bg-clip-text text-transparent"> Ürün Kategorileri</span>
+            </h2>
+            <p class="text-center text-gray-400 mb-8 sm:mb-12 text-sm sm:text-base">İhtiyacınıza uygun depolama ekipmanı modellerini keşfedin</p>
+
+            @php
+                use Modules\Shop\App\Models\ShopCategory;
+
+                // Homepage'de gösterilecek kategorileri çek
+                $categories = ShopCategory::where('show_in_homepage', true)
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->get();
+
+                $locale = app()->getLocale();
+            @endphp
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                @foreach($categories as $category)
+                    @php
+                        $slug = $category->getTranslated('slug', $locale) ?? ($category->slug[$locale] ?? '');
+                        $title = $category->getTranslated('title', $locale) ?? ($category->title[$locale] ?? '');
+                        $description = $category->getTranslated('description', $locale) ?? ($category->description[$locale] ?? '');
+                        $iconClass = $category->icon_class ?? 'fas fa-box';
+
+                        // Transpalet kategorisi için özel styling
+                        $isTranspalet = str_contains(strtolower($slug), 'transpalet');
+                        $borderClass = $isTranspalet ? 'border-yellow-600 hover:border-yellow-500' : 'border-gray-700 hover:border-yellow-600';
+                        $iconBgClass = $isTranspalet ? 'gold-gradient' : 'bg-gray-700 group-hover:bg-yellow-600/20';
+                        $iconColorClass = $isTranspalet ? 'text-gray-950' : 'text-yellow-500';
+                    @endphp
+
+                    <a href="/shop/kategori/{{ $slug }}"
+                       class="group bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border {{ $borderClass }} transition-all duration-300 transform hover:scale-105">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 {{ $iconBgClass }} rounded-lg flex items-center justify-center mb-3 sm:mb-4 transition-colors">
+                            <i class="{{ $iconClass }} {{ $iconColorClass }} text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-2 text-white group-hover:text-yellow-500 transition-colors">{{ $title }}</h3>
+                        <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                            {{ strip_tags(Str::limit($description, 60)) }}
+                        </p>
+                        <div class="flex items-center text-yellow-500 text-xs sm:text-sm font-semibold">
+                            <span>Modelleri İncele</span>
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+
+            <!-- All Products CTA -->
+            <div class="mt-8 sm:mt-12 text-center">
+                <a href="/shop" class="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 gold-gradient rounded-xl text-gray-950 text-sm sm:text-base font-bold transition-all hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] transform hover:scale-105">
+                    <i class="fas fa-th-large text-lg sm:text-xl"></i>
+                    <span>Tüm Ürünleri Görüntüle</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Opsiyonlar - Configuration Options -->
+    <section class="py-12 sm:py-16 px-4 bg-black">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="text-3xl sm:text-4xl font-black mb-8 sm:mb-12 text-center">
+                <span class="gold-gradient bg-clip-text text-transparent">Opsiyonlar</span>
+                <span class="text-white"> ve Özelleştirmeler</span>
+            </h2>
+            <p class="text-center text-gray-400 mb-8 text-sm sm:text-base">İhtiyacınıza göre özelleştirilebilir elektrikli transpalet seçenekleri</p>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Çatal Boyutları -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border border-yellow-600">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 gold-gradient rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-arrows-alt-h text-gray-950 text-lg sm:text-xl"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">Çatal Boyutları</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                        İşletmenizin paletlerine uygun çatal uzunluğu ve genişliği
+                    </p>
+                    <ul class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>900-1500 mm uzunluk</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>560 / 685 mm genişlik</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Özel sipariş mevcut</li>
+                    </ul>
+                </div>
+
+                <!-- Batarya Kapasitesi -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border border-yellow-600">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 gold-gradient rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-battery-full text-gray-950 text-lg sm:text-xl"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">Batarya Kapasitesi</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                        Çalışma sürenize göre artırılabilir batarya seçenekleri
+                    </p>
+                    <ul class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>1x 20Ah (Standart)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>2x 20Ah (Yoğun kullanım)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>3x-4x 20Ah (7/24 vardiya)</li>
+                    </ul>
+                </div>
+
+                <!-- Denge Tekerlekleri -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border border-gray-700">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-circle-notch text-yellow-500 text-lg sm:text-xl"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">Denge Tekerlekleri</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                        Ağır yükler ve engebeli zeminler için stabilite desteği
+                    </p>
+                    <ul class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Büyük yükler için güvenlik</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Engebeli zemin desteği</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Sonradan eklenebilir</li>
+                    </ul>
+                </div>
+
+                <!-- Çatal İndirme Yüksekliği -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border border-gray-700">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-arrows-alt-v text-yellow-500 text-lg sm:text-xl"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">Çatal Yüksekliği</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                        Farklı palet tipleri için ayarlanabilir çatal yüksekliği
+                    </p>
+                    <ul class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>80 mm (Standart)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>55 mm (Alçak profil)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Özel paletler için ideal</li>
+                    </ul>
+                </div>
+
+                <!-- Şarj Cihazı -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border border-gray-700">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-charging-station text-yellow-500 text-lg sm:text-xl"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">Şarj Cihazı</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                        Kullanım yoğunluğunuza göre şarj hızı seçenekleri
+                    </p>
+                    <ul class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>5A (Standart şarj)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>10A (Hızlı şarj)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>DC-DC akıllı şarj</li>
+                    </ul>
+                </div>
+
+                <!-- Kumanda Kolu -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-6 rounded-2xl border border-gray-700">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+                        <i class="fas fa-hand-paper text-yellow-500 text-lg sm:text-xl"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">Kumanda Kolu</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-3">
+                        Operatör konforuna göre kol tipi seçeneği
+                    </p>
+                    <ul class="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-500">
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Küçük kol (Standart)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Büyük kol (Konfor)</li>
+                        <li><i class="fas fa-check text-yellow-500 mr-2"></i>Ergonomik tasarım</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="mt-8 sm:mt-12 bg-yellow-600/10 border-l-4 border-yellow-600 p-4 sm:p-6 rounded-r-2xl">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 gold-gradient rounded-full flex items-center justify-center">
+                        <i class="fas fa-cog text-gray-950 text-lg sm:text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-base sm:text-lg font-bold text-white mb-1 sm:mb-2">Özelleştirilmiş Çözümler</h4>
+                        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                            Tüm opsiyonlar fabrika çıkışlı veya sonradan retrofitlenebilir. İşletmenizin özel ihtiyaçları için <strong>ücretsiz danışmanlık</strong> hizmeti sunuyoruz. WhatsApp veya telefon ile hemen iletişime geçin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- FAQ - Long-tail Keywords -->
     <section class="py-16 px-4 bg-black">
         <div class="container mx-auto max-w-4xl">
@@ -509,7 +949,7 @@
                     </button>
                     <div x-show="openFaq === 1" x-collapse class="px-6 pb-6">
                         <p class="text-gray-400">
-                            İXTİF F4 elektrikli transpalet Kasım kampanyasında $1,250 (normal fiyat $1,560). 1 yıl garanti dahildir. Akülü transpalet fiyatları kapasite ve özelliklere göre değişir.
+                            İXTİF F4 elektrikli transpalet Kasım kampanyasında $1,250 (normal fiyat $1,560). Satılık transpalet stoklarımız mevcuttur. Transpalet fiyatları kapasite ve özelliklere göre değişir. Elektrikli transpalet satın al fırsatından yararlanın, 1 yıl garanti dahildir.
                         </p>
                     </div>
                 </div>
@@ -522,7 +962,7 @@
                     </button>
                     <div x-show="openFaq === 2" x-collapse class="px-6 pb-6">
                         <p class="text-gray-400">
-                            Li-Ion bataryalı elektrikli transpalet 2-3 saat içinde tam şarj olur. Hızlı şarj özelliği sayesinde iş akışınızda minimum kesinti yaşarsınız.
+                            Şarjlı transpalet ve Li-Ion bataryalı elektrikli transpalet 2-3 saat içinde tam şarj olur. Akülü transpalet sistemimiz hızlı şarj özelliği sayesinde iş akışınızda minimum kesinti yaşarsınız. Depo için transpalet ihtiyaçlarınızda kesintisiz çalışma sağlar.
                         </p>
                     </div>
                 </div>
@@ -535,7 +975,7 @@
                     </button>
                     <div x-show="openFaq === 3" x-collapse class="px-6 pb-6">
                         <p class="text-gray-400">
-                            Terazili transpalet, entegre terazi sistemi olan transpalet çeşididir. Yükü tartarken taşıma imkanı sağlar. İXTİF F4 modelinde opsiyonel olarak sunulmaktadır.
+                            Terazili transpalet, entegre terazi sistemi olan elektrikli transpalet çeşididir. Yükü tartarken taşıma imkanı sağlar. Terazili transpalet satın al opsiyonu ile İXTİF F4 modelinde sunulmaktadır. Depo için transpalet ihtiyaçlarınızda hassas ölçüm gerektiren uygulamalar için idealdir.
                         </p>
                     </div>
                 </div>
@@ -656,6 +1096,19 @@
                         </p>
                     </div>
                 </div>
+
+                <!-- FAQ 13 - Lokasyon (önceki 14) -->
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                    <button @click="openFaq = openFaq === 13 ? null : 13" class="w-full p-6 text-left flex items-center justify-between hover:bg-gray-800/50 transition-colors">
+                        <h3 class="text-white font-bold pr-4">Tüm Türkiye'ye elektrikli transpalet satış ve servisi var mı?</h3>
+                        <i class="fas transition-transform duration-300" :class="openFaq === 13 ? 'fa-chevron-up text-yellow-500' : 'fa-chevron-down text-gray-400'"></i>
+                    </button>
+                    <div x-show="openFaq === 13" x-collapse class="px-6 pb-6">
+                        <p class="text-gray-400">
+                            Evet! Tüm Türkiye'ye stoktan teslim transpaletler sunuyoruz. Bugün ara, yarın teslim hızlı teslimat garantisi. Depo içi elektrikli transpalet, elektrikli şantiye transpaleti ve soğuk hava deposuna transpalet çözümlerimiz mevcuttur. Dar alanlar için transpaletler özel olarak stoklanmaktadır.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -668,10 +1121,29 @@
                     <span class="text-white">Elektrikli Transpalet</span>
                     <span class="gold-gradient bg-clip-text text-transparent"> Kampanyası</span>
                 </h2>
-                <p class="text-xl text-gray-400 mb-8">Akülü transpalet özel fiyatı - Kasım ayına özel %20 indirim</p>
+                <p class="text-xl text-gray-400 mb-8">Şarjlı transpalet ve satılık transpalet stoklarımızdan elektrikli transpalet satın al - Kasım ayına özel %20 indirim</p>
 
-                <!-- Price Box -->
-                <div class="bg-black/30 border border-yellow-600/30 rounded-2xl p-8 mb-8">
+                <!-- Price Box with Animation -->
+                <div class="bg-black/30 border border-yellow-600/30 rounded-2xl p-8 mb-8"
+                     x-data="{
+                         showTL: false,
+                         priceTimer: null,
+                         init() {
+                             this.startPriceCycle();
+                         },
+                         startPriceCycle() {
+                             this.priceTimer = setInterval(() => {
+                                 // TL'ye geç (1.5 saniye)
+                                 this.showTL = true;
+                                 setTimeout(() => {
+                                     this.showTL = false;
+                                 }, 1500);
+                             }, 4500); // Her 4.5 saniyede bir döngü (3s USD + 1.5s TL)
+                         },
+                         destroy() {
+                             if (this.priceTimer) clearInterval(this.priceTimer);
+                         }
+                     }">
                     <div class="flex items-center justify-center gap-6 flex-wrap mb-6">
                         <div class="text-center">
                             <p class="text-gray-500 mb-1 text-sm">Normal Fiyat</p>
@@ -680,7 +1152,8 @@
                         <i class="fas fa-arrow-right text-yellow-500 text-3xl"></i>
                         <div class="text-center">
                             <p class="text-yellow-500 font-bold mb-1">Kampanya Fiyatı</p>
-                            <p class="text-6xl font-black gold-gradient bg-clip-text text-transparent">$1,250</p>
+                            <p x-show="!showTL" class="text-6xl font-black gold-gradient bg-clip-text text-transparent">$1,250</p>
+                            <p x-show="showTL" class="text-6xl font-black gold-gradient bg-clip-text text-transparent">52.500 ₺</p>
                         </div>
                     </div>
 
@@ -692,7 +1165,8 @@
 
                 <!-- CTA Buttons -->
                 <div class="space-y-4 mb-8">
-                    <a href="{{ whatsapp_link('Elektrikli Transpalet Kampanya - Teknik Detay') }}"
+                    <a href="{{ whatsapp_link(null, 'Elektrikli Transpalet Kampanya - Teknik Detay') }}"
+                       target="_blank"
                        class="inline-block px-12 py-6 gold-gradient rounded-full text-gray-950 font-black text-2xl hover:shadow-[0_0_50px_rgba(212,175,55,0.8)] transition-all">
                         <i class="fab fa-whatsapp mr-3"></i>
                         HEMEN SİPARİŞ VER
@@ -701,12 +1175,12 @@
                     <p class="text-gray-500 text-sm">veya</p>
 
                     <div class="grid lg:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                        <a href="tel:{{ setting('contact_phone_1', '02167553555') }}"
+                        <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
                            class="flex items-center justify-center gap-3 bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 hover:bg-white/20 transition-all">
                             <i class="fas fa-phone text-2xl text-white"></i>
                             <div class="text-left">
                                 <div class="text-white font-bold">Telefon ile Sipariş</div>
-                                <div class="text-gray-400 text-sm">{{ setting('contact_phone_1', '0216 755 3 555') }}</div>
+                                <div class="text-gray-400 text-sm">{{ $contactPhone }}</div>
                             </div>
                         </a>
                         <a href="mailto:{{ setting('contact_email', 'info@ixtif.com') }}?subject=Elektrikli Transpalet Teklif"
@@ -733,26 +1207,68 @@
 @endsection
 
 @push('scripts-footer')
+    <!-- Swiper Init Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reviewsSwiper = new Swiper('.reviewsSwiper', {
+            slidesPerView: 'auto',
+            spaceBetween: 16,
+            loop: true,
+            autoplay: {
+                delay: 0,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+            },
+            speed: 5000,
+            freeMode: true,
+            freeModeMomentum: false,
+            allowTouchMove: true,      // ✅ Manuel kaydırma aktif
+            grabCursor: true,           // ✅ Mouse cursor grab olur
+            breakpoints: {
+                768: {
+                    spaceBetween: 24,
+                }
+            }
+        });
+    });
+    </script>
+
+    <!-- Swiper Custom CSS -->
+    <style>
+    .reviewsSwiper .swiper-slide {
+        width: 280px;
+        height: auto;
+    }
+    @media (min-width: 768px) {
+        .reviewsSwiper .swiper-slide {
+            width: 350px;
+        }
+    }
+    /* Equal height cards */
+    .reviewsSwiper .swiper-wrapper {
+        align-items: stretch;
+    }
+    .reviewsSwiper .swiper-slide > div {
+        height: 100%;
+    }
+    </style>
+
     <!-- Countdown Script (Optimized) -->
     <script>
     (function() {
         'use strict';
         let endTime = null;
 
-        function getRandomTime() {
-            const minHours = 36;
-            const maxHours = 48;
-            const randomHours = Math.floor(Math.random() * (maxHours - minHours + 1)) + minHours;
-            const randomMinutes = Math.floor(Math.random() * 60);
-            const randomSeconds = Math.floor(Math.random() * 60);
-            const totalMs = (randomHours * 3600000) + (randomMinutes * 60000) + (randomSeconds * 1000);
-            return Date.now() + totalMs;
+        function getFixedTime() {
+            // 3 gün sabit süre = 72 saat
+            const threeDays = 3 * 24 * 3600 * 1000; // 259,200,000 ms
+            return Date.now() + threeDays;
         }
 
         function resetCountdown() {
-            endTime = getRandomTime();
+            endTime = getFixedTime();
             try {
-                localStorage.setItem('campaignEndTime', endTime);
+                localStorage.setItem('campaignEndTime_v3', endTime);
             } catch(e) {}
         }
 
@@ -787,11 +1303,11 @@
         }
 
         try {
-            const stored = localStorage.getItem('campaignEndTime');
-            endTime = stored ? parseInt(stored) : getRandomTime();
-            if (!stored) localStorage.setItem('campaignEndTime', endTime);
+            const stored = localStorage.getItem('campaignEndTime_v3');
+            endTime = stored ? parseInt(stored) : getFixedTime();
+            if (!stored) localStorage.setItem('campaignEndTime_v3', endTime);
         } catch(e) {
-            endTime = getRandomTime();
+            endTime = getFixedTime();
         }
 
         updateCountdown();

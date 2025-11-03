@@ -22,6 +22,11 @@
             background-size: 200% auto;
             animation: gold-shimmer 3s ease infinite;
         }
+        .gold-gradient-strong {
+            background: linear-gradient(135deg, #FFD700 0%, #FFF 50%, #FFD700 100%);
+            background-size: 200% auto;
+            animation: gold-shimmer 4s ease infinite;
+        }
     </style>
 
     <!-- Compiled CSS (Tailwind + Custom) -->
@@ -29,6 +34,9 @@
 
     <!-- Font Awesome (Local veya CSP-approved CDN) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
     <!-- AI Chat Widget CSS -->
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v={{ time() }}">
@@ -53,27 +61,52 @@
     <!-- Minimal Header - Google Ads Optimized -->
     <header class="fixed top-0 left-0 right-0 z-40 bg-black/95 backdrop-blur-xl border-b border-gray-800/30 py-3 px-4">
         <div class="container mx-auto flex items-center justify-between">
-            <!-- Logo - Anasayfaya gider -->
-            <a href="/" class="text-2xl font-black gold-gradient bg-clip-text text-transparent hover:opacity-80 transition-opacity">
-                iXtif
+            <!-- Logo - Settings'den çekilir -->
+            @php
+                $logoService = app(\App\Services\LogoService::class);
+                $logos = $logoService->getLogos();
+                $logoUrl = $logos['light_logo_url'] ?? null;
+                $logoDarkUrl = $logos['dark_logo_url'] ?? null;
+                $siteTitle = $logos['site_title'] ?? setting('site_title', 'iXtif');
+            @endphp
+
+            <a href="/" class="flex items-center hover:opacity-80 transition-opacity">
+                @if($logoDarkUrl)
+                    {{-- Dark logo kullan (2. logo) --}}
+                    <img src="{{ $logoDarkUrl }}" alt="{{ $siteTitle }}" class="h-8 md:h-10 w-auto object-contain">
+                @elseif($logoUrl)
+                    <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="h-8 md:h-10 w-auto object-contain">
+                @else
+                    {{-- Fallback: Text logo --}}
+                    <span class="text-2xl font-black gold-gradient bg-clip-text text-transparent">{{ $siteTitle }}</span>
+                @endif
             </a>
 
-            <!-- Contact Icons - Telefon + WhatsApp -->
+            <!-- Contact Icons - Settings'den çekilir -->
+            @php
+                $contactPhone = setting('contact_phone_1', '0216 755 35 55');
+                $contactWhatsapp = setting('contact_whatsapp_1', '905309555885');
+            @endphp
+
             <div class="flex items-center gap-3">
                 <!-- WhatsApp -->
-                <a href="{{ whatsapp_link('Elektrikli Transpalet') }}"
-                   target="_blank"
-                   class="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors">
-                    <i class="fab fa-whatsapp text-xl"></i>
-                    <span class="hidden sm:inline font-semibold text-sm">WhatsApp</span>
-                </a>
+                @if($contactWhatsapp)
+                    <a href="{{ whatsapp_link(null, 'Elektrikli Transpalet') }}"
+                       target="_blank"
+                       class="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        <span class="hidden sm:inline font-semibold text-sm">WhatsApp</span>
+                    </a>
+                @endif
 
                 <!-- Telefon -->
-                <a href="tel:{{ setting('contact_phone_1', '02167553555') }}"
-                   class="flex items-center gap-2 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-white transition-colors">
-                    <i class="fas fa-phone"></i>
-                    <span class="hidden md:inline font-semibold text-sm">{{ setting('contact_phone_1', '0216 755 3 555') }}</span>
-                </a>
+                @if($contactPhone)
+                    <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                       class="flex items-center gap-2 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-white transition-colors">
+                        <i class="fas fa-phone"></i>
+                        <span class="hidden md:inline font-semibold text-sm">{{ $contactPhone }}</span>
+                    </a>
+                @endif
             </div>
         </div>
     </header>
@@ -91,6 +124,9 @@
             </p>
         </div>
     </footer>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- Alpine.js (Required for chat widget) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>

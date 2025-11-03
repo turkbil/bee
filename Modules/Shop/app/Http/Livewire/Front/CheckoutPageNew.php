@@ -39,6 +39,14 @@ class CheckoutPageNew extends Component
     // Teslimat adresi
     public $shipping_address_id;
 
+    // Guest inline adres formu (Teslimat)
+    public $shipping_address_line_1 = '';
+    public $shipping_address_line_2 = '';
+    public $shipping_city = '';
+    public $shipping_district = '';
+    public $shipping_postal_code = '';
+    public $shipping_delivery_notes = '';
+
     // Agreements (Simplified - Single Checkbox)
     public $agree_all = false; // Combines KVKK, distance selling, preliminary info
 
@@ -93,6 +101,11 @@ class CheckoutPageNew extends Component
 
     public function mount()
     {
+        // ❗ Login değilse üyelik sayfasına yönlendir
+        if (!Auth::check()) {
+            return redirect()->route('shop.register.before.checkout');
+        }
+
         $this->loadCart();
 
         // Sepet boşsa sepet sayfasına yönlendir
@@ -292,10 +305,19 @@ class CheckoutPageNew extends Component
             'contact_first_name' => 'required|string|max:255',
             'contact_last_name' => 'required|string|max:255',
             'contact_phone' => 'required|string|max:20',
-            'billing_address_id' => 'required',
-            'shipping_address_id' => 'required',
             'agree_all' => 'accepted', // Single combined agreement
         ];
+
+        // Login user için adres seçimi zorunlu
+        if ($this->customerId) {
+            $rules['billing_address_id'] = 'required';
+            $rules['shipping_address_id'] = 'required';
+        } else {
+            // Guest user için inline adres formu zorunlu
+            $rules['shipping_address_line_1'] = 'required|string|max:255';
+            $rules['shipping_city'] = 'required|string|max:100';
+            $rules['shipping_district'] = 'required|string|max:100';
+        }
 
         // Fatura tipi kontrolü
         if ($this->billing_type === 'corporate') {
@@ -316,6 +338,9 @@ class CheckoutPageNew extends Component
             'contact_phone.required' => 'Telefon zorunludur',
             'billing_address_id.required' => 'Fatura adresi seçmelisiniz',
             'shipping_address_id.required' => 'Teslimat adresi seçmelisiniz',
+            'shipping_address_line_1.required' => 'Adres zorunludur',
+            'shipping_city.required' => 'İl zorunludur',
+            'shipping_district.required' => 'İlçe zorunludur',
             'agree_all.accepted' => 'Ön Bilgilendirme Formu ve Mesafeli Satış Sözleşmesi\'ni kabul etmelisiniz',
             'billing_company_name.required' => 'Şirket ünvanı zorunludur',
             'billing_tax_office.required' => 'Vergi dairesi zorunludur',
@@ -328,6 +353,39 @@ class CheckoutPageNew extends Component
         try {
             // Müşteri oluştur veya güncelle
             $customer = $this->createOrUpdateCustomer();
+
+            // Guest için adres oluştur (login user için atlanır)
+            if (!$this->customerId || !$this->shipping_address_id) {
+                $shippingAddress = ShopCustomerAddress::create([
+                    'customer_id' => $customer->customer_id,
+                    'address_type' => 'shipping',
+                    'address_line_1' => $this->shipping_address_line_1,
+                    'address_line_2' => $this->shipping_address_line_2,
+                    'city' => $this->shipping_city,
+                    'district' => $this->shipping_district,
+                    'postal_code' => $this->shipping_postal_code,
+                    'delivery_notes' => $this->shipping_delivery_notes,
+                    'is_default_shipping' => true,
+                ]);
+
+                $this->shipping_address_id = $shippingAddress->address_id;
+
+                // Fatura adresi = Teslimat adresi (default)
+                if ($this->billing_same_as_shipping) {
+                    $billingAddress = ShopCustomerAddress::create([
+                        'customer_id' => $customer->customer_id,
+                        'address_type' => 'billing',
+                        'address_line_1' => $this->shipping_address_line_1,
+                        'address_line_2' => $this->shipping_address_line_2,
+                        'city' => $this->shipping_city,
+                        'district' => $this->shipping_district,
+                        'postal_code' => $this->shipping_postal_code,
+                        'is_default_billing' => true,
+                    ]);
+
+                    $this->billing_address_id = $billingAddress->address_id;
+                }
+            }
 
             // Adresleri al (snapshot için)
             $billingAddress = ShopCustomerAddress::find($this->billing_address_id);
@@ -397,7 +455,8 @@ class CheckoutPageNew extends Component
 
             session()->flash('order_success', 'Siparişiniz başarıyla alındı! Sipariş numaranız: ' . $order->order_number);
 
-            return redirect()->route('shop.index');
+            // Sipariş onay sayfasına yönlendir
+            return redirect()->route('shop.order.success', $order->order_number);
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -22,9 +22,10 @@ Route::name('landing.')->group(function() {
     // ========================================
 
     // Kampanya #1 - Google Ads Kasım 2025
-    Route::get('/elektrikli-transpalet', function() {
+    // Parametreli URL'ler: /elektrikli-transpalet/1, /elektrikli-transpalet/2, ... /elektrikli-transpalet/10
+    Route::get('/elektrikli-transpalet/{id?}', function($id = null) {
         return view('landing.transpalet.f4.1.index');
-    })->name('transpalet.f4.1');
+    })->name('transpalet.f4.1')->where('id', '[1-9]|10');
 
     // Gelecek Kampanyalar (Yorum satırında hazır)
     // Kampanya #2 - Black Friday 2025

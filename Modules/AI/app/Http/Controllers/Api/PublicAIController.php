@@ -550,7 +550,15 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
+        // FORCE OPCACHE UPDATE: 2025-11-03 05:22
+        \Log::info('🚀🚀🚀 shopAssistantChat STARTED - ' . date('Y-m-d H:i:s'), [
+            'message' => $request->input('message'),
+            'session_id' => $request->input('session_id'),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         try {
+
             // Validate input (Tenant context check için exists rule'ları kaldırıldı)
             $validated = $request->validate([
                 'message' => 'required|string|min:1|max:1000',

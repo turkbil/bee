@@ -62,6 +62,29 @@ class ModuleContextOrchestrator
                 }
             }
 
+            // 🔍 Add smart search results if available
+            if (!empty($options['smart_search_results']['products'])) {
+                \Log::info('🔍 ModuleContextOrchestrator: Smart search results bulundu', [
+                    'product_count' => count($options['smart_search_results']['products']),
+                ]);
+
+                $searchProducts = [];
+                foreach ($options['smart_search_results']['products'] as $productData) {
+                    // Her ürünü formatla (fiyat + USD hesaplama dahil)
+                    $formattedProduct = $this->shopContext->formatProductData($productData);
+                    if (!empty($formattedProduct)) {
+                        $searchProducts[] = $formattedProduct;
+                    }
+                }
+
+                if (!empty($searchProducts)) {
+                    $shopData['smart_search_products'] = $searchProducts;
+                    \Log::info('✅ ModuleContextOrchestrator: Smart search products context\'e eklendi', [
+                        'count' => count($searchProducts),
+                    ]);
+                }
+            }
+
             $context['modules']['shop'] = $shopData;
         }
 

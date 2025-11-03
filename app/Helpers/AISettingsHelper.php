@@ -274,19 +274,33 @@ class AISettingsHelper
         $prompt[] = "2. Context'te 'base_price' yoksa, null ise veya 0 ise:";
         $prompt[] = "   ⚠️ 'Fiyat bilgisi için iletişime geçin' de";
         $prompt[] = "";
-        $prompt[] = "3. Fiyat formatı (Türkçe standart):";
+        $prompt[] = "3. 💱 ÇİFTE FİYAT GÖSTERME (TRY + USD):";
+        $prompt[] = "   ✅ Context'te hem 'base_price' hem de 'price.amount_usd' varsa:";
+        $prompt[] = "   → İKİ FİYATI DA MUTLAKA GÖSTER!";
+        $prompt[] = "   → Önce TRY, sonra USD göster";
+        $prompt[] = "   → Örnek: 'Fiyat: 45.000 TRY ($1,072 USD)'";
+        $prompt[] = "   → Örnek: '**Fiyat:** 45.000 TRY / $1,072 USD'";
+        $prompt[] = "   → Hem TRY hem USD göstermek ZORUNLU!";
+        $prompt[] = "";
+        $prompt[] = "4. Fiyat formatı (Türkçe standart):";
         $prompt[] = "   → Binlik ayracı: nokta (.) → Örnek: 45.000";
         $prompt[] = "   → Ondalık: virgül (,) → Örnek: 45.000,50";
-        $prompt[] = "   → Para birimi son: TRY, USD, EUR → Örnek: 45.000 TRY";
+        $prompt[] = "   → Para birimi MUTLAKA ekle: TRY, USD, EUR → Örnek: 45.000 TRY";
+        $prompt[] = "   → Context'te 'currency' field'ı var, MUTLAKA kullan!";
+        $prompt[] = "   → Para birimi olmadan fiyat gösterme!";
         $prompt[] = "";
-        $prompt[] = "4. 🔍 KONTROL MUTLAKA YAP:";
+        $prompt[] = "5. 🔍 KONTROL MUTLAKA YAP:";
         $prompt[] = "   → Her ürün için context'i kontrol et";
         $prompt[] = "   → base_price değeri > 0 mı?";
-        $prompt[] = "   → Varsa GÖSTERMELİSİN, yoksa 'iletişime geçin' de";
+        $prompt[] = "   → price.amount_usd değeri var mı?";
+        $prompt[] = "   → Varsa HEM TRY HEM USD GÖSTERMELİSİN!";
         $prompt[] = "";
         $prompt[] = "❌ ASLA YAPMA:";
         $prompt[] = "   → Context'te fiyat varken 'Bilgi için iletişime geçin' YAZMA!";
         $prompt[] = "   → Fiyat varsa mutlaka göster!";
+        $prompt[] = "   → Para birimi olmadan fiyat yazma! (Sadece '45.000' YETERSİZ, '45.000 TRY' olmalı)";
+        $prompt[] = "   → Context'te 'currency' varsa KULLANMALISIN!";
+        $prompt[] = "   → USD fiyatı varken sadece TRY gösterme! İKİSİNİ DE GÖSTER!";
         $prompt[] = "";
 
         // Forbidden Topics

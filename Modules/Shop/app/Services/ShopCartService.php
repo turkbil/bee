@@ -227,7 +227,7 @@ class ShopCartService
 
             // Fiyat değiştiyse güncelle
             if ($item->unit_price != $currentPrice) {
-                $item->updatePrice($currentPrice, $item->discount_amount);
+                $item->updatePrice($currentPrice, (float) $item->discount_amount);
                 $needsRecalculation = true;
             }
         }

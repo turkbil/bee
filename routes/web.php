@@ -13,7 +13,9 @@ use Modules\Search\App\Http\Controllers\SearchPageController;
 // 🛒 SHOP PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
 // NOT: Bu route'lar Shop modülünde tanımlanabilirdi ama Livewire component'ler modül route'unda sorun yaşıyor
 Route::get('/shop/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');
+Route::get('/shop/register-to-checkout', \Modules\Shop\App\Http\Livewire\Front\RegisterToCheckoutPage::class)->name('shop.register.before.checkout');
 Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
+Route::get('/shop/order/success/{order_number}', [\Modules\Shop\App\Http\Controllers\Front\OrderController::class, 'success'])->name('shop.order.success');
 
 // PDF Export - Wildcard'dan önce tanımlanmalı
 Route::middleware([InitializeTenancy::class, 'site'])

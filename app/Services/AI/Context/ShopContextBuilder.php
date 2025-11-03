@@ -625,9 +625,10 @@ class ShopContextBuilder
                 return null;
             }
 
-            // Model'i veritabanından çek
+            // Model'i veritabanından çek (primary key 'product_id' olduğu için where kullan)
             $product = ShopProduct::with(['category', 'childProducts', 'parentProduct'])
-                ->find($productId);
+                ->where('product_id', $productId)
+                ->first();
 
             if (!$product) {
                 \Log::warning('⚠️ formatProductData: Ürün bulunamadı', [

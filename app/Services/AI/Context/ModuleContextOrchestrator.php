@@ -63,6 +63,13 @@ class ModuleContextOrchestrator
             }
 
             // 🔍 Add smart search results if available
+            \Log::info('🔥🔥 ModuleContextOrchestrator OPTIONS', [
+                'has_smart_search' => isset($options['smart_search_results']),
+                'has_products' => isset($options['smart_search_results']['products']),
+                'product_count' => count($options['smart_search_results']['products'] ?? []),
+                'options_keys' => array_keys($options),
+            ]);
+
             if (!empty($options['smart_search_results']['products'])) {
                 \Log::info('🔍 ModuleContextOrchestrator: Smart search results bulundu', [
                     'product_count' => count($options['smart_search_results']['products']),

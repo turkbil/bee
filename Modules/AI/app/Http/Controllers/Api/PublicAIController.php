@@ -695,6 +695,13 @@ class PublicAIController extends Controller
                 'user_sentiment' => $userSentiment, // ✅ Include sentiment analysis
             ];
 
+            // DEBUG: Smart search results
+            \Log::info('🔍🔍🔍 CONTEXT OPTIONS', [
+                'has_smart_search' => !empty($smartSearchResults['products']),
+                'product_count' => count($smartSearchResults['products'] ?? []),
+                'first_product' => $smartSearchResults['products'][0] ?? null,
+            ]);
+
             // Use ModuleContextOrchestrator to build full context
             $aiContext = $this->contextOrchestrator->buildUserContext(
                 $validated['message'],

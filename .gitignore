@@ -85,4 +85,9 @@ unique-gradients.txt
 public/design/composer.json
 public/design/composer.lock
 public/design/vendor/
-readme/backups/
+
+# Database backups - SECURITY CRITICAL!
+readme/backups/*.sql
+readme/backups/*.sql.gz
+readme/backups/*.tar.gz
+readme/backups/20*

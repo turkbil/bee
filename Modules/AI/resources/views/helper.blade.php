@@ -107,10 +107,30 @@
                             </a>
                             @endhasmoduleaccess
 
+                            {{-- AI Workflow Engine --}}
+                            <h6 class="dropdown-menu-header card-header-light">
+                                <span class="dropdown-header">{{ __('ai::admin.workflow.workflow_engine') }}</span>
+                            </h6>
+
                             @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.workflow.flows.index') }}">
+                                <i class="fa fa-code-branch me-1"></i>
+                                {{ __('ai::admin.workflow.flows_title') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'create')
+                            <a class="dropdown-item" href="{{ route('admin.ai.workflow.flows.manage') }}">
+                                <i class="fa fa-plus me-1"></i>
+                                {{ __('ai::admin.workflow.create_flow') }}
+                            </a>
                             @endhasmoduleaccess
 
                             @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.workflow.directives.index') }}">
+                                <i class="fa fa-cogs me-1"></i>
+                                {{ __('ai::admin.workflow.directives_title') }}
+                            </a>
                             @endhasmoduleaccess
 
                             {{-- Universal Input System V3 - Phase 3'te eklenecek

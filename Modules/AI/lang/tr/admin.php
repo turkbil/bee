@@ -829,6 +829,9 @@ return [
 
     // AI Workflow
     'workflow' => [
+        // General
+        'workflow_engine' => 'Workflow Engine',
+
         // Flow List
         'flows_title' => 'AI Konuşma Akışları',
         'flows_subtitle' => 'Yapay zeka sohbet akışlarını yönetin',

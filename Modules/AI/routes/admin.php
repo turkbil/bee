@@ -1015,13 +1015,9 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                             ->name('flows.index');
 
                         // FlowEditor - Visual Flow Designer (Drawflow)
-                        Route::get('/flows/create', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor::class)
-                            // ->middleware('module.permission:ai,create')
-                            ->name('flows.create');
-
-                        Route::get('/flows/{flowId}/edit', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor::class)
-                            // ->middleware('module.permission:ai,update')
-                            ->name('flows.edit');
+                        Route::get('/flows/manage/{flowId?}', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor::class)
+                            // ->middleware('module.permission:ai,create,update')
+                            ->name('flows.manage');
 
                         // Directive Management
                         Route::get('/directives', \Modules\AI\App\Http\Livewire\Admin\Workflow\DirectiveManager::class)

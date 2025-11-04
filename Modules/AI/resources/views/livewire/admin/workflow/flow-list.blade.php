@@ -10,7 +10,7 @@
                     <div class="text-muted mt-1">{{ __('ai::admin.workflow.flows_subtitle') }}</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
-                    <a href="{{ route('admin.ai.workflow.flows.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.ai.workflow.flows.manage') }}" class="btn btn-primary">
                         <i class="fa fa-plus me-1"></i>
                         {{ __('ai::admin.workflow.create_flow') }}
                     </a>
@@ -78,7 +78,7 @@
                             </div>
                             <div class="card-footer">
                                 <div class="btn-group w-100">
-                                    <a href="{{ route('admin.ai.workflow.flows.edit', $flow->id) }}" class="btn btn-sm">
+                                    <a href="{{ route('admin.ai.workflow.flows.manage', $flow->id) }}" class="btn btn-sm">
                                         <i class="fa fa-edit"></i> {{ __('ai::admin.edit') }}
                                     </a>
                                     <button wire:click="toggleStatus({{ $flow->id }})" class="btn btn-sm">
@@ -108,7 +108,7 @@
                                     {{ __('ai::admin.workflow.no_flows_subtitle') }}
                                 </p>
                                 <div class="empty-action">
-                                    <a href="{{ route('admin.ai.workflow.flows.create') }}" class="btn btn-primary">
+                                    <a href="{{ route('admin.ai.workflow.flows.manage') }}" class="btn btn-primary">
                                         <i class="fa fa-plus"></i>
                                         {{ __('ai::admin.workflow.create_flow') }}
                                     </a>

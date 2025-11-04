@@ -553,13 +553,27 @@ app()->setLocale($originalLocale);
                     @endif
 
                     @if($groupedModules->has('ai') && $groupedModules['ai']->count() > 0)
-                    <li class="nav-item {{ $activeType == 'ai' ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('admin.ai.index') }}">
+                    <li class="nav-item {{ $activeType == 'ai' ? 'active' : '' }} dropdown">
+                        <a class="nav-link dropdown-toggle" href="#navbar-ai" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fa-solid fa-stars" style="font-size: 18px;"></i>
                             </span>
                             <span class="nav-link-title">{{ __('admin.artificial_intelligence') }}</span>
                         </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ route('admin.ai.index') }}">
+                                <i class="fa fa-comment me-2"></i> {{ __('ai::admin.conversations') }}
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">{{ __('ai::admin.workflow.flows_title') }}</h6>
+                            <a class="dropdown-item" href="{{ route('admin.ai.workflow.flows.index') }}">
+                                <i class="fa fa-code-branch me-2"></i> {{ __('ai::admin.workflow.flows_title') }}
+                            </a>
+                            <a class="dropdown-item" href="{{ route('admin.ai.workflow.directives.index') }}">
+                                <i class="fa fa-cogs me-2"></i> {{ __('ai::admin.workflow.directives_title') }}
+                            </a>
+                        </div>
                     </li>
                     @endif
 

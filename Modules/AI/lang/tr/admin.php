@@ -823,6 +823,9 @@ return [
     'module_integrations' => 'Modül entegrasyonları',
     'bulk_operations' => 'Toplu işlemler',
     'usage_analytics' => 'Kullanım analitiği',
+    'conversations' => 'Konuşmalar',
+    'statistics' => 'İstatistikler',
+    'total' => 'Toplam',
 
     // AI Workflow
     'workflow' => [

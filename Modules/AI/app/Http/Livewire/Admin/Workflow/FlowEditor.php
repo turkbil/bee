@@ -5,6 +5,7 @@ namespace Modules\AI\App\Http\Livewire\Admin\Workflow;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\TenantConversationFlow;
+use App\Models\AIWorkflowNode;
 use App\Services\ConversationNodes\NodeExecutor;
 use Illuminate\Support\Str;
 
@@ -44,50 +45,9 @@ class FlowEditor extends Component
             $this->priority = $flow->priority;
         }
 
-        // Node kütüphanesini kategoriye göre gruplu al
-        $this->nodesByCategory = NodeExecutor::getNodesByCategory();
-        $this->availableNodes = NodeExecutor::getAvailableNodes();
-
-        // Tenant-specific node'ları filtrele (sadece bu tenant'a ait olanlar)
-        $this->filterNodesByTenant();
-    }
-
-    private function filterNodesByTenant()
-    {
-        // Global nodes (Common) - Her tenant görebilir
-        // Tenant-specific nodes - Sadece ilgili tenant görebilir
-
-        $filteredCategories = [];
-
-        foreach ($this->nodesByCategory as $category => $nodes) {
-            $filteredNodes = array_filter($nodes, function($node) {
-                // Common node'lar herkese açık
-                if (str_contains($node['class'], '\\Common\\')) {
-                    return true;
-                }
-
-                // Tenant-specific node kontrolü
-                if (str_contains($node['class'], '\\TenantSpecific\\')) {
-                    // Tenant_2 için node mu? (İxtif.com)
-                    if (str_contains($node['class'], 'Tenant_2') && $this->currentTenantId == 2) {
-                        return true;
-                    }
-                    // Tenant_1 için node mu? (tenant_a)
-                    if (str_contains($node['class'], 'Tenant_1') && $this->currentTenantId == 1) {
-                        return true;
-                    }
-                    return false;
-                }
-
-                return true;
-            });
-
-            if (!empty($filteredNodes)) {
-                $filteredCategories[$category] = array_values($filteredNodes);
-            }
-        }
-
-        $this->nodesByCategory = $filteredCategories;
+        // Node kütüphanesini DB'den al (kategori bazlı, tenant'a özel filtrelenmiş)
+        $this->nodesByCategory = AIWorkflowNode::getByCategory($this->currentTenantId);
+        $this->availableNodes = AIWorkflowNode::getForTenant($this->currentTenantId);
     }
 
     public function saveFlow()

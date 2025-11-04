@@ -3,6 +3,7 @@
 namespace App\Services\ConversationNodes;
 
 use App\Models\AIConversation;
+use App\Models\AIWorkflowNode;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -38,9 +39,42 @@ class NodeExecutor
     }
 
     /**
-     * Initialize node registry with default nodes
+     * Initialize node registry from database
+     *
+     * Loads all active nodes from ai_workflow_nodes table
      */
     protected function initializeRegistry(): void
+    {
+        try {
+            // Get all active nodes from database
+            $nodes = AIWorkflowNode::where('is_active', true)
+                ->orderBy('category')
+                ->orderBy('order')
+                ->get();
+
+            foreach ($nodes as $node) {
+                self::register($node->node_key, $node->node_class);
+            }
+
+            Log::info('Node registry initialized from database', [
+                'total_nodes' => count(self::$nodeRegistry),
+                'node_types' => array_keys(self::$nodeRegistry),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to initialize node registry from database', [
+                'error' => $e->getMessage(),
+            ]);
+
+            // Fallback: Initialize with hardcoded nodes (for safety)
+            $this->initializeHardcodedRegistry();
+        }
+    }
+
+    /**
+     * Fallback: Initialize with hardcoded nodes
+     * Used when database is not available
+     */
+    protected function initializeHardcodedRegistry(): void
     {
         // Register common nodes (available to all tenants)
         self::register('ai_response', \App\Services\ConversationNodes\Common\AIResponseNode::class);
@@ -59,10 +93,7 @@ class NodeExecutor
         self::register('comparison', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\ComparisonNode::class);
         self::register('quotation', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\QuotationNode::class);
 
-        Log::info('Node registry initialized', [
-            'total_nodes' => count(self::$nodeRegistry),
-            'node_types' => array_keys(self::$nodeRegistry),
-        ]);
+        Log::warning('Node registry initialized with hardcoded fallback');
     }
 
     /**

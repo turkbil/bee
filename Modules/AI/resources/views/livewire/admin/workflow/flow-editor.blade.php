@@ -198,11 +198,23 @@
             padding: 15px;
             min-width: 200px;
             box-shadow: 0 1px 3px rgba(0,0,0,.1);
-            transition: all 0.2s ease;
+            /* REMOVE transition for performance */
+            /* transition: all 0.2s ease; */
             /* Performance optimization */
             will-change: transform, left, top;
             backface-visibility: hidden;
             -webkit-font-smoothing: subpixel-antialiased;
+            transform: translateZ(0);
+            pointer-events: all;
+        }
+
+        /* Disable Drawflow pan - we don't need it */
+        #drawflow {
+            cursor: default !important;
+        }
+
+        .drawflow .parent-drawflow {
+            position: relative !important;
         }
 
         .drawflow .drawflow-node:hover {
@@ -319,7 +331,25 @@
             const container = document.getElementById('drawflow');
             editor = new Drawflow(container);
             editor.reroute = true;
+            editor.reroute_fix_curvature = 0.5;
+
+            // CRITICAL: Disable zoom and center canvas
+            editor.zoom_max = 1;
+            editor.zoom_min = 1;
+            editor.zoom_value = 1;
+
             editor.start();
+
+            // FORCE: Reset zoom and position
+            editor.zoom = 1;
+            editor.canvas_x = 0;
+            editor.canvas_y = 0;
+
+            // Apply transform directly
+            const precanvas = container.querySelector('.drawflow');
+            if (precanvas) {
+                precanvas.style.transform = 'translate(0px, 0px) scale(1)';
+            }
 
             // Load existing flow if editing
             @if($flowId && !empty($flowData))
@@ -400,97 +430,83 @@
         });
 
         function loadExistingFlow(flowData) {
-            console.log('🔄 Loading flow - Building Drawflow import structure...');
+            console.log('🔄 Loading flow with SIMPLE approach...');
 
-            // RESET canvas transform to origin
-            const precanvas = document.querySelector('.drawflow .drawflow-wrapper');
+            // Clear everything
+            editor.clear();
+
+            // Ensure canvas at origin
+            editor.canvas_x = 0;
+            editor.canvas_y = 0;
+            const precanvas = document.querySelector('#drawflow .parent-drawflow');
             if (precanvas) {
                 precanvas.style.transform = 'translate(0px, 0px) scale(1)';
             }
 
-            // Build Drawflow import structure
-            const drawflowData = {
-                drawflow: {
-                    Home: {
-                        data: {}
-                    }
-                }
-            };
-
+            // Map to track node IDs
             const nodeIdMap = new Map();
 
-            // Step 1: Create all nodes in Drawflow format
+            // Add each node DIRECTLY
             flowData.nodes.forEach((node, index) => {
-                const nodeId = index + 1;
-                const posX = node.position?.x || 100;
-                const posY = node.position?.y || 100;
+                const posX = node.position?.x || 150;
+                const posY = node.position?.y || (100 + index * 180);
 
-                drawflowData.drawflow.Home.data[nodeId] = {
-                    id: nodeId,
-                    name: node.type,
-                    data: {
-                        label: node.name,
-                        class: node.class || node.type,
-                        config: node.config || {}
-                    },
-                    class: node.type,
-                    html: `<div class="node-title">${node.name}</div><div class="node-type">${node.type}</div>`,
-                    typenode: false,
-                    inputs: { input_1: { connections: [] } },
-                    outputs: { output_1: { connections: [] } },
-                    pos_x: posX,
-                    pos_y: posY
-                };
+                const html = `
+                    <div style="padding: 10px;">
+                        <div class="node-title" style="font-weight: bold; margin-bottom: 5px;">${node.name}</div>
+                        <div class="node-type" style="font-size: 11px; color: #666;">${node.type}</div>
+                    </div>
+                `;
 
-                nodeIdMap.set(node.id, nodeId);
-                console.log(`📦 Node prepared: ${node.name} at [${posX}, ${posY}]`);
+                // Use Drawflow's addNode method
+                const dfId = editor.addNode(
+                    node.type,
+                    1, // inputs
+                    1, // outputs
+                    posX,
+                    posY,
+                    node.type,
+                    { label: node.name, config: node.config || {} },
+                    html,
+                    false // not typenode
+                );
+
+                nodeIdMap.set(node.id, dfId);
+                console.log(`✅ Node ${node.name} added with ID ${dfId} at [${posX}, ${posY}]`);
             });
 
-            // Step 2: Add all connections
-            flowData.edges.forEach(edge => {
-                const sourceId = nodeIdMap.get(edge.source);
-                const targetId = nodeIdMap.get(edge.target);
-
-                if (sourceId && targetId) {
-                    drawflowData.drawflow.Home.data[sourceId].outputs.output_1.connections.push({
-                        node: String(targetId),
-                        input: 'input_1'
-                    });
-                    console.log(`🔗 Connection prepared: ${edge.source} -> ${edge.target}`);
-                }
-            });
-
-            // Step 3: Import to Drawflow
-            console.log('📥 Importing to Drawflow...');
-            editor.import(drawflowData);
-            console.log('✅ Flow loaded successfully!');
-
-            // Step 4: Force fix ALL node positions after import
+            // Wait a bit for DOM to settle
             setTimeout(() => {
-                flowData.nodes.forEach((node, index) => {
-                    const nodeId = index + 1;
-                    const posX = node.position?.x || 100;
-                    const posY = node.position?.y || 100;
+                // Add connections
+                flowData.edges.forEach(edge => {
+                    const sourceId = nodeIdMap.get(edge.source);
+                    const targetId = nodeIdMap.get(edge.target);
 
-                    // Update internal data
-                    const nodeData = editor.drawflow.drawflow.Home.data[nodeId];
-                    if (nodeData) {
-                        nodeData.pos_x = posX;
-                        nodeData.pos_y = posY;
-                    }
-
-                    // Force DOM position
-                    const nodeElement = document.getElementById(`node-${nodeId}`);
-                    if (nodeElement) {
-                        nodeElement.style.left = posX + 'px';
-                        nodeElement.style.top = posY + 'px';
-                        console.log(`🔧 Fixed position: Node ${nodeId} -> [${posX}, ${posY}]`);
+                    if (sourceId && targetId) {
+                        try {
+                            editor.addConnection(sourceId, targetId, 'output_1', 'input_1');
+                            console.log(`✅ Connected: ${edge.source} -> ${edge.target}`);
+                        } catch (e) {
+                            console.error(`❌ Connection failed: ${edge.source} -> ${edge.target}`, e);
+                        }
                     }
                 });
 
-                // Redraw connections
-                editor.updateConnectionNodes(`node-1`);
-            }, 100);
+                // Force update all node positions one more time
+                nodeIdMap.forEach((dfId, nodeId) => {
+                    const node = flowData.nodes.find(n => n.id === nodeId);
+                    if (node) {
+                        const element = document.getElementById(`node-${dfId}`);
+                        if (element) {
+                            element.style.left = `${node.position.x}px`;
+                            element.style.top = `${node.position.y}px`;
+                            element.style.position = 'absolute';
+                        }
+                    }
+                });
+
+                console.log('✅ Flow loading complete!');
+            }, 200);
         }
 
         function clearCanvas() {

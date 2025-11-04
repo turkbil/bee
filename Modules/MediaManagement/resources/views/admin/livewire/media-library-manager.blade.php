@@ -301,8 +301,14 @@
                                          alt="{{ $media->name }}"
                                          class="object-fit-cover w-100 h-100"
                                          loading="lazy">
+                                    <!-- KB Badge (Sol Üst) -->
+                                    <div class="position-absolute top-0 start-0 m-1">
+                                        <span class="badge badge-sm bg-dark bg-opacity-75">
+                                            {{ $this->formatBytes($media->size) }}
+                                        </span>
+                                    </div>
                                     <!-- Checkbox Selection (Sağ Üst) -->
-                                    <div class="position-absolute top-0 end-0 m-2" @click.stop>
+                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;" @click.stop>
                                         <input type="checkbox"
                                                wire:model.live="selectedItems"
                                                value="{{ $media->id }}"
@@ -310,12 +316,6 @@
                                                style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
                                                id="checkbox-{{ $media->id }}"
                                                @checked(in_array($media->id, $selectedItems))>
-                                    </div>
-                                    <!-- KB Badge (Sağ Alt) -->
-                                    <div class="position-absolute bottom-0 end-0 m-1">
-                                        <span class="badge badge-sm bg-dark bg-opacity-75">
-                                            {{ $this->formatBytes($media->size) }}
-                                        </span>
                                     </div>
                                 @else
                                     <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary bg-light">
@@ -326,7 +326,7 @@
                                         <div class="badge badge-sm bg-azure-lt text-dark mt-1">{{ $this->formatBytes($media->size) }}</div>
                                     </div>
                                     <!-- Checkbox Selection for Non-Image Files (Sağ Üst) -->
-                                    <div class="position-absolute top-0 end-0 m-2" @click.stop>
+                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;" @click.stop>
                                         <input type="checkbox"
                                                wire:model.live="selectedItems"
                                                value="{{ $media->id }}"

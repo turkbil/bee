@@ -38,7 +38,7 @@ class ExampleFlowSeeder extends Seeder
                         'config' => [
                             'prompt' => 'Müşteriyi sıcak ve profesyonel bir şekilde karşıla. İxtif.com olarak transpalet ve forklift konusunda yardımcı olabileceğini belirt.',
                         ],
-                        'position' => ['x' => 100, 'y' => 100],
+                        'position' => ['x' => 150, 'y' => 100],
                     ],
 
                     // Node 2: Category Detection
@@ -50,7 +50,7 @@ class ExampleFlowSeeder extends Seeder
                             'categories' => ['transpalet', 'forklift', 'aksesuarlar'],
                             'confidence_threshold' => 0.7,
                         ],
-                        'position' => ['x' => 100, 'y' => 250],
+                        'position' => ['x' => 150, 'y' => 280],
                     ],
 
                     // Node 3: Product Recommendation
@@ -64,7 +64,7 @@ class ExampleFlowSeeder extends Seeder
                             'stock_priority' => true,
                             'show_images' => true,
                         ],
-                        'position' => ['x' => 100, 'y' => 400],
+                        'position' => ['x' => 150, 'y' => 460],
                     ],
 
                     // Node 4: Condition - Fiyat Sorusu
@@ -78,10 +78,10 @@ class ExampleFlowSeeder extends Seeder
                             'true_branch' => 'node_5',
                             'false_branch' => 'node_6',
                         ],
-                        'position' => ['x' => 100, 'y' => 550],
+                        'position' => ['x' => 150, 'y' => 640],
                     ],
 
-                    // Node 5: Price Filter
+                    // Node 5: Price Filter (RIGHT BRANCH)
                     [
                         'id' => 'node_5',
                         'type' => 'price_filter',
@@ -91,10 +91,10 @@ class ExampleFlowSeeder extends Seeder
                             'show_vat' => true,
                             'price_format' => 'detailed',
                         ],
-                        'position' => ['x' => 300, 'y' => 650],
+                        'position' => ['x' => 500, 'y' => 760],
                     ],
 
-                    // Node 6: Collect Data
+                    // Node 6: Collect Data (MAIN BRANCH)
                     [
                         'id' => 'node_6',
                         'type' => 'collect_data',
@@ -104,7 +104,7 @@ class ExampleFlowSeeder extends Seeder
                             'required' => ['phone'],
                             'message' => 'Size daha detaylı bilgi verebilmem için iletişim bilgilerinizi alabilir miyim?',
                         ],
-                        'position' => ['x' => 100, 'y' => 700],
+                        'position' => ['x' => 150, 'y' => 900],
                     ],
 
                     // Node 7: Quotation
@@ -118,7 +118,7 @@ class ExampleFlowSeeder extends Seeder
                             'include_delivery' => true,
                             'template' => 'professional',
                         ],
-                        'position' => ['x' => 100, 'y' => 850],
+                        'position' => ['x' => 150, 'y' => 1080],
                     ],
 
                     // Node 8: Share Contact
@@ -132,7 +132,7 @@ class ExampleFlowSeeder extends Seeder
                             'website' => 'https://ixtif.com',
                             'message' => 'Ek sorularınız için bizimle iletişime geçebilirsiniz:',
                         ],
-                        'position' => ['x' => 100, 'y' => 1000],
+                        'position' => ['x' => 150, 'y' => 1260],
                     ],
 
                     // Node 9: End
@@ -144,7 +144,7 @@ class ExampleFlowSeeder extends Seeder
                             'message' => 'İyi günler dilerim!',
                             'save_conversation' => true,
                         ],
-                        'position' => ['x' => 100, 'y' => 1150],
+                        'position' => ['x' => 150, 'y' => 1440],
                     ],
                 ],
 

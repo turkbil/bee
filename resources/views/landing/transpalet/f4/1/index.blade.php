@@ -247,12 +247,19 @@
                     </p>
 
                     <!-- Trust Badge - Şirket Garantisi -->
-                    <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-4 sm:mb-6">
+                    <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4">
                         <i class="fas fa-shield-check text-yellow-500"></i>
                         <span>İXTİF A.Ş. Garantisiyle</span>
                     </div>
 
-                    <!-- Price - Clear CTA with Animation -->
+                    <!-- Kampanya Başlığı -->
+                    <div class="mb-2 sm:mb-3">
+                        <h2 class="text-lg sm:text-xl lg:text-2xl font-black gold-gradient bg-clip-text text-transparent">
+                            🔥 Kasım Kampanyası - Yılın En Düşük Fiyatı!
+                        </h2>
+                    </div>
+
+                    <!-- Price - 2 Column Layout -->
                     <div class="bg-gradient-to-br from-gray-900 to-gray-800 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border-2 border-yellow-600 mb-3 sm:mb-4"
                          x-data="{
                              showTL: false,
@@ -273,24 +280,36 @@
                                  if (this.priceTimer) clearInterval(this.priceTimer);
                              }
                          }">
-                        <div class="flex items-baseline gap-2 mb-1 sm:mb-2">
-                            <span class="text-gray-500 line-through text-sm sm:text-base lg:text-lg">$1,560</span>
-                            <span class="text-yellow-500 font-black text-[10px] sm:text-xs lg:text-sm bg-yellow-600/20 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">-20%</span>
-                        </div>
-                        <div class="flex items-baseline gap-2 mb-2 sm:mb-3">
-                            <div class="relative inline-block min-w-[140px] sm:min-w-[180px] lg:min-w-[220px]">
-                                <span x-show="!showTL" class="absolute left-0 top-0 text-2xl sm:text-3xl lg:text-4xl font-black gold-gradient bg-clip-text text-transparent">$1,250</span>
-                                <span x-show="showTL" class="absolute left-0 top-0 text-2xl sm:text-3xl lg:text-4xl font-black gold-gradient bg-clip-text text-transparent">52.500 ₺</span>
-                                <span class="invisible text-2xl sm:text-3xl lg:text-4xl font-black">52.500 ₺</span>
+                        <div class="grid grid-cols-2 gap-4 sm:gap-6">
+                            <!-- Sol Kolon: İndirim ve Özellikler -->
+                            <div class="flex flex-col justify-center">
+                                <div class="flex items-baseline gap-2 mb-2 sm:mb-3">
+                                    <span class="text-gray-500 line-through text-sm sm:text-base lg:text-xl">$1,560</span>
+                                    <span class="text-yellow-500 font-black text-xs sm:text-sm lg:text-base bg-yellow-600/20 px-2 sm:px-3 py-1 rounded">-20%</span>
+                                </div>
+                                <div class="flex flex-col gap-2 sm:gap-3 text-xs sm:text-sm lg:text-base">
+                                    <div class="flex items-center gap-2 text-yellow-500">
+                                        <i class="fas fa-shield-alt"></i>
+                                        <span class="font-semibold">1 Yıl Garanti</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-yellow-500">
+                                        <i class="fas fa-box-open"></i>
+                                        <span class="font-semibold">Stoktan Teslim</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-xs">
-                            <span class="text-yellow-500">
-                                <i class="fas fa-shield-alt mr-1"></i> 1 Yıl Garanti
-                            </span>
-                            <span class="text-yellow-500">
-                                <i class="fas fa-box-open mr-1"></i> Stoktan Teslim
-                            </span>
+
+                            <!-- Sağ Kolon: Büyük Fiyat Gösterimi -->
+                            <div class="flex flex-col items-center justify-center border-l border-gray-700 pl-4 sm:pl-6">
+                                <div class="text-center">
+                                    <div class="relative inline-block min-w-[100px] sm:min-w-[140px] lg:min-w-[180px]">
+                                        <span x-show="!showTL" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black gold-gradient bg-clip-text text-transparent whitespace-nowrap">$1,250</span>
+                                        <span x-show="showTL" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black gold-gradient bg-clip-text text-transparent whitespace-nowrap">52.500₺</span>
+                                        <span class="invisible text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black whitespace-nowrap">52.500₺</span>
+                                    </div>
+                                    <p class="text-[10px] sm:text-xs text-gray-400 mt-2">USD / TRY</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

@@ -333,23 +333,18 @@
             editor.reroute = true;
             editor.reroute_fix_curvature = 0.5;
 
-            // CRITICAL: Disable zoom and center canvas
-            editor.zoom_max = 1;
-            editor.zoom_min = 1;
-            editor.zoom_value = 1;
+            // Allow zoom but start at 1
+            editor.zoom_max = 2;
+            editor.zoom_min = 0.5;
+            editor.zoom_value = 0.05;
+            editor.zoom_last_value = 1;
 
             editor.start();
 
-            // FORCE: Reset zoom and position
+            // Set initial position and zoom
             editor.zoom = 1;
             editor.canvas_x = 0;
             editor.canvas_y = 0;
-
-            // Apply transform directly
-            const precanvas = container.querySelector('.drawflow');
-            if (precanvas) {
-                precanvas.style.transform = 'translate(0px, 0px) scale(1)';
-            }
 
             // Load existing flow if editing
             @if($flowId && !empty($flowData))
@@ -430,21 +425,18 @@
         });
 
         function loadExistingFlow(flowData) {
-            console.log('🔄 Loading flow with SIMPLE approach...');
+            console.log('🔄 Loading flow with position fix...');
 
             // Clear everything
             editor.clear();
 
-            // Ensure canvas at origin
-            editor.canvas_x = 0;
-            editor.canvas_y = 0;
-            const precanvas = document.querySelector('#drawflow .parent-drawflow');
-            if (precanvas) {
-                precanvas.style.transform = 'translate(0px, 0px) scale(1)';
-            }
+            // Reset zoom and position
+            editor.zoom_reset();
 
-            // Map to track node IDs
-            const nodeIdMap = new Map();
+            // Wait for canvas to be ready
+            setTimeout(() => {
+                // Map to track node IDs
+                const nodeIdMap = new Map();
 
             // Add each node DIRECTLY
             flowData.nodes.forEach((node, index) => {
@@ -492,21 +484,50 @@
                     }
                 });
 
-                // Force update all node positions one more time
-                nodeIdMap.forEach((dfId, nodeId) => {
-                    const node = flowData.nodes.find(n => n.id === nodeId);
-                    if (node) {
-                        const element = document.getElementById(`node-${dfId}`);
-                        if (element) {
-                            element.style.left = `${node.position.x}px`;
-                            element.style.top = `${node.position.y}px`;
-                            element.style.position = 'absolute';
-                        }
-                    }
-                });
+                // AGGRESSIVE position fix - try multiple times
+                let attempts = 0;
+                const fixPositions = () => {
+                    attempts++;
+                    console.log(`🔧 Position fix attempt ${attempts}...`);
 
-                console.log('✅ Flow loading complete!');
+                    nodeIdMap.forEach((dfId, nodeId) => {
+                        const node = flowData.nodes.find(n => n.id === nodeId);
+                        if (node) {
+                            const element = document.getElementById(`node-${dfId}`);
+                            if (element) {
+                                // Force absolute positioning
+                                element.style.position = 'absolute';
+                                element.style.left = `${node.position.x}px`;
+                                element.style.top = `${node.position.y}px`;
+                                element.style.zIndex = '10';
+
+                                // Also update Drawflow internal data
+                                if (editor.drawflow && editor.drawflow.drawflow &&
+                                    editor.drawflow.drawflow.Home &&
+                                    editor.drawflow.drawflow.Home.data &&
+                                    editor.drawflow.drawflow.Home.data[dfId]) {
+                                    editor.drawflow.drawflow.Home.data[dfId].pos_x = node.position.x;
+                                    editor.drawflow.drawflow.Home.data[dfId].pos_y = node.position.y;
+                                    console.log(`✅ Fixed node ${dfId}: [${node.position.x}, ${node.position.y}]`);
+                                }
+                            }
+                        }
+                    });
+
+                    // Update all connections
+                    editor.updateConnectionNodes('node-1');
+
+                    // Try again if needed (max 3 attempts)
+                    if (attempts < 3) {
+                        setTimeout(fixPositions, 300);
+                    } else {
+                        console.log('✅ Flow loading complete after ' + attempts + ' attempts!');
+                    }
+                };
+
+                fixPositions();
             }, 200);
+            }, 50); // Close the first setTimeout
         }
 
         function clearCanvas() {

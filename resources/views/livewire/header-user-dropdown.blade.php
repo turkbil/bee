@@ -6,8 +6,8 @@
             @mouseenter="showTooltip = true"
             @mouseleave="showTooltip = false"
             aria-label="Open user menu">
-        @if($user && $user->getFirstMedia('avatar'))
-            <img src="{{ $user->getFirstMedia('avatar')->getUrl() }}?v={{ time() }}"
+        @if($userAvatar)
+            <img src="{{ $userAvatar }}"
                  alt="Avatar"
                  class="w-8 h-8 rounded-full object-cover">
         @else

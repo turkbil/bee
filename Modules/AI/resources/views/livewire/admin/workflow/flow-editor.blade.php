@@ -426,19 +426,26 @@
             });
 
             // Add edges/connections
+            let connectedCount = 0;
             flowData.edges.forEach(edge => {
-                const sourceIndex = flowData.nodes.findIndex(n => n.id === edge.source) + 1;
-                const targetIndex = flowData.nodes.findIndex(n => n.id === edge.target) + 1;
+                const sourceIdx = flowData.nodes.findIndex(n => n.id === edge.source);
+                const targetIdx = flowData.nodes.findIndex(n => n.id === edge.target);
 
-                if (sourceIndex && targetIndex) {
-                    drawflowData.drawflow.Home.data[sourceIndex].outputs.output_1.connections.push({
-                        node: String(targetIndex),
+                if (sourceIdx !== -1 && targetIdx !== -1) {
+                    const sourceNodeId = sourceIdx + 1;
+                    const targetNodeId = targetIdx + 1;
+
+                    drawflowData.drawflow.Home.data[sourceNodeId].outputs.output_1.connections.push({
+                        node: String(targetNodeId),
                         output: 'input_1'
                     });
+                    connectedCount++;
                 }
             });
 
+            console.log('🔗 Connections added:', connectedCount, '/', flowData.edges.length);
             editor.import(drawflowData);
+            console.log('✅ Flow imported successfully');
         }
 
         function clearCanvas() {

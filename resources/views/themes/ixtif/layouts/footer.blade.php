@@ -323,7 +323,7 @@
 
             {{-- Ödeme Logoları (SAĞ) --}}
             <div class="flex justify-center md:justify-end">
-                <img src="https://ixtif.com/storage/tenant2/81/cc.png"
+                <img src="https://ixtif.com/storage/tenant2/189/cc.png"
                      alt="Ödeme Yöntemleri - Mastercard, Visa"
                      class="h-8 md:h-10 w-auto object-contain"
                      loading="lazy">

@@ -249,7 +249,7 @@
                     <!-- Trust Badge - Şirket Garantisi -->
                     <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4">
                         <i class="fas fa-shield-check text-yellow-500"></i>
-                        <span>İXTİF A.Ş. Garantisiyle</span>
+                        <span>İXTİF İç ve Dış Ticaret Anonim Şirketi Garantisiyle</span>
                     </div>
 
                     <!-- Kampanya Başlığı -->
@@ -360,7 +360,7 @@
 
                 <!-- Right - Product Image (Optimized) -->
                 <div class="relative">
-                    <div class="aspect-square bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-3xl border border-gray-700 flex items-center justify-center overflow-hidden relative p-8">
+                    <div class="hero-product-image aspect-square bg-gradient-to-br from-gray-900 via-gray-800 to-black rounded-3xl border border-gray-700 flex items-center justify-center overflow-hidden relative p-8">
                         <img src="https://ixtif.com/storage/tenant2/82/lep4ns74ctsp2gydkwetkw7xs1y01psfss4tf5u6.png"
                              alt="Elektrikli transpalet akülü transpalet 1500 kg Li-Ion iXtif F4"
                              title="Elektrikli Transpalet - Akülü Transpalet 1500kg"
@@ -933,6 +933,39 @@
         </div>
     </section>
 
+    <!-- Referanslar Section -->
+    <section class="py-10 sm:py-12 lg:py-14 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
+        <div class="container mx-auto max-w-7xl">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black mb-2 sm:mb-3 text-center">
+                <span class="gold-gradient bg-clip-text text-transparent">Referanslarımız</span>
+            </h2>
+            <p class="text-center text-gray-400 text-xs sm:text-sm mb-6 sm:mb-8">
+                Türkiye'nin önde gelen firmalarına güvenilir çözümler sunuyoruz
+            </p>
+
+            <!-- Logo Grid -->
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+                @php
+                    $references = [165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188];
+                @endphp
+
+                @foreach($references as $index => $refId)
+                    @php
+                        // Beyaz arka planlı logolar için özel class (3, 6, 13, 22, 23)
+                        $specialLogos = [2, 5, 12, 21, 22]; // 0-based index: 3->2, 6->5, 13->12, 22->21, 23->22
+                        $logoClass = in_array($index, $specialLogos) ? 'reference-logo-special' : 'reference-logo';
+                    @endphp
+                    <div class="bg-gray-900/80 backdrop-blur-sm rounded-xl border border-gray-700 p-4 sm:p-6 flex items-center justify-center hover:bg-white hover:border-yellow-600 hover:shadow-lg hover:shadow-yellow-600/20 transition-all group">
+                        <img src="https://ixtif.com/storage/tenant2/{{ $refId }}/{{ $index + 1 }}.png"
+                             alt="Referans {{ $index + 1 }}"
+                             class="w-full h-auto object-contain max-h-16 sm:max-h-20 transition-all duration-300 {{ $logoClass }}"
+                             loading="lazy">
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
     <!-- Ürün Kategorileri - Tüm Modellere Ulaşım -->
     <section class="py-10 sm:py-12 lg:py-14 px-4 bg-gradient-to-b from-black via-gray-900 to-black">
         <div class="container mx-auto max-w-7xl">
@@ -1452,6 +1485,7 @@
             </div>
         </div>
     </section>
+
 @endsection
 
 @push('scripts-footer')
@@ -1498,6 +1532,26 @@
     }
     .reviewsSwiper .swiper-slide > div {
         height: 100%;
+    }
+
+    /* Reference Logo Filter - Tek Renk (Normal logolar) */
+    .reference-logo {
+        filter: brightness(0) invert(1);
+        opacity: 0.7;
+    }
+    .group:hover .reference-logo {
+        filter: none;
+        opacity: 1;
+    }
+
+    /* Reference Logo Filter - Özel (Beyaz arka planlı logolar: 3, 6, 13, 22, 23) */
+    .reference-logo-special {
+        filter: grayscale(1) contrast(1.2);
+        opacity: 0.8;
+    }
+    .group:hover .reference-logo-special {
+        filter: none;
+        opacity: 1;
     }
     </style>
 

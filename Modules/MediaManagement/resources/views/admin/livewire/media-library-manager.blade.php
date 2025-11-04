@@ -83,33 +83,16 @@
     <div class="card mb-3">
         <div class="card-body">
             <div class="row g-2 align-items-end">
-                <div class="col-auto">
-                    <div class="form-check" style="padding-top: 0.5rem;">
-                        <input type="checkbox"
-                               wire:model.live="selectAll"
-                               class="form-check-input"
-                               id="selectAllCheckbox"
-                               x-data="{
-                                   indeterminate: {{ count($selectedItems) > 0 && !$selectAll ? 'true' : 'false' }}
-                               }"
-                               x-init="$el.indeterminate = indeterminate"
-                               x-effect="$el.indeterminate = ({{ count($selectedItems) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
-                               @checked($selectAll)>
-                        <label class="form-check-label" for="selectAllCheckbox">
-                            {{ __('admin.select_all') }}
-                        </label>
-                    </div>
-                </div>
                 <div class="col-lg-3 col-md-5">
                     <div class="input-icon">
                         <span class="input-icon-addon">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
                         </span>
-                        <input type="text" class="form-control" wire:model.debounce.500ms="search" placeholder="{{ __('mediamanagement::admin.search_placeholder') }}">
+                        <input type="text" class="form-control" wire:model.live.debounce.500ms="search" placeholder="{{ __('mediamanagement::admin.search_placeholder') }}">
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">
-                    <select class="form-select" wire:model="typeFilter">
+                    <select class="form-select" wire:model.live="typeFilter">
                         <option value="">{{ __('mediamanagement::admin.all_types') }}</option>
                         @foreach($mediaTypes as $typeKey => $typeConfig)
                             <option value="{{ $typeKey }}">{{ $typeConfig['label'] ?? \Illuminate\Support\Str::headline($typeKey) }}</option>
@@ -117,7 +100,7 @@
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">
-                    <select class="form-select" wire:model="collectionFilter">
+                    <select class="form-select" wire:model.live="collectionFilter">
                         <option value="">{{ __('mediamanagement::admin.all_collections') }}</option>
                         @foreach($availableCollections as $collection)
                             <option value="{{ $collection }}">{{ \Illuminate\Support\Str::headline(str_replace('_', ' ', $collection)) }}</option>
@@ -125,7 +108,7 @@
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-6">
-                    <select class="form-select" wire:model="dateFilter">
+                    <select class="form-select" wire:model.live="dateFilter">
                         <option value="all">{{ __('mediamanagement::admin.date_all') }}</option>
                         <option value="24h">Son 24 Saat</option>
                         <option value="7d">Son 7 Gün</option>
@@ -135,7 +118,7 @@
                     </select>
                 </div>
                 <div class="col-lg-1 col-md-2 col-sm-3">
-                    <select class="form-select" wire:model="perPage">
+                    <select class="form-select" wire:model.live="perPage">
                         @foreach([12, 24, 48, 96] as $size)
                             <option value="{{ $size }}">{{ $size }}</option>
                         @endforeach
@@ -155,7 +138,7 @@
                     <div class="row g-2">
                         <div class="col-md-6">
                             <label class="form-label">{{ __('mediamanagement::admin.model') }}</label>
-                            <select class="form-select" wire:model="moduleFilter">
+                            <select class="form-select" wire:model.live="moduleFilter">
                                 <option value="">{{ __('mediamanagement::admin.all_models') }}</option>
                                 @foreach($availableModules as $module)
                                     <option value="{{ $module }}">{{ $this->moduleLabel($module) }}</option>
@@ -164,7 +147,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">{{ __('mediamanagement::admin.disk') }}</label>
-                            <select class="form-select" wire:model="diskFilter">
+                            <select class="form-select" wire:model.live="diskFilter">
                                 <option value="">{{ __('mediamanagement::admin.all_disks') }}</option>
                                 @foreach($availableDisks as $disk)
                                     <option value="{{ $disk }}">{{ \Illuminate\Support\Str::upper($disk) }}</option>

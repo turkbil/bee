@@ -284,10 +284,32 @@
         @keydown.escape.window="if(showLightbox) { closeLightbox(); }"
         @keydown.arrow-right.window="if(showLightbox) { nextMedia(); }"
         @keydown.arrow-left.window="if(showLightbox) { prevMedia(); }">
+            <style>
+                /* Media Grid: 5 kolonlar (xl+) */
+                @media (min-width: 1200px) {
+                    .media-card-col { flex: 0 0 auto; width: 20%; max-width: 20%; }
+                }
+                /* Media Grid: 7 kolonlar (lg) */
+                @media (min-width: 992px) and (max-width: 1199px) {
+                    .media-card-col { flex: 0 0 auto; width: 14.28%; max-width: 14.28%; }
+                }
+                /* Media Grid: 4 kolonlar (md) */
+                @media (min-width: 768px) and (max-width: 991px) {
+                    .media-card-col { flex: 0 0 auto; width: 25%; max-width: 25%; }
+                }
+                /* Media Grid: 3 kolonlar (sm) */
+                @media (min-width: 576px) and (max-width: 767px) {
+                    .media-card-col { flex: 0 0 auto; width: 33.33%; max-width: 33.33%; }
+                }
+                /* Media Grid: 2 kolonlar (xs) */
+                @media (max-width: 575px) {
+                    .media-card-col { flex: 0 0 auto; width: 50%; max-width: 50%; }
+                }
+            </style>
             <div class="row row-cards g-2">
                 @php $previewableIndex = 0; @endphp
                 @foreach($mediaItems as $media)
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6" x-data="{ copied: false }">
+                    <div class="media-card-col" x-data="{ copied: false }">
                         <div class="card card-sm h-100" wire:key="media-card-{{ $media->id }}">
                             <!-- Thumbnail Preview -->
                             <div class="ratio ratio-1x1 card-img-top position-relative"

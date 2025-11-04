@@ -5,14 +5,14 @@
                 <div class="col">
                     <h2 class="page-title">
                         <i class="fa fa-cogs me-2"></i>
-                        AI Directives
+                        {{ __('ai::admin.workflow.directives_title') }}
                     </h2>
-                    <div class="text-muted mt-1">Configure AI behavior for your tenant</div>
+                    <div class="text-muted mt-1">{{ __('ai::admin.workflow.directives_subtitle') }}</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <button wire:click="openNewModal" class="btn btn-primary">
                         <i class="fa fa-plus me-1"></i>
-                        New Directive
+                        {{ __('ai::admin.workflow.new_directive') }}
                     </button>
                 </div>
             </div>
@@ -26,25 +26,25 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Search</label>
-                            <input type="text" wire:model.debounce.500ms="search" class="form-control" placeholder="Search directives...">
+                            <label class="form-label">{{ __('ai::admin.search_placeholder') }}</label>
+                            <input type="text" wire:model.debounce.500ms="search" class="form-control" placeholder="{{ __('ai::admin.workflow.search_directives') }}">
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Category</label>
+                            <label class="form-label">{{ __('ai::admin.workflow.category') }}</label>
                             <select wire:model="filterCategory" class="form-select">
-                                <option value="all">All Categories</option>
-                                <option value="general">General</option>
-                                <option value="behavior">Behavior</option>
-                                <option value="display">Display</option>
-                                <option value="pricing">Pricing</option>
-                                <option value="lead">Lead Collection</option>
-                                <option value="contact">Contact</option>
+                                <option value="all">{{ __('ai::admin.workflow.category_all') }}</option>
+                                <option value="general">{{ __('ai::admin.workflow.category_general') }}</option>
+                                <option value="behavior">{{ __('ai::admin.workflow.category_behavior') }}</option>
+                                <option value="display">{{ __('ai::admin.workflow.category_display') }}</option>
+                                <option value="pricing">{{ __('ai::admin.workflow.category_pricing') }}</option>
+                                <option value="lead">{{ __('ai::admin.workflow.category_lead') }}</option>
+                                <option value="contact">{{ __('ai::admin.workflow.category_contact') }}</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label">Statistics</label>
+                            <label class="form-label">{{ __('ai::admin.statistics') }}</label>
                             <div class="fw-bold">
-                                Total: {{ $categories->sum() }} directives
+                                {{ __('ai::admin.total') }}: {{ $categories->sum() }} {{ __('ai::admin.workflow.total_directives') }}
                             </div>
                         </div>
                     </div>
@@ -57,13 +57,13 @@
                     <table class="table table-vcenter card-table">
                         <thead>
                             <tr>
-                                <th>Key</th>
-                                <th>Value</th>
-                                <th>Type</th>
-                                <th>Category</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th class="w-1">Actions</th>
+                                <th>{{ __('ai::admin.workflow.key') }}</th>
+                                <th>{{ __('ai::admin.workflow.value') }}</th>
+                                <th>{{ __('ai::admin.workflow.type') }}</th>
+                                <th>{{ __('ai::admin.workflow.category') }}</th>
+                                <th>{{ __('ai::admin.description') }}</th>
+                                <th>{{ __('ai::admin.status') }}</th>
+                                <th class="w-1">{{ __('ai::admin.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -121,9 +121,9 @@
                                             </label>
                                         @else
                                             @if($directive->is_active)
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-success">{{ __('ai::admin.workflow.status_active') }}</span>
                                             @else
-                                                <span class="badge bg-secondary">Inactive</span>
+                                                <span class="badge bg-secondary">{{ __('ai::admin.workflow.status_inactive') }}</span>
                                             @endif
                                         @endif
                                     </td>
@@ -146,7 +146,7 @@
                                                     <i class="fa fa-power-off"></i>
                                                 </button>
                                                 <button wire:click="deleteDirective({{ $directive->id }})"
-                                                        onclick="return confirm('Are you sure?')"
+                                                        onclick="return confirm('{{ __('ai::admin.workflow.confirm_delete') }}')"
                                                         class="btn btn-sm btn-ghost-danger">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -158,7 +158,7 @@
                                 <tr>
                                     <td colspan="7" class="text-center text-muted py-4">
                                         <i class="fa fa-cog fs-1 mb-2 d-block"></i>
-                                        No directives found
+                                        {{ __('ai::admin.workflow.no_directives') }}
                                     </td>
                                 </tr>
                             @endforelse

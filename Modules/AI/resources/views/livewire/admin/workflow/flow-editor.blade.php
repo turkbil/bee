@@ -5,18 +5,18 @@
                 <div class="col">
                     <h2 class="page-title">
                         <i class="fa fa-code-branch me-2"></i>
-                        {{ $flowId ? 'Edit Flow' : 'Create New Flow' }}
+                        {{ $flowId ? __('ai::admin.workflow.edit_flow') : __('ai::admin.workflow.create_new_flow') }}
                     </h2>
-                    <div class="text-muted mt-1">Design your conversation flow with drag & drop</div>
+                    <div class="text-muted mt-1">{{ __('ai::admin.workflow.design_subtitle') }}</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <a href="{{ route('admin.ai.workflow.flows.index') }}" class="btn btn-ghost-secondary me-2">
                         <i class="fa fa-times me-1"></i>
-                        Cancel
+                        {{ __('ai::admin.workflow.cancel') }}
                     </a>
                     <button wire:click="saveFlow" class="btn btn-primary" id="save-flow-btn">
                         <i class="fa fa-save me-1"></i>
-                        Save Flow
+                        {{ __('ai::admin.workflow.save_flow') }}
                     </button>
                 </div>
             </div>
@@ -32,24 +32,24 @@
                         <div class="card-body">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label required">Flow Name</label>
-                                    <input type="text" wire:model.defer="flowName" class="form-control" placeholder="e.g. Customer Support Flow">
+                                    <label class="form-label required">{{ __('ai::admin.workflow.flow_name') }}</label>
+                                    <input type="text" wire:model.defer="flowName" class="form-control" placeholder="{{ __('ai::admin.workflow.flow_name_placeholder') }}">
                                     @error('flowName') <span class="text-danger small">{{ $message }}</span> @enderror
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Priority</label>
+                                    <label class="form-label">{{ __('ai::admin.workflow.priority') }}</label>
                                     <input type="number" wire:model.defer="priority" class="form-control" min="0" max="999">
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Status</label>
+                                    <label class="form-label">{{ __('ai::admin.status') }}</label>
                                     <label class="form-check form-switch mt-2">
                                         <input type="checkbox" wire:model.defer="isActive" class="form-check-input">
-                                        <span class="form-check-label">Active</span>
+                                        <span class="form-check-label">{{ __('ai::admin.workflow.active') }}</span>
                                     </label>
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Description</label>
-                                    <textarea wire:model.defer="flowDescription" class="form-control" rows="2" placeholder="Describe what this flow does..."></textarea>
+                                    <label class="form-label">{{ __('ai::admin.workflow.flow_description') }}</label>
+                                    <textarea wire:model.defer="flowDescription" class="form-control" rows="2" placeholder="{{ __('ai::admin.workflow.flow_description_placeholder') }}"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -64,10 +64,10 @@
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fa fa-cubes me-2"></i>
-                                Node Library
+                                {{ __('ai::admin.workflow.node_library') }}
                             </h3>
                             <div class="card-subtitle text-muted small mt-1">
-                                Tenant: {{ $currentTenantId == 2 ? 'İxtif.com' : 'Tenant A' }}
+                                {{ __('ai::admin.workflow.tenant') }}: {{ $currentTenantId == 2 ? 'İxtif.com' : 'Tenant A' }}
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -78,11 +78,11 @@
                                         <div class="fw-bold text-uppercase small">
                                             <i class="fa fa-folder me-1"></i>
                                             @if($category === 'common')
-                                                <span class="badge bg-green-lt text-green">Global Functions</span>
+                                                <span class="badge bg-green-lt text-green">{{ __('ai::admin.workflow.global_functions') }}</span>
                                             @elseif($category === 'ecommerce')
-                                                <span class="badge bg-blue-lt text-blue">E-Commerce</span>
+                                                <span class="badge bg-blue-lt text-blue">{{ __('ai::admin.workflow.ecommerce') }}</span>
                                             @elseif($category === 'communication')
-                                                <span class="badge bg-purple-lt text-purple">Communication</span>
+                                                <span class="badge bg-purple-lt text-purple">{{ __('ai::admin.workflow.communication') }}</span>
                                             @else
                                                 <span class="badge bg-gray-lt">{{ ucfirst($category) }}</span>
                                             @endif
@@ -121,13 +121,13 @@
                             @if(empty($nodesByCategory))
                                 <div class="list-group-item text-center text-muted py-4">
                                     <i class="fa fa-inbox fs-2 mb-2 d-block"></i>
-                                    No nodes available
+                                    {{ __('ai::admin.workflow.no_nodes') }}
                                 </div>
                             @endif
                         </div>
                         <div class="card-footer text-muted small">
                             <i class="fa fa-info-circle me-1"></i>
-                            Drag nodes to canvas
+                            {{ __('ai::admin.workflow.drag_nodes') }}
                         </div>
                     </div>
                 </div>
@@ -137,19 +137,19 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center w-100">
-                                <h3 class="card-title">Flow Canvas</h3>
+                                <h3 class="card-title">{{ __('ai::admin.workflow.flow_canvas') }}</h3>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_in()" title="Zoom In">
+                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_in()" title="{{ __('ai::admin.workflow.zoom_in') }}">
                                         <i class="fa fa-search-plus"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_out()" title="Zoom Out">
+                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_out()" title="{{ __('ai::admin.workflow.zoom_out') }}">
                                         <i class="fa fa-search-minus"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_reset()" title="Reset Zoom">
+                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_reset()" title="{{ __('ai::admin.workflow.reset_zoom') }}">
                                         <i class="fa fa-sync-alt"></i>
                                     </button>
                                     <button class="btn btn-sm btn-ghost-danger" onclick="clearCanvas()">
-                                        <i class="fa fa-trash"></i> Clear
+                                        <i class="fa fa-trash"></i> {{ __('ai::admin.workflow.clear') }}
                                     </button>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                         </div>
                         <div class="card-footer text-muted small">
                             <i class="fa fa-hand-paper me-1"></i>
-                            Drag canvas to pan • Mouse wheel to zoom • Right-click node to delete
+                            {{ __('ai::admin.workflow.canvas_help') }}
                         </div>
                     </div>
                 </div>
@@ -344,7 +344,7 @@
         }
 
         function clearCanvas() {
-            if (confirm('Clear entire canvas? This cannot be undone.')) {
+            if (confirm('{{ __('ai::admin.workflow.clear_confirm') }}')) {
                 editor.clear();
             }
         }

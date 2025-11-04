@@ -822,5 +822,75 @@ return [
     'universal_input_system' => 'Evrensel giriş sistemi',
     'module_integrations' => 'Modül entegrasyonları',
     'bulk_operations' => 'Toplu işlemler',
-    'usage_analytics' => 'Kullanım analitiği'
+    'usage_analytics' => 'Kullanım analitiği',
+
+    // AI Workflow
+    'workflow' => [
+        // Flow List
+        'flows_title' => 'AI Konuşma Akışları',
+        'flows_subtitle' => 'Yapay zeka sohbet akışlarını yönetin',
+        'create_flow' => 'Yeni Akış Oluştur',
+        'no_flows_found' => 'Akış bulunamadı',
+        'no_flows_subtitle' => 'İlk konuşma akışınızı oluşturun',
+        'search_flows' => 'Akışlarda ara...',
+        'status_all' => 'Tümü',
+        'status_active' => 'Aktif',
+        'status_inactive' => 'Pasif',
+        'nodes' => 'Düğümler',
+        'priority' => 'Öncelik',
+        'updated' => 'Güncellendi',
+        'activate' => 'Etkinleştir',
+        'deactivate' => 'Devre Dışı Bırak',
+        'duplicate' => 'Kopyala',
+        'confirm_delete' => 'Silmek istediğinizden emin misiniz?',
+
+        // Flow Editor
+        'edit_flow' => 'Akışı Düzenle',
+        'create_new_flow' => 'Yeni Akış Oluştur',
+        'design_subtitle' => 'Sürükle-bırak ile konuşma akışınızı tasarlayın',
+        'cancel' => 'İptal',
+        'save_flow' => 'Akışı Kaydet',
+        'flow_name' => 'Akış Adı',
+        'flow_name_placeholder' => 'örn: Müşteri Destek Akışı',
+        'flow_description' => 'Açıklama',
+        'flow_description_placeholder' => 'Bu akışın ne yaptığını açıklayın...',
+        'active' => 'Aktif',
+
+        // Node Library
+        'node_library' => 'Düğüm Kütüphanesi',
+        'tenant' => 'Kiracı',
+        'global_functions' => 'Global Fonksiyonlar',
+        'ecommerce' => 'E-Ticaret',
+        'communication' => 'İletişim',
+        'no_nodes' => 'Kullanılabilir düğüm yok',
+        'drag_nodes' => 'Düğümleri tuvale sürükleyin',
+
+        // Canvas
+        'flow_canvas' => 'Akış Tuvali',
+        'zoom_in' => 'Yakınlaştır',
+        'zoom_out' => 'Uzaklaştır',
+        'reset_zoom' => 'Yakınlaştırmayı Sıfırla',
+        'clear' => 'Temizle',
+        'clear_confirm' => 'Tüm tuvali temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+        'canvas_help' => 'Kaydırmak için tuvali sürükleyin • Yakınlaştırmak için fare tekerleği • Silmek için düğüme sağ tıklayın',
+
+        // Directives
+        'directives_title' => 'AI Direktifleri',
+        'directives_subtitle' => 'Kiracınız için AI davranışını yapılandırın',
+        'new_directive' => 'Yeni Direktif',
+        'search_directives' => 'Direktiflerde ara...',
+        'category_all' => 'Tüm Kategoriler',
+        'category_general' => 'Genel',
+        'category_behavior' => 'Davranış',
+        'category_display' => 'Görüntüleme',
+        'category_pricing' => 'Fiyatlandırma',
+        'category_lead' => 'Potansiyel Müşteri Toplama',
+        'category_contact' => 'İletişim',
+        'total_directives' => 'direktif',
+        'key' => 'Anahtar',
+        'value' => 'Değer',
+        'type' => 'Tip',
+        'category' => 'Kategori',
+        'no_directives' => 'Direktif bulunamadı',
+    ],
 ];

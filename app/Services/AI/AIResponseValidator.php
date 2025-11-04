@@ -107,24 +107,60 @@ class AIResponseValidator
     }
 
     /**
-     * Fix contact links (convert product URLs to tel: links)
+     * Fix contact links (convert product URLs to tel: or WhatsApp links)
      */
     protected function fixContactLinks(string $html): string
     {
-        // Pattern: <a href="https://domain.com/shop/slug">0501 005 67 58</a>
-        // Fix: <a href="tel:05010056758">0501 005 67 58</a>
+        // Fix 1: Product URLs with phone numbers → tel: links
         $html = preg_replace_callback(
             '/<a href="https?:\/\/[^"]*\/shop\/[^"]+"[^>]*>(\+?\d[\d\s]+)<\/a>/i',
             function ($matches) {
                 $phone = preg_replace('/[^0-9+]/', '', $matches[1]);
                 $displayPhone = $matches[1];
 
-                Log::warning('🔧 AIResponseValidator: Fixed invalid contact link', [
-                    'original' => $matches[0],
-                    'phone' => $phone,
-                ]);
+                // Check if this is a WhatsApp number pattern (0501, 0532, etc.)
+                if (preg_match('/^0?5\d{2}/', $phone)) {
+                    // Mobile number - use WhatsApp
+                    $cleanPhone = '90' . ltrim($phone, '0');
+                    Log::warning('🔧 AIResponseValidator: Fixed invalid WhatsApp link', [
+                        'original' => $matches[0],
+                        'fixed' => "https://wa.me/{$cleanPhone}",
+                    ]);
+                    return '<a href="https://wa.me/' . $cleanPhone . '" target="_blank" rel="noopener noreferrer">' . $displayPhone . '</a>';
+                } else {
+                    // Landline - use tel:
+                    Log::warning('🔧 AIResponseValidator: Fixed invalid phone link', [
+                        'original' => $matches[0],
+                        'fixed' => "tel:{$phone}",
+                    ]);
+                    return '<a href="tel:' . $phone . '">' . $displayPhone . '</a>';
+                }
+            },
+            $html
+        );
 
-                return '<a href="tel:' . $phone . '">' . $displayPhone . '</a>';
+        // Fix 2: WhatsApp text with wrong URL
+        // Pattern: [WhatsApp text](wrong-url) → [WhatsApp text](https://wa.me/...)
+        $html = preg_replace_callback(
+            '/\[([^\]]*(?:WhatsApp|whatsapp|WA)[^\]]*)\]\((?!https:\/\/wa\.me)([^\)]+)\)/i',
+            function ($matches) {
+                $linkText = $matches[1];
+                $wrongUrl = $matches[2];
+
+                // Extract phone number from text or URL
+                if (preg_match('/(\+?9?0?\s?5\d{2}\s?\d{3}\s?\d{2}\s?\d{2})/', $linkText . ' ' . $wrongUrl, $phoneMatch)) {
+                    $phone = preg_replace('/[^0-9]/', '', $phoneMatch[1]);
+                    $phone = '90' . ltrim($phone, '90');
+
+                    Log::warning('🔧 AIResponseValidator: Fixed WhatsApp markdown link', [
+                        'original' => $matches[0],
+                        'fixed' => "[{$linkText}](https://wa.me/{$phone})",
+                    ]);
+
+                    return "[{$linkText}](https://wa.me/{$phone})";
+                }
+
+                return $matches[0]; // Keep original if no phone found
             },
             $html
         );

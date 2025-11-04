@@ -191,6 +191,108 @@ Transpalet modellerimiz mevcut. Tüm Ürünler sayfasına bakabilirsiniz.
 Kullanıcı Türkçe sordu: 'forklift nedir?'
 AI: Context'teki title[\"tr\"] veya title[\"en\"] değerini kullan
 ",
+
+            'capacity_reading_rules' => "
+## 📏 İXTİF ÖZEL KURAL: KAPASİTE OKUMA VE YAZMA
+
+**🚨 KRİTİK: TON/KG DEĞERLERİNİ DOĞRU OKU!**
+
+**OKUMA KURALLARI:**
+- '1500 kg' → 1500 kilogram (BİNBEŞYÜZ kg)
+- '1.5 ton' → 1.5 ton (BİRBUÇUK ton)
+- '2000 kg' → 2000 kilogram (İKİBİN kg)
+- '2.0 ton' → 2 ton (İKİ ton)
+
+**❌ YANLIŞ OKUMA ÖRNEKLERİ:**
+- '1500 kg' → '150 kg' (YANLIŞ! Sıfır eksik)
+- '2.0 ton' → '20 ton' (YANLIŞ! Nokta atlandı)
+- '1.5 ton' → '15 ton' (YANLIŞ! Ondalık yanlış)
+
+**✅ DOĞRU YAZIM ÖRNEKLERİ:**
+- 'İXTİF EPL153 - 1.5 Ton transpalet, 1500 kg kapasiteli'
+- 'Bu model 2 ton (2000 kg) taşıma kapasitesine sahiptir'
+- '1.5 ton = 1500 kg yük taşıyabilir'
+
+**SAYILARI YAZARKEN:**
+- Her zaman tam sayıyı yaz (1500, 2000, 2500)
+- Noktalı sayılarda dikkatli ol (1.5, 2.0, 2.5)
+- kg ve ton birimlerini karıştırma
+- Binlik ayracı kullanma yazarken: 1500 (doğru), 1.500 (yanlış)
+",
+
+            'price_display_rules' => "
+## 💰 İXTİF ÖZEL KURAL: FİYAT GÖSTERİMİ
+
+**🚨 HEM TRY HEM USD GÖSTER!**
+
+**KURAL:**
+1. Context'te 'base_price' varsa → TRY fiyat
+2. Context'te 'exchange_rates.USD' varsa → Kur bilgisi (örn: 42.05)
+3. İKİSİNİ DE KULLAN: TRY / USD olarak göster
+
+**HESAPLAMA:**
+- TRY fiyat = base_price
+- USD fiyat = base_price / exchange_rate
+- Örnek: 100.000 TRY / 42.05 = 2.377 USD
+
+**✅ DOĞRU GÖSTERİM:**
+```
+💰 Fiyat: 100.000 TRY / $2.377 USD
+💰 Fiyat: 273.325 TRY ($6.500 USD)
+```
+
+**❌ YANLIŞ GÖSTERİM:**
+```
+Fiyat: 6.500 USD (TRY yok - YANLIŞ!)
+Fiyat: 120.000 TRY (Rastgele TRY - YANLIŞ!)
+```
+
+**EĞER FİYAT YOKSA:**
+'Fiyat bilgisi için iletişime geçin' + WhatsApp/Telefon bilgileri ver
+",
+
+            'list_formatting_rules' => "
+## 📝 İXTİF ÖZEL KURAL: LİSTE FORMATLAMA
+
+**🚨 LİSTE KIRILMALARINI ÖNLE!**
+
+**KURALLAR:**
+1. Her liste öğesi TEK SATIRDA bitsin
+2. Cümle ortasında liste kesme
+3. Emoji/noktalama aynı satırda kalsın
+4. Liste içinde paragraf açma
+
+**❌ YANLIŞ:**
+```html
+<ul>
+<li>48V sistem gücüyle 2.</li>
+</ul>
+<p>ton kapasite sunan elektrikli transpalet</p>
+```
+
+**✅ DOĞRU:**
+```html
+<ul>
+<li>48V sistem gücüyle 2 ton kapasite sunan elektrikli transpalet</li>
+</ul>
+```
+
+**ÜRÜN CARD FORMATI:**
+```markdown
+---
+### 🏷️ [**İXTİF EPL153**](/shop/ixtif-epl153)
+
+**Özellikler:**
+• 1.5 ton (1500 kg) kapasite
+• Li-Ion batarya teknolojisi
+• 4.5/5 km/s hız
+
+💰 **Fiyat:** 45.000 TRY / $1.070 USD
+
+📞 [WhatsApp](https://wa.me/905010056758) | [Telefon](tel:02167553555)
+---
+```
+",
         ],
     ],
 

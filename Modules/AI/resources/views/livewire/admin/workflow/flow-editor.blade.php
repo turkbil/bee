@@ -177,6 +177,9 @@
                 linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px);
             background-size: 20px 20px;
+            /* Performance optimization */
+            will-change: transform;
+            transform: translateZ(0);
         }
 
         /* Canvas Background - Dark Mode */
@@ -196,6 +199,10 @@
             min-width: 200px;
             box-shadow: 0 1px 3px rgba(0,0,0,.1);
             transition: all 0.2s ease;
+            /* Performance optimization */
+            will-change: transform, left, top;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: subpixel-antialiased;
         }
 
         .drawflow .drawflow-node:hover {
@@ -426,18 +433,23 @@
                     html                 // html
                 );
 
-                // CRITICAL FIX: Force update DOM position (Drawflow bug workaround)
-                setTimeout(() => {
+                // CRITICAL FIX: Update Drawflow internal data store + DOM
+                const nodeData = editor.drawflow.drawflow.Home.data[drawflowNodeId];
+                if (nodeData) {
+                    nodeData.pos_x = posX;
+                    nodeData.pos_y = posY;
+
+                    // Force DOM update
                     const nodeElement = document.getElementById(`node-${drawflowNodeId}`);
                     if (nodeElement) {
                         nodeElement.style.left = posX + 'px';
                         nodeElement.style.top = posY + 'px';
-                        console.log(`🔧 Position forced: Node ${drawflowNodeId} -> [${posX}, ${posY}]`);
                     }
-                }, 10);
+
+                    console.log(`✅ Node added: ${node.name} (${node.id} -> Drawflow ID: ${drawflowNodeId}) at [${posX}, ${posY}]`);
+                }
 
                 nodeIdMap.set(node.id, drawflowNodeId);
-                console.log(`✅ Node added: ${node.name} (${node.id} -> Drawflow ID: ${drawflowNodeId}) at [${posX}, ${posY}]`);
             });
 
             // Step 2: Add connections after all nodes are created

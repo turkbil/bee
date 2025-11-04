@@ -162,8 +162,16 @@ class ShopContextBuilder
 
             $allProducts = $allProductsQuery->take($productLimit)->get();
 
+            // Get exchange rates
+            $exchangeRates = [];
+            $currencies = \Modules\Shop\App\Models\ShopCurrency::where('is_active', true)->get();
+            foreach ($currencies as $currency) {
+                $exchangeRates[$currency->code] = $currency->exchange_rate;
+            }
+
             return [
                 'page_type' => 'shop_general',
+                'exchange_rates' => $exchangeRates, // Döviz kurları
                 'categories' => $categories->map(fn($c) => [
                     'id' => $c->category_id,
                     'name' => $this->translate($c->title),

@@ -93,6 +93,37 @@ class MarkdownPostProcessor
     }
 
     /**
+     * Fix numbered list issues
+     * Pattern: <ol start="2"> → normal numbered list
+     */
+    public function fixNumberedLists(string $html): string
+    {
+        $original = $html;
+
+        // Fix broken numbered lists
+        // Pattern: <li><ol start="2"><li>ton kapasiteli</li></ol></li>
+        $html = preg_replace(
+            '/<li>\s*<ol[^>]*>\s*<li>([^<]+)<\/li>\s*<\/ol>\s*<\/li>/i',
+            '<li>$1</li>',
+            $html
+        );
+
+        // Fix split sentences between list and paragraph
+        // Pattern: <li>48V sistem gücüyle 2.</li></ul><p>ton kapasite
+        $html = preg_replace(
+            '/<li>([^<]+)\.<\/li>\s*<\/ul>\s*<p>([^<]+)<\/p>/i',
+            '<li>$1. $2</li></ul>',
+            $html
+        );
+
+        if ($html !== $original) {
+            Log::info('🔧 MarkdownPostProcessor: Fixed numbered lists');
+        }
+
+        return $html;
+    }
+
+    /**
      * Main post-processing pipeline
      *
      * @param string $html AI-generated HTML
@@ -110,7 +141,14 @@ class MarkdownPostProcessor
             $fixes[] = 'broken_lists_fixed';
         }
 
-        // Step 2: Add block spacing
+        // Step 2: Fix numbered lists
+        $beforeNumbered = $html;
+        $html = $this->fixNumberedLists($html);
+        if ($html !== $beforeNumbered) {
+            $fixes[] = 'numbered_lists_fixed';
+        }
+
+        // Step 3: Add block spacing
         $beforeSpacing = $html;
         $html = $this->addBlockSpacing($html);
         if ($html !== $beforeSpacing) {

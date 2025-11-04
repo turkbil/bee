@@ -282,6 +282,13 @@ class AISettingsHelper
         $prompt[] = "   → Örnek: '**Fiyat:** 45.000 TRY / $1,072 USD'";
         $prompt[] = "   → Hem TRY hem USD göstermek ZORUNLU!";
         $prompt[] = "";
+        $prompt[] = "   📊 DÖVİZ KURU HESAPLAMA:";
+        $prompt[] = "   → Context'te 'exchange_rates.USD' değeri var (örn: 42.05)";
+        $prompt[] = "   → TRY'den USD'ye çevrim: base_price / exchange_rate";
+        $prompt[] = "   → Örnek: 100.000 TRY / 42.05 = $2,377 USD";
+        $prompt[] = "   → KESİNLİKLE RASTGELE FİYAT UYDURMA!";
+        $prompt[] = "   → Context'teki exchange_rate'i kullan!";
+        $prompt[] = "";
         $prompt[] = "4. Fiyat formatı (Türkçe standart):";
         $prompt[] = "   → Binlik ayracı: nokta (.) → Örnek: 45.000";
         $prompt[] = "   → Ondalık: virgül (,) → Örnek: 45.000,50";
@@ -374,6 +381,52 @@ class AISettingsHelper
         $prompt[] = "16. Link formatı daima: [**Bold Text**](url)";
         $prompt[] = "   ✅ DOĞRU: [**İXTİF EPL153**](/shop/slug)";
         $prompt[] = "   ❌ YANLIŞ: **[İXTİF EPL153](/shop/slug)**";
+        $prompt[] = "";
+        $prompt[] = "=== 📦 ÜRÜN CARD FORMATI (ÇOK ÖNEMLİ!) ===";
+        $prompt[] = "Birden fazla ürün listelenirken MUTLAKA bu formatı kullan:";
+        $prompt[] = "";
+        $prompt[] = "---";
+        $prompt[] = "### 🏷️ [**Ürün Adı**](/shop/url-slug)";
+        $prompt[] = "";
+        $prompt[] = "**Özellikler:**";
+        $prompt[] = "• Özellik 1 (emoji olabilir 💪)";
+        $prompt[] = "• Özellik 2";
+        $prompt[] = "• Özellik 3";
+        $prompt[] = "";
+        $prompt[] = "💰 **Fiyat:** {base_price} TRY / \${amount_usd} USD";
+        $prompt[] = "(Context'ten doğru fiyatları al, KESİNLİKLE UYDURMA!)";
+        $prompt[] = "";
+        $prompt[] = "📞 **İletişim:** [WhatsApp](https://wa.me/905551234567) | [Telefon](tel:+902161234567)";
+        $prompt[] = "---";
+        $prompt[] = "";
+        $prompt[] = "⚠️ CARD KURALLARI:";
+        $prompt[] = "1. Her ürün arasına --- (çizgi) koy";
+        $prompt[] = "2. Başlık mutlaka ### ile başlamalı ve link olmalı";
+        $prompt[] = "3. Fiyat MUTLAKA context'ten alınmalı";
+        $prompt[] = "4. TRY fiyatı context'te varsa USD'yi hesapla (exchange_rate kullan)";
+        $prompt[] = "5. Özellikleri bullet point (•) ile listele";
+        $prompt[] = "6. İletişim linklerini doğru formatla";
+        $prompt[] = "";
+        $prompt[] = "🚫 LİSTE HATALARINI ÖNLE:";
+        $prompt[] = "- Liste ortasında paragraf açma";
+        $prompt[] = "- Cümleyi yarıda kesip liste dışına taşıma";
+        $prompt[] = "- </ul><p> veya </li></ul><p> yapma";
+        $prompt[] = "- Emoji/noktalama yüzünden liste kırma";
+        $prompt[] = "- Her liste öğesi TEK SATIRDA bitsin";
+        $prompt[] = "";
+
+        // İxtif tenant'ına özel kurallar ekle
+        $tenantId = tenant('id');
+        if ($tenantId == 2) { // İxtif tenant
+            $tenantRules = config('ai-tenant-rules.ixtif.custom_prompts', []);
+
+            if (!empty($tenantRules)) {
+                $prompt[] = "=== 🏢 İXTİF ÖZEL KURALLAR ===";
+                foreach ($tenantRules as $key => $rule) {
+                    $prompt[] = $rule;
+                }
+            }
+        }
 
         return implode("\n", $prompt);
     }

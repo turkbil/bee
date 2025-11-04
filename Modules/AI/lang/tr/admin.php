@@ -864,11 +864,26 @@ return [
 
         // Node Library
         'node_library' => 'Düğüm Kütüphanesi',
+        'node_library_subtitle' => 'Tüm kullanılabilir workflow düğümlerini görüntüleyin',
+        'search_nodes' => 'Düğümlerde ara...',
+        'total_nodes' => 'Toplam Düğüm',
+        'global_nodes' => 'Global Düğümler',
+        'tenant_nodes' => 'Tenant Düğümleri',
+        'categories' => 'Kategoriler',
+        'node_icon' => 'İkon',
+        'node_name' => 'Düğüm Adı',
+        'node_key' => 'Düğüm Anahtarı',
+        'node_class' => 'Sınıf',
+        'scope' => 'Kapsam',
+        'scope_all' => 'Tümü',
+        'scope_global' => 'Global',
+        'scope_tenant' => 'Tenant',
         'tenant' => 'Kiracı',
         'global_functions' => 'Global Fonksiyonlar',
         'ecommerce' => 'E-Ticaret',
         'communication' => 'İletişim',
         'no_nodes' => 'Kullanılabilir düğüm yok',
+        'no_nodes_subtitle' => 'Seeder çalıştırarak düğümleri yükleyin',
         'drag_nodes' => 'Düğümleri tuvale sürükleyin',
 
         // Canvas

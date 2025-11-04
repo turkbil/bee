@@ -127,6 +127,13 @@
                             @endhasmoduleaccess
 
                             @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.workflow.nodes.index') }}">
+                                <i class="fa fa-cube me-1"></i>
+                                {{ __('ai::admin.workflow.node_library') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
                             <a class="dropdown-item" href="{{ route('admin.ai.workflow.directives.index') }}">
                                 <i class="fa fa-cogs me-1"></i>
                                 {{ __('ai::admin.workflow.directives_title') }}

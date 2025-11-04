@@ -1019,16 +1019,15 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                             // ->middleware('module.permission:ai,create,update')
                             ->name('flows.manage');
 
+                        // Node Library
+                        Route::get('/nodes', \Modules\AI\App\Http\Livewire\Admin\Workflow\NodeLibrary::class)
+                            // ->middleware('module.permission:ai,view')
+                            ->name('nodes.index');
+
                         // Directive Management
                         Route::get('/directives', \Modules\AI\App\Http\Livewire\Admin\Workflow\DirectiveManager::class)
                             // ->middleware('module.permission:ai,update')
                             ->name('directives.index');
-
-                        // Node Library (Available nodes)
-                        Route::get('/nodes', function() {
-                            $nodes = \App\Services\ConversationNodes\NodeExecutor::getAvailableNodes();
-                            return response()->json(['nodes' => $nodes]);
-                        })->name('nodes.library');
                     });
             });
     });

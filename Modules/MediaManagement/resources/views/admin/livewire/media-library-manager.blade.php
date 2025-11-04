@@ -258,6 +258,8 @@
             showLightbox: false,
             currentIndex: 0,
             mediaList: @js($previewableMedia),
+            lastCheckedIndex: null,
+            allMediaIds: @js($mediaItems->pluck('id')->toArray()),
             get currentMedia() {
                 return this.mediaList[this.currentIndex] || {};
             },
@@ -279,6 +281,20 @@
                 if (this.currentIndex > 0) {
                     this.currentIndex--;
                 }
+            },
+            handleCheckboxClick(event, mediaId, currentIndex) {
+                if (event.shiftKey && this.lastCheckedIndex !== null) {
+                    event.preventDefault();
+                    const start = Math.min(this.lastCheckedIndex, currentIndex);
+                    const end = Math.max(this.lastCheckedIndex, currentIndex);
+                    const idsToSelect = this.allMediaIds.slice(start, end + 1);
+
+                    // Livewire selectedItems'ı güncelle
+                    const currentSelected = $wire.get('selectedItems');
+                    const newSelected = [...new Set([...currentSelected, ...idsToSelect])];
+                    $wire.set('selectedItems', newSelected);
+                }
+                this.lastCheckedIndex = currentIndex;
             }
         }"
         @keydown.escape.window="if(showLightbox) { closeLightbox(); }"
@@ -308,7 +324,7 @@
             </style>
             <div class="row row-cards g-2">
                 @php $previewableIndex = 0; @endphp
-                @foreach($mediaItems as $media)
+                @foreach($mediaItems as $index => $media)
                     <div class="media-card-col" x-data="{ copied: false }">
                         <div class="card card-sm h-100" wire:key="media-card-{{ $media->id }}">
                             <!-- Thumbnail Preview -->
@@ -323,20 +339,15 @@
                                          alt="{{ $media->name }}"
                                          class="object-fit-cover w-100 h-100"
                                          loading="lazy">
-                                    <!-- KB Badge (Sol Üst) -->
-                                    <div class="position-absolute top-0 start-0 m-1">
-                                        <span class="badge badge-sm bg-dark bg-opacity-75">
-                                            {{ $this->formatBytes($media->size) }}
-                                        </span>
-                                    </div>
                                     <!-- Checkbox Selection (Sağ Üst) -->
-                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;" @click.stop>
+                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;">
                                         <input type="checkbox"
                                                wire:model.live="selectedItems"
                                                value="{{ $media->id }}"
                                                class="form-check-input"
                                                style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
                                                id="checkbox-{{ $media->id }}"
+                                               @click.stop="handleCheckboxClick($event, {{ $media->id }}, {{ $index }})"
                                                @checked(in_array($media->id, $selectedItems))>
                                     </div>
                                 @else
@@ -348,13 +359,14 @@
                                         <div class="badge badge-sm bg-azure-lt text-dark mt-1">{{ $this->formatBytes($media->size) }}</div>
                                     </div>
                                     <!-- Checkbox Selection for Non-Image Files (Sağ Üst) -->
-                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;" @click.stop>
+                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;">
                                         <input type="checkbox"
                                                wire:model.live="selectedItems"
                                                value="{{ $media->id }}"
                                                class="form-check-input"
                                                style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
                                                id="checkbox-{{ $media->id }}"
+                                               @click.stop="handleCheckboxClick($event, {{ $media->id }}, {{ $index }})"
                                                @checked(in_array($media->id, $selectedItems))>
                                     </div>
                                 @endif
@@ -365,8 +377,9 @@
                                 <div class="text-truncate small" title="{{ $media->name ?? $media->file_name }}">
                                     <strong>{{ \Illuminate\Support\Str::limit($media->name ?? $media->file_name, 20) }}</strong>
                                 </div>
-                                <div class="text-muted" style="font-size: 0.625rem;">
-                                    {{ optional($media->created_at)->format('d.m.Y') }}
+                                <div class="d-flex justify-content-between align-items-center" style="font-size: 0.625rem;">
+                                    <span class="text-muted">{{ optional($media->created_at)->format('d.m.Y') }}</span>
+                                    <span class="badge badge-sm bg-secondary">{{ $this->formatBytes($media->size) }}</span>
                                 </div>
                             </div>
 

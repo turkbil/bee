@@ -170,40 +170,135 @@
     @push('styles')
     <link rel="stylesheet" href="/vendor/drawflow/drawflow.min.css">
     <style>
+        /* Canvas Background - Light Mode */
         #drawflow {
-            background: #f6f8fb;
+            background: var(--tblr-bg-surface-secondary, #f6f8fb);
             background-image:
                 linear-gradient(rgba(0,0,0,.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,.05) 1px, transparent 1px);
             background-size: 20px 20px;
         }
+
+        /* Canvas Background - Dark Mode */
+        [data-bs-theme="dark"] #drawflow {
+            background: var(--tblr-bg-surface-dark, #1e293b);
+            background-image:
+                linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+        }
+
+        /* Drawflow Nodes - Light Mode */
         .drawflow .drawflow-node {
-            background: white;
-            border: 2px solid #206bc4;
+            background: var(--tblr-bg-surface, white);
+            border: 2px solid var(--tblr-primary, #206bc4);
             border-radius: 8px;
             padding: 15px;
             min-width: 200px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.1);
+            transition: all 0.2s ease;
         }
+
+        .drawflow .drawflow-node:hover {
+            border-color: var(--tblr-primary-darken, #1a5a9d);
+            box-shadow: 0 4px 6px rgba(32,107,196,.15);
+            transform: translateY(-1px);
+        }
+
+        /* Drawflow Nodes - Dark Mode */
+        [data-bs-theme="dark"] .drawflow .drawflow-node {
+            background: var(--tblr-bg-surface, #1e293b);
+            border-color: var(--tblr-primary, #4299e1);
+            box-shadow: 0 1px 3px rgba(0,0,0,.3);
+        }
+
+        [data-bs-theme="dark"] .drawflow .drawflow-node:hover {
+            border-color: var(--tblr-primary-lighten, #63b3ed);
+            box-shadow: 0 4px 6px rgba(66,153,225,.25);
+        }
+
+        /* Selected Node */
         .drawflow .drawflow-node.selected {
-            border-color: #1e40af;
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.2);
+            border-color: var(--tblr-primary, #206bc4);
+            box-shadow: 0 0 0 3px rgba(32,107,196,.2);
         }
+
+        [data-bs-theme="dark"] .drawflow .drawflow-node.selected {
+            border-color: var(--tblr-primary, #4299e1);
+            box-shadow: 0 0 0 3px rgba(66,153,225,.3);
+        }
+
+        /* Node Text - Light Mode */
         .drawflow .drawflow-node .node-title {
             font-weight: 600;
             margin-bottom: 5px;
-            color: #1e293b;
+            color: var(--tblr-body-color, #1e293b);
         }
+
         .drawflow .drawflow-node .node-type {
             font-size: 12px;
-            color: #64748b;
+            color: var(--tblr-muted, #64748b);
         }
+
+        /* Node Text - Dark Mode */
+        [data-bs-theme="dark"] .drawflow .drawflow-node .node-title {
+            color: var(--tblr-body-color, #f1f5f9);
+        }
+
+        [data-bs-theme="dark"] .drawflow .drawflow-node .node-type {
+            color: var(--tblr-muted, #94a3b8);
+        }
+
+        /* Connection Lines */
         .drawflow .connection .main-path {
-            stroke: #206bc4;
+            stroke: var(--tblr-primary, #206bc4);
             stroke-width: 3px;
         }
-        .node-palette-item:hover {
-            background-color: #f1f5f9;
+
+        [data-bs-theme="dark"] .drawflow .connection .main-path {
+            stroke: var(--tblr-primary, #4299e1);
         }
+
+        /* Node Palette Items - Light Mode */
+        .node-palette-item {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--tblr-border-color, rgba(98,105,118,.16));
+        }
+
+        .node-palette-item:hover {
+            background-color: var(--tblr-primary-lt, #e7f1fb) !important;
+            border-left: 3px solid var(--tblr-primary, #206bc4);
+            padding-left: calc(1.5rem - 3px);
+        }
+
+        /* Node Palette Items - Dark Mode */
+        [data-bs-theme="dark"] .node-palette-item {
+            border-bottom-color: var(--tblr-border-color-dark, rgba(255,255,255,.1));
+        }
+
+        [data-bs-theme="dark"] .node-palette-item:hover {
+            background-color: rgba(66,153,225,.15) !important;
+            border-left: 3px solid var(--tblr-primary, #4299e1);
+        }
+
+        /* Category Headers - Dark Mode */
+        [data-bs-theme="dark"] .list-group-item.bg-light {
+            background-color: var(--tblr-bg-surface-tertiary, #2d3748) !important;
+        }
+
+        /* Sticky Sidebar - Dark Mode */
+        [data-bs-theme="dark"] .card {
+            background-color: var(--tblr-bg-surface, #1e293b);
+            border-color: var(--tblr-border-color-dark, rgba(255,255,255,.1));
+        }
+
+        /* Avatar badges */
+        .avatar.bg-green-lt { background-color: var(--tblr-green-lt, #d3f5df) !important; }
+        .avatar.bg-blue-lt { background-color: var(--tblr-blue-lt, #cfe2ff) !important; }
+        .avatar.bg-purple-lt { background-color: var(--tblr-purple-lt, #e4d9f7) !important; }
+
+        [data-bs-theme="dark"] .avatar.bg-green-lt { background-color: rgba(32,201,151,.2) !important; }
+        [data-bs-theme="dark"] .avatar.bg-blue-lt { background-color: rgba(66,153,225,.2) !important; }
+        [data-bs-theme="dark"] .avatar.bg-purple-lt { background-color: rgba(159,122,234,.2) !important; }
     </style>
     @endpush
 

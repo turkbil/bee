@@ -351,8 +351,7 @@
                                             wire:keydown.enter="updateProductField({{ $product->product_id }}, 'current_stock', $event.target.value)"
                                             class="form-control form-control-sm text-center quick-edit-input"
                                             style="width: 70px;"
-                                            placeholder="0"
-                                            @if(!$product->stock_tracking) disabled @endif>
+                                            placeholder="0">
                                     @elseif ($editingStockId === $product->product_id)
                                         <div class="d-flex flex-column gap-2 align-items-center" x-data
                                             @click.outside="$wire.updateStockInline()">
@@ -390,18 +389,17 @@
                                                     $hasNoStockData = $product->current_stock == 0;
                                                     $isLowStock = $product->current_stock > 0 && $product->current_stock <= $product->low_stock_threshold;
                                                 @endphp
-                                                @if ($hasNoStockData)
-                                                    <span class="text-muted small editable-stock">—</span>
-                                                @else
-                                                    <div class="d-flex flex-column align-items-center">
-                                                        <span class="fw-semibold editable-stock {{ $isLowStock ? 'text-warning' : '' }}">
-                                                            {{ $product->current_stock }}
-                                                        </span>
-                                                        @if ($isLowStock)
-                                                            <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
-                                                        @endif
-                                                    </div>
-                                                @endif
+                                                <div class="d-flex flex-column align-items-center">
+                                                    <span class="fw-semibold editable-stock {{ $hasNoStockData ? 'text-muted' : ($isLowStock ? 'text-warning' : '') }}">
+                                                        {{ $hasNoStockData ? '0' : $product->current_stock }}
+                                                    </span>
+                                                    @if ($isLowStock)
+                                                        <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                    @endif
+                                                    @if ($hasNoStockData)
+                                                        <small class="badge bg-danger-lt" style="font-size: 0.65rem;">Stoksuz</small>
+                                                    @endif
+                                                </div>
                                             @else
                                                 <span class="text-muted small editable-stock">—</span>
                                             @endif
@@ -666,8 +664,7 @@
                                                     wire:keydown.enter="updateProductField({{ $variant->product_id }}, 'current_stock', $event.target.value)"
                                                     class="form-control form-control-sm text-center quick-edit-input"
                                                     style="width: 70px;"
-                                                    placeholder="0"
-                                                    @if(!$variant->stock_tracking) disabled @endif>
+                                                    placeholder="0">
                                             @elseif ($editingStockId === $variant->product_id)
                                                 <div class="d-flex flex-column gap-2 align-items-center" x-data
                                                     @click.outside="$wire.updateStockInline()">
@@ -705,18 +702,17 @@
                                                             $hasNoStockData = $variant->current_stock == 0;
                                                             $isLowStock = $variant->current_stock > 0 && $variant->current_stock <= $variant->low_stock_threshold;
                                                         @endphp
-                                                        @if ($hasNoStockData)
-                                                            <span class="text-muted small editable-stock">—</span>
-                                                        @else
-                                                            <div class="d-flex flex-column align-items-center">
-                                                                <span class="fw-semibold editable-stock {{ $isLowStock ? 'text-warning' : '' }}">
-                                                                    {{ $variant->current_stock }}
-                                                                </span>
-                                                                @if ($isLowStock)
-                                                                    <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
-                                                                @endif
-                                                            </div>
-                                                        @endif
+                                                        <div class="d-flex flex-column align-items-center">
+                                                            <span class="fw-semibold editable-stock {{ $hasNoStockData ? 'text-muted' : ($isLowStock ? 'text-warning' : '') }}">
+                                                                {{ $hasNoStockData ? '0' : $variant->current_stock }}
+                                                            </span>
+                                                            @if ($isLowStock)
+                                                                <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
+                                                            @endif
+                                                            @if ($hasNoStockData)
+                                                                <small class="badge bg-danger-lt" style="font-size: 0.65rem;">Stoksuz</small>
+                                                            @endif
+                                                        </div>
                                                     @else
                                                         <span class="text-muted small editable-stock">—</span>
                                                     @endif

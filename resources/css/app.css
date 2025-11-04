@@ -373,6 +373,18 @@
     /* gray-50 - dark mode için beyaz strong */
 }
 
+/* Product image padding fix - SADECE hero section için */
+.hero-product-image img {
+    padding: 20px;
+}
+
+/* Mobilde daha az padding */
+@media (min-width: 640px) {
+    .hero-product-image img {
+        padding: 30px;
+    }
+}
+
 /* Dark mode support (tenant-aware) */
 @media (prefers-color-scheme: dark) {
     .dark-mode-auto {

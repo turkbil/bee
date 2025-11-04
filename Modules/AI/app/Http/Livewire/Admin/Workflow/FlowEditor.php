@@ -43,6 +43,14 @@ class FlowEditor extends Component
             $this->flowData = $flow->flow_data;
             $this->isActive = $flow->is_active;
             $this->priority = $flow->priority;
+
+            // Debug log
+            \Log::info('FlowEditor mounted', [
+                'flowId' => $this->flowId,
+                'flowData type' => gettype($this->flowData),
+                'flowData empty' => empty($this->flowData),
+                'nodes count' => isset($this->flowData['nodes']) ? count($this->flowData['nodes']) : 0,
+            ]);
         }
 
         // Node kütüphanesini DB'den al (kategori bazlı, tenant'a özel filtrelenmiş)

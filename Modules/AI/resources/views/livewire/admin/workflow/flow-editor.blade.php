@@ -316,7 +316,10 @@
 
             // Load existing flow if editing
             @if($flowId && !empty($flowData))
+                console.log('🔄 Loading existing flow...', @json($flowData));
                 loadExistingFlow(@json($flowData));
+            @else
+                console.log('ℹ️ No existing flow data - flowId:', @json($flowId), 'flowData empty:', @json(empty($flowData)));
             @endif
 
             // Node palette drag start
@@ -406,8 +409,8 @@
                     name: node.type,
                     data: {
                         label: node.name,
-                        class: node.class,
-                        config: node.config
+                        class: node.class || node.type,
+                        config: node.config || {}
                     },
                     class: node.type,
                     html: `
@@ -417,8 +420,8 @@
                     typenode: false,
                     inputs: { input_1: { connections: [] } },
                     outputs: { output_1: { connections: [] } },
-                    pos_x: node.position.x,
-                    pos_y: node.position.y
+                    pos_x: node.position?.x || 100,
+                    pos_y: node.position?.y || 100
                 };
             });
 

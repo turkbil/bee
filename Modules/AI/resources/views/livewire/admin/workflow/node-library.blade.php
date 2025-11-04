@@ -139,10 +139,22 @@
                                             <i class="fa {{ $node->icon }} fa-lg text-muted"></i>
                                         </td>
                                         <td>
-                                            <strong>{{ $node->getName() }}</strong>
-                                            @if($node->getDescription())
+                                            <strong>
+                                                @if(is_array($node->node_name))
+                                                    {{ $node->node_name[app()->getLocale()] ?? $node->node_name['en'] ?? $node->node_key }}
+                                                @else
+                                                    {{ $node->getName() }}
+                                                @endif
+                                            </strong>
+                                            @if(isset($node->node_description) && $node->node_description)
                                                 <br>
-                                                <small class="text-muted">{{ $node->getDescription() }}</small>
+                                                <small class="text-muted">
+                                                    @if(is_array($node->node_description))
+                                                        {{ $node->node_description[app()->getLocale()] ?? $node->node_description['en'] ?? '' }}
+                                                    @else
+                                                        {{ is_object($node) && method_exists($node, 'getDescription') ? $node->getDescription() : '' }}
+                                                    @endif
+                                                </small>
                                             @endif
                                         </td>
                                         <td>

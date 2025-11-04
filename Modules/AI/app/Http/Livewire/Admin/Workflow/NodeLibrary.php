@@ -37,34 +37,79 @@ class NodeLibrary extends Component
 
     private function loadNodes()
     {
-        $query = AIWorkflowNode::query()->where('is_active', true);
+        $nodes = collect();
 
-        // Search filter
-        if ($this->search) {
-            $query->where(function ($q) {
-                $q->where('node_key', 'like', '%' . $this->search . '%')
-                  ->orWhere('node_class', 'like', '%' . $this->search . '%')
-                  ->orWhereRaw("JSON_EXTRACT(node_name, '$.en') LIKE ?", ['%' . $this->search . '%'])
-                  ->orWhereRaw("JSON_EXTRACT(node_name, '$.tr') LIKE ?", ['%' . $this->search . '%']);
-            });
+        // 1. Get global nodes from CENTRAL DB
+        try {
+            $centralQuery = \DB::connection('mysql')->table('ai_workflow_nodes')
+                ->where('is_active', true)
+                ->where('is_global', true);
+
+            if ($this->search) {
+                $centralQuery->where(function ($q) {
+                    $q->where('node_key', 'like', '%' . $this->search . '%')
+                      ->orWhere('node_class', 'like', '%' . $this->search . '%')
+                      ->orWhereRaw("JSON_EXTRACT(node_name, '$.en') LIKE ?", ['%' . $this->search . '%'])
+                      ->orWhereRaw("JSON_EXTRACT(node_name, '$.tr') LIKE ?", ['%' . $this->search . '%']);
+                });
+            }
+
+            if ($this->filterCategory !== 'all') {
+                $centralQuery->where('category', $this->filterCategory);
+            }
+
+            if ($this->filterGlobal !== 'tenant') {
+                $centralNodes = $centralQuery->orderBy('category')->orderBy('order')->get();
+
+                foreach ($centralNodes as $node) {
+                    $nodes->push((object)[
+                        'id' => $node->id,
+                        'node_key' => $node->node_key,
+                        'node_class' => $node->node_class,
+                        'node_name' => json_decode($node->node_name, true),
+                        'node_description' => json_decode($node->node_description, true),
+                        'category' => $node->category,
+                        'icon' => $node->icon,
+                        'order' => $node->order,
+                        'is_global' => true,
+                        'is_active' => $node->is_active,
+                        'tenant_whitelist' => json_decode($node->tenant_whitelist ?? 'null', true),
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to fetch global nodes', ['error' => $e->getMessage()]);
         }
 
-        // Category filter
-        if ($this->filterCategory !== 'all') {
-            $query->where('category', $this->filterCategory);
+        // 2. Get tenant-specific nodes from TENANT DB
+        if ($this->filterGlobal !== 'global' && tenancy()->initialized) {
+            try {
+                $tenantQuery = AIWorkflowNode::query()
+                    ->where('is_active', true)
+                    ->where('is_global', false);
+
+                if ($this->search) {
+                    $tenantQuery->where(function ($q) {
+                        $q->where('node_key', 'like', '%' . $this->search . '%')
+                          ->orWhere('node_class', 'like', '%' . $this->search . '%')
+                          ->orWhereRaw("JSON_EXTRACT(node_name, '$.en') LIKE ?", ['%' . $this->search . '%'])
+                          ->orWhereRaw("JSON_EXTRACT(node_name, '$.tr') LIKE ?", ['%' . $this->search . '%']);
+                    });
+                }
+
+                if ($this->filterCategory !== 'all') {
+                    $tenantQuery->where('category', $this->filterCategory);
+                }
+
+                $tenantNodes = $tenantQuery->orderBy('category')->orderBy('order')->get();
+                $nodes = $nodes->merge($tenantNodes);
+            } catch (\Exception $e) {
+                \Log::error('Failed to fetch tenant nodes', ['error' => $e->getMessage()]);
+            }
         }
 
-        // Global filter
-        if ($this->filterGlobal === 'global') {
-            $query->where('is_global', true);
-        } elseif ($this->filterGlobal === 'tenant') {
-            $query->where('is_global', false);
-        }
-
-        $this->nodes = $query->orderBy('category')->orderBy('order')->get();
-
-        // Group by category
-        $this->nodesByCategory = $this->nodes->groupBy('category');
+        $this->nodes = $nodes;
+        $this->nodesByCategory = $nodes->groupBy('category');
     }
 
     public function toggleStatus($nodeId)

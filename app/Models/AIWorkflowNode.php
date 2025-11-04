@@ -75,32 +75,82 @@ class AIWorkflowNode extends Model
 
     /**
      * Get all active nodes for tenant
+     * Combines global nodes from central DB + tenant-specific nodes from tenant DB
      */
     public static function getForTenant($tenantId): array
     {
         $cacheKey = "ai_workflow_nodes_tenant_{$tenantId}";
 
         return Cache::remember($cacheKey, 3600, function () use ($tenantId) {
-            return static::where('is_active', true)
-                ->where(function ($query) use ($tenantId) {
-                    $query->where('is_global', true)
-                        ->orWhereJsonContains('tenant_whitelist', $tenantId);
-                })
-                ->orderBy('category')
-                ->orderBy('order')
-                ->get()
-                ->map(function ($node) {
-                    return [
+            $nodes = collect();
+
+            // 1. Get global nodes from CENTRAL DB
+            try {
+                $centralNodes = \DB::connection('mysql')->table('ai_workflow_nodes')
+                    ->where('is_active', true)
+                    ->where('is_global', true)
+                    ->orderBy('category')
+                    ->orderBy('order')
+                    ->get();
+
+                foreach ($centralNodes as $node) {
+                    $nodes->push([
                         'type' => $node->node_key,
-                        'name' => $node->getName(),
-                        'description' => $node->getDescription(),
+                        'name' => json_decode($node->node_name, true),
+                        'description' => json_decode($node->node_description, true),
                         'class' => $node->node_class,
                         'category' => $node->category,
                         'icon' => $node->icon,
-                        'default_config' => $node->default_config ?? [],
-                    ];
-                })
-                ->toArray();
+                        'default_config' => json_decode($node->default_config ?? '[]', true),
+                        'is_global' => true,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Failed to fetch global nodes from central DB', ['error' => $e->getMessage()]);
+            }
+
+            // 2. Get tenant-specific nodes from TENANT DB (if in tenant context)
+            if (tenancy()->initialized) {
+                try {
+                    $tenantNodes = static::where('is_active', true)
+                        ->where('is_global', false)
+                        ->where(function ($query) use ($tenantId) {
+                            $query->whereJsonContains('tenant_whitelist', $tenantId)
+                                ->orWhereNull('tenant_whitelist');
+                        })
+                        ->orderBy('category')
+                        ->orderBy('order')
+                        ->get();
+
+                    foreach ($tenantNodes as $node) {
+                        $nodes->push([
+                            'type' => $node->node_key,
+                            'name' => $node->node_name,
+                            'description' => $node->node_description,
+                            'class' => $node->node_class,
+                            'category' => $node->category,
+                            'icon' => $node->icon,
+                            'default_config' => $node->default_config ?? [],
+                            'is_global' => false,
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('Failed to fetch tenant nodes', ['error' => $e->getMessage()]);
+                }
+            }
+
+            return $nodes->map(function ($node) {
+                // Normalize name/description format
+                if (is_array($node['name'])) {
+                    $locale = app()->getLocale();
+                    $node['name'] = $node['name'][$locale] ?? $node['name']['en'] ?? $node['type'];
+                }
+                if (is_array($node['description']) && !empty($node['description'])) {
+                    $locale = app()->getLocale();
+                    $node['description'] = $node['description'][$locale] ?? $node['description']['en'] ?? null;
+                }
+                return $node;
+            })->toArray();
         });
     }
 

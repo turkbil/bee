@@ -58,6 +58,12 @@ class MediaLibraryManager extends Component
     public ?int $detailMediaId = null;
 
     /**
+     * Bulk operations
+     */
+    public array $selectedItems = [];
+    public bool $selectAll = false;
+
+    /**
      * Internal helpers
      */
     protected MediaService $mediaService;
@@ -133,6 +139,66 @@ class MediaLibraryManager extends Component
         if (!in_array($value, ['asc', 'desc'], true)) {
             $this->sortDirection = 'desc';
         }
+    }
+
+    public function updatedSelectAll(): void
+    {
+        if ($this->selectAll) {
+            // Select all items on current page
+            $query = Media::query();
+            $this->applyFiltersToQuery($query);
+            $this->selectedItems = $query->pluck('id')->toArray();
+        } else {
+            $this->selectedItems = [];
+        }
+    }
+
+    public function updatedSelectedItems(): void
+    {
+        // Update selectAll based on selectedItems
+        $query = Media::query();
+        $this->applyFiltersToQuery($query);
+        $totalItems = $query->count();
+
+        $this->selectAll = count($this->selectedItems) === $totalItems && $totalItems > 0;
+    }
+
+    protected function applyFiltersToQuery($query): void
+    {
+        if ($this->search !== '') {
+            $search = Str::lower($this->search);
+            $query->where(function ($q) use ($search) {
+                $q->whereRaw('LOWER(name) LIKE ?', ['%' . $search . '%'])
+                    ->orWhereRaw('LOWER(file_name) LIKE ?', ['%' . $search . '%'])
+                    ->orWhereRaw('LOWER(model_type) LIKE ?', ['%' . $search . '%'])
+                    ->orWhere('model_id', 'like', '%' . $this->search . '%')
+                    ->orWhere('uuid', 'like', '%' . $this->search . '%');
+            });
+        }
+
+        if ($this->typeFilter) {
+            $types = config('mediamanagement.media_types', []);
+            if (isset($types[$this->typeFilter])) {
+                $mimeTypes = $types[$this->typeFilter]['mime_types'] ?? [];
+                if (!empty($mimeTypes)) {
+                    $query->whereIn('mime_type', $mimeTypes);
+                }
+            }
+        }
+
+        if ($this->collectionFilter) {
+            $query->where('collection_name', $this->collectionFilter);
+        }
+
+        if ($this->moduleFilter) {
+            $query->where('model_type', $this->moduleFilter);
+        }
+
+        if ($this->diskFilter) {
+            $query->where('disk', $this->diskFilter);
+        }
+
+        $this->applyDateFilter($query);
     }
 
     public function toggleSort(string $field): void
@@ -379,6 +445,82 @@ class MediaLibraryManager extends Component
         }
 
         $this->dispatch('refreshMediaLibrary');
+    }
+
+    public function bulkDelete(): void
+    {
+        if (empty($this->selectedItems)) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => 'Lütfen silinecek öğeleri seçin',
+                'type' => 'error',
+            ]);
+            return;
+        }
+
+        $deletedCount = 0;
+        $errorCount = 0;
+
+        foreach ($this->selectedItems as $mediaId) {
+            try {
+                $media = Media::find($mediaId);
+                if ($media) {
+                    $libraryItem = MediaLibraryItem::where('media_id', $mediaId)->first();
+                    if ($libraryItem) {
+                        $libraryItem->delete();
+                    } else {
+                        $media->delete();
+                    }
+                    $deletedCount++;
+                }
+            } catch (Throwable $e) {
+                Log::error('Bulk media delete failed', [
+                    'media_id' => $mediaId,
+                    'error' => $e->getMessage(),
+                ]);
+                $errorCount++;
+            }
+        }
+
+        // Reset selections
+        $this->selectedItems = [];
+        $this->selectAll = false;
+
+        // Show result toast
+        if ($deletedCount > 0) {
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => trans_choice('mediamanagement::admin.bulk_delete_success', $deletedCount, ['count' => $deletedCount]),
+                'type' => 'success',
+            ]);
+        }
+
+        if ($errorCount > 0) {
+            $this->dispatch('toast', [
+                'title' => __('admin.warning'),
+                'message' => "{$errorCount} öğe silinemedi",
+                'type' => 'warning',
+            ]);
+        }
+
+        $this->resetPage();
+        $this->dispatch('refreshMediaLibrary');
+    }
+
+    public function getSelectedMediaLinks(): array
+    {
+        if (empty($this->selectedItems)) {
+            return [];
+        }
+
+        $mediaItems = Media::whereIn('id', $this->selectedItems)->get();
+        $links = [];
+
+        foreach ($mediaItems as $media) {
+            $links[] = $media->getUrl();
+        }
+
+        return $links;
     }
 
     protected function cleanTranslations(?array $values): array

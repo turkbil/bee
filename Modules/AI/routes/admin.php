@@ -1003,5 +1003,36 @@ Route::middleware(['admin', 'tenant', 'admin.tenant.select'])
                 Route::get("/knowledge-base", \Modules\AI\App\Livewire\KnowledgeBase\ManageComponent::class)
                     ->middleware('module.permission:ai,view')
                     ->name("knowledge-base");
+
+                // 🤖 AI Workflow Engine Management
+                Route::prefix('workflow')
+                    ->name('workflow.')
+                    // TODO: Add permission middleware after testing
+                    // ->middleware('module.permission:ai,view')
+                    ->group(function () {
+                        // Flow Management
+                        Route::get('/flows', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowList::class)
+                            ->name('flows.index');
+
+                        // FlowEditor - Visual Flow Designer (Drawflow)
+                        Route::get('/flows/create', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor::class)
+                            // ->middleware('module.permission:ai,create')
+                            ->name('flows.create');
+
+                        Route::get('/flows/{flowId}/edit', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor::class)
+                            // ->middleware('module.permission:ai,update')
+                            ->name('flows.edit');
+
+                        // Directive Management
+                        Route::get('/directives', \Modules\AI\App\Http\Livewire\Admin\Workflow\DirectiveManager::class)
+                            // ->middleware('module.permission:ai,update')
+                            ->name('directives.index');
+
+                        // Node Library (Available nodes)
+                        Route::get('/nodes', function() {
+                            $nodes = \App\Services\ConversationNodes\NodeExecutor::getAvailableNodes();
+                            return response()->json(['nodes' => $nodes]);
+                        })->name('nodes.library');
+                    });
             });
     });

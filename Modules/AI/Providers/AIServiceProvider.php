@@ -15,6 +15,9 @@ use Modules\AI\App\Http\Livewire\Admin\Features\AIExamples;
 use Modules\AI\App\Http\Livewire\Admin\Features\AITestPanel;
 use Modules\AI\App\Http\Livewire\Admin\Features\AIFeaturesManagement;
 use Modules\AI\App\Http\Livewire\Admin\Features\AIFeatureManageComponent;
+use Modules\AI\App\Http\Livewire\Admin\Workflow\FlowList;
+use Modules\AI\App\Http\Livewire\Admin\Workflow\DirectiveManager;
+use Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -73,6 +76,11 @@ class AIServiceProvider extends ServiceProvider
 
         // Knowledge Base Management Component
         Livewire::component('ai::knowledge-base.manage', \Modules\AI\App\Livewire\KnowledgeBase\ManageComponent::class);
+
+        // 🤖 AI Workflow Engine Components
+        Livewire::component('ai::admin.workflow.flow-list', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowList::class);
+        Livewire::component('ai::admin.workflow.directive-manager', \Modules\AI\App\Http\Livewire\Admin\Workflow\DirectiveManager::class);
+        Livewire::component('ai::admin.workflow.flow-editor', \Modules\AI\App\Http\Livewire\Admin\Workflow\FlowEditor::class);
 
         // Eski kayıtlar da korunacak (backward compatibility)
         Livewire::component('chat-panel', ChatPanel::class);

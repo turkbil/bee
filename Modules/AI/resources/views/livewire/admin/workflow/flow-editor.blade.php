@@ -14,6 +14,12 @@
                         <i class="fa fa-times me-1"></i>
                         {{ __('ai::admin.workflow.cancel') }}
                     </a>
+                    @if($flowId)
+                    <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#testFlowModal">
+                        <i class="fa fa-play me-1"></i>
+                        {{ __('ai::admin.workflow.test_flow') }}
+                    </button>
+                    @endif
                     <button wire:click="saveFlow" class="btn btn-primary" id="save-flow-btn">
                         <i class="fa fa-save me-1"></i>
                         {{ __('ai::admin.workflow.save_flow') }}
@@ -425,109 +431,115 @@
         });
 
         function loadExistingFlow(flowData) {
-            console.log('🔄 Loading flow with position fix...');
+            console.log('🔄 Loading flow with IMPORT method...');
 
             // Clear everything
             editor.clear();
 
-            // Reset zoom and position
-            editor.zoom_reset();
+            // Build Drawflow import format
+            const drawflowData = {
+                drawflow: {
+                    Home: {
+                        data: {}
+                    }
+                }
+            };
 
-            // Wait for canvas to be ready
-            setTimeout(() => {
-                // Map to track node IDs
-                const nodeIdMap = new Map();
+            // Track node mapping
+            const nodeIdMap = new Map();
+            let nodeCounter = 1;
 
-            // Add each node DIRECTLY
-            flowData.nodes.forEach((node, index) => {
-                const posX = node.position?.x || 150;
-                const posY = node.position?.y || (100 + index * 180);
-
-                const html = `
-                    <div style="padding: 10px;">
-                        <div class="node-title" style="font-weight: bold; margin-bottom: 5px;">${node.name}</div>
-                        <div class="node-type" style="font-size: 11px; color: #666;">${node.type}</div>
-                    </div>
-                `;
-
-                // Use Drawflow's addNode method
-                const dfId = editor.addNode(
-                    node.type,
-                    1, // inputs
-                    1, // outputs
-                    posX,
-                    posY,
-                    node.type,
-                    { label: node.name, config: node.config || {} },
-                    html,
-                    false // not typenode
-                );
-
+            // Convert nodes to Drawflow format
+            flowData.nodes.forEach((node) => {
+                const dfId = nodeCounter++;
                 nodeIdMap.set(node.id, dfId);
-                console.log(`✅ Node ${node.name} added with ID ${dfId} at [${posX}, ${posY}]`);
+
+                const posX = node.position?.x || 150;
+                const posY = node.position?.y || (100 + (dfId - 1) * 180);
+
+                drawflowData.drawflow.Home.data[dfId] = {
+                    id: dfId,
+                    name: node.type,
+                    data: {
+                        label: node.name,
+                        config: node.config || {}
+                    },
+                    class: node.type,
+                    html: `
+                        <div style="padding: 10px;">
+                            <div class="node-title" style="font-weight: bold; margin-bottom: 5px;">${node.name}</div>
+                            <div class="node-type" style="font-size: 11px; color: #666;">${node.type}</div>
+                        </div>
+                    `,
+                    typenode: false,
+                    inputs: { input_1: { connections: [] } },
+                    outputs: { output_1: { connections: [] } },
+                    pos_x: posX,
+                    pos_y: posY
+                };
             });
 
-            // Wait a bit for DOM to settle
+            // Add connections to import data
+            flowData.edges.forEach(edge => {
+                const sourceId = nodeIdMap.get(edge.source);
+                const targetId = nodeIdMap.get(edge.target);
+
+                if (sourceId && targetId) {
+                    // Add connection to source output
+                    drawflowData.drawflow.Home.data[sourceId].outputs.output_1.connections.push({
+                        node: targetId.toString(),
+                        output: 'input_1'
+                    });
+
+                    // Add connection to target input
+                    drawflowData.drawflow.Home.data[targetId].inputs.input_1.connections.push({
+                        node: sourceId.toString(),
+                        input: 'output_1'
+                    });
+
+                    console.log(`🔗 Connection: ${edge.source} (${sourceId}) -> ${edge.target} (${targetId})`);
+                }
+            });
+
+            // Import the complete flow data
+            console.log('📦 Importing flow data:', drawflowData);
+            editor.import(drawflowData);
+
+            // Center view and reset zoom after import
             setTimeout(() => {
-                // Add connections
-                flowData.edges.forEach(edge => {
-                    const sourceId = nodeIdMap.get(edge.source);
-                    const targetId = nodeIdMap.get(edge.target);
+                // Reset zoom to 1
+                editor.zoom_reset();
 
-                    if (sourceId && targetId) {
-                        try {
-                            editor.addConnection(sourceId, targetId, 'output_1', 'input_1');
-                            console.log(`✅ Connected: ${edge.source} -> ${edge.target}`);
-                        } catch (e) {
-                            console.error(`❌ Connection failed: ${edge.source} -> ${edge.target}`, e);
-                        }
-                    }
-                });
-
-                // AGGRESSIVE position fix - try multiple times
-                let attempts = 0;
-                const fixPositions = () => {
-                    attempts++;
-                    console.log(`🔧 Position fix attempt ${attempts}...`);
-
+                // Optional: Verify positions after import
+                setTimeout(() => {
+                    let allCorrect = true;
                     nodeIdMap.forEach((dfId, nodeId) => {
                         const node = flowData.nodes.find(n => n.id === nodeId);
-                        if (node) {
+                        if (node && node.position) {
                             const element = document.getElementById(`node-${dfId}`);
                             if (element) {
-                                // Force absolute positioning
-                                element.style.position = 'absolute';
-                                element.style.left = `${node.position.x}px`;
-                                element.style.top = `${node.position.y}px`;
-                                element.style.zIndex = '10';
+                                const currentLeft = parseInt(element.style.left);
+                                const currentTop = parseInt(element.style.top);
 
-                                // Also update Drawflow internal data
-                                if (editor.drawflow && editor.drawflow.drawflow &&
-                                    editor.drawflow.drawflow.Home &&
-                                    editor.drawflow.drawflow.Home.data &&
-                                    editor.drawflow.drawflow.Home.data[dfId]) {
-                                    editor.drawflow.drawflow.Home.data[dfId].pos_x = node.position.x;
-                                    editor.drawflow.drawflow.Home.data[dfId].pos_y = node.position.y;
-                                    console.log(`✅ Fixed node ${dfId}: [${node.position.x}, ${node.position.y}]`);
+                                if (currentLeft !== node.position.x || currentTop !== node.position.y) {
+                                    console.warn(`⚠️ Position mismatch for node ${dfId}: Expected [${node.position.x}, ${node.position.y}], Got [${currentLeft}, ${currentTop}]`);
+                                    allCorrect = false;
+
+                                    // Force correct position if needed
+                                    element.style.left = `${node.position.x}px`;
+                                    element.style.top = `${node.position.y}px`;
                                 }
                             }
                         }
                     });
 
-                    // Update all connections
-                    editor.updateConnectionNodes('node-1');
-
-                    // Try again if needed (max 3 attempts)
-                    if (attempts < 3) {
-                        setTimeout(fixPositions, 300);
-                    } else {
-                        console.log('✅ Flow loading complete after ' + attempts + ' attempts!');
+                    if (allCorrect) {
+                        console.log('✅ All node positions are correct!');
                     }
-                };
 
-                fixPositions();
-            }, 200);
-            }, 50); // Close the first setTimeout
+                    console.log('✅ Flow loaded successfully: ', flowData.nodes.length, 'nodes,', flowData.edges.length, 'connections');
+                }, 200);
+            }, 100);
         }
 
         function clearCanvas() {
@@ -537,4 +549,90 @@
         }
     </script>
     @endpush
+
+    <!-- Test Flow Modal -->
+    <div class="modal fade" id="testFlowModal" tabindex="-1" wire:ignore.self>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa fa-flask me-2"></i>
+                        {{ __('ai::admin.workflow.test_flow_title') }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Chat Interface -->
+                    <div class="chat-container" style="height: 400px; overflow-y: auto; border: 1px solid var(--tblr-border-color); border-radius: 8px; padding: 15px;">
+                        <div id="test-chat-messages">
+                            @if(isset($testMessages))
+                                @foreach($testMessages as $msg)
+                                <div class="mb-3 {{ $msg['role'] == 'user' ? 'text-end' : '' }}">
+                                    <div class="d-inline-block p-3 rounded-3 {{ $msg['role'] == 'user' ? 'bg-primary text-white' : 'bg-light' }}" style="max-width: 70%;">
+                                        <small class="d-block mb-1 {{ $msg['role'] == 'user' ? 'text-white-50' : 'text-muted' }}">
+                                            {{ $msg['role'] == 'user' ? 'You' : 'Assistant' }}
+                                        </small>
+                                        {{ $msg['content'] }}
+                                    </div>
+                                </div>
+                                @endforeach
+                            @else
+                                <div class="text-center text-muted py-5">
+                                    <i class="fa fa-comments fa-3x mb-3"></i>
+                                    <p>{{ __('ai::admin.workflow.test_instructions') }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="mt-3">
+                        <div class="input-group">
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="{{ __('ai::admin.workflow.test_message_placeholder') }}"
+                                   wire:model="testMessage"
+                                   wire:keydown.enter="sendTestMessage"
+                                   id="test-message-input">
+                            <button class="btn btn-primary" wire:click="sendTestMessage" wire:loading.attr="disabled">
+                                <span wire:loading.remove wire:target="sendTestMessage">
+                                    <i class="fa fa-paper-plane"></i>
+                                </span>
+                                <span wire:loading wire:target="sendTestMessage">
+                                    <i class="fa fa-spinner fa-spin"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Debug Panel -->
+                    <div class="mt-3">
+                        <div class="accordion" id="debugAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#debugPanel">
+                                        <i class="fa fa-bug me-2"></i> Debug Information
+                                    </button>
+                                </h2>
+                                <div id="debugPanel" class="accordion-collapse collapse" data-bs-parent="#debugAccordion">
+                                    <div class="accordion-body bg-dark text-white" style="font-family: monospace; font-size: 12px;">
+                                        <pre id="debug-output">{{ json_encode($debugInfo ?? [], JSON_PRETTY_PRINT) }}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost-secondary" data-bs-dismiss="modal">
+                        {{ __('ai::admin.workflow.close') }}
+                    </button>
+                    <button type="button" class="btn btn-warning" wire:click="resetTestSession">
+                        <i class="fa fa-refresh me-1"></i>
+                        {{ __('ai::admin.workflow.reset_session') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

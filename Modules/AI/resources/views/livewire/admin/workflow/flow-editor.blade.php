@@ -426,30 +426,45 @@
                     html                 // html
                 );
 
+                // CRITICAL FIX: Force update DOM position (Drawflow bug workaround)
+                setTimeout(() => {
+                    const nodeElement = document.getElementById(`node-${drawflowNodeId}`);
+                    if (nodeElement) {
+                        nodeElement.style.left = posX + 'px';
+                        nodeElement.style.top = posY + 'px';
+                        console.log(`🔧 Position forced: Node ${drawflowNodeId} -> [${posX}, ${posY}]`);
+                    }
+                }, 10);
+
                 nodeIdMap.set(node.id, drawflowNodeId);
                 console.log(`✅ Node added: ${node.name} (${node.id} -> Drawflow ID: ${drawflowNodeId}) at [${posX}, ${posY}]`);
             });
 
             // Step 2: Add connections after all nodes are created
-            let connectedCount = 0;
-            flowData.edges.forEach(edge => {
-                const sourceDrawflowId = nodeIdMap.get(edge.source);
-                const targetDrawflowId = nodeIdMap.get(edge.target);
+            setTimeout(() => {
+                let connectedCount = 0;
+                flowData.edges.forEach(edge => {
+                    const sourceDrawflowId = nodeIdMap.get(edge.source);
+                    const targetDrawflowId = nodeIdMap.get(edge.target);
 
-                if (sourceDrawflowId && targetDrawflowId) {
-                    // Drawflow addConnection(id_output, id_input, output_class, input_class)
-                    editor.addConnection(
-                        sourceDrawflowId,     // source node id
-                        targetDrawflowId,     // target node id
-                        'output_1',           // output class
-                        'input_1'             // input class
-                    );
-                    connectedCount++;
-                    console.log(`🔗 Connection: ${edge.source} (${sourceDrawflowId}) -> ${edge.target} (${targetDrawflowId})`);
-                }
-            });
+                    if (sourceDrawflowId && targetDrawflowId) {
+                        // Drawflow addConnection(id_output, id_input, output_class, input_class)
+                        editor.addConnection(
+                            sourceDrawflowId,     // source node id
+                            targetDrawflowId,     // target node id
+                            'output_1',           // output class
+                            'input_1'             // input class
+                        );
+                        connectedCount++;
+                        console.log(`🔗 Connection: ${edge.source} (${sourceDrawflowId}) -> ${edge.target} (${targetDrawflowId})`);
+                    }
+                });
 
-            console.log(`✅ Flow loaded: ${flowData.nodes.length} nodes, ${connectedCount} connections`);
+                console.log(`✅ Flow loaded: ${flowData.nodes.length} nodes, ${connectedCount} connections`);
+
+                // Force redraw connections
+                editor.updateConnectionNodes(`node-${nodeIdMap.get('node_1')}`);
+            }, 50);
         }
 
         function clearCanvas() {

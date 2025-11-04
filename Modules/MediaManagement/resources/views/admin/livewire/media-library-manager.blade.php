@@ -83,7 +83,24 @@
     <div class="card mb-3">
         <div class="card-body">
             <div class="row g-2 align-items-end">
-                <div class="col-lg-4 col-md-6">
+                <div class="col-auto">
+                    <div class="form-check" style="padding-top: 0.5rem;">
+                        <input type="checkbox"
+                               wire:model.live="selectAll"
+                               class="form-check-input"
+                               id="selectAllCheckbox"
+                               x-data="{
+                                   indeterminate: {{ count($selectedItems) > 0 && !$selectAll ? 'true' : 'false' }}
+                               }"
+                               x-init="$el.indeterminate = indeterminate"
+                               x-effect="$el.indeterminate = ({{ count($selectedItems) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
+                               @checked($selectAll)>
+                        <label class="form-check-label" for="selectAllCheckbox">
+                            {{ __('admin.select_all') }}
+                        </label>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-5">
                     <div class="input-icon">
                         <span class="input-icon-addon">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
@@ -170,6 +187,57 @@
         </div>
     </div>
 
+    <!-- Bulk Actions Bar -->
+    @if(count($selectedItems) > 0)
+        <div class="card mb-3 bg-primary-lt border-primary" x-data="{ bulkAction: '' }">
+            <div class="card-body py-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="text-primary fw-bold">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11l3 3l8 -8"/><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9"/>
+                            </svg>
+                            {{ count($selectedItems) }} öğe seçildi
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="d-flex gap-2 align-items-center">
+                            <button class="btn btn-sm btn-primary"
+                                    @click="$wire.getSelectedMediaLinks().then(links => {
+                                        const text = links.join(' ');
+                                        navigator.clipboard.writeText(text);
+                                        $dispatch('toast', {
+                                            title: 'Başarılı',
+                                            message: '{{ count($selectedItems) }} medya linki kopyalandı',
+                                            type: 'success'
+                                        });
+                                    })">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"/>
+                                </svg>
+                                Linkleri Kopyala
+                            </button>
+                            <button class="btn btn-sm btn-danger"
+                                    @click.prevent="if(confirm('Seçili {{ count($selectedItems) }} medyayı silmek istediğinize emin misiniz?')) { $wire.bulkDelete() }">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                                </svg>
+                                Toplu Sil
+                            </button>
+                            <button class="btn btn-sm btn-ghost-secondary ms-auto"
+                                    wire:click="$set('selectedItems', [])">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                                Seçimi Temizle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if($mediaItems->count())
         @php
         $previewableMedia = $mediaItems->filter(function($media) {
@@ -233,6 +301,16 @@
                                          alt="{{ $media->name }}"
                                          class="object-fit-cover w-100 h-100"
                                          loading="lazy">
+                                    <!-- Checkbox Selection -->
+                                    <div class="position-absolute top-0 start-0 m-2" @click.stop>
+                                        <input type="checkbox"
+                                               wire:model.live="selectedItems"
+                                               value="{{ $media->id }}"
+                                               class="form-check-input"
+                                               style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
+                                               id="checkbox-{{ $media->id }}"
+                                               @checked(in_array($media->id, $selectedItems))>
+                                    </div>
                                     <div class="position-absolute top-0 end-0 m-1">
                                         <span class="badge badge-sm bg-dark bg-opacity-75">
                                             {{ $this->formatBytes($media->size) }}
@@ -245,6 +323,16 @@
                                         </svg>
                                         <div class="fw-bold text-uppercase small mt-1">{{ strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION)) }}</div>
                                         <div class="badge badge-sm bg-azure-lt text-dark mt-1">{{ $this->formatBytes($media->size) }}</div>
+                                    </div>
+                                    <!-- Checkbox Selection for Non-Image Files -->
+                                    <div class="position-absolute top-0 start-0 m-2" @click.stop>
+                                        <input type="checkbox"
+                                               wire:model.live="selectedItems"
+                                               value="{{ $media->id }}"
+                                               class="form-check-input"
+                                               style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
+                                               id="checkbox-{{ $media->id }}"
+                                               @checked(in_array($media->id, $selectedItems))>
                                     </div>
                                 @endif
                             </div>

@@ -125,6 +125,7 @@ return [
     'confirm_delete' => 'Bu medyayı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
     'delete_success' => 'Medya başarıyla silindi.',
     'delete_failed' => 'Medya silinirken hata oluştu.',
+    'bulk_delete_success' => '{count} medya başarıyla silindi.|{count} medya başarıyla silindi.',
     'update_success' => 'Medya bilgileri güncellendi.',
     'update_failed' => 'Medya bilgileri güncellenemedi.',
     'library_upload_failed' => 'Dosya yüklenirken bir hata oluştu.',

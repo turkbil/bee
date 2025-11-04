@@ -13,6 +13,10 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #030712; color: #fff; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+
+        /* Alpine.js x-cloak */
+        [x-cloak] { display: none !important; }
+
         @keyframes gold-shimmer {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -127,6 +131,9 @@
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Alpine.js Plugins (Must load BEFORE Alpine core) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 
     <!-- Alpine.js (Required for chat widget) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>

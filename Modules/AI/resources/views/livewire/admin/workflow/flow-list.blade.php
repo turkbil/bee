@@ -4,14 +4,14 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        <i class="ti ti-git-branch me-2"></i>
+                        <i class="fa fa-code-branch me-2"></i>
                         AI Conversation Flows
                     </h2>
                     <div class="text-muted mt-1">Manage conversation workflows for your AI chatbot</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <a href="{{ route('admin.ai.workflow.flows.create') }}" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i>
+                        <i class="fa fa-plus me-1"></i>
                         Create New Flow
                     </a>
                 </div>
@@ -79,18 +79,18 @@
                             <div class="card-footer">
                                 <div class="btn-group w-100">
                                     <a href="{{ route('admin.ai.workflow.flows.edit', $flow->id) }}" class="btn btn-sm">
-                                        <i class="ti ti-edit"></i> Edit
+                                        <i class="fa fa-edit"></i> Edit
                                     </a>
                                     <button wire:click="toggleStatus({{ $flow->id }})" class="btn btn-sm">
-                                        <i class="ti ti-power"></i> {{ $flow->is_active ? 'Deactivate' : 'Activate' }}
+                                        <i class="fa fa-power-off"></i> {{ $flow->is_active ? 'Deactivate' : 'Activate' }}
                                     </button>
                                     <button wire:click="duplicateFlow({{ $flow->id }})" class="btn btn-sm">
-                                        <i class="ti ti-copy"></i> Duplicate
+                                        <i class="fa fa-copy"></i> Duplicate
                                     </button>
                                     <button wire:click="deleteFlow({{ $flow->id }})"
                                             onclick="return confirm('Are you sure?')"
                                             class="btn btn-sm text-danger">
-                                        <i class="ti ti-trash"></i> Delete
+                                        <i class="fa fa-trash"></i> Delete
                                     </button>
                                 </div>
                             </div>
@@ -101,7 +101,7 @@
                         <div class="card">
                             <div class="empty">
                                 <div class="empty-icon">
-                                    <i class="ti ti-git-branch"></i>
+                                    <i class="fa fa-code-branch"></i>
                                 </div>
                                 <p class="empty-title">No flows found</p>
                                 <p class="empty-subtitle text-muted">
@@ -109,7 +109,7 @@
                                 </p>
                                 <div class="empty-action">
                                     <a href="{{ route('admin.ai.workflow.flows.create') }}" class="btn btn-primary">
-                                        <i class="ti ti-plus"></i>
+                                        <i class="fa fa-plus"></i>
                                         Create Flow
                                     </a>
                                 </div>

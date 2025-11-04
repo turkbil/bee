@@ -4,14 +4,14 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        <i class="ti ti-settings me-2"></i>
+                        <i class="fa fa-cogs me-2"></i>
                         AI Directives
                     </h2>
                     <div class="text-muted mt-1">Configure AI behavior for your tenant</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <button wire:click="openNewModal" class="btn btn-primary">
-                        <i class="ti ti-plus me-1"></i>
+                        <i class="fa fa-plus me-1"></i>
                         New Directive
                     </button>
                 </div>
@@ -131,24 +131,24 @@
                                         @if($editingDirective === $directive->id)
                                             <div class="btn-group">
                                                 <button wire:click="saveDirective" class="btn btn-sm btn-success">
-                                                    <i class="ti ti-check"></i>
+                                                    <i class="fa fa-check"></i>
                                                 </button>
                                                 <button wire:click="cancelEdit" class="btn btn-sm btn-secondary">
-                                                    <i class="ti ti-x"></i>
+                                                    <i class="fa fa-times"></i>
                                                 </button>
                                             </div>
                                         @else
                                             <div class="btn-group">
                                                 <button wire:click="editDirective({{ $directive->id }})" class="btn btn-sm btn-ghost-secondary">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="fa fa-edit"></i>
                                                 </button>
                                                 <button wire:click="toggleStatus({{ $directive->id }})" class="btn btn-sm btn-ghost-secondary">
-                                                    <i class="ti ti-power"></i>
+                                                    <i class="fa fa-power-off"></i>
                                                 </button>
                                                 <button wire:click="deleteDirective({{ $directive->id }})"
                                                         onclick="return confirm('Are you sure?')"
                                                         class="btn btn-sm btn-ghost-danger">
-                                                    <i class="ti ti-trash"></i>
+                                                    <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>
                                         @endif
@@ -157,7 +157,7 @@
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center text-muted py-4">
-                                        <i class="ti ti-settings-off fs-1 mb-2 d-block"></i>
+                                        <i class="fa fa-cog fs-1 mb-2 d-block"></i>
                                         No directives found
                                     </td>
                                 </tr>

@@ -4,18 +4,18 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        <i class="ti ti-git-branch me-2"></i>
+                        <i class="fa fa-code-branch me-2"></i>
                         {{ $flowId ? 'Edit Flow' : 'Create New Flow' }}
                     </h2>
                     <div class="text-muted mt-1">Design your conversation flow with drag & drop</div>
                 </div>
                 <div class="col-auto ms-auto d-print-none">
                     <a href="{{ route('admin.ai.workflow.flows.index') }}" class="btn btn-ghost-secondary me-2">
-                        <i class="ti ti-x me-1"></i>
+                        <i class="fa fa-times me-1"></i>
                         Cancel
                     </a>
                     <button wire:click="saveFlow" class="btn btn-primary" id="save-flow-btn">
-                        <i class="ti ti-device-floppy me-1"></i>
+                        <i class="fa fa-save me-1"></i>
                         Save Flow
                     </button>
                 </div>
@@ -63,7 +63,7 @@
                     <div class="card" style="position: sticky; top: 20px; max-height: 80vh; overflow-y: auto;">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="ti ti-box me-2"></i>
+                                <i class="fa fa-cubes me-2"></i>
                                 Node Library
                             </h3>
                             <div class="card-subtitle text-muted small mt-1">
@@ -76,7 +76,7 @@
                                     <!-- Category Header -->
                                     <div class="list-group-item bg-light">
                                         <div class="fw-bold text-uppercase small">
-                                            <i class="ti ti-folder me-1"></i>
+                                            <i class="fa fa-folder me-1"></i>
                                             @if($category === 'common')
                                                 <span class="badge bg-green-lt text-green">Global Functions</span>
                                             @elseif($category === 'ecommerce')
@@ -104,7 +104,7 @@
                                                     @elseif($category === 'ecommerce') bg-blue-lt
                                                     @else bg-purple-lt
                                                     @endif">
-                                                    <i class="ti ti-circle-dot"></i>
+                                                    <i class="fa fa-circle"></i>
                                                 </span>
                                                 <div class="flex-fill">
                                                     <div class="fw-bold">{{ $node['name'] }}</div>
@@ -120,13 +120,13 @@
 
                             @if(empty($nodesByCategory))
                                 <div class="list-group-item text-center text-muted py-4">
-                                    <i class="ti ti-inbox fs-2 mb-2 d-block"></i>
+                                    <i class="fa fa-inbox fs-2 mb-2 d-block"></i>
                                     No nodes available
                                 </div>
                             @endif
                         </div>
                         <div class="card-footer text-muted small">
-                            <i class="ti ti-info-circle me-1"></i>
+                            <i class="fa fa-info-circle me-1"></i>
                             Drag nodes to canvas
                         </div>
                     </div>
@@ -139,17 +139,17 @@
                             <div class="d-flex justify-content-between align-items-center w-100">
                                 <h3 class="card-title">Flow Canvas</h3>
                                 <div class="btn-group">
-                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_in()">
-                                        <i class="ti ti-zoom-in"></i>
+                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_in()" title="Zoom In">
+                                        <i class="fa fa-search-plus"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_out()">
-                                        <i class="ti ti-zoom-out"></i>
+                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_out()" title="Zoom Out">
+                                        <i class="fa fa-search-minus"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_reset()">
-                                        <i class="ti ti-zoom-reset"></i>
+                                    <button class="btn btn-sm btn-ghost-secondary" onclick="editor.zoom_reset()" title="Reset Zoom">
+                                        <i class="fa fa-sync-alt"></i>
                                     </button>
                                     <button class="btn btn-sm btn-ghost-danger" onclick="clearCanvas()">
-                                        <i class="ti ti-trash"></i> Clear
+                                        <i class="fa fa-trash"></i> Clear
                                     </button>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@
                             <div id="drawflow" style="height: 600px; position: relative;"></div>
                         </div>
                         <div class="card-footer text-muted small">
-                            <i class="ti ti-hand-move me-1"></i>
+                            <i class="fa fa-hand-paper me-1"></i>
                             Drag canvas to pan • Mouse wheel to zoom • Right-click node to delete
                         </div>
                     </div>

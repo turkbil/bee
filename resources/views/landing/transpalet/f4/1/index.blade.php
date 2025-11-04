@@ -418,9 +418,9 @@
             'https://ixtif.com/storage/tenant2/137/1.jpg',
             'https://ixtif.com/storage/tenant2/138/2.jpg',
             'https://ixtif.com/storage/tenant2/139/3.jpg',
-            'https://ixtif.com/storage/tenant2/143/7.jpg',
-            'https://ixtif.com/storage/tenant2/141/5.jpg',
             'https://ixtif.com/storage/tenant2/142/6.jpg',
+            'https://ixtif.com/storage/tenant2/141/5.jpg',
+            'https://ixtif.com/storage/tenant2/143/7.jpg',
             'https://ixtif.com/storage/tenant2/140/4.jpg',
             'https://ixtif.com/storage/tenant2/144/8.jpg'
         ];

@@ -87,6 +87,7 @@ public/design/composer.lock
 public/design/vendor/
 
 # Database backups - SECURITY CRITICAL!
+readme/backups/
 readme/backups/*.sql
 readme/backups/*.sql.gz
 readme/backups/*.tar.gz

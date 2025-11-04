@@ -1,0 +1,5 @@
+{
+    "require": {
+        "openai-php/laravel": "^0.17.1"
+    }
+}

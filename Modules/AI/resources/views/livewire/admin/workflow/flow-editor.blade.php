@@ -400,83 +400,97 @@
         });
 
         function loadExistingFlow(flowData) {
-            console.log('🔄 Loading flow with manual node addition...');
+            console.log('🔄 Loading flow - Building Drawflow import structure...');
 
-            // Clear existing canvas
-            editor.clear();
+            // RESET canvas transform to origin
+            const precanvas = document.querySelector('.drawflow .drawflow-wrapper');
+            if (precanvas) {
+                precanvas.style.transform = 'translate(0px, 0px) scale(1)';
+            }
 
-            // Step 1: Manually add all nodes first
-            const nodeIdMap = new Map(); // Laravel node_id -> Drawflow node_id
+            // Build Drawflow import structure
+            const drawflowData = {
+                drawflow: {
+                    Home: {
+                        data: {}
+                    }
+                }
+            };
 
+            const nodeIdMap = new Map();
+
+            // Step 1: Create all nodes in Drawflow format
             flowData.nodes.forEach((node, index) => {
+                const nodeId = index + 1;
                 const posX = node.position?.x || 100;
                 const posY = node.position?.y || 100;
 
-                const html = `
-                    <div class="node-title">${node.name}</div>
-                    <div class="node-type">${node.type}</div>
-                `;
-
-                // Drawflow addNode(name, inputs, outputs, posx, posy, class, data, html)
-                const drawflowNodeId = editor.addNode(
-                    node.type,           // name
-                    1,                   // inputs count
-                    1,                   // outputs count
-                    posX,                // pos_x
-                    posY,                // pos_y
-                    node.type,           // class
-                    {
+                drawflowData.drawflow.Home.data[nodeId] = {
+                    id: nodeId,
+                    name: node.type,
+                    data: {
                         label: node.name,
                         class: node.class || node.type,
                         config: node.config || {}
-                    },                   // data
-                    html                 // html
-                );
+                    },
+                    class: node.type,
+                    html: `<div class="node-title">${node.name}</div><div class="node-type">${node.type}</div>`,
+                    typenode: false,
+                    inputs: { input_1: { connections: [] } },
+                    outputs: { output_1: { connections: [] } },
+                    pos_x: posX,
+                    pos_y: posY
+                };
 
-                // CRITICAL FIX: Update Drawflow internal data store + DOM
-                const nodeData = editor.drawflow.drawflow.Home.data[drawflowNodeId];
-                if (nodeData) {
-                    nodeData.pos_x = posX;
-                    nodeData.pos_y = posY;
+                nodeIdMap.set(node.id, nodeId);
+                console.log(`📦 Node prepared: ${node.name} at [${posX}, ${posY}]`);
+            });
 
-                    // Force DOM update
-                    const nodeElement = document.getElementById(`node-${drawflowNodeId}`);
+            // Step 2: Add all connections
+            flowData.edges.forEach(edge => {
+                const sourceId = nodeIdMap.get(edge.source);
+                const targetId = nodeIdMap.get(edge.target);
+
+                if (sourceId && targetId) {
+                    drawflowData.drawflow.Home.data[sourceId].outputs.output_1.connections.push({
+                        node: String(targetId),
+                        input: 'input_1'
+                    });
+                    console.log(`🔗 Connection prepared: ${edge.source} -> ${edge.target}`);
+                }
+            });
+
+            // Step 3: Import to Drawflow
+            console.log('📥 Importing to Drawflow...');
+            editor.import(drawflowData);
+            console.log('✅ Flow loaded successfully!');
+
+            // Step 4: Force fix ALL node positions after import
+            setTimeout(() => {
+                flowData.nodes.forEach((node, index) => {
+                    const nodeId = index + 1;
+                    const posX = node.position?.x || 100;
+                    const posY = node.position?.y || 100;
+
+                    // Update internal data
+                    const nodeData = editor.drawflow.drawflow.Home.data[nodeId];
+                    if (nodeData) {
+                        nodeData.pos_x = posX;
+                        nodeData.pos_y = posY;
+                    }
+
+                    // Force DOM position
+                    const nodeElement = document.getElementById(`node-${nodeId}`);
                     if (nodeElement) {
                         nodeElement.style.left = posX + 'px';
                         nodeElement.style.top = posY + 'px';
-                    }
-
-                    console.log(`✅ Node added: ${node.name} (${node.id} -> Drawflow ID: ${drawflowNodeId}) at [${posX}, ${posY}]`);
-                }
-
-                nodeIdMap.set(node.id, drawflowNodeId);
-            });
-
-            // Step 2: Add connections after all nodes are created
-            setTimeout(() => {
-                let connectedCount = 0;
-                flowData.edges.forEach(edge => {
-                    const sourceDrawflowId = nodeIdMap.get(edge.source);
-                    const targetDrawflowId = nodeIdMap.get(edge.target);
-
-                    if (sourceDrawflowId && targetDrawflowId) {
-                        // Drawflow addConnection(id_output, id_input, output_class, input_class)
-                        editor.addConnection(
-                            sourceDrawflowId,     // source node id
-                            targetDrawflowId,     // target node id
-                            'output_1',           // output class
-                            'input_1'             // input class
-                        );
-                        connectedCount++;
-                        console.log(`🔗 Connection: ${edge.source} (${sourceDrawflowId}) -> ${edge.target} (${targetDrawflowId})`);
+                        console.log(`🔧 Fixed position: Node ${nodeId} -> [${posX}, ${posY}]`);
                     }
                 });
 
-                console.log(`✅ Flow loaded: ${flowData.nodes.length} nodes, ${connectedCount} connections`);
-
-                // Force redraw connections
-                editor.updateConnectionNodes(`node-${nodeIdMap.get('node_1')}`);
-            }, 50);
+                // Redraw connections
+                editor.updateConnectionNodes(`node-1`);
+            }, 100);
         }
 
         function clearCanvas() {

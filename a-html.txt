@@ -1,66 +1,129 @@
-
-multi-modal-manager.js?v=1762289128:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1762289128:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1762289128:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1762289128:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1762289128:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1762289128:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1762289128:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1762289128:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1762289128:13 ⏰ Load Time: 2025-11-04T20:45:28.845Z
-ai-seo-integration.js?v=1762289128:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1762289128:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1762289128:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1762289128:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1762289128:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1762289128:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1762289128:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1762289128:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1762289128:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-monaco-editor-universal.js?v=1762289128:28 🎯 Monaco Editor Universal System başlatılıyor...
-monaco-editor-universal.js?v=1762289128:324 ✅ Monaco Editor Universal System hazır!
-universal-seo-functions.js?v=1762289128:21 🎯 Universal SEO Functions başlatılıyor...
-universal-seo-functions.js?v=1762289128:372 ✅ Universal SEO Functions yüklendi!
-universal-language-functions.js?v=1762289128:21 🎯 Universal Language Functions başlatılıyor...
-universal-language-functions.js?v=1762289128:145 ✅ Universal Language Functions yüklendi!
-universal-ai-content-functions.js?v=1762289128:21 🎯 Universal AI Content Functions başlatılıyor...
-universal-ai-content-functions.js?v=1762289128:146 ✅ Universal AI Content Functions yüklendi!
+multi-modal-manager.js?v=1762290737:13 🔧 Multi Modal Manager initialized
+multi-modal-manager.js?v=1762290737:186 ✅ Multi Modal Manager loaded
+simple-translation-modal.js?v=1762290737:1 🔧 Minimal Translation Modal loading...
+simple-translation-modal.js?v=1762290737:1014 ✅ AI Warning System Translation Modal loaded successfully
+ai-content-system.js?v=1762290737:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1762290737:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1762290737:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1762290737:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1762290737:13 ⏰ Load Time: 2025-11-04T21:12:17.876Z
+ai-seo-integration.js?v=1762290737:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1762290737:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1762290737:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1762290737:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1762290737:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1762290737:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1762290737:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1762290737:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1762290737:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+monaco-editor-universal.js?v=1762290737:28 🎯 Monaco Editor Universal System başlatılıyor...
+monaco-editor-universal.js?v=1762290737:324 ✅ Monaco Editor Universal System hazır!
+universal-seo-functions.js?v=1762290737:21 🎯 Universal SEO Functions başlatılıyor...
+universal-seo-functions.js?v=1762290737:372 ✅ Universal SEO Functions yüklendi!
+universal-language-functions.js?v=1762290737:21 🎯 Universal Language Functions başlatılıyor...
+universal-language-functions.js?v=1762290737:145 ✅ Universal Language Functions yüklendi!
+universal-ai-content-functions.js?v=1762290737:21 🎯 Universal AI Content Functions başlatılıyor...
+universal-ai-content-functions.js?v=1762290737:146 ✅ Universal AI Content Functions yüklendi!
 streaming-translation.js:33 ✅ Streaming translation is supported
 streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
 streaming-translation.js:15 🚀 Streaming Translation System initializing...
 streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-1:2942 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1762289128:839 ⚡ Livewire initialized
-ai-content-system.js?v=1762289128:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1762289128:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1762289128:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1762289128:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1762289128:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1762289128:558 🔒 attachButtonListeners SKIP - already attached
-universal-seo-functions.js?v=1762289128:336 ✅ Universal SEO event listeners kuruldu
-universal-language-functions.js?v=1762289128:129 ✅ Universal Language event listeners kuruldu
-manage.js?v=1762289128:115 🔧 Language switching sistemi kuruluyor...
-manage.js?v=1762289128:118 🔍 Bulunan language button sayısı: 0
-manage.js?v=1762289128:443 🔎 RESTORE KONTROL - sayfa başladı
-manage.js?v=1762289128:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
-manage.js?v=1762289128:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
-manage.js?v=1762289128:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
-manage.js?v=1762289128:1347 🔍 Bulunan seo-no-enter input sayısı: 0
-manage.js?v=1762289128:1407 ✅ 0 SEO input için Enter tuşu engelleme aktif
-manage.js?v=1762289128:662 ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif
-manage.js?v=1762289128:682 🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor
-manage.js?v=1762289128:700 ✅ Tek dil modu kurulumu tamamlandı
-1:3427 🚀 Enterprise Streaming Translation System Ready!
-1:3440 📝 Streaming translation not available - Using standard translation mode
-monaco-editor-universal.js?v=1762289128:59 ✅ Monaco loader yüklendi
-manage.js?v=1762289128:1469 ✅ Dil değiştirildi: tr
-manage.js?v=1762289128:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
-connect.facebook.net/en_US/fbevents.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
-monaco-editor-universal.js?v=1762289128:100 ✅ Monaco Editor hazır
-ai-seo-integration.js?v=1762289128:558 🔒 attachButtonListeners SKIP - already attached
-manage.js?v=1762289128:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: Array(0)
-ai-seo-integration.js?v=1762289128:558 🔒 attachButtonListeners SKIP - already attached
-manage.js?v=1762289128:586 🌍 SEO Counter - Dinamik diller tespit edildi: Array(0)
-1:2979 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
-manage.js?v=1762289128:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
-manage.js?v=1762289128:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
+1:2941 ✅ Alpine.js Global Store initialized (Livewire bundled)
+simple-translation-modal.js?v=1762290737:839 ⚡ Livewire initialized
+ai-content-system.js?v=1762290737:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1762290737:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1762290737:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1762290737:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1762290737:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1762290737:558 🔒 attachButtonListeners SKIP - already attached
+1:3083 🔄 Loading flow with manual node addition...
+1:3127 ✅ Node added: Karşılama (node_1 -> Drawflow ID: 1) at [150, 100]
+1:3127 ✅ Node added: Kategori Tespiti (node_2 -> Drawflow ID: 2) at [150, 280]
+1:3127 ✅ Node added: Ürün Önerisi (node_3 -> Drawflow ID: 3) at [150, 460]
+1:3127 ✅ Node added: Fiyat Soruldu mu? (node_4 -> Drawflow ID: 4) at [150, 640]
+1:3127 ✅ Node added: Fiyat Bilgisi (node_5 -> Drawflow ID: 5) at [500, 760]
+1:3127 ✅ Node added: İletişim Bilgisi Al (node_6 -> Drawflow ID: 6) at [150, 900]
+1:3127 ✅ Node added: Teklif Hazırla (node_7 -> Drawflow ID: 7) at [150, 1080]
+1:3127 ✅ Node added: İletişim Bilgileri Paylaş (node_8 -> Drawflow ID: 8) at [150, 1260]
+1:3127 ✅ Node added: Konuşma Sonu (node_9 -> Drawflow ID: 9) at [150, 1440]
+universal-seo-functions.js?v=1762290737:336 ✅ Universal SEO event listeners kuruldu
+universal-language-functions.js?v=1762290737:129 ✅ Universal Language event listeners kuruldu
+manage.js?v=1762290737:115 🔧 Language switching sistemi kuruluyor...
+manage.js?v=1762290737:118 🔍 Bulunan language button sayısı: 0
+manage.js?v=1762290737:443 🔎 RESTORE KONTROL - sayfa başladı
+manage.js?v=1762290737:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
+manage.js?v=1762290737:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
+manage.js?v=1762290737:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
+manage.js?v=1762290737:1347 🔍 Bulunan seo-no-enter input sayısı: 0
+manage.js?v=1762290737:1407 ✅ 0 SEO input için Enter tuşu engelleme aktif
+manage.js?v=1762290737:662 ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif
+manage.js?v=1762290737:682 🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor
+manage.js?v=1762290737:700 ✅ Tek dil modu kurulumu tamamlandı
+1:3453 🚀 Enterprise Streaming Translation System Ready!
+1:3466 📝 Streaming translation not available - Using standard translation mode
+1:3122 🔧 Position forced: Node 1 -> [150, 100]
+1:3122 🔧 Position forced: Node 2 -> [150, 280]
+1:3122 🔧 Position forced: Node 3 -> [150, 460]
+1:3122 🔧 Position forced: Node 4 -> [150, 640]
+1:3122 🔧 Position forced: Node 5 -> [500, 760]
+1:3122 🔧 Position forced: Node 6 -> [150, 900]
+1:3122 🔧 Position forced: Node 7 -> [150, 1080]
+1:3122 🔧 Position forced: Node 8 -> [150, 1260]
+1:3122 🔧 Position forced: Node 9 -> [150, 1440]
+monaco-editor-universal.js?v=1762290737:59 ✅ Monaco loader yüklendi
+1:3146 🔗 Connection: node_1 (1) -> node_2 (2)
+1:3146 🔗 Connection: node_2 (2) -> node_3 (3)
+1:3146 🔗 Connection: node_3 (3) -> node_4 (4)
+1:3146 🔗 Connection: node_4 (4) -> node_5 (5)
+1:3146 🔗 Connection: node_4 (4) -> node_6 (6)
+1:3146 🔗 Connection: node_5 (5) -> node_6 (6)
+1:3146 🔗 Connection: node_6 (6) -> node_7 (7)
+1:3146 🔗 Connection: node_7 (7) -> node_8 (8)
+1:3146 🔗 Connection: node_8 (8) -> node_9 (9)
+1:3150 ✅ Flow loaded: 9 nodes, 9 connections
+manage.js?v=1762290737:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1762290737:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
+VM2442:1  GET https://connect.facebook.net/en_US/fbevents.js net::ERR_BLOCKED_BY_CLIENT
+(anonymous) @ VM2442:1
+(anonymous) @ VM2442:1
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:734
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:735
+zP @ gtm.js?id=GTM-P8HKHCG9:736
+yP @ gtm.js?id=GTM-P8HKHCG9:733
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:231
+k.invoke @ gtm.js?id=GTM-P8HKHCG9:141
+Ya @ gtm.js?id=GTM-P8HKHCG9:104
+Xa @ gtm.js?id=GTM-P8HKHCG9:103
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:165
+k.invoke @ gtm.js?id=GTM-P8HKHCG9:141
+Ya @ gtm.js?id=GTM-P8HKHCG9:104
+k.rp @ gtm.js?id=GTM-P8HKHCG9:106
+cf @ gtm.js?id=GTM-P8HKHCG9:176
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:642
+eg @ gtm.js?id=GTM-P8HKHCG9:191
+e @ gtm.js?id=GTM-P8HKHCG9:588
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:110
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:589
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:589
+$z @ gtm.js?id=GTM-P8HKHCG9:589
+dA @ gtm.js?id=GTM-P8HKHCG9:594
+lB @ gtm.js?id=GTM-P8HKHCG9:617
+nB @ gtm.js?id=GTM-P8HKHCG9:619
+setTimeout
+Tc @ gtm.js?id=GTM-P8HKHCG9:126
+oB @ gtm.js?id=GTM-P8HKHCG9:622
+Mm @ gtm.js?id=GTM-P8HKHCG9:815
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:819
+c @ gtm.js?id=GTM-P8HKHCG9:817
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:819
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:819
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:821
+monaco-editor-universal.js?v=1762290737:100 ✅ Monaco Editor hazır
+ai-seo-integration.js?v=1762290737:558 🔒 attachButtonListeners SKIP - already attached
+manage.js?v=1762290737:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: []
+ai-seo-integration.js?v=1762290737:558 🔒 attachButtonListeners SKIP - already attached
+manage.js?v=1762290737:586 🌍 SEO Counter - Dinamik diller tespit edildi: []
+favicon.ico:1  GET https://a.test/favicon.ico 404 (Not Found)
+1:2978 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+manage.js?v=1762290737:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
+manage.js?v=1762290737:882 ✅ MANAGE.JS: Loading bar zorla gizlendi

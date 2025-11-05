@@ -16,6 +16,7 @@ class TenantConversationFlow extends Model
 {
     use HasFactory;
 
+    protected $connection = 'tenant'; // Tenant database - her tenant'ın kendi flow'ları
     protected $table = 'tenant_conversation_flows';
 
     protected $fillable = [

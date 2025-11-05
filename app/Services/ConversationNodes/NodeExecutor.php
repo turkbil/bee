@@ -42,24 +42,45 @@ class NodeExecutor
      * Initialize node registry from database
      *
      * Loads all active nodes from ai_workflow_nodes table
+     * Uses getForTenant() to get both global and tenant-specific nodes
      */
     protected function initializeRegistry(): void
     {
         try {
-            // Get all active nodes from database
-            $nodes = AIWorkflowNode::where('is_active', true)
-                ->orderBy('category')
-                ->orderBy('order')
-                ->get();
+            // Get tenant ID (if in tenant context)
+            $tenantId = function_exists('tenant') && tenant() ? tenant('id') : null;
 
-            foreach ($nodes as $node) {
-                self::register($node->node_key, $node->node_class);
+            if ($tenantId) {
+                // Tenant context: Get both global and tenant-specific nodes
+                $nodes = AIWorkflowNode::getForTenant($tenantId);
+
+                foreach ($nodes as $node) {
+                    self::register($node['type'], $node['class']);
+                }
+
+                Log::info('Node registry initialized from database (tenant context)', [
+                    'tenant_id' => $tenantId,
+                    'total_nodes' => count(self::$nodeRegistry),
+                    'node_types' => array_keys(self::$nodeRegistry),
+                ]);
+            } else {
+                // Central context: Get only global nodes from central DB
+                $nodes = \DB::connection('mysql')->table('ai_workflow_nodes')
+                    ->where('is_active', true)
+                    ->where('is_global', true)
+                    ->orderBy('category')
+                    ->orderBy('order')
+                    ->get();
+
+                foreach ($nodes as $node) {
+                    self::register($node->node_key, $node->node_class);
+                }
+
+                Log::info('Node registry initialized from database (central context)', [
+                    'total_nodes' => count(self::$nodeRegistry),
+                    'node_types' => array_keys(self::$nodeRegistry),
+                ]);
             }
-
-            Log::info('Node registry initialized from database', [
-                'total_nodes' => count(self::$nodeRegistry),
-                'node_types' => array_keys(self::$nodeRegistry),
-            ]);
         } catch (\Exception $e) {
             Log::error('Failed to initialize node registry from database', [
                 'error' => $e->getMessage(),

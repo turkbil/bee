@@ -23,6 +23,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | AI Workflow Engine
+    |--------------------------------------------------------------------------
+    |
+    | Yeni node-based workflow engine kullanımı.
+    | true = Yeni sistem (ConversationFlowEngine)
+    | false = Eski sistem (Legacy)
+    |
+    */
+    'use_workflow_engine' => env('AI_USE_WORKFLOW_ENGINE', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | AI Providers
     |--------------------------------------------------------------------------
     |

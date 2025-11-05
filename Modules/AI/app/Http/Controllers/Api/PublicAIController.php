@@ -550,8 +550,16 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
+        // 🔄 NEW WORKFLOW SYSTEM - Route to ConversationFlowEngine
+        $useNewSystem = config('ai.use_workflow_engine', false);
+
+        if ($useNewSystem) {
+            return $this->shopAssistantChatV2($request);
+        }
+
+        // 🔧 OLD SYSTEM (Legacy - will be deprecated)
         // FORCE OPCACHE UPDATE: 2025-11-03 05:22
-        \Log::info('🚀🚀🚀 shopAssistantChat STARTED - ' . date('Y-m-d H:i:s'), [
+        \Log::info('🚀🚀🚀 shopAssistantChat STARTED (OLD SYSTEM) - ' . date('Y-m-d H:i:s'), [
             'message' => $request->input('message'),
             'session_id' => $request->input('session_id'),
             'timestamp' => now()->toDateTimeString()
@@ -2508,5 +2516,90 @@ class PublicAIController extends Controller
             'Cache-Control' => 'no-cache',
             'X-Accel-Buffering' => 'no',
         ]);
+    }
+
+    /**
+     * 🔄 NEW WORKFLOW SYSTEM - Shop Assistant Chat V2
+     * Routes to ConversationFlowEngine instead of legacy system
+     */
+    protected function shopAssistantChatV2(Request $request): JsonResponse
+    {
+        \Log::info('🚀 shopAssistantChatV2 STARTED (NEW WORKFLOW SYSTEM)', [
+            'message' => $request->input('message'),
+            'session_id' => $request->input('session_id'),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
+        try {
+            // Validate input (same as old system)
+            $validated = $request->validate([
+                'message' => 'required|string|min:1|max:1000',
+                'product_id' => 'nullable|integer',
+                'category_id' => 'nullable|integer',
+                'page_slug' => 'nullable|string|max:255',
+                'session_id' => 'nullable|string|max:64',
+            ]);
+
+            // Generate or use existing session_id
+            $sessionId = $validated['session_id'] ?? $this->generateSessionId($request);
+
+            // 🔄 Route to ConversationFlowEngine
+            $engine = app(\App\Services\ConversationFlowEngine::class);
+
+            $result = $engine->processMessage(
+                $sessionId,
+                tenant('id'),
+                $validated['message'],
+                auth()->id()
+            );
+
+            // Map flow result to API response format
+            if ($result['success']) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'message' => $result['response'] ?? 'Merhaba! Size nasıl yardımcı olabilirim?',
+                        'session_id' => $sessionId,
+                        'conversation_id' => $result['conversation_id'] ?? null,
+                        'metadata' => [
+                            'system' => 'workflow_engine_v2',
+                            'flow_name' => $result['context']['flow_name'] ?? null,
+                            'nodes_executed' => $result['context']['nodes_executed'] ?? [],
+                        ],
+                    ],
+                ]);
+            }
+
+            // Flow execution failed - fallback to error
+            \Log::error('❌ Workflow execution failed', [
+                'session_id' => $sessionId,
+                'error' => $result['error'] ?? 'Unknown error',
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
+                'error' => $result['error'] ?? 'Flow execution failed',
+            ], 500);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Geçersiz veri',
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch (\Exception $e) {
+            \Log::error('❌ shopAssistantChatV2 EXCEPTION', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Sistem hatası oluştu. Lütfen daha sonra tekrar deneyin.',
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
+            ], 500);
+        }
     }
 }

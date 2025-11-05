@@ -47,39 +47,129 @@ class ConversationFlowEngine
                 return $this->fallbackResponse('No active flow configured for this tenant');
             }
 
-            // Get current node
-            $currentNode = $this->getCurrentNode($conversation, $flow);
-
-            if (!$currentNode) {
-                return $this->fallbackResponse('Invalid flow configuration');
-            }
-
-            // Execute node
-            $result = $this->executor->execute($currentNode, $conversation, $userMessage);
-
-            if (!$result['success']) {
-                return $this->handleError($conversation, $result);
-            }
-
-            // Update conversation state
-            $this->updateConversationState($conversation, $currentNode, $result);
-
-            // Build AI context
-            $aiContext = $this->buildAIContext($conversation, $result);
-
-            // Generate AI response (if prompt provided)
+            // 🔄 MULTI-NODE EXECUTION LOOP
+            $maxIterations = 20; // Prevent infinite loops
+            $iteration = 0;
+            $executedNodes = [];
+            $finalResult = null;
             $aiResponse = null;
-            if (!empty($result['prompt'])) {
-                $aiResponse = $this->generateAIResponse($result['prompt'], $aiContext);
+
+            while ($iteration < $maxIterations) {
+                $iteration++;
+
+                // Get current node
+                $currentNode = $this->getCurrentNode($conversation, $flow);
+
+                if (!$currentNode) {
+                    Log::warning('Flow ended without reaching end node', [
+                        'conversation_id' => $conversation->id,
+                        'last_node' => $executedNodes[count($executedNodes) - 1] ?? 'none',
+                    ]);
+                    break;
+                }
+
+                Log::info('🔄 Executing node', [
+                    'conversation_id' => $conversation->id,
+                    'node_id' => $currentNode['id'],
+                    'node_type' => $currentNode['type'],
+                    'iteration' => $iteration,
+                    'node_config' => $currentNode['config'] ?? [],
+                ]);
+
+                // Execute node
+                $result = $this->executor->execute($currentNode, $conversation, $userMessage);
+
+                Log::info('✅ Node executed', [
+                    'conversation_id' => $conversation->id,
+                    'node_type' => $currentNode['type'],
+                    'success' => $result['success'],
+                    'next_node' => $result['next_node'] ?? 'NULL',
+                    'has_data' => !empty($result['data']),
+                ]);
+
+                if (!$result['success']) {
+                    return $this->handleError($conversation, $result);
+                }
+
+                // Track executed nodes
+                $executedNodes[] = [
+                    'id' => $currentNode['id'],
+                    'type' => $currentNode['type'],
+                    'name' => $currentNode['name'] ?? $currentNode['type'],
+                ];
+
+                // Update conversation state
+                $this->updateConversationState($conversation, $currentNode, $result);
+
+                // If this was an end node, stop after executing it
+                if ($currentNode['type'] === 'end') {
+                    Log::info('Flow ended at end node', [
+                        'conversation_id' => $conversation->id,
+                        'total_nodes_executed' => count($executedNodes),
+                    ]);
+                    break;
+                }
+
+                // Store final result
+                $finalResult = $result;
+
+                // If AI Response node, generate AI response
+                Log::info('🔍 Checking AI response condition', [
+                    'node_type' => $currentNode['type'],
+                    'has_prompt' => !empty($result['prompt']),
+                    'prompt_preview' => substr($result['prompt'] ?? '', 0, 50),
+                ]);
+
+                if ($currentNode['type'] === 'ai_response' && !empty($result['prompt'])) {
+                    Log::info('🤖 AI Response Node - Starting generation', [
+                        'conversation_id' => $conversation->id,
+                        'prompt_length' => strlen($result['prompt']),
+                    ]);
+
+                    // Build AI context
+                    $aiContext = $this->buildAIContext($conversation, $result);
+                    $aiContext['user_message'] = $userMessage;
+
+                    // Generate AI response
+                    $aiResponse = $this->generateAIResponse($result['prompt'], $aiContext);
+
+                    // Store in conversation context for next nodes
+                    $conversation->addToContext('last_ai_response', $aiResponse);
+
+                    Log::info('✅ AI response generated successfully', [
+                        'conversation_id' => $conversation->id,
+                        'response_length' => strlen($aiResponse ?? ''),
+                        'response_preview' => substr($aiResponse ?? '', 0, 100),
+                    ]);
+                }
+
+                // If node doesn't have next_node, stop
+                if (empty($result['next_node'])) {
+                    Log::info('Flow ended (no next_node)', [
+                        'conversation_id' => $conversation->id,
+                        'last_node' => $currentNode['type'],
+                    ]);
+                    break;
+                }
             }
+
+            if ($iteration >= $maxIterations) {
+                Log::error('Flow execution exceeded max iterations', [
+                    'conversation_id' => $conversation->id,
+                    'max_iterations' => $maxIterations,
+                    'executed_nodes' => array_column($executedNodes, 'type'),
+                ]);
+                return $this->fallbackResponse('Flow execution timeout');
+            }
+
+            $result = $finalResult; // Use final result for context building
 
             $executionTime = round((microtime(true) - $startTime) * 1000, 2);
 
             Log::info('Message processed successfully', [
                 'conversation_id' => $conversation->id,
                 'tenant_id' => $tenantId,
-                'current_node' => $currentNode['type'],
-                'next_node' => $result['next_node'],
+                'nodes_executed' => count($executedNodes),
                 'has_response' => !empty($aiResponse),
                 'execution_time_ms' => $executionTime,
             ]);
@@ -87,9 +177,11 @@ class ConversationFlowEngine
             return [
                 'success' => true,
                 'response' => $aiResponse,
-                'current_node' => $currentNode['name'] ?? $currentNode['type'],
-                'next_node' => $result['next_node'],
-                'context' => $result['data'] ?? [],
+                'nodes_executed' => $executedNodes,
+                'context' => [
+                    'flow_name' => $flow->flow_name,
+                    'nodes_executed' => array_column($executedNodes, 'type'),
+                ],
                 'conversation_id' => $conversation->id,
             ];
 
@@ -188,10 +280,9 @@ class ConversationFlowEngine
     {
         try {
             return $conversation->messages()
-                ->latest()
-                ->limit(10)
+                ->orderBy('created_at', 'asc')
+                ->limit(20) // Son 20 mesaj
                 ->get()
-                ->reverse()
                 ->map(fn($msg) => [
                     'role' => $msg->role,
                     'content' => $msg->content,
@@ -211,23 +302,63 @@ class ConversationFlowEngine
      */
     protected function generateAIResponse(string $prompt, array $context): string
     {
-        // TODO: Integrate with your existing AIService
-        // For now, return the prompt (to be replaced with actual AI call)
-
         try {
-            // Check if AIService exists
-            if (class_exists(\App\Services\AIService::class)) {
-                return app(\App\Services\AIService::class)->ask($prompt, $context);
+            // Use CentralAIService for AI requests
+            $aiService = app(\App\Services\AI\CentralAIService::class);
+
+            // Build context as user message
+            $userMessage = $context['user_message'] ?? '';
+            $messageHistory = $context['message_history'] ?? [];
+
+            // Build full prompt with conversation history
+            $fullPrompt = "SYSTEM: " . $prompt . "\n\n";
+
+            // Add message history for context
+            if (!empty($messageHistory)) {
+                $fullPrompt .= "CONVERSATION HISTORY:\n";
+                foreach ($messageHistory as $msg) {
+                    $role = $msg['role'] === 'user' ? 'USER' : 'ASSISTANT';
+                    $fullPrompt .= "{$role}: {$msg['content']}\n";
+                }
+                $fullPrompt .= "\n";
             }
 
-            // Fallback: return prompt for testing
-            return $prompt;
+            // Add current user message
+            $fullPrompt .= "USER: {$userMessage}\nASSISTANT:";
+
+            // Execute AI request
+            $response = $aiService->executeRequest($fullPrompt, [
+                'usage_type' => 'conversation_flow',
+                'feature_slug' => 'ai_workflow',
+                'reference_id' => $context['conversation_id'] ?? null,
+                'force_provider' => 'openai', // TODO: Make this configurable per tenant/flow
+            ]);
+
+            // Extract response text
+            if (isset($response['response'])) {
+                // Response is an array with 'content' key
+                if (is_array($response['response']) && isset($response['response']['content'])) {
+                    return $response['response']['content'];
+                }
+
+                // If response is already a string
+                if (is_string($response['response'])) {
+                    return $response['response'];
+                }
+            }
+
+            // Fallback
+            Log::warning('AI response missing response field', ['response' => $response]);
+            return 'Üzgünüm, yanıt oluşturulamadı.';
+
         } catch (\Exception $e) {
             Log::error('AI response generation failed', [
                 'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
 
-            return $prompt; // Fallback to prompt
+            return 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.';
         }
     }
 

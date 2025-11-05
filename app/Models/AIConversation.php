@@ -17,6 +17,7 @@ class AIConversation extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central database - tüm tenant conversation'ları burada
     protected $table = 'ai_conversations';
 
     protected $fillable = [
@@ -49,7 +50,7 @@ class AIConversation extends Model
      */
     public function messages(): HasMany
     {
-        return $this->hasMany(ChatMessage::class, 'conversation_id');
+        return $this->hasMany(AIConversationMessage::class, 'conversation_id');
     }
 
     /**
@@ -112,11 +113,12 @@ class AIConversation extends Model
             'success' => $nodeResult['success'] ?? true,
         ];
 
-        // Update conversation
-        $this->update([
-            'current_node_id' => $nodeId,
-            'state_history' => $history,
-        ]);
+        // Update current_node_id in memory AND database
+        $this->current_node_id = $nodeId;
+        $this->state_history = $history;
+
+        // Save to database
+        $this->save();
     }
 
     /**

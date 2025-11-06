@@ -43,8 +43,24 @@ class ProductSearchNode extends AbstractNode
 
             // 🚨 HALÜSİNASYON CHECK: Ürün yoksa yönlendir
             if (empty($products)) {
+                \Log::emergency('🚨 ProductSearch: NO PRODUCTS FOUND', [
+                    'query' => $searchQuery,
+                    'user_message' => $userMessage,
+                ]);
                 return $this->handleNoProductsFound($searchQuery);
             }
+
+            // 🚨 SONNET DEBUG: Log products found
+            \Log::emergency('🚨 ProductSearch: PRODUCTS FOUND', [
+                'query' => $searchQuery,
+                'count' => count($products),
+                'products' => array_map(fn($p) => [
+                    'id' => $p['id'],
+                    'title' => $p['title'],
+                    'slug' => $p['slug'],
+                    'price' => $p['base_price'],
+                ], $products),
+            ]);
 
             // Store products in conversation context
             $conversation->addToContext('searched_products', $products);
@@ -73,6 +89,9 @@ class ProductSearchNode extends AbstractNode
             $this->log('error', 'Product search failed', [
                 'conversation_id' => $conversation->id,
                 'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return $this->failure('Product search failed: ' . $e->getMessage());
@@ -96,7 +115,7 @@ class ProductSearchNode extends AbstractNode
             // Use Meilisearch (assuming ProductSearchService exists)
             if (class_exists('\App\Services\AI\ProductSearchService')) {
                 $service = app(\App\Services\AI\ProductSearchService::class);
-                $results = $service->searchProducts($query, $limit * 2); // Get more for sorting
+                $results = $service->searchProducts($query, ['limit' => $limit * 2]); // Get more for sorting
 
                 return $this->formatProducts($results);
             }
@@ -112,10 +131,13 @@ class ProductSearchNode extends AbstractNode
 
     protected function searchWithDatabase(string $query, int $limit): array
     {
+        $locale = app()->getLocale();
+
         $products = \Modules\Shop\App\Models\ShopProduct::where('is_active', true)
-            ->where(function($q) use ($query) {
-                $q->where('title', 'LIKE', "%{$query}%")
-                  ->orWhere('description', 'LIKE', "%{$query}%")
+            ->where(function($q) use ($query, $locale) {
+                // JSON search for title and body (multilingual fields)
+                $q->where("title->{$locale}", 'LIKE', "%{$query}%")
+                  ->orWhere("body->{$locale}", 'LIKE', "%{$query}%")
                   ->orWhere('sku', 'LIKE', "%{$query}%");
             })
             ->with(['category', 'media'])
@@ -128,18 +150,48 @@ class ProductSearchNode extends AbstractNode
     protected function formatProducts($products): array
     {
         return collect($products)->map(function($product) {
+            // Get translated title
+            $title = is_array($product->title)
+                ? ($product->title[app()->getLocale()] ?? $product->title['en'] ?? 'Untitled')
+                : $product->title;
+
+            // Get translated slug
+            $slug = is_array($product->slug)
+                ? ($product->slug[app()->getLocale()] ?? $product->slug['en'] ?? 'unknown')
+                : $product->slug;
+
+            // Get translated category title
+            $categoryTitle = 'Uncategorized';
+            if ($product->category) {
+                $categoryTitle = is_array($product->category->title)
+                    ? ($product->category->title[app()->getLocale()] ?? $product->category->title['en'] ?? 'Uncategorized')
+                    : $product->category->title;
+            }
+
+            // Get description safely
+            $description = null;
+            if (!empty($product->body)) {
+                $description = is_array($product->body)
+                    ? ($product->body[app()->getLocale()] ?? $product->body['en'] ?? null)
+                    : $product->body;
+                if ($description) {
+                    $description = strip_tags(substr($description, 0, 200));
+                }
+            }
+
             return [
-                'id' => $product->id,
-                'title' => $product->title,
-                'slug' => $product->slug,
+                'id' => $product->product_id ?? $product->id,
+                'title' => $title,
+                'slug' => $slug,
                 'base_price' => $product->base_price ?? 0,
-                'description' => $product->description ? strip_tags(substr($product->description, 0, 200)) : null,
-                'category' => $product->category->title ?? 'Uncategorized',
+                'currency' => $product->currency ?? 'TRY',  // Currency ekle
+                'description' => $description,
+                'category' => $categoryTitle,
                 'category_id' => $product->category_id,
-                'stock' => $product->stock ?? 0,
+                'stock' => $product->current_stock ?? 0,
                 'is_featured' => $product->is_featured ?? false,
                 'image' => $product->media->first()?->getUrl() ?? null,
-                'url' => "/shop/product/{$product->slug}",
+                'url' => "/shop/product/{$slug}",
             ];
         })->toArray();
     }

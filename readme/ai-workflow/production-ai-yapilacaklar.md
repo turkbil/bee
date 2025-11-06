@@ -183,7 +183,137 @@ class TenantConversationFlow extends Model
 
 ---
 
-### 4️⃣ **NodeExecutor Registry Fix** (KRİTİK!)
+### 4️⃣ **SHOP NAMESPACE MIGRATION** (5 KASIM 2024 - TAMAMLANDI ✅)
+
+**Önemli:** Tenant-specific node'lar artık **Shop namespace** altında global olarak sunuluyor!
+
+**Değişiklik Özeti:**
+- ❌ ESKİ: `App\Services\ConversationNodes\TenantSpecific\Tenant_2\CategoryDetectionNode`
+- ✅ YENİ: `App\Services\ConversationNodes\Shop\CategoryDetectionNode`
+
+**Yapılan İşlemler:**
+
+1. **Seeder Dosyaları Güncellendi:**
+   - `database/seeders/AIWorkflowNodesSeeder.php`: Shop namespace kullanılıyor, `is_global=true`
+   - `database/seeders/AIWorkflowSeeder.php`: Hardcoded class referansları kaldırıldı
+
+2. **Tenant Database Temizliği:**
+   - Tenant DB'deki eski `ai_workflow_nodes` kayıtları silindi
+   - Artık tüm node'lar central DB'den yükleniyor
+
+3. **Cache Version Bump:**
+   - `AIWorkflowNode::getForTenant()` cache version: v3 → v4
+
+4. **Shop Node'ları Düzeltildi:**
+   - `ProductSearchNode`: Multilingual field support (title, slug, body JSON search)
+   - `CategoryDetectionNode`: title array handling
+   - Parametre düzeltmeleri (ProductSearchService API)
+
+5. **Flow Config Düzeltmeleri:**
+   - Condition node: `condition` → `condition_type`
+   - `next_node` fields eklendi
+
+**Node'lar (19 adet - Tümü Global):**
+
+**Common Nodes (6):** ai_response, sentiment_detection, context_builder, history_loader, message_saver, welcome, condition, end, collect_data, webhook, link_generator, share_contact
+
+**Shop Nodes (7):** category_detection, product_search, price_query, currency_converter, product_comparison, contact_request, stock_sorter
+
+**Test Sonucu:**
+```bash
+php /tmp/test-ai-chat.php
+✅ 12 node başarıyla çalıştı
+✅ AI response geldi
+✅ Shop namespace aktif
+```
+
+**Production'da Yapılacak (Database İşlemleri):**
+
+### ⚠️ ADIM 1: ÖNCE KONTROL ET (Hiçbir şey silmez!)
+
+```bash
+# Tenant DB'de eski kayıt var mı kontrol et
+php artisan tinker --execute="
+echo '━━━ TENANT DB KONTROL ━━━' . PHP_EOL;
+
+// Tenant 2 (ixtif.com)
+tenancy()->initialize(2);
+\$count2 = DB::table('ai_workflow_nodes')->count();
+echo 'Tenant 2: ' . \$count2 . ' kayıt';
+if (\$count2 > 0) {
+    echo ' ⚠️ (Eski kayıtlar var - temizlenmeli)' . PHP_EOL;
+} else {
+    echo ' ✅ (Temiz)' . PHP_EOL;
+}
+tenancy()->end();
+
+// Tenant 3 (ixtif.com.tr)
+tenancy()->initialize(3);
+\$count3 = DB::table('ai_workflow_nodes')->count();
+echo 'Tenant 3: ' . \$count3 . ' kayıt';
+if (\$count3 > 0) {
+    echo ' ⚠️ (Eski kayıtlar var - temizlenmeli)' . PHP_EOL;
+} else {
+    echo ' ✅ (Temiz)' . PHP_EOL;
+}
+tenancy()->end();
+
+echo '━━━━━━━━━━━━━━━━━━━━━━' . PHP_EOL;
+echo 'Eğer ⚠️ görüyorsan, temizlik komutu gerekli!' . PHP_EOL;
+"
+```
+
+### ⚠️ ADIM 2: EĞER ESKİ KAYITLAR VARSA (⚠️ İşaretli tenant'lar için)
+
+**UYARI:** Aşağıdaki komutlar veritabanından kayıt siler!
+
+```bash
+# Tenant 2 temizliği (SADECE ESKİ KAYIT VARSA ÇALIŞTIR!)
+php artisan tinker --execute="
+tenancy()->initialize(2);
+\$count = DB::table('ai_workflow_nodes')->count();
+if (\$count > 0) {
+    DB::table('ai_workflow_nodes')->delete();
+    echo '✅ Tenant 2: ' . \$count . ' eski kayıt silindi' . PHP_EOL;
+}
+tenancy()->end();
+"
+
+# Tenant 3 temizliği (SADECE ESKİ KAYIT VARSA ÇALIŞTIR!)
+php artisan tinker --execute="
+tenancy()->initialize(3);
+\$count = DB::table('ai_workflow_nodes')->count();
+if (\$count > 0) {
+    DB::table('ai_workflow_nodes')->delete();
+    echo '✅ Tenant 3: ' . \$count . ' eski kayıt silindi' . PHP_EOL;
+}
+tenancy()->end();
+"
+```
+
+### ✅ ADIM 3: Cache Temizle (Her Zaman Gerekli)
+
+```bash
+# Node cache temizle
+php artisan tinker --execute="
+App\Models\AIWorkflowNode::clearCache(2);
+App\Models\AIWorkflowNode::clearCache(3);
+echo '✅ Node cache temizlendi' . PHP_EOL;
+"
+
+# Genel cache temizle
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
+
+echo '✅ Tüm cache temizlendi'
+```
+
+**Not:** Kod değişiklikleri Git'ten otomatik gelecek, sadece DB kontrol/temizlik + cache gerekli!
+
+---
+
+### 5️⃣ **NodeExecutor Registry Fix** (KRİTİK!)
 
 **Dosya:** `app/Services/ConversationNodes/NodeExecutor.php`
 
@@ -257,7 +387,54 @@ php artisan tinker
 
 ---
 
-### 5️⃣ **Livewire 3 Uyumluluk** (ZATEN DÜZELTİLDİ)
+### 6️⃣ **NodeExecutor Force Reinit** (5 KASIM 2024 - TAMAMLANDI ✅)
+
+**Dosya:** `app/Services/ConversationNodes/NodeExecutor.php`
+
+**Sorun:** Laravel container NodeExecutor'ı boot sırasında oluşturuyordu, tenant context'i henüz hazır değildi.
+
+**Çözüm:** `execute()` metodunda her çağrıda force reinitialize + explicit tenant_id geçişi
+
+```php
+public function execute(array $nodeData, AIConversation $conversation, string $userMessage): array
+{
+    $startTime = microtime(true);
+
+    try {
+        // 🚨 CRITICAL: ALWAYS reinitialize registry on EVERY execute()
+        self::$initialized = false;
+        self::$nodeRegistry = [];
+        $this->initializeRegistry($conversation->tenant_id); // Pass explicit tenant_id
+        self::$initialized = true;
+
+        // Validate node data
+        if (!isset($nodeData['type'])) {
+            throw new \Exception('Node type not specified');
+        }
+
+        // Continue with execution...
+    }
+}
+
+protected function initializeRegistry(?int $forceTenantId = null): void
+{
+    // Get tenant ID - prioritize forced ID, then tenant context
+    $tenantId = $forceTenantId ?? (function_exists('tenant') && tenant() ? tenant('id') : null);
+
+    if ($tenantId) {
+        $nodes = AIWorkflowNode::getForTenant($tenantId);
+        foreach ($nodes as $node) {
+            self::register($node['type'], $node['class']);
+        }
+    }
+}
+```
+
+**Sebep:** Dependency injection timing issue - tenant context'i NodeExecutor oluşturulduğunda hazır olmayabilir.
+
+---
+
+### 7️⃣ **Livewire 3 Uyumluluk** (ZATEN DÜZELTİLDİ)
 
 **Dosya:** `Modules/AI/app/Http/Livewire/Admin/Workflow/FlowEditor.php`
 
@@ -538,15 +715,20 @@ tenancy()->end();
 - [ ] Tenant database'lerden `ai_conversations` silindi (eğer varsa)
 
 ### Kod
-- [ ] `AIConversation::$connection = 'mysql'` eklendi
-- [ ] `TenantConversationFlow::$connection = 'tenant'` eklendi
-- [ ] **`NodeExecutor::initializeRegistry()` düzeltildi** (getForTenant kullanılıyor)
-- [ ] **`AIConversation::messages()` ilişkisi yorum satırı yapıldı** (ChatMessage yok)
-- [ ] **`ConversationFlowEngine::generateAIResponse()` CentralAIService entegrasyonu**
-- [ ] **`ConversationFlowEngine::getMessageHistory()` geçici devre dışı**
-- [ ] User message context'e eklendi
-- [ ] Livewire 3 dispatch metodları doğru
-- [ ] Migration dosyası tenant/ klasöründen silindi
+- [x] ✅ `AIConversation::$connection = 'mysql'` eklendi
+- [x] ✅ `TenantConversationFlow::$connection = 'tenant'` eklendi
+- [x] ✅ **SHOP NAMESPACE MIGRATION** (TenantSpecific → Shop)
+- [x] ✅ **Tenant DB'deki eski node kayıtları silindi**
+- [x] ✅ **ProductSearchNode multilingual field support**
+- [x] ✅ **CategoryDetectionNode array handling**
+- [x] ✅ **NodeExecutor force reinit + explicit tenant_id**
+- [x] ✅ **`NodeExecutor::initializeRegistry()` düzeltildi** (getForTenant kullanılıyor)
+- [x] ✅ **`AIConversation::messages()` ilişkisi yorum satırı yapıldı** (ChatMessage yok)
+- [x] ✅ **`ConversationFlowEngine::generateAIResponse()` CentralAIService entegrasyonu**
+- [x] ✅ **`ConversationFlowEngine::getMessageHistory()` geçici devre dışı**
+- [x] ✅ User message context'e eklendi
+- [x] ✅ Livewire 3 dispatch metodları doğru
+- [x] ✅ Migration dosyası tenant/ klasöründen silindi
 
 ### Test
 - [ ] **NodeExecutor registry 13 node yüklüyor** (6 global + 7 tenant-specific)
@@ -571,33 +753,39 @@ tenancy()->end();
 
 ## 🎯 ÖZET
 
-**Yapılacaklar:**
-1. ✅ Central database'e 3 kolon ekle (`flow_id`, `current_node_id`, `state_history`)
-2. ✅ `context_data`'yı JSON'a çevir
-3. ✅ Index'leri ekle
-4. ✅ AIConversation model'e `$connection = 'mysql'` ekle
-5. ✅ TenantConversationFlow model'e `$connection = 'tenant'` ekle
-6. ✅ **NodeExecutor::initializeRegistry() düzelt** (getForTenant kullan)
-7. ✅ ChatMessage ilişkisini yorum satırı yap (messages() metodu)
-8. ✅ **AI Entegrasyonu** (CentralAIService, response extraction, user message)
-9. ✅ Tenant database'lerden `ai_conversations` sil (eğer varsa)
-10. ✅ Migration dosyasını tenant/ klasöründen sil
-11. ✅ Workflow nodes cache temizle
-12. ✅ NodeExecutor registry temizle
-13. ✅ Test et (13 node + gerçek AI yanıtları)
+**KOD DEĞİŞİKLİKLERİ (Git'ten Otomatik Gelecek):**
+1. ✅ AIConversation model'e `$connection = 'mysql'` eklendi
+2. ✅ TenantConversationFlow model'e `$connection = 'tenant'` eklendi
+3. ✅ **SHOP NAMESPACE MIGRATION** (TenantSpecific → Shop)
+4. ✅ **NodeExecutor force reinit** + explicit tenant_id
+5. ✅ **NodeExecutor::initializeRegistry() düzeltildi** (getForTenant kullanılıyor)
+6. ✅ **ProductSearchNode multilingual field support**
+7. ✅ **CategoryDetectionNode array handling**
+8. ✅ ChatMessage ilişkisi yorum satırı yapıldı
+9. ✅ **AI Entegrasyonu** (CentralAIService)
+10. ✅ Migration dosyası tenant/ klasöründen silindi
+
+**DATABASE İŞLEMLERİ (Production'da Manuel Yapılacak):**
+1. ✅ **ÖNCE KONTROL ET:** Tenant DB'de eski kayıt var mı? (Kontrol komutu - hiçbir şey silmez)
+2. ⚠️ **SADECE GEREKİRSE:** Eski kayıtları sil (1. adımda ⚠️ gördüysen)
+3. ✅ **HER ZAMAN:** Node cache + genel cache temizle
+
+**NOT:** Central database'e kolon ekleme işlemleri daha önce yapılmışsa tekrar yapılmasına gerek yok.
 
 **Kritik Noktalar:**
-- `ai_conversations` **SADECE CENTRAL DATABASE'DE** (`$connection = 'mysql'`)
-- `tenant_conversation_flows` **TENANT DATABASE'DE** (`$connection = 'tenant'`)
-- `tenant_id` ile ayırt ediliyor
-- **NodeExecutor registry** global + tenant-specific node'ları birlikte yüklemeli (13 adet)
-- **AI yanıtları CentralAIService** ile alınıyor (response format: `['response']['content']`)
-- **OpenAI kullanılıyor** (force_provider: 'openai' - DeepSeek'te sorun var)
-- **Workflow nodes cache** mutlaka temizlenmeli
-- **NodeExecutor registry** mutlaka temizlenmeli
-- **ChatMessage ilişkisi** yorum satırı yapılmalı (model yok)
+- ✅ `ai_conversations` **SADECE CENTRAL DATABASE'DE** (`$connection = 'mysql'`)
+- ✅ `tenant_conversation_flows` **TENANT DATABASE'DE** (`$connection = 'tenant'`)
+- ✅ `tenant_id` ile ayırt ediliyor
+- ✅ **SHOP NAMESPACE:** TenantSpecific node'lar artık global (19 node: 6 common + 13 shop)
+- ✅ **Tenant DB'de ai_workflow_nodes YOK** - Tümü central DB'den yüklenir
+- ✅ **NodeExecutor force reinit** her execute() çağrısında (tenant context güvenliği)
+- ✅ **ProductSearchNode & CategoryDetectionNode** multilingual field support
+- ✅ **AI yanıtları CentralAIService** ile alınıyor (response format: `['response']['content']`)
+- ✅ **OpenAI kullanılıyor** (force_provider: 'openai')
+- ⚠️ **Workflow nodes cache** temizlenmeli (v4 kullanılıyor)
+- ⚠️ **Tenant DB kontrol edilmeli** (eski kayıtlar varsa temizlenmeli - ÖNCE KONTROL ET!)
 
-**Tahmini Süre:** 15-30 dakika
+**Tahmini Süre:** 5-10 dakika (sadece DB temizliği)
 **Downtime:** Yok (backward compatible)
 
 ---

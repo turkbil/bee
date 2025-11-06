@@ -1,1 +1,46 @@
-
+web-share.js:121 [Web Share] Helper yüklendi. Destek: true
+back-to-top.js:86 [Back to Top] Initialized - Position: Left Bottom
+VM19243:1  GET https://connect.facebook.net/en_US/fbevents.js net::ERR_BLOCKED_BY_CLIENT
+(anonymous) @ VM19243:1
+(anonymous) @ VM19243:1
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:735
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:736
+zP @ gtm.js?id=GTM-P8HKHCG9:737
+yP @ gtm.js?id=GTM-P8HKHCG9:734
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:232
+k.invoke @ gtm.js?id=GTM-P8HKHCG9:141
+Ya @ gtm.js?id=GTM-P8HKHCG9:104
+Xa @ gtm.js?id=GTM-P8HKHCG9:103
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:165
+k.invoke @ gtm.js?id=GTM-P8HKHCG9:141
+Ya @ gtm.js?id=GTM-P8HKHCG9:104
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:106
+cf @ gtm.js?id=GTM-P8HKHCG9:176
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:643
+eg @ gtm.js?id=GTM-P8HKHCG9:191
+e @ gtm.js?id=GTM-P8HKHCG9:589
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:110
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:590
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:590
+$z @ gtm.js?id=GTM-P8HKHCG9:590
+dA @ gtm.js?id=GTM-P8HKHCG9:595
+lB @ gtm.js?id=GTM-P8HKHCG9:618
+nB @ gtm.js?id=GTM-P8HKHCG9:620
+setTimeout
+Tc @ gtm.js?id=GTM-P8HKHCG9:126
+oB @ gtm.js?id=GTM-P8HKHCG9:623
+Mm @ gtm.js?id=GTM-P8HKHCG9:816
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:820
+c @ gtm.js?id=GTM-P8HKHCG9:818
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:820
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:820
+(anonymous) @ gtm.js?id=GTM-P8HKHCG9:822
+(index):8586 [PWA] Service Worker registered: https://a.test/
+ai-chat.js?v=1762388789:208 🚨 API RESPONSE: {success: true, message: 'Merhaba! Size nasıl yardımcı olabilirim? Forklift …letiniz için hangi yedek parçaya ihtiyacınız var?', system: 'workflow_engine_v2', session_id: 'a04f7dc84198e36106febc2eacc5aebd', nodes_executed: Array(8)}
+ai-chat.js?v=1762388789:215 🚨 FULL RESPONSE: {success: true, data: {…}}
+ai-chat.js?v=1762388789:208 🚨 API RESPONSE: {success: true, message: 'Bu konuda yardımcı olamam.', system: 'workflow_engine_v2', session_id: 'a04f7dc84198e36106febc2eacc5aebd', nodes_executed: Array(8)}
+ai-chat.js?v=1762388789:215 🚨 FULL RESPONSE: {success: true, data: {…}}
+ai-chat.js?v=1762388789:208 🚨 API RESPONSE: {success: true, message: 'Bu konuda yardımcı olamam.', system: 'workflow_engine_v2', session_id: 'a04f7dc84198e36106febc2eacc5aebd', nodes_executed: Array(8)}
+ai-chat.js?v=1762388789:215 🚨 FULL RESPONSE: {success: true, data: {…}}
+ai-chat.js?v=1762388789:208 🚨 API RESPONSE: {success: true, message: 'Tam transpalet satmıyoruz. Hangi yedek parçaya ihtiyacınız var?', system: 'workflow_engine_v2', session_id: 'a04f7dc84198e36106febc2eacc5aebd', nodes_executed: Array(12)}
+ai-chat.js?v=1762388789:215 🚨 FULL RESPONSE: {success: true, data: {…}}

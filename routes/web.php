@@ -613,3 +613,40 @@ Route::get('/csrf-refresh', function () {
     return csrf_token();
 })->name('csrf.refresh')->middleware('web');
 Route::get('/test-megamenu-v3', function() { return view('themes.ixtif.pages.test-megamenu-v3'); });
+Route::get('/test-ai-conversation', function () {
+    // Initialize tenant
+    $domain = \Stancl\Tenancy\Database\Models\Domain::where('domain', 'a.test')->first();
+    if (!$domain) {
+        return response()->json(['error' => 'Domain not found'], 404);
+    }
+    
+    tenancy()->initialize($domain->tenant);
+    
+    $engine = app(\App\Services\ConversationFlowEngine::class);
+    
+    $messages = [
+        'transpalet almak istiyorum',
+        '2 ton kapasiteli istiyorum',
+        'fiyatı ne kadar'
+    ];
+    
+    $sessionId = 'test_web_' . time();
+    $results = [];
+    
+    foreach ($messages as $message) {
+        $result = $engine->processMessage($sessionId, 2, $message, null);
+        $results[] = [
+            'message' => $message,
+            'success' => $result['success'],
+            'response' => $result['response'] ?? null,
+            'error' => $result['error'] ?? null,
+            'nodes_executed' => count($result['nodes_executed'] ?? []),
+        ];
+    }
+    
+    return response()->json([
+        'tenant_id' => tenant('id'),
+        'session_id' => $sessionId,
+        'results' => $results,
+    ]);
+});

@@ -16,8 +16,8 @@ const CACHE_NAME = `pwa-cache-${CACHE_VERSION}`;
 // Assets to cache (minimal - only critical)
 const ASSETS_TO_CACHE = [
     '/',
-    '/manifest.json',
-    '/favicon.ico'
+    '/manifest.json'
+    // '/favicon.ico' - Removed: File might be missing or blocked
 ];
 
 /**

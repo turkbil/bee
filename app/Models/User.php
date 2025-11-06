@@ -66,26 +66,6 @@ class User extends Authenticatable implements HasMedia
              ->singleFile()
              ->useDisk('public');
     }
-
-    /**
-     * Media relationship'ini güvenli şekilde yönet
-     */
-    public function media(): \Illuminate\Database\Eloquent\Relations\MorphMany
-    {
-        // Tenant yoksa boş collection döndür (404 sayfaları için)
-        if (!tenant()) {
-            return $this->morphMany(
-                config('media-library.media_model', \Spatie\MediaLibrary\MediaCollections\Models\Media::class),
-                'model'
-            )->whereRaw('1 = 0'); // Boş sonuç döndür
-        }
-
-        // Normal durumda central database kullan
-        return $this->morphMany(
-            config('media-library.media_model', \Spatie\MediaLibrary\MediaCollections\Models\Media::class),
-            'model'
-        )->on('mysql'); // Central database connection kullan
-    }
     
     /**
      * PERFORMANCE: Cached role check to reduce DB queries

@@ -117,9 +117,14 @@ class CategoryDetectionNode extends AbstractNode
 
             $slugValue = $category->slug[app()->getLocale()] ?? $category->slug['tr'] ?? $category->slug['en'] ?? 'unknown';
 
+            // Get translated title
+            $titleValue = is_array($category->title)
+                ? ($category->title[app()->getLocale()] ?? $category->title['tr'] ?? $category->title['en'] ?? 'Uncategorized')
+                : $category->title;
+
             return [
                 'id' => $category->id,
-                'name' => $category->title,
+                'name' => $titleValue,
                 'slug' => $slugValue,
                 'url' => "/shop/category/{$slugValue}",
             ];

@@ -550,12 +550,32 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
+        // 🚨 EMERGENCY DEBUG - SONNET FIXING
+        \Log::emergency('🚨🚨🚨 SHOP ASSISTANT ENTRY POINT', [
+            'timestamp' => now()->toIso8601String(),
+            'message_preview' => substr($request->input('message', ''), 0, 50),
+            'session_id' => $request->input('session_id'),
+        ]);
+
         // 🔄 NEW WORKFLOW SYSTEM - Route to ConversationFlowEngine
-        $useNewSystem = config('ai.use_workflow_engine', false);
+        // 🚨 SONNET FIX: FORCE V2 SYSTEM TEMPORARILY FOR TESTING
+        $useNewSystem = true; // FORCED TRUE - was: config('ai.use_workflow_engine', false);
+
+        \Log::emergency('🚨🚨🚨 CONFIG CHECK RESULT', [
+            'config_value' => $useNewSystem,
+            'config_type' => gettype($useNewSystem),
+            'env_value' => env('AI_USE_WORKFLOW_ENGINE', 'not set'),
+            'config_cached' => app()->configurationIsCached(),
+            'will_use' => $useNewSystem ? 'V2 (NEW)' : 'V1 (OLD)',
+            'v2_method_exists' => method_exists($this, 'shopAssistantChatV2'),
+        ]);
 
         if ($useNewSystem) {
+            \Log::emergency('🚨 ROUTING TO V2 SYSTEM NOW!');
             return $this->shopAssistantChatV2($request);
         }
+
+        \Log::emergency('🚨 USING V1 SYSTEM (OLD)');
 
         // 🔧 OLD SYSTEM (Legacy - will be deprecated)
         // FORCE OPCACHE UPDATE: 2025-11-03 05:22

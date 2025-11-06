@@ -47,6 +47,10 @@ class ConversationFlowEngine
                 return $this->fallbackResponse('No active flow configured for this tenant');
             }
 
+            // 🚨 SONNET FIX: Reset flow to start for each new message
+            $conversation->current_node_id = $flow->start_node_id;
+            $conversation->save();
+
             // 🔄 MULTI-NODE EXECUTION LOOP
             $maxIterations = 20; // Prevent infinite loops
             $iteration = 0;
@@ -174,9 +178,12 @@ class ConversationFlowEngine
                 'execution_time_ms' => $executionTime,
             ]);
 
+            // 🚨 SONNET FIX: Use processed response if link_generator ran
+            $finalResponse = $conversation->context_data['processed_ai_response'] ?? $aiResponse;
+
             return [
                 'success' => true,
-                'response' => $aiResponse,
+                'response' => $finalResponse,
                 'nodes_executed' => $executedNodes,
                 'context' => [
                     'flow_name' => $flow->flow_name,

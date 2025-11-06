@@ -79,13 +79,19 @@ class AIWorkflowNode extends Model
      */
     public static function getForTenant($tenantId): array
     {
-        $cacheKey = "ai_workflow_nodes_tenant_{$tenantId}";
+        // IMPORTANT: Change version number if node classes change
+        $version = 'v4'; // Updated to v4 after complete TenantSpecific → Shop namespace migration
+        $cacheKey = "ai_workflow_nodes_tenant_{$tenantId}_{$version}";
 
         return Cache::remember($cacheKey, 3600, function () use ($tenantId) {
+            \Log::info('🔍 AIWorkflowNode::getForTenant called', ['tenant_id' => $tenantId, 'cache_key' => "ai_workflow_nodes_tenant_{$tenantId}"]);
+
             $nodes = collect();
 
             // 1. Get global nodes from CENTRAL DB
             try {
+                \Log::info('🔍 Querying central DB for global nodes');
+
                 $centralNodes = \DB::connection('mysql')->table('ai_workflow_nodes')
                     ->where('is_active', true)
                     ->where('is_global', true)
@@ -93,8 +99,10 @@ class AIWorkflowNode extends Model
                     ->orderBy('order')
                     ->get();
 
+                \Log::info('🔍 Central DB returned ' . $centralNodes->count() . ' nodes');
+
                 foreach ($centralNodes as $node) {
-                    $nodes->push([
+                    $nodeData = [
                         'type' => $node->node_key,
                         'name' => json_decode($node->node_name, true),
                         'description' => json_decode($node->node_description, true),
@@ -103,7 +111,13 @@ class AIWorkflowNode extends Model
                         'icon' => $node->icon,
                         'default_config' => json_decode($node->default_config ?? '[]', true),
                         'is_global' => true,
-                    ]);
+                    ];
+
+                    if ($node->node_key === 'category_detection') {
+                        \Log::info('🔍 category_detection node loaded', ['class' => $node->node_class]);
+                    }
+
+                    $nodes->push($nodeData);
                 }
             } catch (\Exception $e) {
                 \Log::warning('Failed to fetch global nodes from central DB', ['error' => $e->getMessage()]);

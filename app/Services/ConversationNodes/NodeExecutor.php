@@ -29,13 +29,18 @@ class NodeExecutor
 
     /**
      * Constructor
+     *
+     * Initialize registry on construction to ensure it's always fresh
      */
     public function __construct()
     {
-        if (!self::$initialized) {
-            $this->initializeRegistry();
-            self::$initialized = true;
-        }
+        // ALWAYS reinitialize - clear static registry
+        self::$initialized = false;
+        self::$nodeRegistry = [];
+
+        // Initialize from database
+        $this->initializeRegistry();
+        self::$initialized = true;
     }
 
     /**
@@ -43,25 +48,41 @@ class NodeExecutor
      *
      * Loads all active nodes from ai_workflow_nodes table
      * Uses getForTenant() to get both global and tenant-specific nodes
+     *
+     * @param int|null $forceTenantId Force specific tenant ID (overrides tenant() helper)
      */
-    protected function initializeRegistry(): void
+    protected function initializeRegistry(?int $forceTenantId = null): void
     {
         try {
-            // Get tenant ID (if in tenant context)
-            $tenantId = function_exists('tenant') && tenant() ? tenant('id') : null;
+            // Get tenant ID - prioritize forced ID, then tenant context
+            $tenantId = $forceTenantId ?? (function_exists('tenant') && tenant() ? tenant('id') : null);
+
+            Log::info('🔧 Initializing node registry', [
+                'tenant_id' => $tenantId,
+                'has_tenant_context' => !is_null($tenantId),
+            ]);
 
             if ($tenantId) {
                 // Tenant context: Get both global and tenant-specific nodes
                 $nodes = AIWorkflowNode::getForTenant($tenantId);
 
+                Log::info('📦 Nodes fetched from database', [
+                    'count' => count($nodes),
+                    'ALL_NODES' => $nodes, // FULL DATA DEBUG
+                ]);
+
                 foreach ($nodes as $node) {
+                    Log::info('✅ Registering node', [
+                        'type' => $node['type'],
+                        'class' => $node['class'],
+                    ]);
                     self::register($node['type'], $node['class']);
                 }
 
                 Log::info('Node registry initialized from database (tenant context)', [
                     'tenant_id' => $tenantId,
                     'total_nodes' => count(self::$nodeRegistry),
-                    'node_types' => array_keys(self::$nodeRegistry),
+                    'FULL_REGISTRY' => self::$nodeRegistry, // FULL REGISTRY DEBUG
                 ]);
             } else {
                 // Central context: Get only global nodes from central DB
@@ -84,38 +105,18 @@ class NodeExecutor
         } catch (\Exception $e) {
             Log::error('Failed to initialize node registry from database', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
-            // Fallback: Initialize with hardcoded nodes (for safety)
-            $this->initializeHardcodedRegistry();
+            // DO NOT fallback - throw exception so we can see the real problem
+            throw new \Exception('Node registry initialization failed: ' . $e->getMessage(), 0, $e);
         }
     }
 
     /**
-     * Fallback: Initialize with hardcoded nodes
-     * Used when database is not available
+     * [REMOVED] Fallback function removed - always use database
+     * If database fails, system should throw exception, not use stale hardcoded data
      */
-    protected function initializeHardcodedRegistry(): void
-    {
-        // Register common nodes (available to all tenants)
-        self::register('ai_response', \App\Services\ConversationNodes\Common\AIResponseNode::class);
-        self::register('condition', \App\Services\ConversationNodes\Common\ConditionNode::class);
-        self::register('collect_data', \App\Services\ConversationNodes\Common\CollectDataNode::class);
-        self::register('share_contact', \App\Services\ConversationNodes\Common\ShareContactNode::class);
-        self::register('webhook', \App\Services\ConversationNodes\Common\WebhookNode::class);
-        self::register('end', \App\Services\ConversationNodes\Common\EndNode::class);
-
-        // Register tenant-specific nodes (İxtif.com - Tenant ID: 2)
-        self::register('category_detection', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\CategoryDetectionNode::class);
-        self::register('product_recommendation', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\ProductRecommendationNode::class);
-        self::register('price_filter', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\PriceFilterNode::class);
-        self::register('currency_convert', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\CurrencyConvertNode::class);
-        self::register('stock_check', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\StockCheckNode::class);
-        self::register('comparison', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\ComparisonNode::class);
-        self::register('quotation', \App\Services\ConversationNodes\TenantSpecific\Tenant_2\QuotationNode::class);
-
-        Log::warning('Node registry initialized with hardcoded fallback');
-    }
 
     /**
      * Execute a node
@@ -130,6 +131,20 @@ class NodeExecutor
         $startTime = microtime(true);
 
         try {
+            // 🚨 CRITICAL: ALWAYS reinitialize registry on EVERY execute()
+            // This ensures we ALWAYS have fresh tenant context and correct class mappings
+            // Even if constructor was called without tenant context, this will fix it
+            Log::info('🔧 NodeExecutor::execute() - Force reinitializing registry', [
+                'conversation_id' => $conversation->id,
+                'tenant_id' => $conversation->tenant_id,
+                'current_tenant' => tenant() ? tenant('id') : null,
+            ]);
+
+            self::$initialized = false;
+            self::$nodeRegistry = [];
+            $this->initializeRegistry($conversation->tenant_id);
+            self::$initialized = true;
+
             // Validate node data
             if (!isset($nodeData['type'])) {
                 throw new \Exception('Node type not specified');
@@ -210,7 +225,22 @@ class NodeExecutor
 
         $handlerClass = self::$nodeRegistry[$nodeType];
 
+        // DEBUG: Log the registry state for this node type
+        Log::warning('🔍 Resolving node handler', [
+            'node_type' => $nodeType,
+            'handler_class' => $handlerClass,
+            'class_exists' => class_exists($handlerClass),
+            'registry_keys' => array_keys(self::$nodeRegistry),
+        ]);
+
         if (!class_exists($handlerClass)) {
+            // Dump full registry for debugging
+            Log::error('❌ Class not found - dumping registry', [
+                'node_type' => $nodeType,
+                'handler_class' => $handlerClass,
+                'full_registry' => self::$nodeRegistry,
+            ]);
+
             throw new \Exception("Node handler class not found: {$handlerClass}");
         }
 
@@ -248,6 +278,13 @@ class NodeExecutor
      */
     public static function isRegistered(string $type): bool
     {
+        // Lazy init if needed
+        if (!self::$initialized) {
+            $instance = new self();
+            self::$nodeRegistry = [];
+            $instance->initializeRegistry();
+            self::$initialized = true;
+        }
         return isset(self::$nodeRegistry[$type]);
     }
 
@@ -258,6 +295,13 @@ class NodeExecutor
      */
     public static function getRegisteredTypes(): array
     {
+        // Lazy init if needed
+        if (!self::$initialized) {
+            $instance = new self();
+            self::$nodeRegistry = [];
+            $instance->initializeRegistry();
+            self::$initialized = true;
+        }
         return array_keys(self::$nodeRegistry);
     }
 

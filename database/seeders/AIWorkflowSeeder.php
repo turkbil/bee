@@ -47,7 +47,7 @@ class AIWorkflowSeeder extends Seeder
                     'id' => 'node_category',
                     'type' => 'category_detection',
                     'name' => 'Kategori Tespit',
-                    'class' => 'App\\Services\\ConversationNodes\\TenantSpecific\\Tenant_2\\CategoryDetectionNode',
+                    // Class field removed - NodeExecutor resolves from type
                     'config' => [
                         'category_found_node' => 'node_products',
                         'category_not_found_node' => 'node_greeting',
@@ -56,9 +56,9 @@ class AIWorkflowSeeder extends Seeder
                 ],
                 [
                     'id' => 'node_products',
-                    'type' => 'product_recommendation',
-                    'name' => 'Ürün Önerme',
-                    'class' => 'App\\Services\\ConversationNodes\\TenantSpecific\\Tenant_2\\ProductRecommendationNode',
+                    'type' => 'product_search',
+                    'name' => 'Ürün Arama',
+                    // Class field removed - NodeExecutor resolves from type
                     'config' => [
                         'limit' => 5,
                         'include_price' => true,

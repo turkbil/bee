@@ -42,7 +42,7 @@ class DirectiveManager extends Component
     {
         $tenantId = tenant('id');
 
-        $directives = AITenantDirective::where('tenant_id', $tenantId)
+        $query = AITenantDirective::where('tenant_id', $tenantId)
             ->when($this->search, function($query) {
                 $query->where(function($q) {
                     $q->where('directive_key', 'like', '%' . $this->search . '%')
@@ -52,10 +52,15 @@ class DirectiveManager extends Component
             })
             ->when($this->filterCategory !== 'all', function($query) {
                 $query->where('category', $this->filterCategory);
-            })
-            ->orderBy('category', 'asc')
+            });
+
+        // Get all directives for grouping
+        $allDirectives = $query->orderBy('category', 'asc')
             ->orderBy('directive_key', 'asc')
-            ->paginate(20);
+            ->get();
+
+        // Group by category
+        $groupedDirectives = $allDirectives->groupBy('category');
 
         // Category counts
         $categories = AITenantDirective::where('tenant_id', $tenantId)
@@ -64,9 +69,63 @@ class DirectiveManager extends Component
             ->get()
             ->pluck('count', 'category');
 
+        // Category meta info
+        $categoryMeta = [
+            'ai_config' => [
+                'title' => 'AI Configuration',
+                'icon' => 'fa-brain',
+                'color' => 'azure',
+                'description' => 'Core AI behavior and model settings'
+            ],
+            'chat' => [
+                'title' => 'Chat Settings',
+                'icon' => 'fa-comments',
+                'color' => 'blue',
+                'description' => 'Chat interface and messaging configuration'
+            ],
+            'general' => [
+                'title' => 'General',
+                'icon' => 'fa-cog',
+                'color' => 'secondary',
+                'description' => 'General system directives'
+            ],
+            'behavior' => [
+                'title' => 'Behavior',
+                'icon' => 'fa-lightbulb',
+                'color' => 'yellow',
+                'description' => 'AI behavior patterns'
+            ],
+            'display' => [
+                'title' => 'Display',
+                'icon' => 'fa-eye',
+                'color' => 'purple',
+                'description' => 'Visual display settings'
+            ],
+            'pricing' => [
+                'title' => 'Pricing',
+                'icon' => 'fa-dollar-sign',
+                'color' => 'green',
+                'description' => 'Price display and negotiation'
+            ],
+            'lead' => [
+                'title' => 'Lead Collection',
+                'icon' => 'fa-user-plus',
+                'color' => 'orange',
+                'description' => 'Lead capture directives'
+            ],
+            'contact' => [
+                'title' => 'Contact',
+                'icon' => 'fa-phone',
+                'color' => 'cyan',
+                'description' => 'Contact information display'
+            ],
+        ];
+
         return view('ai::livewire.admin.workflow.directive-manager', [
-            'directives' => $directives,
+            'groupedDirectives' => $groupedDirectives,
             'categories' => $categories,
+            'categoryMeta' => $categoryMeta,
+            'totalCount' => $allDirectives->count(),
         ]);
     }
 

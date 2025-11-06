@@ -42,8 +42,31 @@ Bu sistem, **endüstriyel ürün satışı** yapan e-ticaret siteleri için SEO-
 readme/blog-prompt/
 ├── README.md                      # Bu dosya (kullanım kılavuzu)
 ├── 1-blog-taslak-olusturma.md     # İlk aşama: Blog anahattı oluşturma
-└── 2-blog-yazdirma.md             # İkinci aşama: Blog yazma
+├── 2-blog-yazdirma.md             # İkinci aşama: Blog yazma
+└── 3-schema-seo-checklist.md      # Schema.org ve SEO kontrol listesi
 ```
+
+### Dosya Açıklamaları
+
+**1-blog-taslak-olusturma.md**
+- Blog anahattı (outline) oluşturma promptu
+- SEO meta bilgileri (title, description, slug)
+- Schema.org yapılandırılmış veri planlaması
+- Dahili bağlantı stratejisi
+- Görsel & medya planı
+
+**2-blog-yazdirma.md**
+- Bölüm-bölüm blog içeriği yazma promptu
+- SEO optimizasyonu (anahtar kelime yoğunluğu, LSI terimleri)
+- Featured snippet optimizasyonu
+- Schema markup uyumlu içerik yapısı
+
+**3-schema-seo-checklist.md**
+- Schema.org validation checklist
+- On-page SEO kontrolleri (title, meta, H1-H3)
+- İçerik kalitesi kriterleri
+- Teknik SEO kontrolleri
+- Test araçları ve metrikler
 
 ---
 
@@ -157,12 +180,31 @@ Manuel transpalet, hidrolik sistem ile çalışır...
 - ✅ Teknik detaylı, profesyonel üslup
 - ✅ Kaynak referansları (endüstri standartları, teknik dökümanlar)
 - ✅ Dahili bağlantılar (inline)
+- ✅ Featured snippet optimizasyonu (liste, tablo, tanım)
+- ✅ Schema markup uyumlu içerik
 
 **Kurallar:**
 - İlk 100 kelimede ana anahtar kelime
 - Eş anlamlı/LSI kullanımı
 - Uzun kuyruklu anahtar kelimeler
 - Teknik kaynak zorunlu (ISO, CE, TSE, üretici dökümanları)
+- Keyword density: %1-2
+
+---
+
+### 3. Schema & SEO Checklist
+
+**Kapsam:**
+- ✅ Schema.org yapılandırılmış veriler (Article, FAQPage, Product, HowTo, BreadcrumbList)
+- ✅ On-page SEO kontrolleri (title, meta, URL, başlıklar)
+- ✅ İçerik kalitesi metrikleri (okunabilirlik, E-A-T)
+- ✅ Teknik SEO (mobil uyumluluk, sayfa hızı, canonical)
+- ✅ Test araçları (Google Rich Results Test, PageSpeed Insights)
+
+**Kullanım:**
+- İçerik yayınlanmadan önce tüm maddeleri kontrol et
+- Schema validation araçlarıyla test et
+- SEO skorunu ölç ve optimize et
 
 ---
 
@@ -208,6 +250,20 @@ Bölüm 3: H2 - Transpalet Teknik Özellikleri
 ...
 ```
 
+**4. Yayın Öncesi Kontrol:**
+```
+[3-schema-seo-checklist.md kontrol listesini kullan]
+
+✓ Schema.org validation (Article, FAQPage, BreadcrumbList)
+✓ Title tag optimize edilmiş (50-60 karakter)
+✓ Meta description optimize edilmiş (155-160 karakter)
+✓ Tüm görsellerde alt text var
+✓ Minimum 5 dahili bağlantı
+✓ Minimum 3 otorite dış kaynak
+✓ Google Rich Results Test → Hata yok
+✓ PageSpeed Insights → Score >80
+```
+
 ---
 
 ## ✅ En İyi Uygulamalar
@@ -225,10 +281,19 @@ Bölüm 3: H2 - Transpalet Teknik Özellikleri
 - ✅ Teknik spesifikasyonları madde listesi ile sun
 
 ### SEO ve Kullanıcı Deneyimi
-- ✅ FAQ bloğunu şema-uyumlu yaz
-- ✅ Dahili bağlantıları stratejik kullan
+- ✅ FAQ bloğunu şema-uyumlu yaz (FAQPage Schema)
+- ✅ Dahili bağlantıları stratejik kullan (semantik anchor text)
 - ✅ Cümleleri kısa tut (≤20 kelime)
 - ✅ Profesyonel, objektif ton kullan
+- ✅ Featured snippet hedefle (tanım, liste, tablo)
+
+### Schema.org Yapılandırılmış Veriler
+- ✅ **Article Schema**: Her blog içeriğinde zorunlu
+- ✅ **FAQPage Schema**: FAQ bölümü için zorunlu
+- ✅ **BreadcrumbList Schema**: Kategori hiyerarşisi için
+- ✅ **Product Schema**: Ürün içeriklerinde (teknik özellikler, fiyat)
+- ✅ **HowTo Schema**: Kullanım rehberi içeriklerinde (adım-adım)
+- ✅ Google Rich Results Test ile validation yap
 
 ### Kaynak Kullanımı
 - ✅ Her bölüm sonunda 1-2 otorite kaynak
@@ -292,5 +357,46 @@ Bölüm 3: H2 - Transpalet Teknik Özellikleri
 
 ---
 
+## 🧪 Test & Validation Araçları
+
+### Schema.org Validation
+- 🔗 [Google Rich Results Test](https://search.google.com/test/rich-results) - Schema markup test
+- 🔗 [Schema.org Validator](https://validator.schema.org/) - Schema syntax validation
+- 🔗 [Google Search Console](https://search.google.com/search-console) - Index durumu, mobile usability
+
+### SEO Audit
+- 🔗 [PageSpeed Insights](https://pagespeed.web.dev/) - Sayfa hızı ve Core Web Vitals
+- 🔗 [GTmetrix](https://gtmetrix.com/) - Performance analizi
+- 🔗 [Screaming Frog SEO Spider](https://www.screamingfrogseoseo.com/) - Site crawl, SEO audit
+
+### Okunabilirlik & İçerik
+- 🔗 [Hemingway Editor](http://www.hemingwayapp.com/) - Okunabilirlik skoru
+- 🔗 [Grammarly](https://www.grammarly.com/) - Grammar & style check
+- 🔗 [Yoast SEO](https://yoast.com/) - WordPress SEO plugin (SEO score, readability)
+
+---
+
+## 📊 SEO Başarı Metrikleri
+
+### 90 Gün Hedefler
+- 🎯 **Organic Traffic**: %200 artış
+- 🎯 **Anahtar Kelime Sıralaması**:
+  - Ana anahtar kelime: Top 5
+  - Destek anahtar kelimeler: Top 10
+- 🎯 **Featured Snippet**: Minimum 1 snippet kazanımı
+- 🎯 **CTR**: >5% (organic search)
+- 🎯 **Engagement**:
+  - Bounce rate: <60%
+  - Avg. session duration: >2 dakika
+  - Pages per session: >2
+
+### Takip Araçları
+- **Google Analytics**: Traffic, engagement, conversion
+- **Google Search Console**: Anahtar kelime sıralaması, CTR, impression
+- **Ahrefs/SEMrush**: Backlink, domain authority, competitor analysis
+
+---
+
 **Hazırlayan:** Claude AI + Nurullah
 **Hedef:** Türkiye pazarında endüstriyel ürün satışı için SEO-optimize blog içerikleri
+**Güncelleme Tarihi:** 6 Kasım 2025

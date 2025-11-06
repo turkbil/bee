@@ -67,11 +67,11 @@
 
                 <!-- Category Header -->
                 <div class="col-12 mb-2">
-                    <div class="d-flex align-items-center p-2 bg-{{ $meta['color'] }}-lt dark:bg-{{ $meta['color'] }}-lt rounded">
-                        <i class="fa {{ $meta['icon'] }} me-2 text-{{ $meta['color'] }} dark:text-{{ $meta['color'] }}"></i>
-                        <h3 class="mb-0 h4 text-gray-900 dark:text-white">{{ $meta['title'] }}</h3>
+                    <div class="d-flex align-items-center p-3 bg-{{ $meta['color'] }}-lt rounded">
+                        <i class="fa {{ $meta['icon'] }} me-3 text-{{ $meta['color'] }}" style="font-size: 1.25rem;"></i>
+                        <h3 class="mb-0 h3">{{ $meta['title'] }}</h3>
                         <div class="ms-auto">
-                            <span class="badge bg-{{ $meta['color'] }} text-white">
+                            <span class="badge bg-light text-dark">
                                 {{ $directives->count() }}
                             </span>
                         </div>
@@ -83,11 +83,14 @@
                     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                         <div class="card module-card">
                             <!-- Card Header -->
-                            <div class="card-header d-flex align-items-center bg-{{ $meta['color'] }}-lt dark:bg-{{ $meta['color'] }}-lt">
+                            <div class="card-header d-flex align-items-center">
                                 <div class="me-auto">
-                                    <h3 class="card-title mb-0">
-                                        <code class="text-{{ $meta['color'] }} dark:text-{{ $meta['color'] }}">{{ $directive->directive_key }}</code>
+                                    <h3 class="card-title mb-1" style="font-size: 1rem;">
+                                        <strong>{{ $directive->directive_key }}</strong>
                                     </h3>
+                                    @if($directive->description)
+                                        <p class="text-muted mb-0" style="font-size: 0.875rem;">{{ Str::limit($directive->description, 50) }}</p>
+                                    @endif
                                 </div>
                                 <div class="dropdown">
                                     <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
@@ -115,25 +118,32 @@
                                 @if($editingDirective === $directive->id)
                                     <!-- Edit Mode -->
                                     <div class="list-group-item">
-                                        <div class="mb-2">
-                                            <label class="form-label form-label-sm">{{ __('ai::admin.workflow.value') }}</label>
-                                            @if($directive->directive_type === 'json' || strlen($directive->directive_value) > 100)
-                                                <textarea wire:model.defer="directiveValue"
-                                                          class="form-control form-control-sm font-monospace"
-                                                          rows="4"></textarea>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ __('ai::admin.workflow.value') }}</label>
+                                            @if($directive->directive_type === 'json')
+                                                <button type="button" class="btn btn-outline-primary w-100"
+                                                        onclick="openJsonEditor({{ $directive->id }}, @js($directive->directive_value))">
+                                                    <i class="fa fa-code me-2"></i>
+                                                    JSON Düzenleyici Aç
+                                                </button>
+                                                <textarea wire:model.defer="directiveValue" class="form-control font-monospace mt-2"
+                                                          rows="6" style="font-size: 0.875rem;"></textarea>
+                                            @elseif(strlen($directive->directive_value) > 100)
+                                                <textarea wire:model.defer="directiveValue" class="form-control"
+                                                          rows="4" style="font-size: 0.875rem;"></textarea>
                                             @else
-                                                <input type="text" wire:model.defer="directiveValue"
-                                                       class="form-control form-control-sm font-monospace">
+                                                <input type="text" wire:model.defer="directiveValue" class="form-control"
+                                                       style="font-size: 0.875rem;">
                                             @endif
                                             @error('directiveValue')
-                                                <div class="text-danger small mt-1">{{ $message }}</div>
+                                                <div class="text-danger mt-1">{{ $message }}</div>
                                             @enderror
                                         </div>
 
-                                        <div class="row mb-2">
+                                        <div class="row mb-3">
                                             <div class="col-6">
-                                                <label class="form-label form-label-sm">{{ __('ai::admin.workflow.type') }}</label>
-                                                <select wire:model.defer="directiveType" class="form-select form-select-sm">
+                                                <label class="form-label">{{ __('ai::admin.workflow.type') }}</label>
+                                                <select wire:model.defer="directiveType" class="form-select">
                                                     <option value="string">String</option>
                                                     <option value="integer">Integer</option>
                                                     <option value="boolean">Boolean</option>
@@ -142,8 +152,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-6">
-                                                <label class="form-label form-label-sm">{{ __('ai::admin.workflow.category') }}</label>
-                                                <select wire:model.defer="directiveCategory" class="form-select form-select-sm">
+                                                <label class="form-label">{{ __('ai::admin.workflow.category') }}</label>
+                                                <select wire:model.defer="directiveCategory" class="form-select">
                                                     <option value="ai_config">AI Config</option>
                                                     <option value="chat">Chat</option>
                                                     <option value="general">General</option>
@@ -156,11 +166,9 @@
                                             </div>
                                         </div>
 
-                                        <div class="mb-2">
-                                            <label class="form-label form-label-sm">{{ __('ai::admin.description') }}</label>
-                                            <textarea wire:model.defer="directiveDescription"
-                                                      class="form-control form-control-sm"
-                                                      rows="2"></textarea>
+                                        <div class="mb-3">
+                                            <label class="form-label">{{ __('ai::admin.description') }}</label>
+                                            <textarea wire:model.defer="directiveDescription" class="form-control" rows="2"></textarea>
                                         </div>
 
                                         <div class="mb-3">
@@ -171,37 +179,45 @@
                                         </div>
 
                                         <div class="btn-group w-100">
-                                            <button wire:click="saveDirective" class="btn btn-success btn-sm">
-                                                <i class="fa fa-check me-1"></i> {{ __('ai::admin.save') }}
+                                            <button wire:click="saveDirective" class="btn btn-success">
+                                                <i class="fa fa-check me-2"></i> {{ __('ai::admin.save') }}
                                             </button>
-                                            <button wire:click="cancelEdit" class="btn btn-secondary btn-sm">
-                                                <i class="fa fa-times me-1"></i> {{ __('ai::admin.cancel') }}
+                                            <button wire:click="cancelEdit" class="btn btn-secondary">
+                                                <i class="fa fa-times me-2"></i> {{ __('ai::admin.cancel') }}
                                             </button>
                                         </div>
                                     </div>
                                 @else
                                     <!-- View Mode -->
                                     <div class="list-group-item py-2">
-                                        <div class="d-flex align-items-center">
-                                            <span class="badge bg-{{ $meta['color'] }} text-white me-2">{{ $directive->directive_type }}</span>
-                                            @if($directive->description)
-                                                <small class="text-gray-700 dark:text-gray-300">{{ Str::limit($directive->description, 40) }}</small>
-                                            @endif
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-light text-dark">{{ $directive->directive_type }}</span>
+                                            <span class="badge bg-light text-dark">{{ ucfirst($directive->category) }}</span>
                                         </div>
                                     </div>
-                                    <div class="list-group-item py-3 px-2 mx-1">
-                                        @if($directive->directive_type === 'json' || strlen($directive->directive_value) > 80)
-                                            <details class="mb-0">
-                                                <summary class="text-gray-700 dark:text-gray-300 cursor-pointer">
-                                                    <small>
-                                                        <i class="fa fa-chevron-right me-1"></i>
-                                                        {{ Str::limit($directive->directive_value, 60) }}
-                                                    </small>
+                                    <div class="list-group-item py-3">
+                                        @if($directive->directive_type === 'json')
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="text-muted">JSON Value:</span>
+                                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                                        onclick="viewJson(@js($directive->directive_value), '{{ $directive->directive_key }}')">
+                                                    <i class="fa fa-eye me-1"></i> Görüntüle
+                                                </button>
+                                            </div>
+                                            <code class="d-block p-2 bg-light rounded" style="font-size: 0.75rem; max-height: 100px; overflow: hidden;">{{ Str::limit($directive->directive_value, 150) }}</code>
+                                        @elseif(strlen($directive->directive_value) > 80)
+                                            <details>
+                                                <summary class="cursor-pointer mb-2">
+                                                    <strong>{{ Str::limit($directive->directive_value, 60) }}</strong>
                                                 </summary>
-                                                <pre class="bg-light dark:bg-gray-800 p-2 rounded mt-2 small mb-0 text-gray-900 dark:text-gray-100"><code>{{ $directive->directive_value }}</code></pre>
+                                                <div class="p-2 bg-light rounded mt-2">
+                                                    <code style="font-size: 0.875rem; white-space: pre-wrap;">{{ $directive->directive_value }}</code>
+                                                </div>
                                             </details>
                                         @else
-                                            <code class="small text-gray-900 dark:text-gray-100">{{ $directive->directive_value }}</code>
+                                            <div class="p-2 bg-light rounded">
+                                                <code style="font-size: 0.875rem;">{{ $directive->directive_value }}</code>
+                                            </div>
                                         @endif
                                     </div>
                                 @endif
@@ -211,21 +227,14 @@
                             @if($editingDirective !== $directive->id)
                                 <div class="card-footer">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <div class="d-flex gap-2">
-                                            <span class="text-gray-700 dark:text-gray-300 small">
-                                                {{ ucfirst($directive->category) }}
-                                            </span>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                                <input type="checkbox" wire:click="toggleStatus({{ $directive->id }})"
-                                                       {{ $directive->is_active ? 'checked' : '' }} value="1" />
-                                                <div class="state p-success p-on ms-2">
-                                                    <label>{{ __('ai::admin.active') }}</label>
-                                                </div>
-                                                <div class="state p-danger p-off ms-2">
-                                                    <label>{{ __('ai::admin.inactive') }}</label>
-                                                </div>
+                                        <div class="pretty p-default p-curve p-toggle p-smooth">
+                                            <input type="checkbox" wire:click="toggleStatus({{ $directive->id }})"
+                                                   {{ $directive->is_active ? 'checked' : '' }} value="1" />
+                                            <div class="state p-success p-on ms-2">
+                                                <label>{{ __('ai::admin.active') }}</label>
+                                            </div>
+                                            <div class="state p-danger p-off ms-2">
+                                                <label>{{ __('ai::admin.inactive') }}</label>
                                             </div>
                                         </div>
                                     </div>
@@ -247,7 +256,7 @@
                         </p>
                         <div class="empty-action">
                             <button wire:click="openNewModal" class="btn btn-primary">
-                                <i class="fa fa-plus me-1"></i>
+                                <i class="fa fa-plus me-2"></i>
                                 {{ __('ai::admin.workflow.new_directive') }}
                             </button>
                         </div>
@@ -273,7 +282,7 @@
                         <input type="text" wire:model.defer="directiveKey" class="form-control"
                                placeholder="e.g. max_products_per_response">
                         @error('directiveKey')
-                            <span class="text-danger small">{{ $message }}</span>
+                            <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="row">
@@ -281,14 +290,19 @@
                             <div class="mb-3">
                                 <label class="form-label required">{{ __('ai::admin.workflow.value') }}</label>
                                 @if($directiveType === 'json')
+                                    <button type="button" class="btn btn-outline-primary w-100 mb-2"
+                                            onclick="openJsonEditorNew()">
+                                        <i class="fa fa-code me-2"></i>
+                                        JSON Düzenleyici Aç
+                                    </button>
                                     <textarea wire:model.defer="directiveValue" class="form-control font-monospace"
-                                              rows="5" placeholder='{"key": "value"}'></textarea>
+                                              rows="6" placeholder='{"key": "value"}'></textarea>
                                 @else
                                     <input type="text" wire:model.defer="directiveValue" class="form-control"
                                            placeholder="e.g. 5">
                                 @endif
                                 @error('directiveValue')
-                                    <span class="text-danger small">{{ $message }}</span>
+                                    <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
@@ -333,7 +347,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn me-auto" wire:click="closeNewModal">{{ __('ai::admin.cancel') }}</button>
                     <button type="button" class="btn btn-primary" wire:click="saveDirective">
-                        <i class="fa fa-check me-1"></i>
+                        <i class="fa fa-check me-2"></i>
                         {{ __('ai::admin.save') }}
                     </button>
                 </div>
@@ -342,3 +356,56 @@
     </div>
     <div class="modal-backdrop fade show"></div>
 @endif
+
+<!-- JSON Viewer/Editor Modal -->
+<div id="jsonModal" class="modal modal-blur" tabindex="-1" style="display: none;">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">JSON Görüntüleyici</h5>
+                <button type="button" class="btn-close" onclick="closeJsonModal()"></button>
+            </div>
+            <div class="modal-body">
+                <pre id="jsonContent" class="p-3 bg-light rounded" style="font-size: 1rem; max-height: 70vh; overflow: auto;"><code></code></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeJsonModal()">{{ __('ai::admin.close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+function viewJson(jsonString, title) {
+    try {
+        const jsonObj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+        const formatted = JSON.stringify(jsonObj, null, 2);
+        document.querySelector('#jsonModal .modal-title').textContent = 'JSON: ' + title;
+        document.querySelector('#jsonContent code').textContent = formatted;
+        document.getElementById('jsonModal').style.display = 'block';
+        document.body.classList.add('modal-open');
+    } catch(e) {
+        alert('JSON parse hatası: ' + e.message);
+    }
+}
+
+function closeJsonModal() {
+    document.getElementById('jsonModal').style.display = 'none';
+    document.body.classList.remove('modal-open');
+}
+
+function openJsonEditor(id, jsonString) {
+    viewJson(jsonString, 'Directive #' + id);
+}
+
+function openJsonEditorNew() {
+    const textarea = document.querySelector('[wire\\:model\\.defer="directiveValue"]');
+    if (textarea && textarea.value) {
+        viewJson(textarea.value, 'New Directive');
+    } else {
+        alert('Lütfen önce JSON değerini girin');
+    }
+}
+</script>
+@endpush

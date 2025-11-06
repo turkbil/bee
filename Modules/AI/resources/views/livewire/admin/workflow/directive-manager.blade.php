@@ -127,11 +127,11 @@
                                                     <i class="fa fa-code me-2"></i>
                                                     JSON Düzenleyici Aç
                                                 </button>
-                                                <textarea wire:model.defer="directiveValue" class="form-control font-monospace mt-2"
-                                                          rows="6" style="font-size: 0.875rem;"></textarea>
+                                                <textarea wire:model.defer="directiveValue" class="form-control mt-2"
+                                                          rows="6" style="font-size: 0.875rem; line-height: 1.6;"></textarea>
                                             @elseif(strlen($directive->directive_value) > 100)
                                                 <textarea wire:model.defer="directiveValue" class="form-control"
-                                                          rows="4" style="font-size: 0.875rem;"></textarea>
+                                                          rows="4" style="font-size: 0.875rem; line-height: 1.6;"></textarea>
                                             @else
                                                 <input type="text" wire:model.defer="directiveValue" class="form-control"
                                                        style="font-size: 0.875rem;">
@@ -205,19 +205,19 @@
                                                     <i class="fa fa-eye me-1"></i> Görüntüle
                                                 </button>
                                             </div>
-                                            <code class="d-block p-2 bg-light rounded" style="font-size: 0.75rem; max-height: 100px; overflow: hidden;">{{ Str::limit($directive->directive_value, 150) }}</code>
+                                            <div class="p-2 bg-light rounded" style="font-size: 0.875rem; max-height: 100px; overflow: hidden;">{{ Str::limit($directive->directive_value, 150) }}</div>
                                         @elseif(strlen($directive->directive_value) > 80)
                                             <details>
                                                 <summary class="cursor-pointer mb-2">
                                                     <strong>{{ Str::limit($directive->directive_value, 60) }}</strong>
                                                 </summary>
-                                                <div class="p-2 bg-light rounded mt-2">
-                                                    <code style="font-size: 0.875rem; white-space: pre-wrap;">{{ $directive->directive_value }}</code>
+                                                <div class="p-2 bg-light rounded mt-2" style="font-size: 0.875rem; white-space: pre-wrap;">
+                                                    {{ $directive->directive_value }}
                                                 </div>
                                             </details>
                                         @else
-                                            <div class="p-2 bg-light rounded">
-                                                <code style="font-size: 0.875rem;">{{ $directive->directive_value }}</code>
+                                            <div class="p-2 bg-light rounded" style="font-size: 0.875rem;">
+                                                {{ $directive->directive_value }}
                                             </div>
                                         @endif
                                     </div>
@@ -296,8 +296,8 @@
                                         <i class="fa fa-code me-2"></i>
                                         JSON Düzenleyici Aç
                                     </button>
-                                    <textarea wire:model.defer="directiveValue" class="form-control font-monospace"
-                                              rows="6" placeholder='{"key": "value"}'></textarea>
+                                    <textarea wire:model.defer="directiveValue" class="form-control"
+                                              rows="6" style="line-height: 1.6;" placeholder='{"key": "value"}'></textarea>
                                 @else
                                     <input type="text" wire:model.defer="directiveValue" class="form-control"
                                            placeholder="e.g. 5">
@@ -363,14 +363,26 @@
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">JSON Görüntüleyici</h5>
+                <h5 class="modal-title">JSON Düzenleyici</h5>
                 <button type="button" class="btn-close" onclick="closeJsonModal()"></button>
             </div>
             <div class="modal-body">
-                <pre id="jsonContent" class="p-3 bg-light rounded" style="font-size: 1rem; max-height: 70vh; overflow: auto;"><code></code></pre>
+                <textarea id="jsonTextarea" class="form-control p-3 bg-light"
+                          style="min-height: 60vh; font-size: 1rem; line-height: 1.6;"
+                          rows="20"></textarea>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fa fa-info-circle me-1"></i>
+                        JSON formatını koruyarak düzenleyebilirsiniz. Kaydetmek için "Değişiklikleri Uygula" butonuna tıklayın.
+                    </small>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeJsonModal()">{{ __('ai::admin.close') }}</button>
+                <button type="button" class="btn btn-secondary me-auto" onclick="closeJsonModal()">{{ __('ai::admin.close') }}</button>
+                <button type="button" class="btn btn-primary" onclick="applyJsonChanges()">
+                    <i class="fa fa-check me-2"></i>
+                    Değişiklikleri Uygula
+                </button>
             </div>
         </div>
     </div>
@@ -378,12 +390,14 @@
 
     @push('scripts')
     <script>
+    let currentTargetTextarea = null;
+
     function viewJson(jsonString, title) {
         try {
             const jsonObj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
             const formatted = JSON.stringify(jsonObj, null, 2);
             document.querySelector('#jsonModal .modal-title').textContent = 'JSON: ' + title;
-            document.querySelector('#jsonContent code').textContent = formatted;
+            document.getElementById('jsonTextarea').value = formatted;
             document.getElementById('jsonModal').style.display = 'block';
             document.body.classList.add('modal-open');
         } catch(e) {
@@ -394,15 +408,41 @@
     function closeJsonModal() {
         document.getElementById('jsonModal').style.display = 'none';
         document.body.classList.remove('modal-open');
+        currentTargetTextarea = null;
+    }
+
+    function applyJsonChanges() {
+        const textarea = document.getElementById('jsonTextarea');
+        const jsonValue = textarea.value;
+
+        // JSON geçerliliğini kontrol et
+        try {
+            JSON.parse(jsonValue);
+
+            // Eğer target textarea varsa oraya yaz (edit mode)
+            if (currentTargetTextarea) {
+                currentTargetTextarea.value = jsonValue;
+                // Livewire'a bildirmek için input event tetikle
+                currentTargetTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            closeJsonModal();
+            alert('✅ Değişiklikler uygulandı!');
+        } catch(e) {
+            alert('❌ Geçersiz JSON formatı: ' + e.message);
+        }
     }
 
     function openJsonEditor(id, jsonString) {
+        // Edit mode'daki textarea'yı bul
+        currentTargetTextarea = document.querySelector('[wire\\:model\\.defer="directiveValue"]');
         viewJson(jsonString, 'Directive #' + id);
     }
 
     function openJsonEditorNew() {
         const textarea = document.querySelector('[wire\\:model\\.defer="directiveValue"]');
         if (textarea && textarea.value) {
+            currentTargetTextarea = textarea;
             viewJson(textarea.value, 'New Directive');
         } else {
             alert('Lütfen önce JSON değerini girin');

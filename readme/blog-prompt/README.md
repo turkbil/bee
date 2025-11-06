@@ -1,65 +1,63 @@
-# 📝 Blog Prompt Sistemi
+# 📝 Blog Prompt Sistemi - Endüstriyel Ürün Satışı
 
-> **Endüstriyel ürün satışı için 2 aşamalı blog yazdırma sistemi**
+> **Türkiye pazarında endüstriyel ürün satışı için SEO-optimize blog içerik üretim sistemi**
 
 ---
 
-## 🚀 TEK DOSYA YETERLİ!
+## 🎯 Sistem Yapısı & Hangi Dosyayı Kullanmalıyım?
 
+### 📊 Dosyaların Kullanım Amaçları
+
+| Dosya | Kullanım Amacı | Ne Zaman Kullan? | Öncelik |
+|-------|----------------|------------------|---------|
+| **🤖 CHATGPT-AGENT-SYSTEM.md** | ChatGPT agent sistemi | Otomatik blog üretimi | ⭐⭐⭐⭐⭐ |
+| **🚀 AGENT-WORKFLOW-GUIDE.md** | Adım adım kullanım kılavuzu | Agent workflow öğrenme | ⭐⭐⭐⭐⭐ |
+| **💾 SQL-EXAMPLES.sql** | Hazır SQL örnekleri | Veritabanı işlemleri | ⭐⭐⭐⭐⭐ |
+| **🎯 SEO-EKSIKLER-VE-COZUMLER.md** | SEO analiz raporu | Eksikleri tespit et | ⭐⭐⭐⭐⭐ |
+| **✨ 4-gelismis-seo-eklentileri.md** | Video, Review, Social SEO | Gelişmiş optimizasyon | ⭐⭐⭐⭐⭐ |
+| **BLOG-YAZDIRMA-AKISI.md** | Hızlı blog yazdırma (2 aşama) | Manuel blog yazdırma | ⭐⭐⭐⭐ |
+| **1-blog-taslak-olusturma.md** | Detaylı taslak promptu | Özel taslak ihtiyacı | ⭐⭐⭐ |
+| **2-blog-yazdirma.md** | Detaylı içerik yazma promptu | Özel yazım ihtiyacı | ⭐⭐⭐ |
+| **3-schema-seo-checklist.md** | Final kontrol listesi | Yayın öncesi | ⭐⭐⭐⭐ |
+| **MASTER-GUIDE.md** | Komple referans dökümanı | Detaylı öğrenme | ⭐⭐⭐ |
+
+---
+
+## 🚀 HIZLI BAŞLANGIÇ
+
+### Blog Yazdırma İçin 4 Seçenek:
+
+#### 🤖 **AGENT SİSTEMİ** (EN HIZLI - Önerilen)
 ```
-📌 BLOG-YAZDIRMA-AKISI.md    # SADECE BUNU KULLAN
+📌 CHATGPT-AGENT-SYSTEM.md kullan
+   ↓
+   ChatGPT → SQL → Veritabanı
+   ↓
+   10 dakikada hazır!
 ```
 
-### Nasıl Çalışır?
+#### 1️⃣ **MANUEL HIZLI YOL**
+```
+📌 BLOG-YAZDIRMA-AKISI.md kullan
+   ↓
+   2 aşama: Taslak → İçerik
+   ↓
+   1 saatte hazır
+```
 
-**2 Basit Aşama:**
-1. **TASLAK OLUŞTUR** → Yapı ve plan
-2. **GERÇEK İÇERİK YAZ** → Taslağı doldur
+#### 2️⃣ **DETAYLI YOL**
+```
+1-blog-taslak-olusturma.md → Taslak oluştur
+   ↓
+2-blog-yazdirma.md → İçerik yaz
+   ↓
+3-schema-seo-checklist.md → Kontrol et
+```
 
-**Süre:** ~1 saat
-**Sonuç:** 2000-2500 kelimelik SEO-optimize blog
-
----
-
-## 🎯 Hızlı Başlangıç
-
-1. `BLOG-YAZDIRMA-AKISI.md` dosyasını aç
-2. Taslak prompt'unu kopyala → Taslak oluştur
-3. İçerik prompt'unu kopyala → Blog yaz
-4. Schema ekle → Yayınla!
-
----
-
-## 💡 Özellikler
-
-✅ **Hazır Promptlar** - Kopyala/Yapıştır
-✅ **2 Aşamalı Sistem** - Önce taslak, sonra içerik
-✅ **SEO Optimize** - Title, meta, schema dahil
-✅ **SSS Stratejisi** - 10 soru-cevap
-✅ **B2B Odaklı** - Endüstriyel ürün satışı için
-
----
-
-## 📊 Çıktı
-
-Her blog için alacağınız çıktı:
-- 2000-2500 kelime içerik
-- SEO meta bilgileri (title, description, slug)
-- H1/H2/H3 başlık yapısı
-- 10 adet SSS (FAQ)
-- Schema.org markup (Article + FAQPage)
-- 5+ dahili link önerisi
-- 3+ otorite kaynak
-- Görsel önerileri + alt text
-
----
-
-## 🎯 Hedef Kitle
-
-- **Sektör:** Endüstriyel ürün satışı
-- **Pazar:** Türkiye B2B
-- **Okuyucu:** Satın alma müdürleri, depo yöneticileri, teknik ekipler
-- **Yaş:** 25-65
+#### 3️⃣ **ÖĞRENME YOLU**
+```
+MASTER-GUIDE.md → Tüm sistemi öğren
+```
 
 ---
 
@@ -67,8 +65,17 @@ Her blog için alacağınız çıktı:
 
 ```
 readme/blog-prompt/
-├── BLOG-YAZDIRMA-AKISI.md    # Ana dosya (kullan bunu)
-└── README.md                  # Bu dosya (açıklama)
+├── 🤖 CHATGPT-AGENT-SYSTEM.md         # ChatGPT agent sistemi
+├── 🚀 AGENT-WORKFLOW-GUIDE.md         # Agent kullanım kılavuzu
+├── 💾 SQL-EXAMPLES.sql                 # Hazır SQL örnekleri
+├── 🎯 SEO-EKSIKLER-VE-COZUMLER.md     # SEO analiz raporu (YENİ!)
+├── ✨ 4-gelismis-seo-eklentileri.md   # Gelişmiş SEO (YENİ!)
+├── 📌 BLOG-YAZDIRMA-AKISI.md          # Hızlı blog (2 aşama)
+├── 📝 1-blog-taslak-olusturma.md      # Taslak promptu
+├── ✍️ 2-blog-yazdirma.md              # İçerik yazma promptu
+├── ✅ 3-schema-seo-checklist.md       # Kontrol listesi
+├── 📚 MASTER-GUIDE.md                 # Referans dökümanı
+└── 📋 README.md                       # Bu dosya (genel bakış)
 ```
 
 ---

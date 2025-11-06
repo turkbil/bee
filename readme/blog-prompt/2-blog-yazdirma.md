@@ -144,6 +144,7 @@ Dosya yapısı veya bölüm konumu net değilse önce **tek** soru sor.
 
 ## ÖRNEK KULLANIM
 
+### Giriş Örneği
 ```
 Blog Outline: Transpalet Nedir? (2.000 kelime)
 Şu anki Bölüm: H2 - Transpalet Çeşitleri
@@ -155,6 +156,44 @@ Beklenen Çıktı:
 - Madde listesi veya karşılaştırma tablosu
 - İlgili kaynak (ISO standartları, üretici teknik döküman vb.)
 - Dahili bağlantı fırsatı varsa eklenir
+```
+
+### Örnek Çıktı
+
+```markdown
+## Transpalet Çeşitleri
+
+Endüstriyel malzeme taşımada kullanılan transpaletler, işletme ihtiyaçlarına göre farklı tiplerde üretilmektedir. Her transpalet çeşidi, belirli çalışma koşulları ve yük kapasiteleri için optimize edilmiştir. Doğru transpalet seçimi, hem iş verimliliğini artırır hem de operasyonel maliyetleri düşürür.
+
+Modern lojistik sektöründe üç ana transpalet kategorisi öne çıkmaktadır. Manuel transpaletler, elektrikli transpaletler ve özel amaçlı transpalet modelleri, farklı kullanım senaryolarına çözüm sunar. İşletmenizin ihtiyaçlarına uygun [transpalet modeli seçimi](/transpalet-secim-rehberi), uzun vadeli yatırım getirisini doğrudan etkiler.
+
+### Manuel Transpalet
+
+Manuel transpaletler, hidrolik pompa sistemiyle çalışan ekonomik çözümlerdir. Operatör kol hareketleriyle hidrolik pompayı çalıştırır ve paletin yerden kalkmasını sağlar. Günlük kullanım sıklığı düşük olan işletmeler için ideal seçimdir.
+
+**Teknik Özellikler:**
+- Kapasite: 2.000-3.000 kg
+- Çatal uzunluğu: 800-2.000 mm
+- Kaldırma yüksekliği: 85-200 mm
+- Ağırlık: 60-90 kg
+
+**Avantaj ve Dezavantajlar:**
+
+| Avantajlar | Dezavantajlar |
+|------------|---------------|
+| Düşük ilk yatırım maliyeti | Uzun mesafelerde yorucu |
+| Bakım gereksinimleri minimal | Yüksek tonajlarda zorluk |
+| Elektrik/yakıt gerektirmez | Hız limiti var |
+| Her zeminde kullanım | Eğimli zeminlerde risk |
+
+[Devam eder...]
+
+---
+**SEO Notları:**
+✓ Kullanılan anahtar kelimeler: manuel transpalet (2x), hidrolik (1x), transpalet çeşitleri (1x)
+✓ LSI terimleri: pompa, operatör, kapasite, çatal uzunluğu
+✓ Dahili bağlantı: transpalet-secim-rehberi
+✓ Görsel önerisi: "Manuel transpalet teknik çizimi ve ölçüleri"
 ```
 
 ---

@@ -1,3 +1,4 @@
+<div>
 @include('ai::helper')
 
 <div class="card">
@@ -375,37 +376,38 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
-function viewJson(jsonString, title) {
-    try {
-        const jsonObj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
-        const formatted = JSON.stringify(jsonObj, null, 2);
-        document.querySelector('#jsonModal .modal-title').textContent = 'JSON: ' + title;
-        document.querySelector('#jsonContent code').textContent = formatted;
-        document.getElementById('jsonModal').style.display = 'block';
-        document.body.classList.add('modal-open');
-    } catch(e) {
-        alert('JSON parse hatası: ' + e.message);
+    @push('scripts')
+    <script>
+    function viewJson(jsonString, title) {
+        try {
+            const jsonObj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
+            const formatted = JSON.stringify(jsonObj, null, 2);
+            document.querySelector('#jsonModal .modal-title').textContent = 'JSON: ' + title;
+            document.querySelector('#jsonContent code').textContent = formatted;
+            document.getElementById('jsonModal').style.display = 'block';
+            document.body.classList.add('modal-open');
+        } catch(e) {
+            alert('JSON parse hatası: ' + e.message);
+        }
     }
-}
 
-function closeJsonModal() {
-    document.getElementById('jsonModal').style.display = 'none';
-    document.body.classList.remove('modal-open');
-}
-
-function openJsonEditor(id, jsonString) {
-    viewJson(jsonString, 'Directive #' + id);
-}
-
-function openJsonEditorNew() {
-    const textarea = document.querySelector('[wire\\:model\\.defer="directiveValue"]');
-    if (textarea && textarea.value) {
-        viewJson(textarea.value, 'New Directive');
-    } else {
-        alert('Lütfen önce JSON değerini girin');
+    function closeJsonModal() {
+        document.getElementById('jsonModal').style.display = 'none';
+        document.body.classList.remove('modal-open');
     }
-}
-</script>
-@endpush
+
+    function openJsonEditor(id, jsonString) {
+        viewJson(jsonString, 'Directive #' + id);
+    }
+
+    function openJsonEditorNew() {
+        const textarea = document.querySelector('[wire\\:model\\.defer="directiveValue"]');
+        if (textarea && textarea.value) {
+            viewJson(textarea.value, 'New Directive');
+        } else {
+            alert('Lütfen önce JSON değerini girin');
+        }
+    }
+    </script>
+    @endpush
+</div>

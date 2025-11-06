@@ -550,6 +550,9 @@ class PublicAIController extends Controller
      */
     public function shopAssistantChat(Request $request): JsonResponse
     {
+        // 🚨 FILE PROOF - Write to file to prove this code runs
+        file_put_contents('/tmp/shop_assistant_called.txt', date('Y-m-d H:i:s') . " - CALLED!\n", FILE_APPEND);
+
         // 🚨 EMERGENCY DEBUG - SONNET FIXING
         \Log::emergency('🚨🚨🚨 SHOP ASSISTANT ENTRY POINT', [
             'timestamp' => now()->toIso8601String(),

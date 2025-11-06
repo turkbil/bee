@@ -160,11 +160,54 @@ C: [50-100 kelimelik özlü cevap]
 
 ## ÖRNEK KULLANIM
 
+### Basit Örnek
 ```
 Ana Anahtar Kelime: "transpalet nedir"
 Destek Kelimeler: [Excel dosyasından]
 
 Hedef: Transpalet hakkında 2.000 kelimelik, B2B odaklı, teknik detaylı blog anahattı
+```
+
+### Detaylı Örnek Çıktı
+
+```markdown
+## 1. SEO Meta Bilgileri
+Title Tag: Transpalet Nedir? Çeşitleri ve Fiyatları [2025]
+Meta Description: Transpalet nedir, nasıl çalışır? ✓ Manuel ve elektrikli transpalet özellikleri ✓ Fiyat karşılaştırması ✓ Uzman görüşü. Hemen inceleyin!
+URL Slug: transpalet-nedir
+Focus Keyword: transpalet nedir
+Secondary Keywords: manuel transpalet, elektrikli transpalet, transpalet fiyatları, transpalet çeşitleri
+
+## 2. Schema.org Yapıları
+- Article Schema ✓
+- FAQPage Schema ✓ (10 soru)
+- BreadcrumbList Schema ✓
+- HowTo Schema ✓ (kullanım bölümü için)
+
+## 3. Blog Anahattı
+H1: Transpalet Nedir? Çeşitleri, Özellikleri ve Kullanım Alanları [2025]
+  İlk 100 kelime: "Transpalet nedir?" sorusu + temel tanım + değer önerisi
+
+H2: Transpalet Nedir ve Ne İşe Yarar? (200-250 kelime)
+  - Tanım paragrafı
+  - Çalışma prensibi
+  - Kullanım alanları listesi
+  - Görsel: Transpalet anatomisi
+  - Dahili link: → /depo-ekipmanlari
+
+H2: Transpalet Çeşitleri (500-600 kelime)
+  H3: Manuel Transpalet (200 kelime)
+    - Özellikler
+    - Avantaj/Dezavantaj tablosu
+    - Görsel: Manuel transpalet
+  H3: Elektrikli Transpalet (200 kelime)
+    - Özellikler
+    - Avantaj/Dezavantaj tablosu
+    - Görsel: Elektrikli transpalet
+  H3: Özel Modeller (100 kelime)
+    - Paslanmaz, tartılı, dar koridor
+
+[Devam eder...]
 ```
 
 ---

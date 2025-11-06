@@ -71,7 +71,7 @@ class FlowEditor extends Component
         // JavaScript'ten gelen drawflow data frontend'de yakalanacak
         // Bu method Livewire event ile tetiklenecek
 
-        $this->dispatchBrowserEvent('save-flow-request');
+        $this->dispatch('save-flow-request');
     }
 
     public function saveFlowData($drawflowData)
@@ -84,7 +84,7 @@ class FlowEditor extends Component
         // Validate flow structure
         $validationErrors = $this->validateFlowStructure($flowData);
         if (!empty($validationErrors)) {
-            $this->dispatchBrowserEvent('alert', [
+            $this->dispatch('alert', [
                 'type' => 'error',
                 'message' => 'Flow validation failed: ' . implode(', ', $validationErrors),
             ]);
@@ -109,7 +109,7 @@ class FlowEditor extends Component
         // Clear flow cache
         \App\Services\ConversationFlowEngine::clearFlowCache(tenant('id'));
 
-        $this->dispatchBrowserEvent('alert', [
+        $this->dispatch('alert', [
             'type' => 'success',
             'message' => 'Flow saved successfully!',
         ]);

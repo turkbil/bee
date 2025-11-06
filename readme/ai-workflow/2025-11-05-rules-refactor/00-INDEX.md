@@ -128,6 +128,102 @@
 
 ---
 
+### 📘 05-currency-rules-fix.md
+**Ne zaman oku:** Currency ve fiyat formatlama sistemini anlamak istediğinde
+**İçerik:** ShopCurrency modeli, formatted_price kullanımı, hallüsinasyon önleme
+**Boyut:** 5.2 KB
+**Süre:** 6-8 dakika
+
+---
+
+### 📗 06-settings-system.md
+**Ne zaman oku:** Settings sistemi nasıl çalışıyor öğrenmek istediğinde
+**İçerik:** 3 tablo analizi, settings() helper, AI settings kullanımı
+**Boyut:** 7.8 KB
+**Süre:** 10 dakika
+
+---
+
+### 📙 07-flow-implementation.md
+**Ne zaman oku:** Flow sistemi nasıl kuruldu görmek istediğinde
+**İçerik:** Flow kurulum, database yapısı, prompt detayları, yeni tenant ekleme
+**Boyut:** 9.2 KB
+**Süre:** 12 dakika
+
+**İçindekiler:**
+- ⚠️ **ÖNEMLİ:** Sadece 1 aktif flow (ID: 6) - Eski flow'lar silindi!
+- AKTİF PROMPT (2025-11-06 güncel)
+- Node yapısı (14 node)
+- Database yapısı
+- Yeni tenant ekleme workflow
+
+---
+
+### 📕 08-backend-implementation.md
+**Ne zaman oku:** Backend implementasyonu detaylarını görmek istediğinde
+**İçerik:** ContextBuilderNode, ProductSearchNode güncellemeleri, kodlama örnekleri
+**Boyut:** 8.4 KB
+**Süre:** 10-12 dakika
+
+---
+
+### 🚨 09-prompt-correction.md (YENİ! - 2025-11-06)
+**Ne zaman oku:** KRİTİK İŞ ODAĞI DEĞİŞİKLİĞİNİ anlamak istediğinde
+**İçerik:** Prompt düzeltme kaydı, yedek parça → TAM ÜRÜN odaklı değişiklik
+**Boyut:** 12.5 KB
+**Süre:** 15 dakika
+
+**⚠️ ÇOK ÖNEMLİ! KRİTİK DEĞİŞİKLİK:**
+- **Sorun:** AI yedek parça odaklı, "nasılsın?" cevaplamıyor
+- **Çözüm:** ANA İŞ TANIMI eklendi (TAM ÜRÜN SATIŞI)
+- **Yeni:** Samimi konuşma kuralları eklendi
+- **Sonuç:** Yedek parça en düşük öncelik (kategori 7)
+
+**İçindekiler:**
+- Test sonuçları (hatalı davranış)
+- Kullanıcı geri bildirimi (kritik!)
+- Eski vs Yeni prompt karşılaştırma
+- Beklenen sonuçlar
+- Database güncelleme detayları
+
+---
+
+### 📗 10-final-flow-structure.md (YENİ! - 2025-11-06)
+**Ne zaman oku:** Flow yapısının tam detayını görmek istediğinde
+**İçerik:** 14 node detaylı açıklama, edge bağlantıları, senaryo bazlı akışlar
+**Boyut:** 18.7 KB
+**Süre:** 20-25 dakika
+
+**İçindekiler:**
+- Genel bilgiler (Flow ID: 6)
+- Flow akış diyagramı
+- 14 node detaylı açıklama
+- 13 edge bağlantıları
+- Senaryo bazlı akışlar (4 senaryo)
+- Kritik noktalar
+- Güncelleme geçmişi
+
+---
+
+### 📘 11-context-data-reference.md (YENİ! - 2025-11-06)
+**Ne zaman oku:** AI'ya giden context verisi yapısını anlamak istediğinde
+**İçerik:** Contact, AI Settings, Products, Conversation History detayları
+**Boyut:** 19.2 KB
+**Süre:** 20-25 dakika
+
+**İçindekiler:**
+- Tam context yapısı
+- Contact data (iletişim bilgileri)
+- AI Settings (kişilik ayarları)
+- Conversation Context
+- Products data (ürün verisi)
+- Price formatting (N+1 önleme)
+- Conversation history
+- Context flow (node'lar arası veri akışı)
+- Güvenlik kontrolleri
+
+---
+
 ## 🎓 ÖĞRENİM YOLU
 
 ### Yeni Başlıyorsan (İlk Defa)
@@ -172,11 +268,25 @@
 | Dosya | Boyut | Satır | Okuma Süresi | Öncelik |
 |-------|-------|-------|--------------|---------|
 | README.md | 1.3 KB | ~50 | 2 dk | ⭐⭐⭐ |
-| 00-INDEX.md (bu dosya) | ~4 KB | ~200 | 5 dk | ⭐⭐ |
+| 00-INDEX.md (bu dosya) | ~8 KB | ~300 | 8 dk | ⭐⭐ |
 | 04-v1-critical-rules.md | 1.7 KB | ~70 | 3 dk | ⭐⭐ |
-| 03-ixtif-rules-summary.md | 3.8 KB | ~150 | 5-7 dk | ⭐⭐⭐ |
+| 03-ixtif-rules-summary.md | 4.5 KB | ~180 | 6-8 dk | ⭐⭐⭐ |
 | 02-v1-full-plan.md | 6.4 KB | ~250 | 8-10 dk | ⭐⭐ |
-| 01-ai-rules-complete.md | 13 KB | 556 | 15-20 dk | ⭐⭐⭐⭐⭐ |
+| 05-currency-rules-fix.md | 5.2 KB | ~210 | 6-8 dk | ⭐⭐ |
+| 06-settings-system.md | 7.8 KB | ~310 | 10 dk | ⭐⭐ |
+| 01-ai-rules-complete.md | 15 KB | 610 | 18-22 dk | ⭐⭐⭐⭐⭐ |
+| 07-flow-implementation.md | 10.5 KB | ~400 | 12-15 dk | ⭐⭐⭐⭐ |
+| 08-backend-implementation.md | 8.4 KB | ~340 | 10-12 dk | ⭐⭐⭐ |
+| **09-prompt-correction.md** | **12.5 KB** | **~500** | **15 dk** | **⭐⭐⭐⭐⭐** |
+| **10-final-flow-structure.md** | **18.7 KB** | **~750** | **20-25 dk** | **⭐⭐⭐⭐** |
+| **11-context-data-reference.md** | **19.2 KB** | **~770** | **20-25 dk** | **⭐⭐⭐⭐** |
+
+**TOPLAM:** 13 dosya, ~120 KB, ~3500 satır
+
+**Yeni Dosyalar (2025-11-06):**
+- 🚨 **09-prompt-correction.md** - KRİTİK İŞ ODAĞI DEĞİŞİKLİĞİ
+- 📗 **10-final-flow-structure.md** - Flow yapısı detayı
+- 📘 **11-context-data-reference.md** - Context data yapısı
 
 ---
 

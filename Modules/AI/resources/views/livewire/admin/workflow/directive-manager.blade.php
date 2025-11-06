@@ -367,13 +367,22 @@
                 <button type="button" class="btn-close" onclick="closeJsonModal()"></button>
             </div>
             <div class="modal-body">
-                <textarea id="jsonTextarea" class="form-control p-3 bg-light"
-                          style="min-height: 60vh; font-size: 1rem; line-height: 1.6;"
-                          rows="20"></textarea>
-                <div class="mt-2">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">Key-Value Düzenleme</label>
+                        <button type="button" class="btn btn-sm btn-success" onclick="addJsonField()">
+                            <i class="fa fa-plus me-1"></i> Yeni Alan Ekle
+                        </button>
+                    </div>
+                    <div id="jsonFieldsContainer" class="border rounded p-3 bg-light" style="max-height: 50vh; overflow-y: auto;">
+                        <!-- Key-value fields will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="mt-3">
                     <small class="text-muted">
                         <i class="fa fa-info-circle me-1"></i>
-                        JSON formatını koruyarak düzenleyebilirsiniz. Kaydetmek için "Değişiklikleri Uygula" butonuna tıklayın.
+                        Her satır bir JSON key-value çiftidir. "Değişiklikleri Uygula" butonuna tıklayınca otomatik JSON formatına çevrilir.
                     </small>
                 </div>
             </div>
@@ -391,18 +400,65 @@
     @push('scripts')
     <script>
     let currentTargetTextarea = null;
+    let fieldCounter = 0;
 
     function viewJson(jsonString, title) {
         try {
             const jsonObj = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
-            const formatted = JSON.stringify(jsonObj, null, 2);
             document.querySelector('#jsonModal .modal-title').textContent = 'JSON: ' + title;
-            document.getElementById('jsonTextarea').value = formatted;
+
+            // JSON'u key-value field'lara dönüştür
+            const container = document.getElementById('jsonFieldsContainer');
+            container.innerHTML = '';
+            fieldCounter = 0;
+
+            // Her key-value çifti için field oluştur
+            Object.entries(jsonObj).forEach(([key, value]) => {
+                addJsonFieldWithData(key, value);
+            });
+
             document.getElementById('jsonModal').style.display = 'block';
             document.body.classList.add('modal-open');
         } catch(e) {
             alert('JSON parse hatası: ' + e.message);
         }
+    }
+
+    function addJsonField() {
+        addJsonFieldWithData('', '');
+    }
+
+    function addJsonFieldWithData(key = '', value = '') {
+        const container = document.getElementById('jsonFieldsContainer');
+        const fieldId = fieldCounter++;
+
+        // Value'yu string'e çevir (object/array ise JSON.stringify)
+        const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value);
+
+        const fieldHtml = `
+            <div class="row mb-2 json-field" id="field-${fieldId}">
+                <div class="col-md-4">
+                    <input type="text" class="form-control json-key"
+                           placeholder="Key" value="${key}">
+                </div>
+                <div class="col-md-7">
+                    <input type="text" class="form-control json-value"
+                           placeholder="Value" value="${valueStr.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-danger btn-sm w-100"
+                            onclick="removeJsonField(${fieldId})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', fieldHtml);
+    }
+
+    function removeJsonField(fieldId) {
+        document.getElementById('field-' + fieldId)?.remove();
     }
 
     function closeJsonModal() {
@@ -412,25 +468,50 @@
     }
 
     function applyJsonChanges() {
-        const textarea = document.getElementById('jsonTextarea');
-        const jsonValue = textarea.value;
+        const container = document.getElementById('jsonFieldsContainer');
+        const fields = container.querySelectorAll('.json-field');
+        const jsonObj = {};
 
-        // JSON geçerliliğini kontrol et
-        try {
-            JSON.parse(jsonValue);
+        // Her field'dan key-value al
+        fields.forEach(field => {
+            const key = field.querySelector('.json-key').value.trim();
+            let value = field.querySelector('.json-value').value.trim();
 
-            // Eğer target textarea varsa oraya yaz (edit mode)
-            if (currentTargetTextarea) {
-                currentTargetTextarea.value = jsonValue;
-                // Livewire'a bildirmek için input event tetikle
-                currentTargetTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+            if (key) {
+                // Value'nun tipini akıllı algıla
+                if (value === 'true') {
+                    jsonObj[key] = true;
+                } else if (value === 'false') {
+                    jsonObj[key] = false;
+                } else if (value === 'null') {
+                    jsonObj[key] = null;
+                } else if (!isNaN(value) && value !== '') {
+                    jsonObj[key] = Number(value);
+                } else if (value.startsWith('{') || value.startsWith('[')) {
+                    // JSON object veya array
+                    try {
+                        jsonObj[key] = JSON.parse(value);
+                    } catch(e) {
+                        jsonObj[key] = value; // Parse edilemezse string olarak al
+                    }
+                } else {
+                    jsonObj[key] = value;
+                }
             }
+        });
 
-            closeJsonModal();
-            alert('✅ Değişiklikler uygulandı!');
-        } catch(e) {
-            alert('❌ Geçersiz JSON formatı: ' + e.message);
+        // JSON string'e çevir
+        const jsonString = JSON.stringify(jsonObj, null, 2);
+
+        // Eğer target textarea varsa oraya yaz (edit mode)
+        if (currentTargetTextarea) {
+            currentTargetTextarea.value = jsonString;
+            // Livewire'a bildirmek için input event tetikle
+            currentTargetTextarea.dispatchEvent(new Event('input', { bubbles: true }));
         }
+
+        closeJsonModal();
+        alert('✅ Değişiklikler uygulandı! JSON otomatik oluşturuldu.');
     }
 
     function openJsonEditor(id, jsonString) {
@@ -445,7 +526,14 @@
             currentTargetTextarea = textarea;
             viewJson(textarea.value, 'New Directive');
         } else {
-            alert('Lütfen önce JSON değerini girin');
+            // Boş JSON başlat
+            currentTargetTextarea = textarea;
+            document.querySelector('#jsonModal .modal-title').textContent = 'JSON: New Directive';
+            document.getElementById('jsonFieldsContainer').innerHTML = '';
+            fieldCounter = 0;
+            addJsonField(); // İlk boş field ekle
+            document.getElementById('jsonModal').style.display = 'block';
+            document.body.classList.add('modal-open');
         }
     }
     </script>

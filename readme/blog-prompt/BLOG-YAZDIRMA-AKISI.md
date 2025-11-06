@@ -1,159 +1,185 @@
-# 🚀 BLOG YAZDIRMA AKIŞI - TEK DOSYA
+# 🚀 BLOG YAZDIRMA - 2 AŞAMALI SİSTEM
 
-> **2 ANA AŞAMA: Önce TASLAK → Sonra GERÇEK İÇERİK**
-
----
-
-## 📌 SADECE BU DOSYAYI KULLANIN!
-
-**Basit Akış:**
-1. **TASLAK OLUŞTUR** (Prompt 1 kullan) → Yapıyı kur
-2. **GERÇEK İÇERİK YAZ** (Prompt 2 kullan) → Taslağı doldur
-
-Bu kadar! Diğer dosyaları unutun.
+> **Önce TASLAK oluştur → Sonra GERÇEK İÇERİK yaz**
 
 ---
 
-## 🔵 AŞAMA 1: TASLAK OLUŞTUR
+## 📌 BU TEK DOSYA YETERLİ!
 
-### 🎯 Önce Anahtar Kelimeleri Belirle
+**Neden 2 Aşama?**
+- Taslak = İskelet, yol haritası
+- Gerçek = Taslağı doldurup detaylandırma
+- Sonuç = Tutarlı, SEO-optimize, eksiksiz içerik
+
+---
+
+# 🔵 AŞAMA 1: TASLAK OLUŞTUR
+
+## Hazırlık (30 saniye)
 ```
 ✅ Ana anahtar kelime: [örn: transpalet nedir]
-✅ 3-5 destek kelime: [manuel transpalet, elektrikli transpalet, transpalet fiyatları]
-✅ Hedef kitle: [B2B / B2C]
+✅ Destek kelimeler: [manuel transpalet, elektrikli transpalet, transpalet fiyatları]
+✅ Hedef kitle: [B2B mı B2C mi?]
+✅ Rakip analizi: [Google'da ilk 3 sonucu incele]
 ```
 
-### 📝 TASLAK PROMPT'U - Kopyala & Yapıştır:
+## 📝 TASLAK PROMPT'U (Kopyala-Yapıştır)
 
 ```markdown
-Sen 25 yıllık SEO uzmanısın. Türkiye'de endüstriyel ürün satışı yapan bir site için blog taslağı oluşturacaksın.
+Sen 25 yıllık SEO uzmanısın. Türkiye'de endüstriyel ürün satışı için blog TASLAĞI oluştur.
 
-ANAHTAR KELİME: [BURAYA ANA KELİMEYİ YAZ]
-DESTEK KELİMELER: [BURAYA DESTEK KELİMELERİ YAZ]
+ANAHTAR KELİME: [ANA KELİMEYİ YAZ]
+DESTEK KELİMELER: [3-5 DESTEK KELİME]
+HEDİF KİTLE: [B2B/B2C]
 
-İSTENENLER:
-1. Title (55 karakter) + Meta Description (155 karakter)
-2. H1 ve H2/H3 başlıklar (anahtar kelime dağılımıyla)
-3. Her başlık için kelime sayısı hedefi
-4. Her bölüm için not (görsel, tablo, liste vb.)
-5. 10 adet SSS sorusu
-6. Dahili link önerileri (5 adet)
-7. Schema planı (Article, FAQ, HowTo)
+TASLAK İÇERİĞİ:
 
-Blog 2000-2500 kelime olacak. B2B odaklı, teknik detaylı.
+1. SEO META:
+   - Title (55 karakter, anahtar kelime başta)
+   - Meta description (155 karakter, CTA ile)
+   - URL slug önerisi
 
-Çıktıyı markdown formatında, net başlıklarla ver.
+2. İÇERİK YAPISI (2000-2500 kelime için):
+   - H1 başlık
+   - 4-6 H2 başlık (her biri için kelime sayısı)
+   - Gerekli H3 alt başlıklar
+   - Her bölüm için: [kelime sayısı] + [içerik notu]
+
+3. HER BÖLÜM İÇİN BELİRT:
+   - Hangi anahtar kelimeler kullanılacak
+   - Görsel/tablo/liste gereksinimi
+   - Dahili link fırsatı
+
+4. SSS SORULARI:
+   - 10 adet long-tail soru
+
+5. EKSTRA:
+   - 5 dahili link önerisi (anchor text + hedef sayfa)
+   - 3 dış kaynak önerisi
+   - Schema planı (Article, FAQ, HowTo?)
+
+Çıktıyı düzenli markdown formatında ver.
 ```
 
-### Örnek Kullanım:
+### 🎯 Örnek Kullanım:
 ```
 ANAHTAR KELİME: transpalet nedir
 DESTEK KELİMELER: manuel transpalet, elektrikli transpalet, transpalet fiyatları, 2 ton transpalet
+HEDİF KİTLE: B2B
+```
+
+### ✅ Taslak Çıktı Örneği:
+```markdown
+## SEO Meta
+- Title: Transpalet Nedir? Çeşitleri ve Fiyatları [2025]
+- Description: Transpalet nedir, nasıl çalışır? ✓ Manuel ve elektrikli modeller...
+- URL: /transpalet-nedir
+
+## İçerik Yapısı
+H1: Transpalet Nedir? Çeşitleri, Özellikleri ve Kullanım Alanları
+
+H2: Transpalet Nedir ve Ne İşe Yarar? [250 kelime]
+  - Ana tanım + çalışma prensibi
+  - Anahtar: "transpalet nedir", "palet taşıma"
+  - Görsel: Transpalet anatomisi
+
+H2: Transpalet Çeşitleri [500 kelime]
+  H3: Manuel Transpalet [200 kelime]
+  H3: Elektrikli Transpalet [200 kelime]
+  H3: Özel Modeller [100 kelime]
+  - Karşılaştırma tablosu ekle
+  - Anahtar: "manuel transpalet", "elektrikli transpalet"
+
+[devam eder...]
 ```
 
 ---
 
-## 🟢 AŞAMA 2: TASLAKTAN GERÇEK İÇERİK OLUŞTUR
+# 🟢 AŞAMA 2: GERÇEK İÇERİK YAZ
 
-### ✍️ İÇERİK PROMPT'U - Taslağı Gerçeğe Dönüştür:
+## 🎯 İKİ SEÇENEĞ YÖNTEMİNİZ VAR:
+
+### YÖNTEM A: TEK SEFERDE TÜM BLOG (Hızlı)
 
 ```markdown
-Sen endüstriyel ürünler konusunda uzman içerik yazarısın.
+Aşağıdaki taslağı kullanarak 2000-2500 kelimelik SEO-optimize blog yaz.
 
-BÖLÜM: [TASLAKTAN BÖLÜM BAŞLIĞINI YAPIŞTIIR]
-HEDEF KELİME SAYISI: [TASLAKTAN AL]
-ANAHTAR KELİMELER: [İLGİLİ KELİMELERİ YAZ]
+[TASLAGI BURAYA YAPIŞTIR]
 
 YAZIM KURALLARI:
+- B2B profesyonel ton
 - Cümle max 20 kelime
 - Paragraf 50-150 kelime
-- %1-2 anahtar kelime yoğunluğu
-- LSI ve eş anlamlı kelimeler kullan
-- Profesyonel B2B tonu
+- %1-2 keyword density
+- Her bölümde LSI kelimeler
 
-EKLE:
-- Madde listesi VEYA tablo (uygunsa)
-- 1 dahili link önerisi
-- 1 otorite kaynak
+MUTLAKA EKLE:
+- Her H2'de en az 1 tablo/liste
+- Toplam 5 dahili link (metne doğal yerleştir)
+- 3 otorite dış kaynak
+- 10 SSS (50-100 kelime cevaplar)
+- Her bölüm için görsel önerisi + alt text
+
+ÇIKTI: Markdown formatında, baştan sona eksiksiz blog.
+```
+
+### YÖNTEM B: BÖLÜM BÖLÜM YAZ (Detaylı)
+
+```markdown
+Aşağıdaki blog taslağından sadece bu bölümü yaz:
+
+BÖLÜM: [H2 BAŞLIĞI]
+KELİME SAYISI: [TASLAKTAN]
+ANAHTAR KELİMELER: [TASLAKTAN]
+
+İÇERİK:
+- Giriş paragrafı (50-60 kelime)
+- Ana içerik (belirtilen kelime sayısı)
+- Liste/tablo (uygunsa)
+- 1 dahili link
+- 1 kaynak
 - Görsel önerisi + alt text
 
-Markdown formatında yaz. SEO notlarını sonuna ekle.
+YAZIM: B2B ton, cümle ≤20 kelime, keyword density %1-2
 ```
 
-### İpucu:
-Her bölümü ayrı ayrı yazdırın. Sonra birleştirin.
+**Not:** Her bölümü ayrı yazdırıp sonra birleştirin.
 
 ---
 
-## ❓ ADIM 4: SSS (FAQ) BÖLÜMÜ OLUŞTUR
+# 📋 BİTİRME AŞAMASI
 
-### SSS Prompt'u:
-
-```markdown
-Aşağıdaki konu için 10 adet SSS oluştur.
-
-KONU: [ANA ANAHTAR KELİME]
-DESTEK KELİMELER: [LİSTE]
-
-HER SORU İÇİN:
-- Soru: Long-tail anahtar kelime içermeli (3-5 kelime)
-- Cevap: 50-100 kelime, net ve özlü
-- Cevaba bir anahtar kelime doğal şekilde yerleştir
-
-SORU TİPLERİ DAHİL ET:
-- Nedir/Nasıl soruları (3 adet)
-- Karşılaştırma soruları (2 adet)
-- Fiyat/Maliyet soruları (2 adet)
-- Teknik özellik soruları (2 adet)
-- Problem çözüm sorusu (1 adet)
-
-FAQPage Schema'ya uygun format kullan.
-```
-
----
-
-## 🔧 ADIM 5: SEO KONTROLÜ & SCHEMA EKLE
-
-### A. Hızlı SEO Kontrol Listesi
+## ✅ SON KONTROL LİSTESİ
 
 ```markdown
-## ✅ BİTİRMEDEN KONTROL ET:
+## YAYIN ÖNCESİ KONTROL
 
-### Meta Bilgiler
-□ Title: 50-60 karakter, anahtar kelime başta
-□ Description: 155-160 karakter, CTA var
-□ URL: kisa-ve-aciklayici
-□ H1: Tek ve optimize
-
-### İçerik
-□ İlk 100 kelimede ana anahtar kelime
 □ Kelime sayısı: 2000-2500
-□ H2 başlık sayısı: 4-6
-□ Görsel sayısı: 5+
-□ Dahili link: 5-10
-□ Dış link: 3-5 otorite
-
-### Teknik
+□ Title: 50-60 karakter
+□ Meta description: 155-160 karakter
+□ H1: Tek ve optimize
+□ H2 sayısı: 4-6
+□ İlk 100 kelimede ana keyword
+□ 10 SSS sorusu
+□ 5+ dahili link
+□ 3+ dış kaynak
 □ Tüm görsellerde alt text
-□ Mobile responsive kontrol
-□ Sayfa hızı (<3 saniye)
-□ Schema markup eklendi
+□ Schema markup eklendi (aşağıda)
 ```
 
-### B. Schema Markup Ekle (Article + FAQ)
+## 🏷️ SCHEMA MARKUP EKLE
 
 ```html
-<!-- Bu kodu <head> içine veya içeriğin sonuna ekle -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Article",
-      "headline": "[BAŞLIK]",
+      "headline": "[TITLE]",
       "description": "[META DESCRIPTION]",
       "image": "[GÖRSEL URL]",
-      "datePublished": "[TARİH]",
+      "datePublished": "[BUGÜNÜN TARİHİ]",
       "author": {
         "@type": "Organization",
         "name": "[ŞİRKET ADI]"
@@ -170,7 +196,7 @@ FAQPage Schema'ya uygun format kullan.
             "text": "[CEVAP 1]"
           }
         }
-        // Diğer sorular için tekrarla
+        // 10 soru için devam et
       ]
     }
   ]
@@ -180,122 +206,107 @@ FAQPage Schema'ya uygun format kullan.
 
 ---
 
-## 💡 HAZIR ŞABLON: DİREKT KULLAN
+# 🎯 GERÇEK ÖRNEK: TRANSPALET
 
-### Komple Blog Yazdırma - Tek Prompt (Kısa Bloglar İçin)
-
-```markdown
-Endüstriyel ürün satışı yapan Türkiye'deki bir e-ticaret sitesi için "[ANAHTAR KELİME]" konusunda 2000 kelimelik SEO-optimize blog yaz.
-
-İÇERİK YAPISI:
-1. Giriş (100-150 kelime) - Ana anahtar kelime ilk cümlede
-2. [KONU] Nedir? (300-400 kelime)
-3. Çeşitleri/Türleri (400-500 kelime) - Tablo ekle
-4. Nasıl Çalışır/Kullanılır? (300-400 kelime)
-5. Seçim Kriterleri (400-500 kelime) - Liste formatı
-6. SSS (10 soru-cevap, her cevap 50-100 kelime)
-7. Sonuç (100-150 kelime) - CTA ile bitir
-
-EKLE:
-- Her bölümde 1-2 anahtar kelime
-- 5 dahili link önerisi
-- 3 dış kaynak (otorite site)
-- Her bölüm için görsel önerisi + alt text
-- Title (55 kar) + Meta description (155 kar)
-
-YAZIM: B2B odaklı, teknik, güvenilir ton. Cümle ≤20 kelime.
+## 1️⃣ Input
+```
+Ana kelime: transpalet nedir
+Destek: manuel transpalet, elektrikli transpalet, transpalet fiyatları
+Hedef: B2B
 ```
 
----
-
-## 🎯 ÖRNEK: TRANSPALET BLOG AKIŞI
-
-### 1️⃣ Anahtar Kelimeler
-- Ana: transpalet nedir
-- Destek: manuel transpalet, elektrikli transpalet, transpalet fiyatları
-
-### 2️⃣ Taslak Çıktısı (Özet)
+## 2️⃣ Taslak Çıktısı (Özet)
 ```
 Title: Transpalet Nedir? Çeşitleri ve Fiyatları [2025]
-H1: Transpalet Nedir? Çeşitleri, Özellikleri ve Kullanım Alanları
-H2: Transpalet Nedir ve Ne İşe Yarar? (250 kelime)
-H2: Transpalet Çeşitleri (500 kelime)
-  H3: Manuel Transpalet
-  H3: Elektrikli Transpalet
-H2: Transpalet Nasıl Çalışır? (400 kelime)
-H2: Transpalet Seçim Kriterleri (400 kelime)
-H2: SSS (10 soru)
+H1: Transpalet Nedir? Endüstriyel Taşıma Rehberi
+- Giriş [150 kelime]
+- Transpalet Nedir? [300 kelime]
+- Çeşitleri [500 kelime]
+  - Manuel [200]
+  - Elektrikli [200]
+  - Özel [100]
+- Nasıl Çalışır? [400 kelime]
+- Seçim Kriterleri [400 kelime]
+- Bakım ve Güvenlik [350 kelime]
+- SSS [400 kelime]
+- Sonuç [100 kelime]
+= TOPLAM: 2200 kelime
 ```
 
-### 3️⃣ İçerik Yazdır (Bölüm bölüm)
-### 4️⃣ SSS Ekle
-### 5️⃣ Schema Ekle & Kontrol Et
+## 3️⃣ Gerçek İçerik
+- Yöntem A ile tek seferde VEYA
+- Yöntem B ile 7 bölüm ayrı ayrı
+
+## 4️⃣ Final
+- Kontrol listesi ✓
+- Schema ekle ✓
+- Yayınla! 🚀
 
 ---
 
-## 🚨 EN SIK YAPILAN HATALAR
+# 💡 İPUÇLARI
 
-❌ **YAPMAYIN:**
-- Tüm içeriği tek seferde yazdırmaya çalışmak
-- Anahtar kelime dolgusu (keyword stuffing)
-- Schema markup'ı atlama
-- Alt text yazmama
-- Çok uzun cümleler (>20 kelime)
+## ✅ EN İYİ SONUÇ İÇİN:
+1. **Taslağı detaylı yap** - Ne kadar iyi taslak, o kadar iyi içerik
+2. **Rakip analizi yap** - Google'da ilk 3 sonucu incele
+3. **LSI kelimeleri kullan** - Eş anlamlı ve ilişkili terimler
+4. **Görselleri unutma** - Her bölüme en az 1 görsel
+5. **Schema'yı atla** - SEO için kritik
 
-✅ **YAPIN:**
-- Bölüm bölüm yazdırın
-- Doğal anahtar kelime kullanımı
-- Her zaman schema ekleyin
-- Her görsele alt text
+## ❌ YAPMAYIN:
+- Keyword stuffing (aşırı tekrar)
+- 20+ kelimelik cümleler
+- Schema'sız yayın
+- Alt text'siz görsel
+- Dahili link'siz içerik
+
+## ✅ YAPIN:
+- Doğal keyword kullanımı
 - Kısa, net cümleler
+- Her zaman schema
+- Her görsele alt text
+- 5-10 dahili link
 
 ---
 
-## 📊 HIZLI KONTROL
+# 🚀 ÖZET: 2 AŞAMA
 
-### Blog Hazır mı? Son Kontrol:
 ```
-□ 2000+ kelime
-□ Title & meta var
-□ H1 tek ve optimize
-□ 4-6 H2 başlık
-□ 10 SSS sorusu
-□ 5+ dahili link
-□ 3+ dış kaynak
-□ Schema eklendi
-□ Görsellerde alt text
-□ Mobile test yapıldı
+1. TASLAK OLUŞTUR (Yapı + Plan)
+   ↓
+2. GERÇEK İÇERİK YAZ (Taslağı doldur)
+   ↓
+3. KONTROL & SCHEMA EKLE
+   ↓
+4. YAYINLA!
 ```
 
-**Hepsi ✓ ise → YAYINLA! 🚀**
+**Süre:**
+- Taslak: 5 dakika
+- İçerik: 30-45 dakika
+- Final: 10 dakika
+- **TOPLAM: ~1 saat**
 
 ---
 
-## 💬 YARDIM
+# 🆘 SIKÇA SORULAN SORULAR
 
-**Soru:** Hangi prompt'u ne zaman kullanacağım?
-**Cevap:** Sırayla:
-1. Taslak prompt (Adım 2)
-2. İçerik prompt (Adım 3) - her bölüm için
-3. SSS prompt (Adım 4)
-4. Schema ekle (Adım 5)
+**S: Hangi yöntemi kullanayım? A mı B mi?**
+C: 1500 kelimeye kadar A (tek seferde), daha uzun içerikler için B (bölüm bölüm).
 
-**Soru:** Tek prompt'la tüm blogu yazdırabilir miyim?
-**Cevap:** 1500 kelimeye kadar evet. Daha uzun bloglar için bölüm bölüm daha kaliteli.
+**S: Taslak şart mı?**
+C: Evet! Taslaksız içerik = dağınık, eksik, tutarsız.
 
----
+**S: Schema'yı nasıl test edeyim?**
+C: Google Rich Results Test kullan.
 
-## 📁 DİĞER DOSYALAR NE İŞE YARAR?
-
-İhtiyacınız olursa:
-- **MASTER-GUIDE.md** → Detaylı öğrenmek isteyenler için (30+ sayfa)
-- **1,2,3-...md** → Spesifik konular için
-- **Bu dosya** → Hızlıca blog yazdırmak için (EN PRATİK)
+**S: Diğer dosyalara bakmam gerekiyor mu?**
+C: Hayır, bu dosya yeterli. Derinlemesine öğrenmek isterseniz MASTER-GUIDE.md'ye bakabilirsiniz.
 
 ---
 
-**✨ İPUCU:** Bu dosyayı bookmark yapın. Her blog için bu akışı takip edin. 5 adımda profesyonel, SEO-optimize blog hazır!
+**📌 NOT:** Bu dosyayı bookmark yapın. Her blog için bu 2 aşamalı sistemi kullanın.
 
 ---
 
-*Güncelleme: 6 Kasım 2025 | Endüstriyel Ürün Satışı Odaklı | B2B & B2C*
+*Güncelleme: 6 Kasım 2025 | Türkiye B2B Endüstriyel | 2 Aşamalı Sistem*

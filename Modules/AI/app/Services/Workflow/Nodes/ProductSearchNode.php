@@ -76,7 +76,8 @@ class ProductSearchNode extends BaseNode
             'transpalet', 'forklift', 'istif', 'istif makinesi',
             'akülü', 'elektrikli', 'manuel', 'palet', 'platform',
             'kaldırıcı', 'yük', 'depo', 'lojistik', 'taşıyıcı',
-            'makine', 'makina', 'ekipman', 'araç', 'ürün'
+            'makine', 'makina', 'ekipman', 'araç', 'ürün',
+            'ixtif', 'cpd', 'ept', 'çatal', 'ton'
         ];
 
         // Intent keywords - bunlar da ürün araması tetikler

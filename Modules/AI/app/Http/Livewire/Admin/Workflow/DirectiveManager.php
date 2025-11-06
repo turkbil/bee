@@ -122,7 +122,7 @@ class DirectiveManager extends Component
                     'is_active' => $this->isActive,
                 ]);
 
-                $this->dispatchBrowserEvent('alert', [
+                $this->dispatch('alert', [
                     'type' => 'success',
                     'message' => 'Directive updated successfully!',
                 ]);
@@ -141,7 +141,7 @@ class DirectiveManager extends Component
                 'is_active' => $this->isActive,
             ]);
 
-            $this->dispatchBrowserEvent('alert', [
+            $this->dispatch('alert', [
                 'type' => 'success',
                 'message' => 'Directive created successfully!',
             ]);
@@ -162,7 +162,7 @@ class DirectiveManager extends Component
                 'is_active' => !$directive->is_active,
             ]);
 
-            $this->dispatchBrowserEvent('alert', [
+            $this->dispatch('alert', [
                 'type' => 'success',
                 'message' => 'Directive status updated!',
             ]);
@@ -179,7 +179,7 @@ class DirectiveManager extends Component
         if ($directive && $directive->tenant_id == tenant('id')) {
             $directive->delete();
 
-            $this->dispatchBrowserEvent('alert', [
+            $this->dispatch('alert', [
                 'type' => 'success',
                 'message' => 'Directive deleted successfully!',
             ]);

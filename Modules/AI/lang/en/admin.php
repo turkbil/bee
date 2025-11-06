@@ -763,5 +763,33 @@ return [
     'universal_input_system' => 'Universal input system',
     'module_integrations' => 'Module integrations',
     'bulk_operations' => 'Bulk operations',
-    'usage_analytics' => 'Usage analytics'
+    'usage_analytics' => 'Usage analytics',
+
+    // Workflow
+    'workflow' => [
+        // Node Configuration
+        'edit_config' => 'Edit Config',
+        'delete_node' => 'Delete Node',
+        'delete_node_confirm' => 'Are you sure you want to delete this node?',
+        'node_configuration' => 'Node Configuration',
+        'node_type' => 'Node Type',
+        'node_label' => 'Node Label',
+        'system_prompt' => 'System Prompt',
+        'system_prompt_help' => 'This is the AI\'s personality and behavior instructions.',
+        'max_tokens' => 'Max Tokens',
+        'temperature' => 'Temperature',
+        'configuration_json' => 'Configuration (JSON)',
+        'configuration_json_help' => 'Edit the JSON configuration for this node.',
+        'save_changes' => 'Save Changes',
+        'config_saved' => 'Configuration saved! Don\'t forget to save the flow.',
+        'config_error' => 'Error saving configuration',
+        'select_node_to_edit' => 'Select a node to edit its configuration',
+        'characters' => 'characters',
+        'cancel' => 'Cancel',
+
+        // Test Flow
+        'test_flow' => 'Test Flow',
+        'reset_session' => 'Reset Session',
+        'close' => 'Close',
+    ]
 ];

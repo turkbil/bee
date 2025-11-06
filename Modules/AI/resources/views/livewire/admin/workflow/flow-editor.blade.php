@@ -273,6 +273,75 @@
             color: var(--tblr-muted, #94a3b8);
         }
 
+        /* Node Container Styles - Advanced Nodes */
+        .node-ai-response {
+            background: #e3f2fd !important;
+            border-left: 4px solid #2196f3 !important;
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+        }
+
+        .node-product-search {
+            background: #e8f5e9 !important;
+            border-left: 4px solid #4caf50 !important;
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+        }
+
+        .node-stock-sorter {
+            background: #fff3e0 !important;
+            border-left: 4px solid #ff9800 !important;
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+        }
+
+        .node-condition {
+            background: #f3e5f5 !important;
+            border-left: 4px solid #9c27b0 !important;
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* Node Container Styles - Simple Nodes */
+        .node-simple {
+            background: #f5f5f5 !important;
+            border-left: 4px solid #ccc !important;
+            border-radius: 4px;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* Dark Mode - Advanced Nodes */
+        [data-bs-theme="dark"] .node-ai-response {
+            background: #1e3a5f !important;
+            border-left-color: #4299e1 !important;
+        }
+
+        [data-bs-theme="dark"] .node-product-search {
+            background: #1e3d30 !important;
+            border-left-color: #48bb78 !important;
+        }
+
+        [data-bs-theme="dark"] .node-stock-sorter {
+            background: #3d2e1e !important;
+            border-left-color: #ed8936 !important;
+        }
+
+        [data-bs-theme="dark"] .node-condition {
+            background: #2d1e3d !important;
+            border-left-color: #9f7aea !important;
+        }
+
+        /* Dark Mode - Simple Nodes */
+        [data-bs-theme="dark"] .node-simple {
+            background: #2d3748 !important;
+            border-left-color: #4a5568 !important;
+        }
+
         /* Connection Lines */
         .drawflow .connection .main-path {
             stroke: var(--tblr-primary, #206bc4);
@@ -330,7 +399,68 @@
     @push('scripts')
     <script src="/vendor/drawflow/drawflow.min.js"></script>
     <script>
+        // Translation variables
+        const trans = {
+            editConfig: '{{ __('ai::admin.workflow.edit_config') }}',
+            deleteNode: '{{ __('ai::admin.workflow.delete_node') }}',
+            deleteNodeConfirm: '{{ __('ai::admin.workflow.delete_node_confirm') }}',
+            nodeConfiguration: '{{ __('ai::admin.workflow.node_configuration') }}',
+            nodeType: '{{ __('ai::admin.workflow.node_type') }}',
+            nodeLabel: '{{ __('ai::admin.workflow.node_label') }}',
+            systemPrompt: '{{ __('ai::admin.workflow.system_prompt') }}',
+            systemPromptHelp: '{{ __('ai::admin.workflow.system_prompt_help') }}',
+            maxTokens: '{{ __('ai::admin.workflow.max_tokens') }}',
+            temperature: '{{ __('ai::admin.workflow.temperature') }}',
+            configJson: '{{ __('ai::admin.workflow.configuration_json') }}',
+            configJsonHelp: '{{ __('ai::admin.workflow.configuration_json_help') }}',
+            saveChanges: '{{ __('ai::admin.workflow.save_changes') }}',
+            cancel: '{{ __('ai::admin.workflow.cancel') }}',
+            configSaved: '{{ __('ai::admin.workflow.config_saved') }}',
+            configError: '{{ __('ai::admin.workflow.config_error') }}',
+            selectNode: '{{ __('ai::admin.workflow.select_node_to_edit') }}',
+            characters: '{{ __('ai::admin.workflow.characters') }}'
+        };
+
         let editor = null;
+
+        /**
+         * Node tipine göre stil bilgisini döndür
+         */
+        function getNodeStyle(nodeType) {
+            // Karmaşık config'e sahip node'lar (renkli + belirgin)
+            const advancedNodes = {
+                'ai_response': {
+                    containerClass: 'node-ai-response',
+                    btnClass: 'btn-primary',
+                    icon: 'fa-robot'
+                },
+                'product_search': {
+                    containerClass: 'node-product-search',
+                    btnClass: 'btn-success',
+                    icon: 'fa-search'
+                },
+                'stock_sorter': {
+                    containerClass: 'node-stock-sorter',
+                    btnClass: 'btn-warning',
+                    icon: 'fa-sort'
+                },
+                'condition': {
+                    containerClass: 'node-condition',
+                    btnClass: 'btn-purple',
+                    icon: 'fa-code-branch'
+                }
+            };
+
+            // Basit node'lar (gri + soluk)
+            const simpleStyle = {
+                containerClass: 'node-simple',
+                btnClass: 'btn-ghost-secondary',
+                icon: 'fa-circle',
+                isSimple: true
+            };
+
+            return advancedNodes[nodeType] || simpleStyle;
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Drawflow
@@ -346,6 +476,12 @@
             editor.zoom_last_value = 1;
 
             editor.start();
+
+            // Disable default context menu (right-click delete)
+            container.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
 
             // Set initial position and zoom
             editor.zoom = 1;
@@ -390,9 +526,32 @@
 
                 // Add node to canvas
                 const nodeId = 'node_' + Date.now();
+                const nodeStyle = getNodeStyle(nodeType);
                 const nodeHtml = `
-                    <div class="node-title">${nodeName}</div>
-                    <div class="node-type">${nodeType}</div>
+                    <div class="${nodeStyle.containerClass}">
+                        <button type="button" class="btn btn-sm btn-ghost-danger delete-node-btn"
+                                onclick="deleteNode(event)"
+                                style="position: absolute; top: 2px; right: 2px; padding: 2px 6px; font-size: 10px; line-height: 1; z-index: 10;"
+                                title="${trans.deleteNode}">
+                            <i class="fa fa-times"></i>
+                        </button>
+                        <div class="node-id" style="font-size: 9px; color: #999; margin-bottom: 3px; font-family: monospace;">
+                            <i class="fa ${nodeStyle.icon} me-1"></i>ID: ${nodeId}
+                        </div>
+                        <div class="node-title" style="font-weight: bold; margin-bottom: 5px; padding-right: 20px;">${nodeName}</div>
+                        <div class="node-type" style="font-size: 11px; color: #666; margin-bottom: 8px;">${nodeType}</div>
+                        ${!nodeStyle.isSimple ? `
+                        <button type="button" class="btn btn-sm ${nodeStyle.btnClass} w-100 edit-node-config-btn"
+                                onclick="openNodeConfig(event)"
+                                style="font-size: 11px; padding: 4px 8px;">
+                            <i class="fa fa-edit me-1"></i>${trans.editConfig}
+                        </button>
+                        ` : `
+                        <div style="font-size: 10px; color: #999; text-align: center; padding: 4px;">
+                            <i class="fa fa-info-circle me-1"></i>Basit config (sadece next_node)
+                        </div>
+                        `}
+                    </div>
                 `;
 
                 editor.addNode(
@@ -456,6 +615,7 @@
 
                 const posX = node.position?.x || 150;
                 const posY = node.position?.y || (100 + (dfId - 1) * 180);
+                const nodeStyle = getNodeStyle(node.type);
 
                 drawflowData.drawflow.Home.data[dfId] = {
                     id: dfId,
@@ -466,9 +626,29 @@
                     },
                     class: node.type,
                     html: `
-                        <div style="padding: 10px;">
-                            <div class="node-title" style="font-weight: bold; margin-bottom: 5px;">${node.name}</div>
-                            <div class="node-type" style="font-size: 11px; color: #666;">${node.type}</div>
+                        <div class="${nodeStyle.containerClass}">
+                            <button type="button" class="btn btn-sm btn-ghost-danger delete-node-btn"
+                                    onclick="deleteNode(event)"
+                                    style="position: absolute; top: 2px; right: 2px; padding: 2px 6px; font-size: 10px; line-height: 1; z-index: 10;"
+                                    title="${trans.deleteNode}">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <div class="node-id" style="font-size: 9px; color: #999; margin-bottom: 3px; font-family: monospace;">
+                                <i class="fa ${nodeStyle.icon} me-1"></i>ID: ${node.id}
+                            </div>
+                            <div class="node-title" style="font-weight: bold; margin-bottom: 5px; padding-right: 20px;">${node.name}</div>
+                            <div class="node-type" style="font-size: 11px; color: #666; margin-bottom: 8px;">${node.type}</div>
+                            ${!nodeStyle.isSimple ? `
+                            <button type="button" class="btn btn-sm ${nodeStyle.btnClass} w-100 edit-node-config-btn"
+                                    onclick="openNodeConfig(event)"
+                                    style="font-size: 11px; padding: 4px 8px;">
+                                <i class="fa fa-edit me-1"></i>${trans.editConfig}
+                            </button>
+                            ` : `
+                            <div style="font-size: 10px; color: #999; text-align: center; padding: 4px;">
+                                <i class="fa fa-info-circle me-1"></i>Basit config
+                            </div>
+                            `}
                         </div>
                     `,
                     typenode: false,
@@ -545,6 +725,383 @@
         function clearCanvas() {
             if (confirm('{{ __('ai::admin.workflow.clear_confirm') }}')) {
                 editor.clear();
+            }
+        }
+
+        // Node Config Editor Functions
+        let currentEditingNodeId = null;
+        let currentEditingNodeData = null;
+
+        function openNodeConfig(event) {
+            event.stopPropagation();
+
+            // Find the node element
+            const button = event.target.closest('button');
+            const nodeElement = button.closest('.drawflow-node');
+
+            if (!nodeElement) {
+                console.error('Node element not found');
+                return;
+            }
+
+            // Get node ID from drawflow
+            const nodeId = nodeElement.id.replace('node-', '');
+            const nodeData = editor.getNodeFromId(nodeId);
+
+            if (!nodeData) {
+                console.error('Node data not found for ID:', nodeId);
+                return;
+            }
+
+            currentEditingNodeId = nodeId;
+            currentEditingNodeData = nodeData;
+
+            console.log('Opening config for node:', nodeId, nodeData);
+
+            // Update offcanvas title
+            document.getElementById('config-node-title').textContent =
+                `${nodeData.data.label || nodeData.name} - ${trans.nodeConfiguration}`;
+
+            // Generate config form
+            generateConfigForm(nodeData);
+
+            // Open offcanvas (native DOM - Bootstrap namespace not available)
+            const offcanvasEl = document.getElementById('nodeConfigOffcanvas');
+            offcanvasEl.classList.add('show');
+            offcanvasEl.style.visibility = 'visible';
+
+            // Add backdrop
+            const backdrop = document.createElement('div');
+            backdrop.className = 'offcanvas-backdrop fade show';
+            backdrop.id = 'nodeConfigBackdrop';
+            backdrop.onclick = closeNodeConfig;
+            document.body.appendChild(backdrop);
+            document.body.classList.add('offcanvas-open');
+        }
+
+        function closeNodeConfig() {
+            // Close offcanvas
+            const offcanvasEl = document.getElementById('nodeConfigOffcanvas');
+            offcanvasEl.classList.remove('show');
+            offcanvasEl.style.visibility = 'hidden';
+
+            // Remove backdrop
+            const backdrop = document.getElementById('nodeConfigBackdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            document.body.classList.remove('offcanvas-open');
+        }
+
+        function deleteNode(event) {
+            event.stopPropagation();
+
+            // Find the node element
+            const button = event.target.closest('button');
+            const nodeElement = button.closest('.drawflow-node');
+
+            if (!nodeElement) {
+                console.error('Node element not found');
+                return;
+            }
+
+            // Get node ID from drawflow
+            const nodeId = nodeElement.id.replace('node-', '');
+
+            // Confirm deletion
+            if (confirm(trans.deleteNodeConfirm)) {
+                console.log('Deleting node:', nodeId);
+                editor.removeNodeId('node-' + nodeId);
+            }
+        }
+
+        function generateConfigForm(nodeData) {
+            const container = document.getElementById('config-form-content');
+            const config = nodeData.data.config || {};
+            const nodeType = nodeData.name;
+
+            let formHtml = `
+                <div class="mb-3">
+                    <label class="form-label fw-bold">${trans.nodeType}</label>
+                    <input type="text" class="form-control" value="${nodeType}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">${trans.nodeLabel}</label>
+                    <input type="text" class="form-control" id="config-label" value="${nodeData.data.label || ''}">
+                </div>
+            `;
+
+            // TYPE-SPECIFIC FORM BUILDERS (no JSON typing!)
+
+            if (nodeType === 'ai_response') {
+                // AI Response: system_prompt + max_tokens + temperature
+                const promptValue = config.system_prompt || '';
+                const charCount = promptValue.length;
+
+                formHtml += `
+                    <div class="mb-3">
+                        <label class="form-label fw-bold required">
+                            ${trans.systemPrompt}
+                            <span class="badge bg-blue-lt text-blue ms-2" id="char-count">${charCount} ${trans.characters}</span>
+                        </label>
+                        <textarea class="form-control font-monospace" id="config-system_prompt" rows="20"
+                                  style="font-size: 12px; line-height: 1.5;"
+                                  oninput="updateCharCount(this)">${escapeHtml(promptValue)}</textarea>
+                        <div class="form-hint mt-1">
+                            <i class="fa fa-info-circle me-1"></i>
+                            ${trans.systemPromptHelp}
+                        </div>
+                    </div>
+                `;
+
+                formHtml += `
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">${trans.maxTokens}</label>
+                            <input type="number" class="form-control" id="config-max_tokens" value="${config.max_tokens || 500}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">${trans.temperature}</label>
+                            <input type="number" step="0.1" min="0" max="2" class="form-control" id="config-temperature" value="${config.temperature || 0.7}">
+                        </div>
+                    </div>
+                `;
+            }
+            else if (nodeType === 'product_search') {
+                // Product Search: search_limit + sort_by_stock + use_meilisearch + no_products_next_node
+                formHtml += `
+                    <div class="mb-3">
+                        <label class="form-label">Arama Limiti (Kaç ürün?)</label>
+                        <input type="number" class="form-control" id="config-search_limit" value="${config.search_limit || 5}" min="1" max="20">
+                        <div class="form-hint">Kullanıcıya gösterilecek maksimum ürün sayısı</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="config-sort_by_stock" ${config.sort_by_stock ? 'checked' : ''}>
+                            <span class="form-check-label">Stoğa Göre Sırala</span>
+                        </label>
+                        <div class="form-hint">Yüksek stoklu ürünler önce gösterilsin mi?</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="config-use_meilisearch" ${config.use_meilisearch !== false ? 'checked' : ''}>
+                            <span class="form-check-label">Meilisearch Kullan (Hızlı Arama)</span>
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ürün Bulunamazsa İleri Node</label>
+                        <input type="text" class="form-control font-monospace" id="config-no_products_next_node" value="${config.no_products_next_node || ''}" placeholder="node_11">
+                        <div class="form-hint">Ürün bulunamazsa hangi node'a gitsin? (örn: node_11)</div>
+                    </div>
+                `;
+            }
+            else if (nodeType === 'stock_sorter') {
+                // Stock Sorter: exclude_out_of_stock + high_stock_threshold
+                formHtml += `
+                    <div class="mb-3">
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="config-exclude_out_of_stock" ${config.exclude_out_of_stock ? 'checked' : ''}>
+                            <span class="form-check-label">Stokta Olmayanları Hariç Tut</span>
+                        </label>
+                        <div class="form-hint">Stok = 0 olan ürünler gösterilmesin mi?</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yüksek Stok Eşiği</label>
+                        <input type="number" class="form-control" id="config-high_stock_threshold" value="${config.high_stock_threshold || 10}" min="0">
+                        <div class="form-hint">Bu değerin üstündeki stoklar "yüksek stok" sayılır</div>
+                    </div>
+                `;
+            }
+            else if (nodeType === 'condition') {
+                // Condition: condition_type + field + operator + value + true_node + false_node
+                formHtml += `
+                    <div class="mb-3">
+                        <label class="form-label">Koşul Tipi</label>
+                        <select class="form-select" id="config-condition_type">
+                            <option value="intent" ${config.condition_type === 'intent' ? 'selected' : ''}>Niyet (Intent)</option>
+                            <option value="sentiment" ${config.condition_type === 'sentiment' ? 'selected' : ''}>Duygu (Sentiment)</option>
+                            <option value="product_count" ${config.condition_type === 'product_count' ? 'selected' : ''}>Ürün Sayısı</option>
+                            <option value="custom" ${config.condition_type === 'custom' ? 'selected' : ''}>Özel</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Doğruysa İleri Node</label>
+                            <input type="text" class="form-control font-monospace" id="config-true_node" value="${config.true_node || ''}" placeholder="node_8">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Yanlışsa İleri Node</label>
+                            <input type="text" class="form-control font-monospace" id="config-false_node" value="${config.false_node || ''}" placeholder="node_9">
+                        </div>
+                    </div>
+                `;
+            }
+            else if (nodeType === 'welcome' || nodeType === 'history_loader' || nodeType === 'sentiment_detection' ||
+                     nodeType === 'category_detection' || nodeType === 'price_query' || nodeType === 'context_builder' ||
+                     nodeType === 'contact_request' || nodeType === 'link_generator' || nodeType === 'message_saver' ||
+                     nodeType === 'end') {
+                // Simple nodes: next_node only
+                formHtml += `
+                    <div class="mb-3">
+                        <label class="form-label">İleri Node</label>
+                        <input type="text" class="form-control font-monospace" id="config-next_node" value="${config.next_node || ''}" placeholder="node_2">
+                        <div class="form-hint">Bu node bittikten sonra hangi node'a gitsin? (örn: node_2, node_10)</div>
+                    </div>
+                `;
+            }
+            else {
+                // Fallback: Generic JSON editor for unknown node types
+                formHtml += `
+                    <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-triangle me-2"></i>
+                        Bu node tipi için özel form henüz hazırlanmamış. JSON düzenleyici kullanın.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">${trans.configJson}</label>
+                        <textarea class="form-control font-monospace" id="config-json" rows="15"
+                                  style="font-size: 12px;">${JSON.stringify(config, null, 2)}</textarea>
+                        <div class="form-hint mt-1">
+                            <i class="fa fa-info-circle me-1"></i>
+                            ${trans.configJsonHelp}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = formHtml;
+        }
+
+        function updateCharCount(textarea) {
+            const charCount = textarea.value.length;
+            document.getElementById('char-count').textContent = `${charCount} ${trans.characters}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Save node config
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('save-node-config-btn').addEventListener('click', function() {
+                if (!currentEditingNodeId || !currentEditingNodeData) {
+                    alert('No node selected');
+                    return;
+                }
+
+                try {
+                    // Get updated label
+                    const newLabel = document.getElementById('config-label')?.value || currentEditingNodeData.data.label;
+
+                    // Get updated config (FORM → JSON conversion)
+                    let newConfig = {};
+                    const nodeType = currentEditingNodeData.name;
+
+                    if (nodeType === 'ai_response') {
+                        // AI Response
+                        newConfig = {
+                            ...currentEditingNodeData.data.config,
+                            system_prompt: document.getElementById('config-system_prompt')?.value || '',
+                            max_tokens: parseInt(document.getElementById('config-max_tokens')?.value) || 500,
+                            temperature: parseFloat(document.getElementById('config-temperature')?.value) || 0.7
+                        };
+                    }
+                    else if (nodeType === 'product_search') {
+                        // Product Search
+                        newConfig = {
+                            search_limit: parseInt(document.getElementById('config-search_limit')?.value) || 5,
+                            sort_by_stock: document.getElementById('config-sort_by_stock')?.checked || false,
+                            use_meilisearch: document.getElementById('config-use_meilisearch')?.checked || false,
+                            no_products_next_node: document.getElementById('config-no_products_next_node')?.value || ''
+                        };
+                    }
+                    else if (nodeType === 'stock_sorter') {
+                        // Stock Sorter
+                        newConfig = {
+                            exclude_out_of_stock: document.getElementById('config-exclude_out_of_stock')?.checked || false,
+                            high_stock_threshold: parseInt(document.getElementById('config-high_stock_threshold')?.value) || 10
+                        };
+                    }
+                    else if (nodeType === 'condition') {
+                        // Condition
+                        newConfig = {
+                            condition_type: document.getElementById('config-condition_type')?.value || 'intent',
+                            true_node: document.getElementById('config-true_node')?.value || '',
+                            false_node: document.getElementById('config-false_node')?.value || ''
+                        };
+                    }
+                    else if (nodeType === 'welcome' || nodeType === 'history_loader' || nodeType === 'sentiment_detection' ||
+                             nodeType === 'category_detection' || nodeType === 'price_query' || nodeType === 'context_builder' ||
+                             nodeType === 'contact_request' || nodeType === 'link_generator' || nodeType === 'message_saver' ||
+                             nodeType === 'end') {
+                        // Simple nodes: next_node only
+                        newConfig = {
+                            next_node: document.getElementById('config-next_node')?.value || ''
+                        };
+                    }
+                    else {
+                        // Fallback: Generic JSON parsing
+                        const jsonText = document.getElementById('config-json')?.value || '{}';
+                        newConfig = JSON.parse(jsonText);
+                    }
+
+                    // Update node data in editor
+                    currentEditingNodeData.data.label = newLabel;
+                    currentEditingNodeData.data.config = newConfig;
+
+                    // Update node HTML
+                    updateNodeHtml(currentEditingNodeId, newLabel, currentEditingNodeData.name);
+
+                    console.log('Config saved for node:', currentEditingNodeId, newConfig);
+
+                    // Close offcanvas
+                    closeNodeConfig();
+
+                    // Show success message
+                    alert(trans.configSaved);
+
+                } catch (error) {
+                    console.error('Error saving config:', error);
+                    alert(trans.configError + ': ' + error.message);
+                }
+            });
+        });
+
+        function updateNodeHtml(nodeId, newLabel, nodeType) {
+            const nodeElement = document.getElementById(`node-${nodeId}`);
+            if (nodeElement) {
+                const contentDiv = nodeElement.querySelector('.drawflow_content_node');
+                if (contentDiv) {
+                    const nodeStyle = getNodeStyle(nodeType);
+
+                    contentDiv.innerHTML = `
+                        <div class="${nodeStyle.containerClass}">
+                            <button type="button" class="btn btn-sm btn-ghost-danger delete-node-btn"
+                                    onclick="deleteNode(event)"
+                                    style="position: absolute; top: 2px; right: 2px; padding: 2px 6px; font-size: 10px; line-height: 1; z-index: 10;"
+                                    title="${trans.deleteNode}">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <div class="node-id" style="font-size: 9px; color: #999; margin-bottom: 3px; font-family: monospace;">ID: node-${nodeId}</div>
+                            <div class="node-title" style="font-weight: bold; margin-bottom: 5px; padding-right: 20px;">${escapeHtml(newLabel)}</div>
+                            <div class="node-type" style="font-size: 11px; color: #666; margin-bottom: 8px;">
+                                ${nodeStyle.icon ? `<i class="fa ${nodeStyle.icon} me-1"></i>` : ''}${nodeType}
+                            </div>
+                            ${!nodeStyle.isSimple ? `
+                            <button type="button" class="btn btn-sm ${nodeStyle.btnClass} w-100 edit-node-config-btn"
+                                    onclick="openNodeConfig(event)"
+                                    style="font-size: 11px; padding: 4px 8px;">
+                                <i class="fa fa-edit me-1"></i>${trans.editConfig}
+                            </button>
+                            ` : `
+                            <div style="padding: 4px 8px; text-align: center; font-size: 11px; color: #999; background: #fafafa; border-radius: 4px;">
+                                <i class="fa fa-info-circle me-1"></i>Basit config (sadece next_node)
+                            </div>
+                            `}
+                        </div>
+                    `;
+                }
             }
         }
     </script>
@@ -635,4 +1192,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Node Config Editor Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="nodeConfigOffcanvas" style="width: 600px;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">
+                <i class="fa fa-cog me-2"></i>
+                <span id="config-node-title">{{ __('ai::admin.workflow.node_configuration') }}</span>
+            </h5>
+            <button type="button" class="btn-close" onclick="closeNodeConfig()"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="config-form-content">
+                <!-- Dynamic content will be loaded here -->
+                <div class="text-center text-muted py-5">
+                    <i class="fa fa-cog fa-3x mb-3"></i>
+                    <p>{{ __('ai::admin.workflow.select_node_to_edit') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="offcanvas-footer border-top p-3">
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-ghost-secondary flex-fill" onclick="closeNodeConfig()">
+                    <i class="fa fa-times me-1"></i>
+                    {{ __('ai::admin.workflow.cancel') }}
+                </button>
+                <button type="button" class="btn btn-primary flex-fill" id="save-node-config-btn">
+                    <i class="fa fa-save me-1"></i>
+                    {{ __('ai::admin.workflow.save_changes') }}
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+

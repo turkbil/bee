@@ -149,14 +149,59 @@ class AIChatController extends Controller
                 'history_count' => count($conversationHistory),
                 'total_messages' => $conversation->messages()->count()
             ]);
-            
-            // Call AI Service
-            $aiResponse = $this->aiService->ask($message, [
-                'source' => 'admin_chat',
-                'conversation_history' => $conversationHistory,
-                'prompt_id' => $promptId,
-                'tenant_id' => $tenantId
-            ]);
+
+            // 🔥 USE FLOW EXECUTOR FOR E-COMMERCE CHAT
+            $useFlowExecutor = true; // Switch to enable/disable
+
+            if ($useFlowExecutor) {
+                try {
+                    // Get active flow (priority based)
+                    $flow = \Modules\AI\App\Models\Flow::getActiveFlow();
+
+                    if ($flow) {
+                        Log::info('🚀 Using FlowExecutor', [
+                            'flow_id' => $flow->id,
+                            'flow_name' => $flow->name
+                        ]);
+
+                        $flowExecutor = app(\Modules\AI\App\Services\Workflow\FlowExecutor::class);
+
+                        $result = $flowExecutor->execute($flow->flow_data, [
+                            'user_message' => $message,
+                            'session_id' => $conversation->session_id,
+                            'tenant_id' => $tenantId,
+                            'conversation_history' => $conversationHistory
+                        ]);
+
+                        $aiResponse = $result['final_response'] ?? null;
+
+                        Log::info('✅ FlowExecutor completed', [
+                            'has_response' => !empty($aiResponse),
+                            'response_length' => strlen($aiResponse ?? '')
+                        ]);
+                    } else {
+                        Log::warning('⚠️ No active flow found, falling back to AIService');
+                        $useFlowExecutor = false;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('❌ FlowExecutor failed, falling back to AIService', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    $useFlowExecutor = false;
+                }
+            }
+
+            // Fallback to old AIService if FlowExecutor not used
+            if (!$useFlowExecutor || empty($aiResponse)) {
+                Log::info('📞 Using classic AIService');
+                $aiResponse = $this->aiService->ask($message, [
+                    'source' => 'admin_chat',
+                    'conversation_history' => $conversationHistory,
+                    'prompt_id' => $promptId,
+                    'tenant_id' => $tenantId
+                ]);
+            }
 
             // Validate AI response
             if (empty($aiResponse) || !is_string($aiResponse)) {

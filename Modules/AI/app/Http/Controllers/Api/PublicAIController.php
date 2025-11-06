@@ -2563,44 +2563,115 @@ class PublicAIController extends Controller
             // Generate or use existing session_id
             $sessionId = $validated['session_id'] ?? $this->generateSessionId($request);
 
-            // 🔄 Route to ConversationFlowEngine
-            $engine = app(\App\Services\ConversationFlowEngine::class);
+            // 🔥 USE FLOW EXECUTOR FOR E-COMMERCE CHAT
+            $flow = \Modules\AI\App\Models\Flow::getActiveFlow();
 
-            $result = $engine->processMessage(
-                $sessionId,
-                tenant('id'),
-                $validated['message'],
-                auth()->id()
-            );
-
-            // Map flow result to API response format
-            if ($result['success']) {
+            if (!$flow) {
+                \Log::error('❌ No active flow found');
                 return response()->json([
-                    'success' => true,
-                    'data' => [
-                        'message' => $result['response'] ?? 'Merhaba! Size nasıl yardımcı olabilirim?',
-                        'session_id' => $sessionId,
-                        'conversation_id' => $result['conversation_id'] ?? null,
-                        'metadata' => [
-                            'system' => 'workflow_engine_v2',
-                            'flow_name' => $result['context']['flow_name'] ?? null,
-                            'nodes_executed' => $result['context']['nodes_executed'] ?? [],
-                        ],
-                    ],
+                    'success' => false,
+                    'message' => 'Workflow not configured',
+                ], 500);
+            }
+
+            \Log::info('🚀 Using FlowExecutor', [
+                'flow_id' => $flow->id,
+                'flow_name' => $flow->name
+            ]);
+
+            $flowExecutor = app(\Modules\AI\App\Services\Workflow\FlowExecutor::class);
+
+            // Load conversation history from database
+            $conversationHistory = [];
+            $conversation = \Modules\AI\App\Models\AIConversation::where('session_id', $sessionId)
+                ->where('tenant_id', tenant('id'))
+                ->first();
+
+            if ($conversation) {
+                // Get last 10 messages for context
+                $messages = $conversation->messages()
+                    ->orderBy('created_at', 'asc')
+                    ->take(10)
+                    ->get();
+
+                foreach ($messages as $msg) {
+                    $conversationHistory[] = [
+                        'role' => $msg->role,
+                        'content' => $msg->content
+                    ];
+                }
+
+                \Log::info('📜 Loaded conversation history', [
+                    'session_id' => $sessionId,
+                    'message_count' => count($conversationHistory)
                 ]);
             }
 
-            // Flow execution failed - fallback to error
-            \Log::error('❌ Workflow execution failed', [
+            $result = $flowExecutor->execute($flow->flow_data, [
+                'user_message' => $validated['message'],
                 'session_id' => $sessionId,
-                'error' => $result['error'] ?? 'Unknown error',
+                'tenant_id' => tenant('id'),
+                'conversation_history' => $conversationHistory
             ]);
 
+            $aiResponse = $result['final_response'] ?? '';
+
+            if (empty($aiResponse)) {
+                \Log::error('❌ Empty AI response from FlowExecutor');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'AI yanıt üretemedi',
+                ], 500);
+            }
+
+            \Log::info('✅ FlowExecutor completed', [
+                'response_length' => strlen($aiResponse)
+            ]);
+
+            // Save conversation to database
+            if (!$conversation) {
+                $conversation = \Modules\AI\App\Models\AIConversation::create([
+                    'session_id' => $sessionId,
+                    'tenant_id' => tenant('id'),
+                    'user_id' => null, // Guest user
+                    'feature_slug' => 'shop-assistant',
+                    'status' => 'active',
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+            }
+
+            // Save user message
+            $conversation->messages()->create([
+                'role' => 'user',
+                'content' => $validated['message'],
+            ]);
+
+            // Save AI response
+            $conversation->messages()->create([
+                'role' => 'assistant',
+                'content' => $aiResponse,
+            ]);
+
+            \Log::info('💾 Conversation saved', [
+                'conversation_id' => $conversation->id,
+                'session_id' => $sessionId
+            ]);
+
+            // Map flow result to API response format
             return response()->json([
-                'success' => false,
-                'message' => 'Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.',
-                'error' => $result['error'] ?? 'Flow execution failed',
-            ], 500);
+                'success' => true,
+                'data' => [
+                    'message' => $aiResponse,
+                    'session_id' => $sessionId,
+                    'conversation_id' => null, // TODO
+                    'metadata' => [
+                        'system' => 'workflow_engine_v2',
+                        'flow_name' => $flow->name,
+                        'nodes_executed' => array_keys($result),
+                    ],
+                ],
+            ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([

@@ -895,6 +895,29 @@ return [
         'clear_confirm' => 'Tüm tuvali temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
         'canvas_help' => 'Kaydırmak için tuvali sürükleyin • Yakınlaştırmak için fare tekerleği • Silmek için düğüme sağ tıklayın',
 
+        // Node Configuration
+        'edit_config' => 'Ayarları Düzenle',
+        'delete_node' => 'Düğümü Sil',
+        'delete_node_confirm' => 'Bu düğümü silmek istediğinizden emin misiniz?',
+        'node_configuration' => 'Düğüm Yapılandırması',
+        'node_type' => 'Düğüm Tipi',
+        'node_label' => 'Düğüm Etiketi',
+        'system_prompt' => 'Sistem Prompt',
+        'system_prompt_help' => 'AI\'nın kişiliği ve davranış talimatları.',
+        'max_tokens' => 'Maksimum Token',
+        'temperature' => 'Sıcaklık (Temperature)',
+        'configuration_json' => 'Yapılandırma (JSON)',
+        'configuration_json_help' => 'Bu düğüm için JSON yapılandırmasını düzenleyin.',
+        'save_changes' => 'Değişiklikleri Kaydet',
+        'config_saved' => 'Yapılandırma kaydedildi! Akışı kaydetmeyi unutmayın.',
+        'config_error' => 'Yapılandırma kaydedilirken hata oluştu',
+        'select_node_to_edit' => 'Düzenlemek için bir düğüm seçin',
+        'characters' => 'karakter',
+
+        // Test Flow
+        'test_flow' => 'Akışı Test Et',
+        'reset_session' => 'Oturumu Sıfırla',
+
         // Directives
         'directives_title' => 'AI Direktifleri',
         'directives_subtitle' => 'Kiracınız için AI davranışını yapılandırın',

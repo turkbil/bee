@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace Modules\AI\App\Services\Tenant;
 
 /**
- * İXTİF Tenant-Specific Prompt Service
+ * Tenant 2 & 3 (iXTİF) Prompt Service
  *
  * Bu servis SADECE tenant 2 (ixtif.com) ve tenant 3 (ixtif.com.tr) için kullanılır.
  *
- * İXTİF'e özel:
+ * Tenant-specific özellikler:
  * - Profesyonel "SİZ" hitabı
  * - Satış odaklı yaklaşım
- * - Kategori ayrımı (transpalet, forklift, reach truck, vb.)
+ * - Endüstriyel ekipman kategorileri (transpalet, forklift, reach truck, vb.)
  * - Telefon numarası toplama stratejisi
+ * - Fiyat ve stok politikası kuralları
+ *
+ * @package Modules\AI\App\Services\Tenant
+ * @version 2.0
  */
-class IxtifPromptService
+class Tenant2PromptService
 {
     /**
-     * İXTİF-specific prompt'u oluştur
+     * Tenant 2/3 specific prompt'u oluştur
      *
      * @return array Prompt satırları
      */

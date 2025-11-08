@@ -1243,8 +1243,8 @@ class PublicAIController extends Controller
      * 3. Prompt'ları kısa ve öz tutun (token tasarrufu + okunabilirlik)
      *
      * 📂 TENANT-SPECIFIC PROMPT DOSYALARI:
-     * - Modules/AI/app/Services/Tenant/IxtifPromptService.php (tenant 2, 3)
-     * - Diğer tenantlar için Services/Tenant/{TenantName}PromptService.php oluştur
+     * - Modules/AI/app/Services/Tenant/Tenant2PromptService.php (tenant 2, 3 - iXTİF)
+     * - Diğer tenantlar için Services/Tenant/Tenant{ID}PromptService.php oluştur
      *
      * 🔄 NASIL ÇALIŞIR:
      * - Global promptlar (bu dosya) önce eklenir
@@ -1254,8 +1254,8 @@ class PublicAIController extends Controller
      *
      * ✅ ÖRNEK:
      * if (tenant('id') == 2) {
-     *     $ixtifService = new IxtifPromptService();
-     *     $prompts[] = $ixtifService->getPromptAsString();
+     *     $tenant2Service = new Tenant2PromptService();
+     *     $prompts[] = $tenant2Service->getPromptAsString();
      * }
      *
      * ============================================================================
@@ -1633,11 +1633,11 @@ class PublicAIController extends Controller
             \Log::warning('Knowledge Base yüklenemedi', ['error' => $e->getMessage()]);
         }
 
-        // 🎯 İXTİF-SPECIFIC PROMPT (ONLY for tenants 2 & 3)
-        // Professional sales approach, category differentiation, phone collection
+        // 🎯 TENANT 2/3-SPECIFIC PROMPT (iXTİF)
+        // Professional sales approach, category differentiation, phone collection, price/stock policy
         if (in_array(tenant('id'), [2, 3])) {
-            $ixtifService = new \Modules\AI\App\Services\Tenant\IxtifPromptService();
-            $prompts[] = $ixtifService->getPromptAsString();
+            $tenant2Service = new \Modules\AI\App\Services\Tenant\Tenant2PromptService();
+            $prompts[] = $tenant2Service->getPromptAsString();
         }
 
         // Add module context if available

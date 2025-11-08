@@ -63,6 +63,19 @@ class NodeExecutor
                 fn() => $this->executeNode($nodeData, $context)
             );
         } else {
+            // DEBUG: Check context before executing node
+            if ($nodeType === 'ai_response') {
+                file_put_contents('/tmp/node_context_debug.txt',
+                    date('Y-m-d H:i:s') . " - AIResponseNode executing\n" .
+                    "Has conversation_history: " . (isset($context['conversation_history']) ? 'YES' : 'NO') . "\n" .
+                    "History count: " . (isset($context['conversation_history']) ? count($context['conversation_history']) : 0) . "\n" .
+                    "Context keys: " . implode(', ', array_keys($context)) . "\n" .
+                    "History preview: " . json_encode(array_slice($context['conversation_history'] ?? [], 0, 2), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n" .
+                    "--------------------\n\n",
+                    FILE_APPEND
+                );
+            }
+
             $result = $this->executeNode($nodeData, $context);
         }
 

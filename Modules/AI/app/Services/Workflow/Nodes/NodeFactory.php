@@ -29,6 +29,7 @@ class NodeFactory
             'welcome' => WelcomeNode::class,
             'category_detection' => CategoryDetectionNode::class,
             'product_search' => ProductSearchNode::class,
+            'meilisearch_settings' => MeilisearchSettingsNode::class,
             'stock_sorter' => StockSorterNode::class,
             'context_builder' => ContextBuilderNode::class,
             'ai_response' => AIResponseNode::class,

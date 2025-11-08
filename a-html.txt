@@ -1,12 +1,1 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0;url='https://laravel.test/login'" />
 
-        <title>Redirecting to https://laravel.test/login</title>
-    </head>
-    <body>
-        Redirecting to <a href="https://laravel.test/login">https://laravel.test/login</a>.
-    </body>
-</html>

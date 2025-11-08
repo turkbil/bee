@@ -146,6 +146,13 @@ class InitializeTenancy extends BaseMiddleware
             // Tenant'ı başlat
             $this->tenancy->initialize($tenant);
 
+            Log::emergency('🔥 API Tenant initialized', [
+                'host' => $host,
+                'tenant_id' => $tenant->id,
+                'tenant_helper_works' => tenant() ? 'YES' : 'NO',
+                'tenant_helper_id' => tenant('id')
+            ]);
+
             return $next($request);
 
         } catch (\Exception $e) {

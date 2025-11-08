@@ -29,6 +29,12 @@ class HybridSearchService
         ]);
 
         // 1. KEYWORD SEARCH (Meilisearch) - Fast, typo-tolerant
+        Log::info('🔍 Scout search starting', [
+            'query' => $query,
+            'tenant_id' => tenant('id'),
+            'tenant_initialized' => tenancy()->initialized,
+        ]);
+
         $keywordQuery = ShopProduct::search($query)->where('is_active', true);
 
         if ($categoryId) {
@@ -36,6 +42,12 @@ class HybridSearchService
         }
 
         $keywordResults = $keywordQuery->take(50)->get();
+
+        Log::info('🔍 Scout search completed', [
+            'query' => $query,
+            'results_count' => $keywordResults->count(),
+            'first_result' => $keywordResults->first()?->title ?? null,
+        ]);
 
         // 2. SEMANTIC SEARCH (Vector) - Meaning-based
         // Only if we have products with embeddings
@@ -93,13 +105,22 @@ class HybridSearchService
         // 5. SORT BY HYBRID SCORE
         uasort($hybridScores, fn($a, $b) => $b['hybrid_score'] <=> $a['hybrid_score']);
 
-        // 6. GET TOP N PRODUCTS
+        // 6. GET TOP N PRODUCTS WITH GLOBAL SORTING
         $topProductIds = array_slice(array_keys($hybridScores), 0, $limit);
 
         $topProducts = ShopProduct::whereIn('product_id', $topProductIds)
             ->get()
             ->sortBy(fn($p) => array_search($p->product_id, $topProductIds))
             ->values();
+
+        // ✅ GLOBAL SORTING RULE (is_master_product → show_on_homepage → current_stock)
+        // Apply secondary sort to products with same hybrid score
+        $topProducts = $topProducts->sortBy([
+            fn($a, $b) => array_search($a->product_id, $topProductIds) <=> array_search($b->product_id, $topProductIds), // Hybrid score first
+            fn($a, $b) => ($b->is_master_product ?? 0) <=> ($a->is_master_product ?? 0),     // Then master products
+            fn($a, $b) => ($b->show_on_homepage ?? 0) <=> ($a->show_on_homepage ?? 0),       // Then homepage products
+            fn($a, $b) => ($b->current_stock ?? 0) <=> ($a->current_stock ?? 0),             // Then stock level
+        ])->values();
 
         Log::info('✅ Hybrid search completed', [
             'keyword_results' => count($keywordResults),

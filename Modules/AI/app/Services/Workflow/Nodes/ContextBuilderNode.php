@@ -8,75 +8,110 @@ class ContextBuilderNode extends BaseNode
 {
     public function execute(array $context): array
     {
-        $products = $context['products'] ?? collect();
-        
+        // Ensure $products is always a Collection (handle both array and Collection)
+        $products = collect($context['products'] ?? []);
+
+        Log::info('🏗️ ContextBuilderNode: Input', [
+            'has_products' => isset($context['products']),
+            'products_count' => $products->count(),
+            'products_found' => $context['products_found'] ?? 'NULL'
+        ]);
+
+        // Get USD exchange rate from shop_currencies
+        $usdRate = \DB::table('shop_currencies')
+            ->where('code', 'USD')
+            ->where('is_active', 1)
+            ->value('exchange_rate') ?? 42.0; // Fallback to 42 if not found
+
         // Build markdown context for AI
         $productContext = "## 📦 Mevcut Ürünler:\n\n";
-        
+
         foreach ($products as $product) {
             // Handle both Model and array
             if (is_array($product)) {
                 $title = $product['title']['tr'] ?? $product['title']['en'] ?? 'Ürün';
-                $price = number_format($product['base_price'] ?? 0, 2, ',', '.');
+                $basePrice = $product['base_price'] ?? 0;
+                $currency = $product['currency'] ?? 'TRY';
                 $stock = $product['current_stock'] ?? 0;
+                $categoryId = $product['category_id'] ?? null;
+
                 // slug can be string or array (JSON)
                 $slugData = $product['slug'] ?? '';
-                $slug = is_array($slugData) ? ($slugData['tr'] ?? $slugData['en'] ?? '') : $slugData;
+                if (is_array($slugData)) {
+                    $slug = $slugData['tr'] ?? $slugData['en'] ?? '';
+                } elseif (is_string($slugData)) {
+                    // JSON string parse
+                    $decoded = json_decode($slugData, true);
+                    $slug = is_array($decoded) ? ($decoded['tr'] ?? $decoded['en'] ?? $slugData) : $slugData;
+                } else {
+                    $slug = '';
+                }
                 $slug = trim($slug, '"');
             } else {
                 $title = $product->getTranslated('title', 'tr');
-                $price = number_format($product->base_price ?? 0, 2, ',', '.');
+                $basePrice = $product->base_price ?? 0;
+                $currency = $product->currency ?? 'TRY';
                 $stock = $product->current_stock ?? 0;
-                $slug = is_string($product->slug) ? trim($product->slug, '"') : '';
+                $slug = $product->getTranslated('slug', 'tr') ?? '';
+                $categoryId = $product->category_id ?? null;
             }
 
-            // Satış odaklı sunum
-            $productContext .= "### 🔥 {$title}\n";
+            // Get category label (from product data if provided by tenant-specific service)
+            $categoryLabel = '';
+            if (is_array($product) && isset($product['_category_label'])) {
+                $categoryLabel = $product['_category_label'];
+            } elseif (!is_array($product) && isset($product->_category_label)) {
+                $categoryLabel = $product->_category_label;
+            }
 
-            // Fiyat sunumu - cazip göster
-            $priceNum = floatval(str_replace(['.', ','], ['', '.'], $price));
-            if ($priceNum < 2000) {
-                $productContext .= "- 💰 **{$price} TL** (KDV dahil) - En ekonomik!\n";
-            } elseif ($priceNum < 5000) {
-                $productContext .= "- 💰 **{$price} TL** (KDV dahil) - Uygun fiyat!\n";
+            // Currency conversion: USD -> TRY
+            if (strtoupper($currency) === 'USD') {
+                $priceInTRY = $basePrice * $usdRate;
+                $price = number_format($priceInTRY, 0, ',', '.');
+                $currencySymbol = 'TL';
+                $originalPrice = '$' . number_format($basePrice, 0, ',', '.');
             } else {
-                $productContext .= "- 💰 **{$price} TL** (KDV dahil) - Premium kalite!\n";
+                $price = number_format($basePrice, 0, ',', '.');
+                $currencySymbol = 'TL';
+                $originalPrice = null;
             }
 
-            // Stok durumu - aciliyet yarat
-            if ($stock <= 5 && $stock > 0) {
-                $productContext .= "- ⚠️ **SON {$stock} ADET!** Acele edin!\n";
-            } elseif ($stock <= 20) {
-                $productContext .= "- 📦 Stokta {$stock} adet (Hızla tükeniyor)\n";
-            } elseif ($stock > 20) {
-                $productContext .= "- ✅ Stokta hazır, hemen teslim!\n";
+            // ✅ BAŞLIK TEMİZLEME: Sayı formatı düzelt (2. Ton → 2 Ton)
+            // Database'de "İXTİF EPT20-20ETC - 2. Ton..." gibi başlıklar var
+            // Türkçe'de sayılarda nokta kullanılmaz: "2 ton" doğru, "2. ton" yanlış
+            $title = preg_replace('/(\d+)\.\s+(Ton|ton)/u', '$1 $2', $title);
+
+            // ✅ TEMİZ SUNUM - İkon yok, hardcode yok, stok bilgisi yok
+            $productContext .= "### {$title}\n";
+
+            // Fiyat (USD ise TL karşılığı göster)
+            if ($originalPrice) {
+                $productContext .= "- **{$price} {$currencySymbol}** ≈ {$originalPrice}\n";
+            } else {
+                $productContext .= "- **{$price} {$currencySymbol}**\n";
             }
 
-            // Satış odaklı özellikler
-            $titleLower = mb_strtolower($title);
-            if (str_contains($titleLower, 'li-ion') || str_contains($titleLower, 'lithium')) {
-                $productContext .= "- 🔋 Li-Ion: Hafif ve uzun ömürlü\n";
-            }
-            if (str_contains($titleLower, 'elektrikli')) {
-                $productContext .= "- ⚡ Elektrikli: Güçlü performans\n";
-            }
-            if (str_contains($titleLower, 'manuel')) {
-                $productContext .= "- 💪 Manuel: Bakım gerektirmez\n";
-            }
+            // ✅ STOK BİLGİSİ KALDIRILDI
+            // ✅ ASLA stok durumu verme (kullanıcı talebi)
+            // ✅ AI sadece mevcut ürünleri önerecek (stok olan ürünler zaten öncelikli)
 
             // Tıklanabilir link
             if ($slug) {
-                $productContext .= "- 👉 [**Hemen İncele**](/shop/product/{$slug})\n";
+                $productContext .= "- [Ürünü İncele](/shop/{$slug})\n";
             }
             $productContext .= "\n";
         }
         
-        $context['product_context'] = $productContext;
-        
-        Log::info('🏗️ ContextBuilderNode', [
-            'context_length' => strlen($productContext)
+        Log::info('🏗️ ContextBuilderNode: Output', [
+            'context_length' => strlen($productContext),
+            'products_count' => $products->count()
         ]);
-        
-        return $context;
+
+        // Return only new keys (FlowExecutor will merge with context)
+        // IMPORTANT: Also return products_found to preserve it for AIResponseNode
+        return [
+            'product_context' => $productContext,
+            'products_found' => $products->count()  // Preserve for AI check
+        ];
     }
 }

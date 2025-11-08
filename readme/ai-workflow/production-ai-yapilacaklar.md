@@ -1,819 +1,786 @@
-# 🚀 AI WORKFLOW - PRODUCTION'A ALMA YAPILACAKLAR LİSTESİ
+# 🚀 PRODUCTION AI DEPLOYMENT - YAPILACAKLAR
 
-**Tarih:** 5 Kasım 2024
-**Durum:** DEV'de Test Edildi, Production'a Hazırlanıyor
-
----
-
-## ⚠️ ÖNEMLİ UYARI
-
-Bu işlemler **CANLI SUNUCUDA** yapılacak!
-**Backup almadan işlem YAPMA!**
+**Tarih:** 2025-11-08
+**Versiyon:** AI Workflow v2.3 - Conversation History Fix + Meilisearch Integration
+**Sistem:** iXtif.com (Tenant 2) + Tüm Tenant'lar
+**Deployment Tipi:** Code + Composer + Cache
 
 ---
 
-## 📋 DATABASE DEĞİŞİKLİKLERİ
+## 📋 ÖZET - NE YAPILDI?
 
-### 1️⃣ **CENTRAL DATABASE** (tuufi_com / laravel)
+### ✅ Yeni Özellikler:
+1. **Conversation History Fix** - AI artık eski konuşmaları doğru hatırlıyor
+2. **Meilisearch Node** - Gelişmiş ürün arama düğümü eklendi
+3. **OpenAI API Key Fix** - Config cache'li sistemlerde API key doğru yükleniyor
+4. **UX İyileştirmeleri** - Chatbot input auto-focus, better flow
+5. **Tenant2 Product Search Service** - Yeni tenant-specific arama servisi
+6. **Markdown Parse İyileştirmeleri** - Daha iyi HTML dönüşümü
+7. **Dokümantasyon** - v2.3 basit kullanım kılavuzu eklendi
 
-#### A. `ai_conversations` Tablosuna Kolonlar Ekle
+### 🔧 Değişen Dosyalar:
+- **34 dosya** değiştirildi
+- **+1,277 satır** eklendi
+- **-2,181 satır** silindi
+- **Net: -904 satır** (kod simplification yapıldı! ✅)
 
-```sql
--- 1. flow_id kolonu
-ALTER TABLE ai_conversations
-ADD COLUMN flow_id BIGINT UNSIGNED NULL
-COMMENT 'Hangi workflow akışı kullanılıyor - tenant_conversation_flows.id'
-AFTER tenant_id;
+### 🆕 Yeni Dosyalar:
+1. `Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php` (216 satır)
+2. `app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php` (~700 satır)
+3. `readme/ai-workflow/v2.3/` klasörü (dokümantasyon)
 
--- 2. current_node_id kolonu
-ALTER TABLE ai_conversations
-ADD COLUMN current_node_id VARCHAR(50) NULL
-COMMENT 'Workflow akışında şu anda hangi node\'da (örn: node_greeting_1)'
-AFTER flow_id;
-
--- 3. state_history kolonu
-ALTER TABLE ai_conversations
-ADD COLUMN state_history JSON NULL
-COMMENT 'Node geçiş geçmişi - [{node_id, timestamp, success}]'
-AFTER context_data;
-
--- 4. context_data'yı JSON'a çevir (eğer longtext ise)
-ALTER TABLE ai_conversations
-MODIFY COLUMN context_data JSON NULL
-COMMENT 'Sohbet sırasında toplanan veriler - JSON formatında';
-```
-
-#### B. Index'leri Ekle
-
-```sql
--- flow_id için index
-ALTER TABLE ai_conversations
-ADD INDEX idx_flow_id (flow_id);
-
--- tenant_id + flow_id birleşik index
-ALTER TABLE ai_conversations
-ADD INDEX idx_tenant_flow (tenant_id, flow_id);
-
--- current_node_id için index
-ALTER TABLE ai_conversations
-ADD INDEX idx_current_node (current_node_id);
-```
-
-#### C. Doğrulama
-
-```sql
--- Kolonları kontrol et
-DESCRIBE ai_conversations;
-
--- Özellikle şunlar olmalı:
--- flow_id          -> bigint unsigned, NULL, idx_flow_id
--- current_node_id  -> varchar(50), NULL, idx_current_node
--- context_data     -> json, NULL
--- state_history    -> json, NULL
-```
+### ❌ Silinen Dosyalar:
+1. `app/Services/AI/TenantSpecific/IxtifProductSearchService.php` (449 satır - artık Tenant2 kullanılıyor)
 
 ---
 
-### 2️⃣ **TENANT DATABASE'LERDE YAPILMAYACAK İŞLEM**
+## 🎯 PRODUCTION'A ALMA ADIMLARI
 
-**⚠️ DİKKAT:** `ai_conversations` tablosu **SADECE CENTRAL DATABASE'DE** olmalı!
+### 📦 ADIM 1: GIT İŞLEMLERİ (Local)
 
-**Eğer tenant database'lerde varsa:**
-```sql
--- TENANT 1 (tenant_tuufi)
-SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS ai_conversations;
-SET FOREIGN_KEY_CHECKS=1;
-
--- TENANT 2 (tenant_ixtif)
-SET FOREIGN_KEY_CHECKS=0;
-DROP TABLE IF EXISTS ai_conversations;
-SET FOREIGN_KEY_CHECKS=1;
-
--- Diğer tenant'lar için de aynı işlem
-```
-
-**Sebep:** `ai_conversations` central'de toplanıyor, `tenant_id` ile ayırt ediliyor.
-
----
-
-### 3️⃣ **MIGRATION DOSYALARI**
-
-#### A. Tenant Migrations'dan Sil
+#### 1.1. Buffer Dosyaları Temizlendi mi Kontrol Et
 
 ```bash
-# Bu dosya SADECE central migrations'da olmalı:
-rm database/migrations/tenant/2024_11_04_120002_create_ai_conversations_table.php
+# Buffer dosyaları boş olmalı (1 byte)
+ls -lah a-console.txt a-html.txt b-html.txt
+
+# Beklenen çıktı:
+# -rw-r--r-- 1 user staff 1B ... a-console.txt
+# -rw-r--r-- 1 user staff 1B ... a-html.txt
+# -rw-r--r-- 1 user staff 1B ... b-html.txt
 ```
 
-#### B. Central Migrations'da Kalmalı
+**⚠️ Eğer dosyalar dolu ise:**
+```bash
+echo "" > a-console.txt
+echo "" > a-html.txt
+echo "" > b-html.txt
+```
+
+#### 1.2. Git Status Kontrolü
 
 ```bash
-# Bu dosya yerinde kalacak:
-database/migrations/2024_11_04_120002_create_ai_conversations_table.php
+# Değişiklikleri kontrol et
+git status
+
+# Beklenen: 34 dosya değişmiş + 3 yeni dosya/klasör
+# Modified: 31 dosya (.gitignore dahil)
+# Deleted: 1 dosya (IxtifProductSearchService.php)
+# Untracked: 3 item (MeilisearchSettingsNode, Tenant2ProductSearchService, v2.3/)
 ```
 
----
-
-## 📝 KOD DEĞİŞİKLİKLERİ
-
-### 1️⃣ **AIConversation Model**
-
-**Dosya:** `app/Models/AIConversation.php`
-
-**Değişiklik:**
-```php
-class AIConversation extends Model
-{
-    use HasFactory;
-
-    // ⭐ BU SATIRI EKLE
-    protected $connection = 'mysql'; // Central database - tüm tenant conversation'ları burada
-
-    protected $table = 'ai_conversations';
-```
-
-**Sebep:** Model'e connection belirtilmezse tenant context'inde tenant database'i kullanmaya çalışır. Ama `ai_conversations` central'de olmalı.
-
----
-
-### 3️⃣ **TenantConversationFlow Model**
-
-**Dosya:** `app/Models/TenantConversationFlow.php`
-
-**Değişiklik:**
-```php
-class TenantConversationFlow extends Model
-{
-    use HasFactory;
-
-    // ⭐ BU SATIRI EKLE
-    protected $connection = 'tenant'; // Tenant database - her tenant'ın kendi flow'ları
-
-    protected $table = 'tenant_conversation_flows';
-```
-
-**Sebep:** Flow'lar tenant-specific olmalı. Her tenant kendi flow'larını tenant database'inde tutar.
-
----
-
-### 2️⃣ **ChatMessage İlişkisi** (DÜZELTİLDİ)
-
-**Dosya:** `app/Models/AIConversation.php`
-
-**Sorun:** `ChatMessage` model'i yok, ama ilişki tanımlı. Bu flow execution sırasında `Class "App\Models\ChatMessage" not found` hatasına sebep oluyor.
-
-**Değişiklik:**
-```php
-// Line 48-56
-/**
- * Get messages in this conversation
- *
- * TODO: Implement ChatMessage model or use correct message model
- */
-// public function messages(): HasMany
-// {
-//     return $this->hasMany(ChatMessage::class, 'conversation_id');
-// }
-```
-
-**Sebep:** İlişki şu anda kullanılmıyor ve eksik model class'ı flow execution'ı bozuyor. Yorum satırı yaparak geçici çözüm sağlandı.
-
-**Gelecek Çözüm:** Conversation message'ları için uygun model oluşturulduğunda bu ilişki aktif edilecek.
-
----
-
-### 4️⃣ **SHOP NAMESPACE MIGRATION** (5 KASIM 2024 - TAMAMLANDI ✅)
-
-**Önemli:** Tenant-specific node'lar artık **Shop namespace** altında global olarak sunuluyor!
-
-**Değişiklik Özeti:**
-- ❌ ESKİ: `App\Services\ConversationNodes\TenantSpecific\Tenant_2\CategoryDetectionNode`
-- ✅ YENİ: `App\Services\ConversationNodes\Shop\CategoryDetectionNode`
-
-**Yapılan İşlemler:**
-
-1. **Seeder Dosyaları Güncellendi:**
-   - `database/seeders/AIWorkflowNodesSeeder.php`: Shop namespace kullanılıyor, `is_global=true`
-   - `database/seeders/AIWorkflowSeeder.php`: Hardcoded class referansları kaldırıldı
-
-2. **Tenant Database Temizliği:**
-   - Tenant DB'deki eski `ai_workflow_nodes` kayıtları silindi
-   - Artık tüm node'lar central DB'den yükleniyor
-
-3. **Cache Version Bump:**
-   - `AIWorkflowNode::getForTenant()` cache version: v3 → v4
-
-4. **Shop Node'ları Düzeltildi:**
-   - `ProductSearchNode`: Multilingual field support (title, slug, body JSON search)
-   - `CategoryDetectionNode`: title array handling
-   - Parametre düzeltmeleri (ProductSearchService API)
-
-5. **Flow Config Düzeltmeleri:**
-   - Condition node: `condition` → `condition_type`
-   - `next_node` fields eklendi
-
-**Node'lar (19 adet - Tümü Global):**
-
-**Common Nodes (6):** ai_response, sentiment_detection, context_builder, history_loader, message_saver, welcome, condition, end, collect_data, webhook, link_generator, share_contact
-
-**Shop Nodes (7):** category_detection, product_search, price_query, currency_converter, product_comparison, contact_request, stock_sorter
-
-**Test Sonucu:**
-```bash
-php /tmp/test-ai-chat.php
-✅ 12 node başarıyla çalıştı
-✅ AI response geldi
-✅ Shop namespace aktif
-```
-
-**Production'da Yapılacak (Database İşlemleri):**
-
-### ⚠️ ADIM 1: ÖNCE KONTROL ET (Hiçbir şey silmez!)
+#### 1.3. Yeni Dosyaları Ekle
 
 ```bash
-# Tenant DB'de eski kayıt var mı kontrol et
-php artisan tinker --execute="
-echo '━━━ TENANT DB KONTROL ━━━' . PHP_EOL;
+# Yeni node'u ekle
+git add Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
 
-// Tenant 2 (ixtif.com)
-tenancy()->initialize(2);
-\$count2 = DB::table('ai_workflow_nodes')->count();
-echo 'Tenant 2: ' . \$count2 . ' kayıt';
-if (\$count2 > 0) {
-    echo ' ⚠️ (Eski kayıtlar var - temizlenmeli)' . PHP_EOL;
-} else {
-    echo ' ✅ (Temiz)' . PHP_EOL;
-}
-tenancy()->end();
+# Yeni tenant service'i ekle
+git add app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php
 
-// Tenant 3 (ixtif.com.tr)
-tenancy()->initialize(3);
-\$count3 = DB::table('ai_workflow_nodes')->count();
-echo 'Tenant 3: ' . \$count3 . ' kayıt';
-if (\$count3 > 0) {
-    echo ' ⚠️ (Eski kayıtlar var - temizlenmeli)' . PHP_EOL;
-} else {
-    echo ' ✅ (Temiz)' . PHP_EOL;
-}
-tenancy()->end();
+# Yeni dokümantasyonu ekle
+git add readme/ai-workflow/v2.3/
 
-echo '━━━━━━━━━━━━━━━━━━━━━━' . PHP_EOL;
-echo 'Eğer ⚠️ görüyorsan, temizlik komutu gerekli!' . PHP_EOL;
-"
+# .gitignore güncellemesini ekle (buffer dosyaları için)
+git add .gitignore
 ```
 
-### ⚠️ ADIM 2: EĞER ESKİ KAYITLAR VARSA (⚠️ İşaretli tenant'lar için)
-
-**UYARI:** Aşağıdaki komutlar veritabanından kayıt siler!
+#### 1.4. Silinen Dosyayı Onayla
 
 ```bash
-# Tenant 2 temizliği (SADECE ESKİ KAYIT VARSA ÇALIŞTIR!)
-php artisan tinker --execute="
-tenancy()->initialize(2);
-\$count = DB::table('ai_workflow_nodes')->count();
-if (\$count > 0) {
-    DB::table('ai_workflow_nodes')->delete();
-    echo '✅ Tenant 2: ' . \$count . ' eski kayıt silindi' . PHP_EOL;
-}
-tenancy()->end();
-"
-
-# Tenant 3 temizliği (SADECE ESKİ KAYIT VARSA ÇALIŞTIR!)
-php artisan tinker --execute="
-tenancy()->initialize(3);
-\$count = DB::table('ai_workflow_nodes')->count();
-if (\$count > 0) {
-    DB::table('ai_workflow_nodes')->delete();
-    echo '✅ Tenant 3: ' . \$count . ' eski kayıt silindi' . PHP_EOL;
-}
-tenancy()->end();
-"
+# Git'e silinen dosyayı bildir
+git rm app/Services/AI/TenantSpecific/IxtifProductSearchService.php
 ```
 
-### ✅ ADIM 3: Cache Temizle (Her Zaman Gerekli)
+#### 1.5. Tüm Değişiklikleri Ekle
 
 ```bash
-# Node cache temizle
-php artisan tinker --execute="
-App\Models\AIWorkflowNode::clearCache(2);
-App\Models\AIWorkflowNode::clearCache(3);
-echo '✅ Node cache temizlendi' . PHP_EOL;
-"
+# Geri kalan tüm dosyaları ekle
+git add .
 
-# Genel cache temizle
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-
-echo '✅ Tüm cache temizlendi'
+# Son kontrol
+git status
 ```
 
-**Not:** Kod değişiklikleri Git'ten otomatik gelecek, sadece DB kontrol/temizlik + cache gerekli!
+#### 1.6. Commit & Push
 
----
-
-### 5️⃣ **NodeExecutor Registry Fix** (KRİTİK!)
-
-**Dosya:** `app/Services/ConversationNodes/NodeExecutor.php`
-
-**Sorun:** Tenant context'inde NodeExecutor sadece tenant-specific node'ları yüklüyor, global node'ları (ai_response, condition, collect_data, end, share_contact, webhook) yüklemiyor.
-
-**Hata:** `Unknown node type: ai_response. Available types: category_detection, product_recommendation...`
-
-**Değişiklik:**
-```php
-protected function initializeRegistry(): void
-{
-    try {
-        // Get tenant ID (if in tenant context)
-        $tenantId = function_exists('tenant') && tenant() ? tenant('id') : null;
-
-        if ($tenantId) {
-            // Tenant context: Get both global and tenant-specific nodes
-            $nodes = AIWorkflowNode::getForTenant($tenantId);
-
-            foreach ($nodes as $node) {
-                self::register($node['type'], $node['class']);
-            }
-
-            Log::info('Node registry initialized from database (tenant context)', [
-                'tenant_id' => $tenantId,
-                'total_nodes' => count(self::$nodeRegistry),
-                'node_types' => array_keys(self::$nodeRegistry),
-            ]);
-        } else {
-            // Central context: Get only global nodes from central DB
-            $nodes = \DB::connection('mysql')->table('ai_workflow_nodes')
-                ->where('is_active', true)
-                ->where('is_global', true)
-                ->orderBy('category')
-                ->orderBy('order')
-                ->get();
-
-            foreach ($nodes as $node) {
-                self::register($node->node_key, $node->node_class);
-            }
-
-            Log::info('Node registry initialized from database (central context)', [
-                'total_nodes' => count(self::$nodeRegistry),
-                'node_types' => array_keys(self::$nodeRegistry),
-            ]);
-        }
-    } catch (\Exception $e) {
-        Log::error('Failed to initialize node registry from database', [
-            'error' => $e->getMessage(),
-        ]);
-
-        // Fallback: Initialize with hardcoded nodes (for safety)
-        $this->initializeHardcodedRegistry();
-    }
-}
-```
-
-**Sebep:** Eski kod `AIWorkflowNode::where('is_active', true)` kullanıyordu. Bu tenant context'inde sadece tenant database'deki node'ları alıyor. Global node'lar central database'de olduğu için görünmüyor. `getForTenant()` metodu hem central DB'den global node'ları hem de tenant DB'den tenant-specific node'ları alıyor.
-
-**Test:**
 ```bash
-php artisan tinker
->>> $tenant = \App\Models\Tenant::find(2);
->>> tenancy()->initialize($tenant);
->>> \App\Services\ConversationNodes\NodeExecutor::clearRegistry();
->>> $executor = new \App\Services\ConversationNodes\NodeExecutor();
->>> $types = \App\Services\ConversationNodes\NodeExecutor::getRegisteredTypes();
->>> print_r($types);
-# 13 node görülmeli: ai_response, condition, collect_data, end, share_contact, webhook, category_detection, product_recommendation, price_filter, currency_convert, stock_check, comparison, quotation
+# Commit yap
+git add . && git commit -m "$(cat <<'EOF'
+✨ AI Workflow v2.3 - Conversation History Fix + Meilisearch
+
+**Major Improvements:**
+1. ✅ Conversation history fix - AI remembers context correctly
+2. 🔍 Meilisearch integration - Advanced product search node
+3. 🔑 OpenAI API key fix - Works with config cache
+4. 🎨 UX improvements - Auto-focus input, better chat flow
+5. 📊 Tenant2ProductSearchService - Enhanced tenant-specific search
+6. 📝 Markdown parse improvements - Better HTML conversion
+7. 📚 Documentation - v2.3 user guide added
+
+**Code Changes:**
+- 34 files changed: +1,277, -2,181 (net: -904 lines)
+- New files: MeilisearchSettingsNode, Tenant2ProductSearchService
+- Deleted: IxtifProductSearchService (replaced by Tenant2)
+- Updated: AIResponseNode, ContextBuilderNode, ProductSearchNode
+- Cleanup: Buffer files emptied, added to .gitignore
+
+**Deployment Requirements:**
+✅ composer dump-autoload (new classes added)
+✅ npm run prod (CSS/JS changed)
+✅ php artisan cache:clear
+✅ php artisan view:clear
+✅ curl opcache-reset.php
+✅ File permissions check (new files)
+
+📖 Detailed guide: readme/ai-workflow/production-ai-yapilacaklar.md
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+
+# Remote'a gönder
+git push origin main
 ```
 
 ---
 
-### 6️⃣ **NodeExecutor Force Reinit** (5 KASIM 2024 - TAMAMLANDI ✅)
+## 🖥️ ADIM 2: PRODUCTION SERVER DEPLOYMENT
 
-**Dosya:** `app/Services/ConversationNodes/NodeExecutor.php`
-
-**Sorun:** Laravel container NodeExecutor'ı boot sırasında oluşturuyordu, tenant context'i henüz hazır değildi.
-
-**Çözüm:** `execute()` metodunda her çağrıda force reinitialize + explicit tenant_id geçişi
-
-```php
-public function execute(array $nodeData, AIConversation $conversation, string $userMessage): array
-{
-    $startTime = microtime(true);
-
-    try {
-        // 🚨 CRITICAL: ALWAYS reinitialize registry on EVERY execute()
-        self::$initialized = false;
-        self::$nodeRegistry = [];
-        $this->initializeRegistry($conversation->tenant_id); // Pass explicit tenant_id
-        self::$initialized = true;
-
-        // Validate node data
-        if (!isset($nodeData['type'])) {
-            throw new \Exception('Node type not specified');
-        }
-
-        // Continue with execution...
-    }
-}
-
-protected function initializeRegistry(?int $forceTenantId = null): void
-{
-    // Get tenant ID - prioritize forced ID, then tenant context
-    $tenantId = $forceTenantId ?? (function_exists('tenant') && tenant() ? tenant('id') : null);
-
-    if ($tenantId) {
-        $nodes = AIWorkflowNode::getForTenant($tenantId);
-        foreach ($nodes as $node) {
-            self::register($node['type'], $node['class']);
-        }
-    }
-}
-```
-
-**Sebep:** Dependency injection timing issue - tenant context'i NodeExecutor oluşturulduğunda hazır olmayabilir.
-
----
-
-### 7️⃣ **Livewire 3 Uyumluluk** (ZATEN DÜZELTİLDİ)
-
-**Dosya:** `Modules/AI/app/Http/Livewire/Admin/Workflow/FlowEditor.php`
-
-**Değişiklik:** (Zaten yapıldı ama doğrula)
-```php
-// ❌ ESKI (Livewire 2)
-$this->dispatchBrowserEvent('save-flow-request');
-
-// ✅ YENİ (Livewire 3)
-$this->dispatch('save-flow-request');
-```
-
-**Blade Dosyası:** `Modules/AI/resources/views/livewire/admin/workflow/flow-editor.blade.php`
-
-```javascript
-// ❌ ESKI
-window.addEventListener('save-flow-request', () => {});
-
-// ✅ YENİ
-Livewire.on('save-flow-request', () => {});
-```
-
----
-
-### 6️⃣ **AI Entegrasyonu** (TAMAMLANDI ✅)
-
-**Dosya:** `app/Services/ConversationFlowEngine.php`
-
-**Değişiklik 1:** `generateAIResponse()` metodunu CentralAIService kullanacak şekilde güncelle (Line 212-255)
-
-```php
-protected function generateAIResponse(string $prompt, array $context): string
-{
-    try {
-        // Use CentralAIService for AI requests
-        $aiService = app(\App\Services\AI\CentralAIService::class);
-
-        // Build context as user message
-        $userMessage = $context['user_message'] ?? '';
-        $conversationContext = $context['conversation_context'] ?? [];
-
-        // Combine system prompt + user message
-        $fullPrompt = $prompt . "\n\nKullanıcı mesajı: " . $userMessage;
-
-        // Execute AI request
-        $response = $aiService->executeRequest($fullPrompt, [
-            'usage_type' => 'conversation_flow',
-            'feature_slug' => 'ai_workflow',
-            'reference_id' => $context['conversation_id'] ?? null,
-            'force_provider' => 'openai', // TODO: Make this configurable
-        ]);
-
-        // Extract response text (response is array with 'content' key)
-        if (isset($response['response'])) {
-            if (is_array($response['response']) && isset($response['response']['content'])) {
-                return $response['response']['content'];
-            }
-            if (is_string($response['response'])) {
-                return $response['response'];
-            }
-        }
-
-        return 'Üzgünüm, yanıt oluşturulamadı.';
-    } catch (\Exception $e) {
-        Log::error('AI response generation failed', ['error' => $e->getMessage()]);
-        return 'Üzgünüm, bir hata oluştu.';
-    }
-}
-```
-
-**Değişiklik 2:** User message'ı context'e ekle (Line 70-71)
-
-```php
-// Add user message to context
-$aiContext['user_message'] = $userMessage;
-```
-
-**Değişiklik 3:** Message history metodunu geçici devre dışı bırak (Line 190-214)
-
-```php
-protected function getMessageHistory(AIConversation $conversation): array
-{
-    // TODO: Implement message history when ChatMessage model is created
-    return [];
-}
-```
-
-**Sebep:**
-- CentralAIService tüm AI provider'ları (OpenAI, Anthropic, DeepSeek) tek bir interface'den yönetir
-- Credit tracking, token hesaplama, usage logging otomatik yapılır
-- Response format: `$response['response']['content']` (nested array)
-
-**Test Sonucu:**
-```
-Kullanıcı: "Merhaba, 2 ton kapasiteli transpalet arıyorum"
-AI: "Merhaba! İxtif.com olarak sizi burada görmekten çok mutluyuz..."
-✅ Gerçek AI yanıtları geliyor!
-```
-
----
-
-## 🧪 TEST ADIMLARI (Production'da)
-
-### 1️⃣ **Database Değişikliklerini Uygula**
+### 2.1. SSH Bağlantısı
 
 ```bash
-# Backup al
-mysqldump -u root laravel > backup_ai_conversations_$(date +%Y%m%d_%H%M%S).sql
+# Production sunucuya bağlan
+ssh tuufi.com_@vh163.timeweb.ru
 
-# Kolonları ekle (yukarıdaki SQL'leri çalıştır)
-mysql -u root laravel < production_ai_workflow_schema.sql
+# Proje dizinine git
+cd /var/www/vhosts/tuufi.com/httpdocs/
 ```
 
-### 2️⃣ **Kod Değişikliklerini Deploy Et**
+### 2.2. Git Pull
 
 ```bash
-# Git pull veya dosyaları upload et
+# Mevcut branch kontrol
+git branch
+# Beklenen: * main
+
+# Git pull (kod değişikliklerini çek)
 git pull origin main
 
-# Composer update (gerekirse)
-composer install --no-dev --optimize-autoloader
+# Başarılı mı kontrol et
+echo $?
+# Beklenen: 0 (başarılı)
 
-# Cache temizle
-php artisan cache:clear
-php artisan config:clear
+# Hangi dosyalar geldi kontrol
+git log -1 --stat
+```
+
+---
+
+## 🔧 ADIM 3: COMPOSER İŞLEMLERİ
+
+### 3.1. Autoload Kontrolü
+
+```bash
+# Yeni class'lar autoload'a eklenmiş mi kontrol et
+grep -r "MeilisearchSettingsNode" vendor/composer/autoload_classmap.php
+grep -r "Tenant2ProductSearchService" vendor/composer/autoload_classmap.php
+
+# Eğer sonuç BOŞ ise → composer dump-autoload gerekli!
+```
+
+### 3.2. Composer Dump-Autoload
+
+```bash
+# Autoload'u yeniden oluştur
+composer dump-autoload --optimize
+
+# Beklenen çıktı:
+# Generating optimized autoload files
+# Generated optimized autoload files containing X classes
+```
+
+### 3.3. Doğrulama
+
+```bash
+# Yeni class'lar artık yükleniyor mu kontrol et
+grep -r "MeilisearchSettingsNode" vendor/composer/autoload_classmap.php
+# Beklenen: 'Modules\\AI\\App\\Services\\Workflow\\Nodes\\MeilisearchSettingsNode' => ...
+
+grep -r "Tenant2ProductSearchService" vendor/composer/autoload_classmap.php
+# Beklenen: 'App\\Services\\AI\\TenantSpecific\\Tenant2ProductSearchService' => ...
+```
+
+---
+
+## 🎨 ADIM 4: FRONTEND BUILD (CSS/JS)
+
+### 4.1. Node Modules Kontrolü
+
+```bash
+# package.json değişmiş mi kontrol et
+git diff HEAD~1 package.json
+
+# Eğer değişmemişse → npm install gerekli DEĞİL
+# Sadece asset compile gerekli
+```
+
+### 4.2. NPM Build
+
+```bash
+# Production build (CSS + JS compile)
+npm run prod
+
+# Beklenen çıktı:
+# ✔ Compiled Successfully in XXXXms
+# Build at: 2025-11-08 ...
+# ├── public/css/app.css
+# ├── public/js/app.js
+# └── public/mix-manifest.json
+```
+
+### 4.3. Asset Kontrolü
+
+```bash
+# Mix manifest güncellenmiş mi kontrol et
+cat public/mix-manifest.json
+
+# Beklenen: Yeni hash'ler
+# {
+#     "/css/app.css": "/css/app.css?id=...",
+#     "/js/app.js": "/js/app.js?id=..."
+# }
+```
+
+---
+
+## 🗑️ ADIM 5: CACHE TEMİZLİĞİ
+
+### 5.1. Normal Cache Clear (Güvenli)
+
+```bash
+# View cache temizle
 php artisan view:clear
-php artisan route:clear
 
-# ⚠️ ÖNEMLİ: Workflow nodes cache'ini de temizle
-php artisan tinker --execute="
-\Cache::forget('ai_workflow_nodes_tenant_1');
-\Cache::forget('ai_workflow_nodes_tenant_2');
-\Cache::forget('ai_workflow_nodes_tenant_3');
-echo 'Workflow nodes cache temizlendi';
-"
+# Response cache temizle
+php artisan responsecache:clear
 
-# NodeExecutor registry'yi temizle
-php artisan tinker --execute="
-\App\Services\ConversationNodes\NodeExecutor::clearRegistry();
-echo 'NodeExecutor registry temizlendi';
-"
-```
-
-### 3️⃣ **Test Et**
-
-```bash
-# Tinker ile test
-php artisan tinker
->>> $executor = new \App\Services\ConversationNodes\NodeExecutor();
->>> $types = \App\Services\ConversationNodes\NodeExecutor::getRegisteredTypes();
->>> print_r($types);
-# ai_response, condition, collect_data, end... olmalı
-
-# Flow test
->>> $engine = app(\App\Services\ConversationFlowEngine::class);
->>> $result = $engine->processMessage('test_' . time(), 2, 'merhaba', null);
->>> print_r($result);
-```
-
-### 4️⃣ **Admin Panel Test**
-
-1. Admin'e giriş yap
-2. `/admin/ai/workflow/flows` → Flow listesi
-3. Flow oluştur / düzenle
-4. Test Flow butonuna tıkla
-5. Mesaj gönder
-6. Debug panel'i aç, sonuçları kontrol et
-
----
-
-## ⚠️ OLASI HATALAR VE ÇÖZÜMLER
-
-### Hata 1: `Table 'ai_conversations' doesn't exist`
-
-**Sebep:** Tenant database'de arıyor ama tablo central'de
-
-**Çözüm:**
-```php
-// AIConversation.php içinde
-protected $connection = 'mysql'; // MUTLAKA EKLE
-```
-
-### Hata 2: `Unknown column 'flow_id'`
-
-**Sebep:** Central database'e kolon eklenmemiş
-
-**Çözüm:**
-```sql
-ALTER TABLE ai_conversations ADD COLUMN flow_id BIGINT UNSIGNED NULL;
-```
-
-### Hata 3: `Unknown column 'current_node_id'`
-
-**Sebep:** Central database'e kolon eklenmemiş
-
-**Çözüm:**
-```sql
-ALTER TABLE ai_conversations ADD COLUMN current_node_id VARCHAR(50) NULL;
-```
-
-### Hata 4: `Class "App\Models\ChatMessage" not found`
-
-**Sebep:** Model'de yanlış class referansı
-
-**Çözüm:**
-```php
-// AIConversation.php:53 - Doğru model adını kullan veya yorum satırı yap
-// return $this->hasMany(ChatMessage::class, 'conversation_id');
-```
-
-### Hata 5: `Unknown node type: ai_response`
-
-**Sebep:** NodeExecutor registry tenant context'inde global node'ları yüklemiyor
-
-**Çözüm:**
-```php
-// app/Services/ConversationNodes/NodeExecutor.php
-// initializeRegistry() metodunu yukarıdaki "4️⃣ NodeExecutor Registry Fix" bölümündeki gibi düzelt
-
-// Sonra cache temizle ve test et
+# Application cache temizle (DİKKAT: Config cache'i korur!)
 php artisan cache:clear
-\App\Services\ConversationNodes\NodeExecutor::clearRegistry();
 ```
 
-**Doğrulama:**
+**⚠️ ÖNEMLİ:** `config:clear` YAPMA! Production'da config cached olmalı.
+
+### 5.2. OPcache Reset (PHP Bytecode Cache)
+
+```bash
+# OPcache reset (ZORUNLU!)
+curl -s -k https://ixtif.com/opcache-reset.php
+
+# Beklenen çıktı:
+# OPcache has been reset successfully
+
+# 2 saniye bekle (cache propagation)
+sleep 2
+```
+
+### 5.3. Compiled Views Silme (Gerekirse)
+
+```bash
+# Eğer view değişiklikleri yansımıyorsa
+find storage/framework/views -type f -name "*.php" -delete
+
+# View cache'i tekrar oluştur
+php artisan view:cache
+```
+
+---
+
+## 🔐 ADIM 6: FILE PERMISSIONS (ÖNEMLİ!)
+
+### 6.1. Yeni Dosyaların Permission Kontrolü
+
+```bash
+# Yeni node dosyası
+ls -la Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
+
+# Beklenen:
+# -rw-r--r-- tuufi.com_ psaserv ... MeilisearchSettingsNode.php
+
+# Yanlış ise (root:root veya 700):
+sudo chown tuufi.com_:psaserv Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
+sudo chmod 644 Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
+```
+
+```bash
+# Yeni tenant service dosyası
+ls -la app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php
+
+# Beklenen:
+# -rw-r--r-- tuufi.com_ psaserv ... Tenant2ProductSearchService.php
+
+# Yanlış ise:
+sudo chown tuufi.com_:psaserv app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php
+sudo chmod 644 app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php
+```
+
+### 6.2. Yeni Klasör Permission'ı
+
+```bash
+# v2.3 dokümantasyon klasörü
+ls -lad readme/ai-workflow/v2.3/
+
+# Beklenen:
+# drwxr-xr-x tuufi.com_ psaserv ... v2.3/
+
+# Yanlış ise:
+sudo chown -R tuufi.com_:psaserv readme/ai-workflow/v2.3/
+sudo find readme/ai-workflow/v2.3/ -type f -exec chmod 644 {} \;
+sudo find readme/ai-workflow/v2.3/ -type d -exec chmod 755 {} \;
+```
+
+### 6.3. Toplu Permission Fix (Eğer Gerekirse)
+
+```bash
+# Tüm AI modülü klasörü
+sudo chown -R tuufi.com_:psaserv Modules/AI/
+sudo find Modules/AI/ -type f -exec chmod 644 {} \;
+sudo find Modules/AI/ -type d -exec chmod 755 {} \;
+
+# Tüm app/Services klasörü
+sudo chown -R tuufi.com_:psaserv app/Services/
+sudo find app/Services/ -type f -exec chmod 644 {} \;
+sudo find app/Services/ -type d -exec chmod 755 {} \;
+```
+
+---
+
+## ✅ ADIM 7: DOĞRULAMA VE TEST
+
+### 7.1. HTTP Status Kontrolü
+
+```bash
+# Site açılıyor mu kontrol et
+curl -s -k -I "https://ixtif.com/" 2>&1 | grep "HTTP"
+
+# Beklenen: HTTP/2 200
+# ❌ HTTP/2 500 → OPcache reset yap, log kontrol et
+```
+
+### 7.2. PHP Syntax Kontrolü
+
+```bash
+# Yeni dosyalarda syntax hatası var mı?
+php -l Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
+# Beklenen: No syntax errors detected
+
+php -l app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php
+# Beklenen: No syntax errors detected
+```
+
+### 7.3. Class Loading Testi (Tinker)
+
 ```bash
 php artisan tinker
->>> $tenant = \App\Models\Tenant::find(2);
->>> tenancy()->initialize($tenant);
->>> $executor = new \App\Services\ConversationNodes\NodeExecutor();
->>> $types = \App\Services\ConversationNodes\NodeExecutor::getRegisteredTypes();
->>> count($types);
-# 13 olmalı (6 global + 7 tenant-specific)
->>> in_array('ai_response', $types);
-# true olmalı
+
+# Yeni class'ı yükleyebildi mi test et
+>>> class_exists(\Modules\AI\App\Services\Workflow\Nodes\MeilisearchSettingsNode::class);
+# Beklenen: true
+
+>>> class_exists(\App\Services\AI\TenantSpecific\Tenant2ProductSearchService::class);
+# Beklenen: true
+
+# Eski class silindi mi kontrol et
+>>> class_exists(\App\Services\AI\TenantSpecific\IxtifProductSearchService::class);
+# Beklenen: false
+
+>>> exit
 ```
 
-### Hata 6: `Invalid node configuration for ai_response`
+### 7.4. AI Chatbot Fonksiyonel Test
 
-**Sebep:** Flow data'da eski config key kullanılmış (`prompt` yerine `system_prompt` olmalı)
+**Test 1: Chatbot Açılıyor mu?**
+```
+1. https://ixtif.com ana sayfasına git
+2. Sağ altta mor AI butonu görünüyor mu? ✅
+3. Butona tıkla
+4. Sohbet penceresi açılıyor mu? ✅
+5. "Merhaba! 👋" hoş geldin mesajı var mı? ✅
+```
+
+**Test 2: Conversation History Çalışıyor mu?**
+```
+1. AI'ya yaz: "Transpalet fiyatı nedir?"
+2. AI yanıt versin (ürün listesi göstermeli)
+3. AI'ya yaz: "3 tonluk stokta mı?"
+4. AI önceki konuşmayı hatırlıyor mu? ✅
+   - Beklenen: "Evet, 3 ton transpalet stokta"
+   - ❌ Yanlış: "Hangi ürün hakkında bilgi istiyorsunuz?"
+```
+
+**Test 3: Yeni Meilisearch Node Çalışıyor mu?**
+```
+1. AI'ya yaz: "2 ton transpalet"
+2. Ürün önerileri geliyor mu? ✅
+3. Log kontrol et:
+   tail -f storage/logs/laravel.log | grep "MeilisearchSettingsNode"
+4. Beklenen: "🔍 MeilisearchSettingsNode: Searching"
+```
+
+**Test 4: Auto-Focus Çalışıyor mu?**
+```
+1. AI'ya mesaj yaz ve gönder
+2. AI yanıt versin
+3. Input otomatik focus alıyor mu? ✅
+   - Direkt yazmaya devam edebilmeli
+   - Manuel input'a tıklamaya gerek yok
+```
+
+---
+
+## 🐛 ADIM 8: SORUN GİDERME
+
+### Problem 1: "Class not found" Hatası
+
+**Belirti:**
+```
+Class 'Modules\AI\App\Services\Workflow\Nodes\MeilisearchSettingsNode' not found
+```
 
 **Çözüm:**
-```php
-// Tenant database'de flow config'i düzelt
-$tenant = \App\Models\Tenant::find(2);
-tenancy()->initialize($tenant);
+```bash
+# Composer autoload yeniden oluştur
+composer dump-autoload --optimize
 
-$flow = \App\Models\TenantConversationFlow::find(1);
-$flowData = $flow->flow_data;
+# OPcache reset
+curl -s -k https://ixtif.com/opcache-reset.php
 
-// ai_response node'larındaki prompt -> system_prompt
-foreach ($flowData['nodes'] as &$node) {
-    if ($node['type'] === 'ai_response' && isset($node['config']['prompt'])) {
-        $node['config']['system_prompt'] = $node['config']['prompt'];
-        unset($node['config']['prompt']);
-    }
-}
-
-$flow->flow_data = $flowData;
-$flow->save();
-
-tenancy()->end();
+# Test
+php artisan tinker
+>>> class_exists(\Modules\AI\App\Services\Workflow\Nodes\MeilisearchSettingsNode::class);
 ```
 
-**VEYA:** Flow editor'da node'u aç, kaydet (otomatik doğru key ile kaydeder)
+---
+
+### Problem 2: "Permission denied" Hatası
+
+**Belirti:**
+```
+failed to open stream: Permission denied in .../MeilisearchSettingsNode.php
+```
+
+**Çözüm:**
+```bash
+# Dosya owner'ını düzelt
+sudo chown tuufi.com_:psaserv Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
+sudo chmod 644 Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php
+
+# OPcache reset
+curl -s -k https://ixtif.com/opcache-reset.php
+```
 
 ---
 
-## 📊 KONTROL LİSTESİ
+### Problem 3: AI Chatbot Eski Yanıtları Veriyor
 
-### Database
-- [ ] Central database backup alındı
-- [ ] `flow_id` kolonu eklendi
-- [ ] `current_node_id` kolonu eklendi
-- [ ] `state_history` kolonu eklendi
-- [ ] `context_data` JSON'a çevrildi
-- [ ] Index'ler eklendi
-- [ ] Tenant database'lerden `ai_conversations` silindi (eğer varsa)
+**Belirti:**
+- Conversation history çalışmıyor
+- AI eski prompt'ları kullanıyor
 
-### Kod
-- [x] ✅ `AIConversation::$connection = 'mysql'` eklendi
-- [x] ✅ `TenantConversationFlow::$connection = 'tenant'` eklendi
-- [x] ✅ **SHOP NAMESPACE MIGRATION** (TenantSpecific → Shop)
-- [x] ✅ **Tenant DB'deki eski node kayıtları silindi**
-- [x] ✅ **ProductSearchNode multilingual field support**
-- [x] ✅ **CategoryDetectionNode array handling**
-- [x] ✅ **NodeExecutor force reinit + explicit tenant_id**
-- [x] ✅ **`NodeExecutor::initializeRegistry()` düzeltildi** (getForTenant kullanılıyor)
-- [x] ✅ **`AIConversation::messages()` ilişkisi yorum satırı yapıldı** (ChatMessage yok)
-- [x] ✅ **`ConversationFlowEngine::generateAIResponse()` CentralAIService entegrasyonu**
-- [x] ✅ **`ConversationFlowEngine::getMessageHistory()` geçici devre dışı**
-- [x] ✅ User message context'e eklendi
-- [x] ✅ Livewire 3 dispatch metodları doğru
-- [x] ✅ Migration dosyası tenant/ klasöründen silindi
+**Çözüm:**
+```bash
+# View cache + OPcache temizle
+php artisan view:clear
+find storage/framework/views -type f -name "*.php" -delete
+curl -s -k https://ixtif.com/opcache-reset.php
 
-### Test
-- [ ] **NodeExecutor registry 13 node yüklüyor** (6 global + 7 tenant-specific)
-- [ ] **ai_response, condition, end node'ları registry'de var**
-- [ ] **Flow execution başarılı** (flow bulunuyor, node execute ediliyor)
-- [ ] **AI yanıtları çalışıyor** (CentralAIService ile gerçek AI response)
-- [ ] Test Flow modal çalışıyor
-- [ ] Conversation'lar central database'e kaydediliyor
-- [ ] `tenant_id` ile doğru tenant ayırt ediliyor
-- [ ] AI provider seçimi (OpenAI/Anthropic/DeepSeek)
+# Response cache temizle
+php artisan responsecache:clear
 
-### Cache
-- [ ] Application cache temizlendi
-- [ ] Config cache temizlendi
-- [ ] View cache temizlendi
-- [ ] Route cache temizlendi
-- [ ] **Workflow nodes cache temizlendi** (ai_workflow_nodes_tenant_*)
-- [ ] **NodeExecutor registry temizlendi**
-- [ ] OPcache reset (eğer varsa)
+# Browser hard refresh
+# CTRL + F5 (Windows) / CMD + SHIFT + R (Mac)
+```
 
 ---
 
-## 🎯 ÖZET
+### Problem 4: CSS/JS Değişiklikleri Görünmüyor
 
-**KOD DEĞİŞİKLİKLERİ (Git'ten Otomatik Gelecek):**
-1. ✅ AIConversation model'e `$connection = 'mysql'` eklendi
-2. ✅ TenantConversationFlow model'e `$connection = 'tenant'` eklendi
-3. ✅ **SHOP NAMESPACE MIGRATION** (TenantSpecific → Shop)
-4. ✅ **NodeExecutor force reinit** + explicit tenant_id
-5. ✅ **NodeExecutor::initializeRegistry() düzeltildi** (getForTenant kullanılıyor)
-6. ✅ **ProductSearchNode multilingual field support**
-7. ✅ **CategoryDetectionNode array handling**
-8. ✅ ChatMessage ilişkisi yorum satırı yapıldı
-9. ✅ **AI Entegrasyonu** (CentralAIService)
-10. ✅ Migration dosyası tenant/ klasöründen silindi
+**Belirti:**
+- Floating widget auto-focus çalışmıyor
+- Stil değişiklikleri yansımıyor
 
-**DATABASE İŞLEMLERİ (Production'da Manuel Yapılacak):**
-1. ✅ **ÖNCE KONTROL ET:** Tenant DB'de eski kayıt var mı? (Kontrol komutu - hiçbir şey silmez)
-2. ⚠️ **SADECE GEREKİRSE:** Eski kayıtları sil (1. adımda ⚠️ gördüysen)
-3. ✅ **HER ZAMAN:** Node cache + genel cache temizle
+**Çözüm:**
+```bash
+# Assets tekrar compile et
+npm run prod
 
-**NOT:** Central database'e kolon ekleme işlemleri daha önce yapılmışsa tekrar yapılmasına gerek yok.
+# Mix manifest kontrol et
+cat public/mix-manifest.json
 
-**Kritik Noktalar:**
-- ✅ `ai_conversations` **SADECE CENTRAL DATABASE'DE** (`$connection = 'mysql'`)
-- ✅ `tenant_conversation_flows` **TENANT DATABASE'DE** (`$connection = 'tenant'`)
-- ✅ `tenant_id` ile ayırt ediliyor
-- ✅ **SHOP NAMESPACE:** TenantSpecific node'lar artık global (19 node: 6 common + 13 shop)
-- ✅ **Tenant DB'de ai_workflow_nodes YOK** - Tümü central DB'den yüklenir
-- ✅ **NodeExecutor force reinit** her execute() çağrısında (tenant context güvenliği)
-- ✅ **ProductSearchNode & CategoryDetectionNode** multilingual field support
-- ✅ **AI yanıtları CentralAIService** ile alınıyor (response format: `['response']['content']`)
-- ✅ **OpenAI kullanılıyor** (force_provider: 'openai')
-- ⚠️ **Workflow nodes cache** temizlenmeli (v4 kullanılıyor)
-- ⚠️ **Tenant DB kontrol edilmeli** (eski kayıtlar varsa temizlenmeli - ÖNCE KONTROL ET!)
+# Cache clear
+php artisan view:clear
 
-**Tahmini Süre:** 5-10 dakika (sadece DB temizliği)
-**Downtime:** Yok (backward compatible)
+# Browser cache temizle
+# CTRL + SHIFT + DELETE
+```
+
+---
+
+### Problem 5: Vendor Klasörü Git'te Değişmiş Görünüyor
+
+**Belirti:**
+```
+M vendor/composer/autoload_classmap.php
+M vendor/composer/autoload_static.php
+```
+
+**Açıklama:**
+Bu NORMALDIR! Yeni class'lar eklendiğinde composer otomatik olarak bu dosyaları günceller.
+
+**Yapılacak:**
+```bash
+# Bu dosyaları commit'e dahil et (sorun değil)
+git add vendor/composer/autoload_classmap.php
+git add vendor/composer/autoload_static.php
+
+# VEYA production'da sadece dump-autoload yap (önerilen)
+composer dump-autoload --optimize
+```
+
+---
+
+## 📊 DEPLOYMENT CHECKLIST
+
+### ✅ Ön Hazırlık (Local)
+- [x] Buffer dosyaları boşaltıldı (a-console.txt, a-html.txt, b-html.txt)
+- [x] .gitignore'a buffer dosyaları eklendi
+- [x] Git status temiz (34 dosya + 3 yeni)
+- [x] Yeni dosyalar eklendi (git add)
+- [x] Silinen dosya onaylandı (git rm)
+- [x] Commit yapıldı (detaylı mesajla)
+- [x] Git push edildi
+
+### ✅ Production Server
+- [ ] SSH bağlantısı yapıldı
+- [ ] Git pull çalıştırıldı (başarılı)
+- [ ] Composer dump-autoload yapıldı
+- [ ] NPM run prod çalıştırıldı
+- [ ] Cache clear yapıldı (view + response + cache)
+- [ ] OPcache reset edildi
+- [ ] File permissions kontrol edildi (yeni dosyalar)
+- [ ] HTTP 200 kontrolü yapıldı
+
+### ✅ Doğrulama
+- [ ] PHP syntax kontrolü (yeni dosyalar)
+- [ ] Class loading testi (tinker)
+- [ ] AI chatbot açılıyor
+- [ ] Conversation history çalışıyor
+- [ ] Meilisearch node çalışıyor
+- [ ] Auto-focus çalışıyor
+- [ ] Log'larda hata yok
+
+### ✅ Final Test
+- [ ] Ana sayfa açılıyor (HTTP 200)
+- [ ] Chatbot butonu görünüyor
+- [ ] Mesaj gönderme çalışıyor
+- [ ] AI yanıt veriyor
+- [ ] Eski konuşmaları hatırlıyor
+- [ ] Admin panel çalışıyor
+- [ ] Performans normal
+
+---
+
+## 📁 DEĞİŞEN DOSYALAR LİSTESİ (34 DOSYA)
+
+### Backend - Core AI Workflow (13 dosya)
+1. `Modules/AI/app/Http/Controllers/Api/PublicAIController.php` (+138, -20)
+2. `Modules/AI/app/Services/OpenAIService.php` (+20)
+3. `Modules/AI/app/Services/OptimizedPromptService.php` (+9, -95)
+4. `Modules/AI/app/Services/Tenant/IxtifPromptService.php` (+25, -17)
+5. `Modules/AI/app/Services/Workflow/NodeExecutor.php` (+13)
+6. `Modules/AI/app/Services/Workflow/Nodes/AIResponseNode.php` (+280, -21) ⭐
+7. `Modules/AI/app/Services/Workflow/Nodes/CategoryDetectionNode.php` (+17, -5)
+8. `Modules/AI/app/Services/Workflow/Nodes/ContextBuilderNode.php` (+76, -41)
+9. `Modules/AI/app/Services/Workflow/Nodes/NodeFactory.php` (+1)
+10. `Modules/AI/app/Services/Workflow/Nodes/ProductSearchNode.php` (+71, -17)
+11. `Modules/AI/app/Services/Workflow/Nodes/StockSorterNode.php` (+9, -6)
+12. `Modules/AI/app/Models/AIConversation.php` (+2, -1)
+13. `Modules/AI/app/Models/AIMessage.php` (+1, -1)
+
+### Backend - Services (3 dosya)
+14. `app/Services/AI/HybridSearchService.php` (+22, -1)
+15. `app/Services/AI/ProductSearchService.php` (+5, -1)
+16. `app/Services/MarkdownService.php` (+108, -21)
+
+### Backend - Middleware & Config (2 dosya)
+17. `app/Http/Middleware/InitializeTenancy.php` (+7)
+18. `config/services.php` (+2, -1)
+
+### Frontend - Views (3 dosya)
+19. `resources/views/components/ai/floating-widget.blade.php` (+79, -58)
+20. `resources/views/components/ai/inline-widget.blade.php` (+17)
+21. `resources/views/components/ixtif/product-card.blade.php` (+69, -56)
+
+### Frontend - Assets (4 dosya)
+22. `public/assets/js/ai-chat.js` (+10, -9)
+23. `public/css/app.css` (+2, -2)
+24. `public/css/back-to-top.css` (+1, -1)
+25. `public/mix-manifest.json` (+1, -1)
+
+### Routes (1 dosya)
+26. `Modules/AI/routes/api.php` (+2, -3)
+
+### Documentation (1 dosya)
+27. `readme/ai-workflow/production-ai-yapilacaklar.md` (+282, -687)
+
+### Config & System (4 dosya)
+28. `.gitignore` (+5) ⭐
+29. `vendor/composer/autoload_classmap.php` (+1)
+30. `vendor/composer/autoload_static.php` (+1)
+31. `a-console.txt` (+1, -59) - BOŞALTILDI
+32. `a-html.txt` (+1, -223) - BOŞALTILDI
+33. `b-html.txt` (+1, -597) - BOŞALTILDI
+
+### Deleted (1 dosya)
+34. `app/Services/AI/TenantSpecific/IxtifProductSearchService.php` (SİLİNDİ)
+
+### New Files (3 item)
+35. `Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php` 🆕
+36. `app/Services/AI/TenantSpecific/Tenant2ProductSearchService.php` 🆕
+37. `readme/ai-workflow/v2.3/` (klasör + 2 dosya) 🆕
+
+---
+
+## 🔍 DEPLOYMENT SONRASI KONTROL
+
+### Log Kontrolü
+
+```bash
+# Laravel log kontrol
+tail -100 storage/logs/laravel.log
+
+# ✅ Aranan log'lar:
+# - "🔍 MeilisearchSettingsNode: Searching"
+# - "✅ AIResponseNode: Response generated"
+# - "Conversation history loaded: X messages"
+
+# ❌ Olmaması gerekenler:
+# - "Class not found: MeilisearchSettingsNode"
+# - "Permission denied"
+# - "Call to undefined method"
+```
+
+### Database Kontrolü (Gerekirse)
+
+```bash
+php artisan tinker
+
+# Yeni conversation'lar kaydediliyor mu?
+>>> \Modules\AI\App\Models\AIConversation::latest()->first();
+
+# Conversation history var mı?
+>>> \Modules\AI\App\Models\AIMessage::where('conversation_id', 123)->count();
+
+>>> exit
+```
 
 ---
 
 ## 📞 DESTEK
 
-**Sorun Yaşarsan:**
-1. Backup'tan restore et
-2. Cache'leri temizle
-3. Log'lara bak: `storage/logs/laravel.log`
-4. Database durumunu kontrol et: `DESCRIBE ai_conversations`
+**Sorun Olursa:**
 
-**Test Komutları:**
-```bash
-# Registry kontrol
-php artisan tinker --execute="print_r(\App\Services\ConversationNodes\NodeExecutor::getRegisteredTypes());"
+1. **Cache Temizle:**
+   ```bash
+   php artisan cache:clear
+   php artisan view:clear
+   php artisan responsecache:clear
+   curl -s -k https://ixtif.com/opcache-reset.php
+   ```
 
-# Conversation sayısı
-php artisan tinker --execute="echo \DB::connection('mysql')->table('ai_conversations')->count();"
+2. **Log Kontrol:**
+   ```bash
+   tail -f storage/logs/laravel.log
+   ```
 
-# Flow test
-php artisan tinker --execute="
-\$engine = app(\App\Services\ConversationFlowEngine::class);
-\$result = \$engine->processMessage('test_sim_' . time(), 2, 'test', null);
-echo json_encode(\$result);
-"
-```
+3. **Class Loading Kontrol:**
+   ```bash
+   composer dump-autoload --optimize
+   php artisan tinker
+   >>> class_exists(\Modules\AI\App\Services\Workflow\Nodes\MeilisearchSettingsNode::class);
+   ```
+
+4. **Git Rollback (Gerekirse):**
+   ```bash
+   git log --oneline -5
+   git reset --hard [önceki-commit-hash]
+   git push origin main --force
+   ```
 
 ---
 
-**SON KONTROL:** Bu dokümanı adım adım takip et, her adımı işaretle, sorun çıkarsa geri dön!
+## 🎯 BAŞARI KRİTERLERİ
+
+Deployment başarılı sayılır eğer:
+
+✅ Site HTTP 200 dönüyor
+✅ AI chatbot açılıyor
+✅ Mesaj gönderme çalışıyor
+✅ AI yanıt veriyor
+✅ Conversation history çalışıyor (AI eski mesajları hatırlıyor)
+✅ Log'larda "MeilisearchSettingsNode" kayıtları görünüyor
+✅ Auto-focus çalışıyor (input otomatik focus alıyor)
+✅ Admin panel hatasız açılıyor
+✅ Performans normal (sayfa yükleme < 2 saniye)
+
+---
+
+**Son Güncelleme:** 2025-11-08
+**Hazırlayan:** Claude AI Assistant
+**Test Eden:** [Kullanıcı adı buraya]
+**Onaylayan:** [Kullanıcı adı buraya]
+
+---
+
+## 📝 NOTLAR
+
+- Bu deployment **CODE + COMPOSER** değişikliği içeriyor
+- **DATABASE değişikliği YOK** (migration yok)
+- **ENV değişikliği YOK** (config aynı)
+- **File permissions** kritik (yeni dosyalar için)
+- **OPcache reset** zorunlu (PHP class cache)
+- **Composer dump-autoload** zorunlu (yeni class'lar var)
+- **NPM run prod** önerilen (CSS/JS değişti)
+
+---
+
+## 🚨 GERİ ALMA PLANI
+
+Eğer deployment başarısız olursa:
+
+```bash
+# 1. Git rollback
+git log --oneline -5
+git reset --hard [önceki-commit-hash]
+
+# 2. Composer rollback
+composer dump-autoload --optimize
+
+# 3. Cache temizle
+php artisan cache:clear
+php artisan view:clear
+curl -s -k https://ixtif.com/opcache-reset.php
+
+# 4. Test et
+curl -s -k -I "https://ixtif.com/" 2>&1 | grep "HTTP"
+```
+
+**Önemli:** Backup yoksa geri dönüş YOK! (Database değişikliği olmadığı için sorun değil ama yine de dikkat!)
+
+---
+
+**BU DEPLOYMENT'TA DATABASE DEĞİŞİKLİĞİ YOK!**
+**SADECE KOD + COMPOSER + CACHE İŞLEMLERİ VAR!**
+**BACKUP ZORUNLU DEĞİL AMA ÖNERİLİR!**

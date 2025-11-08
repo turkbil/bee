@@ -13,11 +13,12 @@ class ProductSearchNode extends BaseNode
 
         $searchLimit = $this->getConfig('search_limit', 5);
         $sortByStock = $this->getConfig('sort_by_stock', true);
+        $useMeilisearch = $this->getConfig('use_meilisearch', false);
 
         Log::info('🔍 ProductSearchNode: Searching products', [
             'user_message' => $userMessage,
-            'user_message_full' => $userMessage,
-            'search_limit' => $searchLimit
+            'search_limit' => $searchLimit,
+            'use_meilisearch' => $useMeilisearch
         ]);
 
         // Extract keywords from user message
@@ -34,32 +35,85 @@ class ProductSearchNode extends BaseNode
                 'user_message' => $userMessage
             ]);
 
-            $context['products'] = collect();
-            $context['products_found'] = 0;
-            return $context;
+            return [
+                'products' => collect(),
+                'products_found' => 0
+            ];
         }
 
-        // Search products by keywords
-        $query = ShopProduct::query();
-        $query->where(function($q) use ($keywords) {
-            foreach ($keywords as $keyword) {
-                $q->orWhere('title->tr', 'LIKE', "%{$keyword}%")
-                  ->orWhere('title->en', 'LIKE', "%{$keyword}%");
-            }
-        });
-
-        $products = $query->limit($searchLimit)->get();
+        // Search with Meilisearch or MySQL
+        if ($useMeilisearch) {
+            $products = $this->searchWithMeilisearch($keywords, $searchLimit);
+        } else {
+            $products = $this->searchWithMySQL($keywords, $searchLimit);
+        }
 
         Log::info('✅ ProductSearchNode: Found products', [
             'keywords' => $keywords,
             'count' => $products->count()
         ]);
 
-        // Add to context
-        $context['products'] = $products;
-        $context['products_found'] = $products->count();
+        // Return only new keys (FlowExecutor will merge with context)
+        return [
+            'products' => $products,
+            'products_found' => $products->count()
+        ];
+    }
 
-        return $context;
+    /**
+     * Search products with Meilisearch (Laravel Scout)
+     */
+    protected function searchWithMeilisearch(array $keywords, int $limit)
+    {
+        $searchQuery = implode(' ', $keywords);
+
+        Log::info('🔍 Meilisearch: Searching', [
+            'query' => $searchQuery,
+            'limit' => $limit
+        ]);
+
+        $results = ShopProduct::search($searchQuery)
+            ->where('current_stock', '>', 0)
+            ->take($limit)
+            ->get();
+
+        Log::info('✅ Meilisearch: Results found', [
+            'count' => $results->count()
+        ]);
+
+        return $results;
+    }
+
+    /**
+     * Search products with MySQL (JSON query)
+     */
+    protected function searchWithMySQL(array $keywords, int $limit)
+    {
+        Log::info('🔍 MySQL: Searching', [
+            'keywords' => $keywords,
+            'limit' => $limit
+        ]);
+
+        $query = ShopProduct::query();
+
+        // Search in title (JSON column)
+        $query->where(function($q) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $q->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) LIKE ?", ["%{$keyword}%"])
+                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.en')) LIKE ?", ["%{$keyword}%"]);
+            }
+        });
+
+        // Only products with stock
+        $query->where('current_stock', '>', 0);
+
+        $results = $query->limit($limit)->get();
+
+        Log::info('✅ MySQL: Results found', [
+            'count' => $results->count()
+        ]);
+
+        return $results;
     }
 
     /**

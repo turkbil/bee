@@ -632,12 +632,37 @@ class PublicAIController extends Controller
             }
 
             // 🆕 Smart Product Search Integration
-            $productSearchService = app(\App\Services\AI\ProductSearchService::class);
+
+            // 🔍 SEARCH QUERY: Use current message only (no conversation context)
+            // Conversation context is handled by AI prompt, not search query
+            $searchQuery = $validated['message'];
 
             try {
+                // 🔍 PRODUCT SEARCH (Tenant-specific or generic)
+                $tenantId = tenant('id');
+
+                if ($tenantId == 2 || $tenantId == 3) {
+                    // 🏢 Tenant 2/3: iXtif (endüstriyel ekipman)
+                    // Kategori bilgileri tenant-specific (transpalet, forklift, reach truck, vb.)
+                    $productSearchService = app(\App\Services\AI\TenantSpecific\Tenant2ProductSearchService::class);
+                    \Log::info('🏢 Using Tenant2ProductSearchService', ['tenant_id' => $tenantId]);
+                } else {
+                    // 🌍 Generic: Tüm diğer 10000 tenant
+                    $productSearchService = app(\App\Services\AI\ProductSearchService::class);
+                    \Log::info('🌍 Using Generic ProductSearchService', ['tenant_id' => $tenantId]);
+                }
+
+                \Log::info('🔍 Product search query', [
+                    'original_message' => $validated['message'],
+                    'search_query' => $searchQuery,
+                    'tenant_id' => tenant('id')
+                ]);
+
+                $smartSearchResults = $productSearchService->searchProducts($searchQuery);
+                $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
+
                 // 🆕 iXTİF ÖZEL: Fiyat sorgusu detection (en ucuz, en pahalı)
                 $isPriceQuery = false;
-                $searchQuery = $validated['message'];
 
                 if (tenant('id') == 2 || tenant('id') == 3) { // iXtif tenants
                     $lowerMessage = mb_strtolower($validated['message']);
@@ -1020,6 +1045,11 @@ class PublicAIController extends Controller
             $markdownService = app(MarkdownService::class);
             $finalMessage = $markdownService->parse($finalMessage);
 
+            \Log::info('🔍 AFTER MarkdownService.parse()', [
+                'preview' => mb_substr($finalMessage, 0, 200),
+                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $finalMessage) ? 'YES' : 'NO')
+            ]);
+
             // 🔧 POST-PROCESSING: Fix HTML format issues
             $postProcessor = app(\App\Services\AI\MarkdownPostProcessor::class);
             $postProcessResult = $postProcessor->process($finalMessage);
@@ -1031,6 +1061,11 @@ class PublicAIController extends Controller
                 ]);
                 $finalMessage = $postProcessResult['processed'];
             }
+
+            \Log::info('🔍 AFTER PostProcessor', [
+                'preview' => mb_substr($finalMessage, 0, 200),
+                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $finalMessage) ? 'YES' : 'NO')
+            ]);
 
             // 🔍 VALIDATION: Check for AI hallucinations and errors
             $validator = app(\App\Services\AI\AIResponseValidator::class);
@@ -1052,6 +1087,12 @@ class PublicAIController extends Controller
                     'conversation_id' => $conversation->id,
                 ]);
             }
+
+            \Log::info('🔍 FINAL MESSAGE (before return)', [
+                'preview' => mb_substr($finalMessage, 0, 200),
+                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $finalMessage) ? 'YES' : 'NO'),
+                'length' => mb_strlen($finalMessage)
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -1929,23 +1970,17 @@ class PublicAIController extends Controller
             }
 
             // Get messages
-            $markdownService = app(MarkdownService::class);
-
             $messages = $conversation->messages()
                 ->orderBy('created_at', 'asc')
                 ->get()
-                ->map(function ($message) use ($markdownService) {
-                    // 📝 MARKDOWN TO HTML - Parse assistant messages (AI responses)
-                    // User messages don't need markdown parsing
-                    $content = $message->content;
-                    if ($message->role === 'assistant') {
-                        $content = $markdownService->parse($content);
-                    }
-
+                ->map(function ($message) {
+                    // ✅ NO PARSING NEEDED!
+                    // Assistant messages are already saved as HTML in database (since V2 system)
+                    // User messages are plain text
                     return [
                         'id' => $message->id,
                         'role' => $message->role,
-                        'content' => $content,
+                        'content' => $message->content,
                         'created_at' => $message->created_at->toIso8601String(),
                     ];
                 });
@@ -2586,16 +2621,45 @@ class PublicAIController extends Controller
 
             // Load conversation history from database
             $conversationHistory = [];
+
+            // PROOF: File yazarak kod yolunu doğrula
+            file_put_contents('/tmp/conversation_loading_proof.txt',
+                date('Y-m-d H:i:s') . " - Session: {$sessionId}, Tenant: " . tenant('id') . "\n",
+                FILE_APPEND
+            );
+
             $conversation = \Modules\AI\App\Models\AIConversation::where('session_id', $sessionId)
                 ->where('tenant_id', tenant('id'))
                 ->first();
 
+            \Log::emergency('🔍 Conversation lookup', [
+                'session_id' => $sessionId,
+                'tenant_id' => tenant('id'),
+                'conversation_found' => $conversation ? 'YES' : 'NO',
+                'conversation_id' => $conversation ? $conversation->id : null
+            ]);
+
             if ($conversation) {
-                // Get last 10 messages for context
+                // Get last 10 messages for context (most recent first, then reverse)
                 $messages = $conversation->messages()
-                    ->orderBy('created_at', 'asc')
+                    ->orderBy('created_at', 'desc')
                     ->take(10)
-                    ->get();
+                    ->get()
+                    ->reverse()
+                    ->values(); // Reset array keys
+
+                // DEBUG: Write to file
+                file_put_contents('/tmp/conversation_history_debug.txt',
+                    date('Y-m-d H:i:s') . " - Conversation ID: {$conversation->id}\n" .
+                    "Messages count: " . $messages->count() . "\n" .
+                    "Messages: " . json_encode($messages->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n\n",
+                    FILE_APPEND
+                );
+
+                \Log::emergency('🔍 Messages query result', [
+                    'messages_count' => $messages->count(),
+                    'conversation_id' => $conversation->id
+                ]);
 
                 foreach ($messages as $msg) {
                     $conversationHistory[] = [
@@ -2604,17 +2668,49 @@ class PublicAIController extends Controller
                     ];
                 }
 
-                \Log::info('📜 Loaded conversation history', [
+                // DEBUG: Write history to file
+                file_put_contents('/tmp/conversation_history_debug.txt',
+                    "History array count: " . count($conversationHistory) . "\n" .
+                    "History: " . json_encode($conversationHistory, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n" .
+                    "--------------------\n\n",
+                    FILE_APPEND
+                );
+
+                \Log::emergency('📜 Loaded conversation history', [
                     'session_id' => $sessionId,
-                    'message_count' => count($conversationHistory)
+                    'message_count' => count($conversationHistory),
+                    'history_preview' => array_slice($conversationHistory, 0, 2)
                 ]);
+            } else {
+                \Log::emergency('⚠️ NO CONVERSATION FOUND - will create new');
             }
+
+            // 🔍 PRODUCT SEARCH (Tenant-specific or generic)
+            $searchQuery = $validated['message'];
+            $tenantId = tenant('id');
+
+            if ($tenantId == 2 || $tenantId == 3) {
+                // 🏢 Tenant 2/3: iXtif (endüstriyel ekipman)
+                $productSearchService = app(\App\Services\AI\TenantSpecific\Tenant2ProductSearchService::class);
+                \Log::info('🏢 Using Tenant2ProductSearchService (V2)', ['tenant_id' => $tenantId]);
+            } else {
+                // 🌍 Generic: Tüm diğer 10000 tenant
+                $productSearchService = app(\App\Services\AI\ProductSearchService::class);
+                \Log::info('🌍 Using Generic ProductSearchService (V2)', ['tenant_id' => $tenantId]);
+            }
+
+            $smartSearchResults = $productSearchService->searchProducts($searchQuery);
+            $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
 
             $result = $flowExecutor->execute($flow->flow_data, [
                 'user_message' => $validated['message'],
                 'session_id' => $sessionId,
                 'tenant_id' => tenant('id'),
-                'conversation_history' => $conversationHistory
+                'conversation_history' => $conversationHistory,
+                'smart_search_results' => $smartSearchResults ?? [],
+                'products' => collect($smartSearchResults['products'] ?? []),  // ✅ ContextBuilderNode için
+                'products_found' => ($smartSearchResults['count'] ?? 0),
+                'user_sentiment' => $userSentiment ?? []
             ]);
 
             $aiResponse = $result['final_response'] ?? '';
@@ -2624,6 +2720,28 @@ class PublicAIController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'AI yanıt üretemedi',
+                ], 500);
+            }
+
+            // 📝 MARKDOWN TO HTML - Backend parsing (güvenli ve tutarlı)
+            $markdownService = app(MarkdownService::class);
+            $aiResponse = $markdownService->parse($aiResponse);
+
+            \Log::info('🔍 Markdown converted to HTML (V2)', [
+                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $aiResponse) ? 'YES' : 'NO'),
+                'preview' => mb_substr($aiResponse, 0, 200),
+                'length' => mb_strlen($aiResponse)
+            ]);
+
+            // ✅ MARKDOWN PARSING SONRASI BOŞ KONTROL (Kritik!)
+            if (empty(trim($aiResponse))) {
+                \Log::error('❌ Empty AI response after markdown parsing', [
+                    'original_length' => strlen($result['final_response'] ?? ''),
+                    'parsed_length' => strlen($aiResponse)
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'AI yanıt işlenemedi (markdown parsing hatası)',
                 ], 500);
             }
 
@@ -2667,7 +2785,7 @@ class PublicAIController extends Controller
                 'data' => [
                     'message' => $aiResponse,
                     'session_id' => $sessionId,
-                    'conversation_id' => null, // TODO
+                    'conversation_id' => $conversation->id,
                     'metadata' => [
                         'system' => 'workflow_engine_v2',
                         'flow_name' => $flow->name,

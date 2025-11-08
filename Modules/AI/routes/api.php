@@ -56,10 +56,9 @@ Route::prefix('ai/v1')
         ->name('resolve-link')
         ->middleware(['throttle:120,1']); // 120 requests per minute
 
-    // 🗑️ Delete Conversation (Admin/Testing - NO AUTH for now)
+    // 🗑️ Delete Conversation (Admin/Testing - NO AUTH for now, NO throttle like shop-assistant)
     Route::delete('/conversation/{conversationId}', [PublicAIController::class, 'deleteConversation'])
-        ->name('conversation.delete')
-        ->middleware(['throttle:10,1']); // 10 deletions per minute
+        ->name('conversation.delete');
 
     // 📚 Knowledge Base Endpoints (Public access, cached)
     Route::get('/knowledge-base', [PublicAIController::class, 'getKnowledgeBase'])

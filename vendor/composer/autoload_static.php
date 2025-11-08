@@ -7083,6 +7083,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\AI\\App\\Services\\Workflow\\Nodes\\CategoryDetectionNode' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/CategoryDetectionNode.php',
         'Modules\\AI\\App\\Services\\Workflow\\Nodes\\ContextBuilderNode' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/ContextBuilderNode.php',
         'Modules\\AI\\App\\Services\\Workflow\\Nodes\\EndNode' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/EndNode.php',
+        'Modules\\AI\\App\\Services\\Workflow\\Nodes\\MeilisearchSettingsNode' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php',
         'Modules\\AI\\App\\Services\\Workflow\\Nodes\\MessageSaverNode' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/MessageSaverNode.php',
         'Modules\\AI\\App\\Services\\Workflow\\Nodes\\NodeFactory' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/NodeFactory.php',
         'Modules\\AI\\App\\Services\\Workflow\\Nodes\\ProductSearchNode' => __DIR__ . '/../..' . '/Modules/AI/app/Services/Workflow/Nodes/ProductSearchNode.php',

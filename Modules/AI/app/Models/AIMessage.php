@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class AIMessage extends Model
 {
-    protected $connection = 'mysql'; // Changed from 'tenant' to 'mysql' (central DB)
+    // Note: No $connection specified = uses default (tenant) connection
     protected $table = 'ai_messages';
 
     protected $fillable = [

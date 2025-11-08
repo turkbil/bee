@@ -8,9 +8,13 @@ use Modules\Shop\App\Http\Controllers\Front\ShopController;
 use Illuminate\Support\Facades\Log;
 
 /**
- * İXTİF ÖZEL DİNAMİK ÜRÜN ARAMA SERVİSİ
+ * TENANT 2 ÖZEL DİNAMİK ÜRÜN ARAMA SERVİSİ
  *
  * Tenant: ixtif.com (ID: 2) ve ixtif.com.tr (ID: 3)
+ *
+ * ⚠️ TENANT-SPECIFIC: Bu kategoriler sadece Tenant 2 için geçerli!
+ *    Global ProductSearchService tüm 10000 tenant için kullanılır.
+ *    Bu servis sadece iXtif (endüstriyel ekipman) kategorilerini içerir.
  *
  * Çalışma Mantığı:
  * 1. Kullanıcı mesajından keyword çıkar (forklift, transpalet, reach truck, vb.)
@@ -18,9 +22,16 @@ use Illuminate\Support\Facades\Log;
  * 3. İlgili ürünleri DB'den anlık çek
  * 4. Yedek parça sadece talep edilirse ara
  */
-class IxtifProductSearchService
+class Tenant2ProductSearchService
 {
     protected string $locale;
+    protected \App\Services\AI\HybridSearchService $hybridSearch;
+
+    public function __construct(\App\Services\AI\HybridSearchService $hybridSearch)
+    {
+        $this->locale = app()->getLocale();
+        $this->hybridSearch = $hybridSearch;
+    }
 
     // Ana kategori keyword'leri (priority HIGH)
     protected array $mainCategoryKeywords = [
@@ -48,11 +59,6 @@ class IxtifProductSearchService
         'fren',
         'rulman',
     ];
-
-    public function __construct()
-    {
-        $this->locale = app()->getLocale();
-    }
 
     /**
      * İXTİF ÖZEL PROMPT'LARI
@@ -155,6 +161,9 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
     /**
      * Kullanıcı mesajına göre dinamik ürün araması yap
      *
+     * 🔄 UPDATED: Global ProductSearchService ile aynı logic kullanır
+     *             Sadece kategori detection tenant-specific
+     *
      * @param string $userMessage Kullanıcı mesajı
      * @return array Bulunan ürünler + metadata
      */
@@ -162,53 +171,127 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
     {
         $startTime = microtime(true);
 
-        // 1. Keyword extraction
-        $detectedCategories = $this->extractCategoryKeywords($userMessage);
-        $isSparePartRequest = $this->isSparePartRequest($userMessage);
+        // 1. TENANT-SPECIFIC: Kategori detection
+        $detectedCategory = $this->detectCategoryTenant2($userMessage);
 
-        Log::info('🔍 IxtifProductSearchService - Keyword extraction', [
+        Log::info('🏢 Tenant2ProductSearchService - Category detection', [
             'user_message' => mb_substr($userMessage, 0, 100),
-            'detected_categories' => $detectedCategories,
-            'is_spare_part' => $isSparePartRequest,
+            'detected_category' => $detectedCategory ? $detectedCategory['category_name'] : 'none'
         ]);
 
-        // 2. Ürün arama stratejisi
-        $products = [];
-
-        if (!empty($detectedCategories)) {
-            // ZOOM: Kullanıcı spesifik kategori belirtti → O kategorilere odaklan
-            $products = $this->searchByCategories($detectedCategories, $limit = 20);
-            $searchType = 'category_zoom';
-        } elseif ($isSparePartRequest) {
-            // SPARE PARTS ONLY: Kullanıcı yedek parça istiyor
-            $products = $this->searchSpareParts($userMessage, $limit = 15);
-            $searchType = 'spare_parts';
-        } else {
-            // GENERAL: Kategori belirtilmedi → Ana ürünleri göster (yedek parça HARİÇ)
-            $products = $this->searchMainProducts($limit = 30);
-            $searchType = 'general';
-        }
+        // 2. HYBRID SEARCH (Global ile aynı - Meilisearch + Vector)
+        $hybridResults = $this->hybridSearch->search(
+            $userMessage,
+            $detectedCategory['category_id'] ?? null,
+            100  // TÜM ürünleri getir, AI filtreleyecek
+        );
 
         $executionTime = round((microtime(true) - $startTime) * 1000, 2);
 
-        Log::info('✅ IxtifProductSearchService - Search completed', [
-            'search_type' => $searchType,
-            'products_found' => count($products),
-            'execution_time_ms' => $executionTime,
+        if (!empty($hybridResults)) {
+            Log::info('✅ Tenant2 Hybrid Search SUCCESS', [
+                'results_count' => count($hybridResults),
+                'top_product' => $hybridResults[0]['product']['title'] ?? null,
+                'execution_time_ms' => $executionTime
+            ]);
+
+            // Add category labels to products (for ContextBuilderNode)
+            $categoryMap = [
+                1 => '[FORKLIFT] ',
+                2 => '[TRANSPALET] ',
+                3 => '[İSTİF MAKİNESİ] ',
+                4 => '[SİPARİŞ TOPLAMA] ',
+                5 => '[OTONOM] ',
+                6 => '[REACH TRUCK] ',
+            ];
+
+            $products = array_column($hybridResults, 'product');
+            foreach ($products as &$product) {
+                $categoryId = $product['category_id'] ?? null;
+                $product['_category_label'] = $categoryId && isset($categoryMap[$categoryId])
+                    ? $categoryMap[$categoryId]
+                    : '';
+            }
+
+            return [
+                'products' => $products,
+                'search_layer' => 'hybrid',
+                'detected_category' => $detectedCategory,
+                'total_found' => count($hybridResults),
+                'execution_time_ms' => $executionTime
+            ];
+        }
+
+        Log::warning('❌ No products found (Tenant2)', [
+            'category_detected' => $detectedCategory ? 'yes' : 'no',
+            'query' => substr($userMessage, 0, 100)
         ]);
 
-        return [
-            'products' => $products,
-            'search_type' => $searchType,
-            'detected_categories' => $detectedCategories,
-            'is_spare_part_request' => $isSparePartRequest,
-            'execution_time_ms' => $executionTime,
-            'total_found' => count($products),
-        ];
+        return [];
     }
 
     /**
-     * Kullanıcı mesajından kategori keyword'lerini çıkar
+     * Tenant 2 kategori detection (endüstriyel ekipman)
+     *
+     * @param string $message
+     * @return array|null ['category_id' => int, 'category_name' => string]
+     */
+    protected function detectCategoryTenant2(string $message): ?array
+    {
+        $lowerMessage = mb_strtolower($message);
+
+        // Tenant 2 kategori mapping (endüstriyel ekipman)
+        $categoryMap = [
+            'forklift' => [
+                'id' => 1,
+                'name' => 'Forklift',
+                'keywords' => ['forklift', 'akülü forklift', 'elektrikli forklift',
+                               'en pahalı forklift', 'en ucuz forklift', 'ucuz forklift', 'pahalı forklift']
+            ],
+            'transpalet' => [
+                'id' => 2,
+                'name' => 'Transpalet',
+                'keywords' => ['transpalet', 'pallet truck', 'transpalet modeli', 'transpalet çeşitleri',
+                               'en pahalı transpalet', 'en ucuz transpalet', 'ucuz transpalet', 'pahalı transpalet']
+            ],
+            'istif-makinesi' => [
+                'id' => 3,
+                'name' => 'İstif Makinesi',
+                'keywords' => ['istif makinesi', 'istif', 'stacker']
+            ],
+            'siparis-toplama' => [
+                'id' => 4,
+                'name' => 'Sipariş Toplama',
+                'keywords' => ['sipariş toplama', 'order picker', 'picking']
+            ],
+            'otonom' => [
+                'id' => 5,
+                'name' => 'Otonom Sistemler',
+                'keywords' => ['otonom', 'autonomous', 'agv', 'otomatik', 'robot']
+            ],
+            'reach-truck' => [
+                'id' => 6,
+                'name' => 'Reach Truck',
+                'keywords' => ['reach truck', 'reach', 'dar koridor']
+            ],
+        ];
+
+        foreach ($categoryMap as $slug => $data) {
+            foreach ($data['keywords'] as $keyword) {
+                if (stripos($lowerMessage, $keyword) !== false) {
+                    return [
+                        'category_id' => $data['id'],
+                        'category_name' => $data['name']
+                    ];
+                }
+            }
+        }
+
+        return null; // Kategori bulunamadı
+    }
+
+    /**
+     * Kullanıcı mesajından kategori keyword'lerini çıkar (DEPRECATED - eskisi)
      *
      * @param string $message
      * @return array Tespit edilen kategori slug'ları
@@ -445,5 +528,68 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
         }
 
         return '';
+    }
+
+    /**
+     * Detect user sentiment from message
+     * (Copied from ProductSearchService for compatibility)
+     */
+    public function detectUserSentiment(string $message): array
+    {
+        $sentiment = [
+            'is_urgent' => false,
+            'is_rude' => false,
+            'is_polite' => false,
+            'is_confused' => false,
+            'tone' => 'neutral'
+        ];
+
+        $lowerMessage = mb_strtolower($message);
+
+        // Urgency detection
+        $urgencyWords = ['acil', 'hemen', 'şimdi', 'çabuk', 'ivedi', 'asap'];
+        foreach ($urgencyWords as $word) {
+            if (strpos($lowerMessage, $word) !== false) {
+                $sentiment['is_urgent'] = true;
+                $sentiment['tone'] = 'urgent';
+                break;
+            }
+        }
+
+        // Politeness detection
+        $politeWords = ['lütfen', 'rica ederim', 'mümkünse', 'zahmet', 'teşekkür'];
+        foreach ($politeWords as $word) {
+            if (strpos($lowerMessage, $word) !== false) {
+                $sentiment['is_polite'] = true;
+                if ($sentiment['tone'] === 'neutral') {
+                    $sentiment['tone'] = 'polite';
+                }
+                break;
+            }
+        }
+
+        // Rudeness detection
+        $rudeWords = ['hemen', 'çabuk ol', 'acele et', 'yavaş'];
+        foreach ($rudeWords as $word) {
+            if (strpos($lowerMessage, $word) !== false && !$sentiment['is_polite']) {
+                $sentiment['is_rude'] = true;
+                $sentiment['tone'] = 'rude';
+                break;
+            }
+        }
+
+        // Confusion detection
+        $confusionWords = ['anlamadım', 'ne demek', 'hangisi', 'fark nedir', 'bilmiyorum'];
+        foreach ($confusionWords as $word) {
+            if (strpos($lowerMessage, $word) !== false) {
+                $sentiment['is_confused'] = true;
+                if ($sentiment['tone'] === 'neutral') {
+                    $sentiment['tone'] = 'confused';
+                }
+                break;
+            }
+        }
+
+        return $sentiment;
     }
 }

@@ -204,19 +204,20 @@ function registerAiChatStore() {
 
                 const data = await response.json();
 
-                // 🚨 SONNET DEBUG
-                console.log('🚨 API RESPONSE:', {
-                    success: data.success,
-                    message: data.data.message,
-                    system: data.data.metadata?.system,
-                    session_id: data.data.session_id,
-                    nodes_executed: data.data.metadata?.nodes_executed
-                });
-                console.log('🚨 FULL RESPONSE:', data);
-
+                // ✅ ÖNCE ERROR CHECK
                 if (!response.ok || !data.success) {
                     throw new Error(data.message || 'Mesaj gönderilemedi');
                 }
+
+                // 🚨 SONNET DEBUG (sadece success'de)
+                console.log('🚨 API RESPONSE:', {
+                    success: data.success,
+                    message: data.data?.message,
+                    system: data.data?.metadata?.system,
+                    session_id: data.data?.session_id,
+                    nodes_executed: data.data?.metadata?.nodes_executed
+                });
+                console.log('🚨 FULL RESPONSE:', data);
 
                 // Add AI response to chat
                 this.addMessage({

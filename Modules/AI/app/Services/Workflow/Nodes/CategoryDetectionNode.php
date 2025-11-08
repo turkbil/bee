@@ -8,15 +8,27 @@ class CategoryDetectionNode extends BaseNode
 {
     public function execute(array $context): array
     {
+        // DEBUG: Check incoming context
+        file_put_contents('/tmp/category_node_debug.txt',
+            date('Y-m-d H:i:s') . " - CategoryDetectionNode\n" .
+            "Incoming context keys: " . implode(', ', array_keys($context)) . "\n" .
+            "Has conversation_history: " . (isset($context['conversation_history']) ? 'YES' : 'NO') . "\n" .
+            "History count: " . (isset($context['conversation_history']) ? count($context['conversation_history']) : 0) . "\n" .
+            "--------------------\n\n",
+            FILE_APPEND
+        );
+
         $userMessage = $context['user_message'] ?? '';
-        
+
         // Simple category detection
         $category = $this->detectCategory($userMessage);
-        $context['detected_category'] = $category;
-        
+
         Log::info('🏷️ CategoryDetectionNode', ['category' => $category]);
-        
-        return $context;
+
+        // Return only new keys (FlowExecutor will merge with context)
+        return [
+            'detected_category' => $category
+        ];
     }
     
     protected function detectCategory(string $message): ?string

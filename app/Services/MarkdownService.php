@@ -44,33 +44,119 @@ class MarkdownService
      */
     public function parse(string $markdown): string
     {
-        // 🔧 FIX 0: Çoklu ürün - Her ⭐ yeni satırda başlamalı
-        // Problem: "Fiyat: $X ⭐ Ürün 2" → "Fiyat: $X\n\n⭐ Ürün 2"
-        $markdown = $this->separateMultipleProducts($markdown);
+        // ✅ BAŞLANGIÇ - Orijinal content'i kaydet
+        $originalMarkdown = $markdown;
+        $originalLength = strlen($markdown);
 
-        // 🔧 FIX 0.5: Bold text içindeki tek satır atlamalarını kaldır
-        // Problem: "**İXTİF F4 201 - 2.\nTon Transpalet**" → Paragraf bozuluyor
-        $markdown = $this->removeNewlinesFromBoldText($markdown);
+        \Log::info('🔍 MarkdownService.parse() BAŞLADI', [
+            'original_length' => $originalLength,
+            'preview' => mb_substr($markdown, 0, 200)
+        ]);
 
-        // 🔧 FIX 0.6: Orphan punctuation'ı bir önceki satıra ekle
-        // Problem: "...istersiniz\n? 😊" → "...istersiniz? 😊"
-        $markdown = $this->fixOrphanPunctuation($markdown);
+        try {
+            // 🔧 FIX 0: Çoklu ürün - Her ⭐ yeni satırda başlamalı
+            $markdown = $this->separateMultipleProducts($markdown);
+            $this->logTransformation('separateMultipleProducts', $originalMarkdown, $markdown);
 
-        // 🔧 FIX 1: AI tire ile başlayan satırları markdown list formatına çevir (ÖNCE!)
-        // AI yazdığı: "[LINK] - özellik1 - özellik2 - özellik3"
-        // Markdown: "[LINK]\n\n- özellik1\n- özellik2\n- özellik3"
-        $markdown = $this->fixInlineListsToMarkdown($markdown);
+            // 🔧 FIX 0.5: Bold text içindeki tek satır atlamalarını kaldır
+            $markdown = $this->removeNewlinesFromBoldText($markdown);
+            $this->logTransformation('removeNewlinesFromBoldText', $originalMarkdown, $markdown);
 
-        // SONRA custom link formatlarını işle
-        $markdown = $this->processCustomLinks($markdown);
+            // 🔧 FIX 0.6: Orphan punctuation'ı bir önceki satıra ekle
+            $markdown = $this->fixOrphanPunctuation($markdown);
+            $this->logTransformation('fixOrphanPunctuation', $originalMarkdown, $markdown);
 
-        // Standard markdown'ı parse et
-        $html = $this->converter->convert($markdown)->getContent();
+            // 🔧 FIX 1: AI tire ile başlayan satırları markdown list formatına çevir
+            $markdown = $this->fixInlineListsToMarkdown($markdown);
+            $this->logTransformation('fixInlineListsToMarkdown', $originalMarkdown, $markdown);
 
-        // HTML'i temizle ve formatla
-        $html = $this->cleanHtml($html);
+            // SONRA custom link formatlarını işle
+            $markdown = $this->processCustomLinks($markdown);
+            $this->logTransformation('processCustomLinks', $originalMarkdown, $markdown);
 
-        return $html;
+            // ⚠️ EMPTY CHECK AFTER MARKDOWN TRANSFORMATIONS
+            if (empty(trim($markdown))) {
+                \Log::error('❌ MARKDOWN EMPTY after transformations!', [
+                    'original_preview' => mb_substr($originalMarkdown, 0, 200)
+                ]);
+                // FALLBACK: Orijinal markdown'ı kullan
+                $markdown = $originalMarkdown;
+            }
+
+            // Standard markdown'ı parse et
+            $html = $this->converter->convert($markdown)->getContent();
+            \Log::info('🔍 After CommonMark converter', [
+                'html_length' => strlen($html),
+                'preview' => mb_substr($html, 0, 200)
+            ]);
+
+            // ⚠️ EMPTY CHECK AFTER COMMONMARK
+            if (empty(trim($html))) {
+                \Log::error('❌ HTML EMPTY after CommonMark converter!', [
+                    'markdown_preview' => mb_substr($markdown, 0, 200)
+                ]);
+                // FALLBACK: Markdown'ı <p> tag'i içine al
+                $html = "<p>" . htmlspecialchars($markdown) . "</p>";
+            }
+
+            // HTML'i temizle ve formatla
+            $html = $this->cleanHtml($html);
+            \Log::info('🔍 After cleanHtml', [
+                'html_length' => strlen($html),
+                'preview' => mb_substr($html, 0, 200)
+            ]);
+
+            // ⚠️ FINAL EMPTY CHECK
+            if (empty(trim($html))) {
+                \Log::error('❌ HTML EMPTY after cleanHtml!', [
+                    'original_markdown' => $originalMarkdown
+                ]);
+                // ULTIMATE FALLBACK: Orijinal markdown'ı düz HTML olarak döndür
+                return "<p>" . htmlspecialchars($originalMarkdown) . "</p>";
+            }
+
+            \Log::info('✅ MarkdownService.parse() TAMAMLANDI', [
+                'final_length' => strlen($html)
+            ]);
+
+            return $html;
+
+        } catch (\Exception $e) {
+            \Log::error('❌ MarkdownService.parse() EXCEPTION', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'original_markdown' => $originalMarkdown
+            ]);
+
+            // EXCEPTION FALLBACK: Orijinal markdown'ı güvenli HTML olarak döndür
+            return "<p>" . htmlspecialchars($originalMarkdown) . "</p>";
+        }
+    }
+
+    /**
+     * Transformation log helper
+     */
+    protected function logTransformation(string $step, string $original, string $result): void
+    {
+        $originalLength = strlen($original);
+        $resultLength = strlen($result);
+        $changed = ($original !== $result);
+
+        if ($changed || $resultLength === 0) {
+            \Log::info("🔧 {$step}", [
+                'changed' => $changed,
+                'original_length' => $originalLength,
+                'result_length' => $resultLength,
+                'preview' => mb_substr($result, 0, 150)
+            ]);
+        }
+
+        // EMPTY WARNING
+        if ($resultLength === 0 && $originalLength > 0) {
+            \Log::warning("⚠️ {$step} MADE CONTENT EMPTY!", [
+                'original_preview' => mb_substr($original, 0, 200)
+            ]);
+        }
     }
 
     /**
@@ -320,7 +406,8 @@ class MarkdownService
     protected function cleanHtml(string $html): string
     {
         // 🔧 FIX 1: DOM tabanlı HTML düzeltme (daha güvenilir)
-        $html = $this->fixHtmlStructureWithDom($html);
+        // ⚠️ DISABLED - DOM parser nested yapıları bozuyor, sadece gerekirse aktif et
+        // $html = $this->fixHtmlStructureWithDom($html);
 
         // 🔧 FIX 2: Unparsed markdown linkleri düzelt
         // "[**Text**](url)" → "<a>Text</a>"

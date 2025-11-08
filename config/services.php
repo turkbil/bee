@@ -46,7 +46,8 @@ return [
     */
 
     'openai' => [
-        'api_key' => env('OPENAI_API_KEY'),
+        'key' => env('OPENAI_API_KEY'), // 'key' standardı (api_key değil!)
+        'api_key' => env('OPENAI_API_KEY'), // BC compat
         'organization' => env('OPENAI_ORGANIZATION'),
     ],
 

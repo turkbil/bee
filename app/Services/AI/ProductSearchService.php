@@ -146,10 +146,14 @@ class ProductSearchService
             // STEP 2: HYBRID SEARCH (Meilisearch 70% + Vector 30%)
             // ✅ Meilisearch handles: typo tolerance, fuzzy matching, tokenization, stopwords
             // ✅ No keyword extraction needed - pass user query directly!
+            // 🔍 Limit 100: AI sees ALL products in category, then filters intelligently
+            //    Example: "transpalet" → AI sees all 77, shows best 5-10
+            //             "1.5 ton elektrikli" → AI filters and shows only matching (maybe 3)
+            //             "ucuz" → AI sorts by price, shows cheapest
             $hybridResults = $this->hybridSearch->search(
                 $normalizedMessage,
                 $detectedCategory['category_id'] ?? null,
-                10
+                100
             );
 
             if (!empty($hybridResults)) {

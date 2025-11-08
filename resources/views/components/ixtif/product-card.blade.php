@@ -225,39 +225,63 @@
     };
 @endphp
 
-<div x-data="{
-    priceHovered: false,
-    showTryPrice: false,
-    priceTimer: null,
-    hasTryPrice: {{ $productTryPrice ? 'true' : 'false' }},
-    init() {
-        // Otomatik döngü başlat (sadece TRY fiyatı varsa)
-        if (this.hasTryPrice) {
-            this.startPriceCycle();
-        }
-    },
-    startPriceCycle() {
-        this.priceTimer = setInterval(() => {
-            if (!this.priceHovered) {
-                // Hover edilmiyorsa → TRY'ye geç (1.5 saniye)
-                this.showTryPrice = true;
-                setTimeout(() => {
-                    if (!this.priceHovered) {
-                        this.showTryPrice = false;
-                    }
-                }, 1500);
+@once
+<script>
+document.addEventListener('alpine:init', () => {
+    // Product card price component
+    Alpine.data('productCard', (hasTryPrice = false) => ({
+        priceHovered: false,
+        showTryPrice: false,
+        priceTimer: null,
+        hasTryPrice: hasTryPrice,
+        init() {
+            if (this.hasTryPrice) {
+                this.startPriceCycle();
             }
-        }, 5500); // Her 5.5 saniyede bir döngü (4s USD + 1.5s TRY)
-    },
-    destroy() {
-        if (this.priceTimer) clearInterval(this.priceTimer);
-    }
-}" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
+        },
+        startPriceCycle() {
+            this.priceTimer = setInterval(() => {
+                if (!this.priceHovered) {
+                    this.showTryPrice = true;
+                    setTimeout(() => {
+                        if (!this.priceHovered) {
+                            this.showTryPrice = false;
+                        }
+                    }, 1500); // TL: 1.5 saniye
+                }
+            }, 4500); // Döngü: 4.5 saniye (USD 3s + TRY 1.5s)
+        },
+        destroy() {
+            if (this.priceTimer) clearInterval(this.priceTimer);
+        }
+    }));
+
+    // Add to cart button component
+    Alpine.data('addToCartButton', (productId) => ({
+        loading: false,
+        success: false,
+        addToCart() {
+            this.loading = true;
+            window.dispatchEvent(new CustomEvent('add-to-cart', {
+                detail: { productId: productId, quantity: 1 }
+            }));
+            setTimeout(() => {
+                this.loading = false;
+                this.success = true;
+                setTimeout(() => { this.success = false; }, 2000);
+            }, 500);
+        }
+    }));
+});
+</script>
+@endonce
+
+<div x-data="productCard({{ $productTryPrice ? 'true' : 'false' }})" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
 
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
         <div class="relative {{ $imageContainerClasses }}">
-            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 p-2 md:p-8 lg:p-12">
                 @if($productImage)
                     <img src="{{ $productImage }}"
                          alt="{{ $productTitle }}"
@@ -270,10 +294,10 @@
 
             {{-- Badges Container (Foto üstünde - sadece vertical layout) --}}
             @if($layout === 'vertical')
-                <div class="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
+                <div class="absolute top-2 left-2 lg:top-3 lg:left-3 z-10 flex flex-col gap-1.5 lg:gap-2 items-start">
                     {{-- Discount Badge - sadece %5+ indirim varsa --}}
                     @if($productDiscountPercentage && $productDiscountPercentage >= 5)
-                        <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                        <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
                             -%{{ $productDiscountPercentage }}
                         </div>
                     @endif
@@ -287,7 +311,7 @@
                             $isFirstBadge = $index === 0;
                             $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
                         @endphp
-                        <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                        <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
                             {{ $getBadgeLabel($badge) }}
                         </div>
                     @endforeach
@@ -298,18 +322,20 @@
         {{-- Content Section --}}
         <div class="{{ $contentClasses }}">
             {{-- Category Badge with Icon + Custom Badges (Vertical: sağda, Horizontal: solda) --}}
-            <div class="flex items-center gap-2 {{ $layout === 'horizontal' ? 'mb-2' : 'mb-4 justify-between' }}">
-                <span class="flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
+            <div class="flex items-center gap-2 {{ $layout === 'horizontal' ? 'mb-2' : 'mb-4 justify-end lg:justify-between' }}">
+                {{-- Category: Mobilde gizli, tablet+ göster --}}
+                <span class="hidden lg:flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
                     <i class="{{ $productCategoryIcon }} text-sm"></i>
                     {{ $productCategory }}
                 </span>
 
                 {{-- Badges (Horizontal layout: sağda | Vertical: görsel üzerinde) --}}
                 @if($layout === 'horizontal')
-                    <div class="flex items-center gap-2 flex-wrap justify-end">
+                    {{-- Mobilde: flex-row-reverse (indirim sağda), Desktop: normal --}}
+                    <div class="flex items-center gap-1.5 lg:gap-2 flex-wrap justify-end flex-row-reverse lg:flex-row">
                         {{-- Discount Badge - sadece %5+ indirim varsa --}}
                         @if($productDiscountPercentage && $productDiscountPercentage >= 5)
-                            <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                            <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
                                 -%{{ $productDiscountPercentage }}
                             </div>
                         @endif
@@ -323,14 +349,14 @@
                                 $isFirstBadge = $index === 0;
                                 $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
                             @endphp
-                            <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-2.5 py-1 rounded-lg shadow-lg text-xs font-bold">
+                            <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
                                 {{ $getBadgeLabel($badge) }}
                             </div>
                         @endforeach
                     </div>
                 @else
                     @if($productFeatured)
-                        <span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full font-bold">
+                        <span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full font-bold hidden lg:inline-block">
                             ⭐ Öne Çıkan
                         </span>
                     @endif
@@ -362,8 +388,8 @@
                     @elseif($productTryPrice && $productCurrencyCode !== 'TRY')
                         {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
-                            <div class="relative inline-block mb-2">
-                                <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500 font-medium">
+                            <div class="relative inline-block -mb-4 lg:-mb-2">
+                                <span class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-none">
                                     {{ $productFormattedComparePrice }}
                                 </span>
                                 {{-- Çapraz çizgi (diagonal line) --}}
@@ -404,8 +430,8 @@
                     @else
                         {{-- Old Price (üstü çapraz çizili) - varsa --}}
                         @if(isset($productFormattedComparePrice))
-                            <div class="relative inline-block mb-2">
-                                <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500 font-medium">
+                            <div class="relative inline-block -mb-4 lg:-mb-2">
+                                <span class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-none">
                                     {{ $productFormattedComparePrice }}
                                 </span>
                                 {{-- Çapraz çizgi (diagonal line) --}}
@@ -449,21 +475,8 @@
                         {{-- Add to Cart Button --}}
                         <button
                             type="button"
-                            x-data="{ loading: false, success: false }"
-                            @click="
-                                loading = true;
-                                window.dispatchEvent(new CustomEvent('add-to-cart', {
-                                    detail: {
-                                        productId: {{ $productId }},
-                                        quantity: 1
-                                    }
-                                }));
-                                setTimeout(() => {
-                                    loading = false;
-                                    success = true;
-                                    setTimeout(() => { success = false; }, 2000);
-                                }, 500);
-                            "
+                            x-data="addToCartButton({{ $productId }})"
+                            @click="addToCart()"
                             :disabled="loading || success"
                             class="flex-shrink-0 border-2 border-blue-600 dark:border-blue-400 hover:border-blue-700 dark:hover:border-blue-300 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                             :class="{ 'animate-pulse': loading, '!border-green-600 !text-green-600 !bg-green-50 dark:!bg-green-900/20': success }">

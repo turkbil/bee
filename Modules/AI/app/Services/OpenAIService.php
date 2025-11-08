@@ -168,6 +168,19 @@ class OpenAIService
                 'messages_count' => count($payload['messages'])
             ]);
 
+            // 🚨 EMERGENCY: Log FULL payload to see exact messages sent to OpenAI
+            Log::emergency('🔥 FULL OpenAI API REQUEST PAYLOAD', [
+                'model' => $payload['model'],
+                'messages_full' => array_map(function($msg) {
+                    return [
+                        'role' => $msg['role'],
+                        'content_length' => strlen($msg['content'] ?? ''),
+                        'content' => substr($msg['content'] ?? '', 0, 200) // First 200 chars
+                    ];
+                }, $payload['messages']),
+                'total_messages' => count($payload['messages'])
+            ]);
+
             // ✨ REAL-TIME STREAMING HTTP REQUEST (Guzzle)
             $fullResponse = '';
             $inputTokens = 0;
@@ -289,6 +302,13 @@ class OpenAIService
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
                 'total_tokens' => $totalTokens
+            ]);
+
+            // 🚨 EMERGENCY: Log FULL response from OpenAI
+            Log::emergency('🔥 FULL OpenAI API RESPONSE', [
+                'response_preview' => substr($fullResponse, 0, 500),
+                'response_length' => strlen($fullResponse),
+                'tokens_used' => $totalTokens
             ]);
 
             $totalTime = round((microtime(true) - $apiStartTime) * 1000, 2);

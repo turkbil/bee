@@ -18,7 +18,8 @@ use App\Models\Tenant;
  */
 class AIConversation extends Model
 {
-    protected $connection = 'mysql'; // Changed from 'tenant' to 'mysql' (central DB)
+    // Note: No $connection specified = uses default (tenant) connection
+    // This allows shop assistant conversations to be tenant-specific
     protected $table = 'ai_conversations';
 
     protected $fillable = [

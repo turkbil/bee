@@ -81,6 +81,11 @@ SUNUCU_BILGILERI.txt
 background-analysis.txt
 unique-gradients.txt
 
+# Buffer files (debugging - DO NOT COMMIT!)
+a-console.txt
+a-html.txt
+b-html.txt
+
 # Design test files
 public/design/composer.json
 public/design/composer.lock

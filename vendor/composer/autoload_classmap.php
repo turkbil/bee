@@ -5719,6 +5719,7 @@ return array(
     'Modules\\AI\\App\\Services\\Workflow\\Nodes\\CategoryDetectionNode' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/CategoryDetectionNode.php',
     'Modules\\AI\\App\\Services\\Workflow\\Nodes\\ContextBuilderNode' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/ContextBuilderNode.php',
     'Modules\\AI\\App\\Services\\Workflow\\Nodes\\EndNode' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/EndNode.php',
+    'Modules\\AI\\App\\Services\\Workflow\\Nodes\\MeilisearchSettingsNode' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/MeilisearchSettingsNode.php',
     'Modules\\AI\\App\\Services\\Workflow\\Nodes\\MessageSaverNode' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/MessageSaverNode.php',
     'Modules\\AI\\App\\Services\\Workflow\\Nodes\\NodeFactory' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/NodeFactory.php',
     'Modules\\AI\\App\\Services\\Workflow\\Nodes\\ProductSearchNode' => $baseDir . '/Modules/AI/app/Services/Workflow/Nodes/ProductSearchNode.php',

@@ -92,29 +92,37 @@ class IxtifPromptService
         $prompts[] = "";
 
         // ====================================
-        // 3.5️⃣ SORU SORMA FORMAT KURALI
+        // 3.5️⃣ SORU SORMA FORMAT KURALI - TENANT-SPECIFIC!
         // ====================================
-        $prompts[] = "**📝 SORU FORMAT KURALI - HTML LİSTE KULLAN!**";
+        $prompts[] = "**📝 SORU FORMAT KURALI - MARKDOWN LİSTE KULLAN!**";
         $prompts[] = "";
-        $prompts[] = "Soru sorarken MUTLAKA HTML liste formatı (<ul><li>) kullan:";
+        $prompts[] = "🚨 **İXTİF-SPECIFIC:** Endüstriyel ürün sorularını Markdown liste ile sor!";
         $prompts[] = "";
-        $prompts[] = "✅ **DOĞRU FORMAT (HTML Liste):**";
-        $prompts[] = "```html";
-        $prompts[] = "<p>Tabii, size yardımcı olabilirim! 😊</p>";
-        $prompts[] = "<p>Size en uygun transpaleti bulabilmem için:</p>";
-        $prompts[] = "<ul>";
-        $prompts[] = "<li>Kaç ton taşıma kapasitesi istiyorsunuz? (2 ton, 3 ton?)</li>";
-        $prompts[] = "<li>Manuel mi yoksa elektrikli mi tercih edersiniz?</li>";
-        $prompts[] = "<li>Nerede kullanacaksınız? (Soğuk depo gibi özel alan var mı?)</li>";
-        $prompts[] = "</ul>";
+        $prompts[] = "Soru sorarken MUTLAKA Markdown liste formatı kullan:";
+        $prompts[] = "";
+        $prompts[] = "✅ **DOĞRU FORMAT (Markdown Liste - İXTİF için):**";
+        $prompts[] = "```markdown";
+        $prompts[] = "Tabii, size yardımcı olabilirim! 😊";
+        $prompts[] = "";
+        $prompts[] = "Size en uygun transpaleti bulabilmem için:";
+        $prompts[] = "";
+        $prompts[] = "- Kaç ton taşıma kapasitesi istiyorsunuz? (1.5 ton, 2 ton, 3 ton?)";
+        $prompts[] = "- Manuel mi yoksa elektrikli mi tercih edersiniz?";
+        $prompts[] = "- Nerede kullanacaksınız? (Soğuk depo, şantiye, depo gibi?)";
+        $prompts[] = "- Bütçe aralığınız nedir?";
         $prompts[] = "```";
         $prompts[] = "";
         $prompts[] = "❌ **YANLIŞ FORMAT (Tek satırda yan yana):**";
-        $prompts[] = "```html";
-        $prompts[] = "<p>Tabii yardımcı olabilirim! - Kaç ton? - Manuel mi elektrikli mi? - Nerede kullanacaksınız?</p>";
+        $prompts[] = "```";
+        $prompts[] = "Tabii yardımcı olabilirim! Kaç ton? Manuel mi elektrikli mi? Nerede kullanacaksınız?";
         $prompts[] = "```";
         $prompts[] = "";
-        $prompts[] = "**ÖNEMLİ:** Sorular <ul><li> ile HTML liste olarak yazılmalı!";
+        $prompts[] = "**ÖNEMLİ DETAYLAR (İXTİF-SPECIFIC):**";
+        $prompts[] = "- **Kapasite sorusu:** '1.5 ton, 2 ton, 3 ton' gibi spesifik ton değerleri örnek ver!";
+        $prompts[] = "- **Tip sorusu:** 'Manuel mi elektrikli mi' MUTLAKA sor!";
+        $prompts[] = "- **Kullanım alanı:** 'Soğuk depo, şantiye, depo, fabrika' gibi endüstriyel alan örnekleri ver!";
+        $prompts[] = "- **Marka/Model:** İXTİF markasını vurgula, 'İXTİF F4, EPL185, EPT20' gibi model örnekleri ver!";
+        $prompts[] = "- Sorular AYRI satirlarda Markdown liste formatında (`-` ile) yazılmalı!";
         $prompts[] = "";
 
         // ====================================

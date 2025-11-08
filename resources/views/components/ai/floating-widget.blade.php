@@ -63,6 +63,16 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
         this.$watch('chat?.hasConversation', value => {
             if (value) this.expanded = true;
         });
+
+        // Auto-focus input after AI responds (when loading finishes)
+        this.$watch('chat?.isLoading', (isLoading) => {
+            if (!isLoading && this.chat?.floatingOpen) {
+                // Use setTimeout to ensure DOM is fully ready
+                setTimeout(() => {
+                    this.$refs.messageInput?.focus();
+                }, 100);
+            }
+        });
     },
 
     destroy() {
@@ -77,6 +87,12 @@ $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-righ
             this.chat.sendMessage(this.message);
             this.message = '';
             this.expanded = true; // Expand when sending message
+
+            // Keep focus on input after submit for continuous typing
+            // Use setTimeout to ensure DOM is fully ready
+            setTimeout(() => {
+                this.$refs.messageInput?.focus();
+            }, 50);
         }
     }
 }"
@@ -248,7 +264,7 @@ class="fixed {{ $selectedPosition }} z-50">
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
         :style="{
-            height: (expanded || chat?.hasConversation) ? '600px' : '420px',
+            height: '600px',
             transition: 'height 0.4s ease-in-out',
             maxHeight: 'calc(100vh - 120px)'
         }"
@@ -295,26 +311,10 @@ class="fixed {{ $selectedPosition }} z-50">
             x-transition:leave="transition-all ease-in duration-300"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 -translate-y-2"
-            class="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700"
-            x-data="{
-                suggestions: [
-                    'Ürün özellikleri',
-                    'Stok durumu',
-                    'Fiyat bilgisi',
-                    'Hızlı öneri',
-                    'Karşılaştırma',
-                    'En iyiler'
-                ],
-                currentSuggestion: 0,
-                init() {
-                    setInterval(() => {
-                        this.currentSuggestion = (this.currentSuggestion + 1) % this.suggestions.length;
-                    }, 2000);
-                }
-            }"
+            class="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700"
             x-cloak
         >
-            <div class="text-center">
+            <div class="text-center max-w-md mx-auto">
                 {{-- Animated Icon with Ripple Effect --}}
                 <div class="relative inline-block mb-4">
                     {{-- Ripple layers --}}
@@ -338,47 +338,67 @@ class="fixed {{ $selectedPosition }} z-50">
                 <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-2 animate-fade-in-up">
                     Merhaba! 👋
                 </h4>
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 animate-fade-in-up animation-delay-100">
-                    Size nasıl yardımcı olabilirim?
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 animate-fade-in-up animation-delay-100">
+                    Aradığınız bunlardan birisi mi?
                 </p>
 
-                {{-- Rotating Suggestions - Center aligned with smooth fade --}}
-                <div class="h-6 flex items-center justify-center">
-                    <p
-                        x-data="{
-                            currentText: 'Ürün özellikleri',
-                            fading: false,
-                            suggestionsList: [
-                                'Ürün özellikleri',
-                                'Stok durumu',
-                                'Fiyat bilgisi',
-                                'Hızlı öneri',
-                                'Karşılaştırma',
-                                'En iyiler'
-                            ],
-                            currentIndex: 0,
-                            init() {
-                                setInterval(() => {
-                                    // Fade out
-                                    this.fading = true;
+                {{-- Category Selector - Horizontal Layout --}}
+                <div class="w-full">
+                    <div class="grid grid-cols-2 gap-2">
+                        {{-- Transpalet --}}
+                        <button
+                            @click="message = 'Merhaba, transpalet için bilgi alabilir miyim?'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-dolly text-lg text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Transpalet</span>
+                        </button>
 
-                                    // Change text after fade out completes
-                                    setTimeout(() => {
-                                        this.currentIndex = (this.currentIndex + 1) % this.suggestionsList.length;
-                                        this.currentText = this.suggestionsList[this.currentIndex];
+                        {{-- Forklift --}}
+                        <button
+                            @click="message = 'Merhaba, forklift modelleri hakkında bilgi almak istiyorum'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-forklift text-lg text-orange-600 dark:text-orange-400 group-hover:text-orange-700 dark:group-hover:text-orange-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Forklift</span>
+                        </button>
 
-                                        // Fade in
-                                        setTimeout(() => {
-                                            this.fading = false;
-                                        }, 50);
-                                    }, 250);
-                                }, 2500);
-                            }
-                        }"
-                        :class="{ 'opacity-0': fading, 'opacity-100': !fading }"
-                        class="text-sm text-gray-600 dark:text-gray-300 text-center transition-opacity duration-250"
-                        x-text="currentText"
-                    ></p>
+                        {{-- İstif Makinesi --}}
+                        <button
+                            @click="message = 'Merhaba, istif makinesi seçenekleriniz nelerdir?'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-boxes-stacked text-lg text-green-600 dark:text-green-400 group-hover:text-green-700 dark:group-hover:text-green-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">İstif Makinesi</span>
+                        </button>
+
+                        {{-- Reach Truck --}}
+                        <button
+                            @click="message = 'Merhaba, reach truck konusunda yardımcı olabilir misiniz?'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-warehouse text-lg text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Reach Truck</span>
+                        </button>
+
+                        {{-- Yedek Parça --}}
+                        <button
+                            @click="message = 'Merhaba, yedek parça fiyatlarını öğrenebilir miyim?'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-screwdriver-wrench text-lg text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Yedek Parça</span>
+                        </button>
+
+                        {{-- Diğer / Sohbet Başlat --}}
+                        <button
+                            @click="$refs.messageInput.focus();"
+                            class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 hover:shadow-md"
+                        >
+                            <i class="fas fa-comment-dots text-lg"></i>
+                            <span class="text-sm font-medium">Diğer</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -468,6 +488,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
                     <input
                         type="text"
+                        x-ref="messageInput"
                         x-model="message"
                         @focus="expanded = true; inputFocused = true"
                         @blur="inputFocused = false"

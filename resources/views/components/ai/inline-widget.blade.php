@@ -104,6 +104,16 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
                     this.chat.scrollToBottom();
                 }, 400);
             }
+
+            // Auto-focus input after AI responds (when loading finishes)
+            this.$watch('chat?.isLoading', (isLoading) => {
+                if (!isLoading && this.isOpen) {
+                    // Use setTimeout to ensure DOM is fully ready
+                    setTimeout(() => {
+                        this.$refs.messageInput?.focus();
+                    }, 100);
+                }
+            });
         },
 
         toggle() {
@@ -129,6 +139,12 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
 
                 this.chat.sendMessage(this.message, context);
                 this.message = '';
+
+                // Keep focus on input after submit for continuous typing
+                // Use setTimeout to ensure DOM is fully ready
+                setTimeout(() => {
+                    this.$refs.messageInput?.focus();
+                }, 50);
             }
         }
     }"
@@ -252,6 +268,7 @@ $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
             <form @submit.prevent="submitMessage()" class="flex gap-2">
                 <input
                     type="text"
+                    x-ref="messageInput"
                     x-model="message"
                     placeholder="Mesajınızı yazın..."
                     :disabled="chat?.isLoading"

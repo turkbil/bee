@@ -22,14 +22,17 @@ class StockSorterNode extends BaseNode
             $products = $products->sortByDesc('current_stock');
         }
 
-        $context['products'] = $products;
-        $context['high_stock_count'] = $products->filter(fn($p) => isset($p->current_stock) && $p->current_stock >= $highStockThreshold)->count();
-        
+        $highStockCount = $products->filter(fn($p) => isset($p->current_stock) && $p->current_stock >= $highStockThreshold)->count();
+
         Log::info('📊 StockSorterNode', [
             'total' => $products->count(),
-            'high_stock' => $context['high_stock_count']
+            'high_stock' => $highStockCount
         ]);
-        
-        return $context;
+
+        // Return only new keys (FlowExecutor will merge with context)
+        return [
+            'products' => $products,
+            'high_stock_count' => $highStockCount
+        ];
     }
 }

@@ -39,26 +39,9 @@ class OptimizedPromptService
                 );
                 $info['working_hours'] = settings('contact_working_hours');
 
-                // AI Ayarları (Group 9)
-                $info['ai_assistant_name'] = settings('ai_assistant_name');
-                $info['ai_personality_role'] = settings('ai_personality_role');
-                $info['ai_company_sector'] = settings('ai_company_sector');
-                $info['ai_company_founded_year'] = settings('ai_company_founded_year');
-                $info['ai_company_main_services'] = settings('ai_company_main_services');
-                $info['ai_company_expertise'] = settings('ai_company_expertise');
-                $info['ai_target_customer_profile'] = settings('ai_target_customer_profile');
-                $info['ai_target_industries'] = settings('ai_target_industries');
-                $info['ai_response_tone'] = settings('ai_response_tone');
-                $info['ai_sales_approach'] = settings('ai_sales_approach');
-                $info['ai_custom_instructions'] = settings('ai_custom_instructions');
-                $info['ai_forbidden_topics'] = settings('ai_forbidden_topics');
-                $info['ai_company_certifications'] = settings('ai_company_certifications');
-                $info['ai_knowledge_base'] = settings('ai_knowledge_base');
-
-                // Modül Yetkilendirmeleri
-                $info['ai_module_shop_enabled'] = settings('ai_module_shop_enabled');
-                $info['ai_module_page_enabled'] = settings('ai_module_page_enabled');
-                $info['ai_module_blog_enabled'] = settings('ai_module_blog_enabled');
+                // ✅ Group 9 (AI Settings) KALDIRILDI
+                // ✅ ai_knowledge_base tablosu kullanılıyor (/admin/ai/knowledge-base)
+                // ✅ Modül aktiflik kontrolü Workflow tarafından otomatik yapılıyor
             }
 
             // Fallback: Domain'den firma adını çıkar
@@ -1442,32 +1425,13 @@ class OptimizedPromptService
                 $prompts[] = "";
             }
 
-            if (!empty($companyInfo['ai_company_sector'])) {
-                $prompts[] = "**Sektör:** {$companyInfo['ai_company_sector']}";
-                $prompts[] = "";
-            }
-
             if (!empty($companyInfo['description'])) {
                 $prompts[] = "**Firma Hakkında:** {$companyInfo['description']}";
                 $prompts[] = "";
             }
 
-            // AI Kişilik ayarları
-            if (!empty($companyInfo['ai_company_main_services'])) {
-                $prompts[] = "**Ana Hizmetler:** {$companyInfo['ai_company_main_services']}";
-            }
-            if (!empty($companyInfo['ai_company_expertise'])) {
-                $prompts[] = "**Uzmanlaştığımız Alanlar:** {$companyInfo['ai_company_expertise']}";
-            }
-            if (!empty($companyInfo['ai_target_customer_profile'])) {
-                $prompts[] = "**Hedef Müşteri Profilimiz:** {$companyInfo['ai_target_customer_profile']}";
-            }
-            if (!empty($companyInfo['ai_company_certifications'])) {
-                $prompts[] = "**Sertifikalarımız:** {$companyInfo['ai_company_certifications']}";
-            }
-            if (!empty($companyInfo['ai_company_founded_year'])) {
-                $prompts[] = "**Kuruluş Yılı:** {$companyInfo['ai_company_founded_year']}";
-            }
+            // ✅ AI Kişilik ayarları KALDIRILDI
+            // ✅ Firma bilgileri artık ai_knowledge_base tablosunda (/admin/ai/knowledge-base)
 
             $prompts[] = "";
 
@@ -1499,60 +1463,10 @@ class OptimizedPromptService
                 $prompts[] = "";
             }
 
-            // Özel talimatlar (Custom Instructions)
-            if (!empty($companyInfo['ai_custom_instructions'])) {
-                $prompts[] = "## 📋 ÖZEL TALİMATLAR (Mutlaka Uygula!)";
-                $prompts[] = "";
-                $prompts[] = $companyInfo['ai_custom_instructions'];
-                $prompts[] = "";
-            }
-
-            // Yasaklı konular
-            if (!empty($companyInfo['ai_forbidden_topics'])) {
-                $prompts[] = "## ❌ YASAKLI KONULAR";
-                $prompts[] = "";
-                $prompts[] = "Bu konular hakkında ASLA bilgi verme: {$companyInfo['ai_forbidden_topics']}";
-                $prompts[] = "Kullanıcı sorduğunda kibarca reddet: 'Bu konu hakkında bilgi veremiyorum. Ürün ve hizmetlerimiz hakkında size yardımcı olabilirim.'";
-                $prompts[] = "";
-            }
-
-            // Bilgi Bankası (Sık Sorulan Sorular)
-            if (!empty($companyInfo['ai_knowledge_base'])) {
-                $prompts[] = "## 📚 BİLGİ BANKASI (Sık Sorulan Sorular)";
-                $prompts[] = "";
-                $prompts[] = $companyInfo['ai_knowledge_base'];
-                $prompts[] = "";
-            }
-
-            // Modül Yetkilendirmeler (Shop/Page/Blog)
-            $moduleRules = [];
-
-            if (!empty($companyInfo['ai_module_shop_enabled']) && $companyInfo['ai_module_shop_enabled'] === 'enabled') {
-                $moduleRules[] = "✅ **Shop Modülü Aktif:** Ürünler hakkında bilgi verebilir, ürün önerisi yapabilirsin.";
-            } else {
-                $moduleRules[] = "❌ **Shop Modülü Kapalı:** Ürün bilgisi veremezsin. Kullanıcı ürün sorduğunda: 'Ürün bilgileri için müşteri temsilcilerimizle iletişime geçebilirsiniz.'";
-            }
-
-            if (!empty($companyInfo['ai_module_page_enabled']) && $companyInfo['ai_module_page_enabled'] === 'enabled') {
-                $moduleRules[] = "✅ **Page Modülü Aktif:** Firma sayfaları, hizmetler, hakkımızda gibi konularda bilgi verebilirsin.";
-            } else {
-                $moduleRules[] = "❌ **Page Modülü Kapalı:** Firma sayfaları hakkında detaylı bilgi veremezsin.";
-            }
-
-            if (!empty($companyInfo['ai_module_blog_enabled']) && $companyInfo['ai_module_blog_enabled'] === 'enabled') {
-                $moduleRules[] = "✅ **Blog Modülü Aktif:** Blog makaleleri önerebilir, içerik paylaşabilirsin.";
-            } else {
-                $moduleRules[] = "❌ **Blog Modülü Kapalı:** Blog içerikleri hakkında bilgi veremezsin.";
-            }
-
-            if (!empty($moduleRules)) {
-                $prompts[] = "## 🔌 MODÜL YETKİLERİ (Dikkat!)";
-                $prompts[] = "";
-                foreach ($moduleRules as $rule) {
-                    $prompts[] = $rule;
-                }
-                $prompts[] = "";
-            }
+            // ✅ Özel talimatlar KALDIRILDI - Kodda optimize edilmiş promptlar kullanılıyor
+            // ✅ Yasaklı konular KALDIRILDI - Gerekirse ai_knowledge_base'e eklenebilir
+            // ✅ Bilgi Bankası KALDIRILDI - ai_knowledge_base tablosu kullanılıyor (/admin/ai/knowledge-base)
+            // ✅ Modül yetkileri KALDIRILDI - Workflow otomatik tespit ediyor
 
             $prompts[] = "---";
             $prompts[] = "";

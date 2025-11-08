@@ -14,6 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- 🔇 CONSOLE FILTER - MUST BE FIRST! Suppress tracking/marketing noise --}}
+    <script>
+    (function(){const p=[/yandex/i,/attestation/i,/topics/i,/googletagmanager/i,/facebook/i,/ERR_BLOCKED_BY_CLIENT/i];const s=m=>!m?false:p.some(x=>x.test(m));const e=console.error;console.error=function(){const m=Array.from(arguments).join(' ');if(!s(m))e.apply(console,arguments);};const w=console.warn;console.warn=function(){const m=Array.from(arguments).join(' ');if(!s(m))w.apply(console,arguments);};const l=console.log;console.log=function(){const m=Array.from(arguments).join(' ');if(!s(m))l.apply(console,arguments);};})();
+    </script>
+
     {{-- Theme Flash Fix: Minimal inline script (1 line) - Prevents flash before Alpine.js loads --}}
     <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
 
@@ -76,82 +81,8 @@
     {{-- Livewire Styles --}}
     @livewireStyles
 
-    {{-- Google Analytics --}}
-    @php
-        $googleAnalyticsCode = setting('seo_site_google_analytics_code');
-    @endphp
-    @if($googleAnalyticsCode)
-    <!-- Google tag (gtag.js) - Performance Optimized -->
-    <script defer src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsCode }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ $googleAnalyticsCode }}');
-    </script>
-    @endif
-
-    {{-- Yandex Metrica - Moved to GTM --}}
-
-    {{-- Console Error Filter - Ad Blocker Suppress --}}
-    <script>
-    (function() {
-        'use strict';
-
-        // Ignore list - Wildcard support with regex
-        const consoleErrorIgnoreList = [
-            /yandex\.ru/i,                    // Yandex Metrika (tüm subdomainler)
-            /yandex\.com/i,                   // Yandex alternative domains
-            /mc\.yandex/i,                    // Yandex Metrika CDN
-            /metrika.*yandex/i,               // Yandex Metrika variations
-            /googletagmanager\.com/i,         // Google Tag Manager
-            /google-analytics\.com/i,         // Google Analytics
-            /doubleclick\.net/i,              // Google Ads
-            /facebook\.net/i,                 // Facebook Pixel
-            /connect\.facebook/i,             // Facebook SDK
-            /ERR_BLOCKED_BY_CLIENT/i          // Generic ad blocker error
-        ];
-
-        // Check if error should be ignored
-        function shouldIgnoreError(message) {
-            if (!message) return false;
-
-            return consoleErrorIgnoreList.some(function(pattern) {
-                return pattern.test(message);
-            });
-        }
-
-        // Override console.error
-        const originalConsoleError = console.error;
-        console.error = function() {
-            const message = Array.prototype.slice.call(arguments).join(' ');
-
-            if (!shouldIgnoreError(message)) {
-                originalConsoleError.apply(console, arguments);
-            }
-        };
-
-        // Suppress window.onerror for ignored patterns
-        const originalOnError = window.onerror;
-        window.onerror = function(message, source, lineno, colno, error) {
-            if (shouldIgnoreError(message) || shouldIgnoreError(source)) {
-                return true; // Suppress error
-            }
-
-            if (originalOnError) {
-                return originalOnError.apply(this, arguments);
-            }
-            return false;
-        };
-
-        // Suppress unhandledrejection for network errors
-        window.addEventListener('unhandledrejection', function(event) {
-            if (event.reason && shouldIgnoreError(event.reason.toString())) {
-                event.preventDefault();
-            }
-        });
-    })();
-    </script>
+    {{-- ❌ REMOVED: Duplicate console filter - Now at top of <head> --}}
+    {{-- ❌ REMOVED: Google Analytics & Yandex - Now auto-loaded via marketing.auto-platforms component --}}
 
     {{-- Dynamic Content Areas --}}
     @stack('head')
@@ -161,32 +92,15 @@
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v=<?php echo time(); ?>">
     {{-- AI Chat JS moved to footer.blade.php AFTER Alpine.js/Livewire --}}
 
-    {{-- Google Tag Manager --}}
-    @php
-        $gtmId = setting('seo_google_tag_manager_id');
-    @endphp
-    @if($gtmId)
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','{{ $gtmId }}');</script>
-    @endif
-    {{-- End Google Tag Manager --}}
+    {{-- 🎯 Marketing Platforms Auto-Loader (GTM, GA4, Facebook, Yandex, LinkedIn, TikTok, Clarity) --}}
+    <x-marketing.auto-platforms />
 </head>
 
 <body class="font-sans antialiased min-h-screen bg-white dark:bg-gray-900 transition-all duration-500 flex flex-col"
       :class="{ 'dark-mode-active': darkMode === 'dark' }">
 
-    {{-- Google Tag Manager (noscript) --}}
-    @php
-        $gtmId = setting('seo_google_tag_manager_id');
-    @endphp
-    @if($gtmId)
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $gtmId }}"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    @endif
-    {{-- End Google Tag Manager (noscript) --}}
+    {{-- 🎯 GTM Body Snippet (No-Script Fallback) --}}
+    <x-marketing.gtm-body />
 
     <header id="main-header" x-data="{
         sidebarOpen: false,

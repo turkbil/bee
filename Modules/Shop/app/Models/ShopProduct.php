@@ -212,7 +212,54 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             // Custom searchable fields
             'category_name' => $this->category ? ($this->category->getTranslated('title', $locale) ?? '') : '',
             'brand_name' => $this->brand ? ($this->brand->getTranslated('name', $locale) ?? $this->brand->name) : '',
+
+            // 📋 FULL CONTENT FIELDS - AI için zengin içerik
+            'technical_specs_text' => $this->getSearchableText($this->technical_specs),
+            'features_text' => $this->getSearchableText($this->features),
+            'highlighted_features_text' => $this->getSearchableText($this->highlighted_features),
+            'use_cases_text' => $this->getSearchableText($this->use_cases),
+            'competitive_advantages_text' => $this->getSearchableText($this->competitive_advantages),
+            'target_industries_text' => $this->getSearchableText($this->target_industries),
+            'accessories_text' => $this->getSearchableText($this->accessories),
+            'certifications_text' => $this->getSearchableText($this->certifications),
+            'warranty_info_text' => $this->getSearchableText($this->warranty_info),
+            'shipping_info_text' => $this->getSearchableText($this->shipping_info),
+            'dimensions_text' => $this->getSearchableText($this->dimensions),
+            'primary_specs_text' => $this->getSearchableText($this->primary_specs),
         ];
+    }
+
+    /**
+     * Convert array/object to searchable text
+     */
+    protected function getSearchableText($data): string
+    {
+        if (empty($data)) {
+            return '';
+        }
+
+        if (is_string($data)) {
+            return strip_tags($data);
+        }
+
+        if (is_array($data)) {
+            $parts = [];
+            foreach ($data as $key => $value) {
+                if (is_array($value) || is_object($value)) {
+                    $parts[] = $this->getSearchableText($value);
+                } elseif (is_string($value) || is_numeric($value)) {
+                    // Add key as context if not numeric
+                    if (!is_numeric($key)) {
+                        $parts[] = $key . ': ' . strip_tags((string)$value);
+                    } else {
+                        $parts[] = strip_tags((string)$value);
+                    }
+                }
+            }
+            return implode(' | ', array_filter($parts));
+        }
+
+        return '';
     }
 
     /**

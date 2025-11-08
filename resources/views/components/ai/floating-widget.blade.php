@@ -390,13 +390,13 @@ class="fixed {{ $selectedPosition }} z-50">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Yedek Parça</span>
                         </button>
 
-                        {{-- Diğer / Sohbet Başlat --}}
+                        {{-- Merhaba / Sohbet Başlat --}}
                         <button
-                            @click="$refs.messageInput.focus();"
+                            @click="message = 'Merhaba, nasılsınız?'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 hover:shadow-md"
                         >
                             <i class="fas fa-comment-dots text-lg"></i>
-                            <span class="text-sm font-medium">Diğer</span>
+                            <span class="text-sm font-medium">Merhaba</span>
                         </button>
                     </div>
                 </div>

@@ -155,6 +155,60 @@ Kullanıcı 'reach truck' derse:
 **ÖZEL DURUM - YEDEK PARÇA:**
 Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
 ",
+
+            'price_and_stock_policy' => "
+## 💰 İXTİF ÖZEL KURAL: FİYAT VE STOK DURUMU POLİTİKASI
+
+**🚨 KRİTİK KURALLAR - MUTLAKA UYULMALI:**
+
+### 1. FİYATSIZ ÜRÜNLER (base_price = 0 veya price_on_request = true)
+**Ürün gösterilir, ancak fiyat yerine şu mesaj verilir:**
+> \"Fiyat bilgisi için lütfen müşteri temsilcilerimizle iletişime geçin.\"
+> \"Detaylı fiyat teklifi için 0216 755 3 555 numaralı telefonu arayabilir veya iletişim bilgilerinizi bırakabilirsiniz.\"
+
+**❌ ASLA YAPMA:**
+- \"Bu ürünün fiyatı yok\"
+- \"Fiyat belirsiz\"
+- \"0 TL\"
+
+**✅ DOĞRU ÖRNEK:**
+```
+[İXTİF CPD18FVL - Forklift](URL)
+- 1.8 ton kapasite
+- **Fiyat:** Müşteri temsilcilerimizle iletişime geçerek detaylı fiyat teklifi alabilirsiniz.
+- **İletişim:** 0216 755 3 555
+```
+
+### 2. STOKTA OLMAYAN ÜRÜNLER (current_stock = 0)
+**Ürün gösterilir, \"stokta yok\" DENİLMEZ!**
+
+**❌ ASLA YAPMA:**
+- \"Bu ürün stokta yok\"
+- \"Stok tükendi\"
+- \"Temin edilemez\"
+
+**✅ DOĞRU MESAJ:**
+```
+\"Tedarik süresi ve stok bilgisi için lütfen müşteri hizmetlerimizle iletişime geçin.\"
+\"Sipariş ve teslimat bilgisi için numaranızı bırakabilir veya 0216 755 3 555'i arayabilirsiniz.\"
+```
+
+**✅ DOĞRU ÖRNEK:**
+```
+[İXTİF EFL181 - Forklift](URL)
+- 1.8 ton kapasite, Li-Ion batarya
+- **Fiyat:** $3,450 USD
+- **Tedarik:** Sipariş ve teslimat süresi için 0216 755 3 555'i arayabilirsiniz.
+```
+
+### 3. HER İKİ DURUM VARSA (Fiyatsız + Stoksuz)
+```
+\"Fiyat ve tedarik süresi bilgisi için müşteri temsilcilerimizle iletişime geçebilirsiniz.\"
+\"Detaylı bilgi için 0216 755 3 555'i arayın veya iletişim bilgilerinizi bırakın.\"
+```
+
+**SONUÇ:** Tüm ürünler gösterilir, hiçbir ürün gizlenmez. AI, fiyat/stok eksikliğini nazikçe temsilci yönlendirmesi ile kapatır.
+",
         ];
     }
 

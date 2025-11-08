@@ -72,6 +72,14 @@ function clearSystemCache(button) {
 window.clearSystemCache = clearSystemCache;
 
 /**
+ * AI Conversation Clear Function
+ *
+ * NOT: Bu fonksiyon /public/assets/js/ai-chat.js dosyasında tanımlıdır.
+ * O dosyadaki fonksiyon hem localStorage hem de database'den conversation'ı siler.
+ * Burada override etmiyoruz, ai-chat.js'teki fonksiyonu kullanıyoruz.
+ */
+
+/**
  * Topbar Height Calculator
  * Topbar yüksekliğini hesaplayıp CSS variable olarak set eder
  */

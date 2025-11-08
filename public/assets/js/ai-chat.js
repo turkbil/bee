@@ -209,16 +209,6 @@ function registerAiChatStore() {
                     throw new Error(data.message || 'Mesaj gönderilemedi');
                 }
 
-                // 🚨 SONNET DEBUG (sadece success'de)
-                console.log('🚨 API RESPONSE:', {
-                    success: data.success,
-                    message: data.data?.message,
-                    system: data.data?.metadata?.system,
-                    session_id: data.data?.session_id,
-                    nodes_executed: data.data?.metadata?.nodes_executed
-                });
-                console.log('🚨 FULL RESPONSE:', data);
-
                 // Add AI response to chat
                 this.addMessage({
                     role: 'assistant',

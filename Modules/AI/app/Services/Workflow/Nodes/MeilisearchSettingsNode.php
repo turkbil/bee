@@ -24,7 +24,13 @@ class MeilisearchSettingsNode extends BaseNode
         ]);
 
         // Build Meilisearch filter string
-        $filterParts = ['is_active = true', 'current_stock > 0'];
+        $filterParts = ['is_active = true'];
+
+        // ✅ KURAL: Fiyatsız ve stoksuz ürünleri de göster
+        // AI prompt'unda "Fiyat için temsilciye ulaşın" mesajı verecek
+
+        // Not: exclude_out_of_stock config'i artık kullanılmıyor
+        // Tüm ürünler gösterilecek, AI prompt'u stok durumunu açıklayacak
 
         // Add custom filters from context
         if (!empty($filters)) {
@@ -137,9 +143,44 @@ class MeilisearchSettingsNode extends BaseNode
             $filters['_type_hint'] = 'manual';
         }
 
-        // Category from context (detected by previous node)
+        // ✅ CATEGORY BOUNDARY - Kategori tespit edildiyse SADECE o kategoriden ürün göster
         if (isset($context['detected_category'])) {
-            $filters['_category'] = $context['detected_category'];
+            $categorySlug = $context['detected_category'];
+
+            // Kategori slug → title keyword mapping (tenant-agnostic)
+            $categoryKeywords = [
+                'transpalet' => 'transpalet',
+                'forklift' => 'forklift',
+                'stacker' => 'istif',
+            ];
+
+            if (isset($categoryKeywords[$categorySlug])) {
+                $keyword = $categoryKeywords[$categorySlug];
+
+                // Database'den tenant-specific category ID bul
+                try {
+                    $category = \Modules\Shop\App\Models\ShopCategory::where('is_active', true)
+                        ->where(function($q) use ($keyword) {
+                            $q->where('title->tr', 'like', '%' . $keyword . '%')
+                              ->orWhere('title->en', 'like', '%' . $keyword . '%');
+                        })
+                        ->first();
+
+                    if ($category) {
+                        // Gerçek Meilisearch filter olarak ekle
+                        $filters['category_id'] = $category->category_id;
+
+                        Log::info('🎯 Kategori Boundary Aktif', [
+                            'detected' => $categorySlug,
+                            'keyword' => $keyword,
+                            'category_id' => $category->category_id,
+                            'category_title' => $category->getTranslated('title', 'tr')
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Category boundary lookup failed', ['error' => $e->getMessage()]);
+                }
+            }
         }
 
         return $filters;
@@ -160,14 +201,26 @@ class MeilisearchSettingsNode extends BaseNode
 
         // Searchable attributes (order matters - priority)
         $index->updateSearchableAttributes([
-            'title',           // Highest priority
-            'model_number',
-            'sku',
-            'brand_name',
-            'category_name',
-            'description',
-            'tags',
-            'body'            // Lowest priority
+            'title',                          // Highest priority - Ürün adı
+            'model_number',                   // Model numarası
+            'sku',                           // Stok kodu
+            'brand_name',                    // Marka adı
+            'category_name',                 // Kategori adı
+            'technical_specs_text',          // Teknik özellikler (voltaj, kapasite, vs.)
+            'features_text',                 // Özellikler
+            'highlighted_features_text',     // Öne çıkan özellikler
+            'primary_specs_text',            // Ana özellikler
+            'use_cases_text',                // Kullanım alanları
+            'target_industries_text',        // Hedef sektörler
+            'competitive_advantages_text',   // Rekabetçi avantajlar
+            'accessories_text',              // Aksesuarlar
+            'certifications_text',           // Sertifikalar
+            'warranty_info_text',            // Garanti bilgisi
+            'shipping_info_text',            // Kargo bilgisi
+            'dimensions_text',               // Boyutlar
+            'description',                   // Kısa açıklama
+            'tags',                          // Etiketler
+            'body'                           // Detaylı açıklama (Lowest priority)
         ]);
 
         // Filterable attributes

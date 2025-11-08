@@ -4,6 +4,7 @@ namespace App\Services\AI;
 
 use Modules\Shop\App\Models\ShopProduct;
 use Illuminate\Support\Facades\Log;
+use MeiliSearch\Client as MeiliClient;
 
 class HybridSearchService
 {
@@ -29,19 +30,41 @@ class HybridSearchService
         ]);
 
         // 1. KEYWORD SEARCH (Meilisearch) - Fast, typo-tolerant
-        Log::info('🔍 Scout search starting', [
+        Log::info('🔍 Meilisearch (raw client) search starting', [
             'query' => $query,
             'tenant_id' => tenant('id'),
             'tenant_initialized' => tenancy()->initialized,
         ]);
 
-        $keywordQuery = ShopProduct::search($query)->where('is_active', true);
+        // ✅ RAW MEILISEARCH CLIENT (comparison operators için gerekli)
+        $client = new MeiliClient(config('scout.meilisearch.host'), config('scout.meilisearch.key'));
+        $indexName = tenancy()->initialized
+            ? 'shop_products_tenant_' . tenant('id')
+            : 'shop_products';
+
+        // Build filter string
+        $filterParts = ['is_active = true'];  // ✅ Sadece aktif ürünler (fiyatsız/stoksuz da göster)
 
         if ($categoryId) {
-            $keywordQuery->where('category_id', $categoryId);
+            $filterParts[] = "category_id = {$categoryId}";
         }
 
-        $keywordResults = $keywordQuery->take(50)->get();
+        $filterString = implode(' AND ', $filterParts);
+
+        $searchResults = $client->index($indexName)->search($query, [
+            'filter' => $filterString,
+            'limit' => 50
+        ]);
+
+        // Convert Meilisearch hits to Eloquent models
+        $hits = $searchResults->getHits();
+        $productIds = collect($hits)->pluck('product_id');
+        $keywordResults = ShopProduct::whereIn('product_id', $productIds)
+            ->get()
+            ->sortBy(function($product) use ($productIds) {
+                return $productIds->search($product->product_id);
+            })
+            ->values();
 
         Log::info('🔍 Scout search completed', [
             'query' => $query,

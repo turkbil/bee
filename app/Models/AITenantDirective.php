@@ -9,13 +9,17 @@ use Illuminate\Support\Facades\Cache;
 /**
  * AI Tenant Directive Model
  *
- * Central configuration table for tenant-specific AI behavior
- * Key-value pairs for controlling AI responses and actions
+ * CENTRAL DATABASE - Tenant-specific AI directives stored centrally
+ * Central manages all tenant directives with tenant_id filtering
+ * Allows template copying and central management
  */
 class AITenantDirective extends Model
 {
     use HasFactory;
 
+    // CRITICAL: Directives stored in CENTRAL DB for management + templates
+    // Each tenant has unique directives but stored centrally with tenant_id
+    protected $connection = 'mysql'; // Force CENTRAL DB connection
     protected $table = 'ai_tenant_directives';
 
     protected $fillable = [
@@ -215,6 +219,77 @@ class AITenantDirective extends Model
         foreach ($categories as $category) {
             Cache::forget("tenant_directives_{$tenantId}_{$category}");
         }
+    }
+
+    /**
+     * Copy all directives from one tenant to another
+     *
+     * @param int $sourceTenantId Source tenant ID (örn: 2 = ixtif.com)
+     * @param int $targetTenantId Target tenant ID
+     * @param bool $overwrite Üzerine yaz? (default: false - varsa atla)
+     * @return int Kopyalanan directive sayısı
+     */
+    public static function copyFromTenant(int $sourceTenantId, int $targetTenantId, bool $overwrite = false): int
+    {
+        $sourceDirectives = self::byTenant($sourceTenantId)->active()->get();
+        $copied = 0;
+
+        foreach ($sourceDirectives as $directive) {
+            // Hedef tenant'ta zaten varsa
+            $exists = self::byTenant($targetTenantId)
+                ->where('directive_key', $directive->directive_key)
+                ->exists();
+
+            if ($exists && !$overwrite) {
+                continue; // Üzerine yazma, atla
+            }
+
+            // Kopyala
+            self::updateOrCreate(
+                [
+                    'tenant_id' => $targetTenantId,
+                    'directive_key' => $directive->directive_key,
+                ],
+                [
+                    'directive_value' => $directive->directive_value,
+                    'directive_type' => $directive->directive_type,
+                    'category' => $directive->category,
+                    'description' => $directive->description,
+                    'is_active' => $directive->is_active,
+                ]
+            );
+            $copied++;
+        }
+
+        // Hedef tenant cache'ini temizle
+        self::clearCache($targetTenantId);
+
+        return $copied;
+    }
+
+    /**
+     * Get available tenants for template copying
+     *
+     * @return array [tenant_id => tenant_name, ...]
+     */
+    public static function getAvailableTemplates(): array
+    {
+        // Directive'leri olan tenant'ları getir
+        $tenantIds = self::query()
+            ->select('tenant_id')
+            ->distinct()
+            ->pluck('tenant_id')
+            ->toArray();
+
+        // Tenant bilgilerini getir (eğer Tenant model varsa)
+        if (class_exists(\App\Models\Tenant::class)) {
+            return \App\Models\Tenant::whereIn('id', $tenantIds)
+                ->pluck('name', 'id')
+                ->toArray();
+        }
+
+        // Tenant model yoksa sadece ID'leri döndür
+        return array_combine($tenantIds, $tenantIds);
     }
 
     /**

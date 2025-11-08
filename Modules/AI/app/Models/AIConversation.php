@@ -18,8 +18,9 @@ use App\Models\Tenant;
  */
 class AIConversation extends Model
 {
-    // Note: No $connection specified = uses default (tenant) connection
-    // This allows shop assistant conversations to be tenant-specific
+    // CRITICAL: AI is a GLOBAL module managed by central (tuufi.com)
+    // All tenant conversations stored in central DB with tenant_id
+    protected $connection = 'mysql'; // Force central DB connection
     protected $table = 'ai_conversations';
 
     protected $fillable = [

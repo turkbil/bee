@@ -15,7 +15,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class AIMessage extends Model
 {
-    // Note: No $connection specified = uses default (tenant) connection
+    // CRITICAL: AI is a GLOBAL module managed by central (tuufi.com)
+    // All messages stored in central DB (conversation already has tenant_id)
+    protected $connection = 'mysql'; // Force central DB connection
     protected $table = 'ai_messages';
 
     protected $fillable = [

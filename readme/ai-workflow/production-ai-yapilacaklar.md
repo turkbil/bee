@@ -179,6 +179,66 @@ git log -1 --stat
 
 ---
 
+## 🗄️ ADIM 2.5: DATABASE MIGRATION (Opsiyonel - Kontrol Et)
+
+**⚠️ ÖNEMLİ:** Bu adım SADECE migration pending ise gerekli!
+
+### 2.5.1. Migration Status Kontrolü
+
+```bash
+# Migration durumunu kontrol et
+php artisan migrate:status | grep "ai_conversations"
+
+# Beklenen çıktılar:
+# Senaryo 1: [XX] Ran → ATLA, ADIM 3'e geç
+# Senaryo 2: Pending → Devam et
+```
+
+### 2.5.2. Pending Migration'ı Çalıştır (Eğer Varsa)
+
+```bash
+# Önce test et (dry-run)
+php artisan migrate --pretend
+
+# Sorun yoksa çalıştır
+php artisan migrate
+
+# Beklenen çıktı:
+# Migrating: 2024_11_04_120002_create_ai_conversations_table
+# Migrated:  2024_11_04_120002_create_ai_conversations_table (XX ms)
+```
+
+### 2.5.3. Doğrulama
+
+```bash
+# Migration başarılı mı?
+php artisan migrate:status | grep "ai_conversations"
+# Beklenen: [XX] Ran
+
+# Tablo mevcut mu?
+php artisan tinker
+>>> \Schema::hasTable('ai_conversations');
+// Beklenen: true
+>>> exit
+```
+
+### 2.5.4. Tenant Migration (Eğer Gerekiyorsa)
+
+```bash
+# Tenant database'lerde de migration çalıştır
+php artisan tenants:migrate
+
+# Veya spesifik tenant için
+php artisan tenants:migrate --tenants=2
+```
+
+**📖 Detaylı SQL Kılavuzu:**
+`readme/ai-workflow/deployment-sql-v2.3.md` dosyasına bak!
+
+**⚠️ NOT:** Bu deployment'ta database yapısı değişmedi. Migration çalıştırmana gerek olmayabilir.
+
+---
+
 ## 🔧 ADIM 3: COMPOSER İŞLEMLERİ
 
 ### 3.1. Autoload Kontrolü

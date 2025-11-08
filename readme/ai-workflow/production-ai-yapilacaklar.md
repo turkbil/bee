@@ -232,10 +232,11 @@ php artisan tenants:migrate
 php artisan tenants:migrate --tenants=2
 ```
 
-**📖 Detaylı SQL Kılavuzu:**
-`readme/ai-workflow/deployment-sql-v2.3.md` dosyasına bak!
+**📖 Detaylı SQL Kılavuzları:**
+- `readme/ai-workflow/deployment-sql-v2.3.md` - Migration & seed data import
+- `readme/ai-workflow/production-eksik-tablolar.md` - Tablo kontrol listesi
 
-**⚠️ NOT:** Bu deployment'ta database yapısı değişmedi. Migration çalıştırmana gerek olmayabilir.
+**⚠️ KRİTİK:** Seed data import ZORUNLU! Tablolar boş olursa sistem çalışmaz.
 
 ---
 

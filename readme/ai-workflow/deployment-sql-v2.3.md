@@ -8,17 +8,21 @@
 
 ## 📋 ÖZET
 
-Bu deployment'ta **MANUEL SQL ÇALIŞTIRMAYA GEREK YOK**.
+Bu deployment'ta **2 ADIM VAR**:
 
-**Sebep:**
-- Model değişiklikleri sadece kod seviyesinde (connection yorumu)
-- Tablo yapısı değişmedi
-- Yeni kolon eklenmedi
-- Mevcut migration'lar zaten mevcut
+1. **Migration Çalıştır** (Eğer pending ise)
+   - Boş tablolar oluşturur
+   - Laravel migration komutuyla
 
-**Yapılacak:**
-- Sadece PENDING migration'ları çalıştır (eğer varsa)
-- Laravel migration komutlarını kullan (manuel SQL değil)
+2. **Seed Data Import Et** (ZORUNLU!)
+   - Local'den export edilmiş gerçek veriler
+   - Tablolara başlangıç verisi ekler
+   - Yoksa sistem çalışmaz!
+
+**Seed Data İçeriği:**
+- `central-ai-data.sql` (4.2KB) → 1 flow + 2 directive
+- `tenant-ai-data.sql` (17KB) → 1 flow + 11 directive
+- Toplam: ~21KB (güvenli, git'e eklenebilir)
 
 ---
 

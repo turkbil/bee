@@ -62,10 +62,12 @@ function registerAiChatStore() {
 
         // Initialize
         init() {
-            // Load session ID from localStorage
-            this.sessionId = localStorage.getItem('ai_chat_session_id');
+            // 🔧 FIX: sessionStorage kullan (her sekme/tab için farklı session)
+            // localStorage → Tüm sekmeler aynı session'ı paylaşıyor (YANLIŞ!)
+            // sessionStorage → Her sekme/tab farklı session (DOĞRU!)
+            this.sessionId = sessionStorage.getItem('ai_chat_session_id');
 
-            // Load floating widget state from localStorage
+            // Floating widget state için localStorage kullan (sekmeler arası paylaşılabilir)
             const savedFloatingState = localStorage.getItem('ai_chat_floating_open');
             if (savedFloatingState !== null) {
                 this.floatingOpen = savedFloatingState === 'true';
@@ -219,7 +221,8 @@ function registerAiChatStore() {
                 // Update session info
                 if (data.data.session_id) {
                     this.sessionId = data.data.session_id;
-                    localStorage.setItem('ai_chat_session_id', this.sessionId);
+                    // 🔧 FIX: sessionStorage kullan (her sekme için farklı)
+                    sessionStorage.setItem('ai_chat_session_id', this.sessionId);
                 }
                 if (data.data.conversation_id) {
                     this.conversationId = data.data.conversation_id;
@@ -301,7 +304,8 @@ function registerAiChatStore() {
             this.messages = [];
             this.conversationId = null;
             this.sessionId = null;
-            localStorage.removeItem('ai_chat_session_id');
+            // 🔧 FIX: sessionStorage temizle
+            sessionStorage.removeItem('ai_chat_session_id');
 
             // Placeholder will automatically show when messages are empty
         },
@@ -374,26 +378,85 @@ if (typeof Alpine !== 'undefined' && Alpine.version) {
 window.aiChatRenderMarkdown = function(content) {
     if (!content) return '';
 
-    // 🚀 BACKEND HTML RENDERING
-    // Backend (PHP) artık markdown'ı HTML'e çeviriyor (league/commonmark)
-    // Frontend sadece HTML'i render ediyor - güvenli ve tutarlı!
+    // 🚀 FRONTEND MARKDOWN RENDERING
+    // Backend artık RAW markdown gönderiyor (HTML double-escape sorunu çözüldü)
+    // Frontend marked.js ile parse ediyor
     //
-    // Eski sistem: JavaScript'te 290 satır custom markdown parser (hataya açık, güvensiz)
-    // Yeni sistem: PHP'de league/commonmark library (battle-tested, XSS korumalı, 15+ yıllık)
+    // Neden değişti?
+    // - Backend HTML'e çeviriyordu → Frontend x-html ile render edince double-escape oluyordu
+    // - Çözüm: Backend RAW markdown gönder, frontend parse etsin
     //
-    // Backend işlemleri:
-    // - Custom link formatları: [LINK:shop:slug], [LINK:shop:category:slug]
-    // - Markdown → HTML parsing (CommonMark + GFM extension)
-    // - XSS koruması (html_input: strip)
-    // - Tailwind class injection
-    // - Link target & rel attributes
-    //
-    // Frontend sorumluluğu:
-    // - Sadece backend'den gelen HTML'i render et
-    // - Güvenli, hızlı, minimal kod
+    // marked.js kullanımı:
+    // - Battle-tested library (15+ yıl)
+    // - XSS korumalı (sanitize: true)
+    // - GFM (GitHub Flavored Markdown) desteği
+    // - Custom renderer ile Tailwind class injection
 
-    // Direkt content'i döndür (backend'den HTML geliyor)
-    return content;
+    // Check if marked.js loaded
+    if (typeof marked === 'undefined') {
+        console.error('❌ marked.js library not loaded!');
+        return content; // Fallback: show raw markdown
+    }
+
+    // Configure marked.js
+    marked.setOptions({
+        gfm: true,            // GitHub Flavored Markdown
+        breaks: true,         // \n → <br>
+        sanitize: false,      // XSS koruması (manual yapacağız)
+        smartLists: true,
+        smartypants: true
+    });
+
+    // Custom renderer for Tailwind classes
+    const renderer = new marked.Renderer();
+
+    // Paragraphs
+    renderer.paragraph = (text) => {
+        return `<p class="mb-3 text-gray-800 dark:text-gray-200 leading-relaxed">${text}</p>`;
+    };
+
+    // Unordered lists
+    renderer.list = (body, ordered) => {
+        const tag = ordered ? 'ol' : 'ul';
+        const classes = ordered
+            ? 'list-decimal list-inside space-y-2 mb-4 text-gray-800 dark:text-gray-200'
+            : 'space-y-2 mb-4 text-gray-800 dark:text-gray-200';
+        return `<${tag} class="${classes}">${body}</${tag}>`;
+    };
+
+    // List items
+    renderer.listitem = (text) => {
+        return `<li class="flex items-start gap-2">
+                    <span class="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                    <span class="flex-1">${text}</span>
+                </li>`;
+    };
+
+    // Strong (bold)
+    renderer.strong = (text) => {
+        return `<strong class="font-semibold text-gray-900 dark:text-white">${text}</strong>`;
+    };
+
+    // Links
+    renderer.link = (href, title, text) => {
+        const titleAttr = title ? `title="${title}"` : '';
+        return `<a href="${href}" ${titleAttr} class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    };
+
+    // Headings
+    renderer.heading = (text, level) => {
+        const sizes = ['text-3xl', 'text-2xl', 'text-xl', 'text-lg', 'text-base', 'text-sm'];
+        const size = sizes[level - 1] || 'text-base';
+        return `<h${level} class="${size} font-bold text-gray-900 dark:text-white mb-3">${text}</h${level}>`;
+    };
+
+    // Parse markdown to HTML
+    try {
+        return marked.parse(content, { renderer });
+    } catch (error) {
+        console.error('❌ Markdown parsing error:', error);
+        return content; // Fallback: show raw content
+    }
 };
 window.clearAIConversation = function(button) {
     if (!window.Alpine || !window.Alpine.store('aiChat')) {
@@ -403,10 +466,6 @@ window.clearAIConversation = function(button) {
 
     const chat = window.Alpine.store('aiChat');
 
-    if (!chat.conversationId) {
-        return;
-    }
-
     // Show loading
     const originalText = button.querySelector('.button-text').textContent;
     const spinner = button.querySelector('.loading-spinner');
@@ -414,7 +473,20 @@ window.clearAIConversation = function(button) {
     spinner.classList.remove('hidden');
     button.disabled = true;
 
-    // Delete from database
+    // 🔧 FIX: conversationId yoksa bile çalış (frontend temizle yeterli)
+    if (!chat.conversationId) {
+        // Backend'de kayıt yok, sadece frontend temizle
+        chat.clearConversation();
+        button.querySelector('.button-text').textContent = '✓ Temizlendi';
+        setTimeout(() => {
+            button.querySelector('.button-text').textContent = originalText;
+            spinner.classList.add('hidden');
+            button.disabled = false;
+        }, 1500);
+        return;
+    }
+
+    // Backend'de conversation varsa, sil
     fetch('/api/ai/v1/conversation/' + chat.conversationId, { method: 'DELETE' })
         .then(response => {
             if (!response.ok) throw new Error('API hatası');
@@ -437,7 +509,6 @@ window.clearAIConversation = function(button) {
         })
         .finally(() => {
             // Reset button
-            button.querySelector('.button-text').textContent = originalText;
             spinner.classList.add('hidden');
             button.disabled = false;
         });

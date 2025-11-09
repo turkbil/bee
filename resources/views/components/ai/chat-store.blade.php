@@ -28,6 +28,8 @@
         $jsVersion = file_exists($aiChatJsPath) ? filemtime($aiChatJsPath) : time();
     @endphp
     <link rel="stylesheet" href="{{ asset('assets/css/ai-chat.css') }}?v={{ $cssVersion }}" media="all">
+    {{-- marked.js: Markdown parser for frontend rendering --}}
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/lib/marked.umd.min.js"></script>
     {{-- DEFER KALDIRILDI: Alpine:init event'inde çalıştığı için sorun yok, ama defer timing problemlerine yol açıyordu --}}
     <script src="{{ asset('assets/js/ai-chat.js') }}?v={{ $jsVersion }}"></script>
 @endonce

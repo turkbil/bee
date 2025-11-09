@@ -491,12 +491,14 @@ class AISettingsHelper
      * ⭐ Sadece is_active=true olanlar döner
      * ⭐ Sort order'a göre sıralanır
      * ⭐ Database'den okunur (tenant-specific)
+     * ⭐ AI Module'ün tenant_knowledge_base tablosunu kullanır
      */
     public static function getKnowledgeBase(): array
     {
         try {
-            $items = \Modules\SettingManagement\App\Models\AIKnowledgeBase::active()
-                ->ordered()
+            $items = \Modules\AI\App\Models\KnowledgeBase::where('is_active', true)
+                ->orderBy('sort_order', 'asc')
+                ->orderBy('id', 'asc')
                 ->get()
                 ->map(function ($item) {
                     return [
@@ -504,7 +506,6 @@ class AISettingsHelper
                         'category' => $item->category,
                         'question' => $item->question,
                         'answer' => $item->answer,
-                        'metadata' => $item->metadata,
                         'is_active' => $item->is_active,
                         'sort_order' => $item->sort_order,
                     ];
@@ -591,5 +592,72 @@ class AISettingsHelper
         }
 
         return null;
+    }
+
+    /**
+     * Get tenant directive from database
+     *
+     * @param string $key Directive key
+     * @param int|null $tenantId Tenant ID (null = current tenant)
+     * @param mixed $default Default value if not found
+     * @return mixed Directive value (parsed based on directive_type)
+     */
+    public static function getDirective(string $key, ?int $tenantId = null, mixed $default = null): mixed
+    {
+        $tenantId = $tenantId ?? tenant('id');
+
+        $directive = \DB::table('ai_tenant_directives')
+            ->where('tenant_id', $tenantId)
+            ->where('directive_key', $key)
+            ->first();
+
+        if (!$directive) {
+            return $default;
+        }
+
+        // Parse based on type
+        return match ($directive->directive_type) {
+            'json' => json_decode($directive->directive_value, true),
+            'boolean' => (bool) $directive->directive_value,
+            'integer' => (int) $directive->directive_value,
+            'float' => (float) $directive->directive_value,
+            default => $directive->directive_value, // string
+        };
+    }
+
+    /**
+     * Get all directives for a tenant by category
+     *
+     * @param string|null $category Filter by category (null = all)
+     * @param int|null $tenantId Tenant ID (null = current tenant)
+     * @return array Directives grouped by key
+     */
+    public static function getDirectivesByCategory(?string $category = null, ?int $tenantId = null): array
+    {
+        $tenantId = $tenantId ?? tenant('id');
+
+        $query = \DB::table('ai_tenant_directives')
+            ->where('tenant_id', $tenantId);
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        $directives = $query->get();
+
+        $result = [];
+        foreach ($directives as $directive) {
+            $value = match ($directive->directive_type) {
+                'json' => json_decode($directive->directive_value, true),
+                'boolean' => (bool) $directive->directive_value,
+                'integer' => (int) $directive->directive_value,
+                'float' => (float) $directive->directive_value,
+                default => $directive->directive_value,
+            };
+
+            $result[$directive->directive_key] = $value;
+        }
+
+        return $result;
     }
 }

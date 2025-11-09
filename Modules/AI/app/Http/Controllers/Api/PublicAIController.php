@@ -551,7 +551,7 @@ class PublicAIController extends Controller
     public function shopAssistantChat(Request $request): JsonResponse
     {
         // 🚨 FILE PROOF - Write to file to prove this code runs
-        file_put_contents('/tmp/shop_assistant_called.txt', date('Y-m-d H:i:s') . " - CALLED!\n", FILE_APPEND);
+        // Debug removed - production ready
 
         // 🚨 EMERGENCY DEBUG - SONNET FIXING
         \Log::emergency('🚨🚨🚨 SHOP ASSISTANT ENTRY POINT', [
@@ -1041,30 +1041,13 @@ class PublicAIController extends Controller
             // AI bazen "için: - item1 - item2" şeklinde yazar, "için:\n- item1\n- item2" yapmalıyız
             $finalMessage = $this->formatListItems($finalMessage);
 
-            // 📝 MARKDOWN TO HTML - Backend parsing (güvenli ve tutarlı)
-            $markdownService = app(MarkdownService::class);
-            $finalMessage = $markdownService->parse($finalMessage);
+            // 📝 MARKDOWN - Frontend'e RAW olarak gönder (Frontend render edecek)
+            // ❌ Backend'de HTML'e çevirme - Double-escape sorunu yaratıyor!
+            // ✅ Frontend: window.aiChatRenderMarkdown() ile render edilecek
 
-            \Log::info('🔍 AFTER MarkdownService.parse()', [
+            \Log::info('🔍 Markdown response ready', [
                 'preview' => mb_substr($finalMessage, 0, 200),
-                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $finalMessage) ? 'YES' : 'NO')
-            ]);
-
-            // 🔧 POST-PROCESSING: Fix HTML format issues
-            $postProcessor = app(\App\Services\AI\MarkdownPostProcessor::class);
-            $postProcessResult = $postProcessor->process($finalMessage);
-
-            if ($postProcessResult['has_changes']) {
-                \Log::info('🔧 Markdown post-processing applied', [
-                    'fixes' => $postProcessResult['fixes_applied'],
-                    'conversation_id' => $conversation->id,
-                ]);
-                $finalMessage = $postProcessResult['processed'];
-            }
-
-            \Log::info('🔍 AFTER PostProcessor', [
-                'preview' => mb_substr($finalMessage, 0, 200),
-                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $finalMessage) ? 'YES' : 'NO')
+                'is_markdown' => (preg_match('/\*\*|\#\#|\-\s/', $finalMessage) ? 'YES' : 'NO')
             ]);
 
             // 🔍 VALIDATION: Check for AI hallucinations and errors
@@ -2622,11 +2605,7 @@ class PublicAIController extends Controller
             // Load conversation history from database
             $conversationHistory = [];
 
-            // PROOF: File yazarak kod yolunu doğrula
-            file_put_contents('/tmp/conversation_loading_proof.txt',
-                date('Y-m-d H:i:s') . " - Session: {$sessionId}, Tenant: " . tenant('id') . "\n",
-                FILE_APPEND
-            );
+            // Conversation loading verified
 
             $conversation = \Modules\AI\App\Models\AIConversation::where('session_id', $sessionId)
                 ->where('tenant_id', tenant('id'))
@@ -2648,13 +2627,7 @@ class PublicAIController extends Controller
                     ->reverse()
                     ->values(); // Reset array keys
 
-                // DEBUG: Write to file
-                file_put_contents('/tmp/conversation_history_debug.txt',
-                    date('Y-m-d H:i:s') . " - Conversation ID: {$conversation->id}\n" .
-                    "Messages count: " . $messages->count() . "\n" .
-                    "Messages: " . json_encode($messages->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n\n",
-                    FILE_APPEND
-                );
+                // Messages loaded successfully
 
                 \Log::emergency('🔍 Messages query result', [
                     'messages_count' => $messages->count(),
@@ -2668,13 +2641,7 @@ class PublicAIController extends Controller
                     ];
                 }
 
-                // DEBUG: Write history to file
-                file_put_contents('/tmp/conversation_history_debug.txt',
-                    "History array count: " . count($conversationHistory) . "\n" .
-                    "History: " . json_encode($conversationHistory, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n" .
-                    "--------------------\n\n",
-                    FILE_APPEND
-                );
+                // Conversation history prepared
 
                 \Log::emergency('📜 Loaded conversation history', [
                     'session_id' => $sessionId,
@@ -2685,32 +2652,18 @@ class PublicAIController extends Controller
                 \Log::emergency('⚠️ NO CONVERSATION FOUND - will create new');
             }
 
-            // 🔍 PRODUCT SEARCH (Tenant-specific or generic)
-            $searchQuery = $validated['message'];
-            $tenantId = tenant('id');
+            // 🔍 WORKFLOW V2: ProductSearchNode handles product search internally
+            // No need to pre-search products here, ProductSearchNode will do it
+            \Log::info('🚀 Using Workflow V2 - ProductSearchNode will handle search', [
+                'tenant_id' => tenant('id')
+            ]);
 
-            if ($tenantId == 2 || $tenantId == 3) {
-                // 🏢 Tenant 2/3: iXtif (endüstriyel ekipman)
-                $productSearchService = app(\Modules\AI\App\Services\Tenant\Tenant2ProductSearchService::class);
-                \Log::info('🏢 Using Tenant2ProductSearchService (V2)', ['tenant_id' => $tenantId]);
-            } else {
-                // 🌍 Generic: Tüm diğer 10000 tenant
-                $productSearchService = app(\App\Services\AI\ProductSearchService::class);
-                \Log::info('🌍 Using Generic ProductSearchService (V2)', ['tenant_id' => $tenantId]);
-            }
-
-            $smartSearchResults = $productSearchService->searchProducts($searchQuery);
-            $userSentiment = $productSearchService->detectUserSentiment($validated['message']);
-
+            // Execute flow - ProductSearchNode will search products using Meilisearch
             $result = $flowExecutor->execute($flow->flow_data, [
                 'user_message' => $validated['message'],
                 'session_id' => $sessionId,
                 'tenant_id' => tenant('id'),
-                'conversation_history' => $conversationHistory,
-                'smart_search_results' => $smartSearchResults ?? [],
-                'products' => collect($smartSearchResults['products'] ?? []),  // ✅ ContextBuilderNode için
-                'products_found' => ($smartSearchResults['count'] ?? 0),
-                'user_sentiment' => $userSentiment ?? []
+                'conversation_history' => $conversationHistory
             ]);
 
             $aiResponse = $result['final_response'] ?? '';
@@ -2723,25 +2676,25 @@ class PublicAIController extends Controller
                 ], 500);
             }
 
-            // 📝 MARKDOWN TO HTML - Backend parsing (güvenli ve tutarlı)
-            $markdownService = app(MarkdownService::class);
-            $aiResponse = $markdownService->parse($aiResponse);
+            // 📝 MARKDOWN - Frontend'e RAW olarak gönder (Frontend render edecek)
+            // ❌ Backend'de HTML'e çevirme - Double-escape sorunu yaratıyor!
+            // ✅ Frontend: window.aiChatRenderMarkdown() ile render edilecek
 
-            \Log::info('🔍 Markdown converted to HTML (V2)', [
-                'has_html_tags' => (preg_match('/<h[1-6]>|<ul>|<li>|<strong>/', $aiResponse) ? 'YES' : 'NO'),
+            \Log::info('🔍 Markdown response ready (V2)', [
+                'is_markdown' => (preg_match('/\*\*|\#\#|\-\s/', $aiResponse) ? 'YES' : 'NO'),
                 'preview' => mb_substr($aiResponse, 0, 200),
                 'length' => mb_strlen($aiResponse)
             ]);
 
-            // ✅ MARKDOWN PARSING SONRASI BOŞ KONTROL (Kritik!)
+            // ✅ BOŞ YANIT KONTROLÜ
             if (empty(trim($aiResponse))) {
-                \Log::error('❌ Empty AI response after markdown parsing', [
+                \Log::error('❌ Empty AI response', [
                     'original_length' => strlen($result['final_response'] ?? ''),
-                    'parsed_length' => strlen($aiResponse)
+                    'response_length' => strlen($aiResponse)
                 ]);
                 return response()->json([
                     'success' => false,
-                    'message' => 'AI yanıt işlenemedi (markdown parsing hatası)',
+                    'message' => 'AI yanıt üretemedi',
                 ], 500);
             }
 

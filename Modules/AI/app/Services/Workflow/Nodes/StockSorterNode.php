@@ -9,15 +9,11 @@ class StockSorterNode extends BaseNode
     /**
      * 🎯 Profesyonel Ürün Sıralama Sistemi
      *
-     * Felsefe: "Müşteriye en alakalı, satın alabileceği, kaliteli ürünleri önce göster"
-     *
      * Sıralama Kriterleri (Önem Sırasına Göre):
-     * 1. 🥇 Satın Alınabilirlik: Fiyatı olan ürünler önce (price_on_request = false)
-     * 2. 🥈 Vitrin Ürünleri: Homepage'de gösterilen ürünler önce (homepage = 1)
-     * 3. 🥉 Vitrin Sırası: Homepage sort order (homepage_sort_order ASC)
-     * 4. 🏆 Stok Durumu: Stokta olan ürünler önce (current_stock > 0)
-     * 5. 🎨 Kategori Sırası: Sort order (sort_order ASC)
-     * 6. 💰 Fiyat: En ucuz önce (base_price ASC)
+     * 1. 🥇 Vitrin Ürünleri: Homepage'de gösterilen ürünler önce (homepage = 1)
+     * 2. 🥈 Stok Durumu: Stokta olan ürünler önce (current_stock > 0)
+     * 3. 🥉 Kategori Sırası: Sort order (sort_order ASC)
+     * 4. 💰 Fiyat: Fiyatlı ürünler önce, sonra en ucuzdan pahalıya (base_price ASC)
      */
     public function execute(array $context): array
     {
@@ -38,9 +34,10 @@ class StockSorterNode extends BaseNode
         }
 
         // 2. Profesyonel sıralama uygula
+        // Sıralama: Homepage > Stok > Kategori Sorting > Fiyat (en ucuz)
         if ($products->isNotEmpty()) {
             $products = $products->sort(function($a, $b) {
-                // 🥇 1. Öncelik: Vitrin Ürünleri (Homepage = 1 olanlar önce)
+                // 🥇 1. ÖNCE: Vitrin Ürünleri (Homepage = 1 olanlar önce)
                 $aHomepage = $a->homepage ?? 0;
                 $bHomepage = $b->homepage ?? 0;
 
@@ -48,15 +45,15 @@ class StockSorterNode extends BaseNode
                     return $bHomepage <=> $aHomepage; // 1 önce, 0 sonra
                 }
 
-                // 🥈 2. Öncelik: Stok Durumu (Stokta olan önce)
+                // 🥈 2. SONRA: Stok Durumu (Stokta olan önce)
                 $aInStock = ($a->current_stock ?? 0) > 0;
                 $bInStock = ($b->current_stock ?? 0) > 0;
 
                 if ($aInStock !== $bInStock) {
-                    return $bInStock <=> $aInStock; // true (in stock) önce
+                    return $bInStock <=> $aInStock; // Stokta olan önce
                 }
 
-                // 🥉 3. Öncelik: Kategori İçi Sıra (Sort Order)
+                // 🥉 3. Kategori İçi Sıra (Sort Order)
                 $aSortOrder = $a->sort_order ?? 9999;
                 $bSortOrder = $b->sort_order ?? 9999;
 
@@ -64,24 +61,24 @@ class StockSorterNode extends BaseNode
                     return $aSortOrder <=> $bSortOrder; // Küçük sayı önce
                 }
 
-                // 💰 4. Öncelik: Fiyat (En ucuz önce)
-                // ⚠️ KRİTİK: Fiyat=0 olan ürünler en sona atılır
+                // 💰 4. Fiyat (En ucuz önce - fiyatlı ürünler için)
                 $aPrice = $a->base_price ?? 0;
                 $bPrice = $b->base_price ?? 0;
 
-                // Fiyat=0 kontrolü
-                if ($aPrice == 0 && $bPrice > 0) {
-                    return 1; // a (fiyatsız) sonra
-                }
-                if ($aPrice > 0 && $bPrice == 0) {
-                    return -1; // b (fiyatsız) sonra
-                }
-                if ($aPrice == 0 && $bPrice == 0) {
-                    return 0; // İkisi de fiyatsız, eşit
+                // İkisi de fiyatlı → en ucuz önce
+                if ($aPrice > 0 && $bPrice > 0) {
+                    return $aPrice <=> $bPrice;
                 }
 
-                // Her ikisi de fiyatlı → en ucuz önce
-                return $aPrice <=> $bPrice;
+                // Biri fiyatlı biri değil → fiyatlı önce
+                if ($aPrice > 0 && $bPrice == 0) {
+                    return -1;
+                }
+                if ($aPrice == 0 && $bPrice > 0) {
+                    return 1;
+                }
+
+                return 0; // Eşit
             })->values(); // Re-index array
         }
 

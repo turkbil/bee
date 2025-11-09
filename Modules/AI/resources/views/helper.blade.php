@@ -65,13 +65,6 @@
                             </a>
                             @endhasmoduleaccess
 
-                            @hasmoduleaccess('ai', 'view')
-                            <a class="dropdown-item" href="{{ route('admin.ai.knowledge-base') }}">
-                                <i class="ti ti-brain me-1"></i>
-                                Bilgi Bankası
-                            </a>
-                            @endhasmoduleaccess
-
                             {{-- Profil ve Ayarlar --}}
                             <h6 class="dropdown-menu-header card-header-light">
                                 <span class="dropdown-header">{{ __('ai::admin.profile_settings') }}</span>
@@ -137,6 +130,13 @@
                             <a class="dropdown-item" href="{{ route('admin.ai.workflow.directives.index') }}">
                                 <i class="fa fa-cogs me-1"></i>
                                 {{ __('ai::admin.workflow.directives_title') }}
+                            </a>
+                            @endhasmoduleaccess
+
+                            @hasmoduleaccess('ai', 'view')
+                            <a class="dropdown-item" href="{{ route('admin.ai.knowledge-base') }}">
+                                <i class="ti ti-brain me-1"></i>
+                                Bilgi Bankası
                             </a>
                             @endhasmoduleaccess
 

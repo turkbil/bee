@@ -84,11 +84,17 @@ class ContextBuilderNode extends BaseNode
             // ✅ TEMİZ SUNUM - İkon yok, hardcode yok, stok bilgisi yok
             $productContext .= "### {$title}\n";
 
-            // Fiyat (USD ise TL karşılığı göster)
-            if ($originalPrice) {
-                $productContext .= "- **{$price} {$currencySymbol}** ≈ {$originalPrice}\n";
+            // Fiyat kontrolü - fiyatsız ürünler için özel mesaj
+            if ($basePrice > 0) {
+                // Fiyatlı ürün
+                if ($originalPrice) {
+                    $productContext .= "- **{$price} {$currencySymbol}** ≈ {$originalPrice}\n";
+                } else {
+                    $productContext .= "- **{$price} {$currencySymbol}**\n";
+                }
             } else {
-                $productContext .= "- **{$price} {$currencySymbol}**\n";
+                // Fiyatsız ürün - iletişim bilgilerini göster
+                $productContext .= "- 📞 **Fiyat için iletişime geçin**\n";
             }
 
             // ✅ STOK BİLGİSİ KALDIRILDI

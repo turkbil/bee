@@ -347,7 +347,7 @@ class="fixed {{ $selectedPosition }} z-50">
                     <div class="grid grid-cols-2 gap-2">
                         {{-- Transpalet --}}
                         <button
-                            @click="message = 'Merhaba, transpalet için bilgi alabilir miyim?'; submitMessage();"
+                            @click="message = 'Transpalet modelleri hakkında bilgi almak istiyorum'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
                         >
                             <i class="fas fa-dolly text-lg text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300"></i>
@@ -356,7 +356,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
                         {{-- Forklift --}}
                         <button
-                            @click="message = 'Merhaba, forklift modelleri hakkında bilgi almak istiyorum'; submitMessage();"
+                            @click="message = 'Forklift modelleri ve özellikleri hakkında bilgi almak istiyorum'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
                         >
                             <i class="fas fa-forklift text-lg text-orange-600 dark:text-orange-400 group-hover:text-orange-700 dark:group-hover:text-orange-300"></i>
@@ -365,7 +365,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
                         {{-- İstif Makinesi --}}
                         <button
-                            @click="message = 'Merhaba, istif makinesi seçenekleriniz nelerdir?'; submitMessage();"
+                            @click="message = 'İstif makinesi seçenekleri ve özellikleri nelerdir?'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
                         >
                             <i class="fas fa-boxes-stacked text-lg text-green-600 dark:text-green-400 group-hover:text-green-700 dark:group-hover:text-green-300"></i>
@@ -374,7 +374,7 @@ class="fixed {{ $selectedPosition }} z-50">
 
                         {{-- Reach Truck --}}
                         <button
-                            @click="message = 'Merhaba, reach truck konusunda yardımcı olabilir misiniz?'; submitMessage();"
+                            @click="message = 'Reach truck modelleri hakkında bilgi alabilir miyim?'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
                         >
                             <i class="fas fa-warehouse text-lg text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300"></i>
@@ -383,20 +383,38 @@ class="fixed {{ $selectedPosition }} z-50">
 
                         {{-- Yedek Parça --}}
                         <button
-                            @click="message = 'Merhaba, yedek parça fiyatlarını öğrenebilir miyim?'; submitMessage();"
+                            @click="message = 'Yedek parça hizmetleriniz hakkında bilgi alabilir miyim?'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
                         >
                             <i class="fas fa-screwdriver-wrench text-lg text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300"></i>
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Yedek Parça</span>
                         </button>
 
-                        {{-- Merhaba / Sohbet Başlat --}}
+                        {{-- Teknik Servis --}}
                         <button
-                            @click="message = 'Merhaba, nasılsınız?'; submitMessage();"
+                            @click="message = 'Teknik servis hizmetleriniz hakkında bilgi almak istiyorum'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-wrench text-lg text-yellow-600 dark:text-yellow-400 group-hover:text-yellow-700 dark:group-hover:text-yellow-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Teknik Servis</span>
+                        </button>
+
+                        {{-- Kiralama --}}
+                        <button
+                            @click="message = 'Kiralama seçenekleri ve şartları hakkında bilgi alabilir miyim?'; submitMessage();"
+                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                        >
+                            <i class="fas fa-calendar-check text-lg text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300"></i>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Kiralama</span>
+                        </button>
+
+                        {{-- İletişim --}}
+                        <button
+                            @click="message = 'İletişim bilgilerinizi ve çalışma saatlerinizi öğrenebilir miyim?'; submitMessage();"
                             class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 hover:shadow-md"
                         >
-                            <i class="fas fa-comment-dots text-lg"></i>
-                            <span class="text-sm font-medium">Merhaba</span>
+                            <i class="fas fa-phone text-lg"></i>
+                            <span class="text-sm font-medium">İletişim</span>
                         </button>
                     </div>
                 </div>

@@ -17,27 +17,18 @@ use Illuminate\Support\Facades\Log;
 class AIResponseNode extends BaseNode
 {
     /**
-     * Get directive value from database (tenant-specific)
+     * Get directive value from database (tenant-specific with global fallback)
      */
     protected function getDirectiveValue(string $key, string $type, $default)
     {
         try {
-            $directive = \App\Models\AITenantDirective::where('tenant_id', tenant('id'))
-                ->where('directive_key', $key)
-                ->where('is_active', true)
-                ->first();
+            // Use SimpleDirectiveService for global fallback support
+            $directiveService = new \App\Services\AI\SimpleDirectiveService();
+            $value = $directiveService->getDirective($key, tenant('id'), $default);
 
-            if ($directive) {
-                $value = $directive->directive_value;
+            // Value is already parsed by service, return directly
+            return $value;
 
-                // Type casting
-                return match($type) {
-                    'integer' => (int) $value,
-                    'boolean' => (bool) $value,
-                    'float', 'string' => (float) $value,
-                    default => $value
-                };
-            }
         } catch (\Exception $e) {
             \Log::warning("Could not load directive: {$key}", ['error' => $e->getMessage()]);
         }
@@ -47,15 +38,6 @@ class AIResponseNode extends BaseNode
 
     public function execute(array $context): array
     {
-        // DEBUG FILE: Dosyaya yaz ki kesinlikle görelim
-        file_put_contents('/tmp/ai_response_node_debug.txt',
-            date('Y-m-d H:i:s') . " - AIResponseNode EXECUTED\n" .
-            "Context keys: " . implode(', ', array_keys($context)) . "\n" .
-            "products_found: " . ($context['products_found'] ?? 'NULL') . "\n" .
-            "has_product_context: " . (isset($context['product_context']) ? 'YES' : 'NO') . "\n\n",
-            FILE_APPEND
-        );
-
         // Load system prompt from directives first, fallback to flow config
         $systemPrompt = $this->getDirectiveValue(
             'chatbot_system_prompt',

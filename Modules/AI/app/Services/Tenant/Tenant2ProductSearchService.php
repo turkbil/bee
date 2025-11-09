@@ -37,13 +37,131 @@ class Tenant2ProductSearchService
         $this->hybridSearch = $hybridSearch;
     }
 
+    /**
+     * WORKFLOW V2: Search method for ProductSearchNode
+     *
+     * @param string $userMessage User's search query
+     * @param int $limit Result limit
+     * @param int|null $categoryId Optional category filter
+     * @return array ['products' => Collection, 'products_found' => int, 'detected_category' => int|null]
+     */
+    public function search(string $userMessage, int $limit = 50, ?int $categoryId = null): array
+    {
+        // Extract keywords and detect category
+        $keywords = $this->extractKeywords($userMessage);
+        $detectedCategory = $categoryId ?? $this->detectCategoryId($userMessage);
+
+        Log::info('🏢 Tenant2: Product search', [
+            'keywords' => $keywords,
+            'detected_category' => $detectedCategory,
+            'limit' => $limit
+        ]);
+
+        if (empty($keywords)) {
+            return [
+                'products' => collect(),
+                'products_found' => 0,
+                'detected_category' => $detectedCategory
+            ];
+        }
+
+        // Search with Meilisearch + category filter
+        $searchQuery = implode(' ', $keywords);
+        $search = ShopProduct::search($searchQuery);
+
+        if ($detectedCategory) {
+            $search->where('category_id', $detectedCategory);
+        }
+
+        $products = $search->take($limit)->get();
+
+        Log::info('✅ Tenant2: Products found', [
+            'count' => $products->count(),
+            'category_filtered' => $detectedCategory ? 'YES' : 'NO'
+        ]);
+
+        return [
+            'products' => $products,
+            'products_found' => $products->count(),
+            'detected_category' => $detectedCategory
+        ];
+    }
+
+    /**
+     * Extract keywords from user message (TENANT 2 specific)
+     */
+    protected function extractKeywords(string $message): array
+    {
+        $keywords = [];
+        $message = mb_strtolower($message);
+
+        // Product type keywords - TENANT 2 (iXtif) specific
+        $productTypes = [
+            'transpalet', 'forklift', 'istif', 'istif makinesi',
+            'akülü', 'elektrikli', 'manuel', 'palet', 'platform',
+            'kaldırıcı', 'yük', 'depo', 'lojistik', 'taşıyıcı',
+            'makine', 'makina', 'ekipman', 'araç',
+            'order picker', 'reach truck', 'otonom',
+            'cpd', 'ept', 'epl', 'efl', 'tdl'  // Model prefixes
+        ];
+
+        foreach ($productTypes as $type) {
+            if (str_contains($message, $type)) {
+                $keywords[] = $type;
+            }
+        }
+
+        return array_unique($keywords);
+    }
+
+    /**
+     * Detect category ID from user message (TENANT 2 specific - iXtif categories)
+     */
+    protected function detectCategoryId(string $message): ?int
+    {
+        $message = mb_strtolower($message);
+
+        // Category mapping - TENANT 2 (iXtif) specific
+        $categoryMap = [
+            'forklift' => 1,
+            'transpalet' => 2,
+            'palet' => 2,
+            'istif' => 3,
+            'istif makinesi' => 3,
+            'order picker' => 4,
+            'sipariş toplama' => 4,
+            'otonom' => 5,
+            'reach truck' => 6,
+        ];
+
+        // Find category by keyword (longest match first)
+        $detectedCategory = null;
+        $longestMatch = 0;
+
+        foreach ($categoryMap as $keyword => $categoryId) {
+            if (str_contains($message, $keyword) && strlen($keyword) > $longestMatch) {
+                $detectedCategory = $categoryId;
+                $longestMatch = strlen($keyword);
+            }
+        }
+
+        if ($detectedCategory) {
+            Log::info('🎯 Tenant2: Category detected', [
+                'keyword_match' => array_search($detectedCategory, $categoryMap),
+                'category_id' => $detectedCategory
+            ]);
+        }
+
+        return $detectedCategory;
+    }
+
     // Ana kategori keyword'leri (priority HIGH)
     protected array $mainCategoryKeywords = [
         'forklift' => ['forklift', 'forklifts', 'akülü forklift', 'elektrikli forklift'],
         'transpalet' => ['transpalet', 'pallet truck', 'transpalet modeli', 'transpalet çeşitleri'],
         'istif-makinesi' => ['istif makinesi', 'istif', 'stacker', 'yük istif'],
         'reach-truck' => ['reach truck', 'reach', 'dar koridor', 'yüksek raf'],
-        'siparis-toplama' => ['sipariş toplama', 'order picker', 'picking', 'komis yonlama'],
+        'siparis-toplama' => ['sipariş toplama', 'order picker', 'picking', 'komisyonlama'],
         'otonom' => ['otonom', 'autonomous', 'agv', 'otomatik', 'robot'],
     ];
 

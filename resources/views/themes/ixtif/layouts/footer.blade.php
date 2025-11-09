@@ -468,7 +468,10 @@
 {{-- Livewire Scripts --}}
 @livewireScripts
 
-{{-- AI Chat JS - MUST load AFTER Livewire/Alpine.js --}}
+{{-- marked.js: Markdown parser for AI Chat --}}
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/lib/marked.umd.min.js"></script>
+
+{{-- AI Chat JS - MUST load AFTER Livewire/Alpine.js and marked.js --}}
 <script src="/assets/js/ai-chat.js?v=<?php echo time(); ?>"></script>
 
 {{-- Google Tag Manager Event Tracking --}}

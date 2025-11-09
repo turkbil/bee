@@ -272,3 +272,157 @@ class YourComponent implements AIContentGeneratable {
     $result = $this->generateAIContent($params);
 }
 ```
+
+---
+
+# 🏗️ AI WORKFLOW - TENANT YAPISI
+
+## ⚠️ KRİTİK KURAL: Global vs Tenant-Specific Ayrımı
+
+**GLOBAL dosyalarda ASLA tenant-specific kod olmamalı!**
+
+### 📂 Dosya Yapısı
+
+```
+Modules/AI/
+├── app/
+│   ├── Services/
+│   │   ├── Workflow/
+│   │   │   ├── Nodes/              # 🌍 GLOBAL NODE'LAR
+│   │   │   │   ├── ProductSearchNode.php     (tenant service loader)
+│   │   │   │   ├── StockSorterNode.php       (genel sıralama)
+│   │   │   │   ├── ContextBuilderNode.php    (markdown builder)
+│   │   │   │   └── AIResponseNode.php        (AI yanıt)
+│   │   │   │
+│   │   │   └── FlowExecutor.php    # 🌍 GLOBAL executor
+│   │   │
+│   │   └── Tenant/                 # 🏢 TENANT-SPECIFIC SERVİSLER
+│   │       ├── Tenant2ProductSearchService.php     # iXtif.com (ID: 2)
+│   │       ├── Tenant3ProductSearchService.php     # Diğer tenant
+│   │       └── Tenant{X}ProductSearchService.php   # Yeni tenant'lar
+```
+
+### ✅ GLOBAL Dosyalar (Tüm Tenant'lar İçin)
+
+**Konum:** `Modules/AI/app/Services/Workflow/Nodes/`
+
+**Kurallar:**
+- ❌ Hiçbir tenant keyword'ü yok (transpalet, forklift, vb.)
+- ❌ Hiçbir tenant kategori mapping'i yok
+- ❌ Hiçbir tenant business rule yok
+- ✅ Config-driven çalışır
+- ✅ Tenant service'leri kullanır
+
+### 🏢 TENANT-SPECIFIC Dosyalar
+
+**Konum:** `Modules/AI/app/Services/Tenant/`
+
+**Naming Convention:** `Tenant{ID}*.php`
+
+**İçermesi Gerekenler:**
+```php
+// ✅ TENANT SPECIFIC - Keyword mapping
+protected function extractKeywords(string $message): array
+{
+    $productTypes = [
+        'tenant_product_1',
+        'tenant_product_2',
+        // Tenant'a özel keyword'ler
+    ];
+}
+
+// ✅ TENANT SPECIFIC - Category mapping
+protected function detectCategoryId(string $message): ?int
+{
+    $categoryMap = [
+        'keyword1' => 1,  // Tenant kategori ID
+        'keyword2' => 2,  // Tenant kategori ID
+    ];
+}
+
+// ✅ TENANT SPECIFIC - Search logic
+public function search(string $userMessage, int $limit, ?int $categoryId): array
+{
+    // Tenant'a özel arama mantığı
+}
+```
+
+### 🔄 Çalışma Mantığı
+
+```php
+ProductSearchNode (GLOBAL)
+    ↓
+getTenantSearchService(tenant_id)
+    ↓
+Tenant{X}ProductSearchService (TENANT-SPECIFIC)
+    ├── extractKeywords() → Tenant keyword'leri
+    ├── detectCategoryId() → Tenant kategori mapping
+    └── search() → Tenant arama logic'i
+```
+
+### 📋 Yeni Tenant Ekleme
+
+1. **Servis Oluştur**
+   ```bash
+   cp Modules/AI/app/Services/Tenant/Tenant2ProductSearchService.php \
+      Modules/AI/app/Services/Tenant/Tenant{X}ProductSearchService.php
+   ```
+
+2. **Keyword'leri Tanımla**
+   ```php
+   protected function extractKeywords(string $message): array
+   {
+       $productTypes = [
+           'tenant_specific_keyword_1',
+           'tenant_specific_keyword_2',
+       ];
+   }
+   ```
+
+3. **Kategori Mapping Ekle**
+   ```php
+   protected function detectCategoryId(string $message): ?int
+   {
+       $categoryMap = [
+           'keyword1' => 10,  // Tenant kategori ID
+           'keyword2' => 11,
+       ];
+   }
+   ```
+
+4. **Directives Ekle (Database)**
+   ```php
+   AITenantDirective::create([
+       'tenant_id' => X,
+       'directive_key' => 'category_keywords',
+       'directive_value' => json_encode([...]),
+   ]);
+   ```
+
+### 🚫 YAPILMAMASI GEREKENLER
+
+**❌ Global Dosyalarda Tenant-Specific Kod:**
+```php
+// ❌ ProductSearchNode.php içinde
+if (str_contains($message, 'transpalet')) {  // ❌ Tenant keyword!
+    return ['transpalet'];
+}
+```
+
+**✅ Doğrusu:**
+```php
+// ✅ Tenant2ProductSearchService.php içinde
+if (str_contains($message, 'transpalet')) {  // ✅ Tenant service
+    return ['transpalet'];
+}
+```
+
+### 📚 Detaylı Döküman
+
+Detaylı mimari ve kullanım kılavuzu için:
+- `readme/AI-TENANT-STRUCTURE.md` - Tam mimari ve best practices
+
+---
+
+**Son Güncelleme:** 2025-11-09
+**Versiyon:** 2.0 (Multi-tenant architecture)

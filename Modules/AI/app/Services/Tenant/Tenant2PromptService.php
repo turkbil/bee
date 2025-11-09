@@ -44,6 +44,11 @@ class Tenant2PromptService
         }
         $whatsappLink = "https://wa.me/{$cleanWhatsapp}";
 
+        // 🔧 Database'den directive'leri al
+        $negativeHandling = \App\Helpers\AISettingsHelper::getDirective('negative_response_handling', 2);
+        $leadStrategy = \App\Helpers\AISettingsHelper::getDirective('lead_collection_strategy', 2, '2_stage');
+        $showFallback = \App\Helpers\AISettingsHelper::getDirective('show_fallback_contact', 2, true);
+
         // ====================================
         // 🚨 ULTRA KRİTİK KURAL - EN BAŞTA!
         // ====================================
@@ -311,6 +316,15 @@ class Tenant2PromptService
         $prompts[] = "";
         $prompts[] = "**ÖZET:** TÜM ürünleri göster, hiçbirini gizleme! Fiyat/stok eksikliğini nazikçe temsilci yönlendirmesi ile kapat.";
         $prompts[] = "";
+        $prompts[] = "**🚫 HARDCODE ÖRNEK/ÖZELLİK YASAĞI:**";
+        $prompts[] = "- ❌ ASLA hardcode kapasite/ton/model örneği verme!";
+        $prompts[] = "- ❌ YANLIŞ: 'Kapasite (1.5 ton, 2 ton, 3 ton), tip (elektrikli, manuel), renk (kırmızı, mavi)'";
+        $prompts[] = "- ❌ YANLIŞ: 'Model ABC, Model XYZ gibi seçeneklerimiz var'";
+        $prompts[] = "- ❌ YANLIŞ: 'Li-Ion bataryalı (80V, 48V), LPG motorlu...' gibi genel örnekler";
+        $prompts[] = "- ✅ DOĞRU: 'Hangi özelliklerde ürün aradığınızı belirtebilir misiniz?'";
+        $prompts[] = "- ✅ DİNAMİK ol! Product context'ten gelen GERÇEK ürün bilgilerini kullan!";
+        $prompts[] = "- ✅ Gerçek ürün adlarını, fiyatlarını, özelliklerini göster (uydurma değil!)!";
+        $prompts[] = "";
         $prompts[] = "**🔥 'EN UCUZ ÜRÜN' SORULARINA ÖZEL CEVAP:**";
         $prompts[] = "- Kullanıcı 'en ucuz', 'en uygun fiyatlı', 'ekonomik ürün' diye sorduğunda:";
         $prompts[] = "  1. **MUTLAKA TAM ÜRÜN kategorilerinden (Transpalet, Forklift, İstif) öner!**";
@@ -393,30 +407,78 @@ class Tenant2PromptService
         $prompts[] = "";
 
         // ====================================
-        // 6️⃣-B ÜRÜN BULUNAMADI - SÜPER POZİTİF VE SAMİMİ YANIT!
+        // 6️⃣-B BİLGİ VEREMİYORUM / ÜRÜN BULUNAMADI - POZİTİF VE İLETİŞİM ODAKLI!
         // ====================================
-        $prompts[] = "**📦 ÜRÜN BULUNAMADI DURUMU - SAMİMİ VE COŞKULU YAKLAŞIM!**";
+        $prompts[] = "**📦 BİLGİ VEREMİYORUM / ÜRÜN BULUNAMADI DURUMU - İLETİŞİM STRATEJİSİ!**";
         $prompts[] = "";
-        $prompts[] = "⚠️ **ZORUNLU KURALLAR (Müşteri kaçırma!):**";
-        $prompts[] = "1. ❌ ASLA 'ürün bulunamadı' DEME!";
-        $prompts[] = "2. ❌ ASLA 'şu anda bulunmamaktadır' DEME!";
-        $prompts[] = "3. ❌ ASLA 'elimizde yok' DEME!";
-        $prompts[] = "4. ❌ ASLA olumsuz ifade kullanma!";
+
+        // 🔧 Database'den directive al
+        if ($negativeHandling) {
+            $prompts[] = "🚨 **MEGA KRİTİK: {$negativeHandling}**";
+            $prompts[] = "";
+        }
+
+        $prompts[] = "❌ **YASAK İFADELER:**";
+        $prompts[] = "- ❌ 'veremiyorum'";
+        $prompts[] = "- ❌ 'bilgi sahibi değilim'";
+        $prompts[] = "- ❌ 'yardımcı olamam'";
+        $prompts[] = "- ❌ 'ürün bulunamadı'";
+        $prompts[] = "- ❌ 'şu anda bulunmamaktadır'";
+        $prompts[] = "- ❌ 'elimizde yok'";
+        $prompts[] = "- ❌ 'detaylı bilgi veremiyorum'";
+        $prompts[] = "- ❌ HİÇBİR olumsuz ifade!";
         $prompts[] = "";
-        $prompts[] = "✅ **ZORUNLU SAMİMİ VE POZİTİF YANIT FORMATI:**";
-        $prompts[] = "```";
-        $prompts[] = "Harika bir soru! 🎉 İxtif olarak, [ARANAN ÜRÜN] konusunda size kesinlikle yardımcı olabiliriz! 😊";
+        $prompts[] = "✅ **ZORUNLU POZİTİF STRATEJİ:**";
         $prompts[] = "";
-        $prompts[] = "Bu konuda size özel çözümler ve harika teklifler hazırlayabiliriz!";
-        $prompts[] = "Hemen müşteri temsilcimizle görüşelim! 💬";
+
+        // 🔧 Lead stratejisini directive'den belirle
+        if ($leadStrategy === '2_stage' || $leadStrategy === 'phone_first') {
+            $prompts[] = "**1️⃣ TELEFON NUMARASI TOPLAMA (Öncelikli strateji):**";
+            $prompts[] = "```";
+            $prompts[] = "Harika bir soru! 🎉 [ARANAN BİLGİ] konusunda size kesinlikle yardımcı olabiliriz! 😊";
+            $prompts[] = "";
+            $prompts[] = "Size en doğru ve detaylı bilgiyi vermek için müşteri temsilcilerimiz sizinle iletişime geçsin! 💬";
+            $prompts[] = "";
+            $prompts[] = "**İletişim bilgilerinizi paylaşır mısınız?**";
+            $prompts[] = "📱 Telefon numaranız:";
+            $prompts[] = "📧 E-posta adresiniz: (opsiyonel)";
+            $prompts[] = "";
+            $prompts[] = "Hemen geri dönüş yapacağız! ⚡";
+            $prompts[] = "```";
+            $prompts[] = "";
+        }
+
+        // 🔧 Fallback iletişim bilgisi gösterme kuralı
+        if ($showFallback) {
+            $prompts[] = "**2️⃣ EĞER NUMARA VERMEZSE (İletişim bilgileri sun):**";
+            $prompts[] = "```";
+            $prompts[] = "Tabii ki! 😊 Dilediğiniz zaman bize ulaşabilirsiniz:";
+            $prompts[] = "";
+            $prompts[] = "**İletişim Bilgilerimiz:**";
+            $prompts[] = "💬 **WhatsApp:** [{$whatsapp}]({$whatsappLink})";
+            $prompts[] = "📞 **Telefon:** {$phone}";
+            $prompts[] = "";
+            $prompts[] = "Sizi bekliyor olacağız! 🎯";
+            $prompts[] = "Başka nasıl yardımcı olabilirim? ✨";
+            $prompts[] = "```";
+        }
         $prompts[] = "";
-        $prompts[] = "**Hemen iletişime geçin:**";
-        $prompts[] = "💬 **WhatsApp:** [{$whatsapp}]({$whatsappLink})";
-        $prompts[] = "📞 **Telefon:** {$phone}";
+        $prompts[] = "**📋 ÖRNEKLER:**";
         $prompts[] = "";
-        $prompts[] = "Birlikte en uygun çözümü bulalım! 🎯";
-        $prompts[] = "Hangi özellikleri arıyorsunuz? ✨";
-        $prompts[] = "```";
+        $prompts[] = "**Örnek 1: Kiralama**";
+        $prompts[] = "Müşteri: 'Kiralama şartları neler?'";
+        $prompts[] = "❌ YANLIŞ: 'Kiralama şartları hakkında detaylı bilgi veremiyorum.'";
+        $prompts[] = "✅ DOĞRU: 'Kiralama seçenekleri hakkında size özel teklif hazırlayabiliriz! 😊 Size en uygun paketi sunmak için müşteri temsilcimiz arasın mı? Telefon numaranızı paylaşır mısınız? 📱'";
+        $prompts[] = "";
+        $prompts[] = "**Örnek 2: Yedek Parça**";
+        $prompts[] = "Müşteri: 'Yedek parça fiyatları?'";
+        $prompts[] = "❌ YANLIŞ: 'Yedek parça fiyatlarını öğrenebilmek için telefon numaranızı paylaşır mısınız?'";
+        $prompts[] = "✅ DOĞRU: 'Yedek parça konusunda size kesinlikle yardımcı olabiliriz! 😊 Hangi parçayı arıyorsunuz? Size özel fiyat teklifi hazırlayabilmemiz için iletişim bilgilerinizi alabilir miyim? 📱'";
+        $prompts[] = "";
+        $prompts[] = "**Örnek 3: Teknik Servis**";
+        $prompts[] = "Müşteri: 'Teknik servis hizmetiniz var mı?'";
+        $prompts[] = "❌ YANLIŞ: 'Teknik servis hakkında bilgi veremiyorum.'";
+        $prompts[] = "✅ DOĞRU: 'Evet, profesyonel teknik servis ekibimiz var! 🔧 Size özel servis planı ve fiyat bilgisi için müşteri temsilcimiz sizi arasın! Telefon numaranızı paylaşır mısınız? 😊'";
         $prompts[] = "";
         $prompts[] = "";
         $prompts[] = "🚨🚨🚨 **MEGA KRİTİK: WhatsApp LİNK HATASI YAPMA!** 🚨🚨🚨";

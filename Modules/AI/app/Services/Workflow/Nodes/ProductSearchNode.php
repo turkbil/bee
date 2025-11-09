@@ -10,31 +10,42 @@ class ProductSearchNode extends BaseNode
     public function execute(array $context): array
     {
         $userMessage = $context['user_message'] ?? '';
+        $tenantId = $context['tenant_id'] ?? tenant('id');
 
         $searchLimit = $this->getConfig('search_limit', 5);
-        $sortByStock = $this->getConfig('sort_by_stock', true);
+        $sortByStock = $this->getConfig('sort_by_sort', true);
         $useMeilisearch = $this->getConfig('use_meilisearch', false);
+
+        // Get category from context (CategoryDetectionNode sets this)
+        $detectedCategory = $context['detected_category'] ?? null;
 
         Log::info('🔍 ProductSearchNode: Searching products', [
             'user_message' => $userMessage,
             'search_limit' => $searchLimit,
-            'use_meilisearch' => $useMeilisearch
+            'use_meilisearch' => $useMeilisearch,
+            'detected_category' => $detectedCategory,
+            'tenant_id' => $tenantId
         ]);
 
-        // Extract keywords from user message
-        $keywords = $this->extractKeywords($userMessage);
+        // Use tenant-specific search service if available
+        $searchService = $this->getTenantSearchService($tenantId);
 
-        Log::info('🔍 ProductSearchNode: Keywords extracted', [
-            'keywords' => $keywords,
-            'count' => count($keywords)
-        ]);
+        if ($searchService) {
+            // Tenant-specific search (handles keywords, categories internally)
+            $result = $searchService->search($userMessage, $searchLimit, $detectedCategory);
 
-        // If no product keywords found, don't search (user is just chatting)
-        if (empty($keywords)) {
-            Log::info('🔍 ProductSearchNode: No product keywords found, skipping search', [
-                'user_message' => $userMessage
+            Log::info('✅ ProductSearchNode: Tenant-specific search completed', [
+                'tenant_id' => $tenantId,
+                'count' => $result['products']->count()
             ]);
 
+            return $result;
+        }
+
+        // FALLBACK: Generic search for tenants without custom service
+        $keywords = $this->extractGenericKeywords($userMessage);
+
+        if (empty($keywords)) {
             return [
                 'products' => collect(),
                 'products_found' => 0
@@ -43,17 +54,16 @@ class ProductSearchNode extends BaseNode
 
         // Search with Meilisearch or MySQL
         if ($useMeilisearch) {
-            $products = $this->searchWithMeilisearch($keywords, $searchLimit);
+            $products = $this->searchWithMeilisearch($keywords, $searchLimit, $detectedCategory);
         } else {
-            $products = $this->searchWithMySQL($keywords, $searchLimit);
+            $products = $this->searchWithMySQL($keywords, $searchLimit, $detectedCategory);
         }
 
-        Log::info('✅ ProductSearchNode: Found products', [
+        Log::info('✅ ProductSearchNode: Generic search completed', [
             'keywords' => $keywords,
             'count' => $products->count()
         ]);
 
-        // Return only new keys (FlowExecutor will merge with context)
         return [
             'products' => $products,
             'products_found' => $products->count()
@@ -61,24 +71,51 @@ class ProductSearchNode extends BaseNode
     }
 
     /**
+     * Get tenant-specific search service
+     */
+    protected function getTenantSearchService(?int $tenantId)
+    {
+        if (!$tenantId) {
+            return null;
+        }
+
+        // Check if tenant has custom search service
+        $serviceClass = "\\Modules\\AI\\App\\Services\\Tenant\\Tenant{$tenantId}ProductSearchService";
+
+        if (class_exists($serviceClass)) {
+            return app($serviceClass);
+        }
+
+        return null;
+    }
+
+    /**
      * Search products with Meilisearch (Laravel Scout)
      */
-    protected function searchWithMeilisearch(array $keywords, int $limit)
+    protected function searchWithMeilisearch(array $keywords, int $limit, ?int $categoryId = null)
     {
         $searchQuery = implode(' ', $keywords);
 
         Log::info('🔍 Meilisearch: Searching', [
             'query' => $searchQuery,
-            'limit' => $limit
+            'limit' => $limit,
+            'category_filter' => $categoryId
         ]);
 
-        $results = ShopProduct::search($searchQuery)
-            ->where('current_stock', '>', 0)
-            ->take($limit)
-            ->get();
+        // StockSorterNode will prioritize products with stock
+        // Here we get ALL matching products (in-stock and out-of-stock)
+        $search = ShopProduct::search($searchQuery);
+
+        // Apply category filter if detected
+        if ($categoryId) {
+            $search->where('category_id', $categoryId);
+        }
+
+        $results = $search->take($limit)->get();
 
         Log::info('✅ Meilisearch: Results found', [
-            'count' => $results->count()
+            'count' => $results->count(),
+            'filtered_by_category' => $categoryId ? 'YES' : 'NO'
         ]);
 
         return $results;
@@ -87,72 +124,70 @@ class ProductSearchNode extends BaseNode
     /**
      * Search products with MySQL (JSON query)
      */
-    protected function searchWithMySQL(array $keywords, int $limit)
+    protected function searchWithMySQL(array $keywords, int $limit, ?int $categoryId = null)
     {
         Log::info('🔍 MySQL: Searching', [
             'keywords' => $keywords,
-            'limit' => $limit
+            'limit' => $limit,
+            'category_filter' => $categoryId
         ]);
 
         $query = ShopProduct::query();
 
-        // Search in title (JSON column)
+        // Apply category filter if detected
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        // Search in title (JSON column) - case-insensitive
         $query->where(function($q) use ($keywords) {
             foreach ($keywords as $keyword) {
-                $q->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) LIKE ?", ["%{$keyword}%"])
-                  ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.en')) LIKE ?", ["%{$keyword}%"]);
+                $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr'))) LIKE LOWER(?)", ["%{$keyword}%"])
+                  ->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.en'))) LIKE LOWER(?)", ["%{$keyword}%"]);
             }
         });
 
-        // Only products with stock
-        $query->where('current_stock', '>', 0);
+        // StockSorterNode will prioritize products with stock
+        // Here we get ALL matching products
 
         $results = $query->limit($limit)->get();
 
         Log::info('✅ MySQL: Results found', [
-            'count' => $results->count()
+            'count' => $results->count(),
+            'filtered_by_category' => $categoryId ? 'YES' : 'NO'
         ]);
 
         return $results;
     }
 
     /**
-     * Extract keywords from user message
+     * GENERIC keyword extraction (for tenants without custom service)
+     *
+     * Very basic - just looks for common intent words
+     * Tenants should implement their own search service for better results
      */
-    protected function extractKeywords(string $message): array
+    protected function extractGenericKeywords(string $message): array
     {
-        // Common Turkish keywords for products
         $keywords = [];
         $message = mb_strtolower($message);
 
-        // Product type keywords - genişletilmiş liste
-        $productTypes = [
-            'transpalet', 'forklift', 'istif', 'istif makinesi',
-            'akülü', 'elektrikli', 'manuel', 'palet', 'platform',
-            'kaldırıcı', 'yük', 'depo', 'lojistik', 'taşıyıcı',
-            'makine', 'makina', 'ekipman', 'araç', 'ürün',
-            'ixtif', 'cpd', 'ept', 'çatal', 'ton'
-        ];
+        // Generic intent detection - just check if user wants to search
+        $intentKeywords = ['göster', 'listele', 'bul', 'ara', 'var mı', 'istiyorum', 'arıyorum', 'ürün'];
 
-        // Intent keywords - bunlar da ürün araması tetikler
-        $intentKeywords = ['göster', 'listele', 'bak', 'var mı', 'lazım', 'istiyorum', 'arıyorum'];
-        $hasIntent = false;
         foreach ($intentKeywords as $intent) {
             if (str_contains($message, $intent)) {
-                $hasIntent = true;
-                break;
+                // Return empty - tenant should implement custom service
+                // or AI will ask user to be more specific
+                return [];
             }
         }
 
-        foreach ($productTypes as $type) {
-            if (str_contains($message, $type)) {
-                $keywords[] = $type;
+        // Split message into words for basic search
+        $words = preg_split('/\s+/', $message);
+        foreach ($words as $word) {
+            if (strlen($word) > 3) { // Only words longer than 3 chars
+                $keywords[] = $word;
             }
-        }
-
-        // Eğer intent var ama keyword yoksa, genel ürün ara
-        if ($hasIntent && empty($keywords)) {
-            $keywords[] = 'transpalet'; // Default olarak transpalet göster
         }
 
         return array_unique($keywords);

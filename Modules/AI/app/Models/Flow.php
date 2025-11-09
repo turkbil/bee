@@ -9,9 +9,11 @@ class Flow extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql'; // Central DB with tenant_id filtering
     protected $table = 'ai_flows';
 
     protected $fillable = [
+        'tenant_id',
         'name',
         'description',
         'flow_data',
@@ -43,12 +45,23 @@ class Flow extends Model
     }
 
     /**
-     * Get highest priority active flow
+     * Get highest priority active flow for tenant
      */
-    public static function getActiveFlow()
+    public static function getActiveFlow($tenantId = null)
     {
-        return static::active()
+        $tenantId = $tenantId ?: (function_exists('tenant') ? tenant('id') : null);
+
+        return static::where('tenant_id', $tenantId)
+            ->active()
             ->byPriority()
             ->first();
+    }
+
+    /**
+     * Scope: Filter by tenant
+     */
+    public function scopeForTenant($query, $tenantId)
+    {
+        return $query->where('tenant_id', $tenantId);
     }
 }

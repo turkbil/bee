@@ -1,13 +1,14 @@
 # AI Chat System Analysis - Documentation Index
 
-**Analysis Date:** 2025-11-05  
-**Status:** COMPLETE - All findings documented
+**Analysis Date:** 2025-11-05
+**Last Updated:** 2025-11-09
+**Status:** COMPLETE - All findings documented + Setup Guide added
 
 ---
 
 ## 📚 Documentation Files
 
-This analysis contains 3 comprehensive documents. Choose based on your needs:
+This analysis contains 4 comprehensive documents. Choose based on your needs:
 
 ### 1. **AI_CHAT_ARCHITECTURE_ANALYSIS_2025-11-05.md** (28 KB)
 **For:** Deep technical understanding, troubleshooting, development
@@ -61,6 +62,24 @@ This analysis contains 3 comprehensive documents. Choose based on your needs:
 
 ---
 
+### 4. **AI-SHOP-CHAT-SETUP-GUIDE-2025-11-09.md** (NEW!)
+**For:** Yeni tenant kurulumu, global directives, flow kopyalama, production setup
+
+**Contains:**
+- Sistem mimarisi (Basit ve anlaşılır)
+- Database yapısı (Tenant DB vs Central DB)
+- Yeni tenant kurulumu (5 dakikada!)
+- Global directive sistemi (tenant_id=0)
+- Flow kopyalama (tenant'tan tenant'a)
+- Artisan command kullanımı
+- Troubleshooting guide
+- Model configuration
+- Custom node ekleme
+
+**Read this if:** Yeni tenant ekleyeceksin, sistem kuracaksın, global directive yöneteceksin
+
+---
+
 ## 🎯 Quick Navigation
 
 ### "I want to understand the system"
@@ -77,6 +96,12 @@ This analysis contains 3 comprehensive documents. Choose based on your needs:
 
 ### "I want to add a new node type"
 → Read: **AI_SYSTEM_FILE_MANIFEST.md** - "Node Handlers" section
+
+### "I want to setup AI for a new tenant"
+→ Read: **AI-SHOP-CHAT-SETUP-GUIDE-2025-11-09.md** - "Yeni Tenant Kurulumu" section
+
+### "I need global directive system"
+→ Read: **AI-SHOP-CHAT-SETUP-GUIDE-2025-11-09.md** - "Global Directive Sistemi" section
 
 ---
 

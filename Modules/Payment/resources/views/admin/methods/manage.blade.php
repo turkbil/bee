@@ -5,9 +5,8 @@
     {{ $paymentMethodId ? 'Ödeme Yöntemi Düzenle' : 'Yeni Ödeme Yöntemi' }}
 @endsection
 
-<div class="container-xl">
-    <form wire:submit.prevent="save">
-        <div class="row mt-3">
+<form wire:submit.prevent="save">
+    <div class="row">
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
@@ -186,4 +185,3 @@
             </div>
         </div>
     </form>
-</div>

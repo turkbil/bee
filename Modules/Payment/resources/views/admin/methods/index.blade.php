@@ -5,8 +5,7 @@
     Ödeme Yöntemleri
 @endsection
 
-<div class="container-xl">
-    <div class="card mt-3">
+<div class="card">
         <div class="card-header">
             <h3 class="card-title">Payment Methods (PayTR, Stripe, Iyzico...)</h3>
         </div>
@@ -93,4 +92,3 @@
             </div>
         </div>
     </div>
-</div>

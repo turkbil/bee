@@ -1,8 +1,7 @@
 {{-- helper.blade.php'den section'lar gelecek --}}
 @include('payment::admin.helper')
 
-<div class="container-xl">
-    <div class="card mt-3">
+<div class="card">
         <div class="card-header">
             <h3 class="card-title">Ödeme Listesi</h3>
         </div>
@@ -95,4 +94,3 @@
             </div>
         </div>
     </div>
-</div>

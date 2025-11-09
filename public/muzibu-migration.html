@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Migration Planlama | Müzik Platformu Yapısı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .table-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-core { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg-relation { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .bg-feature { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-seo { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: #667eea;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 0.4375rem;
+            top: 1.5rem;
+            width: 2px;
+            height: calc(100% - 1.5rem);
+            background: linear-gradient(to bottom, #667eea, transparent);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="glass rounded-3xl shadow-2xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-4xl font-black text-gray-900 mb-2">
+                        <i class="fas fa-music text-purple-600 mr-3"></i>
+                        Muzibu Migration Planlama
+                    </h1>
+                    <p class="text-gray-600 text-lg">Müzik Platformu Veritabanı Yapısı & Laravel Entegrasyonu</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500 mb-1">Tarih</div>
+                    <div class="text-xl font-bold text-purple-600">9 Kasım 2025</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">16</div>
+                    <div class="text-purple-100 text-sm">Toplam Tablo</div>
+                </div>
+                <div class="bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">5</div>
+                    <div class="text-pink-100 text-sm">Core Tablolar</div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">8</div>
+                    <div class="text-blue-100 text-sm">İlişki Tabloları</div>
+                </div>
+                <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">3</div>
+                    <div class="text-green-100 text-sm">Özellik Tabloları</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Structure -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Core Tables -->
+            <div class="glass rounded-3xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-core rounded-xl flex items-center justify-center text-white">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    Core Tablolar
+                </h2>
+                <div class="space-y-3">
+                    <div class="table-badge bg-core text-white w-full justify-between">
+                        <span><i class="fas fa-compact-disc"></i> muzibu_albums</span>
+                        <span class="text-xs opacity-75">Albümler</span>
+                    </div>
+                    <div class="table-badge bg-core text-white w-full justify-between">
+                        <span><i class="fas fa-microphone"></i> muzibu_artists</span>
+                        <span class="text-xs opacity-75">Sanatçılar</span>
+                    </div>
+                    <div class="table-badge bg-core text-white w-full justify-between">
+                        <span><i class="fas fa-music"></i> muzibu_songs</span>
+                        <span class="text-xs opacity-75">Şarkılar</span>
+                    </div>
+                    <div class="table-badge bg-core text-white w-full justify-between">
+                        <span><i class="fas fa-list-ul"></i> muzibu_genres</span>
+                        <span class="text-xs opacity-75">Türler</span>
+                    </div>
+                    <div class="table-badge bg-core text-white w-full justify-between">
+                        <span><i class="fas fa-list"></i> muzibu_playlists</span>
+                        <span class="text-xs opacity-75">Çalma Listeleri</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relation Tables -->
+            <div class="glass rounded-3xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-relation rounded-xl flex items-center justify-center text-white">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    İlişki Tabloları
+                </h2>
+                <div class="space-y-3">
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-arrow-right-arrow-left"></i> muzibu_playlist_song</span>
+                        <span class="text-xs opacity-75">Playlist ↔ Song</span>
+                    </div>
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-arrow-right-arrow-left"></i> muzibu_song_mood</span>
+                        <span class="text-xs opacity-75">Song ↔ Mood</span>
+                    </div>
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-heart"></i> muzibu_favorites</span>
+                        <span class="text-xs opacity-75">User ↔ Song</span>
+                    </div>
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-heart"></i> muzibu_playlist_favorites</span>
+                        <span class="text-xs opacity-75">User ↔ Playlist</span>
+                    </div>
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-building"></i> muzibu_playlist_sector</span>
+                        <span class="text-xs opacity-75">Playlist ↔ Sector</span>
+                    </div>
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-building"></i> muzibu_radio_sector</span>
+                        <span class="text-xs opacity-75">Radio ↔ Sector</span>
+                    </div>
+                    <div class="table-badge bg-relation text-white w-full justify-between">
+                        <span><i class="fas fa-radio"></i> muzibu_playlist_radio</span>
+                        <span class="text-xs opacity-75">Playlist ↔ Radio</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Tables -->
+            <div class="glass rounded-3xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-feature rounded-xl flex items-center justify-center text-white">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    Özellik Tabloları
+                </h2>
+                <div class="space-y-3">
+                    <div class="table-badge bg-feature text-white w-full justify-between">
+                        <span><i class="fas fa-smile"></i> muzibu_moods</span>
+                        <span class="text-xs opacity-75">Ruh Halleri</span>
+                    </div>
+                    <div class="table-badge bg-feature text-white w-full justify-between">
+                        <span><i class="fas fa-building"></i> muzibu_sectors</span>
+                        <span class="text-xs opacity-75">Sektörler</span>
+                    </div>
+                    <div class="table-badge bg-feature text-white w-full justify-between">
+                        <span><i class="fas fa-radio"></i> muzibu_radios</span>
+                        <span class="text-xs opacity-75">Radyo İstasyonları</span>
+                    </div>
+                    <div class="table-badge bg-feature text-white w-full justify-between">
+                        <span><i class="fas fa-play"></i> muzibu_song_plays</span>
+                        <span class="text-xs opacity-75">Dinleme İstatistikleri</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Migration Strategy -->
+            <div class="glass rounded-3xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-seo rounded-xl flex items-center justify-center text-white">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    Migration Stratejisi
+                </h2>
+                <div class="space-y-4">
+                    <div class="timeline-item">
+                        <h3 class="font-bold text-gray-900 mb-1">Adım 1: Analiz</h3>
+                        <p class="text-sm text-gray-600">Eski SQL yapısını Laravel yapısına uyarla</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="font-bold text-gray-900 mb-1">Adım 2: Dönüşüm</h3>
+                        <p class="text-sm text-gray-600">title_tr → JSON {tr: "", en: ""}</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="font-bold text-gray-900 mb-1">Adım 3: Migration</h3>
+                        <p class="text-sm text-gray-600">Central + Tenant migration oluştur</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h3 class="font-bold text-gray-900 mb-1">Adım 4: Test</h3>
+                        <p class="text-sm text-gray-600">Migration çalıştır ve doğrula</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Changes -->
+        <div class="glass rounded-3xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-exchange-alt text-purple-600 mr-3"></i>
+                Önemli Değişiklikler
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border-l-4 border-red-500 pl-4">
+                    <h3 class="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                        <i class="fas fa-times-circle text-red-500"></i>
+                        Eski Yapı
+                    </h3>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                        <li>• title_tr, title_en ayrı kolonlar</li>
+                        <li>• created (datetime)</li>
+                        <li>• active (tinyint)</li>
+                        <li>• meta_* ayrı kolonlar</li>
+                        <li>• Foreign key yok</li>
+                    </ul>
+                </div>
+                <div class="border-l-4 border-green-500 pl-4">
+                    <h3 class="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        Yeni Yapı
+                    </h3>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                        <li>• title (JSON multi-lang)</li>
+                        <li>• created_at, updated_at</li>
+                        <li>• is_active (boolean)</li>
+                        <li>• SEO ilişkili tablo</li>
+                        <li>• Foreign key + constraints</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-white">
+            <p class="text-sm opacity-75">
+                <i class="fas fa-code mr-2"></i>
+                Generated with Claude Code | Muzibu Music Platform
+            </p>
+        </div>
+    </div>
+</body>
+</html>

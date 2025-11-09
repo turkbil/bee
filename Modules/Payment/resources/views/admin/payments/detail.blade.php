@@ -5,8 +5,7 @@
     Ödeme Detayı: {{ $payment->payment_number }}
 @endsection
 
-<div class="container-xl">
-    <div class="row mt-3">
+<div class="row">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
@@ -133,4 +132,3 @@
             @endif
         </div>
     </div>
-</div>

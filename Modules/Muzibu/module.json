@@ -1,0 +1,9 @@
+{
+    "name": "Muzibu",
+    "alias": "muzibu",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": ["Modules\\Muzibu\\Providers\\MuzibuServiceProvider"],
+    "files": []
+}

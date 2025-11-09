@@ -1,0 +1,29 @@
+{
+    "name": "nwidart/muzibu",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": []
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Muzibu\\": "",
+            "Modules\\Muzibu\\Database\\Factories\\": "database/factories/",
+            "Modules\\Muzibu\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\Muzibu\\App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Muzibu\\Tests\\": "tests/"
+        }
+    }
+}

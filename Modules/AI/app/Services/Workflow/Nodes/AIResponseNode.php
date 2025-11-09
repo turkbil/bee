@@ -305,7 +305,7 @@ class AIResponseNode extends BaseNode
             $enhancedPrompt .= "\n- Sadece temiz urun adini goster, etiket olmadan!";
             $enhancedPrompt .= "\n\nKONUSMA VE SATIS TONU:";
             $enhancedPrompt .= "\n✅ Kullanıcının adını HATIRLA ve KULLAN";
-            $enhancedPrompt .= "\n✅ Daha önce ne konuştuğunuzu HATIRLA";
+            $enhancedPrompt .= "\n✅ Conversation history sadece CONTEXT için kullan - ASLA kullanıcıya 'önceki konuşmamızda', 'daha önce' deme!";
             $enhancedPrompt .= "\n✅ PROFESYONEL SATIŞ DİLİ kullan (samimi ama güçlü)";
             $enhancedPrompt .= "\n✅ DOĞRU: \"İhtiyacınıza en uygun ürünler bunlar:\"";
             $enhancedPrompt .= "\n✅ DOĞRU: \"Size şu ürünleri öneriyorum:\"";
@@ -460,21 +460,25 @@ class AIResponseNode extends BaseNode
             $enhancedPrompt .= "\n- ASLA STOK BILGISI VERME (ne \"var\" ne \"yok\" deme!)";
             $enhancedPrompt .= "\n- Kullanicidan iletisim bilgisi iste (3 adimli strateji)";
             $enhancedPrompt .= "\n- Musteri temsilcisini oner";
-            $enhancedPrompt .= "\n\nKONUSMA:";
-            $enhancedPrompt .= "\n- Kullanicinin adini HATIRLA";
-            $enhancedPrompt .= "\n- Daha once ne konustugunuzu HATIRLA";
-            $enhancedPrompt .= "\n- Ayni soruyu tekrar sorma!";
-            $enhancedPrompt .= "\n- Her yaniti 'Merhaba! Hos geldin' ile BASLATMA!";
+            $enhancedPrompt .= "\n\n🚨 KRİTİK: CONVERSATION HISTORY KULLANIMI:";
+            $enhancedPrompt .= "\n✅ Kullanicinin adini HATIRLA ve KULLAN";
+            $enhancedPrompt .= "\n✅ Conversation context'i HATIRLA (ne istedi, ne sordu)";
+            $enhancedPrompt .= "\n❌ ASLA 'önceki konuşmamızda', 'daha önce', 'hatırlıyorum' DEME!";
+            $enhancedPrompt .= "\n❌ History'yi kullanıcıya SÖYLEME, sadece context için KULLAN!";
+            $enhancedPrompt .= "\n✅ Ayni soruyu tekrar sorma!";
+            $enhancedPrompt .= "\n✅ Her yaniti 'Merhaba! Hos geldin' ile BASLATMA!";
             $enhancedPrompt .= "\n\nYAPMALISIN:";
-            $enhancedPrompt .= "\n1. ONCE mesaj gecmisine bak - daha once ne konustunuz?";
+            $enhancedPrompt .= "\n1. ONCE mesaj gecmisine bak - context'i anla (ama kullanıcıya SÖYLEME!)";
             $enhancedPrompt .= "\n2. Kullanicinin adini biliyorsan KULLAN";
             $enhancedPrompt .= "\n3. Kullanicinin ne istedigini anla";
             $enhancedPrompt .= "\n4. Eger urun ariyorsa, daha fazla detay sor (ozellikler, tercihler, butce)";
             $enhancedPrompt .= "\n5. Eger sohbet ediyorsa, dogal yanit ver";
             $enhancedPrompt .= "\n\n❌ YAPMA:";
+            $enhancedPrompt .= "\n- 'Daha önce ... arıyordunuz' YASAK!";
+            $enhancedPrompt .= "\n- 'Önceki konuşmamızda ...' YASAK!";
+            $enhancedPrompt .= "\n- 'Hatırlıyorum, ...' YASAK!";
             $enhancedPrompt .= "\n- Her mesaja 'Merhaba! Hoş geldin' deme!";
             $enhancedPrompt .= "\n- Aynı soruyu tekrar tekrar sorma!";
-            $enhancedPrompt .= "\n- Mesaj geçmişini görmezden gelme!";
         }
 
         // System prompt (first message)

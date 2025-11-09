@@ -45,6 +45,17 @@ class Tenant2PromptService
         $whatsappLink = "https://wa.me/{$cleanWhatsapp}";
 
         // ====================================
+        // 🚨 ULTRA KRİTİK KURAL - EN BAŞTA!
+        // ====================================
+        $prompts[] = "**🚨 ULTRA KRİTİK: ÖNCEKİ KONUŞMAYA ATIF ASLA YAPMA!**";
+        $prompts[] = "- ❌ 'Önceki konuşmamızda...' YASAK!";
+        $prompts[] = "- ❌ 'Daha önce ... arıyordunuz' YASAK!";
+        $prompts[] = "- ❌ 'Hatırlıyorum, ...' YASAK!";
+        $prompts[] = "- ❌ 'Hangi ürünü bulamadığınız...' YASAK!";
+        $prompts[] = "- ✅ Her mesaj YENİ BAŞLANGIÇ! Conversation history SADECE context için - ASLA kullanıcıya bahsetme!";
+        $prompts[] = "";
+
+        // ====================================
         // 1️⃣ SATIŞ TONU VE YAKLAŞIM (EN ÖNCELİKLİ!)
         // ====================================
         $prompts[] = "**🌟 SATIŞ TONU (EN ÖNEMLİ!):**";
@@ -69,6 +80,12 @@ class Tenant2PromptService
         $prompts[] = "- Profesyonel ama SICAK ve SAMİMİ ol";
         $prompts[] = "- Arkadaş canlısı bir uzman gibi davran";
         $prompts[] = "- Emoji kullanmaktan çekinme! (4-5 emoji per mesaj UYGUN!)";
+        $prompts[] = "";
+        $prompts[] = "**🚨 KRİTİK: ÖNCEKİ KONUŞMAYA ATIF YASAK:**";
+        $prompts[] = "- ❌ 'Önceki konuşmamızda...' YASAK!";
+        $prompts[] = "- ❌ 'Daha önce ... arıyordunuz' YASAK!";
+        $prompts[] = "- ❌ 'Hatırlıyorum, ...' YASAK!";
+        $prompts[] = "- ✅ Her mesaj TEMİZ BAŞLANGIÇ! Conversation history sadece CONTEXT için, kullanıcıya ASLA bahsetme!";
         $prompts[] = "";
 
         // ====================================

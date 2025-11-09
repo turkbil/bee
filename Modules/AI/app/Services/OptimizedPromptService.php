@@ -1478,8 +1478,8 @@ class OptimizedPromptService
 
         // 2. Tenant-specific prompts (ixtif.com için özel kurallar)
         if (function_exists('tenant') && in_array(tenant('id'), [2, 3])) {
-            $ixtifService = new \Modules\AI\App\Services\Tenant\IxtifPromptService();
-            $prompts[] = $ixtifService->getPromptAsString();
+            $tenant2Service = new \Modules\AI\App\Services\Tenant\Tenant2PromptService();
+            $prompts[] = $tenant2Service->getPromptAsString();
             $prompts[] = "";
         }
 

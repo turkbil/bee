@@ -4,10 +4,10 @@ namespace Modules\Payment\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Modules\Payment\App\Http\Livewire\Admin\PaymentComponent;
-use Modules\Payment\App\Http\Livewire\Admin\PaymentManageComponent;
-use Modules\Payment\App\Http\Livewire\Admin\PaymentCategoryComponent;
-use Modules\Payment\App\Http\Livewire\Admin\PaymentCategoryManageComponent;
+use Modules\Payment\App\Http\Livewire\Admin\PaymentsComponent;
+use Modules\Payment\App\Http\Livewire\Admin\PaymentDetailComponent;
+use Modules\Payment\App\Http\Livewire\Admin\PaymentMethodsComponent;
+use Modules\Payment\App\Http\Livewire\Admin\PaymentMethodManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -25,9 +25,6 @@ class PaymentServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Payment Observer kaydı
-        \Modules\Payment\App\Models\Payment::observe(\Modules\Payment\App\Observers\PaymentObserver::class);
-        \Modules\Payment\App\Models\PaymentCategory::observe(\Modules\Payment\App\Observers\PaymentCategoryObserver::class);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
@@ -61,26 +58,6 @@ class PaymentServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-
-        // Repository Pattern bindings
-        $this->app->bind(
-            \Modules\Payment\App\Contracts\PaymentRepositoryInterface::class,
-            \Modules\Payment\App\Repositories\PaymentRepository::class
-        );
-
-        $this->app->bind(
-            \Modules\Payment\App\Contracts\PaymentCategoryRepositoryInterface::class,
-            \Modules\Payment\App\Repositories\PaymentCategoryRepository::class
-        );
-
-        $this->app->bind(
-            \App\Contracts\GlobalSeoRepositoryInterface::class,
-            \App\Repositories\GlobalSeoRepository::class
-        );
-
-        // Service Layer bindings
-        $this->app->singleton(\Modules\Payment\App\Services\PaymentService::class);
-        $this->app->singleton(\Modules\Payment\App\Services\PaymentCategoryService::class);
     }
 
     /**
@@ -88,9 +65,7 @@ class PaymentServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        $this->commands([
-            \Modules\Payment\App\Console\WarmPaymentCacheCommand::class,
-        ]);
+        // Komutlar buraya eklenecek
     }
 
     /**

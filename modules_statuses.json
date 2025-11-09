@@ -17,5 +17,6 @@
     "SeoManagement": true,
     "MenuManagement": true,
     "MediaManagement": true,
-    "Search": true
+    "Search": true,
+    "Payment": true
 }

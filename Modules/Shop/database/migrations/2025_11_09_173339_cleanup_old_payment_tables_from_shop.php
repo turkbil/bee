@@ -50,10 +50,26 @@ return new class extends Migration
             });
         }
 
-        // 3. shop_payments tablosunu kaldır
+        // 3. shop_payments tablosundan foreign key'leri kaldır
+        if (Schema::hasTable('shop_payments')) {
+            Schema::table('shop_payments', function (Blueprint $table) {
+                try {
+                    $table->dropForeign(['payment_method_id']);
+                } catch (\Exception $e) {
+                    // Foreign key yoksa devam et
+                }
+                try {
+                    $table->dropForeign(['order_id']);
+                } catch (\Exception $e) {
+                    // Foreign key yoksa devam et
+                }
+            });
+        }
+
+        // 4. shop_payments tablosunu kaldır
         Schema::dropIfExists('shop_payments');
 
-        // 4. shop_payment_methods tablosunu kaldır
+        // 5. shop_payment_methods tablosunu kaldır
         Schema::dropIfExists('shop_payment_methods');
     }
 

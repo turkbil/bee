@@ -2,15 +2,15 @@
 
 return [
 // Genel
-'muzibus' => 'Portfolyolar',
-'muzibu_management' => 'Portfolyo Yönetimi',
-'new_muzibu' => 'Yeni Portfolyo',
+'muzibus' => 'Müzikler',
+'muzibu_management' => 'Müzik Yönetimi',
+'new_muzibu' => 'Yeni Müzik',
 'media_management' => 'Medya Yönetimi',
-'new_muzibu_pretitle' => 'Yeni Portfolyo Oluştur',
-'edit_muzibu_pretitle' => 'Portfolyo Düzenle',
-'save_to_upload_media' => 'Medya yüklemek için önce portfolyoyu kaydedin',
+'new_muzibu_pretitle' => 'Yeni Müzik Ekle',
+'edit_muzibu_pretitle' => 'Müzik Düzenle',
+'save_to_upload_media' => 'Medya yüklemek için önce müziği kaydedin',
 'title_required_for_media' => 'Medya yüklemek için en az başlık alanını doldurmanız gerekiyor',
-'muzibu_detail' => 'Portfolyo Detayı',
+'muzibu_detail' => 'Müzik Detayı',
 'home' => 'Anasayfa',
 'title_field' => 'Başlık',
 'content' => 'İçerik',
@@ -22,8 +22,8 @@ return [
 'deactivate' => 'Pasifleştir',
 
 // Pretitle
-'edit_muzibu_pretitle' => 'Portfolyo Düzenleme',
-'new_muzibu_pretitle' => 'Yeni Portfolyo Ekleme',
+'edit_muzibu_pretitle' => 'Müzik Düzenleme',
+'new_muzibu_pretitle' => 'Yeni Müzik Ekleme',
 
 // SEO
 'seo' => 'SEO',
@@ -31,46 +31,46 @@ return [
 'meta_description' => 'Meta Açıklama',
 'focus_keywords' => 'Ana Odak Kelimeleri',
 'focus_keywords_placeholder' => 'ana kelime1, ana kelime2, ana kelime3',
-'focus_keywords_help' => 'Bu portfolyo için en önemli anahtar kelimeleri girin. SEO odaklanması için kullanılır.',
+'focus_keywords_help' => 'Bu müzik için en önemli anahtar kelimeleri girin. SEO odaklanması için kullanılır.',
 
 // AI & Translation
 'ai_bulk_translate' => 'Yapay Zeka ile Toplu Çeviri',
-'ai_content_instructions' => 'Portfolyo içerikleri üretimi. SEO uyumlu, kullanıcı dostu ve kapsamlı portfolyo içerikleri oluştur.',
+'ai_content_instructions' => 'Müzik içerikleri üretimi. SEO uyumlu, kullanıcı dostu ve kapsamlı müzik içerikleri oluştur.',
 
 // Search & Filter
 'search_placeholder' => 'Ara...',
 'enter_new_title' => 'Yeni başlık giriniz',
 'items_selected' => 'öğe seçildi',
-'no_muzibus_found' => 'Portfolyo bulunamadı',
+'no_muzibus_found' => 'Müzik bulunamadı',
 'no_results' => 'Sonuç bulunamadı',
 
 // Menu
 'menu' => 'Menü',
-'menu_title' => 'Portfolyo Yönetimi',
-'edit_muzibu' => 'Portfolyo Düzenle',
-'create_muzibu' => 'Yeni Portfolyo',
+'menu_title' => 'Müzik Yönetimi',
+'edit_muzibu' => 'Müzik Düzenle',
+'create_muzibu' => 'Yeni Müzik',
 
 // Validation & Messages
 'title_validation_error' => 'Başlık geçersiz. Lütfen kontrol edin.',
 'title_updated' => 'başlık güncellendi',
 'title_updated_successfully' => 'Başlık başarıyla güncellendi.',
-'muzibu_not_found' => 'Portfolyo bulunamadı',
+'muzibu_not_found' => 'Müzik bulunamadı',
 'homemuzibu_cannot_be_deactivated' => 'Anasayfa deaktifleştirilemez',
 'operation_failed' => 'İşlem başarısız',
-'no_muzibus_can_be_deleted' => 'Hiç portfolyo silinemez',
+'no_muzibus_can_be_deleted' => 'Hiç müzik silinemez',
 
 // Dashboard Translations
-'total_muzibus' => 'Toplam Portfolyo',
-'all_muzibus' => 'Tüm Portfolyolar',
-'create_muzibu' => 'Portfolyo Oluştur',
-'recent_muzibus' => 'Son Portfolyolar',
-'no_muzibus_yet' => 'Henüz portfolyo yok',
-'create_first_muzibu' => 'İlk Portfolyoyu Oluştur',
+'total_muzibus' => 'Toplam Müzik',
+'all_muzibus' => 'Tüm Müzikler',
+'create_muzibu' => 'Müzik Oluştur',
+'recent_muzibus' => 'Son Müzikler',
+'no_muzibus_yet' => 'Henüz müzik yok',
+'create_first_muzibu' => 'İlk Müziği Oluştur',
 'view_all' => 'Tümünü Gör',
 'manage' => 'Yönet',
 
 // Content Editor
-'content_placeholder' => 'Portfolyo içeriğinizi buraya yazın',
+'content_placeholder' => 'Müzik içeriğinizi buraya yazın',
 'wysiwyg_editor' => 'Zengin Metin Editörü',
 
 // SEO Management
@@ -82,23 +82,23 @@ return [
 'seo_description_help' => 'Google\'da başlığın altında gözüken açıklama. İnsanı tıklamaya teşvik etmeli.',
 'seo_keywords' => 'Anahtar Kelimeler',
 'seo_keywords_placeholder' => 'anahtar1, anahtar2, anahtar3',
-'seo_keywords_help' => '5-10 kelime yeterli. Portfolyonuzun hangi kelimelerle bulunacağını belirler.',
+'seo_keywords_help' => '5-10 kelime yeterli. Müziğinizin hangi kelimelerle bulunacağını belirler.',
 'focus_keyword' => 'Ana Odak Kelime',
 'focus_keyword_placeholder' => 'Ana odak kelime',
-'focus_keyword_help' => 'Portfolyonun ana odaklandığı tek kelime. Bu kelimeyi portfolyoda 3-5 kez geçirin.',
+'focus_keyword_help' => 'Müziğin ana odaklandığı tek kelime. Bu kelimeyi içerikte 3-5 kez geçirin.',
 'editor_supports_html' => 'Editör HTML ve zengin metin formatlarını destekler',
 'fullscreen' => 'Tam Ekran',
 'initializing_editor' => 'Editör başlatılıyor',
 
 // Service Messages
-'muzibu_created_successfully' => 'Portfolyo başarıyla oluşturuldu',
-'muzibu_updated_successfully' => 'Portfolyo başarıyla güncellendi',
-'muzibu_deleted_successfully' => 'Portfolyo başarıyla silindi',
+'muzibu_created_successfully' => 'Müzik başarıyla oluşturuldu',
+'muzibu_updated_successfully' => 'Müzik başarıyla güncellendi',
+'muzibu_deleted_successfully' => 'Müzik başarıyla silindi',
 'update_failed' => 'Güncelleme başarısız',
 'deletion_failed' => 'Silme işlemi başarısız',
 
 // Content Placeholders
-'content_placeholder' => 'Portfolyo içeriğinizi buraya yazın',
+'content_placeholder' => 'Müzik içeriğinizi buraya yazın',
 
 // Studio Editor
 'studio.editor' => 'Studio ile Düzenle',
@@ -135,7 +135,7 @@ return [
 'search_categories' => 'Kategorilerde ara...',
 'category_create_failed' => 'Kategori oluşturulamadı',
 'category_delete_failed' => 'Kategori silinemedi',
-'category_has_muzibus' => 'Bu kategoride portfolyolar bulunduğu için silinemez',
+'category_has_muzibus' => 'Bu kategoride müzikler bulunduğu için silinemez',
 
 // Media Library
 'media' => [

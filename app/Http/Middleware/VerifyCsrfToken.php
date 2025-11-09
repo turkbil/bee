@@ -14,6 +14,9 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         // API rotalarını CSRF doğrulamasından hariç tutmak için ekleyebilirsiniz
         // 'api/*',
+
+        // Payment Gateway Callbacks (PayTR, Stripe vs.)
+        'payment/callback/*',
     ];
     
     /**

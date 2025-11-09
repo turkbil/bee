@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu İyileştirmeler - Detaylı Açıklama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .enhancement-card {
+            transition: all 0.3s;
+        }
+
+        .enhancement-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        }
+
+        .checkbox-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 1.5rem;
+            height: 1.5rem;
+            cursor: pointer;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .priority-critical { border-left: 4px solid #ef4444; }
+        .priority-high { border-left: 4px solid #f59e0b; }
+        .priority-medium { border-left: 4px solid #3b82f6; }
+        .priority-low { border-left: 4px solid #10b981; }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="glass rounded-3xl shadow-2xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-4xl font-black text-gray-900 mb-2">
+                        <i class="fas fa-rocket text-purple-600 mr-3"></i>
+                        Muzibu İyileştirmeler - Detaylı Rehber
+                    </h1>
+                    <p class="text-gray-600 text-lg">Enhancement 6-8 (Part 2): Ne İşe Yarar? Nasıl Yapılır? Ticari Değeri?</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500 mb-1">Tarih</div>
+                    <div class="text-xl font-bold text-purple-600">9 Kasım 2025</div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border-2 border-blue-300">
+                <h3 class="font-bold text-blue-900 mb-2 flex items-center gap-2 text-lg">
+                    <i class="fas fa-info-circle text-blue-600"></i>
+                    Bu Sayfanın Amacı
+                </h3>
+                <p class="text-sm text-blue-800">
+                    Her iyileştirme için <strong>detaylı açıklama</strong>, <strong>ticari değer</strong>,
+                    <strong>kod örnekleri</strong> ve <strong>yapım adımları</strong> bulacaksınız.
+                    İhtiyacınız olanları checkbox ile işaretleyin!
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="glass rounded-2xl shadow-lg p-4 mb-6 flex items-center justify-between">
+            <div class="flex gap-3">
+                <a href="muzibu-enhancements-part1.html" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-all">
+                    <i class="fas fa-arrow-left mr-2"></i> Part 1
+                </a>
+                <a href="muzibu-enhancements-part2.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all">
+                    Part 2
+                </a>
+                <a href="muzibu-enhancements-part3.html" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-all">
+                    Part 3 <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            <a href="index.html" class="text-gray-600 hover:text-gray-900 font-semibold">
+                <i class="fas fa-home mr-2"></i> Ana Sayfa
+            </a>
+        </div>
+
+        <!-- Enhancement 6: Radio Streaming Player -->
+        <div class="enhancement-card glass rounded-3xl shadow-xl p-8 mb-6 priority-critical">
+            <label class="checkbox-wrapper cursor-pointer">
+                <input type="checkbox" class="text-purple-600 rounded">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                            <i class="fas fa-broadcast-tower text-green-600"></i>
+                            6. Radio Streaming Player
+                        </h2>
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">
+                            CRITICAL
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-blue-900 mb-2">Ne İşe Yarar?</h3>
+                            <ul class="text-sm text-blue-800 space-y-2">
+                                <li>• 7/24 canlı radyo yayını</li>
+                                <li>• HLS/RTMP/HTTP stream desteği</li>
+                                <li>• Auto-reconnect, buffer management</li>
+                                <li>• Live metadata (şimdi çalan şarkı)</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-green-900 mb-2">Ticari Değer</h3>
+                            <ul class="text-sm text-green-800 space-y-2">
+                                <li>• <strong>Abonelik Geliri:</strong> Radyo paketi aylık 100-500 TL</li>
+                                <li>• <strong>Continuous Music:</strong> Kesintisiz müzik hizmeti</li>
+                                <li>• <strong>Set & Forget:</strong> Müşteri radyo açar, uğraşmaz</li>
+                                <li>• <strong>B2B Değer:</strong> İşletmeler için özel radyo</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="font-bold text-gray-900 mb-2">📻 Radio Player Özellikleri:</h3>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div class="bg-gray-100 p-3 rounded">
+                                <h4 class="font-semibold mb-1">Stream Desteği</h4>
+                                <ul class="text-xs text-gray-600">
+                                    <li>✓ HLS (HTTP Live Streaming)</li>
+                                    <li>✓ MP3/AAC stream</li>
+                                    <li>✓ Icecast/Shoutcast</li>
+                                    <li>✓ Auto codec detection</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-100 p-3 rounded">
+                                <h4 class="font-semibold mb-1">Stabilite</h4>
+                                <ul class="text-xs text-gray-600">
+                                    <li>✓ Auto-reconnect on error</li>
+                                    <li>✓ Buffer management</li>
+                                    <li>✓ Network error handling</li>
+                                    <li>✓ Retry logic (exponential backoff)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-100 p-3 rounded">
+                                <h4 class="font-semibold mb-1">Metadata</h4>
+                                <ul class="text-xs text-gray-600">
+                                    <li>✓ Now playing (artist - title)</li>
+                                    <li>✓ Station info</li>
+                                    <li>✓ Album art display</li>
+                                    <li>✓ Live listeners count</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-100 p-3 rounded">
+                                <h4 class="font-semibold mb-1">UI Kontroller</h4>
+                                <ul class="text-xs text-gray-600">
+                                    <li>✓ Play/Stop button</li>
+                                    <li>✓ Volume control</li>
+                                    <li>✓ Station selector</li>
+                                    <li>✓ Loading indicator</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="font-bold text-gray-900 mb-2">📝 Alpine.js Radio Player:</h3>
+                        <div class="code-block">
+<pre>&lt;div x-data="radioPlayer()" x-init="init()"&gt;
+    &lt;audio x-ref="radioAudio"
+           @error="handleError()"
+           @canplay="onCanPlay()"
+           @waiting="isBuffering = true"
+           @playing="isBuffering = false"&gt;&lt;/audio&gt;
+
+    &lt;div class="radio-player"&gt;
+        &lt;!-- Station Info --&gt;
+        &lt;div class="flex items-center gap-4"&gt;
+            &lt;img :src="currentStation?.logo" class="w-20 h-20 rounded-full" /&gt;
+            &lt;div class="flex-1"&gt;
+                &lt;h3 class="font-bold text-lg" x-text="currentStation?.name"&gt;&lt;/h3&gt;
+                &lt;div class="text-sm text-gray-600" x-show="nowPlaying"&gt;
+                    &lt;i class="fas fa-music mr-1"&gt;&lt;/i&gt;
+                    &lt;span x-text="nowPlaying"&gt;&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div class="text-xs text-gray-500" x-show="!nowPlaying"&gt;
+                    Yayın bilgisi alınıyor...
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Controls --&gt;
+        &lt;div class="flex items-center gap-6 mt-4"&gt;
+            &lt;!-- Play/Stop --&gt;
+            &lt;button @click="toggleRadio()"
+                    :disabled="isBuffering"
+                    class="w-16 h-16 rounded-full"
+                    :class="isPlaying ? 'bg-red-500' : 'bg-green-500'"&gt;
+                &lt;i x-show="!isBuffering"
+                   :class="isPlaying ? 'fas fa-stop' : 'fas fa-play'"
+                   class="text-white text-2xl"&gt;&lt;/i&gt;
+                &lt;i x-show="isBuffering" class="fas fa-spinner fa-spin text-white"&gt;&lt;/i&gt;
+            &lt;/button&gt;
+
+            &lt;!-- Status --&gt;
+            &lt;div class="flex-1"&gt;
+                &lt;div x-show="isPlaying && !isBuffering" class="flex items-center gap-2"&gt;
+                    &lt;span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"&gt;&lt;/span&gt;
+                    &lt;span class="text-sm font-semibold text-red-600"&gt;CANLI YAYIN&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div x-show="isBuffering" class="text-sm text-gray-600"&gt;
+                    Bağlanıyor...
+                &lt;/div&gt;
+                &lt;div x-show="!isPlaying && !isBuffering" class="text-sm text-gray-600"&gt;
+                    Durdu
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Volume --&gt;
+            &lt;div class="flex items-center gap-2"&gt;
+                &lt;i class="fas fa-volume-up text-gray-600"&gt;&lt;/i&gt;
+                &lt;input type="range" min="0" max="100"
+                       :value="volume"
+                       @input="setVolume($event.target.value)"
+                       class="w-32" /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Station Selector --&gt;
+        &lt;div class="mt-6"&gt;
+            &lt;h4 class="font-semibold mb-2"&gt;Radyo İstasyonları&lt;/h4&gt;
+            &lt;div class="grid grid-cols-3 gap-3"&gt;
+                &lt;template x-for="station in stations" :key="station.id"&gt;
+                    &lt;button @click="changeStation(station)"
+                            :class="currentStation?.id === station.id ? 'ring-2 ring-green-500' : ''"
+                            class="p-3 border rounded-lg hover:bg-gray-50"&gt;
+                        &lt;img :src="station.logo" class="w-12 h-12 mx-auto mb-2 rounded" /&gt;
+                        &lt;div class="text-xs font-semibold" x-text="station.name"&gt;&lt;/div&gt;
+                    &lt;/button&gt;
+                &lt;/template&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+function radioPlayer() {
+    return {
+        stations: [],
+        currentStation: null,
+        isPlaying: false,
+        isBuffering: false,
+        volume: 70,
+        nowPlaying: '',
+        reconnectAttempts: 0,
+        maxReconnectAttempts: 5,
+
+        async init() {
+            await this.loadStations();
+            this.loadFromStorage();
+            this.startMetadataPolling();
+        },
+
+        async loadStations() {
+            const response = await fetch('/api/radios');
+            this.stations = await response.json();
+            if (this.stations.length > 0 && !this.currentStation) {
+                this.currentStation = this.stations[0];
+            }
+        },
+
+        toggleRadio() {
+            if (this.isPlaying) {
+                this.stop();
+            } else {
+                this.play();
+            }
+        },
+
+        play() {
+            if (!this.currentStation) return;
+
+            this.isBuffering = true;
+            this.$refs.radioAudio.src = this.currentStation.stream_url;
+            this.$refs.radioAudio.volume = this.volume / 100;
+
+            this.$refs.radioAudio.play()
+                .then(() => {
+                    this.isPlaying = true;
+                    this.isBuffering = false;
+                    this.reconnectAttempts = 0;
+                    this.saveToStorage();
+                })
+                .catch(error => {
+                    console.error('Radio play error:', error);
+                    this.handleError();
+                });
+        },
+
+        stop() {
+            this.$refs.radioAudio.pause();
+            this.$refs.radioAudio.src = '';
+            this.isPlaying = false;
+            this.isBuffering = false;
+            this.saveToStorage();
+        },
+
+        changeStation(station) {
+            const wasPlaying = this.isPlaying;
+            this.stop();
+            this.currentStation = station;
+            this.nowPlaying = '';
+
+            if (wasPlaying) {
+                setTimeout(() => this.play(), 300);
+            }
+            this.saveToStorage();
+        },
+
+        setVolume(vol) {
+            this.volume = vol;
+            this.$refs.radioAudio.volume = vol / 100;
+            this.saveToStorage();
+        },
+
+        handleError() {
+            this.isBuffering = false;
+            this.reconnectAttempts++;
+
+            if (this.reconnectAttempts <= this.maxReconnectAttempts) {
+                const delay = Math.pow(2, this.reconnectAttempts) * 1000;
+                console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`);
+
+                setTimeout(() => {
+                    if (this.isPlaying) {
+                        this.play();
+                    }
+                }, delay);
+            } else {
+                alert('Radyo bağlantısı kurulamadı. Lütfen daha sonra tekrar deneyin.');
+                this.stop();
+                this.reconnectAttempts = 0;
+            }
+        },
+
+        async startMetadataPolling() {
+            setInterval(async () => {
+                if (!this.currentStation || !this.isPlaying) return;
+
+                try {
+                    const response = await fetch(`/api/radios/${this.currentStation.id}/metadata`);
+                    const data = await response.json();
+                    this.nowPlaying = data.nowPlaying || '';
+                } catch (error) {
+                    console.error('Metadata fetch error:', error);
+                }
+            }, 10000); // Her 10 saniyede bir güncelle
+        },
+
+        saveToStorage() {
+            localStorage.setItem('radioPlayer', JSON.stringify({
+                stationId: this.currentStation?.id,
+                volume: this.volume,
+                wasPlaying: this.isPlaying
+            }));
+        },
+
+        loadFromStorage() {
+            const saved = localStorage.getItem('radioPlayer');
+            if (saved) {
+                const data = JSON.parse(saved);
+                this.volume = data.volume || 70;
+
+                if (data.stationId) {
+                    const station = this.stations.find(s => s.id === data.stationId);
+                    if (station) {
+                        this.currentStation = station;
+                    }
+                }
+            }
+        }
+    }
+}
+&lt;/script&gt;</pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                        <h3 class="font-bold text-purple-900 mb-2">Nasıl Yapılır?</h3>
+                        <ol class="text-sm text-purple-800 space-y-2">
+                            <li><strong>1.</strong> Radio model + migration (stream_url kolonu)</li>
+                            <li><strong>2.</strong> Alpine.js radio player component</li>
+                            <li><strong>3.</strong> API endpoint: /api/radios/{id}/metadata</li>
+                            <li><strong>4.</strong> Auto-reconnect logic (exponential backoff)</li>
+                            <li><strong>5.</strong> Buffer management (waiting/playing events)</li>
+                            <li><strong>6.</strong> LocalStorage persistence</li>
+                            <li><strong>7.</strong> Station selector UI</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-yellow-900 mb-2">
+                            <i class="fas fa-server text-yellow-600"></i> Backend - Metadata API
+                        </h3>
+                        <div class="code-block mt-2">
+<pre>// API/RadioController.php
+public function getMetadata($id)
+{
+    $radio = Radio::findOrFail($id);
+
+    // Icecast/Shoutcast metadata fetch
+    $metadata = $this->fetchStreamMetadata($radio->stream_url);
+
+    return response()->json([
+        'success' => true,
+        'nowPlaying' => $metadata['nowPlaying'] ?? null,
+        'listeners' => $metadata['listeners'] ?? 0,
+        'bitrate' => $metadata['bitrate'] ?? null,
+    ]);
+}
+
+private function fetchStreamMetadata($streamUrl)
+{
+    // Icecast JSON endpoint varsa
+    if (str_contains($streamUrl, 'icecast')) {
+        $statusUrl = str_replace('/stream', '/status-json.xsl', $streamUrl);
+        $response = Http::get($statusUrl);
+        // Parse JSON...
+    }
+
+    // Shoutcast ise
+    if (str_contains($streamUrl, 'shoutcast')) {
+        // Shoutcast API çağrısı...
+    }
+
+    return [];
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center gap-4 text-sm">
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded">
+                            <i class="fas fa-clock mr-1"></i> Süre: 4-6 saat
+                        </span>
+                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded">
+                            <i class="fas fa-chart-line mr-1"></i> Zorluk: Orta
+                        </span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded">
+                            <i class="fas fa-check mr-1"></i> ROI: Çok Yüksek (Abonelik)
+                        </span>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Enhancement 7: Sector Filtering -->
+        <!-- Enhancement 7: Sector Filtering -->
+        <div class="enhancement-card glass rounded-3xl shadow-xl p-8 mb-6 priority-high">
+            <label class="checkbox-wrapper cursor-pointer">
+                <input type="checkbox" class="text-purple-600 rounded">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                            <i class="fas fa-building text-orange-600"></i>
+                            7. Sector-Based Filtering (Sektör Filtresi)
+                        </h2>
+                        <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold">
+                            HIGH
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-blue-900 mb-2">Ne İşe Yarar?</h3>
+                            <ul class="text-sm text-blue-800 space-y-2">
+                                <li>• Restoran/Kafe/Ofis/Spor Salonu müzik filtreleme</li>
+                                <li>• Sektöre özel playlist önerileri</li>
+                                <li>• Dropdown veya card seçim UI</li>
+                                <li>• İlişkili içerik gösterimi</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-green-900 mb-2">Ticari Değer</h3>
+                            <ul class="text-sm text-green-800 space-y-2">
+                                <li>• <strong>Pazarlama:</strong> "Restoranınız için müzikler"</li>
+                                <li>• <strong>Segmentation:</strong> Sektörel hedefleme</li>
+                                <li>• <strong>Upsell:</strong> "Kafe paketi" sat</li>
+                                <li>• <strong>Personalization:</strong> İlgili içerik</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="font-bold text-gray-900 mb-2">📝 Frontend Component:</h3>
+                        <div class="code-block">
+<pre>&lt;div x-data="{ selectedSector: null }"&gt;
+    &lt;!-- Sector Cards --&gt;
+    &lt;div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"&gt;
+        &lt;button @click="selectedSector = 1"
+                :class="selectedSector === 1 ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-white'"
+                class="p-6 border rounded-xl hover:shadow-lg transition"&gt;
+            &lt;i class="fas fa-utensils text-4xl text-orange-500 mb-2"&gt;&lt;/i&gt;
+            &lt;div class="font-semibold"&gt;Restoran&lt;/div&gt;
+            &lt;div class="text-xs text-gray-500"&gt;Sakin, romantik&lt;/div&gt;
+        &lt;/button&gt;
+
+        &lt;button @click="selectedSector = 2"
+                :class="selectedSector === 2 ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-white'"
+                class="p-6 border rounded-xl hover:shadow-lg transition"&gt;
+            &lt;i class="fas fa-coffee text-4xl text-brown-500 mb-2"&gt;&lt;/i&gt;
+            &lt;div class="font-semibold"&gt;Kafe&lt;/div&gt;
+            &lt;div class="text-xs text-gray-500"&gt;Chill, indie&lt;/div&gt;
+        &lt;/button&gt;
+
+        &lt;button @click="selectedSector = 3"
+                :class="selectedSector === 3 ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-white'"
+                class="p-6 border rounded-xl hover:shadow-lg transition"&gt;
+            &lt;i class="fas fa-briefcase text-4xl text-blue-500 mb-2"&gt;&lt;/i&gt;
+            &lt;div class="font-semibold"&gt;Ofis&lt;/div&gt;
+            &lt;div class="text-xs text-gray-500"&gt;Konsantrasyon&lt;/div&gt;
+        &lt;/button&gt;
+
+        &lt;button @click="selectedSector = 4"
+                :class="selectedSector === 4 ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-white'"
+                class="p-6 border rounded-xl hover:shadow-lg transition"&gt;
+            &lt;i class="fas fa-dumbbell text-4xl text-red-500 mb-2"&gt;&lt;/i&gt;
+            &lt;div class="font-semibold"&gt;Spor Salonu&lt;/div&gt;
+            &lt;div class="text-xs text-gray-500"&gt;Yüksek tempo&lt;/div&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Filtered Playlists --&gt;
+    &lt;div x-show="selectedSector"&gt;
+        &lt;h2 class="text-2xl font-bold mb-4"&gt;
+            &lt;span x-text="getSectorName(selectedSector)"&gt;&lt;/span&gt; için Playlist'ler
+        &lt;/h2&gt;
+        &lt;div class="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;
+            &lt;!-- API'den gelen playlist'ler --&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h3 class="font-bold text-gray-900 mb-2">🔧 Backend API:</h3>
+                        <div class="code-block">
+<pre>// API/PlaylistController.php
+public function getBySector(Request $request)
+{
+    $sectorId = $request->sector_id;
+
+    $playlists = Playlist::whereHas('sectors', function($q) use ($sectorId) {
+            $q->where('sector_id', $sectorId);
+        })
+        ->with(['songs' => function($q) {
+            $q->limit(5); // İlk 5 şarkı
+        }])
+        ->where('is_active', true)
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'sector' => Sector::find($sectorId),
+        'playlists' => $playlists,
+    ]);
+}
+
+// Livewire Component
+class MusicBySector extends Component
+{
+    public $sectorId;
+    public $playlists;
+
+    public function mount($sectorId = null)
+    {
+        $this->sectorId = $sectorId;
+        $this->loadPlaylists();
+    }
+
+    public function loadPlaylists()
+    {
+        if (!$this->sectorId) return;
+
+        $this->playlists = Playlist::whereHas('sectors', fn($q) =>
+            $q->where('sector_id', $this->sectorId)
+        )->with('songs')->get();
+    }
+
+    public function changeSector($sectorId)
+    {
+        $this->sectorId = $sectorId;
+        $this->loadPlaylists();
+    }
+
+    public function render()
+    {
+        $sectors = Sector::all();
+        return view('livewire.music-by-sector', compact('sectors'));
+    }
+}</pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                        <h3 class="font-bold text-purple-900 mb-2">Nasıl Yapılır?</h3>
+                        <ol class="text-sm text-purple-800 space-y-2">
+                            <li><strong>1.</strong> Sector model + migration (zaten var)</li>
+                            <li><strong>2.</strong> muzibu_playlist_sector pivot tablosu (var)</li>
+                            <li><strong>3.</strong> API endpoint: /api/playlists?sector_id=X</li>
+                            <li><strong>4.</strong> Frontend sector selector (cards/dropdown)</li>
+                            <li><strong>5.</strong> Livewire component: MusicBySector</li>
+                            <li><strong>6.</strong> Playlist seeder'da sector ilişkileri ekle</li>
+                        </ol>
+                    </div>
+
+                    <div class="mt-4 flex items-center gap-4 text-sm">
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded">
+                            <i class="fas fa-clock mr-1"></i> Süre: 3-4 saat
+                        </span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded">
+                            <i class="fas fa-chart-line mr-1"></i> Zorluk: Kolay
+                        </span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded">
+                            <i class="fas fa-check mr-1"></i> ROI: Yüksek (Pazarlama)
+                        </span>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Enhancement 8: Mood-Based Filtering -->
+        <div class="enhancement-card glass rounded-3xl shadow-xl p-8 mb-6 priority-high">
+            <label class="checkbox-wrapper cursor-pointer">
+                <input type="checkbox" class="text-purple-600 rounded">
+                <div class="flex-1">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                            <i class="fas fa-heart text-pink-600"></i>
+                            8. Mood-Based Filtering (Ruh Hali Filtresi)
+                        </h2>
+                        <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-semibold">
+                            HIGH
+                        </span>
+                    </div>
+
+                    <!-- 2-Column Grid: Ne İşe Yarar + Ticari Değer -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-blue-50 rounded-2xl p-6">
+                            <h3 class="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-lightbulb"></i> Ne İşe Yarar?
+                            </h3>
+                            <ul class="space-y-2 text-blue-800">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle mt-1 flex-shrink-0"></i>
+                                    <span><strong>Emotional Targeting</strong> - "Mutlu", "Sakin", "Romantik", "Enerjik" ruh hali seçimi</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle mt-1 flex-shrink-0"></i>
+                                    <span><strong>Multi-Select Filtering</strong> - Birden fazla mood seçimi (Sakin + Romantik)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle mt-1 flex-shrink-0"></i>
+                                    <span><strong>Mood Badges</strong> - Her şarkı/playlist için mood tag gösterimi</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check-circle mt-1 flex-shrink-0"></i>
+                                    <span><strong>Frontend Filtering</strong> - Alpine.js ile anında filtreleme (page reload yok)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 rounded-2xl p-6">
+                            <h3 class="text-lg font-bold text-green-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-dollar-sign"></i> Ticari Değer
+                            </h3>
+                            <ul class="space-y-2 text-green-800">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-chart-line mt-1 flex-shrink-0"></i>
+                                    <span><strong>Kullanıcı Deneyimi</strong> - "Akşam romantik müzik istiyorum" ⭐⭐⭐⭐⭐</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-chart-line mt-1 flex-shrink-0"></i>
+                                    <span><strong>Session Süresi +40%</strong> - Doğru mood = daha uzun dinleme</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-chart-line mt-1 flex-shrink-0"></i>
+                                    <span><strong>Pazarlama Segmentation</strong> - "Rahatlatıcı ofis müzikleri paketi"</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-chart-line mt-1 flex-shrink-0"></i>
+                                    <span><strong>Spotify Benzeri UX</strong> - Modern platform feature parity</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Feature Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-purple-100 rounded-xl p-4 text-center">
+                            <i class="fas fa-smile text-3xl text-purple-600 mb-2"></i>
+                            <div class="text-sm font-semibold text-purple-900">Mutlu</div>
+                            <div class="text-xs text-purple-700">Happy mood tag</div>
+                        </div>
+                        <div class="bg-blue-100 rounded-xl p-4 text-center">
+                            <i class="fas fa-spa text-3xl text-blue-600 mb-2"></i>
+                            <div class="text-sm font-semibold text-blue-900">Sakin</div>
+                            <div class="text-xs text-blue-700">Calm/Relax mood</div>
+                        </div>
+                        <div class="bg-pink-100 rounded-xl p-4 text-center">
+                            <i class="fas fa-heart text-3xl text-pink-600 mb-2"></i>
+                            <div class="text-sm font-semibold text-pink-900">Romantik</div>
+                            <div class="text-xs text-pink-700">Romantic mood</div>
+                        </div>
+                        <div class="bg-orange-100 rounded-xl p-4 text-center">
+                            <i class="fas fa-bolt text-3xl text-orange-600 mb-2"></i>
+                            <div class="text-sm font-semibold text-orange-900">Enerjik</div>
+                            <div class="text-xs text-orange-700">Energetic mood</div>
+                        </div>
+                    </div>
+
+                    <!-- Code Example: Alpine.js Frontend -->
+                    <div class="bg-gray-900 rounded-2xl p-6 mb-6 overflow-x-auto">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-white font-bold flex items-center gap-2">
+                                <i class="fas fa-code"></i> Frontend: Mood Filter Component (Alpine.js)
+                            </h4>
+                            <span class="text-gray-400 text-xs">resources/views/front/muzibu/browse.blade.php</span>
+                        </div>
+                        <pre class="text-green-400 text-sm"><code>&lt;!-- Mood Filter Component --&gt;
+&lt;div x-data="moodFilter()" x-init="loadPlaylists()"&gt;
+    &lt;!-- Mood Selector --&gt;
+    &lt;div class="flex flex-wrap gap-3 mb-6"&gt;
+        &lt;template x-for="mood in moods" :key="mood.id"&gt;
+            &lt;button
+                @click="toggleMood(mood.id)"
+                :class="selectedMoods.includes(mood.id) ? 'bg-purple-600 text-white' : 'bg-white text-gray-700'"
+                class="px-6 py-3 rounded-full border-2 border-purple-600 transition-all hover:scale-105"
+            &gt;
+                &lt;i :class="mood.icon" class="mr-2"&gt;&lt;/i&gt;
+                &lt;span x-text="mood.name"&gt;&lt;/span&gt;
+            &lt;/button&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Selected Mood Badges --&gt;
+    &lt;div class="mb-4" x-show="selectedMoods.length &gt; 0"&gt;
+        &lt;span class="text-sm text-gray-600 mr-2"&gt;Seçili ruh hali:&lt;/span&gt;
+        &lt;template x-for="moodId in selectedMoods" :key="moodId"&gt;
+            &lt;span class="inline-flex items-center gap-2 bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm mr-2"&gt;
+                &lt;span x-text="getMoodName(moodId)"&gt;&lt;/span&gt;
+                &lt;button @click="removeMood(moodId)" class="hover:text-purple-900"&gt;×&lt;/button&gt;
+            &lt;/span&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Playlist Grid (Filtered) --&gt;
+    &lt;div class="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;
+        &lt;template x-for="playlist in filteredPlaylists" :key="playlist.id"&gt;
+            &lt;div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all"&gt;
+                &lt;img :src="playlist.cover_url" class="w-full h-48 object-cover"&gt;
+                &lt;div class="p-4"&gt;
+                    &lt;h3 class="font-bold text-lg mb-2" x-text="playlist.title"&gt;&lt;/h3&gt;
+
+                    &lt;!-- Playlist Mood Badges --&gt;
+                    &lt;div class="flex flex-wrap gap-2 mb-3"&gt;
+                        &lt;template x-for="mood in playlist.moods" :key="mood.id"&gt;
+                            &lt;span class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"&gt;
+                                &lt;i :class="mood.icon" class="mr-1"&gt;&lt;/i&gt;
+                                &lt;span x-text="mood.name"&gt;&lt;/span&gt;
+                            &lt;/span&gt;
+                        &lt;/template&gt;
+                    &lt;/div&gt;
+
+                    &lt;button @click="playPlaylist(playlist.id)" class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"&gt;
+                        &lt;i class="fas fa-play mr-2"&gt;&lt;/i&gt; Çal
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+function moodFilter() {
+    return {
+        moods: [
+            { id: 1, name: 'Mutlu', icon: 'fas fa-smile', color: 'purple' },
+            { id: 2, name: 'Sakin', icon: 'fas fa-spa', color: 'blue' },
+            { id: 3, name: 'Romantik', icon: 'fas fa-heart', color: 'pink' },
+            { id: 4, name: 'Enerjik', icon: 'fas fa-bolt', color: 'orange' },
+            { id: 5, name: 'Hüzünlü', icon: 'fas fa-cloud-rain', color: 'gray' },
+            { id: 6, name: 'Motivasyon', icon: 'fas fa-fire', color: 'red' }
+        ],
+        selectedMoods: [],
+        allPlaylists: [],
+
+        get filteredPlaylists() {
+            if (this.selectedMoods.length === 0) {
+                return this.allPlaylists;
+            }
+
+            return this.allPlaylists.filter(playlist =&gt; {
+                // Playlist'in en az bir seçili mood'u içermesi yeterli
+                return playlist.moods.some(mood =&gt; this.selectedMoods.includes(mood.id));
+            });
+        },
+
+        toggleMood(moodId) {
+            const index = this.selectedMoods.indexOf(moodId);
+            if (index === -1) {
+                this.selectedMoods.push(moodId);
+            } else {
+                this.selectedMoods.splice(index, 1);
+            }
+        },
+
+        removeMood(moodId) {
+            const index = this.selectedMoods.indexOf(moodId);
+            if (index !== -1) {
+                this.selectedMoods.splice(index, 1);
+            }
+        },
+
+        getMoodName(moodId) {
+            const mood = this.moods.find(m =&gt; m.id === moodId);
+            return mood ? mood.name : '';
+        },
+
+        async loadPlaylists() {
+            try {
+                const response = await fetch('/api/playlists?with=moods,songs');
+                const data = await response.json();
+                this.allPlaylists = data.data;
+            } catch (error) {
+                console.error('Playlists yüklenemedi:', error);
+            }
+        },
+
+        playPlaylist(playlistId) {
+            // Music player'a playlist gönder
+            window.dispatchEvent(new CustomEvent('play-playlist', { detail: { playlistId } }));
+        }
+    }
+}
+&lt;/script&gt;</code></pre>
+                    </div>
+
+                    <!-- Implementation Steps -->
+                    <div class="bg-purple-50 rounded-2xl p-6 mb-6">
+                        <h3 class="font-bold text-purple-900 mb-4 text-lg">Nasıl Yapılır?</h3>
+                        <ol class="space-y-3 text-purple-800">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
+                                <div>
+                                    <strong>Mood Model + Migration (zaten var)</strong>
+                                    <p class="text-sm text-purple-700">muzibu_moods tablosu: id, title (JSON), icon, color, is_active</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
+                                <div>
+                                    <strong>Pivot Tabloları (zaten var)</strong>
+                                    <p class="text-sm text-purple-700">muzibu_song_mood, muzibu_playlist_mood, muzibu_album_mood</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</span>
+                                <div>
+                                    <strong>Model İlişkileri Ekle</strong>
+                                    <p class="text-sm text-purple-700">Song/Playlist/Album modellerinde belongsToMany('moods') ilişkisi</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">4</span>
+                                <div>
+                                    <strong>API Endpoint Ekle</strong>
+                                    <p class="text-sm text-purple-700">GET /api/playlists?mood_ids[]=1&mood_ids[]=3 (multi-select)</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">5</span>
+                                <div>
+                                    <strong>Frontend Component</strong>
+                                    <p class="text-sm text-purple-700">Alpine.js ile mood selector + filtreleme logic</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">6</span>
+                                <div>
+                                    <strong>Admin CRUD (Livewire)</strong>
+                                    <p class="text-sm text-purple-700">Mood yönetimi + Playlist/Song'lara mood atama checkbox'ları</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">7</span>
+                                <div>
+                                    <strong>Seeder Data</strong>
+                                    <p class="text-sm text-purple-700">6 temel mood (Mutlu, Sakin, Romantik, Enerjik, Hüzünlü, Motivasyon)</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Backend API Code -->
+                    <div class="bg-gray-900 rounded-2xl p-6 mb-6 overflow-x-auto">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-white font-bold flex items-center gap-2">
+                                <i class="fab fa-php"></i> Backend: API Controller
+                            </h4>
+                            <span class="text-gray-400 text-xs">app/Http/Controllers/API/PlaylistController.php</span>
+                        </div>
+                        <pre class="text-green-400 text-sm"><code>// Mood-based playlist filtering
+public function index(Request $request)
+{
+    $query = Playlist::with(['songs', 'moods', 'sectors']);
+
+    // Mood filtering (multi-select)
+    if ($request->has('mood_ids') && !empty($request->mood_ids)) {
+        $moodIds = is_array($request->mood_ids) ? $request->mood_ids : [$request->mood_ids];
+
+        $query->whereHas('moods', function($q) use ($moodIds) {
+            $q->whereIn('muzibu_moods.id', $moodIds);
+        });
+    }
+
+    // Active playlists only
+    $query->where('is_active', true);
+
+    // Order by popularity (play count)
+    $query->orderBy('play_count', 'desc');
+
+    $playlists = $query->paginate($request->get('per_page', 20));
+
+    return response()->json([
+        'success' => true,
+        'data' => $playlists
+    ]);
+}
+
+// Mood model relationship
+// Modules/Muzibu/app/Models/Playlist.php
+public function moods()
+{
+    return $this->belongsToMany(
+        Mood::class,
+        'muzibu_playlist_mood',
+        'playlist_id',
+        'mood_id'
+    );
+}</code></pre>
+                    </div>
+
+                    <!-- Time/Difficulty/ROI -->
+                    <div class="flex flex-wrap items-center gap-4 text-sm">
+                        <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-semibold">
+                            <i class="fas fa-clock mr-2"></i> Süre: 3-4 saat
+                        </span>
+                        <span class="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-semibold">
+                            <i class="fas fa-chart-line mr-2"></i> Zorluk: Kolay
+                        </span>
+                        <span class="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg font-semibold">
+                            <i class="fas fa-check-double mr-2"></i> ROI: Yüksek (UX)
+                        </span>
+                    </div>
+                </div>
+            </label>
+        </div>
+
+    </div>
+    <script>
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('Muzibu Enhancements Part 2 - Accordion Script Starting...');
+
+    // Checkbox'ları gizle
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.style.display = 'none';
+        const label = checkbox.closest('label');
+        if (label) {
+            label.style.cursor = 'default';
+            label.classList.remove('checkbox-wrapper', 'cursor-pointer');
+        }
+    });
+
+    // TÜM kod bloklarını bul (.code-block ve .bg-gray-900 olanlar)
+    const codeBlocks = document.querySelectorAll('.code-block, .bg-gray-900');
+    console.log('Toplam kod bloğu bulundu:', codeBlocks.length);
+
+    codeBlocks.forEach((codeBlock, index) => {
+        if (codeBlock.dataset.accordionProcessed === 'true') {
+            console.log('Blok #' + index + ' zaten işlenmiş');
+            return;
+        }
+
+        codeBlock.dataset.accordionProcessed = 'true';
+        codeBlock.style.display = 'none';
+        codeBlock.classList.add('hidden');
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-between hover:from-purple-700 hover:to-blue-700 transition-all mb-4 shadow-lg';
+        button.innerHTML = '<span><i class="fas fa-code mr-2"></i> Kod Örneğini Göster</span><i class="fas fa-chevron-down transition-transform duration-300" id="accordion-icon-' + index + '"></i>';
+
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isHidden = codeBlock.classList.contains('hidden');
+
+            if (isHidden) {
+                codeBlock.classList.remove('hidden');
+                codeBlock.style.display = 'block';
+                this.querySelector('span').innerHTML = '<i class="fas fa-code mr-2"></i> Kodu Gizle';
+                const icon = document.getElementById('accordion-icon-' + index);
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                codeBlock.classList.add('hidden');
+                codeBlock.style.display = 'none';
+                this.querySelector('span').innerHTML = '<i class="fas fa-code mr-2"></i> Kod Örneğini Göster';
+                const icon = document.getElementById('accordion-icon-' + index);
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        codeBlock.parentNode.insertBefore(button, codeBlock);
+        console.log('Blok #' + index + ' işlendi');
+    });
+
+    console.log('Accordion işlemi tamamlandı. İşlenen blok sayısı:', codeBlocks.length);
+});
+    </script>
+</body>
+</html>

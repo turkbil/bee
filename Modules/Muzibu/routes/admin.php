@@ -1,12 +1,8 @@
 <?php
 // Modules/Muzibu/routes/admin.php
 use Illuminate\Support\Facades\Route;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuComponent;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuManageComponent;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuCategoryComponent;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuCategoryManageComponent;
 
-// Admin rotaları
+// Admin rotaları - Livewire Pattern
 Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
@@ -14,24 +10,99 @@ Route::middleware(['admin', 'tenant'])
         Route::prefix('muzibu')
             ->name('muzibu.')
             ->group(function () {
-                Route::get('/', MuzibuComponent::class)
+                // Muzibu Dashboard - Songs Index (direkt)
+                Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\SongController::class, 'index'])
                     ->middleware('module.permission:muzibu,view')
                     ->name('index');
 
-                Route::get('/manage/{id?}', MuzibuManageComponent::class)
-                    ->middleware('module.permission:muzibu,update')
-                    ->name('manage');
-
-                // Kategori route'ları
-                Route::prefix('category')
-                    ->name('category.')
+                // Songs - Livewire
+                Route::prefix('song')
+                    ->name('song.')
                     ->group(function () {
-                        Route::get('/', MuzibuCategoryComponent::class)
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\SongController::class, 'index'])
                             ->middleware('module.permission:muzibu,view')
                             ->name('index');
 
-                        Route::get('/manage/{id?}', MuzibuCategoryManageComponent::class)
-                            ->middleware('module.permission:muzibu,update')
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\SongController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Artists - Livewire
+                Route::prefix('artist')
+                    ->name('artist.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\ArtistController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\ArtistController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Genres - Livewire
+                Route::prefix('genre')
+                    ->name('genre.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\GenreController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\GenreController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Albums - Livewire
+                Route::prefix('album')
+                    ->name('album.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\AlbumController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\AlbumController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Playlists - Livewire
+                Route::prefix('playlist')
+                    ->name('playlist.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Sectors - Livewire
+                Route::prefix('sector')
+                    ->name('sector.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\SectorController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\SectorController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
+
+                // Radios - Livewire
+                Route::prefix('radio')
+                    ->name('radio.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\RadioController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\RadioController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
                             ->name('manage');
                     });
             });

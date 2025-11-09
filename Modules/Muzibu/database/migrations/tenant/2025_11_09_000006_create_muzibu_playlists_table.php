@@ -1,0 +1,52 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('muzibu_playlists', function (Blueprint $table) {
+            $table->id('playlist_id');
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->json('title')->comment('Çoklu dil playlist adı: {"tr": "Çalma Listesi", "en": "Playlist"}');
+            $table->json('slug')->comment('Çoklu dil slug: {"tr": "calma-listesi", "en": "playlist"}');
+            $table->json('description')->nullable()->comment('Çoklu dil açıklama: {"tr": "Açıklama", "en": "Description"}');
+            $table->unsignedBigInteger('media_id')->nullable()->comment('Thumbmaker media ID (playlist cover)');
+            $table->boolean('is_system')->default(false)->index()->comment('System playlist (admin created)');
+            $table->boolean('is_public')->default(true)->index()->comment('Public visibility');
+            $table->boolean('is_radio')->default(false)->index()->comment('Radio stream type');
+            $table->boolean('is_active')->default(true)->index();
+            $table->timestamps();
+            $table->softDeletes();
+
+            // Foreign keys
+            $table->foreign('media_id')->references('id')->on('media')->nullOnDelete();
+
+            // İlave indeksler
+            $table->index('user_id');
+            $table->index('created_at');
+            $table->index('updated_at');
+            $table->index('deleted_at');
+
+            // Composite index'ler
+            $table->index(['is_active', 'deleted_at', 'created_at'], 'muzibu_playlists_active_deleted_created_idx');
+            $table->index(['is_active', 'deleted_at'], 'muzibu_playlists_active_deleted_idx');
+            $table->index(['is_public', 'is_active', 'deleted_at'], 'muzibu_playlists_public_active_deleted_idx');
+            $table->index(['is_system', 'is_active', 'deleted_at'], 'muzibu_playlists_system_active_deleted_idx');
+            $table->index(['is_radio', 'is_active', 'deleted_at'], 'muzibu_playlists_radio_active_deleted_idx');
+            $table->index(['user_id', 'is_active', 'deleted_at'], 'muzibu_playlists_user_active_deleted_idx');
+        });
+
+        // JSON slug indexes (MySQL 8.0+ / MariaDB 10.5+) - Disabled for compatibility
+        // Note: JSON functional indexes disabled for broader database compatibility
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('muzibu_playlists');
+    }
+};

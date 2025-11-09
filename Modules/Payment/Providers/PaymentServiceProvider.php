@@ -45,10 +45,11 @@ class PaymentServiceProvider extends ServiceProvider
         }
         $this->loadViewsFrom(module_path('Payment', 'resources/views'), 'payment');
 
-        Livewire::component('payment-component', PaymentComponent::class);
-        Livewire::component('payment-manage-component', PaymentManageComponent::class);
-        Livewire::component('payment-category-component', PaymentCategoryComponent::class);
-        Livewire::component('payment-category-manage-component', PaymentCategoryManageComponent::class);
+        // Admin Livewire Components
+        Livewire::component('payment::admin.payments-component', PaymentsComponent::class);
+        Livewire::component('payment::admin.payment-detail-component', PaymentDetailComponent::class);
+        Livewire::component('payment::admin.payment-methods-component', PaymentMethodsComponent::class);
+        Livewire::component('payment::admin.payment-method-manage-component', PaymentMethodManageComponent::class);
     }
 
     /**
@@ -65,7 +66,9 @@ class PaymentServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // Komutlar buraya eklenecek
+        $this->commands([
+            \Modules\Payment\App\Console\UpdatePayTRInstallmentRatesCommand::class,
+        ]);
     }
 
     /**
@@ -73,10 +76,24 @@ class PaymentServiceProvider extends ServiceProvider
      */
     protected function registerCommandSchedules(): void
     {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+
+            // PayTR Taksit Oranları Güncelleme - Günde 2 kez
+            // Sabah 09:00 (işyeri açılmadan önce)
+            $schedule->command('payment:update-paytr-rates')
+                     ->dailyAt('09:00')
+                     ->withoutOverlapping()
+                     ->runInBackground()
+                     ->appendOutputTo(storage_path('logs/paytr-installments.log'));
+
+            // Akşam 18:00 (işyeri kapandıktan sonra)
+            $schedule->command('payment:update-paytr-rates')
+                     ->dailyAt('18:00')
+                     ->withoutOverlapping()
+                     ->runInBackground()
+                     ->appendOutputTo(storage_path('logs/paytr-installments.log'));
+        });
     }
 
     /**

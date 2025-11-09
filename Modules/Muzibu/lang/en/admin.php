@@ -2,10 +2,33 @@
 
 return [
     // General
+    'music_platform' => 'Music Platform',
+    'music_platform_management' => 'Music Platform Management',
     'muzibus' => 'Muzibus',
     'muzibu_management' => 'Muzibu Management',
     'new_muzibu' => 'New Muzibu',
     'muzibu_detail' => 'Muzibu Detail',
+
+    // Music Library
+    'music_library' => 'Music Library',
+    'songs' => 'Songs',
+    'albums' => 'Albums',
+    'artists' => 'Artists',
+    'genres' => 'Genres',
+
+    // Playlists & Radio
+    'playlists_radio' => 'Playlists & Radio',
+    'playlists' => 'Playlists',
+    'radios' => 'Radios',
+    'sectors' => 'Sectors',
+
+    // Quick Actions
+    'quick_add' => 'Quick Add',
+    'new_song' => 'New Song',
+    'new_album' => 'New Album',
+    'new_artist' => 'New Artist',
+    'new_playlist' => 'New Playlist',
+    'new_radio' => 'New Radio',
     'home' => 'Home',
     'title_field' => 'Title',
     'content' => 'Content',

@@ -1,10 +1,34 @@
 <?php
 
 return [
+// General
+'music_platform' => 'منصة الموسيقى',
+'music_platform_management' => 'إدارة منصة الموسيقى',
 'muzibus' => 'الصفحات',
 'muzibu_management' => 'إدارة الإعلانات',
 'new_muzibu' => 'إعلان جديد',
 'home' => 'الصفحة الرئيسية',
+
+// Music Library
+'music_library' => 'مكتبة الموسيقى',
+'songs' => 'الأغاني',
+'albums' => 'الألبومات',
+'artists' => 'الفنانين',
+'genres' => 'الأنواع',
+
+// Playlists & Radio
+'playlists_radio' => 'قوائم التشغيل والراديو',
+'playlists' => 'قوائم التشغيل',
+'radios' => 'الراديو',
+'sectors' => 'القطاعات',
+
+// Quick Actions
+'quick_add' => 'إضافة سريعة',
+'new_song' => 'أغنية جديدة',
+'new_album' => 'ألبوم جديد',
+'new_artist' => 'فنان جديد',
+'new_playlist' => 'قائمة تشغيل جديدة',
+'new_radio' => 'راديو جديد',
 'title_field' => 'العنوان',
 'content' => 'المحتوى',
 'slug_field' => 'الرابط المختصر',

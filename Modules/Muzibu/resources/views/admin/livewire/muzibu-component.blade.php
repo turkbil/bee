@@ -69,20 +69,20 @@
                                            class="form-check-input"
                                            id="selectAllCheckbox"
                                            x-data="{
-                                               indeterminate: {{ count($selectedItems) > 0 && !$selectAll ? 'true' : 'false' }}
+                                               indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
                                            }"
                                            x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
-                                           @checked($selectAll)>
+                                           x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
+                                           @checked($selectAll ?? false)>
                                     <button
-                                        class="table-sort {{ $sortField === 'muzibu_id' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                        class="table-sort {{ ($sortField ?? '') === 'muzibu_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
                                         wire:click="sortBy('muzibu_id')">
                                     </button>
                                 </div>
                             </th>
                             <th>
                                 <button
-                                    class="table-sort {{ $sortField === 'title' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    class="table-sort {{ ($sortField ?? '') === 'title' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('title')">
                                     {{ __('muzibu::admin.title_field') }}
                                 </button>
@@ -90,7 +90,7 @@
                             <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top"
                                 title="{{ __('muzibu::admin.status') }}">
                                 <button
-                                    class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    class="table-sort {{ ($sortField ?? '') === 'is_active' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('is_active')">
                                     {{ __('muzibu::admin.status') }}
                                 </button>

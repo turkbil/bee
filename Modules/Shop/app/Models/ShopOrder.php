@@ -5,10 +5,13 @@ namespace Modules\Shop\App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Modules\Payment\App\Contracts\Payable;
 
-class ShopOrder extends Model
+class ShopOrder extends Model implements Payable
 {
     protected $table = 'shop_orders';
+    protected $primaryKey = 'order_id';
 
     protected $fillable = [
         'tenant_id',
@@ -67,5 +70,76 @@ class ShopOrder extends Model
     public function items(): HasMany
     {
         return $this->hasMany(ShopOrderItem::class, 'order_id');
+    }
+
+    /**
+     * İlişki: Ödemeler (Polymorphic)
+     */
+    public function payments(): MorphMany
+    {
+        return $this->morphMany(\Modules\Payment\App\Models\Payment::class, 'payable');
+    }
+
+    // Payable Interface Implementation
+
+    public function getPaymentAmount(): float
+    {
+        return (float) $this->total;
+    }
+
+    public function getPaymentCurrency(): string
+    {
+        return 'TRY'; // Shop için default TRY
+    }
+
+    public function getPaymentCustomer(): array
+    {
+        return [
+            'name' => $this->customer_name ?? 'Misafir',
+            'email' => $this->customer_email ?? '',
+            'phone' => $this->customer_phone ?? '',
+            'address' => $this->shipping_address ?? '',
+            'city' => $this->shipping_city ?? '',
+        ];
+    }
+
+    public function getPaymentBasket(): array
+    {
+        $basket = [];
+        foreach ($this->items as $item) {
+            $basket[] = [
+                'name' => $item->product_title ?? 'Ürün',
+                'price' => (float) $item->price,
+                'quantity' => $item->quantity,
+            ];
+        }
+        return $basket;
+    }
+
+    public function getPaymentDescription(): string
+    {
+        return "Sipariş #" . $this->order_number;
+    }
+
+    public function onPaymentCompleted($payment): void
+    {
+        $this->update([
+            'payment_status' => 'paid',
+            'status' => 'processing', // Sipariş işleme alınacak
+        ]);
+    }
+
+    public function onPaymentFailed($payment): void
+    {
+        $this->update([
+            'payment_status' => 'failed',
+        ]);
+    }
+
+    public function onPaymentCancelled($payment): void
+    {
+        $this->update([
+            'payment_status' => 'cancelled',
+        ]);
     }
 }

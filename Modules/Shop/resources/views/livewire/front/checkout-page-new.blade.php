@@ -48,101 +48,44 @@
 
                 {{-- 2. Teslimat Adresi (ÖNCE GELMELI) --}}
                 <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                        <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
-                        Teslimat Adresi
-                    </h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
+                            Teslimat Adresi
+                        </h2>
+                        <button wire:click="openShippingModal"
+                            class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
+                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                        </button>
+                    </div>
 
-                    @if($customerId && $shipping_address_id)
-                        {{-- Login User: Adres Özeti (Modal ile düzenlenir) --}}
-                        <div class="flex items-center justify-between">
-                            <div class="text-sm text-gray-600 dark:text-gray-400">
-                                @php
-                                    $shippingAddr = \Modules\Shop\App\Models\ShopCustomerAddress::find($shipping_address_id);
-                                @endphp
+                    {{-- Özet Gösterimi --}}
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        @php
+                            $shippingAddr = $shipping_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($shipping_address_id) : null;
+                        @endphp
 
-                                @if($shippingAddr)
-                                    <p class="font-medium text-gray-900 dark:text-white mb-1">
-                                        <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-red-500 dark:text-red-400"></i>
-                                        {{ $shippingAddr->title ?? 'Teslimat Adresi' }}
-                                    </p>
-                                    <p class="text-xs ml-5">
-                                        {{ $shippingAddr->address_line_1 }}@if($shippingAddr->address_line_2), {{ $shippingAddr->address_line_2 }}@endif
-                                    </p>
-                                    <p class="text-xs ml-5">{{ $shippingAddr->district }} / {{ $shippingAddr->city }}</p>
-                                @endif
-                            </div>
-                            <button wire:click="openShippingModal"
-                                class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                                <i class="fa-solid fa-edit mr-1"></i> Değiştir
-                            </button>
-                        </div>
-                    @else
-                        {{-- Guest User: Inline Adres Formu --}}
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Adres <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" wire:model="shipping_address_line_1"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    placeholder="Mahalle, Sokak, No">
-                                @error('shipping_address_line_1') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Adres Satır 2 (Opsiyonel)
-                                </label>
-                                <input type="text" wire:model="shipping_address_line_2"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    placeholder="Daire, Kat, vb.">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                        İl <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="text" wire:model="shipping_city"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="Örn: İstanbul">
-                                    @error('shipping_city') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div>
-                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                        İlçe <span class="text-red-500">*</span>
-                                    </label>
-                                    <input type="text" wire:model="shipping_district"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="Örn: Kadıköy">
-                                    @error('shipping_district') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                        Posta Kodu (Opsiyonel)
-                                    </label>
-                                    <input type="text" wire:model="shipping_postal_code"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="34000">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Teslimat Notları (Opsiyonel)
-                                </label>
-                                <textarea wire:model="shipping_delivery_notes"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    rows="2"
-                                    placeholder="Kapıcıya bırakabilirsiniz, vb."></textarea>
-                            </div>
-                        </div>
-                    @endif
+                        @if($shippingAddr)
+                            <p class="font-medium text-gray-900 dark:text-white mb-1">
+                                <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-red-500 dark:text-red-400"></i>
+                                {{ $shippingAddr->title ?? 'Teslimat Adresi' }}
+                            </p>
+                            <p class="text-xs ml-5">
+                                {{ $shippingAddr->address_line_1 }}@if($shippingAddr->address_line_2), {{ $shippingAddr->address_line_2 }}@endif
+                            </p>
+                            <p class="text-xs ml-5">{{ $shippingAddr->district }} / {{ $shippingAddr->city }} {{ $shippingAddr->postal_code }}</p>
+                            @if($shippingAddr->phone)
+                                <p class="text-xs ml-5 mt-1">
+                                    <i class="fa-solid fa-phone text-xs mr-1"></i> {{ $shippingAddr->phone }}
+                                </p>
+                            @endif
+                        @else
+                            <p class="text-xs text-orange-600 dark:text-orange-400">
+                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
+                                Teslimat adresi seçilmedi
+                            </p>
+                        @endif
+                    </div>
 
                     {{-- Modal: Teslimat Adresi Düzenleme --}}
                     @if($showShippingModal ?? false)

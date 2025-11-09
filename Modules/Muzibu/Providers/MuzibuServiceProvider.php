@@ -3,11 +3,6 @@
 namespace Modules\Muzibu\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuComponent;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuManageComponent;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuCategoryComponent;
-use Modules\Muzibu\App\Http\Livewire\Admin\MuzibuCategoryManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -48,10 +43,11 @@ class MuzibuServiceProvider extends ServiceProvider
         }
         $this->loadViewsFrom(module_path('Muzibu', 'resources/views'), 'muzibu');
 
-        Livewire::component('muzibu-component', MuzibuComponent::class);
-        Livewire::component('muzibu-manage-component', MuzibuManageComponent::class);
-        Livewire::component('muzibu-category-component', MuzibuCategoryComponent::class);
-        Livewire::component('muzibu-category-manage-component', MuzibuCategoryManageComponent::class);
+        // TODO: Livewire component'ler Artist, Song, Album, Genre, Playlist, Radio için ayrı ayrı oluşturulacak
+        // Livewire::component('muzibu-artist-component', ArtistComponent::class);
+        // Livewire::component('muzibu-song-component', SongComponent::class);
+        // Livewire::component('muzibu-album-component', AlbumComponent::class);
+        // vb.
     }
 
     /**
@@ -63,24 +59,13 @@ class MuzibuServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
 
         // Repository Pattern bindings
-        $this->app->bind(
-            \Modules\Muzibu\App\Contracts\MuzibuRepositoryInterface::class,
-            \Modules\Muzibu\App\Repositories\MuzibuRepository::class
-        );
-
-        $this->app->bind(
-            \Modules\Muzibu\App\Contracts\MuzibuCategoryRepositoryInterface::class,
-            \Modules\Muzibu\App\Repositories\MuzibuCategoryRepository::class
-        );
-
-        $this->app->bind(
-            \App\Contracts\GlobalSeoRepositoryInterface::class,
-            \App\Repositories\GlobalSeoRepository::class
-        );
-
-        // Service Layer bindings
-        $this->app->singleton(\Modules\Muzibu\App\Services\MuzibuService::class);
-        $this->app->singleton(\Modules\Muzibu\App\Services\MuzibuCategoryService::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\ArtistRepository::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\GenreRepository::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\AlbumRepository::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\SongRepository::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\SectorRepository::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\PlaylistRepository::class);
+        $this->app->singleton(\Modules\Muzibu\App\Repositories\RadioRepository::class);
     }
 
     /**

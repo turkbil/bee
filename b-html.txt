@@ -1,1 +1,85 @@
+# UnexpectedValueException - Internal Server Error
+Invalid route action: [Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew].
 
+PHP 8.3.27
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - vendor/laravel/framework/src/Illuminate/Routing/RouteAction.php:92
+1 - vendor/laravel/framework/src/Illuminate/Routing/RouteAction.php:47
+2 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:197
+3 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:178
+4 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:685
+5 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:576
+6 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:556
+7 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:160
+8 - vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:363
+9 - routes/web.php:15
+10 - vendor/laravel/framework/src/Illuminate/Routing/RouteFileRegistrar.php:34
+11 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:526
+12 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:480
+13 - vendor/laravel/framework/src/Illuminate/Routing/RouteRegistrar.php:210
+14 - vendor/laravel/framework/src/Illuminate/Foundation/Configuration/ApplicationBuilder.php:248
+15 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+16 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+17 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:84
+18 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+19 - vendor/laravel/framework/src/Illuminate/Container/Container.php:836
+20 - vendor/laravel/framework/src/Illuminate/Foundation/Support/Providers/RouteServiceProvider.php:162
+21 - vendor/laravel/framework/src/Illuminate/Foundation/Support/Providers/RouteServiceProvider.php:59
+22 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+23 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+24 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:84
+25 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+26 - vendor/laravel/framework/src/Illuminate/Container/Container.php:836
+27 - vendor/laravel/framework/src/Illuminate/Support/ServiceProvider.php:143
+28 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1154
+29 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1132
+30 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1131
+31 - vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php:17
+32 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:342
+33 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:186
+34 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:170
+35 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+36 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+37 - public/index.php:17
+
+## Request
+
+GET /admin/muzibu
+
+## Headers
+
+* **cookie**: remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlpaZW9kZ1V4aGxMbXhLSk5jZlRBYUE9PSIsInZhbHVlIjoiUEhqcFRNTEliUkJWdlFLWmV3eXlVbGdtb2RGNUdqQmxMbTQxRnVNbGUyOVNIMCt4d3BGVFphZ2ZpbTZOdE5Ybmw2ZjYzdDNtT084RFRsQXU3d1RPZjRTMVRab1R1RG9TRGNha1pDRlBqelA2eC9mditwL0VYSWpZSk9OMGxYOHdjVGtCL3lZM0pSYmwyN3Z1RjZ2YlZzVVdPZ2dQZDgxWXNoc3NseFNreFFzVWpqU3dNd0VaK3NnS052SVVRUzRMd1J1dVFuMHRobWZHdkNyUXVlRkhyTlNKRVBxRmgyU3ozMU5rcVRUTUlwOD0iLCJtYWMiOiJlZmU0YWRiNWYyY2E2ZDMzODBiMjg0M2E3MTk3Y2M1MzQxMmE4NmExMDY1NTA5NTZhMTg5YjljMDJmMGJkNDY2IiwidGFnIjoiIn0%3D; siteTextColor=#ffffff; _ga=GA1.1.1699661875.1760898833; _ym_uid=176118900044921329; _ym_d=1761189000; _fbp=fb.1.1761456765935.67835112351166348; _gcl_gs=2.1.k1$i1761579402$u82105166; _gcl_ag=2.1.k0AAAABB3MeVvvvOukZuQZJ60i3EbMtiWzG$i1761579406$bJgaPCLyV8LMbENvyse5B; _gcl_au=1.1.612840818.1761453196.2000998123.1761874759.1761874758; _ga_5DDRPR03QM=GS2.1.s1762634985$o115$g1$t1762636583$j45$l0$h0; _clck=1ok4nj5%5E2%5Eg0v%5E0%5E2125; _ym_isad=2; viewMode=grid; _ym_visorc=w; last_activity_read=1762716940; _clsk=11nocy9%5E1762726217621%5E113%5E1%5Eb.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6InowNmFjRzQrRnh3eVp2bWU1THdMR1E9PSIsInZhbHVlIjoicU9MTzgyK1pabW94MWM2TUtKeTJQeEZmL3kxM2lpWS9LRVEwUXZJd3V3L01vbDhkODlaUnZDdDVaV0ZBekdNRG1jbnVoaVhRZEg5TWF3SEk0ZVVzQ214QzQvRWlhQjhJTVNtZjcwY21BRjVCUU9kSk5WdmFVM3FtMFR1bU1qUloiLCJtYWMiOiI5MGQyMzlmMzNiOTc3M2Q3ZmRiYmY2YzE5MmYzOGVjYmRlNzQ2YjY0YjVlYzg2NjBjMWNiNzM5NmE1ZGRlZWJhIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6Ikx3SWJLWVpPTjV5bFdwWUJXMjNvSGc9PSIsInZhbHVlIjoiOUo5ekd5bzU3YW5hOGh3UHZtVXNnOVlRem5lZk5BOVllRzRmbTNIVGlXOEF5dmxlRUc4cDZvdDVFOCtqcnpvQy9Od2t4U0VNN3VIaFExNlRjL2s4RzAvd0FBMGlhdDlvSnkycC8wTi9YMHZLbzdCQVhUcVNwY0pGcXZsMXdPSGUiLCJtYWMiOiI0YTdiMmExNTM4NmExOTZkMWJmNWM2NWU3ZmFhNzQ2OWFlZjQ1NmE2MWEyNDlhYmY0YjY3NGZhNDdmM2UxYzJmIiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **sec-fetch-dest**: empty
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+* **sec-ch-ua-platform**: "macOS"
+* **cache-control**: max-age=0
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 92.44.119.135
+* **host**: ixtif.com
+
+## Route Context
+
+No routing data available.
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+No database queries detected.

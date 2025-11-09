@@ -35,7 +35,7 @@
     </style>
 </head>
 <body class="min-h-screen py-12 px-4">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         <!-- Header -->
         <div class="glass rounded-3xl shadow-2xl p-8 mb-8">
             <div class="text-center mb-6">
@@ -46,18 +46,22 @@
                 <p class="text-gray-600 text-xl">Müzik Platformu Planlama & Geliştirme Rehberi</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
                 <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-4 text-center">
-                    <div class="text-3xl font-bold mb-1">3</div>
-                    <div class="text-purple-100 text-sm">Dokümantasyon Sayfası</div>
+                    <div class="text-3xl font-bold mb-1">6</div>
+                    <div class="text-purple-100 text-sm">Dokümantasyon</div>
                 </div>
                 <div class="bg-gradient-to-br from-pink-500 to-pink-600 text-white rounded-xl p-4 text-center">
-                    <div class="text-3xl font-bold mb-1">12</div>
-                    <div class="text-pink-100 text-sm">Veritabanı Tablosu</div>
+                    <div class="text-3xl font-bold mb-1">15</div>
+                    <div class="text-pink-100 text-sm">Enhancements</div>
                 </div>
                 <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold mb-1">12</div>
+                    <div class="text-blue-100 text-sm">DB Tablosu</div>
+                </div>
+                <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-xl p-4 text-center">
                     <div class="text-3xl font-bold mb-1">29</div>
-                    <div class="text-blue-100 text-sm">Toplam Analiz Öğesi</div>
+                    <div class="text-orange-100 text-sm">Analiz Öğesi</div>
                 </div>
                 <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-4 text-center">
                     <div class="text-3xl font-bold mb-1">✓</div>
@@ -67,7 +71,7 @@
         </div>
 
         <!-- Documentation Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <!-- Migration Planning -->
             <a href="muzibu-migration.html" class="doc-card glass rounded-3xl shadow-xl overflow-hidden group">
                 <div class="bg-migration p-8 text-white">
@@ -101,18 +105,11 @@
                             <i class="fas fa-check text-green-500 mt-1"></i>
                             <span><strong>Eski vs Yeni Karşılaştırma</strong> - SQL → JSON dönüşümü</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-check text-green-500 mt-1"></i>
-                            <span><strong>Migration Stratejisi</strong> - 4 adımlı yol haritası</span>
-                        </li>
                     </ul>
                     <div class="mt-6 pt-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span><i class="fas fa-calendar mr-1"></i> 9 Kasım 2025</span>
-                            <span class="text-purple-600 font-semibold group-hover:text-purple-700">
-                                Sayfayı Aç <i class="fas fa-arrow-right ml-1"></i>
-                            </span>
-                        </div>
+                        <span class="text-purple-600 font-semibold group-hover:text-purple-700 text-sm">
+                            Sayfayı Aç <i class="fas fa-arrow-right ml-1"></i>
+                        </span>
                     </div>
                 </div>
             </a>
@@ -150,18 +147,11 @@
                             <i class="fas fa-lightbulb text-blue-500 mt-1"></i>
                             <span><strong>12 İyileştirme Önerisi</strong> - Repository, API, Frontend</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-fire text-red-500 mt-1"></i>
-                            <span><strong>5 Kritik Öncelik</strong> - İlk yapılacaklar listesi</span>
-                        </li>
                     </ul>
                     <div class="mt-6 pt-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span><i class="fas fa-calendar mr-1"></i> 9 Kasım 2025</span>
-                            <span class="text-pink-600 font-semibold group-hover:text-pink-700">
-                                Sayfayı Aç <i class="fas fa-arrow-right ml-1"></i>
-                            </span>
-                        </div>
+                        <span class="text-pink-600 font-semibold group-hover:text-pink-700 text-sm">
+                            Sayfayı Aç <i class="fas fa-arrow-right ml-1"></i>
+                        </span>
                     </div>
                 </div>
             </a>
@@ -197,23 +187,153 @@
                         </li>
                         <li class="flex items-start gap-2">
                             <i class="fas fa-rocket text-blue-500 mt-1"></i>
-                            <span><strong>15 İyileştirme</strong> - Repository, API, Player</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fas fa-fire text-red-500 mt-1"></i>
-                            <span><strong>6 Kritik Öncelik</strong> - Geliştirme rotası</span>
+                            <span><strong>15 Detaylı Enhancement</strong> - Kod örnekleri + Kılavuzlar</span>
                         </li>
                     </ul>
                     <div class="mt-6 pt-4 border-t border-gray-200">
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                            <span><i class="fas fa-calendar mr-1"></i> 9 Kasım 2025</span>
-                            <span class="text-green-600 font-semibold group-hover:text-green-700">
-                                Sayfayı Aç <i class="fas fa-arrow-right ml-1"></i>
-                            </span>
-                        </div>
+                        <span class="text-green-600 font-semibold group-hover:text-green-700 text-sm">
+                            Sayfayı Aç <i class="fas fa-arrow-right ml-1"></i>
+                        </span>
                     </div>
                 </div>
             </a>
+        </div>
+
+        <!-- Enhancement Part Cards -->
+        <div class="glass rounded-3xl shadow-xl p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <i class="fas fa-rocket text-purple-600"></i>
+                Enhancement Dökümanları
+                <span class="text-base font-normal text-gray-500 ml-auto">15 İyileştirme - Basit Anlatımlar</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Part 1 -->
+                <a href="muzibu-enhancements-part1.html" class="doc-card glass rounded-2xl shadow-lg overflow-hidden group border-2 border-transparent hover:border-purple-500">
+                    <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 text-white">
+                        <div class="flex items-center justify-between mb-3">
+                            <i class="fas fa-fire text-4xl opacity-90"></i>
+                            <div class="text-right">
+                                <div class="text-xs opacity-75">Enhancement</div>
+                                <div class="text-xl font-bold">Part 1</div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black mb-2">Enhancement 1-5</h3>
+                        <p class="text-purple-100 text-sm">CRITICAL + HIGH Priority</p>
+                    </div>
+                    <div class="p-5 bg-white">
+                        <div class="space-y-2 text-sm text-gray-700 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">CRITICAL</span>
+                                <span>Repository Pattern</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">CRITICAL</span>
+                                <span>Admin Livewire CRUD</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold">HIGH</span>
+                                <span>Permission System</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold">HIGH</span>
+                                <span>REST API Endpoints</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">CRITICAL</span>
+                                <span>Audio Player (Alpine.js)</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-gray-200">
+                            <span class="text-purple-600 font-semibold group-hover:text-purple-700 text-sm">
+                                5 Enhancement Detayı <i class="fas fa-arrow-right ml-1"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Part 2 -->
+                <a href="muzibu-enhancements-part2.html" class="doc-card glass rounded-2xl shadow-lg overflow-hidden group border-2 border-transparent hover:border-blue-500">
+                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white">
+                        <div class="flex items-center justify-between mb-3">
+                            <i class="fas fa-bolt text-4xl opacity-90"></i>
+                            <div class="text-right">
+                                <div class="text-xs opacity-75">Enhancement</div>
+                                <div class="text-xl font-bold">Part 2</div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black mb-2">Enhancement 6-8</h3>
+                        <p class="text-blue-100 text-sm">CRITICAL + MEDIUM Priority</p>
+                    </div>
+                    <div class="p-5 bg-white">
+                        <div class="space-y-2 text-sm text-gray-700 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">CRITICAL</span>
+                                <span>Radio Streaming Player</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold">HIGH</span>
+                                <span>Sector-Based Filtering</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-bold">HIGH</span>
+                                <span>Mood-Based Filtering</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-gray-200">
+                            <span class="text-blue-600 font-semibold group-hover:text-blue-700 text-sm">
+                                3 Enhancement Detayı <i class="fas fa-arrow-right ml-1"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Part 3 -->
+                <a href="muzibu-enhancements-part3.html" class="doc-card glass rounded-2xl shadow-lg overflow-hidden group border-2 border-transparent hover:border-green-500">
+                    <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 text-white">
+                        <div class="flex items-center justify-between mb-3">
+                            <i class="fas fa-code text-4xl opacity-90"></i>
+                            <div class="text-right">
+                                <div class="text-xs opacity-75">Enhancement</div>
+                                <div class="text-xl font-bold">Part 3</div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black mb-2">Enhancement 9-15</h3>
+                        <p class="text-green-100 text-sm">MEDIUM + LOW Priority</p>
+                    </div>
+                    <div class="p-5 bg-white">
+                        <div class="space-y-2 text-sm text-gray-700 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">MEDIUM</span>
+                                <span>Analytics Dashboard</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">MEDIUM</span>
+                                <span>Time-Based Scheduling</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs font-bold">+ 5 MORE</span>
+                                <span>Seeders, Validation, Optimization</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-gray-200">
+                            <span class="text-green-600 font-semibold group-hover:text-green-700 text-sm">
+                                7 Enhancement Detayı <i class="fas fa-arrow-right ml-1"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border-2 border-orange-200">
+                <p class="text-sm text-gray-700 flex items-start gap-2">
+                    <i class="fas fa-lightbulb text-orange-500 mt-1"></i>
+                    <span>
+                        <strong>Özellik:</strong> Her enhancement'ın <strong>"Basit Anlatım"</strong> bölümü var!
+                        Gerçek dünya örnekleri, performans metrikleri ve anlaşılır açıklamalarla zenginleştirildi.
+                    </span>
+                </p>
+            </div>
         </div>
 
         <!-- Quick Stats -->
@@ -243,10 +363,6 @@
                             <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                             <strong>3</strong> Özellik Tablosu (Sectors, Radios, Song Plays)
                         </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                            <strong>4</strong> Kaldırılan Tablo (Universal sistemler)
-                        </li>
                     </ul>
                 </div>
 
@@ -254,75 +370,27 @@
                 <div>
                     <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                         <i class="fas fa-tasks text-pink-500"></i>
-                        Geliştirme Durumu
+                        Enhancement Öncelik Dağılımı
                     </h3>
                     <ul class="space-y-2 text-sm text-gray-700">
                         <li class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                            <strong>Tamamlandı:</strong> Modül klonlama, DB analizi
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                            <strong>Devam Eden:</strong> Migration planlama
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                            <strong>CRITICAL:</strong> 4 Enhancement (Repository, CRUD, Player, Radio)
                         </li>
                         <li class="flex items-center gap-2">
                             <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                            <strong>Bekleyen:</strong> Model'ler, Observer'lar
+                            <strong>HIGH:</strong> 5 Enhancement (Permission, API, Sector, Mood, Eager Loading)
                         </li>
                         <li class="flex items-center gap-2">
                             <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            <strong>Sonra:</strong> Frontend, API, Audio Player
+                            <strong>MEDIUM:</strong> 4 Enhancement (Analytics, Scheduling, Scopes, Validation)
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            <strong>LOW:</strong> 2 Enhancement (Seeders, Duration Accessor)
                         </li>
                     </ul>
                 </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="glass rounded-3xl shadow-xl p-8 mt-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <i class="fas fa-rocket text-purple-600"></i>
-                Sonraki Adımlar
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border-l-4 border-purple-500 bg-purple-50 p-4 rounded-lg">
-                    <h3 class="font-bold text-purple-900 mb-2 flex items-center gap-2">
-                        <span class="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
-                        Migration Analizi İncele
-                    </h3>
-                    <p class="text-sm text-purple-800 mb-3">
-                        12 tabloyu incele, eski vs yeni yapıyı karşılaştır
-                    </p>
-                    <a href="muzibu-migration.html" class="inline-block bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
-                        <i class="fas fa-database mr-2"></i>
-                        Sayfayı Aç
-                    </a>
-                </div>
-
-                <div class="border-l-4 border-pink-500 bg-pink-50 p-4 rounded-lg">
-                    <h3 class="font-bold text-pink-900 mb-2 flex items-center gap-2">
-                        <span class="bg-pink-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
-                        Eksik/Önerileri İşaretle
-                    </h3>
-                    <p class="text-sm text-pink-800 mb-3">
-                        23 analiz öğesini incele, checkbox ile işaretle
-                    </p>
-                    <a href="muzibu-analysis.html" class="inline-block bg-pink-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-pink-700 transition">
-                        <i class="fas fa-clipboard-check mr-2"></i>
-                        Sayfayı Aç
-                    </a>
-                </div>
-            </div>
-
-            <div class="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200">
-                <p class="text-sm text-gray-700 flex items-start gap-2">
-                    <i class="fas fa-info-circle text-purple-600 mt-1"></i>
-                    <span>
-                        <strong>Not:</strong> Analiz sayfasındaki öğeleri checkbox ile işaretle, geri bildirim ver.
-                        Sonra migration dosyalarını oluşturup geliştirmeye başlayacağız!
-                    </span>
-                </p>
             </div>
         </div>
 

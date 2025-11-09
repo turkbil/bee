@@ -8,7 +8,7 @@
 
 ## 📊 TABLO YAPISI ÖZETİ
 
-### Toplam: 16 Tablo
+### Toplam: 12 Tablo
 
 **Core Tablolar (5):**
 1. `muzibu_albums` - Albümler
@@ -17,20 +17,34 @@
 4. `muzibu_genres` - Müzik Türleri
 5. `muzibu_playlists` - Çalma Listeleri
 
-**İlişki Tabloları (7):**
+**İlişki Tabloları (4):**
 6. `muzibu_playlist_song` - Playlist ↔ Song (Many-to-Many)
-7. `muzibu_song_mood` - Song ↔ Mood (Many-to-Many)
-8. `muzibu_favorites` - User ↔ Song (Favoriler)
-9. `muzibu_playlist_favorites` - User ↔ Playlist (Favori Playlistler)
-10. `muzibu_playlist_sector` - Playlist ↔ Sector (Sektörel)
-11. `muzibu_radio_sector` - Radio ↔ Sector
-12. `muzibu_playlist_radio` - Playlist ↔ Radio
+7. `muzibu_playlist_sector` - Playlist ↔ Sector (Sektörel)
+8. `muzibu_radio_sector` - Radio ↔ Sector
+9. `muzibu_playlist_radio` - Playlist ↔ Radio
 
-**Özellik Tabloları (4):**
-13. `muzibu_moods` - Ruh Halleri (Hüzünlü, Neşeli, vb.)
-14. `muzibu_sectors` - Sektörler (İşletme tipleri)
-15. `muzibu_radios` - Radyo İstasyonları
-16. `muzibu_song_plays` - Dinleme İstatistikleri
+**Özellik Tabloları (3):**
+10. `muzibu_sectors` - Sektörler (İşletme tipleri)
+11. `muzibu_radios` - Radyo İstasyonları
+12. `muzibu_song_plays` - Dinleme İstatistikleri
+
+---
+
+## ⚠️ UNIVERSAL SİSTEMLER
+
+**Kaldırılan Tablolar (Universal modüllerle değiştirildi):**
+
+### 1. Favorites System (Universal)
+- ❌ `muzibu_favorites` - **Kaldırıldı**
+- ❌ `muzibu_playlist_favorites` - **Kaldırıldı**
+- ✅ **Universal Favorites modülü** kullanılacak
+- Tüm içerik tipleri için tek sistem (Song, Playlist, Album, Artist, vb.)
+
+### 2. Tag/Category System (Universal)
+- ❌ `muzibu_moods` - **Kaldırıldı**
+- ❌ `muzibu_song_mood` - **Kaldırıldı**
+- ✅ **Universal Tag/Category modülü** kullanılacak
+- Ruh halleri (Mutlu, Hüzünlü, Romantik) tag olarak eklenecek
 
 ---
 
@@ -541,24 +555,26 @@ class Playlist extends Model
 
 **ÖNEM:** Foreign key bağımlılıkları nedeniyle doğru sırayla oluşturulmalı!
 
-### Sıralama (Tarih prefix):
+### Sıralama (Tarih prefix): 12 Migration
 
 1. `2024_11_09_001_create_muzibu_artists_table.php`
 2. `2024_11_09_002_create_muzibu_albums_table.php`
 3. `2024_11_09_003_create_muzibu_genres_table.php`
-4. `2024_11_09_004_create_muzibu_moods_table.php`
-5. `2024_11_09_005_create_muzibu_sectors_table.php`
-6. `2024_11_09_006_create_muzibu_radios_table.php`
-7. `2024_11_09_007_create_muzibu_songs_table.php` (Artist, Album, Genre'ye bağımlı)
-8. `2024_11_09_008_create_muzibu_playlists_table.php`
-9. `2024_11_09_009_create_muzibu_playlist_song_table.php` (Pivot)
-10. `2024_11_09_010_create_muzibu_song_mood_table.php` (Pivot)
-11. `2024_11_09_011_create_muzibu_favorites_table.php`
-12. `2024_11_09_012_create_muzibu_playlist_favorites_table.php`
-13. `2024_11_09_013_create_muzibu_playlist_sector_table.php`
-14. `2024_11_09_014_create_muzibu_radio_sector_table.php`
-15. `2024_11_09_015_create_muzibu_playlist_radio_table.php`
-16. `2024_11_09_016_create_muzibu_song_plays_table.php`
+4. `2024_11_09_004_create_muzibu_sectors_table.php`
+5. `2024_11_09_005_create_muzibu_radios_table.php`
+6. `2024_11_09_006_create_muzibu_songs_table.php` (Artist, Album, Genre'ye bağımlı)
+7. `2024_11_09_007_create_muzibu_playlists_table.php`
+8. `2024_11_09_008_create_muzibu_playlist_song_table.php` (Pivot)
+9. `2024_11_09_009_create_muzibu_playlist_sector_table.php` (Pivot)
+10. `2024_11_09_010_create_muzibu_radio_sector_table.php` (Pivot)
+11. `2024_11_09_011_create_muzibu_playlist_radio_table.php` (Pivot)
+12. `2024_11_09_012_create_muzibu_song_plays_table.php`
+
+### ❌ Kaldırılan Migration'lar (Universal sistemler):
+- ~~`muzibu_moods_table`~~ → Universal Tag System
+- ~~`muzibu_song_mood_table`~~ → Universal Tag System
+- ~~`muzibu_favorites_table`~~ → Universal Favorites Module
+- ~~`muzibu_playlist_favorites_table`~~ → Universal Favorites Module
 
 ---
 

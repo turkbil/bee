@@ -40,6 +40,7 @@ class TenantCacheService
     public const PREFIX_PORTFOLIO = 'portfolio';
     public const PREFIX_ANNOUNCEMENT = 'announcement';
     public const PREFIX_BLOG = 'blog';
+    public const PREFIX_MUZIBU = 'muzibu';
     public const PREFIX_PERMISSION = 'permission';
     public const PREFIX_THEME = 'theme';
 

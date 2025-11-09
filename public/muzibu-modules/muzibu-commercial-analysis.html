@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Ticari Sistem Analizi | Mevcut Sistem Entegrasyonu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .item-card {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .item-card:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .item-card.selected {
+            background: #f3f4f6;
+            border-left: 4px solid #667eea;
+        }
+
+        .bg-critical { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); }
+        .bg-business { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-keep { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .bg-enhance { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+        .checkbox-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="glass rounded-3xl shadow-2xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h1 class="text-4xl font-black text-gray-900 mb-2">
+                        <i class="fas fa-building text-purple-600 mr-3"></i>
+                        Muzibu Ticari Sistem Analizi
+                    </h1>
+                    <p class="text-gray-600 text-lg">Mevcut Çalışan Sistem → Laravel Entegrasyonu</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-gray-500 mb-1">Tarih</div>
+                    <div class="text-xl font-bold text-purple-600">9 Kasım 2025</div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border-2 border-green-300 mb-6">
+                <h3 class="font-bold text-green-900 mb-2 flex items-center gap-2 text-lg">
+                    <i class="fas fa-info-circle text-green-600"></i>
+                    TİCARİ SİSTEM - MEVCUT ÇALIŞAN PLATFORM
+                </h3>
+                <ul class="space-y-2 text-sm text-green-800">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span><strong>Durum:</strong> Canlı, çalışan müzik platformu (Mayıs 2025 veritabanı)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span><strong>Hedef:</strong> Mevcut özellikleri koruyarak Laravel'e migrate et</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span><strong>Radio:</strong> İşletmeler için özel radyo istasyonları (kritik özellik)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                        <span><strong>Sectors:</strong> Restoran, Kafe, Ofis müzikleri (ticari pazarlama)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">12</div>
+                    <div class="text-green-100 text-sm">Tablo (Hepsi Gerekli)</div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">8</div>
+                    <div class="text-blue-100 text-sm">Eksik Entegrasyon</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">15</div>
+                    <div class="text-purple-100 text-sm">İyileştirme</div>
+                </div>
+                <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl p-4">
+                    <div class="text-2xl font-bold mb-1">6</div>
+                    <div class="text-red-100 text-sm">Kritik Öncelik</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUSINESS CRITICAL FEATURES -->
+        <div class="glass rounded-3xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-keep rounded-xl flex items-center justify-center text-white">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                Ticari Kritik Özellikler (Korunacak - 5)
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Radio System -->
+                <div class="item-card border-l-4 border-green-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-green-600 rounded" checked disabled>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-radio text-green-500"></i>
+                                Radio Streaming Sistemi
+                                <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">ZORUNLU</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Ticari Değer:</strong> İşletmelere özel radyo istasyonları - 7/24 canlı yayın
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Özellikler:</strong>
+                            </p>
+                            <ul class="text-xs text-gray-600 ml-6 mb-2 space-y-1">
+                                <li>• <strong>stream_url:</strong> Radyo canlı yayın URL'i</li>
+                                <li>• <strong>Sector Mapping:</strong> Hangi sektör hangi radyoyu dinler</li>
+                                <li>• <strong>Playlist Integration:</strong> Radyo playlist'leri</li>
+                                <li>• <strong>Scheduling:</strong> Saat bazlı program akışı (gelecek)</li>
+                            </ul>
+                            <div class="mt-2 bg-green-50 p-3 rounded text-xs font-mono">
+muzibu_radios (title, stream_url, thumb)<br>
+muzibu_radio_sector (radio ↔ sector ilişkisi)<br>
+muzibu_playlist_radio (playlist ↔ radio ilişkisi)
+                            </div>
+                            <p class="text-xs text-green-700 mt-2 font-semibold">
+                                <i class="fas fa-dollar-sign text-green-600"></i>
+                                Gelir Modeli: İşletmeler aylık/yıllık abonelik ile özel radyo alıyor
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Sector System -->
+                <div class="item-card border-l-4 border-blue-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-blue-600 rounded" checked disabled>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-building text-blue-500"></i>
+                                Sektör Bazlı Müzik Sistemi
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">ZORUNLU</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Ticari Değer:</strong> Restoran, Kafe, Ofis, Spor Salonu için özelleştirilmiş müzik
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Kullanım Senaryoları:</strong>
+                            </p>
+                            <ul class="text-xs text-gray-600 ml-6 mb-2 space-y-1">
+                                <li>• <strong>Restoran:</strong> Romantik, sakin playlist'ler</li>
+                                <li>• <strong>Kafe:</strong> Chill, Indie, Akustik müzikler</li>
+                                <li>• <strong>Ofis:</strong> Konsantrasyon müzikleri (Lofi, Klasik)</li>
+                                <li>• <strong>Spor Salonu:</strong> Yüksek tempo, Elektronik, Hip-Hop</li>
+                                <li>• <strong>Alışveriş Merkezi:</strong> Popüler hit'ler</li>
+                            </ul>
+                            <div class="mt-2 bg-blue-50 p-3 rounded text-xs font-mono">
+muzibu_sectors (title, description)<br>
+muzibu_playlist_sector (playlist ↔ sector ilişkisi)<br>
+muzibu_radio_sector (radio ↔ sector ilişkisi)
+                            </div>
+                            <p class="text-xs text-blue-700 mt-2 font-semibold">
+                                <i class="fas fa-bullseye text-blue-600"></i>
+                                Pazarlama: "Restoranınız için özel seçilmiş müzikler"
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Song Plays Analytics -->
+                <div class="item-card border-l-4 border-purple-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-purple-600 rounded" checked disabled>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-chart-line text-purple-500"></i>
+                                Dinleme İstatistikleri & Analytics
+                                <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">TİCARİ</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Ticari Değer:</strong> Hangi şarkı ne kadar dinlendi, müşteri analizi
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Raporlar:</strong>
+                            </p>
+                            <ul class="text-xs text-gray-600 ml-6 mb-2 space-y-1">
+                                <li>• <strong>Popüler Şarkılar:</strong> En çok dinlenen 100</li>
+                                <li>• <strong>Müşteri Davranışı:</strong> Hangi sektör ne dinliyor</li>
+                                <li>• <strong>Telif Hakları:</strong> MESAM/MSG raporları için veri</li>
+                                <li>• <strong>A/B Testing:</strong> Playlist performans karşılaştırma</li>
+                            </ul>
+                            <div class="mt-2 bg-purple-50 p-3 rounded text-xs font-mono">
+muzibu_song_plays (<br>
+&nbsp;&nbsp;song_id, user_id, ip_address,<br>
+&nbsp;&nbsp;duration_played, played_at<br>
+)
+                            </div>
+                            <p class="text-xs text-purple-700 mt-2 font-semibold">
+                                <i class="fas fa-gavel text-purple-600"></i>
+                                Yasal: Telif ödemeleri için dinleme sayısı gerekli
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Mood System -->
+                <div class="item-card border-l-4 border-pink-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-pink-600 rounded" checked disabled>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-smile text-pink-500"></i>
+                                Ruh Hali (Mood) Sistemi
+                                <span class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">ZORUNLU</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Ticari Değer:</strong> "Mutlu müzikler", "Sakin playlist" filtreleme
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Mood Kategorileri:</strong>
+                            </p>
+                            <ul class="text-xs text-gray-600 ml-6 mb-2 space-y-1">
+                                <li>• <strong>Mutlu:</strong> Enerjik, pozitif şarkılar</li>
+                                <li>• <strong>Sakin:</strong> Relax, chill müzikler</li>
+                                <li>• <strong>Romantik:</strong> Aşk şarkıları</li>
+                                <li>• <strong>Enerjik:</strong> Workout, aktivite müzikleri</li>
+                                <li>• <strong>Hüzünlü:</strong> Melodik, duygusal</li>
+                            </ul>
+                            <div class="mt-2 bg-pink-50 p-3 rounded text-xs font-mono">
+muzibu_moods (title, icon, color)<br>
+muzibu_song_mood (song ↔ mood ilişkisi)
+                            </div>
+                            <p class="text-xs text-pink-700 mt-2 font-semibold">
+                                <i class="fas fa-filter text-pink-600"></i>
+                                Müşteri: "Akşam saatlerinde romantik müzikler çal"
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Favorites System -->
+                <div class="item-card border-l-4 border-red-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-red-600 rounded" checked disabled>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-heart text-red-500"></i>
+                                Favoriler Sistemi
+                                <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">TİCARİ</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Ticari Değer:</strong> Müşteri kendi favori şarkı/playlist'lerini oluşturuyor
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Özellikler:</strong>
+                            </p>
+                            <ul class="text-xs text-gray-600 ml-6 mb-2 space-y-1">
+                                <li>• <strong>Song Favorites:</strong> Beğenilen şarkılar</li>
+                                <li>• <strong>Playlist Favorites:</strong> Takip edilen playlist'ler</li>
+                                <li>• <strong>Personalization:</strong> Kişiselleştirilmiş öneriler</li>
+                                <li>• <strong>Sync Across Devices:</strong> Tüm cihazlarda senkron</li>
+                            </ul>
+                            <div class="mt-2 bg-red-50 p-3 rounded text-xs font-mono">
+muzibu_favorites (user_id ↔ song_id)<br>
+muzibu_playlist_favorites (user_id ↔ playlist_id)
+                            </div>
+                            <p class="text-xs text-red-700 mt-2 font-semibold">
+                                <i class="fas fa-users text-red-600"></i>
+                                Kullanıcı Engagement: Favorileme = platform bağlılığı
+                            </p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- MISSING INTEGRATIONS -->
+        <div class="glass rounded-3xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-critical rounded-xl flex items-center justify-center text-white">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                Eksik Laravel Entegrasyonları (8)
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Media Management -->
+                <div class="item-card border-l-4 border-red-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-red-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-image text-red-500"></i>
+                                Media Management Entegrasyonu
+                                <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">CRITICAL</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Sorun:</strong> thumb VARCHAR(255) → Eski dosya path sistemi
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Çözüm:</strong> MediaManagement modülü + HasMediaManagement trait
+                            </p>
+                            <div class="mt-2 bg-gray-50 p-3 rounded text-xs font-mono">
+// Album, Artist, Song, Playlist modellerinde<br>
+use HasMediaManagement;<br>
+<br>
+'cover' => single file (albüm kapağı)<br>
+'avatar' => single file (sanatçı fotoğrafı)<br>
+'gallery' => multiple files (galeri)
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                Thumbmaker integration - otomatik resize, WebP dönüşüm
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- SEO Management -->
+                <div class="item-card border-l-4 border-orange-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-orange-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-search text-orange-500"></i>
+                                SEO Management Entegrasyonu
+                                <span class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">CRITICAL</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Sorun:</strong> meta_title, meta_keywords kolonları her tabloda tekrar ediyor
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Çözüm:</strong> SeoManagement modülü + HasSeo trait
+                            </p>
+                            <div class="mt-2 bg-gray-50 p-3 rounded text-xs font-mono">
+use HasSeo;<br>
+<br>
+// Morph relationship<br>
+seo_settings (seoable_type, seoable_id)
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Multi-language -->
+                <div class="item-card border-l-4 border-yellow-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-yellow-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-language text-yellow-500"></i>
+                                Çoklu Dil JSON Yapısı
+                                <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">CRITICAL</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Sorun:</strong> Sadece title_tr var - İngilizce/Arapça yok
+                            </p>
+                            <p class="text-sm text-gray-700 mb-2">
+                                <strong>Çözüm:</strong> title JSON + HasTranslations trait
+                            </p>
+                            <div class="mt-2 bg-gray-50 p-3 rounded text-xs font-mono">
+title JSON -- {"tr": "...", "en": "...", "ar": "..."}<br>
+description JSON -- {"tr": "...", "en": "..."}
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Audio File Storage -->
+                <div class="item-card border-l-4 border-blue-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-blue-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-file-audio text-blue-500"></i>
+                                Audio Dosya Yönetimi
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">HIGH</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                <strong>Seçenekler:</strong>
+                            </p>
+                            <ul class="text-xs text-gray-600 ml-6 mb-2 space-y-1">
+                                <li>• <strong>S3/CloudStorage:</strong> Önerilen (AWS S3, DigitalOcean Spaces)</li>
+                                <li>• <strong>CDN:</strong> CloudFlare R2, Bunny CDN (streaming optimize)</li>
+                                <li>• <strong>Lokal Storage:</strong> Küçük dosyalar için</li>
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Observer Pattern -->
+                <div class="item-card border-l-4 border-purple-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-purple-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-eye text-purple-500"></i>
+                                Observer Pattern (Auto Slug)
+                                <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">MEDIUM</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                SongObserver, AlbumObserver - creating/updating event'lerinde otomatik slug + cache clear
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Soft Deletes -->
+                <div class="item-card border-l-4 border-indigo-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-indigo-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-trash-restore text-indigo-500"></i>
+                                Soft Delete Desteği
+                                <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">RECOMMENDED</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                Yanlışlıkla silinen şarkı/albüm geri getirilebilir - $table->softDeletes()
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Database Indexes -->
+                <div class="item-card border-l-4 border-teal-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-teal-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-database text-teal-500"></i>
+                                Database Index Optimizasyonu
+                                <span class="text-xs bg-teal-100 text-teal-700 px-2 py-1 rounded">PERFORMANCE</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                Foreign key'ler ve sık kullanılan kolonlara index - sorgu hızı 10x artacak
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Foreign Keys -->
+                <div class="item-card border-l-4 border-cyan-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-cyan-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                                <i class="fas fa-link text-cyan-500"></i>
+                                Foreign Key Constraints
+                                <span class="text-xs bg-cyan-100 text-cyan-700 px-2 py-1 rounded">CRITICAL</span>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-2">
+                                Veri bütünlüğü - cascadeOnDelete, nullOnDelete
+                            </p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENHANCEMENTS -->
+        <div class="glass rounded-3xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-enhance rounded-xl flex items-center justify-center text-white">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                Ticari Özellik İyileştirmeleri (15)
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Repository Pattern -->
+                <div class="item-card border-l-4 border-blue-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-blue-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-code text-blue-500"></i>
+                                Repository Pattern + Cache
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                SongRepository, RadioRepository - performans için cache layer
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Admin CRUD -->
+                <div class="item-card border-l-4 border-purple-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-purple-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-cog text-purple-500"></i>
+                                Admin Livewire CRUD
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                SongIndex, AlbumManage, RadioManage, SectorManage
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Permissions -->
+                <div class="item-card border-l-4 border-red-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-red-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-lock text-red-500"></i>
+                                Permission System
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                muzibu.songs.*, muzibu.radios.*, muzibu.sectors.*
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- API Endpoints -->
+                <div class="item-card border-l-4 border-green-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-green-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-plug text-green-500"></i>
+                                REST API Endpoints
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                /api/songs, /api/radios, /api/playlists/by-sector
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Frontend Player -->
+                <div class="item-card border-l-4 border-pink-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-pink-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-play-circle text-pink-500"></i>
+                                Audio Player Component
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                Alpine.js - play/pause, progress bar, playlist queue
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Radio Player -->
+                <div class="item-card border-l-4 border-indigo-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-indigo-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-broadcast-tower text-indigo-500"></i>
+                                Radio Streaming Player
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                Canlı yayın player - stream_url integration
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Sector Filter -->
+                <div class="item-card border-l-4 border-yellow-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-yellow-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-filter text-yellow-500"></i>
+                                Sector-Based Filtering
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                "Restoran müzikleri", "Ofis için playlist'ler"
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Mood Filter -->
+                <div class="item-card border-l-4 border-teal-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-teal-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-smile text-teal-500"></i>
+                                Mood-Based Filtering
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                "Mutlu şarkılar", "Sakin müzikler" filtreleme
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Analytics Dashboard -->
+                <div class="item-card border-l-4 border-orange-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-orange-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-chart-bar text-orange-500"></i>
+                                Analytics Dashboard
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                En popüler şarkılar, sektör bazlı raporlar
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Scheduling -->
+                <div class="item-card border-l-4 border-cyan-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-cyan-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-clock text-cyan-500"></i>
+                                Time-Based Scheduling
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                "Sabah 09:00 - Enerjik", "Akşam 20:00 - Romantik"
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Seeder Data -->
+                <div class="item-card border-l-4 border-lime-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-lime-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-seedling text-lime-500"></i>
+                                Demo Seeder'lar
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                Genre, Artist, Song, Sector, Radio demo verileri
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Validation -->
+                <div class="item-card border-l-4 border-amber-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-amber-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-shield-alt text-amber-500"></i>
+                                Form Request Validation
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                StoreSongRequest, UpdateRadioRequest
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Eager Loading -->
+                <div class="item-card border-l-4 border-rose-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-rose-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-rocket text-rose-500"></i>
+                                Eager Loading (N+1 Fix)
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                Song::with(['artist', 'album', 'moods'])->get()
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Scope Methods -->
+                <div class="item-card border-l-4 border-violet-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-violet-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-filter text-violet-500"></i>
+                                Query Scope'lar
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                scopeBySector, scopeByMood, scopePopular
+                            </p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Duration Format -->
+                <div class="item-card border-l-4 border-fuchsia-500 bg-white p-4 rounded-lg shadow-sm">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" class="text-fuchsia-600 rounded">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-900 text-sm mb-1">
+                                <i class="fas fa-clock text-fuchsia-500"></i>
+                                Duration Accessor (3:45)
+                            </h3>
+                            <p class="text-xs text-gray-600">
+                                Integer (saniye) → Formatted string
+                            </p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CRITICAL PRIORITIES -->
+        <div class="glass rounded-3xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                <div class="w-10 h-10 bg-critical rounded-xl flex items-center justify-center text-white">
+                    <i class="fas fa-fire text-white"></i>
+                </div>
+                Kritik Öncelikler - İlk Yapılacaklar (6)
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+                    <h3 class="font-bold text-red-900 mb-2 flex items-center gap-2">
+                        <span class="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span>
+                        12 Migration Dosyası Oluştur
+                    </h3>
+                    <p class="text-sm text-red-800">
+                        TÜM tablolar gerekli (Radio, Sector, Mood, Favorites dahil) - Foreign key'ler + Index'ler
+                    </p>
+                </div>
+
+                <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-lg">
+                    <h3 class="font-bold text-orange-900 mb-2 flex items-center gap-2">
+                        <span class="bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span>
+                        Media Management Entegrasyonu
+                    </h3>
+                    <p class="text-sm text-orange-800">
+                        HasMediaManagement trait - thumb kolonlarını kaldır
+                    </p>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg">
+                    <h3 class="font-bold text-yellow-900 mb-2 flex items-center gap-2">
+                        <span class="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span>
+                        SEO Management Entegrasyonu
+                    </h3>
+                    <p class="text-sm text-yellow-800">
+                        HasSeo trait - meta_* kolonlarını kaldır
+                    </p>
+                </div>
+
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
+                    <h3 class="font-bold text-green-900 mb-2 flex items-center gap-2">
+                        <span class="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">4</span>
+                        Çoklu Dil JSON Yapısı
+                    </h3>
+                    <p class="text-sm text-green-800">
+                        title_tr → title JSON (TR + EN + AR desteği)
+                    </p>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-900 mb-2 flex items-center gap-2">
+                        <span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">5</span>
+                        Model'ler + Observer'lar
+                    </h3>
+                    <p class="text-sm text-blue-800">
+                        Song, Album, Artist, Genre, Playlist, Radio, Sector, Mood modelleri + ilişkiler
+                    </p>
+                </div>
+
+                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
+                    <h3 class="font-bold text-purple-900 mb-2 flex items-center gap-2">
+                        <span class="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">6</span>
+                        Audio Storage Stratejisi Belirle
+                    </h3>
+                    <p class="text-sm text-purple-800">
+                        S3/CloudStorage vs CDN vs Lokal - karar ver
+                    </p>
+                </div>
+            </div>
+
+            <!-- Development Route -->
+            <div class="mt-8 bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl border-2 border-purple-200">
+                <h3 class="font-bold text-purple-900 mb-3 flex items-center gap-2 text-lg">
+                    <i class="fas fa-route text-purple-600"></i>
+                    Geliştirme Rotası (Ticari Sistem)
+                </h3>
+                <ol class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">1</span>
+                        <span><strong>Migration'ları oluştur</strong> (12 tablo - TÜM özellikler dahil)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">2</span>
+                        <span><strong>Model'leri yaz</strong> (HasTranslations, HasSeo, HasMediaManagement)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">3</span>
+                        <span><strong>Observer'ları ekle</strong> (auto slug, cache clear)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">4</span>
+                        <span><strong>Repository'leri oluştur</strong> (cache layer)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">5</span>
+                        <span><strong>Admin Livewire</strong> (Song, Album, Radio, Sector yönetimi)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">6</span>
+                        <span><strong>Permission'ları ekle</strong> (tüm modül yetkileri)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">7</span>
+                        <span><strong>Frontend sayfalar</strong> (sector filtresi, mood filtresi)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">8</span>
+                        <span><strong>Audio Player</strong> (song + radio streaming)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">9</span>
+                        <span><strong>Analytics Dashboard</strong> (play count, sector reports)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-purple-500 text-white px-2 py-1 rounded text-xs font-bold">10</span>
+                        <span><strong>API Endpoints</strong> (mobile app için)</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 text-white">
+            <p class="text-sm opacity-75">
+                <i class="fas fa-code mr-2"></i>
+                Generated with Claude Code | Muzibu Commercial Music Platform
+            </p>
+            <p class="text-xs opacity-60 mt-2">
+                Ticari Sistem - Tüm Özellikler Korunacak
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('input[type="checkbox"]:not([disabled])').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const card = this.closest('.item-card');
+                if (this.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -560,6 +560,15 @@ class Tenant2PromptService
         $prompts[] = "";
 
         // ====================================
+        // 7.5️⃣ BİLGİ BANKASI (FAQ/Q&A) - ÖĞRENİLMİŞ BİLGİLER
+        // ====================================
+        $knowledgeBasePrompt = \App\Helpers\AISettingsHelper::buildKnowledgeBasePrompt();
+        if (!empty($knowledgeBasePrompt)) {
+            $prompts[] = $knowledgeBasePrompt;
+            $prompts[] = "";
+        }
+
+        // ====================================
         // 8️⃣ ÖRNEK DİYALOG - SAMİMİ VE ÖVÜCÜ YAKLAŞIM!
         // ====================================
         $prompts[] = "**💬 ÖRNEK DİYALOG (SAMİMİ VE COŞKULU YAKLAŞIM):**";

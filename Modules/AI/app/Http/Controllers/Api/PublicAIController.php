@@ -644,7 +644,7 @@ class PublicAIController extends Controller
                 if ($tenantId == 2 || $tenantId == 3) {
                     // 🏢 Tenant 2/3: iXtif (endüstriyel ekipman)
                     // Kategori bilgileri tenant-specific (transpalet, forklift, reach truck, vb.)
-                    $productSearchService = app(\App\Services\AI\TenantSpecific\Tenant2ProductSearchService::class);
+                    $productSearchService = app(\Modules\AI\App\Services\Tenant\Tenant2ProductSearchService::class);
                     \Log::info('🏢 Using Tenant2ProductSearchService', ['tenant_id' => $tenantId]);
                 } else {
                     // 🌍 Generic: Tüm diğer 10000 tenant
@@ -2691,7 +2691,7 @@ class PublicAIController extends Controller
 
             if ($tenantId == 2 || $tenantId == 3) {
                 // 🏢 Tenant 2/3: iXtif (endüstriyel ekipman)
-                $productSearchService = app(\App\Services\AI\TenantSpecific\Tenant2ProductSearchService::class);
+                $productSearchService = app(\Modules\AI\App\Services\Tenant\Tenant2ProductSearchService::class);
                 \Log::info('🏢 Using Tenant2ProductSearchService (V2)', ['tenant_id' => $tenantId]);
             } else {
                 // 🌍 Generic: Tüm diğer 10000 tenant

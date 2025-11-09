@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Services\AI\TenantSpecific;
+namespace Modules\AI\App\Services\Tenant;
 
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Http\Controllers\Front\ShopController;
 use Illuminate\Support\Facades\Log;
+use App\Services\AI\HybridSearchService;
 
 /**
- * TENANT 2 ÖZEL DİNAMİK ÜRÜN ARAMA SERVİSİ
+ * Tenant 2 & 3 (iXTİF) - Ürün Arama Servisi
  *
  * Tenant: ixtif.com (ID: 2) ve ixtif.com.tr (ID: 3)
  *
@@ -21,13 +22,16 @@ use Illuminate\Support\Facades\Log;
  * 2. Ana kategorilere ZOOM yap (yedek parça HARİÇ)
  * 3. İlgili ürünleri DB'den anlık çek
  * 4. Yedek parça sadece talep edilirse ara
+ *
+ * @package Modules\AI\App\Services\Tenant
+ * @version 2.0
  */
 class Tenant2ProductSearchService
 {
     protected string $locale;
-    protected \App\Services\AI\HybridSearchService $hybridSearch;
+    protected HybridSearchService $hybridSearch;
 
-    public function __construct(\App\Services\AI\HybridSearchService $hybridSearch)
+    public function __construct(HybridSearchService $hybridSearch)
     {
         $this->locale = app()->getLocale();
         $this->hybridSearch = $hybridSearch;

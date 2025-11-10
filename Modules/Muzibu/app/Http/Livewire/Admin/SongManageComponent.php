@@ -91,6 +91,10 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $this->inputs['duration'] = 0;
             $this->audioFile = null;
 
+            // Title'ı da temizle (şarkıdan otomatik dolmuşsa)
+            $defaultLocale = get_tenant_default_locale();
+            $this->multiLangInputs[$defaultLocale]['title'] = null;
+
             $this->dispatch('toast', [
                 'title' => 'Başarılı',
                 'message' => 'Şarkı dosyası kaldırıldı',

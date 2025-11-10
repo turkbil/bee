@@ -156,8 +156,8 @@
                                             accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
 
                                         <div class="row g-3">
-                                            {{-- SOL: Drag & Drop Upload (Her zaman görünür) --}}
-                                            <div class="col-md-6">
+                                            {{-- Upload Area - Full width if no file, half width if file exists --}}
+                                            <div class="{{ ($inputs['file_path'] ?? null) ? 'col-md-6' : 'col-md-12' }}">
                                                 <div
                                                     @click="$refs.fileInput.click()"
                                                     @dragover.prevent="isDragging = true"
@@ -186,16 +186,16 @@
                                                 </div>
                                             </div>
 
-                                            {{-- SAĞ: Yüklenen Şarkı + Player + X --}}
+                                            {{-- Current Song (appears only when file is uploaded) --}}
                                             @if($inputs['file_path'] ?? null)
                                                 <div class="col-md-6">
-                                                    <div class="card position-relative" style="min-height: 200px;">
-                                                        {{-- X Button (Gallery Style - Top Right) --}}
+                                                    <div class="card position-relative song-card-with-hover" style="min-height: 200px;">
+                                                        {{-- X Button (Gallery Style - Hover to Show) --}}
                                                         <button
                                                             wire:click="removeAudio"
-                                                            class="btn btn-icon btn-sm position-absolute"
+                                                            class="btn btn-icon btn-sm position-absolute song-delete-btn"
                                                             type="button"
-                                                            style="top: 8px; right: 8px; background: rgba(255,255,255,0.9); border: 1px solid #dee2e6;">
+                                                            style="top: 8px; right: 8px; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
                                                             <i class="fa fa-times text-danger"></i>
                                                         </button>
 
@@ -223,6 +223,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                {{-- CSS for Hover Effect --}}
+                                                <style>
+                                                    .song-card-with-hover:hover .song-delete-btn {
+                                                        opacity: 1 !important;
+                                                    }
+                                                </style>
                                             @endif
                                         </div>
 

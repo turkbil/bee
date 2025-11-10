@@ -101,6 +101,7 @@ return [
     'genre' => 'Tür',
     'duration' => 'Süre',
     'duration_help' => 'Örnek: 03:45 (3 dakika 45 saniye)',
+    'duration_manual_help' => 'Şarkı yüklendiğinde otomatik hesaplanır, manuel de düzenleyebilirsiniz',
     'auto_calculated' => 'Otomatik Hesaplanacak',
     'duration_auto_help' => 'Şarkı dosyası yüklendiğinde süre otomatik olarak hesaplanacaktır',
     'audio_file' => 'Şarkı Dosyası',

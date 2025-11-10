@@ -59,13 +59,14 @@ class ConvertToHLSJob implements ShouldQueue
 
             // FFmpeg command for HLS conversion
             // Options:
-            // -codec: copy = no re-encoding (fast)
+            // -map 0:a = only audio stream (skip album art/video)
+            // -c copy = no re-encoding (fast)
             // -start_number 0 = start segment numbering from 0
             // -hls_time 10 = 10 second segments
             // -hls_list_size 0 = include all segments in playlist
             // -f hls = output format HLS
             $command = sprintf(
-                'ffmpeg -i %s -codec: copy -start_number 0 -hls_time 10 -hls_list_size 0 -f hls %s 2>&1',
+                'ffmpeg -i %s -map 0:a -c copy -start_number 0 -hls_time 10 -hls_list_size 0 -f hls %s 2>&1',
                 escapeshellarg($inputPath),
                 escapeshellarg($playlistPath)
             );

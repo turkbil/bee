@@ -123,6 +123,15 @@ class SongManageComponent extends Component implements AIContentGeneratable
         ]);
 
         try {
+            // Eski dosyayı sil (varsa)
+            if (!empty($this->inputs['file_path'])) {
+                $oldFilePath = storage_path('app/public/muzibu/songs/' . $this->inputs['file_path']);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                    Log::info('🗑️ Eski audio dosyası silindi', ['file' => $this->inputs['file_path']]);
+                }
+            }
+
             // Dosyayı storage/muzibu/songs/ klasörüne kaydet
             $filename = uniqid('song_') . '.' . $this->audioFile->getClientOriginalExtension();
             $path = $this->audioFile->storeAs('muzibu/songs', $filename, 'public');

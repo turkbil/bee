@@ -135,6 +135,13 @@
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
 
+                                    {{-- CSS for Hover Effect (Global scope) --}}
+                                    <style>
+                                        .song-card-with-hover:hover .song-delete-btn {
+                                            opacity: 1 !important;
+                                        }
+                                    </style>
+
                                     {{-- Split Layout: Upload + Current Song --}}
                                     <div x-data="{
                                         isDragging: false,
@@ -223,13 +230,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                {{-- CSS for Hover Effect --}}
-                                                <style>
-                                                    .song-card-with-hover:hover .song-delete-btn {
-                                                        opacity: 1 !important;
-                                                    }
-                                                </style>
                                             @endif
                                         </div>
 

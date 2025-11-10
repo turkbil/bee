@@ -131,8 +131,7 @@
                             {{-- Şarkı Dosyası Yükleme --}}
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label class="form-label required" style="font-size: 0.875rem;">
-                                        <i class="fa fa-music me-1" style="font-size: 0.875rem;"></i>
+                                    <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
 
@@ -148,7 +147,6 @@
                                                     <div class="col">
                                                         <div class="fw-bold">{{ $inputs['file_path'] }}</div>
                                                         <div class="text-secondary">
-                                                            <i class="fa fa-clock icon-sm"></i>
                                                             {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
                                                             <span class="text-muted">({{ $inputs['duration'] ?? 0 }} saniye)</span>
                                                         </div>
@@ -200,8 +198,7 @@
                             {{-- Süre (Duration) --}}
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label" style="font-size: 0.875rem;">
-                                        <i class="fa fa-clock me-1" style="font-size: 0.875rem;"></i>
+                                    <label class="form-label">
                                         {{ __('muzibu::admin.song.duration') }}
                                     </label>
                                     <div class="input-group">

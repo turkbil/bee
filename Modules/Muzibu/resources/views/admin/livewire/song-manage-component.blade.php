@@ -122,22 +122,25 @@
 
                                     <div class="col-12 col-md-4">
                                         <div class="form-floating">
-                                            <input type="text" wire:model="inputs.duration"
-                                                class="form-control @error('inputs.duration') is-invalid @enderror"
-                                                id="duration_input"
-                                                placeholder="03:45">
-                                            <label for="duration_input">
+                                            <input type="text"
+                                                value="{{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) . ' (' . $inputs['duration'] . ' saniye)' : '00:00 (0 saniye)' }}"
+                                                class="form-control bg-light"
+                                                id="duration_display"
+                                                readonly
+                                                placeholder="00:00">
+                                            <label for="duration_display">
                                                 {{ __('muzibu::admin.song.duration') }}
-                                                <small class="text-muted ms-2">(mm:ss)</small>
+                                                <small class="text-success ms-2">
+                                                    <i class="ti ti-robot"></i>
+                                                    {{ __('muzibu::admin.song.auto_calculated') }}
+                                                </small>
                                             </label>
                                             <div class="form-text">
                                                 <small class="text-muted">
-                                                    {{ __('muzibu::admin.song.duration_help') }}
+                                                    <i class="ti ti-info-circle me-1"></i>
+                                                    {{ __('muzibu::admin.song.duration_auto_help') }}
                                                 </small>
                                             </div>
-                                            @error('inputs.duration')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
                                         </div>
                                     </div>
                                 </div>
@@ -146,18 +149,49 @@
                             </div>
                         @endforeach
 
-                        {{-- MEDYA YÖNETİMİ --}}
+                        {{-- ŞARKI DOSYASI YÜKLEME --}}
                         <div class="mb-4">
-                            <livewire:mediamanagement::universal-media
-                                wire:id="song-media-component"
-                                :model-id="$songId"
-                                model-type="song"
-                                model-class="Modules\Muzibu\App\Models\Song"
-                                :collections="['featured_image', 'gallery']"
-                                :sortable="true"
-                                :set-featured-from-gallery="true"
-                                :key="'universal-media-' . ($songId ?? 'new')"
-                            />
+                            <label class="form-label">
+                                <i class="ti ti-music me-2"></i>
+                                {{ __('muzibu::admin.song.audio_file') }}
+                                <span class="text-muted ms-2">(MP3, WAV, FLAC, M4A, OGG - Max 100MB)</span>
+                            </label>
+
+                            @if($inputs['file_path'] ?? null)
+                                <div class="alert alert-success d-flex align-items-center mb-3">
+                                    <i class="ti ti-file-music me-2"></i>
+                                    <div class="flex-fill">
+                                        <strong>{{ __('muzibu::admin.song.current_file') }}:</strong>
+                                        {{ $inputs['file_path'] }}
+                                        @if($inputs['duration'] ?? 0)
+                                            <span class="ms-3 badge bg-blue-lt">
+                                                <i class="ti ti-clock me-1"></i>
+                                                {{ gmdate('i:s', $inputs['duration']) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <audio controls class="ms-3" style="max-width: 300px;">
+                                        <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            @endif
+
+                            <input
+                                type="file"
+                                wire:model="audioFile"
+                                class="form-control @error('audioFile') is-invalid @enderror"
+                                accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg"
+                            >
+
+                            @error('audioFile')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+
+                            <div wire:loading wire:target="audioFile" class="text-primary mt-2">
+                                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                {{ __('muzibu::admin.song.uploading_audio') }}
+                            </div>
                         </div>
 
                         @foreach ($availableLanguages as $lang)

@@ -24,6 +24,8 @@ class SongManageComponent extends Component implements AIContentGeneratable
         'is_active' => true,
     ];
 
+    public $audioFile;
+
     public $currentLanguage;
     public $availableLanguages = [];
     public $languageNames = [];
@@ -67,6 +69,98 @@ class SongManageComponent extends Component implements AIContentGeneratable
         'translation-completed' => 'handleTranslationCompleted',
         'ai-content-generated' => 'handleAIContentGenerated',
     ];
+
+    /**
+     * Audio dosya yükleme - otomatik duration hesaplama
+     */
+    public function updatedAudioFile()
+    {
+        $this->validate([
+            'audioFile' => 'file|mimes:mp3,wav,flac,m4a,ogg|max:102400', // 100MB
+        ]);
+
+        try {
+            // Dosyayı storage/muzibu/songs/ klasörüne kaydet
+            $filename = uniqid('song_') . '.' . $this->audioFile->getClientOriginalExtension();
+            $path = $this->audioFile->storeAs('muzibu/songs', $filename, 'public');
+
+            // File path'i inputs'a ekle
+            $this->inputs['file_path'] = $filename;
+
+            // Duration hesapla (getID3 kütüphanesi ile)
+            $fullPath = storage_path('app/public/' . $path);
+            $duration = $this->calculateAudioDuration($fullPath);
+
+            if ($duration) {
+                $this->inputs['duration'] = $duration;
+                Log::info('✅ Audio dosyası yüklendi ve duration hesaplandı', [
+                    'filename' => $filename,
+                    'duration' => $duration,
+                    'formatted' => gmdate('i:s', $duration)
+                ]);
+            } else {
+                Log::warning('⚠️ Audio duration hesaplanamadı, varsayılan 0 kullanılacak', [
+                    'filename' => $filename
+                ]);
+                $this->inputs['duration'] = 0;
+            }
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı',
+                'message' => 'Şarkı dosyası yüklendi! Süre: ' . gmdate('i:s', $this->inputs['duration']),
+                'type' => 'success'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Audio upload hatası', [
+                'error' => $e->getMessage()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Hata',
+                'message' => 'Dosya yüklenirken hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Audio dosyasının duration'ını hesapla (getID3 veya FFmpeg ile)
+     */
+    protected function calculateAudioDuration(string $filePath): ?int
+    {
+        try {
+            // Önce getID3 kütüphanesi dene
+            if (class_exists('\getID3')) {
+                $getID3 = new \getID3();
+                $fileInfo = $getID3->analyze($filePath);
+
+                if (isset($fileInfo['playtime_seconds'])) {
+                    return (int) round($fileInfo['playtime_seconds']);
+                }
+            }
+
+            // getID3 yoksa FFmpeg/FFprobe dene
+            if (function_exists('shell_exec')) {
+                $ffprobeCmd = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . escapeshellarg($filePath);
+                $duration = shell_exec($ffprobeCmd);
+
+                if ($duration && is_numeric(trim($duration))) {
+                    return (int) round(floatval(trim($duration)));
+                }
+            }
+
+            Log::warning('⚠️ getID3 ve FFprobe bulunamadı, duration hesaplanamadı');
+            return null;
+
+        } catch (\Exception $e) {
+            Log::error('❌ Duration hesaplama hatası', [
+                'error' => $e->getMessage(),
+                'file' => $filePath
+            ]);
+            return null;
+        }
+    }
 
     public function boot()
     {
@@ -180,7 +274,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($song) {
-            $this->inputs = $song->only(['is_active', 'is_featured', 'album_id', 'genre_id', 'duration']);
+            $this->inputs = $song->only(['is_active', 'is_featured', 'album_id', 'genre_id', 'duration', 'file_path']);
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
@@ -223,7 +317,8 @@ class SongManageComponent extends Component implements AIContentGeneratable
             'inputs.is_featured' => 'boolean',
             'inputs.album_id' => 'nullable|exists:muzibu_albums,album_id',
             'inputs.genre_id' => 'required|exists:muzibu_genres,genre_id',
-            'inputs.duration' => 'nullable|regex:/^[0-9]{1,2}:[0-5][0-9]$/',
+            'inputs.duration' => 'nullable|integer|min:0',
+            'inputs.file_path' => 'nullable|string|max:255',
         ];
 
         $mainLanguage = $this->getMainLanguage();
@@ -241,7 +336,9 @@ class SongManageComponent extends Component implements AIContentGeneratable
         'inputs.album_id.exists' => 'Seçilen albüm bulunamadı',
         'inputs.genre_id.required' => 'Tür seçimi zorunludur',
         'inputs.genre_id.exists' => 'Seçilen tür bulunamadı',
-        'inputs.duration.regex' => 'Süre formatı mm:ss şeklinde olmalıdır (örn: 03:45)',
+        'inputs.duration.integer' => 'Süre saniye cinsinden sayı olmalıdır',
+        'inputs.duration.min' => 'Süre 0 veya daha büyük olmalıdır',
+        'inputs.file_path.max' => 'Dosya yolu en fazla 255 karakter olabilir',
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',

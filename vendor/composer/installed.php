@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'd51c18769a05a3f823d5e353c73ce6b2ee8c637d',
+        'reference' => '422da573d786ffdfa2d7b5e172761b60b77fe33b',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -580,6 +580,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'james-heinrich/getid3' => array(
+            'pretty_version' => 'v1.9.24',
+            'version' => '1.9.24.0',
+            'reference' => '1e11b9b6eb468b522fe604a42a9fdc8ee759bf8a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../james-heinrich/getid3',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'jaybizzle/crawler-detect' => array(
             'pretty_version' => 'v1.3.6',
             'version' => '1.3.6.0',
@@ -643,7 +652,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'd51c18769a05a3f823d5e353c73ce6b2ee8c637d',
+            'reference' => '422da573d786ffdfa2d7b5e172761b60b77fe33b',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -238,9 +238,6 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <small class="form-hint" style="font-size: 0.75rem;">
-                                        {{ __('muzibu::admin.song.duration_manual_help') }}
-                                    </small>
                                 </div>
                             </div>
                         </div>

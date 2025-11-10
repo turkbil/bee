@@ -71,6 +71,49 @@ class SongManageComponent extends Component implements AIContentGeneratable
     ];
 
     /**
+     * Audio dosyasını kaldır
+     */
+    public function removeAudio()
+    {
+        try {
+            // Eğer dosya varsa, fiziksel dosyayı sil
+            if (!empty($this->inputs['file_path'])) {
+                $filePath = storage_path('app/public/muzibu/songs/' . $this->inputs['file_path']);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                    Log::info('✅ Audio dosyası silindi', [
+                        'file' => $this->inputs['file_path']
+                    ]);
+                }
+            }
+
+            // Form verilerini temizle
+            $this->inputs['file_path'] = null;
+            $this->inputs['duration'] = 0;
+            $this->audioFile = null;
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı',
+                'message' => 'Şarkı dosyası kaldırıldı',
+                'type' => 'success'
+            ]);
+
+            Log::info('✅ Audio dosyası kaldırıldı');
+
+        } catch (\Exception $e) {
+            Log::error('❌ Audio kaldırma hatası', [
+                'error' => $e->getMessage()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Hata',
+                'message' => 'Dosya kaldırılırken hata oluştu: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
      * Audio dosya yükleme - otomatik duration hesaplama
      */
     public function updatedAudioFile()

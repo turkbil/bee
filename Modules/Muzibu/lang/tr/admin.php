@@ -115,6 +115,8 @@ return [
     'supported_formats' => 'Desteklenen Formatlar',
     'max_size' => 'Maksimum Boyut',
     'seconds' => 'saniye',
+    'drag_drop_audio' => 'Şarkı Dosyasını Sürükle ve Bırak',
+    'or_click_browse' => 'veya tıklayarak dosya seç',
     'no_duration' => 'Henüz hesaplanmadı',
     'featured' => 'Öne Çıkan',
     'not_featured' => 'Normal',

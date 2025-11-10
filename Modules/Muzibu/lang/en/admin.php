@@ -172,4 +172,17 @@ return [
         'uploading' => 'Uploading...',
         'upload_success' => 'Image uploaded successfully',
     ],
+
+    // Song
+    'song' => [
+        'audio_file' => 'Audio File',
+        'supported_formats' => 'Supported Formats',
+        'max_size' => 'Maximum Size',
+        'seconds' => 'seconds',
+        'drag_drop_audio' => 'Drag and Drop Audio File',
+        'or_click_browse' => 'or click to browse',
+        'duration' => 'Duration',
+        'duration_manual_help' => 'Auto-calculated when audio is uploaded, or you can edit manually',
+        'remove_audio_confirm' => 'Are you sure you want to remove this audio file?',
+    ],
 ];

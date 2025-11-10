@@ -171,26 +171,62 @@
                                         </div>
                                     @endif
 
-                                    {{-- Upload Input --}}
-                                    <input
-                                        type="file"
-                                        wire:model="audioFile"
-                                        class="form-control @error('audioFile') is-invalid @enderror"
-                                        accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
+                                    {{-- Drag & Drop Upload Area --}}
+                                    <div x-data="{
+                                        isDragging: false,
+                                        handleDrop(e) {
+                                            this.isDragging = false;
+                                            const files = e.dataTransfer.files;
+                                            if (files.length > 0) {
+                                                $refs.fileInput.files = files;
+                                                $refs.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+                                            }
+                                        }
+                                    }">
+                                        {{-- Hidden File Input --}}
+                                        <input
+                                            type="file"
+                                            x-ref="fileInput"
+                                            wire:model="audioFile"
+                                            class="d-none"
+                                            accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
 
-                                    @error('audioFile')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                        {{-- Dropzone --}}
+                                        <div
+                                            @click="$refs.fileInput.click()"
+                                            @dragover.prevent="isDragging = true"
+                                            @dragleave.prevent="isDragging = false"
+                                            @drop.prevent="handleDrop($event)"
+                                            :class="{ 'border-primary bg-primary-lt': isDragging }"
+                                            class="border border-2 border-dashed rounded p-4 text-center cursor-pointer"
+                                            style="cursor: pointer; transition: all 0.2s;">
 
-                                    <small class="form-hint">
-                                        {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
-                                        <span class="text-muted">•</span>
-                                        {{ __('muzibu::admin.song.max_size') }}: 100MB
-                                    </small>
+                                            <div class="mb-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mx-auto">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                                </svg>
+                                            </div>
 
-                                    {{-- Upload Progress --}}
-                                    <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
-                                        <div class="progress-bar progress-bar-indeterminate"></div>
+                                            <h4 class="mb-1">{{ __('muzibu::admin.song.drag_drop_audio') }}</h4>
+                                            <p class="text-muted mb-2">{{ __('muzibu::admin.song.or_click_browse') }}</p>
+
+                                            <small class="text-muted d-block">
+                                                {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
+                                                <span class="mx-1">•</span>
+                                                {{ __('muzibu::admin.song.max_size') }}: 100MB
+                                            </small>
+                                        </div>
+
+                                        @error('audioFile')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+
+                                        {{-- Upload Progress --}}
+                                        <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
+                                            <div class="progress-bar progress-bar-indeterminate"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

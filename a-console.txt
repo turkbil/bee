@@ -1,1 +1,12 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://ixtif.com/login'" />
 
+        <title>Redirecting to https://ixtif.com/login</title>
+    </head>
+    <body>
+        Redirecting to <a href="https://ixtif.com/login">https://ixtif.com/login</a>.
+    </body>
+</html>

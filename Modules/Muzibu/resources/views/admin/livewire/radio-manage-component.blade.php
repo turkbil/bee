@@ -79,7 +79,7 @@
                                 wire:id="radio-media-component"
                                 :model-id="$radioId"
                                 model-type="radio"
-                                model-class="Modules\Radio\App\Models\Radio"
+                                model-class="Modules\Muzibu\App\Models\Radio"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,7 +101,7 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
+                                    'fieldName' => 'description',
                                     'label' => __('muzibu::admin.radio.content'),
                                     'placeholder' => __('muzibu::admin.radio.content_placeholder'),
                                 ])
@@ -130,7 +130,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$radioId" model-type="radio"
-                            model-class="Modules\Radio\App\Models\Radio" />
+                            model-class="Modules\Muzibu\App\Models\Radio" />
                     </div>
 
                 </div>

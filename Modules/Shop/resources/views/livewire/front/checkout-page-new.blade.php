@@ -485,11 +485,12 @@
                         </div>
                     @endif
 
-                    {{-- 🧪 TEST BUTON --}}
+                    {{-- TEST BUTONU - Livewire Çalışıyor mu? --}}
                     <button type="button"
-                        wire:click="testMethod"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mb-3">
-                        🧪 TEST (Livewire Çalışıyor mu?)
+                        wire:click="testButton"
+                        class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg mb-2">
+                        <i class="fa-solid fa-bug mr-2"></i>
+                        TEST: Livewire Çalışıyor mu?
                     </button>
 
                     {{-- Ödemeye Geç Butonu --}}
@@ -517,55 +518,86 @@
 
         </div>
     </div>
-</div>
 
-{{-- PayTR Ödeme Modal --}}
-@if($showPaymentModal ?? false)
-    <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" wire:click="closePaymentModal">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden" wire:click.stop>
-            {{-- Modal Header --}}
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-                    <i class="fa-solid fa-credit-card text-green-600 dark:text-green-400 mr-2"></i>
-                    Güvenli Ödeme - PayTR
-                </h3>
-                <button wire:click="closePaymentModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                    <i class="fa-solid fa-times text-xl"></i>
-                </button>
-            </div>
+    {{-- PayTR iframe Modal --}}
+    @if($showPaymentModal ?? false)
+        @teleport('body')
+        <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
+            {{-- Backdrop (karartma) --}}
+            <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
 
-            {{-- Modal Body --}}
-            <div class="p-4">
-                @if($paymentIframeUrl ?? false)
-                    {{-- PayTR iframe yüklenirken göster --}}
-                    <div wire:loading class="text-center py-12">
-                        <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
-                        <p class="text-gray-600 dark:text-gray-400">Ödeme sayfası yükleniyor...</p>
+            {{-- Modal Content --}}
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden z-[10000] my-8">
+                {{-- Header --}}
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-credit-card text-blue-600 dark:text-blue-400 text-xl"></i>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Güvenli Ödeme</h3>
                     </div>
+                    <button wire:click="closePaymentModal"
+                        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                        <i class="fa-solid fa-times text-2xl"></i>
+                    </button>
+                </div>
 
-                    {{-- PayTR iframe --}}
-                    <div wire:loading.remove>
-                        <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
+                {{-- PayTR iframe --}}
+                <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 80px);">
+                    @if($paymentIframeUrl)
                         <iframe
                             src="{{ $paymentIframeUrl }}"
                             id="paytriframe"
                             frameborder="0"
                             scrolling="no"
-                            style="width: 100%; min-height: 500px;">
+                            style="width: 100%; min-height: 600px;"
+                            class="rounded-lg">
                         </iframe>
-                        <script>
-                            if (typeof iFrameResize !== 'undefined') {
-                                iFrameResize({}, '#paytriframe');
-                            }
-                        </script>
-                    </div>
-                @else
-                    <div class="text-center py-12">
-                        <i class="fa-solid fa-exclamation-triangle text-4xl text-yellow-600 dark:text-yellow-400 mb-4"></i>
-                        <p class="text-gray-600 dark:text-gray-400">Ödeme hazırlanıyor...</p>
-                    </div>
-                @endif
+                    @else
+                        <div class="text-center py-12">
+                            <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <p class="text-gray-600 dark:text-gray-400">Ödeme ekranı yükleniyor...</p>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Footer - Güvenlik Bilgisi --}}
+                <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+                    <p class="text-xs text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock text-green-600 dark:text-green-400"></i>
+                        256-bit SSL şifreli güvenli ödeme - PayTR Güvencesiyle
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-@endif
+
+        {{-- PayTR iframeResizer Script --}}
+        @push('scripts')
+        <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Iframe yüklendiğinde resize aktifleştir
+                const iframe = document.getElementById('paytriframe');
+                if (iframe) {
+                    iFrameResize({
+                        log: false,
+                        checkOrigin: false,
+                        heightCalculationMethod: 'bodyScroll'
+                    }, '#paytriframe');
+                }
+            });
+
+            // Livewire component güncellendiğinde iframe'i yeniden başlat
+            Livewire.hook('message.processed', (message, component) => {
+                const iframe = document.getElementById('paytriframe');
+                if (iframe) {
+                    iFrameResize({
+                        log: false,
+                        checkOrigin: false,
+                        heightCalculationMethod: 'bodyScroll'
+                    }, '#paytriframe');
+                }
+            });
+        </script>
+        @endpush
+        @endteleport
+    @endif
+</div>

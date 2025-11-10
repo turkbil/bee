@@ -79,7 +79,7 @@
                                 wire:id="genre-media-component"
                                 :model-id="$genreId"
                                 model-type="genre"
-                                model-class="Modules\Genre\App\Models\Genre"
+                                model-class="Modules\Muzibu\App\Models\Genre"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,9 +101,9 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
-                                    'label' => __('muzibu::admin.genre.content'),
-                                    'placeholder' => __('muzibu::admin.genre.content_placeholder'),
+                                    'fieldName' => 'description',
+                                    'label' => __('muzibu::admin.genre.description'),
+                                    'placeholder' => __('muzibu::admin.genre.description_placeholder'),
                                 ])
                             </div>
                         @endforeach
@@ -130,7 +130,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$genreId" model-type="genre"
-                            model-class="Modules\Genre\App\Models\Genre" />
+                            model-class="Modules\Muzibu\App\Models\Genre" />
                     </div>
 
                 </div>

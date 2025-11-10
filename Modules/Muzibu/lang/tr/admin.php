@@ -35,6 +35,10 @@ return [
     'no_artists_found' => 'Sanatçı bulunamadı',
     'new_artist_pretitle' => 'Yeni Sanatçı Ekle',
     'edit_artist_pretitle' => 'Sanatçı Düzenle',
+    'bio' => 'Biyografi',
+    'bio_placeholder' => 'Sanatçı biyografisini buraya yazın...',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
 ],
 
 // Albums (Albümler)
@@ -59,6 +63,12 @@ return [
     'no_albums_found' => 'Albüm bulunamadı',
     'new_album_pretitle' => 'Yeni Albüm Ekle',
     'edit_album_pretitle' => 'Albüm Düzenle',
+    'description' => 'Açıklama',
+    'description_placeholder' => 'Albüm açıklamasını buraya yazın...',
+    'select_artist' => 'Sanatçı Seçin',
+    'artist' => 'Sanatçı',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
 ],
 
 // Songs (Şarkılar)
@@ -83,6 +93,18 @@ return [
     'no_songs_found' => 'Şarkı bulunamadı',
     'new_song_pretitle' => 'Yeni Şarkı Ekle',
     'edit_song_pretitle' => 'Şarkı Düzenle',
+    'lyrics' => 'Şarkı Sözleri',
+    'lyrics_placeholder' => 'Şarkı sözlerini buraya yazın...',
+    'select_album' => 'Albüm Seçin',
+    'album' => 'Albüm',
+    'select_genre' => 'Tür Seçin',
+    'genre' => 'Tür',
+    'duration' => 'Süre',
+    'duration_help' => 'Örnek: 03:45 (3 dakika 45 saniye)',
+    'featured' => 'Öne Çıkan',
+    'not_featured' => 'Normal',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
 ],
 
 // Genres (Türler)
@@ -107,6 +129,10 @@ return [
     'no_genres_found' => 'Tür bulunamadı',
     'new_genre_pretitle' => 'Yeni Tür Ekle',
     'edit_genre_pretitle' => 'Tür Düzenle',
+    'description' => 'Açıklama',
+    'description_placeholder' => 'Tür açıklamasını buraya yazın...',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
 ],
 
 // Playlists (Çalma Listeleri)
@@ -131,6 +157,16 @@ return [
     'no_playlists_found' => 'Çalma listesi bulunamadı',
     'new_playlist_pretitle' => 'Yeni Çalma Listesi Ekle',
     'edit_playlist_pretitle' => 'Çalma Listesi Düzenle',
+    'description' => 'Açıklama',
+    'description_placeholder' => 'Çalma listesi açıklamasını buraya yazın...',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
+    'public' => 'Herkese Açık',
+    'private' => 'Özel',
+    'system_playlist' => 'Sistem Listesi',
+    'user_playlist' => 'Kullanıcı Listesi',
+    'radio_mode' => 'Radyo Modu',
+    'playlist_mode' => 'Liste Modu',
 ],
 
 // Radios (Radyolar)
@@ -155,6 +191,10 @@ return [
     'no_radios_found' => 'Radyo bulunamadı',
     'new_radio_pretitle' => 'Yeni Radyo Ekle',
     'edit_radio_pretitle' => 'Radyo Düzenle',
+    'description' => 'Açıklama',
+    'description_placeholder' => 'Radyo açıklamasını buraya yazın...',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
 ],
 
 // Sectors (Sektörler)
@@ -179,6 +219,10 @@ return [
     'no_sectors_found' => 'Sektör bulunamadı',
     'new_sector_pretitle' => 'Yeni Sektör Ekle',
     'edit_sector_pretitle' => 'Sektör Düzenle',
+    'description' => 'Açıklama',
+    'description_placeholder' => 'Sektör açıklamasını buraya yazın...',
+    'active' => 'Aktif',
+    'inactive' => 'Pasif',
 ],
 
 // Quick Actions

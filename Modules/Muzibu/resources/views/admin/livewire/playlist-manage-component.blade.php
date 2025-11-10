@@ -79,7 +79,7 @@
                                 wire:id="playlist-media-component"
                                 :model-id="$playlistId"
                                 model-type="playlist"
-                                model-class="Modules\Playlist\App\Models\Playlist"
+                                model-class="Modules\Muzibu\App\Models\Playlist"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,27 +101,74 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
-                                    'label' => __('muzibu::admin.playlist.content'),
-                                    'placeholder' => __('muzibu::admin.playlist.content_placeholder'),
+                                    'fieldName' => 'description',
+                                    'label' => __('muzibu::admin.playlist.description'),
+                                    'placeholder' => __('muzibu::admin.playlist.description_placeholder'),
                                 ])
                             </div>
                         @endforeach
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
-                        <!-- Aktif/Pasif - sadece bir kere -->
-                        <div class="mb-3 mt-4">
-                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
-                                    value="1"
-                                    {{ !isset($inputs['is_active']) || $inputs['is_active'] ? 'checked' : '' }} />
+                        <!-- Aktif/Pasif ve Özellikler - sadece bir kere -->
+                        <div class="row mb-3 mt-4">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
+                                        value="1"
+                                        {{ !isset($inputs['is_active']) || $inputs['is_active'] ? 'checked' : '' }} />
 
-                                <div class="state p-success p-on ms-2">
-                                    <label>{{ __('muzibu::admin.playlist.active') }}</label>
+                                    <div class="state p-success p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.active') }}</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.inactive') }}</label>
+                                    </div>
                                 </div>
-                                <div class="state p-danger p-off ms-2">
-                                    <label>{{ __('muzibu::admin.playlist.inactive') }}</label>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_public" name="is_public" wire:model="inputs.is_public"
+                                        value="1"
+                                        {{ !isset($inputs['is_public']) || $inputs['is_public'] ? 'checked' : '' }} />
+
+                                    <div class="state p-info p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.public') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.private') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="system" name="system" wire:model="inputs.system"
+                                        value="1"
+                                        {{ isset($inputs['system']) && $inputs['system'] ? 'checked' : '' }} />
+
+                                    <div class="state p-warning p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.system_playlist') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.user_playlist') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_radio" name="is_radio" wire:model="inputs.is_radio"
+                                        value="1"
+                                        {{ isset($inputs['is_radio']) && $inputs['is_radio'] ? 'checked' : '' }} />
+
+                                    <div class="state p-primary p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.radio_mode') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.playlist_mode') }}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +177,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$playlistId" model-type="playlist"
-                            model-class="Modules\Playlist\App\Models\Playlist" />
+                            model-class="Modules\Muzibu\App\Models\Playlist" />
                     </div>
 
                 </div>

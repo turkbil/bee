@@ -187,6 +187,9 @@ class CheckoutPageNew extends Component
 
         // ✅ Auth kontrolü artık route middleware'de yapılıyor (web.php'de auth middleware)
 
+        // ✅ Checkbox'ı sıfırla - Her checkout'ta kullanıcı sözleşmeleri yeniden onaylamalı
+        $this->agree_all = false;
+
         $this->loadCart();
 
         // Sepet boşsa sepet sayfasına yönlendir
@@ -688,6 +691,15 @@ class CheckoutPageNew extends Component
     }
 
     /**
+     * Test metodu - Livewire çalışıyor mu?
+     */
+    public function testButton()
+    {
+        \Log::info('🔥 TEST BUTTON CLICKED!');
+        session()->flash('success', 'Test başarılı! Livewire çalışıyor.');
+    }
+
+    /**
      * Ödemeye Geç - PayTR iframe modalını aç
      */
     public function proceedToPayment()
@@ -879,11 +891,13 @@ class CheckoutPageNew extends Component
                     $cartService->clearCart();
                     $this->dispatch('cartUpdated');
 
-                    // Modal aç
+                    DB::commit();
+
+                    // ✅ PayTR iframe modal aç
                     $this->paymentIframeUrl = $result['iframe_url'];
                     $this->showPaymentModal = true;
 
-                    \Log::info('✅ PayTR iframe opened', ['url' => $result['iframe_url']]);
+                    \Log::info('✅ PayTR iframe modal opened', ['url' => $result['iframe_url']]);
                 } else {
                     DB::rollBack();
                     session()->flash('error', 'Ödeme hazırlanamadı: ' . $result['message']);
@@ -902,13 +916,6 @@ class CheckoutPageNew extends Component
     {
         $this->showPaymentModal = false;
         $this->paymentIframeUrl = '';
-    }
-
-    // 🧪 TEST: Basit metod - çalışıyor mu?
-    public function testMethod()
-    {
-        \Log::info('🧪 TEST METHOD CALLED!');
-        session()->flash('success', 'Test metodu çalıştı!');
     }
 
     /**

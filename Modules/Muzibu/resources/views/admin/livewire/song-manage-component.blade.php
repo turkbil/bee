@@ -70,6 +70,79 @@
                                     </div>
                                 </div>
 
+                                <!-- Album, Genre, Duration Seçimleri (Sadece ilk dilde göster) -->
+                                @if($lang === get_tenant_default_locale())
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-floating">
+                                            <select wire:model="inputs.album_id"
+                                                class="form-control @error('inputs.album_id') is-invalid @enderror"
+                                                id="album_select">
+                                                <option value="">{{ __('muzibu::admin.song.select_album') }}</option>
+                                                @if(isset($this->activeAlbums))
+                                                    @foreach($this->activeAlbums as $album)
+                                                        <option value="{{ $album->album_id }}">
+                                                            {{ $album->getTranslated('title', app()->getLocale()) }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <label for="album_select">
+                                                {{ __('muzibu::admin.song.album') }}
+                                            </label>
+                                            @error('inputs.album_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-floating">
+                                            <select wire:model="inputs.genre_id"
+                                                class="form-control @error('inputs.genre_id') is-invalid @enderror"
+                                                id="genre_select">
+                                                <option value="">{{ __('muzibu::admin.song.select_genre') }}</option>
+                                                @if(isset($this->activeGenres))
+                                                    @foreach($this->activeGenres as $genre)
+                                                        <option value="{{ $genre->genre_id }}">
+                                                            {{ $genre->getTranslated('title', app()->getLocale()) }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <label for="genre_select">
+                                                {{ __('muzibu::admin.song.genre') }}
+                                                <span class="required-star">★</span>
+                                            </label>
+                                            @error('inputs.genre_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-floating">
+                                            <input type="text" wire:model="inputs.duration"
+                                                class="form-control @error('inputs.duration') is-invalid @enderror"
+                                                id="duration_input"
+                                                placeholder="03:45">
+                                            <label for="duration_input">
+                                                {{ __('muzibu::admin.song.duration') }}
+                                                <small class="text-muted ms-2">(mm:ss)</small>
+                                            </label>
+                                            <div class="form-text">
+                                                <small class="text-muted">
+                                                    {{ __('muzibu::admin.song.duration_help') }}
+                                                </small>
+                                            </div>
+                                            @error('inputs.duration')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
                             </div>
                         @endforeach
 
@@ -79,7 +152,7 @@
                                 wire:id="song-media-component"
                                 :model-id="$songId"
                                 model-type="song"
-                                model-class="Modules\Song\App\Models\Song"
+                                model-class="Modules\Muzibu\App\Models\Song"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,27 +174,44 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
-                                    'label' => __('muzibu::admin.song.content'),
-                                    'placeholder' => __('muzibu::admin.song.content_placeholder'),
+                                    'fieldName' => 'lyrics',
+                                    'label' => __('muzibu::admin.song.lyrics'),
+                                    'placeholder' => __('muzibu::admin.song.lyrics_placeholder'),
                                 ])
                             </div>
                         @endforeach
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
-                        <!-- Aktif/Pasif - sadece bir kere -->
-                        <div class="mb-3 mt-4">
-                            <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
-                                    value="1"
-                                    {{ !isset($inputs['is_active']) || $inputs['is_active'] ? 'checked' : '' }} />
+                        <!-- Aktif/Pasif ve Öne Çıkan - sadece bir kere -->
+                        <div class="row mb-3 mt-4">
+                            <div class="col-12 col-md-6">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_active" name="is_active" wire:model="inputs.is_active"
+                                        value="1"
+                                        {{ !isset($inputs['is_active']) || $inputs['is_active'] ? 'checked' : '' }} />
 
-                                <div class="state p-success p-on ms-2">
-                                    <label>{{ __('muzibu::admin.song.active') }}</label>
+                                    <div class="state p-success p-on ms-2">
+                                        <label>{{ __('muzibu::admin.song.active') }}</label>
+                                    </div>
+                                    <div class="state p-danger p-off ms-2">
+                                        <label>{{ __('muzibu::admin.song.inactive') }}</label>
+                                    </div>
                                 </div>
-                                <div class="state p-danger p-off ms-2">
-                                    <label>{{ __('muzibu::admin.song.inactive') }}</label>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_featured" name="is_featured" wire:model="inputs.is_featured"
+                                        value="1"
+                                        {{ isset($inputs['is_featured']) && $inputs['is_featured'] ? 'checked' : '' }} />
+
+                                    <div class="state p-warning p-on ms-2">
+                                        <label>{{ __('muzibu::admin.song.featured') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.song.not_featured') }}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +220,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$songId" model-type="song"
-                            model-class="Modules\Song\App\Models\Song" />
+                            model-class="Modules\Muzibu\App\Models\Song" />
                     </div>
 
                 </div>

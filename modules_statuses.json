@@ -18,5 +18,7 @@
     "MenuManagement": true,
     "MediaManagement": true,
     "Search": true,
-    "Payment": true
+    "Payment": true,
+    "Favorite": true,
+    "ReviewSystem": true
 }

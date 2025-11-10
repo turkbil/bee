@@ -79,7 +79,7 @@
                                 wire:id="sector-media-component"
                                 :model-id="$sectorId"
                                 model-type="sector"
-                                model-class="Modules\Sector\App\Models\Sector"
+                                model-class="Modules\Muzibu\App\Models\Sector"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,7 +101,7 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
+                                    'fieldName' => 'description',
                                     'label' => __('muzibu::admin.sector.content'),
                                     'placeholder' => __('muzibu::admin.sector.content_placeholder'),
                                 ])
@@ -130,7 +130,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$sectorId" model-type="sector"
-                            model-class="Modules\Sector\App\Models\Sector" />
+                            model-class="Modules\Muzibu\App\Models\Sector" />
                     </div>
 
                 </div>

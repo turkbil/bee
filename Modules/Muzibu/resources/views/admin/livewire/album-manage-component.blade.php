@@ -70,6 +70,34 @@
                                     </div>
                                 </div>
 
+                                <!-- Sanatçı Seçimi (Sadece ilk dilde göster) -->
+                                @if($lang === get_tenant_default_locale())
+                                <div class="row mb-4">
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating">
+                                            <select wire:model="inputs.artist_id"
+                                                class="form-control @error('inputs.artist_id') is-invalid @enderror"
+                                                id="artist_select">
+                                                <option value="">{{ __('muzibu::admin.album.select_artist') }}</option>
+                                                @if(isset($this->activeArtists))
+                                                    @foreach($this->activeArtists as $artist)
+                                                        <option value="{{ $artist->artist_id }}">
+                                                            {{ $artist->getTranslated('title', app()->getLocale()) }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <label for="artist_select">
+                                                {{ __('muzibu::admin.album.artist') }}
+                                            </label>
+                                            @error('inputs.artist_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
                             </div>
                         @endforeach
 
@@ -79,7 +107,7 @@
                                 wire:id="album-media-component"
                                 :model-id="$albumId"
                                 model-type="album"
-                                model-class="Modules\Album\App\Models\Album"
+                                model-class="Modules\Muzibu\App\Models\Album"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,9 +129,9 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
-                                    'label' => __('muzibu::admin.album.content'),
-                                    'placeholder' => __('muzibu::admin.album.content_placeholder'),
+                                    'fieldName' => 'description',
+                                    'label' => __('muzibu::admin.album.description'),
+                                    'placeholder' => __('muzibu::admin.album.description_placeholder'),
                                 ])
                             </div>
                         @endforeach
@@ -130,7 +158,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$albumId" model-type="album"
-                            model-class="Modules\Album\App\Models\Album" />
+                            model-class="Modules\Muzibu\App\Models\Album" />
                     </div>
 
                 </div>

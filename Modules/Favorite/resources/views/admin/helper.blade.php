@@ -1,12 +1,12 @@
 {{-- Modules/Favorite/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @section('pretitle')
-    {{ __('favorite::admin.favorite_management') }}
+    Favori Sistemi
 @endsection
 
 {{-- Başlık --}}
 @section('title')
-    {{ __('favorite::admin.favorites') }}
+    Favoriler
 @endsection
 
 {{-- Modül Menüsü --}}
@@ -14,20 +14,15 @@
 
     <div class="dropdown d-grid d-md-flex module-menu">
         <a href="#" class="btn dropdown-toggle d-inline-block d-lg-none"
-            data-bs-toggle="dropdown">{{ __('favorite::admin.menu') }}</a>
+            data-bs-toggle="dropdown">Menü</a>
         <div class="dropdown-menu dropdown-module-menu">
             <div class="module-menu-revert">
-                @hasmoduleaccess('favorite', 'view')
-                    <a href="{{ route('admin.favorite.index') }}" class="dropdown-module-item btn btn-ghost-primary">
-                        {{ __('favorite::admin.favorites') }}
-                    </a>
-                @endhasmoduleaccess
-
-                @hasmoduleaccess('favorite', 'create')
-                    <a href="{{ route('admin.favorite.manage') }}" class="dropdown-module-item btn btn-primary">
-                        {{ __('favorite::admin.new_favorite') }}
-                    </a>
-                @endhasmoduleaccess
+                <a href="{{ route('admin.favorite.index') }}" class="dropdown-module-item btn btn-ghost-primary">
+                    Favoriler
+                </a>
+                <a href="{{ route('admin.favorite.statistics') }}" class="dropdown-module-item btn btn-ghost-primary">
+                    İstatistikler
+                </a>
             </div>
         </div>
     </div>

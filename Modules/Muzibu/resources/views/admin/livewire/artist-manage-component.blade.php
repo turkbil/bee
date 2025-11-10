@@ -79,7 +79,7 @@
                                 wire:id="artist-media-component"
                                 :model-id="$artistId"
                                 model-type="artist"
-                                model-class="Modules\Artist\App\Models\Artist"
+                                model-class="Modules\Muzibu\App\Models\Artist"
                                 :collections="['featured_image', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
@@ -101,9 +101,9 @@
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
-                                    'fieldName' => 'body',
-                                    'label' => __('muzibu::admin.artist.content'),
-                                    'placeholder' => __('muzibu::admin.artist.content_placeholder'),
+                                    'fieldName' => 'bio',
+                                    'label' => __('muzibu::admin.artist.bio'),
+                                    'placeholder' => __('muzibu::admin.artist.bio_placeholder'),
                                 ])
                             </div>
                         @endforeach
@@ -130,7 +130,7 @@
                     <!-- SEO TAB - UNIVERSAL COMPONENT - NO FADE for instant switching -->
                     <div class="tab-pane" id="1" role="tabpanel">
                         <livewire:seomanagement::universal-seo-tab :model-id="$artistId" model-type="artist"
-                            model-class="Modules\Artist\App\Models\Artist" />
+                            model-class="Modules\Muzibu\App\Models\Artist" />
                     </div>
 
                 </div>

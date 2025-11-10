@@ -550,6 +550,12 @@ return [
     'portfolio_url_slug' => 'Portfolio URL (Slug)',
     'menu_url_slug' => 'Menu URL (Slug)',
     'song_url_slug' => 'Song URL (Slug)',
+    'artist_url_slug' => 'Artist URL (Slug)',
+    'album_url_slug' => 'Album URL (Slug)',
+    'genre_url_slug' => 'Genre URL (Slug)',
+    'playlist_url_slug' => 'Playlist URL (Slug)',
+    'radio_url_slug' => 'Radio URL (Slug)',
+    'sector_url_slug' => 'Sector URL (Slug)',
     'slug_auto_generated' => 'Auto-generated',
 
     // SEO Help Texts

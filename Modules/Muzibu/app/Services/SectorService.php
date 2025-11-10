@@ -43,7 +43,7 @@ class SectorService
 
         $tabCompletion = [];
         $tabCompletion[0] = !empty($sector->getTranslated('title', $currentLanguage));
-        $tabCompletion[1] = $sector->hasSeoSettings() && !empty($sector->getSeoFallbackTitle());
+        $tabCompletion[1] = true; // SEO tab her zaman tamamlanmış sayılır
 
         return ['sector' => $sector, 'tabCompletion' => $tabCompletion];
     }

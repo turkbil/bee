@@ -80,13 +80,136 @@
                                 :model-id="$playlistId"
                                 model-type="playlist"
                                 model-class="Modules\Muzibu\App\Models\Playlist"
-                                :collections="['featured_image', 'gallery']"
-                                :sortable="true"
-                                :set-featured-from-gallery="true"
+                                :collections="['featured_image']"
                                 :key="'universal-media-' . ($playlistId ?? 'new')"
                             />
                         </div>
 
+                        <!-- 1. Sektörler (Dual Listbox) -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">{{ __('muzibu::admin.playlist.sectors') }}</label>
+                                <div class="dual-listbox-wrapper">
+                                    {{-- Search input with float label --}}
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text"
+                                                class="form-control"
+                                                placeholder="Sektör ara..."
+                                                wire:model.live.debounce.300ms="sectorSearch"
+                                                id="sector-search">
+                                            <label for="sector-search">
+                                                <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                                Sektör Ara
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-5">
+                                            <label class="form-label text-muted small">Tüm Sektörler</label>
+                                            <div class="listbox" id="available-sectors">
+                                                @if(isset($this->activeSectors))
+                                                    @foreach($this->activeSectors as $sector)
+                                                        @if(!in_array($sector->sector_id, $inputs['sector_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $sector->sector_id }}"
+                                                                data-title="{{ strtolower($sector->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $sector->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <div class="transfer-buttons">
+                                                <button type="button" class="btn btn-sm btn-primary mb-2" onclick="transferSectorsRight()">
+                                                    <i class="fa-solid fa-chevron-right"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="transferSectorsLeft()">
+                                                    <i class="fa-solid fa-chevron-left"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <label class="form-label text-muted small">Seçilen Sektörler</label>
+                                            <div class="listbox" id="selected-sectors">
+                                                @if(isset($this->activeSectors))
+                                                    @foreach($this->activeSectors as $sector)
+                                                        @if(in_array($sector->sector_id, $inputs['sector_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $sector->sector_id }}"
+                                                                data-title="{{ strtolower($sector->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $sector->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small class="text-muted">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            {{ __('muzibu::admin.playlist.sectors_help') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Özellikler (Aktif/Pasif Hariç) -->
+                        <div class="row mb-4">
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_system" name="is_system" wire:model="inputs.is_system"
+                                        value="1"
+                                        {{ !isset($inputs['is_system']) || $inputs['is_system'] ? 'checked' : '' }} />
+
+                                    <div class="state p-warning p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.system_playlist') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.user_playlist') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_public" name="is_public" wire:model="inputs.is_public"
+                                        value="1"
+                                        {{ !isset($inputs['is_public']) || $inputs['is_public'] ? 'checked' : '' }} />
+
+                                    <div class="state p-info p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.public') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.private') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+                                    <input type="checkbox" id="is_radio" name="is_radio" wire:model="inputs.is_radio"
+                                        value="1"
+                                        {{ isset($inputs['is_radio']) && $inputs['is_radio'] ? 'checked' : '' }} />
+
+                                    <div class="state p-primary p-on ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.radio_mode') }}</label>
+                                    </div>
+                                    <div class="state p-off ms-2">
+                                        <label>{{ __('muzibu::admin.playlist.playlist_mode') }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Açıklama -->
                         @foreach ($availableLanguages as $lang)
                             @php
                                 $langData = $multiLangInputs[$lang] ?? [];
@@ -108,9 +231,7 @@
                             </div>
                         @endforeach
 
-                        {{-- SEO Character Counter - manage.js'te tanımlı --}}
-
-                        <!-- Aktif/Pasif ve Özellikler - sadece bir kere -->
+                        <!-- 4. Aktif/Pasif -->
                         <div class="row mb-3 mt-4">
                             <div class="col-12 col-md-6 col-lg-3">
                                 <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
@@ -126,51 +247,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                    <input type="checkbox" id="is_public" name="is_public" wire:model="inputs.is_public"
-                                        value="1"
-                                        {{ !isset($inputs['is_public']) || $inputs['is_public'] ? 'checked' : '' }} />
-
-                                    <div class="state p-info p-on ms-2">
-                                        <label>{{ __('muzibu::admin.playlist.public') }}</label>
-                                    </div>
-                                    <div class="state p-off ms-2">
-                                        <label>{{ __('muzibu::admin.playlist.private') }}</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                    <input type="checkbox" id="system" name="system" wire:model="inputs.system"
-                                        value="1"
-                                        {{ isset($inputs['system']) && $inputs['system'] ? 'checked' : '' }} />
-
-                                    <div class="state p-warning p-on ms-2">
-                                        <label>{{ __('muzibu::admin.playlist.system_playlist') }}</label>
-                                    </div>
-                                    <div class="state p-off ms-2">
-                                        <label>{{ __('muzibu::admin.playlist.user_playlist') }}</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-                                    <input type="checkbox" id="is_radio" name="is_radio" wire:model="inputs.is_radio"
-                                        value="1"
-                                        {{ isset($inputs['is_radio']) && $inputs['is_radio'] ? 'checked' : '' }} />
-
-                                    <div class="state p-primary p-on ms-2">
-                                        <label>{{ __('muzibu::admin.playlist.radio_mode') }}</label>
-                                    </div>
-                                    <div class="state p-off ms-2">
-                                        <label>{{ __('muzibu::admin.playlist.playlist_mode') }}</label>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -183,7 +259,7 @@
                 </div>
             </div>
 
-            <x-form-footer route="admin.playlist" :model-id="$playlistId" />
+            <x-form-footer route="admin.muzibu.playlist" :model-id="$playlistId" />
 
         </div>
     </form>
@@ -225,6 +301,21 @@
                     }
                 });
             });
+
+            // 🎯 PLAYLIST-SPECIFIC DUAL LISTBOX FUNCTIONS
+            function transferSectorsRight() {
+                dualListboxTransfer('available-sectors', 'selected-sectors', 'right', updateLivewireSectors);
+            }
+
+            function transferSectorsLeft() {
+                dualListboxTransfer('available-sectors', 'selected-sectors', 'left', updateLivewireSectors);
+            }
+
+            // 🔄 Update Livewire (Playlist-specific)
+            function updateLivewireSectors() {
+                const selectedValues = getDualListboxValues('selected-sectors');
+                @this.set('inputs.sector_ids', selectedValues);
+            }
         </script>
 
         {{-- 🌍 UNIVERSAL SYSTEMS --}}

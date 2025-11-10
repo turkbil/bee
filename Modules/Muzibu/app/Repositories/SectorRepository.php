@@ -23,6 +23,14 @@ class SectorRepository
         return $this->model->where('sector_id', $id)->first();
     }
 
+    public function findByIdWithRelations(int $id): ?Sector
+    {
+        return $this->model
+            ->where('sector_id', $id)
+            ->with(['radios', 'playlists'])
+            ->first();
+    }
+
     public function getActive(): Collection
     {
         return $this->model->active()->orderBy('sector_id', 'desc')->get();

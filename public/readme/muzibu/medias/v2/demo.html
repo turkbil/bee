@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo & Örnekler | Muzibu Media System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 50px 0;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .hero-section {
+            background: white;
+            padding: 60px;
+            text-align: center;
+            border-radius: 20px;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .demo-card {
+            transition: all 0.3s;
+            height: 100%;
+        }
+        .demo-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .platform-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3rem;
+        }
+        .icon-huge {
+            font-size: 5rem;
+            margin: 20px 0;
+        }
+        .btn-back {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+        .video-placeholder {
+            background: #000;
+            color: white;
+            padding: 100px;
+            text-align: center;
+            border-radius: 15px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1200px;">
+        
+        <div class="hero-section">
+            <div class="icon-huge" style="color: #f5576c;">
+                <i class="bi bi-play-btn-fill"></i>
+            </div>
+            <h1 class="hero-title">Demo & Örnekler</h1>
+            <h2 class="text-muted mb-4">Gerçek Hayattan Örnekler</h2>
+            <p class="lead">Büyük platformlar nasıl çalışıyor?</p>
+        </div>
+
+        <!-- FilePond Live Demo -->
+        <div class="card">
+            <div class="card-body" style="padding: 40px;">
+                <h2 class="mb-4"><i class="bi bi-cloud-upload-fill text-primary"></i> FilePond Canlı Demo</h2>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <strong>FilePond resmi demo:</strong> 
+                    <a href="https://pqina.nl/filepond/" target="_blank" class="alert-link">
+                        https://pqina.nl/filepond/
+                    </a>
+                </div>
+
+                <div class="row g-4 mt-3">
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded">
+                            <h5><i class="bi bi-cursor-fill text-primary"></i> Deneyebilecekleriniz:</h5>
+                            <ul>
+                                <li>Drag & Drop ile dosya yükleme</li>
+                                <li>Progress bar animasyonu</li>
+                                <li>Preview (görsel önizleme)</li>
+                                <li>Multiple upload (çoklu)</li>
+                                <li>Validation (yanlış dosya tipi)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded">
+                            <h5><i class="bi bi-play-circle-fill text-success"></i> Nasıl Test Edilir:</h5>
+                            <ol>
+                                <li>Demo linkine git</li>
+                                <li>"Browse" butonuna tıkla</li>
+                                <li>Veya dosyayı sürükle-bırak</li>
+                                <li>Progress bar'ı izle</li>
+                                <li>✅ Upload tamamlandı!</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Büyük Platformlar -->
+        <div class="card">
+            <div class="card-body" style="padding: 40px;">
+                <h2 class="mb-4"><i class="bi bi-globe text-warning"></i> Büyük Platformların Sistemleri</h2>
+                
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card demo-card">
+                            <div class="card-body text-center p-4">
+                                <div class="platform-logo" style="background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);">
+                                    <i class="bi bi-spotify text-white"></i>
+                                </div>
+                                <h4>Spotify</h4>
+                                <hr>
+                                <div class="text-start">
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Upload:</strong> Chunked</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Streaming:</strong> HLS/OGG Vorbis</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Koruma:</strong> Encrypted</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Resume:</strong> Var</p>
+                                </div>
+                                <a href="https://www.spotify.com" target="_blank" class="btn btn-success mt-3">
+                                    <i class="bi bi-box-arrow-up-right"></i> Spotify'ı Ziyaret Et
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card demo-card">
+                            <div class="card-body text-center p-4">
+                                <div class="platform-logo" style="background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);">
+                                    <i class="bi bi-youtube text-white"></i>
+                                </div>
+                                <h4>YouTube</h4>
+                                <hr>
+                                <div class="text-start">
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Upload:</strong> Chunked</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Streaming:</strong> DASH</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Koruma:</strong> Encrypted</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Resume:</strong> Var</p>
+                                </div>
+                                <a href="https://www.youtube.com" target="_blank" class="btn btn-danger mt-3">
+                                    <i class="bi bi-box-arrow-up-right"></i> YouTube'u Ziyaret Et
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card demo-card">
+                            <div class="card-body text-center p-4">
+                                <div class="platform-logo" style="background: linear-gradient(135deg, #000000 0%, #333333 100%);">
+                                    <i class="bi bi-apple text-white"></i>
+                                </div>
+                                <h4>Apple Music</h4>
+                                <hr>
+                                <div class="text-start">
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Upload:</strong> Chunked</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Streaming:</strong> HLS (Apple'ın kendi teknolojisi)</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Koruma:</strong> FairPlay DRM</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Resume:</strong> Var</p>
+                                </div>
+                                <a href="https://music.apple.com" target="_blank" class="btn btn-dark mt-3">
+                                    <i class="bi bi-box-arrow-up-right"></i> Apple Music'i Ziyaret Et
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card demo-card">
+                            <div class="card-body text-center p-4">
+                                <div class="platform-logo" style="background: linear-gradient(135deg, #ff5500 0%, #ff8800 100%);">
+                                    <i class="bi bi-soundwave text-white"></i>
+                                </div>
+                                <h4>SoundCloud</h4>
+                                <hr>
+                                <div class="text-start">
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Upload:</strong> Chunked</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Streaming:</strong> HLS + Progressive</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Koruma:</strong> Encrypted chunks</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Resume:</strong> Var</p>
+                                </div>
+                                <a href="https://soundcloud.com" target="_blank" class="btn btn-warning mt-3">
+                                    <i class="bi bi-box-arrow-up-right"></i> SoundCloud'u Ziyaret Et
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card demo-card">
+                            <div class="card-body text-center p-4">
+                                <div class="platform-logo" style="background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);">
+                                    <i class="bi bi-google text-white"></i>
+                                </div>
+                                <h4>Google Drive</h4>
+                                <hr>
+                                <div class="text-start">
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Upload:</strong> Resumable Chunked</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Pause/Resume:</strong> Var</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Progress:</strong> Real-time</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Büyük dosya:</strong> GB seviyesi</p>
+                                </div>
+                                <a href="https://drive.google.com" target="_blank" class="btn btn-primary mt-3">
+                                    <i class="bi bi-box-arrow-up-right"></i> Google Drive'ı Ziyaret Et
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card demo-card">
+                            <div class="card-body text-center p-4">
+                                <div class="platform-logo" style="background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);">
+                                    <i class="bi bi-whatsapp text-white"></i>
+                                </div>
+                                <h4>WhatsApp</h4>
+                                <hr>
+                                <div class="text-start">
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Upload:</strong> Chunked</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Media:</strong> Video/Audio</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Progress:</strong> Real-time</p>
+                                    <p><i class="bi bi-check-circle-fill text-success"></i> <strong>Resume:</strong> Var</p>
+                                </div>
+                                <a href="https://web.whatsapp.com" target="_blank" class="btn btn-success mt-3">
+                                    <i class="bi bi-box-arrow-up-right"></i> WhatsApp Web'i Ziyaret Et
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nasıl Test Edilir -->
+        <div class="card">
+            <div class="card-body" style="padding: 40px;">
+                <h2 class="mb-4"><i class="bi bi-clipboard-check-fill text-success"></i> Kendin Test Et!</h2>
+                
+                <div class="accordion" id="testAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#test1">
+                                <strong>1. Spotify'da HLS Streaming'i Görmek</strong>
+                            </button>
+                        </h2>
+                        <div id="test1" class="accordion-collapse collapse show" data-bs-parent="#testAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Spotify Web Player'ı aç: <a href="https://open.spotify.com" target="_blank">open.spotify.com</a></li>
+                                    <li>Browser'da <kbd>F12</kbd> bas (Developer Tools)</li>
+                                    <li><strong>Network</strong> sekmesine git</li>
+                                    <li>Bir şarkı çal</li>
+                                    <li>Arama kutusuna <code>.ts</code> yaz</li>
+                                    <li>✅ Göreceksin: chunk-001.ts, chunk-002.ts... (HLS chunk'ları!)</li>
+                                </ol>
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-lightbulb-fill"></i>
+                                    Her 2-3 saniyede yeni bir chunk indirilir ve çalınır!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#test2">
+                                <strong>2. YouTube'da Chunked Upload Görmek</strong>
+                            </button>
+                        </h2>
+                        <div id="test2" class="accordion-collapse collapse" data-bs-parent="#testAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>YouTube'a video yükle: <a href="https://studio.youtube.com" target="_blank">studio.youtube.com</a></li>
+                                    <li>Büyük bir video seç (100 MB+)</li>
+                                    <li>Browser'da <kbd>F12</kbd> bas</li>
+                                    <li><strong>Network</strong> sekmesine git</li>
+                                    <li>Video yüklemeyi başlat</li>
+                                    <li>✅ Göreceksin: Birçok küçük POST request (chunk'lar!)</li>
+                                    <li>✅ Progress bar canlı güncellenir</li>
+                                </ol>
+                                <div class="alert alert-success mt-3">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    İnternet'i durdurup tekrar başlatsan, kaldığı yerden devam eder!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#test3">
+                                <strong>3. Google Drive Resume Capability</strong>
+                            </button>
+                        </h2>
+                        <div id="test3" class="accordion-collapse collapse" data-bs-parent="#testAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Google Drive'ı aç: <a href="https://drive.google.com" target="_blank">drive.google.com</a></li>
+                                    <li>Büyük bir dosya yükle (500 MB+)</li>
+                                    <li>Yükleme başlayınca <strong>Pause</strong> butonuna bas</li>
+                                    <li>30 saniye bekle</li>
+                                    <li><strong>Resume</strong> butonuna bas</li>
+                                    <li>✅ Kaldığı yerden devam eder!</li>
+                                </ol>
+                                <div class="alert alert-warning mt-3">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <strong>Deneme:</strong> İnternet'i kes, sonra aç → Otomatik devam eder!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Tutoriallar -->
+        <div class="card">
+            <div class="card-body" style="padding: 40px;">
+                <h2 class="mb-4"><i class="bi bi-camera-video-fill text-danger"></i> Video Tutoriallar</h2>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    YouTube'da bu konularda video tutorial arayabilirsiniz:
+                </div>
+
+                <div class="row g-4 mt-3">
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded">
+                            <h5><i class="bi bi-youtube text-danger"></i> FilePond Tutorial</h5>
+                            <p>YouTube'da ara: <code>"FilePond tutorial"</code></p>
+                            <a href="https://www.youtube.com/results?search_query=filepond+tutorial" target="_blank" class="btn btn-danger btn-sm">
+                                <i class="bi bi-search"></i> YouTube'da Ara
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded">
+                            <h5><i class="bi bi-youtube text-danger"></i> HLS Streaming Tutorial</h5>
+                            <p>YouTube'da ara: <code>"HLS streaming explained"</code></p>
+                            <a href="https://www.youtube.com/results?search_query=hls+streaming+tutorial" target="_blank" class="btn btn-danger btn-sm">
+                                <i class="bi bi-search"></i> YouTube'da Ara
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded">
+                            <h5><i class="bi bi-youtube text-danger"></i> Chunked Upload Tutorial</h5>
+                            <p>YouTube'da ara: <code>"Chunked file upload"</code></p>
+                            <a href="https://www.youtube.com/results?search_query=chunked+upload+tutorial" target="_blank" class="btn btn-danger btn-sm">
+                                <i class="bi bi-search"></i> YouTube'da Ara
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-4 rounded">
+                            <h5><i class="bi bi-youtube text-danger"></i> FFmpeg Tutorial</h5>
+                            <p>YouTube'da ara: <code>"FFmpeg HLS conversion"</code></p>
+                            <a href="https://www.youtube.com/results?search_query=ffmpeg+hls+tutorial" target="_blank" class="btn btn-danger btn-sm">
+                                <i class="bi bi-search"></i> YouTube'da Ara
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="card">
+            <div class="card-body text-center" style="padding: 40px;">
+                <h2 class="mb-4"><i class="bi bi-check2-circle text-success"></i> Tebrikler!</h2>
+                <p class="lead">Artık modern media upload ve streaming sistemlerini anlıyorsun! 🎉</p>
+                
+                <div class="alert alert-success mt-4" style="font-size: 1.1rem;">
+                    <strong>Şimdi ne yapmalısın?</strong>
+                    <hr>
+                    <p class="mb-0">
+                        1. Bu platformları test et<br>
+                        2. Kendi sisteminizde uygula<br>
+                        3. Kullanıcılarına harika bir deneyim sun!
+                    </p>
+                </div>
+
+                <a href="index.html" class="btn-back mt-4">
+                    <i class="bi bi-arrow-left"></i> Ana Sayfaya Dön
+                </a>
+            </div>
+        </div>
+
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

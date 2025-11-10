@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Muzibu\App\Http\Controllers\Api\MuzibuApiController;
 
 /*
  *--------------------------------------------------------------------------
@@ -14,7 +13,4 @@ use Modules\Muzibu\App\Http\Controllers\Api\MuzibuApiController;
  *
 */
 
-Route::prefix('v1/muzibus')->group(function () {
-    Route::get('/', [MuzibuApiController::class, 'index'])->name('api.muzibus.index');
-    Route::get('{slug}', [MuzibuApiController::class, 'show'])->name('api.muzibus.show');
-});
+// Muzibu API routes will be added here

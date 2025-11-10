@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Select Tasarım Örnekleri - Bootstrap</title>
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            background: #f8f9fa;
+            padding: 2rem 0;
+        }
+
+        .design-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .design-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #212529;
+        }
+
+        .design-desc {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Style 1: Native Multi-Select Enhanced */
+        .native-multiselect {
+            min-height: 200px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+
+        .native-multiselect:focus {
+            border-color: #0d6efd;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .native-multiselect option {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border-radius: 4px;
+        }
+
+        .native-multiselect option:checked {
+            background: linear-gradient(0deg, #0d6efd 0%, #0d6efd 100%);
+            color: white;
+        }
+
+        /* Style 2: Checkbox List */
+        .checkbox-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .checkbox-item {
+            padding: 0.5rem;
+            margin-bottom: 0.25rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #f8f9fa;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+
+        /* Style 3: Tag/Badge Style */
+        .tag-input-wrapper {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.5rem;
+            min-height: 100px;
+            cursor: text;
+        }
+
+        .tag-input-wrapper:focus-within {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .selected-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #0d6efd;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .tag-remove {
+            margin-left: 0.5rem;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .tag-remove:hover {
+            opacity: 1;
+        }
+
+        .tag-dropdown {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .tag-dropdown.show {
+            display: block;
+        }
+
+        .tag-option {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+        }
+
+        .tag-option:hover {
+            background: #f8f9fa;
+        }
+
+        .tag-option.selected {
+            background: #e7f1ff;
+            color: #0d6efd;
+        }
+
+        /* Style 4: Dual Listbox */
+        .dual-listbox {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .listbox {
+            flex: 1;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 0.75rem;
+            min-height: 250px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .listbox-item {
+            padding: 0.5rem;
+            margin-bottom: 0.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .listbox-item:hover {
+            background: #f8f9fa;
+        }
+
+        .listbox-item.selected {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .transfer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Style 5: Pills/Button Toggle */
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .pill-item {
+            padding: 0.5rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 50px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .pill-item:hover {
+            border-color: #0d6efd;
+            background: #f8f9fa;
+        }
+
+        .pill-item.selected {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        /* Style 6: Card Grid Selection */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .select-card {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .select-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .select-card.selected {
+            border-color: #0d6efd;
+            background: #f8f9fa;
+        }
+
+        .select-card .check-icon {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #0d6efd;
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .select-card.selected .check-icon {
+            display: flex;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Style 7: Dropdown with Checkboxes */
+        .dropdown-checkbox {
+            position: relative;
+        }
+
+        .dropdown-toggle-custom {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-toggle-custom:hover {
+            border-color: #0d6efd;
+        }
+
+        .dropdown-menu-custom {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.25rem;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .dropdown-menu-custom.show {
+            display: block;
+        }
+
+        .dropdown-search {
+            padding: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        .dropdown-search input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        .dropdown-item-custom {
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item-custom:hover {
+            background: #f8f9fa;
+        }
+
+        .dropdown-item-custom input {
+            margin-right: 0.5rem;
+        }
+
+        /* Selected Count Badge */
+        .count-badge {
+            background: #0d6efd;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Scrollbar Styling */
+        .checkbox-list::-webkit-scrollbar,
+        .tag-dropdown::-webkit-scrollbar,
+        .listbox::-webkit-scrollbar,
+        .dropdown-menu-custom::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .checkbox-list::-webkit-scrollbar-track,
+        .tag-dropdown::-webkit-scrollbar-track,
+        .listbox::-webkit-scrollbar-track,
+        .dropdown-menu-custom::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .checkbox-list::-webkit-scrollbar-thumb,
+        .tag-dropdown::-webkit-scrollbar-thumb,
+        .listbox::-webkit-scrollbar-thumb,
+        .dropdown-menu-custom::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+
+        .checkbox-list::-webkit-scrollbar-thumb:hover,
+        .tag-dropdown::-webkit-scrollbar-thumb:hover,
+        .listbox::-webkit-scrollbar-thumb:hover,
+        .dropdown-menu-custom::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">Multi-Select Tasarım Örnekleri</h1>
+            <p class="lead text-muted">Bootstrap 5 ile hazırlanmış farklı çoklu seçim stilleri</p>
+        </div>
+
+        <!-- Style 1: Native Multi-Select Enhanced -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-list-ul me-2"></i>
+                1. Native Multi-Select (Geliştirilmiş)
+            </div>
+            <div class="design-desc">
+                Basit ama etkili. CTRL/CMD + Click ile çoklu seçim. Mobilde dokunarak seçim.
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Radyolar Seçin</label>
+                    <select class="native-multiselect" multiple size="8">
+                        <option value="1">Jazz FM 90.5</option>
+                        <option value="2">Rock Station 95.3</option>
+                        <option value="3">Classical Radio 88.7</option>
+                        <option value="4">Pop Hits 101.2</option>
+                        <option value="5">News Radio 93.8</option>
+                        <option value="6">Sports Talk 97.5</option>
+                        <option value="7">Country 104.3</option>
+                        <option value="8">Electronic Beats 106.1</option>
+                    </select>
+                    <small class="text-muted d-block mt-2">
+                        <i class="bi bi-info-circle me-1"></i>
+                        CTRL/CMD tuşuna basılı tutarak birden fazla seçin
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Çalma Listeleri Seçin</label>
+                    <select class="native-multiselect" multiple size="8">
+                        <option value="1">Chill Vibes</option>
+                        <option value="2">Workout Energy</option>
+                        <option value="3">Focus & Study</option>
+                        <option value="4">Party Hits</option>
+                        <option value="5">Sleep Sounds</option>
+                        <option value="6">Road Trip</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style 2: Checkbox List -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-check2-square me-2"></i>
+                2. Checkbox List (Scrollable)
+            </div>
+            <div class="design-desc">
+                Her item için checkbox. Kolay kullanım, görsel geri bildirim.
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Sektörler Seçin</label>
+                    <div class="checkbox-list">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector1" value="1">
+                            <label for="sector1">Müzik & Eğlence</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector2" value="2">
+                            <label for="sector2">Spor & Fitness</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector3" value="3">
+                            <label for="sector3">Haber & Güncel</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector4" value="4">
+                            <label for="sector4">Kültür & Sanat</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector5" value="5">
+                            <label for="sector5">Teknoloji & Bilim</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector6" value="6">
+                            <label for="sector6">Eğitim & Kişisel Gelişim</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector7" value="7">
+                            <label for="sector7">Sağlık & Yaşam</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="sector8" value="8">
+                            <label for="sector8">İş & Ekonomi</label>
+                        </div>
+                    </div>
+                    <small class="text-muted d-block mt-2">
+                        <i class="bi bi-check-circle me-1"></i>
+                        <span id="checkbox-count">0</span> sektör seçildi
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Türler Seçin</label>
+                    <div class="checkbox-list">
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="1">
+                            <label>Pop</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="2">
+                            <label>Rock</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="3">
+                            <label>Jazz</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="4">
+                            <label>Classical</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="5">
+                            <label>Electronic</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="6">
+                            <label>Hip Hop</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" value="7">
+                            <label>Country</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style 3: Tag/Badge Style -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-tags me-2"></i>
+                3. Tag/Badge Style (Modern)
+            </div>
+            <div class="design-desc">
+                Seçilenler badge olarak görünür. Tek tıkla kaldırma. Modern ve temiz görünüm.
+            </div>
+
+            <label class="form-label">Radyo İstasyonları</label>
+            <div class="tag-input-wrapper" onclick="document.getElementById('tag-dropdown').classList.toggle('show')">
+                <div id="selected-tags">
+                    <!-- Seçilen taglar buraya eklenecek -->
+                </div>
+                <small class="text-muted">Seçim yapmak için tıklayın</small>
+            </div>
+
+            <div class="tag-dropdown" id="tag-dropdown">
+                <div class="tag-option" data-value="1" data-label="Jazz FM 90.5">
+                    Jazz FM 90.5
+                </div>
+                <div class="tag-option" data-value="2" data-label="Rock Station 95.3">
+                    Rock Station 95.3
+                </div>
+                <div class="tag-option" data-value="3" data-label="Classical Radio 88.7">
+                    Classical Radio 88.7
+                </div>
+                <div class="tag-option" data-value="4" data-label="Pop Hits 101.2">
+                    Pop Hits 101.2
+                </div>
+                <div class="tag-option" data-value="5" data-label="News Radio 93.8">
+                    News Radio 93.8
+                </div>
+                <div class="tag-option" data-value="6" data-label="Sports Talk 97.5">
+                    Sports Talk 97.5
+                </div>
+            </div>
+        </div>
+
+        <!-- Style 4: Dual Listbox -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-arrow-left-right me-2"></i>
+                4. Dual Listbox (Transfer)
+            </div>
+            <div class="design-desc">
+                İki liste arası transfer. Görsel olarak net, büyük listeler için ideal.
+            </div>
+
+            <div class="dual-listbox">
+                <div>
+                    <label class="form-label">Tüm Playlistler</label>
+                    <div class="listbox" id="available-list">
+                        <div class="listbox-item" data-value="1">Chill Vibes</div>
+                        <div class="listbox-item" data-value="2">Workout Energy</div>
+                        <div class="listbox-item" data-value="3">Focus & Study</div>
+                        <div class="listbox-item" data-value="4">Party Hits</div>
+                        <div class="listbox-item" data-value="5">Sleep Sounds</div>
+                        <div class="listbox-item" data-value="6">Road Trip</div>
+                        <div class="listbox-item" data-value="7">Morning Coffee</div>
+                        <div class="listbox-item" data-value="8">Evening Jazz</div>
+                    </div>
+                </div>
+
+                <div class="transfer-buttons">
+                    <button type="button" class="btn btn-primary" onclick="transferRight()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="transferLeft()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                </div>
+
+                <div>
+                    <label class="form-label">Seçilen Playlistler</label>
+                    <div class="listbox" id="selected-list">
+                        <!-- Seçilenler buraya taşınacak -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style 5: Pills/Button Toggle -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-ui-radios me-2"></i>
+                5. Pills/Button Toggle (Tıkla-Seç)
+            </div>
+            <div class="design-desc">
+                Kolay görsel seçim. Az sayıda opsiyon için mükemmel. Responsive.
+            </div>
+
+            <label class="form-label">Müzik Türleri</label>
+            <div class="pill-group">
+                <div class="pill-item" onclick="togglePill(this)" data-value="pop">
+                    <i class="bi bi-music-note me-1"></i> Pop
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="rock">
+                    <i class="bi bi-music-note me-1"></i> Rock
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="jazz">
+                    <i class="bi bi-music-note me-1"></i> Jazz
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="classical">
+                    <i class="bi bi-music-note me-1"></i> Classical
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="electronic">
+                    <i class="bi bi-music-note me-1"></i> Electronic
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="hiphop">
+                    <i class="bi bi-music-note me-1"></i> Hip Hop
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="country">
+                    <i class="bi bi-music-note me-1"></i> Country
+                </div>
+                <div class="pill-item" onclick="togglePill(this)" data-value="blues">
+                    <i class="bi bi-music-note me-1"></i> Blues
+                </div>
+            </div>
+            <small class="text-muted d-block mt-3">
+                <i class="bi bi-hand-index me-1"></i>
+                Seçmek için tıklayın, kaldırmak için tekrar tıklayın
+            </small>
+        </div>
+
+        <!-- Style 6: Card Grid Selection -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-grid-3x3 me-2"></i>
+                6. Card Grid Selection (Görsel)
+            </div>
+            <div class="design-desc">
+                Görsel kartlar. Detaylı bilgi gösterebilir. Premium hissi verir.
+            </div>
+
+            <label class="form-label mb-3">Radyo İstasyonları</label>
+            <div class="card-grid">
+                <div class="select-card" onclick="toggleCard(this)" data-value="1">
+                    <span class="check-icon">
+                        <i class="bi bi-check"></i>
+                    </span>
+                    <div class="card-title">
+                        <i class="bi bi-broadcast text-primary me-2"></i>
+                        Jazz FM 90.5
+                    </div>
+                    <div class="card-desc">
+                        Smooth jazz & blues, 24/7 live broadcast
+                    </div>
+                </div>
+
+                <div class="select-card" onclick="toggleCard(this)" data-value="2">
+                    <span class="check-icon">
+                        <i class="bi bi-check"></i>
+                    </span>
+                    <div class="card-title">
+                        <i class="bi bi-broadcast text-danger me-2"></i>
+                        Rock Station 95.3
+                    </div>
+                    <div class="card-desc">
+                        Classic & modern rock hits
+                    </div>
+                </div>
+
+                <div class="select-card" onclick="toggleCard(this)" data-value="3">
+                    <span class="check-icon">
+                        <i class="bi bi-check"></i>
+                    </span>
+                    <div class="card-title">
+                        <i class="bi bi-broadcast text-success me-2"></i>
+                        Classical Radio 88.7
+                    </div>
+                    <div class="card-desc">
+                        Symphony, opera & chamber music
+                    </div>
+                </div>
+
+                <div class="select-card" onclick="toggleCard(this)" data-value="4">
+                    <span class="check-icon">
+                        <i class="bi bi-check"></i>
+                    </span>
+                    <div class="card-title">
+                        <i class="bi bi-broadcast text-warning me-2"></i>
+                        Pop Hits 101.2
+                    </div>
+                    <div class="card-desc">
+                        Top 40 hits & chart toppers
+                    </div>
+                </div>
+
+                <div class="select-card" onclick="toggleCard(this)" data-value="5">
+                    <span class="check-icon">
+                        <i class="bi bi-check"></i>
+                    </span>
+                    <div class="card-title">
+                        <i class="bi bi-broadcast text-info me-2"></i>
+                        News Radio 93.8
+                    </div>
+                    <div class="card-desc">
+                        Breaking news & analysis
+                    </div>
+                </div>
+
+                <div class="select-card" onclick="toggleCard(this)" data-value="6">
+                    <span class="check-icon">
+                        <i class="bi bi-check"></i>
+                    </span>
+                    <div class="card-title">
+                        <i class="bi bi-broadcast text-secondary me-2"></i>
+                        Sports Talk 97.5
+                    </div>
+                    <div class="card-desc">
+                        Live games & sports commentary
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style 7: Dropdown with Checkboxes & Search -->
+        <div class="design-section">
+            <div class="design-title">
+                <i class="bi bi-search me-2"></i>
+                7. Dropdown with Search (Profesyonel)
+            </div>
+            <div class="design-desc">
+                Arama özelliği ile çoklu seçim. Çok sayıda opsiyon için ideal. En profesyonel görünüm.
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Çalma Listeleri</label>
+                    <div class="dropdown-checkbox">
+                        <div class="dropdown-toggle-custom" onclick="toggleDropdown('dropdown1')">
+                            <span id="dropdown1-text">Seçim yapın...</span>
+                            <span>
+                                <span class="count-badge" id="dropdown1-count" style="display: none;">0</span>
+                                <i class="bi bi-chevron-down ms-2"></i>
+                            </span>
+                        </div>
+                        <div class="dropdown-menu-custom" id="dropdown1">
+                            <div class="dropdown-search">
+                                <input type="text" placeholder="Ara..." onkeyup="searchDropdown('dropdown1', this.value)">
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl1" value="1" onchange="updateDropdown('dropdown1')">
+                                <label for="pl1">Chill Vibes - Relax & Unwind</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl2" value="2" onchange="updateDropdown('dropdown1')">
+                                <label for="pl2">Workout Energy - Pump It Up</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl3" value="3" onchange="updateDropdown('dropdown1')">
+                                <label for="pl3">Focus & Study - Deep Concentration</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl4" value="4" onchange="updateDropdown('dropdown1')">
+                                <label for="pl4">Party Hits - Dance Floor Bangers</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl5" value="5" onchange="updateDropdown('dropdown1')">
+                                <label for="pl5">Sleep Sounds - Peaceful Dreams</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl6" value="6" onchange="updateDropdown('dropdown1')">
+                                <label for="pl6">Road Trip - Highway Tunes</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl7" value="7" onchange="updateDropdown('dropdown1')">
+                                <label for="pl7">Morning Coffee - Smooth Start</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" id="pl8" value="8" onchange="updateDropdown('dropdown1')">
+                                <label for="pl8">Evening Jazz - Sophisticated Vibes</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Sektörler</label>
+                    <div class="dropdown-checkbox">
+                        <div class="dropdown-toggle-custom" onclick="toggleDropdown('dropdown2')">
+                            <span id="dropdown2-text">Seçim yapın...</span>
+                            <span>
+                                <span class="count-badge" id="dropdown2-count" style="display: none;">0</span>
+                                <i class="bi bi-chevron-down ms-2"></i>
+                            </span>
+                        </div>
+                        <div class="dropdown-menu-custom" id="dropdown2">
+                            <div class="dropdown-search">
+                                <input type="text" placeholder="Ara..." onkeyup="searchDropdown('dropdown2', this.value)">
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" value="1" onchange="updateDropdown('dropdown2')">
+                                <label>Müzik & Eğlence</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" value="2" onchange="updateDropdown('dropdown2')">
+                                <label>Spor & Fitness</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" value="3" onchange="updateDropdown('dropdown2')">
+                                <label>Haber & Güncel</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" value="4" onchange="updateDropdown('dropdown2')">
+                                <label>Kültür & Sanat</label>
+                            </div>
+                            <div class="dropdown-item-custom">
+                                <input type="checkbox" value="5" onchange="updateDropdown('dropdown2')">
+                                <label>Teknoloji & Bilim</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-5 mb-3">
+            <p class="text-muted">
+                <i class="bi bi-info-circle me-2"></i>
+                Tüm tasarımlar Bootstrap 5.3 ile hazırlanmıştır. İstediğinizi seçip projenizde kullanabilirsiniz.
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Checkbox count
+        document.querySelectorAll('.checkbox-list input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function() {
+                const container = this.closest('.checkbox-list');
+                const parent = container.closest('.col-md-6');
+                const countEl = parent.querySelector('#checkbox-count');
+                if (countEl) {
+                    const count = container.querySelectorAll('input:checked').length;
+                    countEl.textContent = count;
+                }
+            });
+        });
+
+        // Tag/Badge Style
+        const selectedTags = new Set();
+        document.querySelectorAll('.tag-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.dataset.value;
+                const label = this.dataset.label;
+
+                if (selectedTags.has(value)) {
+                    selectedTags.delete(value);
+                    this.classList.remove('selected');
+                } else {
+                    selectedTags.add(value);
+                    this.classList.add('selected');
+                }
+
+                updateTags();
+            });
+        });
+
+        function updateTags() {
+            const container = document.getElementById('selected-tags');
+            container.innerHTML = '';
+
+            selectedTags.forEach(value => {
+                const option = document.querySelector(`.tag-option[data-value="${value}"]`);
+                const label = option.dataset.label;
+
+                const tag = document.createElement('span');
+                tag.className = 'selected-tag';
+                tag.innerHTML = `
+                    ${label}
+                    <span class="tag-remove" onclick="removeTag('${value}')">
+                        <i class="bi bi-x"></i>
+                    </span>
+                `;
+                container.appendChild(tag);
+            });
+        }
+
+        function removeTag(value) {
+            selectedTags.delete(value);
+            const option = document.querySelector(`.tag-option[data-value="${value}"]`);
+            option.classList.remove('selected');
+            updateTags();
+        }
+
+        // Close tag dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.tag-input-wrapper') && !e.target.closest('.tag-dropdown')) {
+                document.getElementById('tag-dropdown').classList.remove('show');
+            }
+        });
+
+        // Dual Listbox
+        function transferRight() {
+            const availableList = document.getElementById('available-list');
+            const selectedList = document.getElementById('selected-list');
+            const selectedItems = availableList.querySelectorAll('.listbox-item.selected');
+
+            selectedItems.forEach(item => {
+                item.classList.remove('selected');
+                selectedList.appendChild(item);
+            });
+        }
+
+        function transferLeft() {
+            const availableList = document.getElementById('available-list');
+            const selectedList = document.getElementById('selected-list');
+            const selectedItems = selectedList.querySelectorAll('.listbox-item.selected');
+
+            selectedItems.forEach(item => {
+                item.classList.remove('selected');
+                availableList.appendChild(item);
+            });
+        }
+
+        document.querySelectorAll('.listbox-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('selected');
+            });
+        });
+
+        // Pills Toggle
+        function togglePill(element) {
+            element.classList.toggle('selected');
+        }
+
+        // Card Toggle
+        function toggleCard(element) {
+            element.classList.toggle('selected');
+        }
+
+        // Dropdown with Search
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            dropdown.classList.toggle('show');
+
+            // Close other dropdowns
+            document.querySelectorAll('.dropdown-menu-custom').forEach(d => {
+                if (d.id !== id) {
+                    d.classList.remove('show');
+                }
+            });
+        }
+
+        function updateDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]');
+            const checked = Array.from(checkboxes).filter(cb => cb.checked);
+
+            const textEl = document.getElementById(id + '-text');
+            const countEl = document.getElementById(id + '-count');
+
+            if (checked.length === 0) {
+                textEl.textContent = 'Seçim yapın...';
+                countEl.style.display = 'none';
+            } else if (checked.length === 1) {
+                textEl.textContent = checked[0].nextElementSibling.textContent;
+                countEl.style.display = 'none';
+            } else {
+                textEl.textContent = checked.length + ' öğe seçildi';
+                countEl.textContent = checked.length;
+                countEl.style.display = 'inline-block';
+            }
+        }
+
+        function searchDropdown(id, query) {
+            const dropdown = document.getElementById(id);
+            const items = dropdown.querySelectorAll('.dropdown-item-custom');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-checkbox')) {
+                document.querySelectorAll('.dropdown-menu-custom').forEach(d => {
+                    d.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

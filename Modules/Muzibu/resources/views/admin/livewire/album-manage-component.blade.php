@@ -6,7 +6,6 @@
         );
     @endphp
 
-
     <form method="post" wire:submit.prevent="save">
         @include('admin.partials.error_message')
         <div class="card">
@@ -70,7 +69,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Sanatçı Seçimi (Sadece ilk dilde göster) -->
+                                <!-- Sanatçı (Sadece ilk dilde göster) -->
                                 @if($lang === get_tenant_default_locale())
                                 <div class="row mb-4">
                                     <div class="col-12 col-md-6">
@@ -108,9 +107,7 @@
                                 :model-id="$albumId"
                                 model-type="album"
                                 model-class="Modules\Muzibu\App\Models\Album"
-                                :collections="['featured_image', 'gallery']"
-                                :sortable="true"
-                                :set-featured-from-gallery="true"
+                                :collections="['featured_image']"
                                 :key="'universal-media-' . ($albumId ?? 'new')"
                             />
                         </div>
@@ -164,7 +161,7 @@
                 </div>
             </div>
 
-            <x-form-footer route="admin.album" :model-id="$albumId" />
+            <x-form-footer route="admin.muzibu.album" :model-id="$albumId" />
 
         </div>
     </form>

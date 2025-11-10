@@ -153,4 +153,108 @@ function debounce(func, wait) {
     };
 }
 
+/* ========================================
+   DUAL LISTBOX COMPONENT FUNCTIONS
+   ======================================== */
+
+// Global Dual Listbox initialization
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDualListbox();
+});
+
+// Initialize dual listbox for dynamically loaded content
+window.initializeDualListbox = function() {
+    // Initialize item selection for all dual listboxes
+    document.querySelectorAll('.listbox-item').forEach(item => {
+        // Single click: Toggle selection
+        item.addEventListener('click', function(e) {
+            // Prevent double click from triggering click
+            if (e.detail === 1) {
+                setTimeout(() => {
+                    if (!this.classList.contains('double-clicked')) {
+                        this.classList.toggle('selected');
+                    }
+                    this.classList.remove('double-clicked');
+                }, 200);
+            }
+        });
+
+        // Double click: Transfer to other side
+        item.addEventListener('dblclick', function() {
+            this.classList.add('double-clicked');
+            const listboxParent = this.parentElement;
+            const listboxId = listboxParent.id;
+
+            // Mark as selected for transfer
+            this.classList.add('selected');
+
+            // Determine direction based on listbox ID pattern
+            // Pattern: "available-XXX" → transfer right, "selected-XXX" → transfer left
+            if (listboxId.startsWith('available-')) {
+                const entityName = listboxId.replace('available-', '');
+                const transferFunctionName = 'transfer' + capitalize(entityName) + 'Right';
+                if (typeof window[transferFunctionName] === 'function') {
+                    window[transferFunctionName]();
+                }
+            } else if (listboxId.startsWith('selected-')) {
+                const entityName = listboxId.replace('selected-', '');
+                const transferFunctionName = 'transfer' + capitalize(entityName) + 'Left';
+                if (typeof window[transferFunctionName] === 'function') {
+                    window[transferFunctionName]();
+                }
+            }
+        });
+    });
+};
+
+// Helper function to capitalize first letter
+function capitalize(str) {
+    return str.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+}
+
+// Reusable transfer function for dual listboxes
+window.dualListboxTransfer = function(availableId, selectedId, direction, updateCallback) {
+    const availableList = document.getElementById(availableId);
+    const selectedList = document.getElementById(selectedId);
+
+    if (!availableList || !selectedList) {
+        console.warn(`Dual listbox elements not found: ${availableId}, ${selectedId}`);
+        return;
+    }
+
+    let sourceList, targetList;
+
+    if (direction === 'right') {
+        sourceList = availableList;
+        targetList = selectedList;
+    } else {
+        sourceList = selectedList;
+        targetList = availableList;
+    }
+
+    const selectedItems = sourceList.querySelectorAll('.listbox-item.selected');
+
+    selectedItems.forEach(item => {
+        item.classList.remove('selected');
+        targetList.appendChild(item);
+    });
+
+    // Call the update callback if provided
+    if (typeof updateCallback === 'function') {
+        updateCallback();
+    }
+};
+
+// Get selected values from a listbox
+window.getDualListboxValues = function(listboxId) {
+    const listbox = document.getElementById(listboxId);
+    if (!listbox) {
+        console.warn(`Listbox not found: ${listboxId}`);
+        return [];
+    }
+
+    return Array.from(listbox.querySelectorAll('.listbox-item'))
+        .map(item => parseInt(item.dataset.value));
+};
+
 console.log('✅ Tenant-safe admin assets loaded');

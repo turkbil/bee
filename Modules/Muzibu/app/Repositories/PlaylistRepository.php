@@ -31,6 +31,14 @@ class PlaylistRepository
             ->where('playlist_id', $id)->first();
     }
 
+    public function findByIdWithRelations(int $id): ?Playlist
+    {
+        return $this->model
+            ->where('playlist_id', $id)
+            ->with(['sectors', 'songs'])
+            ->first();
+    }
+
     public function findBySlug(string $slug, string $locale = 'tr'): ?Playlist
     {
         return $this->model->where(function ($query) use ($slug, $locale) {

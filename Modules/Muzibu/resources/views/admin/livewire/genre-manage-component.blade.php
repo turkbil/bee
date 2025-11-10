@@ -6,7 +6,6 @@
         );
     @endphp
 
-
     <form method="post" wire:submit.prevent="save">
         @include('admin.partials.error_message')
         <div class="card">
@@ -80,9 +79,7 @@
                                 :model-id="$genreId"
                                 model-type="genre"
                                 model-class="Modules\Muzibu\App\Models\Genre"
-                                :collections="['featured_image', 'gallery']"
-                                :sortable="true"
-                                :set-featured-from-gallery="true"
+                                :collections="['featured_image']"
                                 :key="'universal-media-' . ($genreId ?? 'new')"
                             />
                         </div>
@@ -136,7 +133,7 @@
                 </div>
             </div>
 
-            <x-form-footer route="admin.genre" :model-id="$genreId" />
+            <x-form-footer route="admin.muzibu.genre" :model-id="$genreId" />
 
         </div>
     </form>

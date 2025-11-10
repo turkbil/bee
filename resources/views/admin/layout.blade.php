@@ -93,6 +93,7 @@
     <link rel="stylesheet" href="/admin-assets/css/main-theme-builder.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/responsive.css?v={{ time() }}" />
     <link rel="stylesheet" href="/admin-assets/css/ai-response-templates.css?v={{ time() }}" />
+    <link rel="stylesheet" href="{{ mix('admin-assets/css/admin.css') }}" />
 
     {{-- Global AI Widget System CSS - Auto-load if AI module is active --}}
     @php
@@ -341,6 +342,7 @@
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/multi-modal-manager.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
+<script src="{{ mix('admin-assets/js/admin.js') }}"></script>
 <script src="/admin-assets/libs/litepicker/dist/litepicker.js" defer></script>
 <script src="/admin-assets/libs/fslightbox/index.js" defer></script>
 {{-- Choices.js removed - AMD conflict with Monaco Editor --}}

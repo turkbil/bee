@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Capability - Muzibu Docs</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .back-btn { display: inline-block; margin-bottom: 30px; padding: 10px 20px; background: #667eea; color: white; text-decoration: none; border-radius: 10px; }
+        h1 { color: #10b981; font-size: 2.5em; margin-bottom: 20px; }
+        h2 { color: #10b981; font-size: 1.8em; margin-top: 40px; margin-bottom: 15px; border-bottom: 3px solid #10b981; padding-bottom: 10px; }
+        .definition { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 15px; margin: 30px 0; font-size: 1.3em; text-align: center; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        .box { padding: 25px; border-radius: 15px; border: 3px solid; }
+        .box-old { border-color: #ef4444; background: #fef2f2; }
+        .box-new { border-color: #10b981; background: #f0fdf4; }
+        .movie-demo { background: #1f2937; color: white; padding: 30px; border-radius: 15px; margin: 30px 0; }
+        .progress { background: #374151; height: 10px; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { background: #10b981; height: 100%; width: 60%; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #10b981; color: white; padding: 15px; }
+        td { padding: 15px; border-bottom: 1px solid #e5e7eb; }
+        .highlight { background: #f0fdf4; padding: 25px; border-radius: 15px; border-left: 5px solid #10b981; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Ana Sayfa</a>
+
+        <h1>▶️ Resume Capability Nedir?</h1>
+
+        <div class="definition">
+            <strong>Resume Capability</strong> = "Devam Edebilme" Özelliği<br>
+            Yükleme yarıda kesilirse <strong>kaldığı yerden devam et!</strong>
+        </div>
+
+        <h2>🎬 Netflix Benzetmesi</h2>
+
+        <div class="comparison">
+            <div class="box box-old">
+                <h3 style="color: #ef4444;">❌ Resume Yok</h3>
+                <p>🎬 Film izliyorsun → 1 saat 30 dakika</p>
+                <p style="color: #ef4444; margin-top: 10px;">❌ İnternet kesildi!</p>
+                <p style="margin-top: 10px;">Tekrar bağlandığında:</p>
+                <p>→ Film baştan başlıyor (00:00)</p>
+                <p>😤 1.5 saat kayıp!</p>
+            </div>
+
+            <div class="box box-new">
+                <h3 style="color: #10b981;">✅ Resume Var (Netflix)</h3>
+                <p>🎬 Film izliyorsun → 1 saat 30 dakika</p>
+                <p style="color: #ef4444; margin-top: 10px;">❌ İnternet kesildi!</p>
+                <p style="margin-top: 10px;">Tekrar bağlandığında:</p>
+                <p style="color: #10b981;">→ Film 1:30'dan devam ediyor ✅</p>
+                <p>😎 Kayıp yok!</p>
+            </div>
+        </div>
+
+        <h2>📤 Dosya Yükleme Örneği</h2>
+
+        <div class="movie-demo">
+            <p style="font-size: 1.3em; font-weight: bold;">📦 song.mp3 (10 MB) yüklüyorsun</p>
+            <div class="progress" style="margin-top: 20px;">
+                <div class="progress-fill"></div>
+            </div>
+            <p style="color: #10b981;">%60 (6 MB yüklendi)</p>
+            <p style="color: #ef4444; margin-top: 20px; font-size: 1.2em;">❌ İNTERNET KESİLDİ!</p>
+        </div>
+
+        <div class="comparison">
+            <div class="box box-old">
+                <h3 style="color: #ef4444;">Resume Yok</h3>
+                <p>Tekrar bağlandığında:</p>
+                <div style="background: #374151; color: white; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <div style="background: #4b5563; height: 10px; border-radius: 5px;"></div>
+                    <p style="margin-top: 10px;">%0 (Baştan başla)</p>
+                </div>
+                <p style="color: #ef4444; margin-top: 10px;">😤 6 MB kayıp!</p>
+                <p>😤 10 MB tekrar yükle</p>
+            </div>
+
+            <div class="box box-new">
+                <h3 style="color: #10b981;">Resume Var</h3>
+                <p>Tekrar bağlandığında:</p>
+                <div style="background: #374151; color: white; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <div style="background: #10b981; height: 10px; width: 60%; border-radius: 5px;"></div>
+                    <p style="margin-top: 10px; color: #10b981;">%60 (Kaldığı yerden devam)</p>
+                </div>
+                <p style="color: #10b981; margin-top: 10px;">😎 6 MB kaybolmadı!</p>
+                <p>😎 Sadece kalan 4 MB yükle</p>
+            </div>
+        </div>
+
+        <h2>🔄 Nasıl Çalışır?</h2>
+
+        <div class="highlight">
+            <h3 style="color: #10b981; margin-bottom: 15px;">Adım Adım İşlem:</h3>
+            <p><strong>1️⃣ Upload ID Oluştur</strong></p>
+            <p style="margin-left: 20px;">→ Benzersiz kimlik: "ABC123"</p>
+            <p style="margin-top: 15px;"><strong>2️⃣ Chunk'ları Yükle</strong></p>
+            <p style="margin-left: 20px;">→ Chunk 1-6: ✅ Yüklendi</p>
+            <p style="margin-left: 20px;">→ Sunucu kaydetti: "ABC123: 6 chunk tamam"</p>
+            <p style="margin-top: 15px; color: #ef4444;"><strong>3️⃣ Kesinti!</strong></p>
+            <p style="margin-left: 20px; color: #ef4444;">→ Chunk 7: ❌ Kesildi!</p>
+            <p style="margin-top: 15px; color: #10b981;"><strong>4️⃣ Resume (Devam)</strong></p>
+            <p style="margin-left: 20px;">→ "ABC123 için durum?"</p>
+            <p style="margin-left: 20px;">→ Sunucu: "6 chunk var, 7'den devam"</p>
+            <p style="margin-left: 20px; color: #10b981;">→ Chunk 7-10: ✅ Tamamlandı!</p>
+        </div>
+
+        <h2>🎯 Avantajları</h2>
+
+        <table>
+            <tr>
+                <th>Durum</th>
+                <th>Resume Yok</th>
+                <th>Resume Var</th>
+            </tr>
+            <tr>
+                <td><strong>10 MB, %50'de kesinti</strong></td>
+                <td>❌ Baştan (10 MB)</td>
+                <td>✅ Devam (5 MB) 😎</td>
+            </tr>
+            <tr>
+                <td><strong>100 MB, %90'da kesinti</strong></td>
+                <td>❌ Baştan (100 MB) 😤</td>
+                <td>✅ Devam (10 MB) 😎</td>
+            </tr>
+            <tr>
+                <td><strong>1 GB, %99'da kesinti</strong></td>
+                <td>❌ Baştan (1 GB) 💀</td>
+                <td>✅ Devam (10 MB) 🎉</td>
+            </tr>
+            <tr>
+                <td><strong>Kullanıcı deneyimi</strong></td>
+                <td>⭐⭐ Stresli</td>
+                <td>⭐⭐⭐⭐⭐ Rahat</td>
+            </tr>
+        </table>
+
+        <h2>💡 Gerçek Örnekler</h2>
+
+        <div class="highlight">
+            <h3 style="color: #10b981;">☁️ Google Drive</h3>
+            <p style="margin-top: 10px;">500 MB dosya yüklüyorsun → %80 yüklendi</p>
+            <p>→ Bilgisayarını kapat</p>
+            <p>→ Yarın tekrar aç</p>
+            <p style="color: #10b981; font-weight: bold;">→ "Resume from 80%" ✅</p>
+        </div>
+
+        <div class="highlight">
+            <h3 style="color: #10b981;">🌐 Chrome Download</h3>
+            <p style="margin-top: 10px;">2 GB oyun indiriyorsun → %60 indi</p>
+            <p>→ Bilgisayarı kapat</p>
+            <p>→ Tekrar aç</p>
+            <p style="color: #10b981; font-weight: bold;">→ ▶️ Resume butonu → %60'dan devam!</p>
+        </div>
+
+        <h2>📊 Zaman Kazancı</h2>
+
+        <div style="background: #fef2f2; padding: 25px; border-radius: 15px;">
+            <p style="font-weight: bold; color: #ef4444;">❌ Resume Yok (50 MB, %70'de kesinti):</p>
+            <p style="margin-left: 20px;">Upload 1: 35 MB → ❌ Kesildi</p>
+            <p style="margin-left: 20px;">Upload 2: 50 MB → ✅ Bitti</p>
+            <p style="margin-left: 20px; font-weight: bold;">Toplam: 85 MB internet</p>
+        </div>
+
+        <div style="background: #f0fdf4; padding: 25px; border-radius: 15px; margin-top: 20px;">
+            <p style="font-weight: bold; color: #10b981;">✅ Resume Var (50 MB, %70'de kesinti):</p>
+            <p style="margin-left: 20px;">Upload 1: 35 MB → ❌ Kesildi</p>
+            <p style="margin-left: 20px;">Resume: 15 MB → ✅ Bitti</p>
+            <p style="margin-left: 20px; font-weight: bold;">Toplam: 50 MB internet</p>
+            <p style="margin-top: 15px; color: #10b981; font-weight: bold;">🎉 %41 daha az internet + %41 daha hızlı!</p>
+        </div>
+
+        <h2>✅ Özet</h2>
+
+        <div style="background: #f0fdf4; padding: 25px; border-radius: 15px;">
+            <p style="font-size: 1.2em; font-weight: bold; color: #10b981;">Resume = Kaldığı yerden devam et</p>
+            <p style="margin-top: 15px;"><strong>Avantajları:</strong></p>
+            <p>✅ İnternet kesintisinde güvenlik</p>
+            <p>✅ Kullanıcı deneyimi mükemmel</p>
+            <p>✅ Mobil kullanıcılar için ideal</p>
+            <p>✅ Zaman ve internet kazancı</p>
+            <p style="margin-top: 15px;"><strong>Sonuç:</strong> Chunked upload ile birlikte MÜKEMMEL!</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="metadata-extract.html" class="back-btn" style="display: inline-block;">Sonraki: Metadata Extract →</a>
+        </div>
+    </div>
+</body>
+</html>

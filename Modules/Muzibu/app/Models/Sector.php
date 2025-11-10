@@ -14,12 +14,14 @@ class Sector extends BaseModel implements HasMedia
 {
     use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes;
 
+    protected $connection = 'tenant';
     protected $table = 'muzibu_sectors';
     protected $primaryKey = 'sector_id';
 
     protected $fillable = [
         'title',
         'slug',
+        'description',
         'media_id',
         'is_active',
     ];
@@ -27,6 +29,7 @@ class Sector extends BaseModel implements HasMedia
     protected $casts = [
         'title' => 'array',
         'slug' => 'array',
+        'description' => 'array',
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -36,7 +39,7 @@ class Sector extends BaseModel implements HasMedia
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['title', 'slug'];
+    protected $translatable = ['title', 'slug', 'description'];
 
     /**
      * ID accessor - sector_id'yi id olarak döndür

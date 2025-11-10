@@ -80,11 +80,85 @@
                                 :model-id="$radioId"
                                 model-type="radio"
                                 model-class="Modules\Muzibu\App\Models\Radio"
-                                :collections="['featured_image', 'gallery']"
-                                :sortable="true"
-                                :set-featured-from-gallery="true"
+                                :collections="['featured_image']"
                                 :key="'universal-media-' . ($radioId ?? 'new')"
                             />
+                        </div>
+
+                        <!-- Çalma Listeleri (Dual Listbox) -->
+                        <div class="row mb-4 mt-4">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">{{ __('muzibu::admin.radio.playlists') }}</label>
+                                <div class="dual-listbox-wrapper">
+                                    {{-- Search input with float label --}}
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text"
+                                                class="form-control"
+                                                placeholder="Çalma listesi ara..."
+                                                wire:model.live.debounce.300ms="playlistSearch"
+                                                id="playlist-search">
+                                            <label for="playlist-search">
+                                                <i class="fa-solid fa-magnifying-glass me-2"></i>
+                                                Çalma Listesi Ara
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <div class="col-5">
+                                            <label class="form-label text-muted small">Tüm Çalma Listeleri</label>
+                                            <div class="listbox" id="available-playlists">
+                                                @if(isset($this->activePlaylists))
+                                                    @foreach($this->activePlaylists as $playlist)
+                                                        @if(!in_array($playlist->playlist_id, $inputs['playlist_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $playlist->playlist_id }}"
+                                                                data-title="{{ strtolower($playlist->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $playlist->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-2 d-flex align-items-center justify-content-center">
+                                            <div class="transfer-buttons">
+                                                <button type="button" class="btn btn-sm btn-primary mb-2" onclick="transferPlaylistsRight()">
+                                                    <i class="fa-solid fa-chevron-right"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="transferPlaylistsLeft()">
+                                                    <i class="fa-solid fa-chevron-left"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-5">
+                                            <label class="form-label text-muted small">Seçilen Çalma Listeleri</label>
+                                            <div class="listbox" id="selected-playlists">
+                                                @if(isset($this->activePlaylists))
+                                                    @foreach($this->activePlaylists as $playlist)
+                                                        @if(in_array($playlist->playlist_id, $inputs['playlist_ids'] ?? []))
+                                                            <div class="listbox-item"
+                                                                data-value="{{ $playlist->playlist_id }}"
+                                                                data-title="{{ strtolower($playlist->getTranslated('title', app()->getLocale())) }}">
+                                                                {{ $playlist->getTranslated('title', app()->getLocale()) }}
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        <small class="text-muted">
+                                            <i class="fa-solid fa-circle-info me-1"></i>
+                                            Listeye tıklayıp seç, ok tuşları ile taşı
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         @foreach ($availableLanguages as $lang)
@@ -136,7 +210,7 @@
                 </div>
             </div>
 
-            <x-form-footer route="admin.radio" :model-id="$radioId" />
+            <x-form-footer route="admin.muzibu.radio" :model-id="$radioId" />
 
         </div>
     </form>
@@ -178,6 +252,21 @@
                     }
                 });
             });
+
+            // 🎯 RADIO-SPECIFIC DUAL LISTBOX FUNCTIONS
+            function transferPlaylistsRight() {
+                dualListboxTransfer('available-playlists', 'selected-playlists', 'right', updateLivewirePlaylists);
+            }
+
+            function transferPlaylistsLeft() {
+                dualListboxTransfer('available-playlists', 'selected-playlists', 'left', updateLivewirePlaylists);
+            }
+
+            // 🔄 Update Livewire (Radio-specific)
+            function updateLivewirePlaylists() {
+                const selectedValues = getDualListboxValues('selected-playlists');
+                @this.set('inputs.playlist_ids', selectedValues);
+            }
         </script>
 
         {{-- 🌍 UNIVERSAL SYSTEMS --}}

@@ -22,7 +22,13 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
     public $inputs = [
         'is_active' => true,
+        'is_system' => true,     // Varsayılan: Sistem Listesi
+        'is_public' => true,     // Varsayılan: Herkese Açık
+        'is_radio' => false,     // Varsayılan: Liste Modu
+        'sector_ids' => [],
     ];
+
+    public $sectorSearch = '';
 
     public $currentLanguage;
     public $availableLanguages = [];
@@ -41,6 +47,23 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         }
 
         return Playlist::query()->find($this->playlistId);
+    }
+
+    #[Computed]
+    public function activeSectors()
+    {
+        $query = \Modules\Muzibu\App\Models\Sector::where('is_active', true);
+
+        // Search filter
+        if (!empty($this->sectorSearch)) {
+            $search = strtolower($this->sectorSearch);
+            $query->where(function($q) use ($search) {
+                $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', ["%{$search}%"])
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', ["%{$search}%"]);
+            });
+        }
+
+        return $query->orderBy('title->tr')->get();
     }
 
     protected $listeners = [
@@ -162,12 +185,15 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($playlist) {
-            $this->inputs = $playlist->only(['is_active']);
+            $this->inputs = $playlist->only(['is_active', 'is_system', 'is_public', 'is_radio']);
+
+            // İlişkileri yükle
+            $this->inputs['sector_ids'] = $playlist->sectors()->pluck('muzibu_sectors.sector_id')->toArray();
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
                     'title' => $playlist->getTranslated('title', $lang, false) ?? '',
-                    'bio' => $playlist->getTranslated('bio', $lang, false) ?? '',
+                    'description' => $playlist->getTranslated('description', $lang, false) ?? '',
                     'slug' => $playlist->getTranslated('slug', $lang, false) ?? '',
                 ];
             }
@@ -179,7 +205,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
                 'title' => '',
-                'bio' => '',
+                'description' => '',
                 'slug' => '',
             ];
         }
@@ -207,7 +233,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         $mainLanguage = $this->getMainLanguage();
         foreach ($this->availableLanguages as $lang) {
             $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
-            $rules["multiLangInputs.{$lang}.bio"] = 'nullable|string';
+            $rules["multiLangInputs.{$lang}.description"] = 'nullable|string';
         }
 
         return $rules;
@@ -218,7 +244,7 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
-        'multiLangInputs.*.bio.string' => 'Biyografi metin formatında olmalıdır',
+        'multiLangInputs.*.description.string' => 'Açıklama metin formatında olmalıdır',
         'multiLangInputs.*.slug.string' => 'Slug metin formatında olmalıdır',
         'multiLangInputs.*.slug.max' => 'Slug en fazla 255 karakter olabilir',
     ];
@@ -236,13 +262,13 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         $errors = [];
 
         foreach ($this->availableLanguages as $lang) {
-            $bio = $this->multiLangInputs[$lang]['bio'] ?? '';
-            if (!empty(trim($bio))) {
-                $result = \App\Services\SecurityValidationService::validateHtml($bio);
+            $description = $this->multiLangInputs[$lang]['description'] ?? '';
+            if (!empty(trim($description))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($description);
                 if (!$result['valid']) {
                     $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
                 } else {
-                    $validated['bio'][$lang] = $result['clean_code'];
+                    $validated['description'][$lang] = $result['clean_code'];
                 }
             }
         }
@@ -281,8 +307,8 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
             $this->playlistId
         );
 
-        if (!empty($validatedContent['bio'])) {
-            $multiLangData['bio'] = $validatedContent['bio'];
+        if (!empty($validatedContent['description'])) {
+            $multiLangData['description'] = $validatedContent['description'];
         }
 
         return $multiLangData;
@@ -332,7 +358,11 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
 
         $multiLangData = $this->prepareMultiLangData($validation['data']);
 
-        $safeInputs = $this->inputs;
+        // İlişkiler için ayrı tut
+        $sectorIds = $this->inputs['sector_ids'] ?? [];
+
+        // İlişkileri çıkar
+        $safeInputs = collect($this->inputs)->except(['sector_ids'])->all();
 
         $data = array_merge($safeInputs, $multiLangData);
 
@@ -358,10 +388,16 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
                     'type' => 'success'
                 ];
             }
+
+            // İlişkileri sync et
+            $playlist->sectors()->sync($sectorIds);
         } else {
             $playlist = Playlist::query()->create($data);
             $this->playlistId = $playlist->playlist_id;
             log_activity($playlist, 'eklendi');
+
+            // İlişkileri sync et
+            $playlist->sectors()->sync($sectorIds);
 
             $toast = [
                 'title' => __('admin.success'),

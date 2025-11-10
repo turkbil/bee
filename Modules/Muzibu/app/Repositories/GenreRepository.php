@@ -25,6 +25,13 @@ class GenreRepository
         return $this->model->where('genre_id', $id)->first();
     }
 
+    public function findByIdWithRelations(int $id): ?Genre
+    {
+        return $this->model
+            ->where('genre_id', $id)
+            ->first();
+    }
+
     public function findBySlug(string $slug, string $locale = 'tr'): ?Genre
     {
         return $this->model->where(function ($query) use ($slug, $locale) {

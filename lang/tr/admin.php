@@ -599,6 +599,12 @@ return [
     'menu_url_slug' => 'Menü URL (Slug)',
     'announcement_url_slug' => 'Duyuru URL Adı',
     'song_url_slug' => 'Şarkı URL (Slug)',
+    'artist_url_slug' => 'Sanatçı URL (Slug)',
+    'album_url_slug' => 'Albüm URL (Slug)',
+    'genre_url_slug' => 'Tür URL (Slug)',
+    'playlist_url_slug' => 'Playlist URL (Slug)',
+    'radio_url_slug' => 'Radyo URL (Slug)',
+    'sector_url_slug' => 'Sektör URL (Slug)',
     'slug_auto_generated' => 'Otomatik oluşur',
     
     // SEO Açıklamaları

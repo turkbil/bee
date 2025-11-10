@@ -22,7 +22,10 @@ class RadioManageComponent extends Component implements AIContentGeneratable
 
     public $inputs = [
         'is_active' => true,
+        'playlist_ids' => [],
     ];
+
+    public $playlistSearch = '';
 
     public $currentLanguage;
     public $availableLanguages = [];
@@ -41,6 +44,31 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         }
 
         return Radio::query()->find($this->radioId);
+    }
+
+    #[Computed]
+    public function activePlaylists()
+    {
+        $query = \Modules\Muzibu\App\Models\Playlist::where('is_active', true);
+
+        // Search filtreleme
+        if (!empty($this->playlistSearch)) {
+            $locale = app()->getLocale();
+            $search = strtolower($this->playlistSearch);
+
+            $query->where(function($q) use ($search, $locale) {
+                $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, ?))) LIKE ?", ["$.{$locale}", "%{$search}%"]);
+
+                if ($locale !== 'tr') {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr'))) LIKE ?", ["%{$search}%"]);
+                }
+                if ($locale !== 'en') {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.en'))) LIKE ?", ["%{$search}%"]);
+                }
+            });
+        }
+
+        return $query->orderBy('title->tr')->get();
     }
 
     protected $listeners = [
@@ -164,10 +192,13 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         if ($radio) {
             $this->inputs = $radio->only(['is_active']);
 
+            // İlişkileri yükle
+            $this->inputs['playlist_ids'] = $radio->playlists()->pluck('muzibu_playlists.playlist_id')->toArray();
+
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
                     'title' => $radio->getTranslated('title', $lang, false) ?? '',
-                    'bio' => $radio->getTranslated('bio', $lang, false) ?? '',
+                    'description' => $radio->getTranslated('description', $lang, false) ?? '',
                     'slug' => $radio->getTranslated('slug', $lang, false) ?? '',
                 ];
             }
@@ -179,7 +210,7 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
                 'title' => '',
-                'bio' => '',
+                'description' => '',
                 'slug' => '',
             ];
         }
@@ -207,7 +238,7 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         $mainLanguage = $this->getMainLanguage();
         foreach ($this->availableLanguages as $lang) {
             $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
-            $rules["multiLangInputs.{$lang}.bio"] = 'nullable|string';
+            $rules["multiLangInputs.{$lang}.description"] = 'nullable|string';
         }
 
         return $rules;
@@ -218,7 +249,7 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
-        'multiLangInputs.*.bio.string' => 'Biyografi metin formatında olmalıdır',
+        'multiLangInputs.*.description.string' => 'Açıklama metin formatında olmalıdır',
         'multiLangInputs.*.slug.string' => 'Slug metin formatında olmalıdır',
         'multiLangInputs.*.slug.max' => 'Slug en fazla 255 karakter olabilir',
     ];
@@ -236,13 +267,13 @@ class RadioManageComponent extends Component implements AIContentGeneratable
         $errors = [];
 
         foreach ($this->availableLanguages as $lang) {
-            $bio = $this->multiLangInputs[$lang]['bio'] ?? '';
-            if (!empty(trim($bio))) {
-                $result = \App\Services\SecurityValidationService::validateHtml($bio);
+            $description = $this->multiLangInputs[$lang]['description'] ?? '';
+            if (!empty(trim($description))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($description);
                 if (!$result['valid']) {
                     $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
                 } else {
-                    $validated['bio'][$lang] = $result['clean_code'];
+                    $validated['description'][$lang] = $result['clean_code'];
                 }
             }
         }
@@ -281,8 +312,8 @@ class RadioManageComponent extends Component implements AIContentGeneratable
             $this->radioId
         );
 
-        if (!empty($validatedContent['bio'])) {
-            $multiLangData['bio'] = $validatedContent['bio'];
+        if (!empty($validatedContent['description'])) {
+            $multiLangData['description'] = $validatedContent['description'];
         }
 
         return $multiLangData;
@@ -332,7 +363,11 @@ class RadioManageComponent extends Component implements AIContentGeneratable
 
         $multiLangData = $this->prepareMultiLangData($validation['data']);
 
-        $safeInputs = $this->inputs;
+        // İlişkiler için ayrı tut
+        $playlistIds = $this->inputs['playlist_ids'] ?? [];
+
+        // İlişkileri çıkar
+        $safeInputs = collect($this->inputs)->except(['playlist_ids'])->all();
 
         $data = array_merge($safeInputs, $multiLangData);
 
@@ -358,10 +393,16 @@ class RadioManageComponent extends Component implements AIContentGeneratable
                     'type' => 'success'
                 ];
             }
+
+            // İlişkileri sync et
+            $radio->playlists()->sync($playlistIds);
         } else {
             $radio = Radio::query()->create($data);
             $this->radioId = $radio->radio_id;
             log_activity($radio, 'eklendi');
+
+            // İlişkileri sync et
+            $radio->playlists()->sync($playlistIds);
 
             $toast = [
                 'title' => __('admin.success'),

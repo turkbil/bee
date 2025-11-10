@@ -9,3 +9,79 @@
 .admin-custom {
     // Add custom admin styles here if needed
 }
+
+/* ========================================
+   DUAL LISTBOX COMPONENT STYLES
+   Dark/Light Mode Compatible
+   ======================================== */
+
+.dual-listbox-wrapper {
+    .listbox {
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 6px;
+        padding: 0.5rem;
+        min-height: 350px;
+        max-height: 350px;
+        overflow-y: auto;
+        background: var(--tblr-bg-surface);
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: var(--tblr-bg-surface-secondary);
+            border-radius: 3px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: var(--tblr-border-color-dark);
+            border-radius: 3px;
+
+            &:hover {
+                background: var(--tblr-secondary);
+            }
+        }
+    }
+
+    .listbox-item {
+        padding: 0.35rem 0.5rem;
+        margin-bottom: 0.15rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--tblr-card-bg);
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        color: var(--tblr-body-color);
+        font-size: 0.8125rem;
+        line-height: 1.3;
+
+        &:hover {
+            background: var(--tblr-primary-lt);
+            border-color: var(--tblr-primary);
+            color: var(--tblr-primary);
+        }
+
+        &.selected {
+            background: var(--tblr-primary);
+            color: var(--tblr-primary-fg, white);
+            border-color: var(--tblr-primary);
+        }
+    }
+
+    .transfer-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        .btn {
+            min-width: 40px;
+
+            i {
+                font-size: 1rem;
+            }
+        }
+    }
+}

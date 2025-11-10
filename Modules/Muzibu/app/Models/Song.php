@@ -16,6 +16,7 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 {
     use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
+    protected $connection = 'tenant';
     protected $table = 'muzibu_songs';
     protected $primaryKey = 'song_id';
 

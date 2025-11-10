@@ -21,9 +21,6 @@ class MuzibuServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Muzibu Observer kaydı
-        \Modules\Muzibu\App\Models\Muzibu::observe(\Modules\Muzibu\App\Observers\MuzibuObserver::class);
-        \Modules\Muzibu\App\Models\MuzibuCategory::observe(\Modules\Muzibu\App\Observers\MuzibuCategoryObserver::class);
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();

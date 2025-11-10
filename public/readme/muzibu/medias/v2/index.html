@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Media Upload Sistemi - Dokümantasyon</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        .hero {
+            background: white;
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .card-header {
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 25px;
+            border-bottom: 3px solid;
+        }
+        .card-body {
+            padding: 30px;
+        }
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        .bg-gradient-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+        }
+        .bg-gradient-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        }
+        .btn-custom {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            color: white;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            color: white;
+        }
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline-item {
+            padding: 20px 0 20px 50px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 30px;
+            width: 3px;
+            height: calc(100% - 30px);
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 25px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1><i class="bi bi-music-note-beamed"></i> Muzibu Media Upload</h1>
+            <p>Modern Şarkı & Görsel Yükleme Sistemi Dokümantasyonu</p>
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle-fill"></i>
+                <strong>Bu dokümantasyon</strong> Muzibu projesinde şarkı ve görsel dosyalarının nasıl yükleneceğini basit bir şekilde açıklar.
+            </div>
+        </div>
+
+        <!-- Spotlight: Technical Specs -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card" style="border: 3px solid #ffd700; box-shadow: 0 15px 50px rgba(255,215,0,0.4);">
+                    <div class="card-header text-white text-center" style="background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%); font-size: 1.8rem; padding: 30px;">
+                        <i class="bi bi-star-fill"></i> BAŞLANGIÇ NOKTASI: Teknik Spesifikasyonlar
+                    </div>
+                    <div class="card-body" style="background: linear-gradient(135deg, #fff9e6 0%, #ffe6e6 100%);">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <div class="icon-box text-white mx-auto" style="background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%); width: 100px; height: 100px; font-size: 3rem;">
+                                    <i class="bi bi-gear-fill"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <h3 style="color: #c62828; font-weight: 800; margin-bottom: 15px;">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> ÖNCE BURAYI OKU!
+                                </h3>
+                                <p style="font-size: 1.1rem; color: #333; margin-bottom: 10px;">
+                                    <strong>Hangi dizine?</strong> <strong>Nasıl kaydedilecek?</strong> <strong>Media tablosu mu, string path mi?</strong>
+                                </p>
+                                <p style="font-size: 1rem; color: #555; margin-bottom: 10px;">
+                                    25,000 şarkı migration planı, dizin yapısı, database stratejisi - HER ŞEY burada NET bir şekilde açıklanmış!
+                                </p>
+                                <p style="font-size: 1.05rem; color: #c62828; font-weight: 700; margin-bottom: 0;">
+                                    <i class="bi bi-check-circle-fill"></i> KARAR: String path + Thumbmaker + Lazy HLS
+                                </p>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <a href="technical-specs.html" class="btn btn-lg text-white w-100" style="background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%); padding: 20px; font-size: 1.3rem; font-weight: 700; border-radius: 15px; box-shadow: 0 8px 20px rgba(247,183,51,0.4);">
+                                    <i class="bi bi-arrow-right-circle-fill"></i><br>
+                                    DETAYLARI GÖR
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <i class="bi bi-cloud-upload-fill"></i> FilePond
+                    </div>
+                    <div class="card-body">
+                        <div class="icon-box bg-gradient-primary text-white">
+                            <i class="bi bi-file-earmark-music"></i>
+                        </div>
+                        <h5 class="text-center mb-3">Modern Upload UI</h5>
+                        <p>Drag & Drop ve preview ile basit dosya yükleme arayüzü (chunking YOK, sadece UI).</p>
+                        <a href="filepond.html" class="btn btn-custom bg-gradient-primary w-100">
+                            Detayları Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-danger text-white" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;">
+                        <i class="bi bi-shield-lock-fill"></i> Streaming Koruma
+                    </div>
+                    <div class="card-body">
+                        <div class="icon-box text-white" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                            <i class="bi bi-shield-check-fill"></i>
+                        </div>
+                        <h5 class="text-center mb-3">Şarkı Hırsızlığını Engelle</h5>
+                        <p>HLS Streaming ile kullanıcılar dinler ama indiremez! Spotify, YouTube gibi.</p>
+                        <a href="streaming-koruma.html" class="btn btn-custom w-100" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);">
+                            Detayları Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header text-white" style="background: linear-gradient(135deg, #e83e8c 0%, #fd7e14 100%);">
+                        <i class="bi bi-info-circle-fill"></i> Metadata
+                    </div>
+                    <div class="card-body">
+                        <div class="icon-box text-white" style="background: linear-gradient(135deg, #e83e8c 0%, #fd7e14 100%);">
+                            <i class="bi bi-code-square"></i>
+                        </div>
+                        <h5 class="text-center mb-3">Otomatik Bilgi Çıkarma</h5>
+                        <p>Şarkı süresini, bitrate'i ve diğer bilgileri otomatik olarak çıkarma sistemi.</p>
+                        <a href="metadata.html" class="btn btn-custom w-100" style="background: linear-gradient(135deg, #e83e8c 0%, #fd7e14 100%);">
+                            Detayları Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-gradient-info text-white">
+                        <i class="bi bi-gear-fill"></i> Çözüm Stratejisi
+                    </div>
+                    <div class="card-body">
+                        <div class="icon-box bg-gradient-info text-white">
+                            <i class="bi bi-diagram-3-fill"></i>
+                        </div>
+                        <h5 class="text-center mb-3">Sistem Mimarisi</h5>
+                        <p>Görseller ve şarkılar için önerilen tam çözüm stratejisi ve mimari yapı.</p>
+                        <a href="solution.html" class="btn btn-custom bg-gradient-info w-100">
+                            Detayları Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                        <i class="bi bi-play-btn-fill"></i> Demo & Örnekler
+                    </div>
+                    <div class="card-body">
+                        <div class="icon-box text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="bi bi-camera-video-fill"></i>
+                        </div>
+                        <h5 class="text-center mb-3">Canlı Demolar</h5>
+                        <p>Gerçek hayat örnekleri, demolar ve video anlatımları ile öğren.</p>
+                        <a href="demo.html" class="btn btn-custom w-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            Detayları Gör <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start Timeline -->
+        <div class="card mb-5">
+            <div class="card-header bg-gradient-primary text-white">
+                <i class="bi bi-speedometer2"></i> Hızlı Başlangıç Kılavuzu (Ne Kullanılacak, Ne Kullanılmayacak)
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot">1</div>
+                        <h5><i class="bi bi-gear-fill text-danger"></i> TEKNİK SPESİFİKASYONLARI OKU!</h5>
+                        <p><strong>ÖNCE BU!</strong> Dizin yapısı, database stratejisi, galeri olmayacağı vs. tüm kararlar burada.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">2</div>
+                        <h5><i class="bi bi-check-circle text-success"></i> FilePond (Sadece UI)</h5>
+                        <p>✅ KULLANILACAK - Modern upload arayüzü. Chunking YOK, sadece drag-drop.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">3</div>
+                        <h5><i class="bi bi-shield-check text-success"></i> Streaming Koruma (HLS)</h5>
+                        <p>✅ KULLANILACAK - Şarkı hırsızlığını engelle. Lazy conversion (ilk çalınca).</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">4</div>
+                        <h5><i class="bi bi-info-circle text-success"></i> Metadata Extraction</h5>
+                        <p>✅ KULLANILACAK - Süre, bitrate otomatik çıkar (getID3).</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot">5</div>
+                        <h5><i class="bi bi-diagram-3"></i> Çözüm Stratejisi + Demo</h5>
+                        <p>Tüm sistemi bir araya getiren mimari ve gerçek örnekler.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-white">
+            <p class="mb-2"><i class="bi bi-info-circle"></i> Muzibu Media Upload Sistemi v2.0</p>
+            <p class="small opacity-75">String Path | Thumbmaker | Lazy HLS Streaming</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -291,7 +291,8 @@
                             <div class="language-content" data-language="{{ $lang }}"
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
-                                @include('muzibu::components.content-editor', [
+                                {{-- İçerik editörü - AI button artık global component'te --}}
+                                @include('admin.components.content-editor', [
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,
@@ -329,7 +330,7 @@
                 </div>
             </div>
 
-            <x-form-footer route="admin.song" :model-id="$songId" />
+            <x-form-footer route="admin.muzibu.song" :model-id="$songId" />
 
         </div>
     </form>

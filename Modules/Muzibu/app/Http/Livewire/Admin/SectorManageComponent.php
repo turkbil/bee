@@ -22,7 +22,12 @@ class SectorManageComponent extends Component implements AIContentGeneratable
 
     public $inputs = [
         'is_active' => true,
+        'radio_ids' => [],
+        'playlist_ids' => [],
     ];
+
+    public $radioSearch = '';
+    public $playlistSearch = '';
 
     public $currentLanguage;
     public $availableLanguages = [];
@@ -41,6 +46,60 @@ class SectorManageComponent extends Component implements AIContentGeneratable
         }
 
         return Sector::query()->find($this->sectorId);
+    }
+
+    #[Computed]
+    public function activeRadios()
+    {
+        $query = \Modules\Muzibu\App\Models\Radio::where('is_active', true);
+
+        // Search filtreleme
+        if (!empty($this->radioSearch)) {
+            $locale = app()->getLocale();
+            $search = strtolower($this->radioSearch);
+
+            $query->where(function($q) use ($search, $locale) {
+                // JSON field için LOWER() ve LIKE kullan
+                $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, ?))) LIKE ?", ["$.{$locale}", "%{$search}%"]);
+
+                // Diğer dillerde de ara
+                if ($locale !== 'tr') {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr'))) LIKE ?", ["%{$search}%"]);
+                }
+                if ($locale !== 'en') {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.en'))) LIKE ?", ["%{$search}%"]);
+                }
+            });
+        }
+
+        return $query->orderBy('title->tr')->get();
+    }
+
+    #[Computed]
+    public function activePlaylists()
+    {
+        $query = \Modules\Muzibu\App\Models\Playlist::where('is_active', true);
+
+        // Search filtreleme
+        if (!empty($this->playlistSearch)) {
+            $locale = app()->getLocale();
+            $search = strtolower($this->playlistSearch);
+
+            $query->where(function($q) use ($search, $locale) {
+                // JSON field için LOWER() ve LIKE kullan
+                $q->whereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, ?))) LIKE ?", ["$.{$locale}", "%{$search}%"]);
+
+                // Diğer dillerde de ara
+                if ($locale !== 'tr') {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr'))) LIKE ?", ["%{$search}%"]);
+                }
+                if ($locale !== 'en') {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.en'))) LIKE ?", ["%{$search}%"]);
+                }
+            });
+        }
+
+        return $query->orderBy('title->tr')->get();
     }
 
     protected $listeners = [
@@ -65,13 +124,24 @@ class SectorManageComponent extends Component implements AIContentGeneratable
 
     public function mount($id = null)
     {
+        Log::info('🚀 SECTOR MOUNT BAŞLADI', ['id' => $id, 'type' => gettype($id)]);
+
         $this->boot();
         $this->initializeUniversalComponents();
 
         if ($id) {
+            Log::info('📌 ID VAR - loadPageData çağrılacak', ['id' => $id]);
             $this->sectorId = $id;
             $this->loadPageData($id);
+
+            Log::info('📊 LoadPageData SONRASI', [
+                'sectorId' => $this->sectorId,
+                'multiLangInputs_tr_title' => $this->multiLangInputs['tr']['title'] ?? 'EMPTY',
+                'inputs_radio_ids_count' => count($this->inputs['radio_ids'] ?? []),
+                'inputs_playlist_ids_count' => count($this->inputs['playlist_ids'] ?? [])
+            ]);
         } else {
+            Log::info('⚪ ID YOK - initializeEmptyInputs çağrılacak');
             $this->initializeEmptyInputs();
         }
 
@@ -157,20 +227,44 @@ class SectorManageComponent extends Component implements AIContentGeneratable
 
     protected function loadPageData($id)
     {
+        Log::info('🔍 loadPageData başladı', ['sector_id' => $id]);
+
         $formData = $this->sectorService->prepareSectorForForm($id, $this->currentLanguage);
         $sector = $formData['sector'] ?? null;
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
+        Log::info('📊 Service sonucu', [
+            'sector_found' => $sector ? 'YES' : 'NO',
+            'sector_id' => $sector ? $sector->sector_id : 'null',
+            'connection' => $sector ? $sector->getConnectionName() : 'null'
+        ]);
+
         if ($sector) {
             $this->inputs = $sector->only(['is_active']);
+
+            // İlişkileri yükle
+            $this->inputs['radio_ids'] = $sector->radios()->pluck('muzibu_radios.radio_id')->toArray();
+            $this->inputs['playlist_ids'] = $sector->playlists()->pluck('muzibu_playlists.playlist_id')->toArray();
+
+            Log::info('✅ İlişkiler yüklendi', [
+                'radios' => count($this->inputs['radio_ids']),
+                'playlists' => count($this->inputs['playlist_ids'])
+            ]);
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
                     'title' => $sector->getTranslated('title', $lang, false) ?? '',
-                    'bio' => $sector->getTranslated('bio', $lang, false) ?? '',
                     'slug' => $sector->getTranslated('slug', $lang, false) ?? '',
+                    'description' => $sector->getTranslated('description', $lang, false) ?? '',
                 ];
             }
+
+            Log::info('✅ multiLangInputs yüklendi', [
+                'tr_title' => $this->multiLangInputs['tr']['title'] ?? 'EMPTY',
+                'tr_description' => strlen($this->multiLangInputs['tr']['description'] ?? '') . ' chars'
+            ]);
+        } else {
+            Log::error('❌ Sector bulunamadı!', ['id' => $id]);
         }
     }
 
@@ -179,8 +273,8 @@ class SectorManageComponent extends Component implements AIContentGeneratable
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
                 'title' => '',
-                'bio' => '',
                 'slug' => '',
+                'description' => '',
             ];
         }
     }
@@ -281,6 +375,15 @@ class SectorManageComponent extends Component implements AIContentGeneratable
             $this->sectorId
         );
 
+        // Description alanını ekle
+        $multiLangData['description'] = [];
+        foreach ($this->availableLanguages as $lang) {
+            $description = $this->multiLangInputs[$lang]['description'] ?? '';
+            if (!empty($description)) {
+                $multiLangData['description'][$lang] = $description;
+            }
+        }
+
         if (!empty($validatedContent['bio'])) {
             $multiLangData['bio'] = $validatedContent['bio'];
         }
@@ -332,7 +435,12 @@ class SectorManageComponent extends Component implements AIContentGeneratable
 
         $multiLangData = $this->prepareMultiLangData($validation['data']);
 
-        $safeInputs = $this->inputs;
+        // İlişkiler için ayrı tut
+        $radioIds = $this->inputs['radio_ids'] ?? [];
+        $playlistIds = $this->inputs['playlist_ids'] ?? [];
+
+        // İlişkileri çıkar
+        $safeInputs = collect($this->inputs)->except(['radio_ids', 'playlist_ids'])->all();
 
         $data = array_merge($safeInputs, $multiLangData);
 
@@ -358,10 +466,18 @@ class SectorManageComponent extends Component implements AIContentGeneratable
                     'type' => 'success'
                 ];
             }
+
+            // İlişkileri sync et
+            $sector->radios()->sync($radioIds);
+            $sector->playlists()->sync($playlistIds);
         } else {
             $sector = Sector::query()->create($data);
             $this->sectorId = $sector->sector_id;
             log_activity($sector, 'eklendi');
+
+            // İlişkileri sync et
+            $sector->radios()->sync($radioIds);
+            $sector->playlists()->sync($playlistIds);
 
             $toast = [
                 'title' => __('admin.success'),

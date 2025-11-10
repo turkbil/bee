@@ -263,9 +263,6 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <small class="form-hint text-muted">
-                                        Şarkı yüklendiğinde otomatik hesaplanır, manuel de düzenleyebilirsiniz
-                                    </small>
                                 </div>
                             </div>
                         </div>

@@ -135,31 +135,6 @@
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
 
-                                    @if($inputs['file_path'] ?? null)
-                                        {{-- Mevcut Şarkı --}}
-                                        <div class="alert alert-success mb-3">
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <div>
-                                                    <strong>{{ $inputs['file_path'] }}</strong>
-                                                    <small class="text-muted ms-2">
-                                                        ({{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }})
-                                                    </small>
-                                                </div>
-                                                <button
-                                                    wire:click="removeAudio"
-                                                    wire:confirm="{{ __('muzibu::admin.song.remove_audio_confirm') }}"
-                                                    class="btn btn-sm btn-danger"
-                                                    type="button">
-                                                    <i class="fa fa-times me-1"></i> Kaldır
-                                                </button>
-                                            </div>
-                                            {{-- Audio Player --}}
-                                            <audio controls class="w-100" style="height: 40px;">
-                                                <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
-                                            </audio>
-                                        </div>
-                                    @endif
-
                                     {{-- Drag & Drop Upload Area --}}
                                     <div x-data="{
                                         isDragging: false,
@@ -180,32 +155,72 @@
                                             class="d-none"
                                             accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
 
-                                        {{-- Dropzone --}}
+                                        {{-- Dropzone with Uploaded File --}}
                                         <div
                                             @click="$refs.fileInput.click()"
                                             @dragover.prevent="isDragging = true"
                                             @dragleave.prevent="isDragging = false"
                                             @drop.prevent="handleDrop($event)"
                                             :class="{ 'border-primary bg-primary-lt': isDragging }"
-                                            class="border border-2 border-dashed rounded p-4 text-center cursor-pointer"
+                                            class="border border-2 border-dashed rounded p-4 text-center cursor-pointer position-relative"
                                             style="cursor: pointer; transition: all 0.2s;">
 
-                                            <div class="mb-3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mx-auto">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                    <polyline points="17 8 12 3 7 8"></polyline>
-                                                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                                                </svg>
-                                            </div>
+                                            @if($inputs['file_path'] ?? null)
+                                                {{-- Uploaded File Card --}}
+                                                <div class="card mb-3" @click.stop>
+                                                    <div class="card-body p-3">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="avatar bg-success-lt me-3">
+                                                                <i class="fa fa-music"></i>
+                                                            </div>
+                                                            <div class="flex-fill text-start">
+                                                                <div class="fw-bold text-truncate" style="max-width: 300px;">
+                                                                    {{ $inputs['file_path'] }}
+                                                                </div>
+                                                                <small class="text-muted">
+                                                                    {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
+                                                                </small>
+                                                            </div>
+                                                            <button
+                                                                wire:click="removeAudio"
+                                                                class="btn btn-sm btn-icon btn-ghost-danger ms-2"
+                                                                type="button"
+                                                                title="Kaldır">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                        {{-- Mini Audio Player --}}
+                                                        <div class="mt-2">
+                                                            <audio controls class="w-100" style="height: 30px;">
+                                                                <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                            <h4 class="mb-1">{{ __('muzibu::admin.song.drag_drop_audio') }}</h4>
-                                            <p class="text-muted mb-2">{{ __('muzibu::admin.song.or_click_browse') }}</p>
+                                                {{-- Change File Text --}}
+                                                <div class="text-muted">
+                                                    <small>Yeni dosya yüklemek için tıklayın veya sürükleyin</small>
+                                                </div>
+                                            @else
+                                                {{-- Empty State --}}
+                                                <div class="mb-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mx-auto">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                                    </svg>
+                                                </div>
 
-                                            <small class="text-muted d-block">
-                                                {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
-                                                <span class="mx-1">•</span>
-                                                {{ __('muzibu::admin.song.max_size') }}: 100MB
-                                            </small>
+                                                <h4 class="mb-1">{{ __('muzibu::admin.song.drag_drop_audio') }}</h4>
+                                                <p class="text-muted mb-2">{{ __('muzibu::admin.song.or_click_browse') }}</p>
+
+                                                <small class="text-muted d-block">
+                                                    {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
+                                                    <span class="mx-1">•</span>
+                                                    {{ __('muzibu::admin.song.max_size') }}: 100MB
+                                                </small>
+                                            @endif
                                         </div>
 
                                         @error('audioFile')

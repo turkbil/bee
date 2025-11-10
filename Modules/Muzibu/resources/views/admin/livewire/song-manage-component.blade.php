@@ -70,10 +70,10 @@
                                     </div>
                                 </div>
 
-                                <!-- Album, Genre, Duration Seçimleri (Sadece ilk dilde göster) -->
+                                <!-- Album, Genre Seçimleri (Sadece ilk dilde göster) -->
                                 @if($lang === get_tenant_default_locale())
                                 <div class="row mb-4">
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating">
                                             <select wire:model="inputs.album_id"
                                                 class="form-control @error('inputs.album_id') is-invalid @enderror"
@@ -96,7 +96,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-6">
                                         <div class="form-floating">
                                             <select wire:model="inputs.genre_id"
                                                 class="form-control @error('inputs.genre_id') is-invalid @enderror"

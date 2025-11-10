@@ -67,7 +67,6 @@ class SongManageComponent extends Component implements AIContentGeneratable
         'refreshComponent' => '$refresh',
         'languageChanged' => 'handleLanguageChange',
         'translation-completed' => 'handleTranslationCompleted',
-        'ai-content-generated' => 'handleAIContentGenerated',
     ];
 
     /**
@@ -335,27 +334,6 @@ class SongManageComponent extends Component implements AIContentGeneratable
             Log::info('✅ SongManage - Çeviri sonuçları alındı ve kaydedildi', [
                 'translated_count' => $result['translated_count'] ?? 0
             ]);
-        }
-    }
-
-    public function handleAIContentGenerated($result)
-    {
-        if ($result['success']) {
-            $content = $result['content'];
-            $targetField = $result['target_field'];
-            $language = $result['language'];
-
-            if (isset($this->multiLangInputs[$language][$targetField])) {
-                $this->multiLangInputs[$language][$targetField] = $content;
-
-                $this->save();
-
-                Log::info('✅ SongManage - AI içerik alındı ve kaydedildi', [
-                    'field' => $targetField,
-                    'language' => $language,
-                    'content_length' => strlen($content)
-                ]);
-            }
         }
     }
 

@@ -276,7 +276,7 @@
                             <div class="language-content" data-language="{{ $lang }}"
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
-                                {{-- İçerik editörü - AI button artık global component'te --}}
+                                {{-- İçerik editörü --}}
                                 @include('admin.components.content-editor', [
                                     'lang' => $lang,
                                     'langName' => $langName,
@@ -386,7 +386,5 @@
         @include('seomanagement::admin.components.universal-seo-scripts', [
             'availableLanguages' => $availableLanguages,
         ])
-
-        @include('ai::admin.components.universal-ai-content-scripts')
     @endpush
 </div>

@@ -19,8 +19,8 @@ class SectorController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.sector-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.sector-manage', [
+            'sectorId' => $id
         ]);
     }
 }

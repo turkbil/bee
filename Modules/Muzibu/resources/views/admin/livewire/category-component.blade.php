@@ -4,7 +4,6 @@
 
 <div wire:key="muzibu-category-component" wire:id="muzibu-category-component">
     {{-- Helper dosyası --}}
-    @include('muzibu::admin.helper-category')
     @include('admin.partials.error_message')
 
     <!-- İki Sütunlu Layout -->

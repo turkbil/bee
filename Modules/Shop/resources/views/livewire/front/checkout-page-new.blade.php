@@ -465,11 +465,44 @@
                         @enderror
                     </div>
 
-                    {{-- Sipariş Tamamla Butonu --}}
-                    <button wire:click="submitOrder"
-                        class="w-full bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 dark:from-blue-500 dark:via-blue-600 dark:to-purple-500 hover:from-blue-700 hover:via-blue-800 hover:to-purple-700 dark:hover:from-blue-600 dark:hover:via-blue-700 dark:hover:to-purple-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] text-sm">
-                        <i class="fa-solid fa-check-circle mr-2"></i>
-                        Siparişi Tamamla
+                    {{-- ⚠️ VALIDATION HATALARI (Buton üstünde) --}}
+                    @if ($errors->any())
+                        <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 dark:border-red-600 rounded-lg p-4 mb-4">
+                            <div class="flex items-start">
+                                <i class="fa-solid fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl mr-3 mt-0.5"></i>
+                                <div class="flex-1">
+                                    <h4 class="text-red-800 dark:text-red-300 font-bold text-sm mb-2">Lütfen eksiklikleri tamamlayın:</h4>
+                                    <ul class="space-y-1">
+                                        @foreach ($errors->all() as $error)
+                                            <li class="text-red-700 dark:text-red-400 text-xs flex items-start">
+                                                <i class="fa-solid fa-circle text-[4px] mr-2 mt-1.5"></i>
+                                                <span>{{ $error }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- 🧪 TEST BUTON --}}
+                    <button type="button"
+                        wire:click="testMethod"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mb-3">
+                        🧪 TEST (Livewire Çalışıyor mu?)
+                    </button>
+
+                    {{-- Ödemeye Geç Butonu --}}
+                    <button type="button"
+                        wire:click="proceedToPayment"
+                        wire:loading.attr="disabled"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-credit-card mr-2"></i>
+                        <span wire:loading.remove wire:target="proceedToPayment">Ödemeye Geç</span>
+                        <span wire:loading wire:target="proceedToPayment">
+                            <i class="fa-solid fa-spinner fa-spin mr-1"></i>
+                            İşleniyor...
+                        </span>
                     </button>
 
                     {{-- Güvenli Ödeme (Küçük) --}}
@@ -485,3 +518,54 @@
         </div>
     </div>
 </div>
+
+{{-- PayTR Ödeme Modal --}}
+@if($showPaymentModal ?? false)
+    <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" wire:click="closePaymentModal">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden" wire:click.stop>
+            {{-- Modal Header --}}
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center">
+                    <i class="fa-solid fa-credit-card text-green-600 dark:text-green-400 mr-2"></i>
+                    Güvenli Ödeme - PayTR
+                </h3>
+                <button wire:click="closePaymentModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+
+            {{-- Modal Body --}}
+            <div class="p-4">
+                @if($paymentIframeUrl ?? false)
+                    {{-- PayTR iframe yüklenirken göster --}}
+                    <div wire:loading class="text-center py-12">
+                        <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                        <p class="text-gray-600 dark:text-gray-400">Ödeme sayfası yükleniyor...</p>
+                    </div>
+
+                    {{-- PayTR iframe --}}
+                    <div wire:loading.remove>
+                        <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
+                        <iframe
+                            src="{{ $paymentIframeUrl }}"
+                            id="paytriframe"
+                            frameborder="0"
+                            scrolling="no"
+                            style="width: 100%; min-height: 500px;">
+                        </iframe>
+                        <script>
+                            if (typeof iFrameResize !== 'undefined') {
+                                iFrameResize({}, '#paytriframe');
+                            }
+                        </script>
+                    </div>
+                @else
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-exclamation-triangle text-4xl text-yellow-600 dark:text-yellow-400 mb-4"></i>
+                        <p class="text-gray-600 dark:text-gray-400">Ödeme hazırlanıyor...</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+@endif

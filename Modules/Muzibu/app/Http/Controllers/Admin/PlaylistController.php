@@ -19,8 +19,8 @@ class PlaylistController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.playlist-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.playlist-manage', [
+            'playlistId' => $id
         ]);
     }
 }

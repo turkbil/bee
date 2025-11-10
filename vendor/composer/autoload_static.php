@@ -7685,7 +7685,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\AddressManager' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/AddressManager.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\CartPage' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CartPage.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\CartWidget' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CartWidget.php',
-        'Modules\\Shop\\App\\Http\\Livewire\\Front\\CheckoutPage' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CheckoutPage.php',
+        'Modules\\Shop\\App\\Http\\Livewire\\Front\\CheckoutPageNew' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/CheckoutPageNew.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Front\\RegisterToCheckoutPage' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Front/RegisterToCheckoutPage.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Traits\\InlineEditTitle' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/InlineEditTitle.php',
         'Modules\\Shop\\App\\Http\\Livewire\\Traits\\WithBulkActions' => __DIR__ . '/../..' . '/Modules/Shop/app/Http/Livewire/Traits/WithBulkActions.php',

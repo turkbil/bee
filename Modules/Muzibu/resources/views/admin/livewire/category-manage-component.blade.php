@@ -6,7 +6,6 @@
         );
     @endphp
 
-    @include('muzibu::admin.helper-category')
 
     <form method="post" wire:submit.prevent="save">
         @include('admin.partials.error_message')

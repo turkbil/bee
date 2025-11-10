@@ -19,8 +19,8 @@ class RadioController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.radio-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.radio-manage', [
+            'radioId' => $id
         ]);
     }
 }

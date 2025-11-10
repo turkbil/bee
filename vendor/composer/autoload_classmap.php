@@ -6281,7 +6281,7 @@ return array(
     'Modules\\Shop\\App\\Http\\Livewire\\Front\\AddressManager' => $baseDir . '/Modules/Shop/app/Http/Livewire/Front/AddressManager.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Front\\CartPage' => $baseDir . '/Modules/Shop/app/Http/Livewire/Front/CartPage.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Front\\CartWidget' => $baseDir . '/Modules/Shop/app/Http/Livewire/Front/CartWidget.php',
-    'Modules\\Shop\\App\\Http\\Livewire\\Front\\CheckoutPage' => $baseDir . '/Modules/Shop/app/Http/Livewire/Front/CheckoutPage.php',
+    'Modules\\Shop\\App\\Http\\Livewire\\Front\\CheckoutPageNew' => $baseDir . '/Modules/Shop/app/Http/Livewire/Front/CheckoutPageNew.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Front\\RegisterToCheckoutPage' => $baseDir . '/Modules/Shop/app/Http/Livewire/Front/RegisterToCheckoutPage.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Traits\\InlineEditTitle' => $baseDir . '/Modules/Shop/app/Http/Livewire/Traits/InlineEditTitle.php',
     'Modules\\Shop\\App\\Http\\Livewire\\Traits\\WithBulkActions' => $baseDir . '/Modules/Shop/app/Http/Livewire/Traits/WithBulkActions.php',

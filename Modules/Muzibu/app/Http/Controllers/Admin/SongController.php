@@ -19,8 +19,8 @@ class SongController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.song-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.song-manage', [
+            'songId' => $id
         ]);
     }
 }

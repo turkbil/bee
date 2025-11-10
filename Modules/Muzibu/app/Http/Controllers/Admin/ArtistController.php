@@ -19,8 +19,8 @@ class ArtistController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.artist-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.artist-manage', [
+            'artistId' => $id
         ]);
     }
 }

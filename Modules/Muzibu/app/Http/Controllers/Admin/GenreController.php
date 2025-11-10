@@ -19,8 +19,8 @@ class GenreController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.genre-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.genre-manage', [
+            'genreId' => $id
         ]);
     }
 }

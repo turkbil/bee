@@ -19,8 +19,8 @@ class AlbumController extends Controller
      */
     public function manage($id = null)
     {
-        return view('muzibu::admin.livewire.album-manage-component', [
-            'id' => $id
+        return view('muzibu::admin.album-manage', [
+            'albumId' => $id
         ]);
     }
 }

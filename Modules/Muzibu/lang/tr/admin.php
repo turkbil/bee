@@ -15,7 +15,6 @@ return [
 
 // Artists (Sanatçılar)
 'artists' => 'Sanatçılar',
-'artist' => 'Sanatçı',
 'artist_list' => 'Sanatçı Listesi',
 'artist_management' => 'Sanatçı Yönetimi',
 'new_artist' => 'Yeni Sanatçı',
@@ -28,14 +27,18 @@ return [
 'artist_activated' => 'Sanatçı aktifleştirildi',
 'artist_deactivated' => 'Sanatçı pasifleştirildi',
 'no_artists_found' => 'Sanatçı bulunamadı',
-'artist.search_placeholder' => 'Sanatçı ara...',
-'artist.title_field' => 'Sanatçı Adı',
-'artist.status' => 'Durum',
-'artist.no_results' => 'Arama kriterlerinize uygun sanatçı bulunamadı',
+'artist' => [
+    'search_placeholder' => 'Sanatçı ara...',
+    'title_field' => 'Sanatçı Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun sanatçı bulunamadı',
+    'no_artists_found' => 'Sanatçı bulunamadı',
+    'new_artist_pretitle' => 'Yeni Sanatçı Ekle',
+    'edit_artist_pretitle' => 'Sanatçı Düzenle',
+],
 
 // Albums (Albümler)
 'albums' => 'Albümler',
-'album' => 'Albüm',
 'album_list' => 'Albüm Listesi',
 'album_management' => 'Albüm Yönetimi',
 'new_album' => 'Yeni Albüm',
@@ -48,14 +51,18 @@ return [
 'album_activated' => 'Albüm aktifleştirildi',
 'album_deactivated' => 'Albüm pasifleştirildi',
 'no_albums_found' => 'Albüm bulunamadı',
-'album.search_placeholder' => 'Albüm ara...',
-'album.title_field' => 'Albüm Adı',
-'album.status' => 'Durum',
-'album.no_results' => 'Arama kriterlerinize uygun albüm bulunamadı',
+'album' => [
+    'search_placeholder' => 'Albüm ara...',
+    'title_field' => 'Albüm Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun albüm bulunamadı',
+    'no_albums_found' => 'Albüm bulunamadı',
+    'new_album_pretitle' => 'Yeni Albüm Ekle',
+    'edit_album_pretitle' => 'Albüm Düzenle',
+],
 
 // Songs (Şarkılar)
 'songs' => 'Şarkılar',
-'song' => 'Şarkı',
 'song_list' => 'Şarkı Listesi',
 'song_management' => 'Şarkı Yönetimi',
 'new_song' => 'Yeni Şarkı',
@@ -68,15 +75,18 @@ return [
 'song_activated' => 'Şarkı aktifleştirildi',
 'song_deactivated' => 'Şarkı pasifleştirildi',
 'no_songs_found' => 'Şarkı bulunamadı',
-'song.search_placeholder' => 'Şarkı ara...',
-'song.title_field' => 'Şarkı Adı',
-'song.status' => 'Durum',
-'song.no_results' => 'Arama kriterlerinize uygun şarkı bulunamadı',
-'song.studio.editor' => 'Studio ile Düzenle',
+'song' => [
+    'search_placeholder' => 'Şarkı ara...',
+    'title_field' => 'Şarkı Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun şarkı bulunamadı',
+    'no_songs_found' => 'Şarkı bulunamadı',
+    'new_song_pretitle' => 'Yeni Şarkı Ekle',
+    'edit_song_pretitle' => 'Şarkı Düzenle',
+],
 
 // Genres (Türler)
 'genres' => 'Türler',
-'genre' => 'Tür',
 'genre_list' => 'Tür Listesi',
 'genre_management' => 'Tür Yönetimi',
 'new_genre' => 'Yeni Tür',
@@ -89,14 +99,18 @@ return [
 'genre_activated' => 'Tür aktifleştirildi',
 'genre_deactivated' => 'Tür pasifleştirildi',
 'no_genres_found' => 'Tür bulunamadı',
-'genre.search_placeholder' => 'Tür ara...',
-'genre.title_field' => 'Tür Adı',
-'genre.status' => 'Durum',
-'genre.no_results' => 'Arama kriterlerinize uygun tür bulunamadı',
+'genre' => [
+    'search_placeholder' => 'Tür ara...',
+    'title_field' => 'Tür Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun tür bulunamadı',
+    'no_genres_found' => 'Tür bulunamadı',
+    'new_genre_pretitle' => 'Yeni Tür Ekle',
+    'edit_genre_pretitle' => 'Tür Düzenle',
+],
 
 // Playlists (Çalma Listeleri)
 'playlists' => 'Çalma Listeleri',
-'playlist' => 'Çalma Listesi',
 'playlist_list' => 'Çalma Listesi',
 'playlist_management' => 'Çalma Listesi Yönetimi',
 'new_playlist' => 'Yeni Çalma Listesi',
@@ -109,14 +123,18 @@ return [
 'playlist_activated' => 'Çalma listesi aktifleştirildi',
 'playlist_deactivated' => 'Çalma listesi pasifleştirildi',
 'no_playlists_found' => 'Çalma listesi bulunamadı',
-'playlist.search_placeholder' => 'Çalma listesi ara...',
-'playlist.title_field' => 'Liste Adı',
-'playlist.status' => 'Durum',
-'playlist.no_results' => 'Arama kriterlerinize uygun çalma listesi bulunamadı',
+'playlist' => [
+    'search_placeholder' => 'Çalma listesi ara...',
+    'title_field' => 'Liste Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun çalma listesi bulunamadı',
+    'no_playlists_found' => 'Çalma listesi bulunamadı',
+    'new_playlist_pretitle' => 'Yeni Çalma Listesi Ekle',
+    'edit_playlist_pretitle' => 'Çalma Listesi Düzenle',
+],
 
 // Radios (Radyolar)
 'radios' => 'Radyolar',
-'radio' => 'Radyo',
 'radio_list' => 'Radyo Listesi',
 'radio_management' => 'Radyo Yönetimi',
 'new_radio' => 'Yeni Radyo',
@@ -129,14 +147,18 @@ return [
 'radio_activated' => 'Radyo aktifleştirildi',
 'radio_deactivated' => 'Radyo pasifleştirildi',
 'no_radios_found' => 'Radyo bulunamadı',
-'radio.search_placeholder' => 'Radyo ara...',
-'radio.title_field' => 'Radyo Adı',
-'radio.status' => 'Durum',
-'radio.no_results' => 'Arama kriterlerinize uygun radyo bulunamadı',
+'radio' => [
+    'search_placeholder' => 'Radyo ara...',
+    'title_field' => 'Radyo Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun radyo bulunamadı',
+    'no_radios_found' => 'Radyo bulunamadı',
+    'new_radio_pretitle' => 'Yeni Radyo Ekle',
+    'edit_radio_pretitle' => 'Radyo Düzenle',
+],
 
 // Sectors (Sektörler)
 'sectors' => 'Sektörler',
-'sector' => 'Sektör',
 'sector_list' => 'Sektör Listesi',
 'sector_management' => 'Sektör Yönetimi',
 'new_sector' => 'Yeni Sektör',
@@ -149,10 +171,15 @@ return [
 'sector_activated' => 'Sektör aktifleştirildi',
 'sector_deactivated' => 'Sektör pasifleştirildi',
 'no_sectors_found' => 'Sektör bulunamadı',
-'sector.search_placeholder' => 'Sektör ara...',
-'sector.title_field' => 'Sektör Adı',
-'sector.status' => 'Durum',
-'sector.no_results' => 'Arama kriterlerinize uygun sektör bulunamadı',
+'sector' => [
+    'search_placeholder' => 'Sektör ara...',
+    'title_field' => 'Sektör Adı',
+    'status' => 'Durum',
+    'no_results' => 'Arama kriterlerinize uygun sektör bulunamadı',
+    'no_sectors_found' => 'Sektör bulunamadı',
+    'new_sector_pretitle' => 'Yeni Sektör Ekle',
+    'edit_sector_pretitle' => 'Sektör Düzenle',
+],
 
 // Quick Actions
 'quick_add' => 'Hızlı Ekle',
@@ -249,9 +276,6 @@ return [
 
 // Content Placeholders
 'content_placeholder' => 'Müzik içeriğinizi buraya yazın',
-
-// Studio Editor
-'studio.editor' => 'Studio ile Düzenle',
 
 // Kategori
 'categories' => 'Kategoriler',

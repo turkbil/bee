@@ -88,16 +88,31 @@ class CheckoutPageNew extends Component
     public $paytrPostData = [];
 
     protected $listeners = [
-        'cartUpdated' => 'loadCart',
+        // 'cartUpdated' => 'loadCart', // ⚠️ KALDIRILDI - Sonsuz döngü önleme!
         'addressSelected' => 'handleAddressSelected',
     ];
 
     // İletişim bilgileri değiştiğinde customer'ı güncelle
     public function updated($propertyName)
     {
-        // ⚠️ INFINITE LOOP GUARD: calculatePaymentFees() içinde değişen property'leri ignore et!
-        if (in_array($propertyName, ['installmentFee', 'creditCardFee', 'grandTotal'])) {
-            return; // Bu property'ler calculatePaymentFees() tarafından set ediliyor, tekrar hesaplama!
+        // ⚠️ INFINITE LOOP GUARD: Metod içinde set edilen property'leri ignore et!
+        $ignoreProperties = [
+            'installmentFee',
+            'creditCardFee',
+            'grandTotal',
+            'showPaymentModal',
+            'paymentIframeUrl',
+            'showCardForm',
+            'paytrPostUrl',
+            'paytrPostData',
+            'subtotal',
+            'taxAmount',
+            'total',
+            'itemCount'
+        ];
+
+        if (in_array($propertyName, $ignoreProperties)) {
+            return; // Bu property'ler başka metodlar tarafından set ediliyor, ignore et!
         }
 
         // Sadece iletişim bilgileri değiştiğinde güncelle
@@ -231,8 +246,8 @@ class CheckoutPageNew extends Component
         $this->creditCardFee = $this->total * 0.0499;
         $this->grandTotal = $this->total + $this->creditCardFee;
 
-        // Widget'ı güncelle (sayfa yüklendiğinde widget senkronize olsun)
-        $this->dispatch('cartUpdated');
+        // ⚠️ Widget dispatch KALDIRıldı - Sonsuz döngü önleme!
+        // Sadece sepet temizlendiğinde (proceedToPayment) dispatch edilecek
     }
 
     public function loadOrCreateCustomer()
@@ -670,6 +685,230 @@ class CheckoutPageNew extends Component
         ]));
 
         return $customer;
+    }
+
+    /**
+     * Ödemeye Geç - PayTR iframe modalını aç
+     */
+    public function proceedToPayment()
+    {
+        \Log::info('💳 proceedToPayment START');
+
+        // Önce validation yap
+        $rules = [
+            'contact_first_name' => 'required|string|max:255',
+            'contact_last_name' => 'required|string|max:255',
+            'contact_phone' => 'required|string|max:20',
+            'agree_all' => 'accepted',
+            'selectedPaymentMethodId' => 'required|exists:payment_methods,payment_method_id',
+        ];
+
+        // Adres kontrolü
+        if ($this->customerId) {
+            $rules['billing_address_id'] = 'required';
+            $rules['shipping_address_id'] = 'required';
+        } else {
+            $rules['shipping_address_line_1'] = 'required|string|max:255';
+            $rules['shipping_city'] = 'required|string|max:100';
+            $rules['shipping_district'] = 'required|string|max:100';
+        }
+
+        // Fatura tipi kontrolü
+        if ($this->billing_type === 'corporate') {
+            $rules['billing_company_name'] = 'required|string|max:255';
+            $rules['billing_tax_office'] = 'required|string|max:255';
+            $rules['billing_tax_number'] = 'required|string|size:10';
+        }
+
+        try {
+            $this->validate($rules, [
+                'contact_first_name.required' => 'Ad zorunludur',
+                'contact_last_name.required' => 'Soyad zorunludur',
+                'contact_phone.required' => 'Telefon zorunludur',
+                'billing_address_id.required' => 'Fatura adresi seçmelisiniz',
+                'shipping_address_id.required' => 'Teslimat adresi seçmelisiniz',
+                'shipping_address_line_1.required' => 'Adres zorunludur',
+                'shipping_city.required' => 'İl zorunludur',
+                'shipping_district.required' => 'İlçe zorunludur',
+                'agree_all.accepted' => 'Sözleşmeleri kabul etmelisiniz',
+                'selectedPaymentMethodId.required' => 'Ödeme yöntemi seçmelisiniz',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('❌ Validation FAILED', ['errors' => $e->errors()]);
+            throw $e;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Müşteri oluştur/güncelle
+            $customer = $this->createOrUpdateCustomer();
+
+            // Guest için adres oluştur
+            if (!$this->customerId || !$this->shipping_address_id) {
+                $shippingAddress = ShopCustomerAddress::create([
+                    'customer_id' => $customer->customer_id,
+                    'address_type' => 'shipping',
+                    'address_line_1' => $this->shipping_address_line_1,
+                    'address_line_2' => $this->shipping_address_line_2,
+                    'city' => $this->shipping_city,
+                    'district' => $this->shipping_district,
+                    'postal_code' => $this->shipping_postal_code,
+                    'delivery_notes' => $this->shipping_delivery_notes,
+                    'is_default_shipping' => true,
+                ]);
+
+                $this->shipping_address_id = $shippingAddress->address_id;
+
+                if ($this->billing_same_as_shipping) {
+                    $billingAddress = ShopCustomerAddress::create([
+                        'customer_id' => $customer->customer_id,
+                        'address_type' => 'billing',
+                        'address_line_1' => $this->shipping_address_line_1,
+                        'address_line_2' => $this->shipping_address_line_2,
+                        'city' => $this->shipping_city,
+                        'district' => $this->shipping_district,
+                        'postal_code' => $this->shipping_postal_code,
+                        'is_default_billing' => true,
+                    ]);
+
+                    $this->billing_address_id = $billingAddress->address_id;
+                }
+            }
+
+            // Adresleri al
+            $billingAddress = ShopCustomerAddress::find($this->billing_address_id);
+            $shippingAddress = ShopCustomerAddress::find($this->shipping_address_id);
+
+            // Sipariş oluştur
+            $order = ShopOrder::create([
+                'tenant_id' => tenant('id'),
+                'customer_id' => $customer->customer_id,
+                'order_number' => 'ORD-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6)),
+                'customer_name' => $customer->full_name,
+                'customer_email' => $customer->email,
+                'customer_phone' => $customer->phone,
+                'customer_company' => $customer->company_name,
+                'customer_tax_office' => $customer->tax_office,
+                'customer_tax_number' => $customer->tax_number,
+                'shipping_address' => $shippingAddress->address_line_1 . ($shippingAddress->address_line_2 ? ' ' . $shippingAddress->address_line_2 : ''),
+                'shipping_city' => $shippingAddress->city,
+                'shipping_district' => $shippingAddress->district,
+                'shipping_postal_code' => $shippingAddress->postal_code,
+                'notes' => $shippingAddress->delivery_notes,
+                'subtotal' => $this->subtotal,
+                'tax_amount' => $this->taxAmount,
+                'shipping_cost' => 0,
+                'discount_amount' => 0,
+                'total_amount' => $this->grandTotal,
+                'status' => 'pending',
+                'payment_status' => 'pending',
+                'agreed_kvkk' => $this->agree_all,
+                'agreed_distance_selling' => $this->agree_all,
+                'agreed_preliminary_info' => $this->agree_all,
+                'agreed_marketing' => false,
+            ]);
+
+            // Sipariş kalemleri
+            foreach ($this->items as $item) {
+                $price = $item->unit_price;
+
+                if ($item->currency && $item->currency->code !== 'TRY') {
+                    $exchangeRate = $item->currency->exchange_rate ?? 1;
+                    $price = $price * $exchangeRate;
+                }
+
+                ShopOrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'variant_id' => $item->variant_id,
+                    'quantity' => $item->quantity,
+                    'unit_price' => $price,
+                    'subtotal' => $price * $item->quantity,
+                    'product_title' => $item->product->getTranslated('title', app()->getLocale()),
+                    'product_sku' => $item->product->sku,
+                ]);
+            }
+
+            // Payment kaydı
+            $payment = Payment::create([
+                'payment_method_id' => $this->selectedPaymentMethodId,
+                'payable_type' => ShopOrder::class,
+                'payable_id' => $order->order_id,
+                'transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
+                'amount' => $this->grandTotal,
+                'currency' => 'TRY',
+                'status' => 'pending',
+                'installment_count' => $this->selectedInstallment,
+                'installment_fee' => $this->installmentFee,
+            ]);
+
+            DB::commit();
+
+            // PayTR iframe token al
+            $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
+
+            if ($paymentMethod && $paymentMethod->gateway === 'paytr') {
+                // PayTRIframeService kullan
+                $iframeService = app(\Modules\Payment\App\Services\PayTRIframeService::class);
+
+                $userInfo = [
+                    'name' => $customer->full_name,
+                    'email' => $customer->email,
+                    'phone' => $customer->phone,
+                    'address' => $shippingAddress->address_line_1 . ', ' . $shippingAddress->city,
+                ];
+
+                $orderInfo = [
+                    'amount' => $this->grandTotal,
+                    'description' => 'Sipariş No: ' . $order->order_number,
+                    'items' => $this->items->map(function ($item) {
+                        return [
+                            'name' => $item->product->getTranslated('title', app()->getLocale()),
+                            'price' => $item->unit_price,
+                            'quantity' => $item->quantity,
+                        ];
+                    })->toArray(),
+                ];
+
+                $result = $iframeService->prepareIframePayment($payment, $userInfo, $orderInfo);
+
+                if ($result['success']) {
+                    // Sepeti temizle (ödeme başladı)
+                    $cartService = app(ShopCartService::class);
+                    $cartService->clearCart();
+                    $this->dispatch('cartUpdated');
+
+                    // Modal aç
+                    $this->paymentIframeUrl = $result['iframe_url'];
+                    $this->showPaymentModal = true;
+
+                    \Log::info('✅ PayTR iframe opened', ['url' => $result['iframe_url']]);
+                } else {
+                    DB::rollBack();
+                    session()->flash('error', 'Ödeme hazırlanamadı: ' . $result['message']);
+                    \Log::error('❌ PayTR token failed', ['message' => $result['message']]);
+                }
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('❌ proceedToPayment ERROR', ['message' => $e->getMessage()]);
+            session()->flash('error', 'Sipariş oluşturulurken hata: ' . $e->getMessage());
+        }
+    }
+
+    public function closePaymentModal()
+    {
+        $this->showPaymentModal = false;
+        $this->paymentIframeUrl = '';
+    }
+
+    // 🧪 TEST: Basit metod - çalışıyor mu?
+    public function testMethod()
+    {
+        \Log::info('🧪 TEST METHOD CALLED!');
+        session()->flash('success', 'Test metodu çalıştı!');
     }
 
     /**

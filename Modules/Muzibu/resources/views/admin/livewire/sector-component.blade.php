@@ -4,7 +4,6 @@
 
 <div class="sector-component-wrapper">
     <div class="card">
-        @include('muzibu::admin.helper-sector')
         <div class="card-body p-0">
             <!-- Header Bölümü -->
             <div class="row mx-2 my-3">
@@ -173,20 +172,12 @@
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
-                                        <a href="{{ route('admin.sector.manage', $sector->sector_id) }}"
+                                        <a href="{{ route('admin.muzibu.sector.manage', $sector->sector_id) }}"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ __('admin.edit') }}"
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
-                                        @if(config('muzibu.integrations.studio.enabled', false) && class_exists(config('muzibu.integrations.studio.component', '')))
-                                        <a href="{{ route('admin.studio.editor', ['module' => 'sector', 'id' => $sector->sector_id]) }}"
-                                            target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{ __('muzibu::admin.sector.studio.editor') }}"
-                                            style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                            <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
-                                        </a>
-                                        @endif
                                         <x-ai-translation :entity-type="'sector'" :entity-id="$sector->sector_id"
                                             tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')

@@ -179,14 +179,6 @@
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
-                                        @if(config('muzibu.integrations.studio.enabled', false) && class_exists(config('muzibu.integrations.studio.component', '')))
-                                        <a href="{{ route('admin.studio.editor', ['module' => 'muzibu', 'id' => $muzibu->muzibu_id]) }}"
-                                            target="_blank" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="{{ __('muzibu::admin.studio.editor') }}"
-                                            style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                            <i class="fa-solid fa-wand-magic-sparkles link-secondary fa-lg"></i>
-                                        </a>
-                                        @endif
                                         <x-ai-translation :entity-type="'muzibu'" :entity-id="$muzibu->muzibu_id"
                                             tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')

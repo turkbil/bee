@@ -6,24 +6,12 @@
         );
     @endphp
 
-    @include('muzibu::admin.helper-sector')
 
     <form method="post" wire:submit.prevent="save">
         @include('admin.partials.error_message')
         <div class="card">
 
             <x-tab-system :tabs="$tabConfig" :tab-completion="$tabCompletionStatus" storage-key="sector_active_tab">
-                {{-- Studio Edit Button --}}
-                @if ($studioEnabled && $sectorId)
-                    <li class="nav-item ms-3">
-                        <a href="{{ route('admin.studio.editor', ['module' => 'sector', 'id' => $sectorId]) }}"
-                            target="_blank" class="btn btn-outline-primary"
-                            style="padding: 0.20rem 0.75rem; margin-top: 5px;">
-                            <i
-                                class="fa-solid fa-wand-magic-sparkles fa-lg me-1"></i>{{ __('muzibu::admin.sector.studio.editor') }}
-                        </a>
-                    </li>
-                @endif
 
                 <x-manage.language.switcher :current-language="$currentLanguage" />
             </x-tab-system>
@@ -82,31 +70,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Kategori Seçimi (Sadece ilk dilde göster) -->
-                                @if($lang === get_tenant_default_locale())
-                                <div class="row mb-4">
-                                    <div class="col-12 col-md-6">
-                                        <div class="form-floating">
-                                            <select wire:model="inputs.sector_category_id"
-                                                class="form-control @error('inputs.sector_category_id') is-invalid @enderror"
-                                                id="category_select">
-                                                <option value="">{{ __('muzibu::admin.sector.select_category') }}</option>
-                                                @foreach($this->activeCategories as $category)
-                                                    <option value="{{ $category->category_id }}">
-                                                        {{ $category->getTranslated('title', app()->getLocale()) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <label for="category_select">
-                                                {{ __('muzibu::admin.sector.category') }}
-                                            </label>
-                                            @error('inputs.sector_category_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
                             </div>
                         @endforeach
 

@@ -1,20 +1,37 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Favorite\App\Http\Controllers\Api\FavoriteApiController;
+use Modules\Favorite\App\Services\FavoriteService;
 
-/*
- *--------------------------------------------------------------------------
- * API Routes
- *--------------------------------------------------------------------------
- *
- * Here is where you can register API routes for your application. These
- * routes are loaded by the RouteServiceProvider within a group which
- * is assigned the "api" middleware group. Enjoy building your API!
- *
-*/
+// API rotaları - Favorite işlemleri
+Route::middleware(['api', 'tenant'])
+    ->prefix('api/favorites')
+    ->name('api.favorites.')
+    ->group(function () {
 
-Route::prefix('v1/favorites')->group(function () {
-    Route::get('/', [FavoriteApiController::class, 'index'])->name('api.favorites.index');
-    Route::get('{slug}', [FavoriteApiController::class, 'show'])->name('api.favorites.show');
-});
+        // Toggle favorite (ekle/çıkar)
+        Route::post('/toggle', function(\Illuminate\Http\Request $request) {
+            $service = app(FavoriteService::class);
+
+            $result = $service->toggleFavorite(
+                $request->input('model_class'),
+                $request->input('model_id'),
+                auth()->id()
+            );
+
+            return response()->json($result);
+        })->middleware('auth:sanctum')->name('toggle');
+
+        // Kullanıcının favorileri
+        Route::get('/my-favorites', function(\Illuminate\Http\Request $request) {
+            $service = app(FavoriteService::class);
+
+            $favorites = $service->getUserFavorites(
+                auth()->id(),
+                $request->input('model_type'),
+                $request->input('per_page', 15)
+            );
+
+            return response()->json($favorites);
+        })->middleware('auth:sanctum')->name('my-favorites');
+    });

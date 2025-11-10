@@ -1,23 +1,28 @@
 <?php
-// Modules/ReviewSystem/routes/admin.php
-use Illuminate\Support\Facades\Route;
-use Modules\ReviewSystem\App\Http\Livewire\Admin\ReviewSystemComponent;
-use Modules\ReviewSystem\App\Http\Livewire\Admin\ReviewSystemManageComponent;
 
-// Admin rotaları
+use Illuminate\Support\Facades\Route;
+
+// Admin rotaları - Yorum ve Puan yönetimi
 Route::middleware(['admin', 'tenant'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::prefix('reviewsystem')
-            ->name('reviewsystem.')
+        Route::prefix('reviews')
+            ->name('reviews.')
             ->group(function () {
-                Route::get('/', ReviewSystemComponent::class)
-                    ->middleware('module.permission:reviewsystem,view')
-                    ->name('index');
+                // Tüm yorumlar
+                Route::get('/', function() {
+                    return view('reviewsystem::admin.index');
+                })->name('index');
 
-                Route::get('/manage/{id?}', ReviewSystemManageComponent::class)
-                    ->middleware('module.permission:reviewsystem,update')
-                    ->name('manage');
+                // Onay bekleyenler
+                Route::get('/pending', function() {
+                    return view('reviewsystem::admin.pending');
+                })->name('pending');
+
+                // İstatistikler
+                Route::get('/statistics', function() {
+                    return view('reviewsystem::admin.statistics');
+                })->name('statistics');
             });
     });

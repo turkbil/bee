@@ -43,6 +43,15 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
         return Album::query()->find($this->albumId);
     }
 
+    #[Computed]
+    public function activeArtists()
+    {
+        return \Modules\Muzibu\App\Models\Artist::query()
+            ->active()
+            ->orderBy('title->tr', 'asc')
+            ->get();
+    }
+
     protected $listeners = [
         'refreshComponent' => '$refresh',
         'languageChanged' => 'handleLanguageChange',
@@ -162,12 +171,12 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($album) {
-            $this->inputs = $album->only(['is_active']);
+            $this->inputs = $album->only(['is_active', 'artist_id']);
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
                     'title' => $album->getTranslated('title', $lang, false) ?? '',
-                    'bio' => $album->getTranslated('bio', $lang, false) ?? '',
+                    'description' => $album->getTranslated('description', $lang, false) ?? '',
                     'slug' => $album->getTranslated('slug', $lang, false) ?? '',
                 ];
             }
@@ -179,7 +188,7 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
                 'title' => '',
-                'bio' => '',
+                'description' => '',
                 'slug' => '',
             ];
         }
@@ -202,12 +211,13 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
     {
         $rules = [
             'inputs.is_active' => 'boolean',
+            'inputs.artist_id' => 'nullable|exists:muzibu_artists,artist_id',
         ];
 
         $mainLanguage = $this->getMainLanguage();
         foreach ($this->availableLanguages as $lang) {
             $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
-            $rules["multiLangInputs.{$lang}.bio"] = 'nullable|string';
+            $rules["multiLangInputs.{$lang}.description"] = 'nullable|string';
         }
 
         return $rules;
@@ -215,10 +225,11 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
 
     protected $messages = [
         'inputs.is_active.boolean' => 'Aktif durumu geçerli bir değer olmalıdır',
+        'inputs.artist_id.exists' => 'Seçilen sanatçı bulunamadı',
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
-        'multiLangInputs.*.bio.string' => 'Biyografi metin formatında olmalıdır',
+        'multiLangInputs.*.description.string' => 'Açıklama metin formatında olmalıdır',
         'multiLangInputs.*.slug.string' => 'Slug metin formatında olmalıdır',
         'multiLangInputs.*.slug.max' => 'Slug en fazla 255 karakter olabilir',
     ];
@@ -236,13 +247,13 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
         $errors = [];
 
         foreach ($this->availableLanguages as $lang) {
-            $bio = $this->multiLangInputs[$lang]['bio'] ?? '';
-            if (!empty(trim($bio))) {
-                $result = \App\Services\SecurityValidationService::validateHtml($bio);
+            $description = $this->multiLangInputs[$lang]['description'] ?? '';
+            if (!empty(trim($description))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($description);
                 if (!$result['valid']) {
                     $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
                 } else {
-                    $validated['bio'][$lang] = $result['clean_code'];
+                    $validated['description'][$lang] = $result['clean_code'];
                 }
             }
         }
@@ -281,8 +292,8 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
             $this->albumId
         );
 
-        if (!empty($validatedContent['bio'])) {
-            $multiLangData['bio'] = $validatedContent['bio'];
+        if (!empty($validatedContent['description'])) {
+            $multiLangData['description'] = $validatedContent['description'];
         }
 
         return $multiLangData;
@@ -422,7 +433,7 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
     {
         $albumFields = [
             'title' => 'string',
-            'bio' => 'html',
+            'description' => 'html',
             'meta_title' => 'string',
             'meta_description' => 'text'
         ];

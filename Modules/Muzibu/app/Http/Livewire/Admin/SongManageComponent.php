@@ -43,6 +43,24 @@ class SongManageComponent extends Component implements AIContentGeneratable
         return Song::query()->find($this->songId);
     }
 
+    #[Computed]
+    public function activeAlbums()
+    {
+        return \Modules\Muzibu\App\Models\Album::query()
+            ->active()
+            ->orderBy('title->tr', 'asc')
+            ->get();
+    }
+
+    #[Computed]
+    public function activeGenres()
+    {
+        return \Modules\Muzibu\App\Models\Genre::query()
+            ->active()
+            ->orderBy('title->tr', 'asc')
+            ->get();
+    }
+
     protected $listeners = [
         'refreshComponent' => '$refresh',
         'languageChanged' => 'handleLanguageChange',
@@ -162,12 +180,12 @@ class SongManageComponent extends Component implements AIContentGeneratable
         $this->tabCompletionStatus = $formData['tabCompletion'] ?? [];
 
         if ($song) {
-            $this->inputs = $song->only(['is_active']);
+            $this->inputs = $song->only(['is_active', 'is_featured', 'album_id', 'genre_id', 'duration']);
 
             foreach ($this->availableLanguages as $lang) {
                 $this->multiLangInputs[$lang] = [
                     'title' => $song->getTranslated('title', $lang, false) ?? '',
-                    'bio' => $song->getTranslated('bio', $lang, false) ?? '',
+                    'lyrics' => $song->getTranslated('lyrics', $lang, false) ?? '',
                     'slug' => $song->getTranslated('slug', $lang, false) ?? '',
                 ];
             }
@@ -179,7 +197,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
         foreach ($this->availableLanguages as $lang) {
             $this->multiLangInputs[$lang] = [
                 'title' => '',
-                'bio' => '',
+                'lyrics' => '',
                 'slug' => '',
             ];
         }
@@ -202,12 +220,16 @@ class SongManageComponent extends Component implements AIContentGeneratable
     {
         $rules = [
             'inputs.is_active' => 'boolean',
+            'inputs.is_featured' => 'boolean',
+            'inputs.album_id' => 'nullable|exists:muzibu_albums,album_id',
+            'inputs.genre_id' => 'required|exists:muzibu_genres,genre_id',
+            'inputs.duration' => 'nullable|regex:/^[0-9]{1,2}:[0-5][0-9]$/',
         ];
 
         $mainLanguage = $this->getMainLanguage();
         foreach ($this->availableLanguages as $lang) {
             $rules["multiLangInputs.{$lang}.title"] = $lang === $mainLanguage ? 'required|min:3|max:255' : 'nullable|min:3|max:255';
-            $rules["multiLangInputs.{$lang}.bio"] = 'nullable|string';
+            $rules["multiLangInputs.{$lang}.lyrics"] = 'nullable|string';
         }
 
         return $rules;
@@ -215,10 +237,15 @@ class SongManageComponent extends Component implements AIContentGeneratable
 
     protected $messages = [
         'inputs.is_active.boolean' => 'Aktif durumu geçerli bir değer olmalıdır',
+        'inputs.is_featured.boolean' => 'Öne çıkan durumu geçerli bir değer olmalıdır',
+        'inputs.album_id.exists' => 'Seçilen albüm bulunamadı',
+        'inputs.genre_id.required' => 'Tür seçimi zorunludur',
+        'inputs.genre_id.exists' => 'Seçilen tür bulunamadı',
+        'inputs.duration.regex' => 'Süre formatı mm:ss şeklinde olmalıdır (örn: 03:45)',
         'multiLangInputs.*.title.required' => 'Başlık alanı zorunludur',
         'multiLangInputs.*.title.min' => 'Başlık en az 3 karakter olmalıdır',
         'multiLangInputs.*.title.max' => 'Başlık en fazla 255 karakter olabilir',
-        'multiLangInputs.*.bio.string' => 'Biyografi metin formatında olmalıdır',
+        'multiLangInputs.*.lyrics.string' => 'Şarkı sözü metin formatında olmalıdır',
         'multiLangInputs.*.slug.string' => 'Slug metin formatında olmalıdır',
         'multiLangInputs.*.slug.max' => 'Slug en fazla 255 karakter olabilir',
     ];
@@ -236,13 +263,13 @@ class SongManageComponent extends Component implements AIContentGeneratable
         $errors = [];
 
         foreach ($this->availableLanguages as $lang) {
-            $bio = $this->multiLangInputs[$lang]['bio'] ?? '';
-            if (!empty(trim($bio))) {
-                $result = \App\Services\SecurityValidationService::validateHtml($bio);
+            $lyrics = $this->multiLangInputs[$lang]['lyrics'] ?? '';
+            if (!empty(trim($lyrics))) {
+                $result = \App\Services\SecurityValidationService::validateHtml($lyrics);
                 if (!$result['valid']) {
                     $errors[] = "HTML ({$lang}): " . implode(', ', $result['errors']);
                 } else {
-                    $validated['bio'][$lang] = $result['clean_code'];
+                    $validated['lyrics'][$lang] = $result['clean_code'];
                 }
             }
         }
@@ -281,8 +308,8 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $this->songId
         );
 
-        if (!empty($validatedContent['bio'])) {
-            $multiLangData['bio'] = $validatedContent['bio'];
+        if (!empty($validatedContent['lyrics'])) {
+            $multiLangData['lyrics'] = $validatedContent['lyrics'];
         }
 
         return $multiLangData;
@@ -422,7 +449,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
     {
         $songFields = [
             'title' => 'string',
-            'bio' => 'html',
+            'lyrics' => 'html',
             'meta_title' => 'string',
             'meta_description' => 'text'
         ];

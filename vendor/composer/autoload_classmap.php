@@ -6037,6 +6037,7 @@ return array(
     'Modules\\Muzibu\\App\\Http\\Resources\\MuzibuResource' => $baseDir . '/Modules/Muzibu/app/Http/Resources/MuzibuResource.php',
     'Modules\\Muzibu\\App\\Jobs\\BulkDeleteMuzibusJob' => $baseDir . '/Modules/Muzibu/app/Jobs/BulkDeleteMuzibusJob.php',
     'Modules\\Muzibu\\App\\Jobs\\BulkUpdateMuzibusJob' => $baseDir . '/Modules/Muzibu/app/Jobs/BulkUpdateMuzibusJob.php',
+    'Modules\\Muzibu\\App\\Jobs\\ConvertToHLSJob' => $baseDir . '/Modules/Muzibu/app/Jobs/ConvertToHLSJob.php',
     'Modules\\Muzibu\\App\\Jobs\\TranslateMuzibuContentJob' => $baseDir . '/Modules/Muzibu/app/Jobs/TranslateMuzibuContentJob.php',
     'Modules\\Muzibu\\App\\Jobs\\TranslateMuzibuJob' => $baseDir . '/Modules/Muzibu/app/Jobs/TranslateMuzibuJob.php',
     'Modules\\Muzibu\\App\\Models\\Album' => $baseDir . '/Modules/Muzibu/app/Models/Album.php',

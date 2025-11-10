@@ -28,6 +28,10 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         'lyrics',
         'duration',
         'file_path',
+        'hls_path',
+        'hls_converted',
+        'bitrate',
+        'metadata',
         'media_id',
         'is_featured',
         'play_count',
@@ -39,6 +43,9 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         'slug' => 'array',
         'lyrics' => 'array',
         'duration' => 'integer',
+        'bitrate' => 'integer',
+        'metadata' => 'array',
+        'hls_converted' => 'boolean',
         'is_featured' => 'boolean',
         'play_count' => 'integer',
         'is_active' => 'boolean',
@@ -426,5 +433,109 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return url("/{$locale}/muzibu/song/{$slug}");
+    }
+
+    /**
+     * Get audio file URL (original MP3)
+     */
+    public function getAudioUrl(): ?string
+    {
+        if (!$this->file_path) {
+            return null;
+        }
+
+        return \Storage::disk('public')->url($this->file_path);
+    }
+
+    /**
+     * Get HLS playlist URL (if converted)
+     */
+    public function getHlsUrl(): ?string
+    {
+        if (!$this->hls_converted || !$this->hls_path) {
+            return null;
+        }
+
+        return \Storage::disk('public')->url($this->hls_path);
+    }
+
+    /**
+     * Check if HLS conversion is needed
+     */
+    public function needsHlsConversion(): bool
+    {
+        return $this->file_path && !$this->hls_converted;
+    }
+
+    /**
+     * Get formatted duration (MM:SS)
+     */
+    public function getFormattedDuration(): string
+    {
+        if (!$this->duration) {
+            return '00:00';
+        }
+
+        $minutes = floor($this->duration / 60);
+        $seconds = $this->duration % 60;
+
+        return sprintf('%02d:%02d', $minutes, $seconds);
+    }
+
+    /**
+     * Get formatted bitrate (e.g., "320 kbps")
+     */
+    public function getFormattedBitrate(): ?string
+    {
+        if (!$this->bitrate) {
+            return null;
+        }
+
+        return $this->bitrate . ' kbps';
+    }
+
+    /**
+     * Extract metadata using getID3
+     */
+    public function extractMetadata(): bool
+    {
+        if (!$this->file_path) {
+            return false;
+        }
+
+        try {
+            $getID3 = new \getID3;
+            $filePath = \Storage::disk('public')->path($this->file_path);
+
+            if (!file_exists($filePath)) {
+                return false;
+            }
+
+            $fileInfo = $getID3->analyze($filePath);
+
+            // Extract metadata
+            $this->duration = isset($fileInfo['playtime_seconds']) ? (int) $fileInfo['playtime_seconds'] : null;
+            $this->bitrate = isset($fileInfo['audio']['bitrate']) ? (int) ($fileInfo['audio']['bitrate'] / 1000) : null;
+
+            // Store additional metadata
+            $this->metadata = [
+                'sample_rate' => $fileInfo['audio']['sample_rate'] ?? null,
+                'channels' => $fileInfo['audio']['channels'] ?? null,
+                'channel_mode' => $fileInfo['audio']['channelmode'] ?? null,
+                'filesize' => $fileInfo['filesize'] ?? null,
+                'mime_type' => $fileInfo['mime_type'] ?? null,
+            ];
+
+            $this->save();
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Muzibu: Metadata extraction failed', [
+                'song_id' => $this->song_id,
+                'error' => $e->getMessage()
+            ]);
+
+            return false;
+        }
     }
 }

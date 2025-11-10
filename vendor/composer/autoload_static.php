@@ -7481,6 +7481,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Muzibu\\App\\Http\\Resources\\MuzibuResource' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Resources/MuzibuResource.php',
         'Modules\\Muzibu\\App\\Jobs\\BulkDeleteMuzibusJob' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Jobs/BulkDeleteMuzibusJob.php',
         'Modules\\Muzibu\\App\\Jobs\\BulkUpdateMuzibusJob' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Jobs/BulkUpdateMuzibusJob.php',
+        'Modules\\Muzibu\\App\\Jobs\\ConvertToHLSJob' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Jobs/ConvertToHLSJob.php',
         'Modules\\Muzibu\\App\\Jobs\\TranslateMuzibuContentJob' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Jobs/TranslateMuzibuContentJob.php',
         'Modules\\Muzibu\\App\\Jobs\\TranslateMuzibuJob' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Jobs/TranslateMuzibuJob.php',
         'Modules\\Muzibu\\App\\Models\\Album' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Models/Album.php',

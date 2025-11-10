@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Livewire\Livewire;
 
 class MuzibuServiceProvider extends ServiceProvider
 {
@@ -43,11 +44,42 @@ class MuzibuServiceProvider extends ServiceProvider
         }
         $this->loadViewsFrom(module_path('Muzibu', 'resources/views'), 'muzibu');
 
-        // TODO: Livewire component'ler Artist, Song, Album, Genre, Playlist, Radio için ayrı ayrı oluşturulacak
-        // Livewire::component('muzibu-artist-component', ArtistComponent::class);
-        // Livewire::component('muzibu-song-component', SongComponent::class);
-        // Livewire::component('muzibu-album-component', AlbumComponent::class);
-        // vb.
+        // Livewire Component Kayıtları
+        $this->registerLivewireComponents();
+    }
+
+    /**
+     * Livewire component'lerini kaydet
+     */
+    protected function registerLivewireComponents(): void
+    {
+        // Artist Components
+        Livewire::component('muzibu::admin.artist-component', \Modules\Muzibu\App\Http\Livewire\Admin\ArtistComponent::class);
+        Livewire::component('muzibu::admin.artist-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\ArtistManageComponent::class);
+
+        // Album Components
+        Livewire::component('muzibu::admin.album-component', \Modules\Muzibu\App\Http\Livewire\Admin\AlbumComponent::class);
+        Livewire::component('muzibu::admin.album-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\AlbumManageComponent::class);
+
+        // Song Components
+        Livewire::component('muzibu::admin.song-component', \Modules\Muzibu\App\Http\Livewire\Admin\SongComponent::class);
+        Livewire::component('muzibu::admin.song-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\SongManageComponent::class);
+
+        // Genre Components
+        Livewire::component('muzibu::admin.genre-component', \Modules\Muzibu\App\Http\Livewire\Admin\GenreComponent::class);
+        Livewire::component('muzibu::admin.genre-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\GenreManageComponent::class);
+
+        // Playlist Components
+        Livewire::component('muzibu::admin.playlist-component', \Modules\Muzibu\App\Http\Livewire\Admin\PlaylistComponent::class);
+        Livewire::component('muzibu::admin.playlist-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\PlaylistManageComponent::class);
+
+        // Radio Components
+        Livewire::component('muzibu::admin.radio-component', \Modules\Muzibu\App\Http\Livewire\Admin\RadioComponent::class);
+        Livewire::component('muzibu::admin.radio-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\RadioManageComponent::class);
+
+        // Sector Components
+        Livewire::component('muzibu::admin.sector-component', \Modules\Muzibu\App\Http\Livewire\Admin\SectorComponent::class);
+        Livewire::component('muzibu::admin.sector-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\SectorManageComponent::class);
     }
 
     /**

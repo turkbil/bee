@@ -10,12 +10,10 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
-use Modules\Favorite\App\Traits\HasFavorites;
-use Modules\ReviewSystem\App\Traits\HasReviews;
 
 class Announcement extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, HasFavorites, HasReviews;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement;
 
     protected $primaryKey = 'announcement_id';
 

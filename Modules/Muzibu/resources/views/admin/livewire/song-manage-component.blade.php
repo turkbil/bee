@@ -120,84 +120,106 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 col-md-4">
-                                        <div class="form-floating">
-                                            <input
-                                                type="number"
-                                                wire:model="inputs.duration"
-                                                class="form-control @error('inputs.duration') is-invalid @enderror"
-                                                id="duration_input"
-                                                placeholder="0"
-                                                min="0">
-                                            <label for="duration_input">
-                                                {{ __('muzibu::admin.song.duration') }}
-                                                <small class="text-muted ms-2">(saniye)</small>
-                                            </label>
-                                            <div class="form-text">
-                                                <small class="text-muted">
-                                                    {{ __('muzibu::admin.song.duration_manual_help') }}
-                                                </small>
-                                            </div>
-                                            @error('inputs.duration')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
                                 </div>
                                 @endif
 
                             </div>
                         @endforeach
 
-                        {{-- ŞARKI DOSYASI YÜKLEME - Basit Tasarım --}}
-                        <div class="mb-4">
-                            <label class="form-label">
-                                <i class="ti ti-music me-2"></i>
-                                {{ __('muzibu::admin.song.audio_file') }}
-                                <small class="text-muted">(MP3, WAV, FLAC, M4A, OGG - Max 100MB)</small>
-                            </label>
+                        {{-- ŞARKI DOSYASI & SÜRE - Tabler.io Design --}}
+                        <div class="row mb-4">
+                            {{-- Şarkı Dosyası Yükleme --}}
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label required">
+                                        <i class="fa fa-music me-2"></i>
+                                        {{ __('muzibu::admin.song.audio_file') }}
+                                    </label>
 
-                            @if($inputs['file_path'] ?? null)
-                                <div class="alert alert-success">
-                                    <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <div class="d-flex align-items-center">
-                                            <i class="ti ti-file-music fs-2 me-3"></i>
-                                            <div>
-                                                <div class="fw-bold">{{ $inputs['file_path'] }}</div>
-                                                <small class="text-muted">
-                                                    <i class="ti ti-clock me-1"></i>
-                                                    {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) . ' (' . $inputs['duration'] . ' saniye)' : '00:00' }}
-                                                </small>
+                                    @if($inputs['file_path'] ?? null)
+                                        {{-- Mevcut Şarkı --}}
+                                        <div class="card mb-3">
+                                            <div class="card-status-top bg-success"></div>
+                                            <div class="card-body">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto">
+                                                        <span class="avatar avatar-lg" style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNCAzdjRhMSAxIDAgMCAwIDEgMWg0Ii8+PHBhdGggZD0iTTE3IDIxaC0xMGEyIDIgMCAwIDEgLTIgLTJ2LTE0YTIgMiAwIDAgMSAyIC0yaDdsNSA1djExYTIgMiAwIDAgMSAtMiAyeiIvPjxwYXRoIGQ9Ik0xMiAxMWwwIDYiLz48cGF0aCBkPSJNOSAxNGw2IDAiLz48L3N2Zz4=)"></span>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="fw-bold">{{ $inputs['file_path'] }}</div>
+                                                        <div class="text-secondary">
+                                                            <i class="fa fa-clock icon-sm"></i>
+                                                            {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
+                                                            <span class="text-muted">({{ $inputs['duration'] ?? 0 }} saniye)</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <button
+                                                            wire:click="removeAudio"
+                                                            wire:confirm="{{ __('muzibu::admin.song.remove_audio_confirm') }}"
+                                                            class="btn btn-icon btn-ghost-danger"
+                                                            type="button">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                {{-- Audio Player --}}
+                                                <div class="mt-3">
+                                                    <audio controls class="w-100">
+                                                        <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
+                                                    </audio>
+                                                </div>
                                             </div>
                                         </div>
-                                        <button
-                                            wire:click="removeAudio"
-                                            wire:confirm="{{ __('muzibu::admin.song.remove_audio_confirm') }}"
-                                            class="btn btn-sm btn-danger"
-                                            type="button">
-                                            <i class="ti ti-x"></i>
-                                            {{ __('muzibu::admin.song.remove') }}
-                                        </button>
+                                    @endif
+
+                                    {{-- Upload Input --}}
+                                    <input
+                                        type="file"
+                                        wire:model="audioFile"
+                                        class="form-control @error('audioFile') is-invalid @enderror"
+                                        accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
+
+                                    @error('audioFile')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+
+                                    <small class="form-hint">
+                                        {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
+                                        <span class="text-muted">•</span>
+                                        {{ __('muzibu::admin.song.max_size') }}: 100MB
+                                    </small>
+
+                                    {{-- Upload Progress --}}
+                                    <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
+                                        <div class="progress-bar progress-bar-indeterminate"></div>
                                     </div>
-                                    <audio controls class="w-100 mt-2">
-                                        <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
-                                    </audio>
                                 </div>
-                            @endif
+                            </div>
 
-                            <input
-                                type="file"
-                                wire:model="audioFile"
-                                class="form-control @error('audioFile') is-invalid @enderror"
-                                accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
-
-                            @error('audioFile')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-
-                            <div wire:loading wire:target="audioFile" class="text-primary mt-2">
-                                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                                {{ __('muzibu::admin.song.uploading_audio') }}
+                            {{-- Süre (Duration) --}}
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        <i class="fa fa-clock me-2"></i>
+                                        {{ __('muzibu::admin.song.duration') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            wire:model="inputs.duration"
+                                            class="form-control @error('inputs.duration') is-invalid @enderror"
+                                            placeholder="0"
+                                            min="0">
+                                        <span class="input-group-text">{{ __('muzibu::admin.song.seconds') }}</span>
+                                        @error('inputs.duration')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <small class="form-hint">
+                                        {{ __('muzibu::admin.song.duration_manual_help') }}
+                                    </small>
+                                </div>
                             </div>
                         </div>
 

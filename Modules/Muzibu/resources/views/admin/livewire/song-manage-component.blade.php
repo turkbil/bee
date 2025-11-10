@@ -126,10 +126,10 @@
                             </div>
                         @endforeach
 
-                        {{-- ŞARKI DOSYASI & SÜRE - Tabler.io Design --}}
+                        {{-- ŞARKI DOSYASI - Tabler.io Design --}}
                         <div class="row mb-4">
                             {{-- Şarkı Dosyası Yükleme --}}
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
@@ -241,27 +241,6 @@
                                         <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
                                             <div class="progress-bar progress-bar-indeterminate"></div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- Süre (Duration) --}}
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        {{ __('muzibu::admin.song.duration') }}
-                                    </label>
-                                    <div class="input-group">
-                                        <input
-                                            type="number"
-                                            wire:model="inputs.duration"
-                                            class="form-control @error('inputs.duration') is-invalid @enderror"
-                                            placeholder="0"
-                                            min="0">
-                                        <span class="input-group-text">{{ __('muzibu::admin.song.seconds') }}</span>
-                                        @error('inputs.duration')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
                                     </div>
                                 </div>
                             </div>

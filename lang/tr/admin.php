@@ -598,6 +598,7 @@ return [
     'portfolio_url_slug' => 'Portföy URL (Slug)',
     'menu_url_slug' => 'Menü URL (Slug)',
     'announcement_url_slug' => 'Duyuru URL Adı',
+    'song_url_slug' => 'Şarkı URL (Slug)',
     'slug_auto_generated' => 'Otomatik oluşur',
     
     // SEO Açıklamaları

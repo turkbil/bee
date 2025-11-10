@@ -549,6 +549,7 @@ return [
     'page_url_slug' => 'Page URL (Slug)',
     'portfolio_url_slug' => 'Portfolio URL (Slug)',
     'menu_url_slug' => 'Menu URL (Slug)',
+    'song_url_slug' => 'Song URL (Slug)',
     'slug_auto_generated' => 'Auto-generated',
 
     // SEO Help Texts

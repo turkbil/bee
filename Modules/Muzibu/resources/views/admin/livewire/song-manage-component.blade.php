@@ -131,8 +131,8 @@
                             {{-- Şarkı Dosyası Yükleme --}}
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label class="form-label required">
-                                        <i class="fa fa-music me-2"></i>
+                                    <label class="form-label required" style="font-size: 0.875rem;">
+                                        <i class="fa fa-music me-1" style="font-size: 0.875rem;"></i>
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
 
@@ -200,8 +200,8 @@
                             {{-- Süre (Duration) --}}
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="fa fa-clock me-2"></i>
+                                    <label class="form-label" style="font-size: 0.875rem;">
+                                        <i class="fa fa-clock me-1" style="font-size: 0.875rem;"></i>
                                         {{ __('muzibu::admin.song.duration') }}
                                     </label>
                                     <div class="input-group">

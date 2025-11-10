@@ -276,8 +276,7 @@
                             <div class="language-content" data-language="{{ $lang }}"
                                 style="{{ $currentLanguage === $lang ? '' : 'display: none;' }}">
 
-                                {{-- İçerik editörü --}}
-                                @include('admin.components.content-editor', [
+                                @include('muzibu::components.content-editor', [
                                     'lang' => $lang,
                                     'langName' => $langName,
                                     'langData' => $langData,

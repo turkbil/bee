@@ -246,6 +246,32 @@
                             </div>
                         </div>
 
+                        {{-- SÜRE (Duration) - Manuel düzenlenebilir --}}
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        {{ __('muzibu::admin.song.duration') }}
+                                    </label>
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            wire:model="inputs.duration"
+                                            class="form-control @error('inputs.duration') is-invalid @enderror"
+                                            placeholder="0"
+                                            min="0">
+                                        <span class="input-group-text">{{ __('muzibu::admin.song.seconds') }}</span>
+                                        @error('inputs.duration')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <small class="form-hint text-muted">
+                                        Şarkı yüklendiğinde otomatik hesaplanır, manuel de düzenleyebilirsiniz
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
                         @foreach ($availableLanguages as $lang)
                             @php
                                 $langData = $multiLangInputs[$lang] ?? [];

@@ -143,6 +143,10 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $fullPath = storage_path('app/public/' . $path);
             $metadata = $this->extractAudioMetadata($fullPath);
 
+            // 🔄 YENİ ŞARKI YÜKLENDIĞINDE ESKİ METADATA'YI SIFIRLA
+            $defaultLocale = get_tenant_default_locale();
+            $this->multiLangInputs[$defaultLocale]['title'] = null; // Eski title'ı sıfırla
+
             // Duration'u kaydet
             if (isset($metadata['duration'])) {
                 $this->inputs['duration'] = $metadata['duration'];
@@ -150,14 +154,15 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 $this->inputs['duration'] = 0;
             }
 
-            // Title'ı kaydet (eğer kullanıcı girmemişse)
-            $defaultLocale = get_tenant_default_locale();
-            if (isset($metadata['title']) && empty($this->multiLangInputs[$defaultLocale]['title'])) {
+            // Title'ı kaydet (ID3'te varsa)
+            if (isset($metadata['title'])) {
                 $this->multiLangInputs[$defaultLocale]['title'] = $metadata['title'];
                 Log::info('📝 ID3 tag\'inden title otomatik dolduruldu', [
                     'title' => $metadata['title'],
                     'locale' => $defaultLocale
                 ]);
+            } else {
+                Log::info('⚠️ ID3 tag\'inde title bulunamadı, boş bırakıldı');
             }
 
             Log::info('✅ Audio dosyası yüklendi ve metadata çıkarıldı', [

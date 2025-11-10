@@ -129,7 +129,7 @@ class AppServiceProvider extends ServiceProvider
 
         // 🔧 Livewire Upload Rules - Runtime override based on authenticated user
         // Must be in boot() to access auth() helper
-        $maxSize = (auth()->check() && auth()->user()->id === 1) ? (1024 * 1024) : 12288;
+        $maxSize = (auth()->check() && auth()->user()->id === 1) ? (1024 * 1024) : 102400; // 100MB for normal users
         config(['livewire.temporary_file_upload.rules' => ['required', 'file', 'max:' . $maxSize]]);
 
         // 🔧 Spatie Media Library - Root user 1GB upload (others: 20MB)

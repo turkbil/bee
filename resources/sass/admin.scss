@@ -6,6 +6,10 @@
 // Tabler.io and Bootstrap are loaded via CDN in admin layouts
 // This file is for additional admin-specific customizations
 
+// FilePond styles
+@import '~filepond/dist/filepond.min.css';
+@import '~filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+
 .admin-custom {
     // Add custom admin styles here if needed
 }

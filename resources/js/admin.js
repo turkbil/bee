@@ -6,6 +6,22 @@
 // Import necessary libraries
 import axios from 'axios';
 
+// FilePond imports
+import * as FilePond from 'filepond';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+
+// Register FilePond plugins
+FilePond.registerPlugin(
+    FilePondPluginFileValidateType,
+    FilePondPluginFileValidateSize,
+    FilePondPluginImagePreview
+);
+
+// Make FilePond available globally
+window.FilePond = FilePond;
+
 // Admin-specific configurations
 window.axios = axios;
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

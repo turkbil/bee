@@ -195,7 +195,7 @@
 
                                             {{-- Current Song (appears only when file is uploaded) --}}
                                             @if($inputs['file_path'] ?? null)
-                                                <div class="col-md-6">
+                                                <div class="col-md-6" wire:key="audio-card-{{ $inputs['file_path'] }}">
                                                     <div class="card position-relative song-card-with-hover" style="min-height: 200px;">
                                                         {{-- X Button (Gallery Style - Hover to Show) --}}
                                                         <button
@@ -224,7 +224,7 @@
                                                             {{-- Audio Player --}}
                                                             <div>
                                                                 <audio controls class="w-100" style="height: 35px;">
-                                                                    <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
+                                                                    <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
                                                                 </audio>
                                                             </div>
                                                         </div>

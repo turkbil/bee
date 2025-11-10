@@ -266,7 +266,7 @@
                                 </div>
 
                                 {{-- Öne Çıkan --}}
-                                <div class="mb-3">
+                                <div class="mb-2">
                                     <div class="pretty p-default p-curve p-toggle p-smooth">
                                         <input type="checkbox" id="is_featured" name="is_featured" wire:model="inputs.is_featured"
                                             value="1"

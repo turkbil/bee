@@ -126,10 +126,10 @@
                             </div>
                         @endforeach
 
-                        {{-- ŞARKI DOSYASI - Tabler.io Design --}}
+                        {{-- ŞARKI DOSYASI & SÜRE - Tabler.io Design --}}
                         <div class="row mb-4">
                             {{-- Şarkı Dosyası Yükleme --}}
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <div class="mb-3">
                                     <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
@@ -244,11 +244,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {{-- SÜRE (Duration) - Manuel düzenlenebilir --}}
-                        <div class="row mb-4">
-                            <div class="col-md-6">
+                            {{-- SÜRE (Duration) - Manuel düzenlenebilir --}}
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">
                                         {{ __('muzibu::admin.song.duration') }}

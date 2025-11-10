@@ -13,4 +13,14 @@ use Illuminate\Support\Facades\Route;
  *
 */
 
-// Muzibu API routes will be added here
+// Song Streaming API
+Route::prefix('muzibu/songs')->group(function () {
+    Route::get('{songId}/stream', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'stream'])
+        ->name('api.muzibu.songs.stream');
+
+    Route::get('{songId}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
+        ->name('api.muzibu.songs.conversion-status');
+
+    Route::post('{songId}/play', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'incrementPlayCount'])
+        ->name('api.muzibu.songs.play');
+});

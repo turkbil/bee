@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu HLS Player - Alpine.js Component</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white">
+
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold mb-8 text-center">
+        🎵 Muzibu HLS Player Component
+    </h1>
+
+    <!-- Alpine.js HLS Player Component -->
+    <div x-data="hlsPlayer()" class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-2xl p-6">
+
+        <!-- Song Info -->
+        <div class="mb-6 text-center">
+            <img :src="song.cover_url || 'https://via.placeholder.com/600x600/1e293b/ffffff?text=No+Cover'"
+                 alt="Album Cover"
+                 class="w-48 h-48 mx-auto rounded-lg shadow-lg mb-4">
+            <h2 class="text-2xl font-bold" x-text="song.title || 'No song loaded'"></h2>
+            <p class="text-gray-400" x-text="song.duration || '--:--'"></p>
+            <p class="text-sm text-gray-500" x-text="song.bitrate || ''"></p>
+        </div>
+
+        <!-- Audio Element (Hidden) -->
+        <audio x-ref="audioPlayer" class="hidden"></audio>
+
+        <!-- Video Element (for HLS) -->
+        <video x-ref="videoPlayer" class="hidden"></video>
+
+        <!-- Controls -->
+        <div class="bg-gray-700 rounded-lg p-4">
+
+            <!-- Progress Bar -->
+            <div class="mb-4">
+                <div class="flex justify-between text-sm mb-1">
+                    <span x-text="formatTime(currentTime)">0:00</span>
+                    <span x-text="formatTime(duration)">0:00</span>
+                </div>
+                <div class="w-full bg-gray-600 rounded-full h-2 cursor-pointer"
+                     @click="seek($event)">
+                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-100"
+                         :style="`width: ${progress}%`"></div>
+                </div>
+            </div>
+
+            <!-- Play/Pause Button -->
+            <div class="flex items-center justify-center gap-4">
+                <button @click="togglePlay"
+                        class="bg-blue-600 hover:bg-blue-700 rounded-full w-16 h-16 flex items-center justify-center transition-colors">
+                    <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'" class="text-2xl"></i>
+                </button>
+
+                <!-- Volume Control -->
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-volume-up text-gray-400"></i>
+                    <input type="range" min="0" max="100" :value="volume"
+                           @input="changeVolume($event)"
+                           class="w-24 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div class="mt-4 text-center text-sm">
+                <span x-show="status === 'converting'" class="text-yellow-400">
+                    <i class="fas fa-spinner fa-spin"></i> HLS converting... Playing original MP3
+                </span>
+                <span x-show="status === 'ready'" class="text-green-400">
+                    <i class="fas fa-check"></i> HLS stream ready
+                </span>
+                <span x-show="status === 'error'" class="text-red-400">
+                    <i class="fas fa-exclamation-triangle"></i> Error loading song
+                </span>
+                <span x-show="status === 'loading'" class="text-blue-400">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                </span>
+            </div>
+        </div>
+
+        <!-- Test Button -->
+        <div class="mt-6 text-center">
+            <button @click="loadSong(1)"
+                    class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold transition-colors">
+                Load Test Song (ID: 1)
+            </button>
+        </div>
+    </div>
+
+    <!-- Documentation -->
+    <div class="mt-12 max-w-4xl mx-auto bg-gray-800 rounded-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">📖 Usage</h2>
+
+        <h3 class="text-xl font-semibold mb-2 text-blue-400">1. Include Dependencies</h3>
+        <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto mb-4"><code class="text-sm">&lt;script src="https://cdn.jsdelivr.net/npm/hls.js@latest"&gt;&lt;/script&gt;
+&lt;script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"&gt;&lt;/script&gt;</code></pre>
+
+        <h3 class="text-xl font-semibold mb-2 text-blue-400">2. Use Component</h3>
+        <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto mb-4"><code class="text-sm">&lt;div x-data="hlsPlayer()"&gt;
+    &lt;!-- Your player HTML --&gt;
+&lt;/div&gt;</code></pre>
+
+        <h3 class="text-xl font-semibold mb-2 text-blue-400">3. Load Song</h3>
+        <pre class="bg-gray-900 p-4 rounded-lg overflow-x-auto"><code class="text-sm">// Load song by ID
+loadSong(123)
+
+// API Endpoint:
+// GET /api/muzibu/songs/{id}/stream</code></pre>
+    </div>
+</div>
+
+<script>
+function hlsPlayer() {
+    return {
+        // State
+        song: {},
+        status: 'idle',
+        isPlaying: false,
+        currentTime: 0,
+        duration: 0,
+        progress: 0,
+        volume: 80,
+        hls: null,
+        streamType: null,
+
+        // Initialize
+        init() {
+            this.setupAudioListeners();
+        },
+
+        // Load song from API
+        async loadSong(songId) {
+            this.status = 'loading';
+
+            try {
+                const response = await fetch(`/api/muzibu/songs/${songId}/stream`);
+                const data = await response.json();
+
+                this.song = data.song;
+                this.status = data.status;
+                this.streamType = data.stream_type;
+
+                // Load stream
+                if (data.stream_type === 'hls') {
+                    this.loadHLS(data.stream_url);
+                } else {
+                    this.loadMP3(data.stream_url);
+                }
+
+                // If converting, poll for HLS readiness
+                if (data.hls_converting) {
+                    this.pollConversionStatus(songId);
+                }
+
+            } catch (error) {
+                console.error('Failed to load song:', error);
+                this.status = 'error';
+            }
+        },
+
+        // Load HLS stream
+        loadHLS(url) {
+            const video = this.$refs.videoPlayer;
+
+            if (Hls.isSupported()) {
+                if (this.hls) {
+                    this.hls.destroy();
+                }
+
+                this.hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                });
+
+                this.hls.loadSource(url);
+                this.hls.attachMedia(video);
+
+                this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    console.log('HLS manifest parsed');
+                    video.play();
+                });
+
+                this.hls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('HLS error:', data);
+                    if (data.fatal) {
+                        this.status = 'error';
+                    }
+                });
+
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // Native HLS support (Safari)
+                video.src = url;
+                video.play();
+            }
+
+            this.setupAudioListeners(video);
+        },
+
+        // Load MP3 stream
+        loadMP3(url) {
+            const audio = this.$refs.audioPlayer;
+            audio.src = url;
+            audio.volume = this.volume / 100;
+            this.setupAudioListeners(audio);
+        },
+
+        // Setup audio event listeners
+        setupAudioListeners(element = null) {
+            const player = element || this.$refs.audioPlayer;
+
+            player.addEventListener('timeupdate', () => {
+                this.currentTime = player.currentTime;
+                this.duration = player.duration || 0;
+                this.progress = (this.currentTime / this.duration) * 100 || 0;
+            });
+
+            player.addEventListener('play', () => {
+                this.isPlaying = true;
+            });
+
+            player.addEventListener('pause', () => {
+                this.isPlaying = false;
+            });
+
+            player.addEventListener('ended', () => {
+                this.isPlaying = false;
+                this.incrementPlayCount();
+            });
+        },
+
+        // Toggle play/pause
+        togglePlay() {
+            const player = this.streamType === 'hls' ? this.$refs.videoPlayer : this.$refs.audioPlayer;
+
+            if (this.isPlaying) {
+                player.pause();
+            } else {
+                player.play();
+            }
+        },
+
+        // Seek to position
+        seek(event) {
+            const player = this.streamType === 'hls' ? this.$refs.videoPlayer : this.$refs.audioPlayer;
+            const rect = event.target.getBoundingClientRect();
+            const pos = (event.clientX - rect.left) / rect.width;
+            player.currentTime = pos * this.duration;
+        },
+
+        // Change volume
+        changeVolume(event) {
+            this.volume = event.target.value;
+            const player = this.streamType === 'hls' ? this.$refs.videoPlayer : this.$refs.audioPlayer;
+            player.volume = this.volume / 100;
+        },
+
+        // Format time (MM:SS)
+        formatTime(seconds) {
+            if (!seconds || isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        },
+
+        // Poll for HLS conversion status
+        async pollConversionStatus(songId) {
+            const maxAttempts = 60; // 5 minutes (60 * 5 seconds)
+            let attempts = 0;
+
+            const interval = setInterval(async () => {
+                attempts++;
+
+                try {
+                    const response = await fetch(`/api/muzibu/songs/${songId}/conversion-status`);
+                    const data = await response.json();
+
+                    if (data.hls_converted) {
+                        clearInterval(interval);
+                        this.status = 'ready';
+
+                        // Reload with HLS stream
+                        this.loadSong(songId);
+                    }
+
+                    if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        console.warn('HLS conversion timeout');
+                    }
+
+                } catch (error) {
+                    console.error('Failed to check conversion status:', error);
+                }
+
+            }, 5000); // Check every 5 seconds
+        },
+
+        // Increment play count
+        async incrementPlayCount() {
+            if (!this.song.id) return;
+
+            try {
+                await fetch(`/api/muzibu/songs/${this.song.id}/play`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to increment play count:', error);
+            }
+        }
+    }
+}
+</script>
+
+</body>
+</html>

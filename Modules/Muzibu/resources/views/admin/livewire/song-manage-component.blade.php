@@ -137,37 +137,26 @@
 
                                     @if($inputs['file_path'] ?? null)
                                         {{-- Mevcut Şarkı --}}
-                                        <div class="card mb-3">
-                                            <div class="card-status-top bg-success"></div>
-                                            <div class="card-body">
-                                                <div class="row align-items-center">
-                                                    <div class="col-auto">
-                                                        <span class="avatar avatar-lg" style="background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xNCAzdjRhMSAxIDAgMCAwIDEgMWg0Ii8+PHBhdGggZD0iTTE3IDIxaC0xMGEyIDIgMCAwIDEgLTIgLTJ2LTE0YTIgMiAwIDAgMSAyIC0yaDdsNSA1djExYTIgMiAwIDAgMSAtMiAyeiIvPjxwYXRoIGQ9Ik0xMiAxMWwwIDYiLz48cGF0aCBkPSJNOSAxNGw2IDAiLz48L3N2Zz4=)"></span>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="fw-bold">{{ $inputs['file_path'] }}</div>
-                                                        <div class="text-secondary">
-                                                            {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
-                                                            <span class="text-muted">({{ $inputs['duration'] ?? 0 }} saniye)</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <button
-                                                            wire:click="removeAudio"
-                                                            wire:confirm="{{ __('muzibu::admin.song.remove_audio_confirm') }}"
-                                                            class="btn btn-icon btn-ghost-danger"
-                                                            type="button">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </div>
+                                        <div class="alert alert-success mb-3">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div>
+                                                    <strong>{{ $inputs['file_path'] }}</strong>
+                                                    <small class="text-muted ms-2">
+                                                        ({{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }})
+                                                    </small>
                                                 </div>
-                                                {{-- Audio Player --}}
-                                                <div class="mt-3">
-                                                    <audio controls class="w-100">
-                                                        <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
-                                                    </audio>
-                                                </div>
+                                                <button
+                                                    wire:click="removeAudio"
+                                                    wire:confirm="{{ __('muzibu::admin.song.remove_audio_confirm') }}"
+                                                    class="btn btn-sm btn-danger"
+                                                    type="button">
+                                                    <i class="fa fa-times me-1"></i> Kaldır
+                                                </button>
                                             </div>
+                                            {{-- Audio Player --}}
+                                            <audio controls class="w-100" style="height: 40px;">
+                                                <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}" type="audio/mpeg">
+                                            </audio>
                                         </div>
                                     @endif
 
@@ -249,7 +238,7 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <small class="form-hint">
+                                    <small class="form-hint" style="font-size: 0.75rem;">
                                         {{ __('muzibu::admin.song.duration_manual_help') }}
                                     </small>
                                 </div>

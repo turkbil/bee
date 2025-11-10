@@ -118,6 +118,7 @@ return [
     'drag_drop_audio' => 'Şarkı Dosyasını Sürükle ve Bırak',
     'or_click_browse' => 'veya tıklayarak dosya seç',
     'no_duration' => 'Henüz hesaplanmadı',
+    'song_url_slug' => 'Şarkı URL',
     'featured' => 'Öne Çıkan',
     'not_featured' => 'Normal',
     'active' => 'Aktif',

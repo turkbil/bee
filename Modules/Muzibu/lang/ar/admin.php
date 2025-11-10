@@ -104,4 +104,18 @@ return [
 'sort_order_hint' => 'الرقم الأصغر يأتي أولاً',
 'active_category' => 'فئة نشطة',
 'search_categories' => 'البحث في الفئات...',
+
+// Song
+'song' => [
+    'audio_file' => 'ملف الصوت',
+    'supported_formats' => 'الصيغ المدعومة',
+    'max_size' => 'الحجم الأقصى',
+    'seconds' => 'ثانية',
+    'drag_drop_audio' => 'اسحب وأفلت ملف الصوت',
+    'or_click_browse' => 'أو انقر للتصفح',
+    'duration' => 'المدة',
+    'duration_manual_help' => 'يتم حسابها تلقائياً عند تحميل الصوت، أو يمكنك التعديل يدوياً',
+    'remove_audio_confirm' => 'هل أنت متأكد من إزالة ملف الصوت هذا؟',
+    'song_url_slug' => 'رابط الأغنية',
+],
 ];

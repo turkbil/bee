@@ -184,5 +184,6 @@ return [
         'duration' => 'Duration',
         'duration_manual_help' => 'Auto-calculated when audio is uploaded, or you can edit manually',
         'remove_audio_confirm' => 'Are you sure you want to remove this audio file?',
+        'song_url_slug' => 'Song URL',
     ],
 ];

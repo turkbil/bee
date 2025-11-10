@@ -63,12 +63,6 @@ class GlobalTabService
                 'name' => 'SEO',
                 'icon' => 'fas fa-search',
                 'required_fields' => ['seo_title']
-            ],
-            [
-                'key' => 'code',
-                'name' => 'Code',
-                'icon' => 'fas fa-code',
-                'required_fields' => []
             ]
         ];
     }

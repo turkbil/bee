@@ -1,0 +1,38 @@
+<?php
+
+namespace Modules\Favorite\App\Contracts;
+
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Modules\Favorite\App\Models\Favorite;
+
+interface FavoriteRepositoryInterface
+{
+    public function findById(int $id): ?Favorite;
+
+    public function findByIdWithSeo(int $id): ?Favorite;
+
+    public function findBySlug(string $slug, string $locale = 'tr'): ?Favorite;
+
+    public function getActive(): Collection;
+
+    public function getPaginated(array $filters = [], int $perPage = 10): LengthAwarePaginator;
+
+    public function search(string $term, array $locales = []): Collection;
+
+    public function create(array $data): Favorite;
+
+    public function update(int $id, array $data): bool;
+
+    public function delete(int $id): bool;
+
+    public function toggleActive(int $id): bool;
+
+    public function bulkDelete(array $ids): int;
+
+    public function bulkToggleActive(array $ids): int;
+
+    public function updateSeoField(int $id, string $locale, string $field, mixed $value): bool;
+
+    public function clearCache(): void;
+}

@@ -85,7 +85,7 @@ class GenreManageComponent extends Component implements AIContentGeneratable
         $this->languageNames = array_column($languages, 'native_name', 'code');
         $this->currentLanguage = get_tenant_default_locale();
 
-        $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('genre');
+        $this->tabConfig = \App\Services\GlobalTabService::getAllTabs('muzibu');
         $this->activeTab = \App\Services\GlobalTabService::getDefaultTabKey('genre');
     }
 

@@ -1,0 +1,52 @@
+<?php
+
+return [
+'favorites' => 'الصفحات',
+'favorite_management' => 'إدارة الإعلانات',
+'new_favorite' => 'إعلان جديد',
+'home' => 'الصفحة الرئيسية',
+'title_field' => 'العنوان',
+'content' => 'المحتوى',
+'slug_field' => 'الرابط المختصر',
+'seo' => 'تحسين محركات البحث',
+'meta_keywords' => 'الكلمات المفتاحية',
+'meta_description' => 'وصف الميتا',
+'active' => 'نشط',
+'inactive' => 'غير نشط',
+'status' => 'الحالة',
+'activate' => 'تفعيل',
+'deactivate' => 'إلغاء التفعيل',
+'search_placeholder' => 'بحث...',
+'enter_new_title' => 'أدخل عنوان جديد',
+'items_selected' => 'عنصر محدد',
+'no_favorites_found' => 'لم يتم العثور على صفحات',
+'no_results' => 'لم يتم العثور على نتائج',
+'menu' => 'القائمة',
+'menu_title' => 'إدارة الصفحات',
+'edit_favorite' => 'تعديل الصفحة',
+'create_favorite' => 'صفحة جديدة',
+'title_validation_error' => 'العنوان غير صحيح. يرجى المراجعة.',
+'title_updated' => 'تم تحديث العنوان',
+'title_updated_successfully' => 'تم تحديث العنوان بنجاح.',
+'favorite_not_found' => 'الإعلان غير موجود',
+'homefavorite_cannot_be_deactivated' => 'لا يمكن إلغاء تفعيل الصفحة الرئيسية',
+'operation_failed' => 'فشلت العملية',
+'no_favorites_can_be_deleted' => 'لا يمكن حذف أي صفحة',
+
+// Dashboard Translations
+'total_favorites' => 'إجمالي الصفحات',
+'all_favorites' => 'جميع الصفحات',
+'create_favorite' => 'إنشاء صفحة',
+'recent_favorites' => 'الصفحات الأخيرة',
+'no_favorites_yet' => 'لا توجد صفحات بعد',
+'create_first_favorite' => 'إنشاء الصفحة الأولى',
+'view_all' => 'عرض الكل',
+'manage' => 'إدارة',
+
+// Content Editor
+'content_placeholder' => 'اكتب محتوى الصفحة هنا',
+'wysiwyg_editor' => 'محرر النصوص المتقدم',
+'editor_supports_html' => 'المحرر يدعم HTML وتنسيقات النص المتقدم',
+'fullscreen' => 'ملء الشاشة',
+'initializing_editor' => 'جاري تشغيل المحرر'
+];

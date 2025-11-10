@@ -1,0 +1,9 @@
+{
+    "name": "ReviewSystem",
+    "alias": "reviewsystem",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": ["Modules\\ReviewSystem\\Providers\\ReviewSystemServiceProvider"],
+    "files": []
+}

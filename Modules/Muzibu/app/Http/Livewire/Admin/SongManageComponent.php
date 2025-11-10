@@ -139,23 +139,33 @@ class SongManageComponent extends Component implements AIContentGeneratable
             // File path'i inputs'a ekle
             $this->inputs['file_path'] = $filename;
 
-            // Duration hesapla (getID3 kütüphanesi ile)
+            // Duration ve Title hesapla (getID3 kütüphanesi ile)
             $fullPath = storage_path('app/public/' . $path);
-            $duration = $this->calculateAudioDuration($fullPath);
+            $metadata = $this->extractAudioMetadata($fullPath);
 
-            if ($duration) {
-                $this->inputs['duration'] = $duration;
-                Log::info('✅ Audio dosyası yüklendi ve duration hesaplandı', [
-                    'filename' => $filename,
-                    'duration' => $duration,
-                    'formatted' => gmdate('i:s', $duration)
-                ]);
+            // Duration'u kaydet
+            if (isset($metadata['duration'])) {
+                $this->inputs['duration'] = $metadata['duration'];
             } else {
-                Log::warning('⚠️ Audio duration hesaplanamadı, varsayılan 0 kullanılacak', [
-                    'filename' => $filename
-                ]);
                 $this->inputs['duration'] = 0;
             }
+
+            // Title'ı kaydet (eğer kullanıcı girmemişse)
+            $defaultLocale = get_tenant_default_locale();
+            if (isset($metadata['title']) && empty($this->multiLangInputs[$defaultLocale]['title'])) {
+                $this->multiLangInputs[$defaultLocale]['title'] = $metadata['title'];
+                Log::info('📝 ID3 tag\'inden title otomatik dolduruldu', [
+                    'title' => $metadata['title'],
+                    'locale' => $defaultLocale
+                ]);
+            }
+
+            Log::info('✅ Audio dosyası yüklendi ve metadata çıkarıldı', [
+                'filename' => $filename,
+                'duration' => $this->inputs['duration'],
+                'formatted' => gmdate('i:s', $this->inputs['duration']),
+                'title' => $metadata['title'] ?? 'yok'
+            ]);
 
             $this->dispatch('toast', [
                 'title' => 'Başarılı',
@@ -177,40 +187,65 @@ class SongManageComponent extends Component implements AIContentGeneratable
     }
 
     /**
-     * Audio dosyasının duration'ını hesapla (getID3 veya FFmpeg ile)
+     * Audio dosyasından metadata çıkar (duration, title, artist, album vb.)
+     *
+     * @return array ['duration' => int, 'title' => string, 'artist' => string, 'album' => string]
      */
-    protected function calculateAudioDuration(string $filePath): ?int
+    protected function extractAudioMetadata(string $filePath): array
     {
+        $metadata = [];
+
         try {
-            // Önce getID3 kütüphanesi dene
+            // getID3 kütüphanesi ile metadata çıkar
             if (class_exists('\getID3')) {
                 $getID3 = new \getID3();
                 $fileInfo = $getID3->analyze($filePath);
 
+                // Duration
                 if (isset($fileInfo['playtime_seconds'])) {
-                    return (int) round($fileInfo['playtime_seconds']);
+                    $metadata['duration'] = (int) round($fileInfo['playtime_seconds']);
+                }
+
+                // Title (ID3v2 öncelikli, sonra ID3v1)
+                if (isset($fileInfo['tags']['id3v2']['title'][0])) {
+                    $metadata['title'] = trim($fileInfo['tags']['id3v2']['title'][0]);
+                } elseif (isset($fileInfo['tags']['id3v1']['title'][0])) {
+                    $metadata['title'] = trim($fileInfo['tags']['id3v1']['title'][0]);
+                }
+
+                // Artist (gelecekte kullanılabilir)
+                if (isset($fileInfo['tags']['id3v2']['artist'][0])) {
+                    $metadata['artist'] = trim($fileInfo['tags']['id3v2']['artist'][0]);
+                } elseif (isset($fileInfo['tags']['id3v1']['artist'][0])) {
+                    $metadata['artist'] = trim($fileInfo['tags']['id3v1']['artist'][0]);
+                }
+
+                // Album (gelecekte kullanılabilir)
+                if (isset($fileInfo['tags']['id3v2']['album'][0])) {
+                    $metadata['album'] = trim($fileInfo['tags']['id3v2']['album'][0]);
+                } elseif (isset($fileInfo['tags']['id3v1']['album'][0])) {
+                    $metadata['album'] = trim($fileInfo['tags']['id3v1']['album'][0]);
                 }
             }
 
-            // getID3 yoksa FFmpeg/FFprobe dene
-            if (function_exists('shell_exec')) {
+            // getID3 yoksa veya duration bulunamadıysa FFmpeg/FFprobe dene
+            if (empty($metadata['duration']) && function_exists('shell_exec')) {
                 $ffprobeCmd = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . escapeshellarg($filePath);
                 $duration = shell_exec($ffprobeCmd);
 
                 if ($duration && is_numeric(trim($duration))) {
-                    return (int) round(floatval(trim($duration)));
+                    $metadata['duration'] = (int) round(floatval(trim($duration)));
                 }
             }
 
-            Log::warning('⚠️ getID3 ve FFprobe bulunamadı, duration hesaplanamadı');
-            return null;
+            return $metadata;
 
         } catch (\Exception $e) {
-            Log::error('❌ Duration hesaplama hatası', [
+            Log::error('❌ Metadata çıkarma hatası', [
                 'error' => $e->getMessage(),
                 'file' => $filePath
             ]);
-            return null;
+            return [];
         }
     }
 

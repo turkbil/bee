@@ -202,7 +202,7 @@
                                                             wire:click="removeAudio"
                                                             class="btn btn-icon btn-sm position-absolute song-delete-btn"
                                                             type="button"
-                                                            style="top: 8px; right: 8px; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
+                                                            style="top: 8px; right: 8px; z-index: 10; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
                                                             <i class="fa fa-times text-danger"></i>
                                                         </button>
 

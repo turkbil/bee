@@ -6016,6 +6016,7 @@ return array(
     'Modules\\Muzibu\\App\\Http\\Controllers\\Admin\\RadioController' => $baseDir . '/Modules/Muzibu/app/Http/Controllers/Admin/RadioController.php',
     'Modules\\Muzibu\\App\\Http\\Controllers\\Admin\\SectorController' => $baseDir . '/Modules/Muzibu/app/Http/Controllers/Admin/SectorController.php',
     'Modules\\Muzibu\\App\\Http\\Controllers\\Admin\\SongController' => $baseDir . '/Modules/Muzibu/app/Http/Controllers/Admin/SongController.php',
+    'Modules\\Muzibu\\App\\Http\\Controllers\\Api\\SongStreamController' => $baseDir . '/Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php',
     'Modules\\Muzibu\\App\\Http\\Livewire\\Admin\\AlbumComponent' => $baseDir . '/Modules/Muzibu/app/Http/Livewire/Admin/AlbumComponent.php',
     'Modules\\Muzibu\\App\\Http\\Livewire\\Admin\\AlbumManageComponent' => $baseDir . '/Modules/Muzibu/app/Http/Livewire/Admin/AlbumManageComponent.php',
     'Modules\\Muzibu\\App\\Http\\Livewire\\Admin\\ArtistComponent' => $baseDir . '/Modules/Muzibu/app/Http/Livewire/Admin/ArtistComponent.php',

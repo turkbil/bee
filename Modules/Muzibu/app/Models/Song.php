@@ -174,34 +174,6 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Şarkı dosyası URL'sini döndür
-     */
-    public function getAudioUrl(): ?string
-    {
-        if (!$this->file_path) {
-            return null;
-        }
-
-        // Storage/muzibu/songs/ klasöründen dosya yolu
-        return asset('storage/muzibu/songs/' . $this->file_path);
-    }
-
-    /**
-     * Şarkı süresini formatla (mm:ss)
-     */
-    public function getFormattedDuration(): string
-    {
-        if (!$this->duration) {
-            return '00:00';
-        }
-
-        $minutes = floor($this->duration / 60);
-        $seconds = $this->duration % 60;
-
-        return sprintf('%02d:%02d', $minutes, $seconds);
-    }
-
-    /**
      * Dinleme sayısını artır
      */
     public function incrementPlayCount(?int $userId = null, ?string $ipAddress = null): void

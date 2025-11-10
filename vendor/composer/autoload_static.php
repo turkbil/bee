@@ -7460,6 +7460,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Muzibu\\App\\Http\\Controllers\\Admin\\RadioController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Admin/RadioController.php',
         'Modules\\Muzibu\\App\\Http\\Controllers\\Admin\\SectorController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Admin/SectorController.php',
         'Modules\\Muzibu\\App\\Http\\Controllers\\Admin\\SongController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Admin/SongController.php',
+        'Modules\\Muzibu\\App\\Http\\Controllers\\Api\\SongStreamController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php',
         'Modules\\Muzibu\\App\\Http\\Livewire\\Admin\\AlbumComponent' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Livewire/Admin/AlbumComponent.php',
         'Modules\\Muzibu\\App\\Http\\Livewire\\Admin\\AlbumManageComponent' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Livewire/Admin/AlbumManageComponent.php',
         'Modules\\Muzibu\\App\\Http\\Livewire\\Admin\\ArtistComponent' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Livewire/Admin/ArtistComponent.php',

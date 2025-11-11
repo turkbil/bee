@@ -13,20 +13,25 @@
 // FilePond Custom Styling - Dark/Light Mode Compatible
 .filepond--root {
     font-family: var(--tblr-font-sans-serif);
+    min-height: 200px;
 }
 
 .filepond--panel-root {
     background-color: var(--tblr-bg-surface);
     border: 2px dashed var(--tblr-border-color);
+    border-radius: 8px;
+    min-height: 200px;
 }
 
 .filepond--drop-label {
     color: var(--tblr-body-color);
+    min-height: 200px;
 }
 
 .filepond--label-action {
     color: var(--tblr-primary);
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .filepond--item-panel {
@@ -39,6 +44,11 @@
 
 .filepond--file-action-button {
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+.filepond--file-action-button:hover,
+.filepond--file-action-button:focus {
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 // Hide "Powered by FilePond"

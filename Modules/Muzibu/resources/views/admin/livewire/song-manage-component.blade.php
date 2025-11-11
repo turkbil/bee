@@ -128,50 +128,79 @@
 
                         {{-- ŞARKI DOSYASI & SÜRE - Tabler.io Design --}}
                         <div class="row mb-4">
-                            {{-- Şarkı Dosyası Yükleme - FilePond --}}
+                            {{-- Şarkı Dosyası Yükleme --}}
                             <div class="col-md-8">
                                 <div class="mb-3">
                                     <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
 
-                                    {{-- FilePond Input --}}
-                                    <input
-                                        type="file"
-                                        class="filepond-audio"
-                                        wire:model="audioFile"
-                                        accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
+                                    {{-- CSS for Hover Effect (Global scope) --}}
+                                    <style>
+                                        .song-card-with-hover:hover .song-delete-btn {
+                                            opacity: 1 !important;
+                                        }
+                                    </style>
+
+                                    {{-- Split Layout: FilePond Upload + Current Song --}}
+                                    <div class="row g-3">
+                                        {{-- FilePond Upload Area - Full width if no file, half width if file exists --}}
+                                        <div class="{{ ($inputs['file_path'] ?? null) ? 'col-md-6' : 'col-md-12' }}">
+                                            <input
+                                                type="file"
+                                                class="filepond-audio"
+                                                wire:model="audioFile"
+                                                accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
+                                        </div>
+
+                                        {{-- Current Song (appears only when file is uploaded) --}}
+                                        @if($inputs['file_path'] ?? null)
+                                            <div class="col-md-6" wire:key="audio-card-{{ $inputs['file_path'] }}">
+                                                <div class="card position-relative song-card-with-hover" style="min-height: 200px;">
+                                                    {{-- X Button (Gallery Style - Hover to Show) --}}
+                                                    <button
+                                                        wire:click="removeAudio"
+                                                        class="btn btn-icon btn-sm position-absolute song-delete-btn"
+                                                        type="button"
+                                                        style="top: 8px; right: 8px; z-index: 10; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
+                                                        <i class="fa fa-times text-danger"></i>
+                                                    </button>
+
+                                                    <div class="card-body p-3">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <div class="avatar bg-success-lt me-3">
+                                                                <i class="fa fa-music"></i>
+                                                            </div>
+                                                            <div class="flex-fill">
+                                                                <div class="fw-bold text-truncate" style="max-width: 180px;">
+                                                                    {{ $inputs['file_path'] }}
+                                                                </div>
+                                                                <small class="text-muted">
+                                                                    {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
+                                                                </small>
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- Audio Player --}}
+                                                        <div>
+                                                            <audio controls class="w-100" style="height: 35px;">
+                                                                <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
 
                                     @error('audioFile')
                                         <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
                                     @enderror
 
-                                    {{-- Current File Info + Audio Player --}}
-                                    @if($inputs['file_path'] ?? null)
-                                        <div class="card mt-3">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="avatar bg-success-lt me-3">
-                                                            <i class="fa fa-music"></i>
-                                                        </div>
-                                                        <div>
-                                                            <div class="fw-bold">{{ $inputs['file_path'] }}</div>
-                                                            <small class="text-muted">
-                                                                {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                    <button wire:click="removeAudio" type="button" class="btn btn-danger btn-sm">
-                                                        <i class="fa fa-times"></i> {{ __('muzibu::admin.song.remove') }}
-                                                    </button>
-                                                </div>
-                                                <audio controls class="w-100">
-                                                    <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
-                                                </audio>
-                                            </div>
-                                        </div>
-                                    @endif
+                                    {{-- Upload Progress --}}
+                                    <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
+                                        <div class="progress-bar progress-bar-indeterminate"></div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -315,7 +344,16 @@
                         maxFileSize: '100MB',
                         stylePanelLayout: 'compact',
                         credits: false,
-                        labelIdle: '<div style="text-align: center; padding: 2rem;"><i class="fa fa-music fa-3x mb-3" style="color: var(--tblr-muted);"></i><h4 class="mb-2">Şarkı Dosyasını Sürükle & Bırak</h4><p style="color: var(--tblr-muted);">veya <span class="filepond--label-action">Dosya Seç</span></p><small style="color: var(--tblr-muted);">MP3, WAV, FLAC, M4A, OGG • Max 100MB</small></div>',
+                        labelIdle: `
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 1rem;">
+                                <div style="margin-bottom: 1rem;">
+                                    <i class="fa fa-music" style="font-size: 48px; color: var(--tblr-muted);"></i>
+                                </div>
+                                <h4 class="mb-1">Şarkı Dosyasını Sürükle ve Bırak</h4>
+                                <p class="text-muted mb-2">veya <span class="filepond--label-action">tıklayarak dosya seç</span></p>
+                                <small class="text-muted d-block">MP3, WAV, FLAC, M4A, OGG <span class="mx-1">•</span> Max 100MB</small>
+                            </div>
+                        `,
                         labelFileProcessing: 'Yükleniyor',
                         labelFileProcessingComplete: 'Yükleme tamamlandı',
                         labelFileProcessingAborted: 'Yükleme iptal edildi',

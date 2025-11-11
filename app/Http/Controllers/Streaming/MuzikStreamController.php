@@ -141,7 +141,7 @@ class MuzikStreamController extends Controller
 
         return response($content, 200, [
             'Content-Type' => 'application/vnd.apple.mpegurl',
-            'Cache-Control' => 'public, max-age=3600',
+            'Cache-Control' => 'no-cache, must-revalidate', // Cache bypass (kalite güncellemeleri için)
             'Access-Control-Allow-Origin' => '*',
         ]);
     }
@@ -164,7 +164,7 @@ class MuzikStreamController extends Controller
         }, 200, [
             'Content-Type' => $mimeType,
             'Content-Length' => $fileSize,
-            'Cache-Control' => 'public, max-age=31536000', // 1 yıl cache (chunks değişmez)
+            'Cache-Control' => 'no-cache, must-revalidate', // Cache bypass (kalite güncellemeleri için)
             'Accept-Ranges' => 'bytes',
             'Access-Control-Allow-Origin' => '*',
         ]);

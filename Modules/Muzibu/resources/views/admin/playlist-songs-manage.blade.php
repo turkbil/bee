@@ -295,149 +295,151 @@ $(document).ready(function() {
         });
     }
 
-    // Şarkı ekleme - ANINDA transfer (Semantic UI style)
+    // Şarkı ekleme - ANINDA transfer (UI first, AJAX after)
     $(document).on('click', '.add-song-btn', function(e) {
         e.preventDefault();
         const btn = $(this);
         const songId = btn.data('song-id');
         const songItem = btn.closest('.list-group-item');
 
-        // AJAX çağrısı (arka planda)
+        // Memory güncelle
+        const song = availableSongs.find(s => s.id === songId);
+        playlistSongs.push(song);
+        availableSongs = availableSongs.filter(s => s.id !== songId);
+
+        // ANINDA TRANSFER: Sol → Sağ (UI ÖNCELİKLİ!)
+        const newIndex = playlistSongs.length - 1;
+        const row = songItem.find('.row');
+
+        // 1. Sortable handle + position badge ekle (row başına)
+        row.find('.col').before(`
+            <div class="col-auto">
+                <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+            </div>
+            <div class="col-auto">
+                <span class="badge bg-secondary">${newIndex + 1}</span>
+            </div>
+        `);
+
+        // 2. Butonu değiştir (+ → ×)
+        songItem.find('.add-song-btn')
+            .removeClass('btn-success add-song-btn')
+            .addClass('btn-outline-danger remove-song-btn')
+            .html('<i class="fas fa-times"></i>');
+
+        // 3. Class değiştir (available → playlist)
+        songItem.removeClass('list-group-item-action')
+            .addClass('sortable-item')
+            .attr('data-position', newIndex);
+
+        // 4. Avatar color değiştir (secondary → primary)
+        songItem.find('.bg-secondary-lt').removeClass('bg-secondary-lt').addClass('bg-primary-lt');
+
+        // 5. Sağ listeye APPEND et
+        const playlistContainer = $('#sortable-playlist');
+        if (playlistContainer.length) {
+            songItem.detach().appendTo(playlistContainer);
+            initSortable();
+        } else {
+            // Liste boşsa, container oluştur
+            $('#playlist-songs-container').html('<div id="sortable-playlist" class="list-group list-group-flush"></div>');
+            songItem.detach().appendTo('#sortable-playlist');
+            initSortable();
+        }
+
+        // Counter'ları güncelle
+        $('#available-count').text(availableSongs.length);
+        $('#playlist-count').text(playlistSongs.length);
+        updateTotalDurationFromMemory();
+
+        // AJAX kayıt (ARKA PLANDA - UI bloklama yok!)
         $.ajax({
             url: `/admin/muzibu/playlist/api/${playlistId}/add`,
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             data: { song_id: songId },
-            success: function(response) {
-                // Memory güncelle
-                const song = availableSongs.find(s => s.id === songId);
-                playlistSongs.push(song);
-                availableSongs = availableSongs.filter(s => s.id !== songId);
-
-                // ANINDA TRANSFER: Sol → Sağ
-                const newIndex = playlistSongs.length - 1;
-                const row = songItem.find('.row');
-
-                // 1. Sortable handle + position badge ekle (row başına)
-                row.find('.col').before(`
-                    <div class="col-auto">
-                        <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
-                    </div>
-                    <div class="col-auto">
-                        <span class="badge bg-secondary">${newIndex + 1}</span>
-                    </div>
-                `);
-
-                // 2. Butonu değiştir (+ → ×)
-                songItem.find('.add-song-btn')
-                    .removeClass('btn-success add-song-btn')
-                    .addClass('btn-outline-danger remove-song-btn')
-                    .html('<i class="fas fa-times"></i>');
-
-                // 3. Class değiştir (available → playlist)
-                songItem.removeClass('list-group-item-action')
-                    .addClass('sortable-item')
-                    .attr('data-position', newIndex);
-
-                // 4. Avatar color değiştir (secondary → primary)
-                songItem.find('.bg-secondary-lt').removeClass('bg-secondary-lt').addClass('bg-primary-lt');
-
-                // 5. Sağ listeye APPEND et
-                const playlistContainer = $('#sortable-playlist');
-                if (playlistContainer.length) {
-                    songItem.detach().appendTo(playlistContainer);
-                    initSortable();
-                } else {
-                    // Liste boşsa, container oluştur
-                    $('#playlist-songs-container').html('<div id="sortable-playlist" class="list-group list-group-flush"></div>');
-                    songItem.detach().appendTo('#sortable-playlist');
-                    initSortable();
-                }
-
-                // Counter'ları güncelle
-                $('#available-count').text(availableSongs.length);
-                $('#playlist-count').text(playlistSongs.length);
-                updateTotalDurationFromMemory();
-            },
             error: function(xhr) {
+                // Hata varsa geri al
                 showError(xhr.responseJSON?.message || '{{ __("admin.error_occurred") }}');
+                // TODO: Rollback UI changes
             }
         });
     });
 
-    // Şarkı çıkarma - ANINDA transfer (Semantic UI style)
+    // Şarkı çıkarma - ANINDA transfer (UI first, AJAX after)
     $(document).on('click', '.remove-song-btn', function(e) {
         e.preventDefault();
         const btn = $(this);
         const songId = btn.data('song-id');
         const songItem = btn.closest('.list-group-item');
 
-        // AJAX çağrısı (arka planda)
+        // Memory güncelle
+        const song = playlistSongs.find(s => s.id === songId);
+        availableSongs.push(song);
+        playlistSongs = playlistSongs.filter(s => s.id !== songId);
+
+        // ANINDA TRANSFER: Sağ → Sol (UI ÖNCELİKLİ!)
+        // 1. Sortable handle + position badge sil
+        songItem.find('.sortable-handle').closest('.col-auto').remove();
+        songItem.find('.badge').closest('.col-auto').remove();
+
+        // 2. Butonu değiştir (× → +)
+        songItem.find('.remove-song-btn')
+            .removeClass('btn-outline-danger remove-song-btn')
+            .addClass('btn-success add-song-btn')
+            .html('<i class="fas fa-plus me-1"></i> {{ __("admin.add") }}');
+
+        // 3. Class değiştir (playlist → available)
+        songItem.removeClass('sortable-item')
+            .addClass('list-group-item-action')
+            .removeAttr('data-position');
+
+        // 4. Avatar color değiştir (primary → secondary)
+        songItem.find('.bg-primary-lt').removeClass('bg-primary-lt').addClass('bg-secondary-lt');
+
+        // 5. Sol listeye APPEND et
+        const availableContainer = $('#available-songs-container .list-group');
+        if (availableContainer.length) {
+            songItem.detach().appendTo(availableContainer);
+        } else {
+            // Liste boşsa yeniden oluştur
+            renderAvailableSongs();
+        }
+
+        // Sağ listedeki position badge'leri düzelt
+        $('#sortable-playlist .sortable-item').each(function(index) {
+            $(this).find('.badge').text(index + 1);
+            $(this).attr('data-position', index);
+        });
+
+        // Counter'ları güncelle
+        $('#available-count').text(availableSongs.length);
+        $('#playlist-count').text(playlistSongs.length);
+        updateTotalDurationFromMemory();
+
+        // Playlist boşaldıysa empty state göster
+        if (playlistSongs.length === 0) {
+            $('#playlist-songs-container').html(`
+                <div class="empty py-5">
+                    <div class="empty-icon">
+                        <i class="fas fa-music-slash fa-3x text-muted"></i>
+                    </div>
+                    <p class="empty-title">{{ __('muzibu::admin.playlist.no_songs_in_playlist') }}</p>
+                    <p class="empty-subtitle text-muted">{{ __('muzibu::admin.playlist.add_songs_from_left') }}</p>
+                </div>
+            `);
+        }
+
+        // AJAX kayıt (ARKA PLANDA - UI bloklama yok!)
         $.ajax({
             url: `/admin/muzibu/playlist/api/${playlistId}/remove`,
             method: 'POST',
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             data: { song_id: songId },
-            success: function(response) {
-                // Memory güncelle
-                const song = playlistSongs.find(s => s.id === songId);
-                availableSongs.push(song);
-                playlistSongs = playlistSongs.filter(s => s.id !== songId);
-
-                // ANINDA TRANSFER: Sağ → Sol
-                // 1. Sortable handle + position badge sil
-                songItem.find('.sortable-handle').closest('.col-auto').remove();
-                songItem.find('.badge').closest('.col-auto').remove();
-
-                // 2. Butonu değiştir (× → +)
-                songItem.find('.remove-song-btn')
-                    .removeClass('btn-outline-danger remove-song-btn')
-                    .addClass('btn-success add-song-btn')
-                    .html('<i class="fas fa-plus me-1"></i> {{ __("admin.add") }}');
-
-                // 3. Class değiştir (playlist → available)
-                songItem.removeClass('sortable-item')
-                    .addClass('list-group-item-action')
-                    .removeAttr('data-position');
-
-                // 4. Avatar color değiştir (primary → secondary)
-                songItem.find('.bg-primary-lt').removeClass('bg-primary-lt').addClass('bg-secondary-lt');
-
-                // 5. Sol listeye APPEND et
-                const availableContainer = $('#available-songs-container .list-group');
-                if (availableContainer.length) {
-                    songItem.detach().appendTo(availableContainer);
-                } else {
-                    // Liste boşsa yeniden oluştur
-                    renderAvailableSongs();
-                }
-
-                // Sağ listedeki position badge'leri düzelt
-                $('#sortable-playlist .sortable-item').each(function(index) {
-                    $(this).find('.badge').text(index + 1);
-                    $(this).attr('data-position', index);
-                });
-
-                // Counter'ları güncelle
-                $('#available-count').text(availableSongs.length);
-                $('#playlist-count').text(playlistSongs.length);
-                updateTotalDurationFromMemory();
-
-                // Playlist boşaldıysa empty state göster
-                if (playlistSongs.length === 0) {
-                    $('#playlist-songs-container').html(`
-                        <div class="empty py-5">
-                            <div class="empty-icon">
-                                <i class="fas fa-music-slash fa-3x text-muted"></i>
-                            </div>
-                            <p class="empty-title">{{ __('muzibu::admin.playlist.no_songs_in_playlist') }}</p>
-                            <p class="empty-subtitle text-muted">{{ __('muzibu::admin.playlist.add_songs_from_left') }}</p>
-                        </div>
-                    `);
-                }
-            },
             error: function(xhr) {
+                // Hata varsa geri al
                 showError(xhr.responseJSON?.message || '{{ __("admin.error_occurred") }}');
+                // TODO: Rollback UI changes
             }
         });
     });

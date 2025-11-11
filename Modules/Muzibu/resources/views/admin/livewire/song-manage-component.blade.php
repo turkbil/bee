@@ -131,13 +131,9 @@
                             {{-- Şarkı Dosyası Yükleme --}}
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label class="form-label required mb-2">
+                                    <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
-                                    <p class="text-muted small mb-3">
-                                        <i class="fa fa-info-circle me-1"></i>
-                                        Desteklenen formatlar: MP3, WAV, FLAC, M4A, OGG • Maksimum boyut: 100MB
-                                    </p>
 
                                     {{-- CSS for Hover Effect (Global scope) --}}
                                     <style>
@@ -160,35 +156,34 @@
                                         {{-- Current Song (appears only when file is uploaded) --}}
                                         @if($inputs['file_path'] ?? null)
                                             <div class="col-md-6" wire:key="audio-card-{{ $inputs['file_path'] }}">
-                                                <div class="card card-sm shadow-sm position-relative song-card-with-hover" style="min-height: 200px;">
+                                                <div class="card position-relative song-card-with-hover" style="min-height: 200px;">
                                                     {{-- X Button (Gallery Style - Hover to Show) --}}
                                                     <button
                                                         wire:click="removeAudio"
                                                         class="btn btn-icon btn-sm position-absolute song-delete-btn"
                                                         type="button"
-                                                        style="top: 0.5rem; right: 0.5rem; z-index: 10; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.95); border: 1px solid var(--tblr-border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); opacity: 0; transition: all 0.2s;">
+                                                        style="top: 8px; right: 8px; z-index: 10; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
                                                         <i class="fa fa-times text-danger"></i>
                                                     </button>
 
-                                                    <div class="card-body p-4 d-flex flex-column" style="min-height: 200px;">
-                                                        <div class="d-flex align-items-center mb-auto">
-                                                            <div class="avatar bg-primary-lt me-3">
-                                                                <i class="fa fa-music text-primary"></i>
+                                                    <div class="card-body p-3">
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <div class="avatar bg-success-lt me-3">
+                                                                <i class="fa fa-music"></i>
                                                             </div>
                                                             <div class="flex-fill">
-                                                                <div class="fw-bold text-truncate" style="max-width: 200px;" title="{{ $inputs['file_path'] }}">
+                                                                <div class="fw-bold text-truncate" style="max-width: 180px;">
                                                                     {{ $inputs['file_path'] }}
                                                                 </div>
                                                                 <small class="text-muted">
-                                                                    <i class="fa fa-clock me-1"></i>
                                                                     {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
                                                                 </small>
                                                             </div>
                                                         </div>
 
                                                         {{-- Audio Player --}}
-                                                        <div class="mt-3">
-                                                            <audio controls class="w-100" style="height: 40px; border-radius: 4px;">
+                                                        <div>
+                                                            <audio controls class="w-100" style="height: 35px;">
                                                                 <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
                                                             </audio>
                                                         </div>
@@ -199,37 +194,20 @@
                                     </div>
 
                                     @error('audioFile')
-                                        <div class="alert alert-danger alert-dismissible mt-3" role="alert">
-                                            <div class="d-flex">
-                                                <div>
-                                                    <i class="fa fa-exclamation-circle me-2"></i>
-                                                </div>
-                                                <div>
-                                                    <strong>Hata:</strong> {{ $message }}
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
                                     @enderror
 
                                     {{-- Upload Progress --}}
-                                    <div wire:loading wire:target="audioFile" class="mt-3">
-                                        <div class="progress progress-sm">
-                                            <div class="progress-bar progress-bar-indeterminate bg-primary"></div>
-                                        </div>
-                                        <small class="text-muted d-block mt-1">
-                                            <i class="fa fa-spinner fa-spin me-1"></i>
-                                            Dosya yükleniyor...
-                                        </small>
+                                    <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
+                                        <div class="progress-bar progress-bar-indeterminate"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- SÜRE & ÖNE ÇIKAN - Yan panel --}}
+                            {{-- SÜRE (Duration) - Manuel düzenlenebilir --}}
                             <div class="col-md-4">
-                                {{-- Süre --}}
                                 <div class="mb-3">
-                                    <label class="form-label mb-2">
-                                        <i class="fa fa-clock me-1"></i>
+                                    <label class="form-label">
                                         {{ __('muzibu::admin.song.duration') }}
                                     </label>
                                     <div class="input-group">
@@ -239,44 +217,24 @@
                                             class="form-control @error('inputs.duration') is-invalid @enderror"
                                             placeholder="0"
                                             min="0">
-                                        <span class="input-group-text">
-                                            <i class="fa fa-hourglass-half me-1"></i>
-                                            {{ __('muzibu::admin.song.seconds') }}
-                                        </span>
+                                        <span class="input-group-text">{{ __('muzibu::admin.song.seconds') }}</span>
                                         @error('inputs.duration')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <small class="form-hint">
-                                        Otomatik tespit edilir, manuel düzenleyebilirsiniz
-                                    </small>
                                 </div>
 
                                 {{-- Öne Çıkan --}}
-                                <div class="mb-3">
-                                    <label class="form-label mb-2">
-                                        <i class="fa fa-star me-1"></i>
-                                        Görünürlük
-                                    </label>
-                                    <div class="card card-sm">
-                                        <div class="card-body p-3">
-                                            <div class="pretty p-default p-curve p-toggle p-smooth">
-                                                <input type="checkbox" id="is_featured" name="is_featured" wire:model="inputs.is_featured"
-                                                    value="1"
-                                                    {{ isset($inputs['is_featured']) && $inputs['is_featured'] ? 'checked' : '' }} />
-                                                <div class="state p-warning p-on">
-                                                    <label class="ms-2">
-                                                        <i class="fa fa-star text-warning me-1"></i>
-                                                        {{ __('muzibu::admin.song.featured') }}
-                                                    </label>
-                                                </div>
-                                                <div class="state p-off">
-                                                    <label class="ms-2">
-                                                        <i class="fa fa-star-o me-1"></i>
-                                                        {{ __('muzibu::admin.song.not_featured') }}
-                                                    </label>
-                                                </div>
-                                            </div>
+                                <div class="mt-4">
+                                    <div class="pretty p-default p-curve p-toggle p-smooth">
+                                        <input type="checkbox" id="is_featured" name="is_featured" wire:model="inputs.is_featured"
+                                            value="1"
+                                            {{ isset($inputs['is_featured']) && $inputs['is_featured'] ? 'checked' : '' }} />
+                                        <div class="state p-warning p-on ms-2">
+                                            <label>{{ __('muzibu::admin.song.featured') }}</label>
+                                        </div>
+                                        <div class="state p-off ms-2">
+                                            <label>{{ __('muzibu::admin.song.not_featured') }}</label>
                                         </div>
                                     </div>
                                 </div>

@@ -170,6 +170,60 @@
             font-size: 14px;
             opacity: 0.9;
         }
+        .console-panel {
+            background: #1e1e1e;
+            border-radius: 12px;
+            margin-top: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .console-header {
+            background: #2d2d2d;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #00ff00;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .console-clear {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .console-clear:hover {
+            background: #c82333;
+        }
+        .console-body {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #00ff00;
+        }
+        .console-log {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .console-log.success {
+            color: #00ff00;
+        }
+        .console-log.info {
+            color: #00bfff;
+        }
+        .console-log.warning {
+            color: #ffa500;
+        }
+        .console-log.speed {
+            color: #ffff00;
+            font-weight: bold;
+        }
         .highlight {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
             padding: 20px;
@@ -208,6 +262,15 @@
 
             <p class="status-text" id="statusText">Dinlemeye hazır</p>
 
+            {{-- Console Log Panel --}}
+            <div class="console-panel" id="consolePanel">
+                <div class="console-header">
+                    <span>⚡ Sistem Durumu</span>
+                    <button onclick="clearConsole()" class="console-clear">Temizle</button>
+                </div>
+                <div class="console-body" id="consoleBody"></div>
+            </div>
+
             <div class="info-grid">
                 <div class="info-card">
                     <div class="info-icon">🔐</div>
@@ -228,6 +291,11 @@
                     <div class="info-icon">🛡️</div>
                     <div class="info-title">Koruma</div>
                     <div class="info-value">Aktif</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <div class="info-title">Hız</div>
+                    <div class="info-value">Cache'li</div>
                 </div>
             </div>
         </div>
@@ -254,6 +322,11 @@
                 <div class="security-card">
                     <h3>✅ Otomatik Silme</h3>
                     <p>Çalınan parçalar tarayıcı belleğinde hemen silinir.</p>
+                </div>
+
+                <div class="security-card">
+                    <h3>✅ Hızlı Yükleme</h3>
+                    <p>Parçalar cache'lenir. İkinci dinlemede anında başlar.</p>
                 </div>
 
                 <div class="security-card">
@@ -289,12 +362,35 @@
         const audioPlayer = document.getElementById('audioPlayer');
         const statusText = document.getElementById('statusText');
         const chunkCountEl = document.getElementById('chunkCount');
+        const consoleBody = document.getElementById('consoleBody');
 
         let hls;
         let isPlaying = false;
         let chunksLoaded = 0;
+        let startTime = 0;
 
         const hlsUrl = 'https://ixtif.com/stream/play/M5sxjFPOXZgIfARp/playlist.m3u8';
+
+        // Console Log Fonksiyonu
+        function addLog(message, type = 'info') {
+            const log = document.createElement('div');
+            log.className = 'console-log ' + type;
+            const time = new Date().toLocaleTimeString('tr-TR');
+            log.textContent = `[${time}] ${message}`;
+            consoleBody.appendChild(log);
+            consoleBody.scrollTop = consoleBody.scrollHeight;
+        }
+
+        function clearConsole() {
+            consoleBody.innerHTML = '';
+            addLog('Console temizlendi', 'info');
+        }
+
+        // Sayfa yüklendiğinde
+        window.addEventListener('load', function() {
+            addLog('✅ Sistem hazır', 'success');
+            addLog('🔐 AES-128 şifreleme aktif', 'success');
+        });
 
         function startDemo() {
             if (isPlaying) {
@@ -302,11 +398,14 @@
                 isPlaying = false;
                 statusText.textContent = 'Durduruldu';
                 statusText.classList.remove('active');
+                addLog('⏸ Duraklatıldı', 'warning');
                 return;
             }
 
             if (Hls.isSupported()) {
                 statusText.innerHTML = '<span class="status-indicator"></span>Yükleniyor...';
+                addLog('⏳ Playlist yükleniyor...', 'info');
+                startTime = Date.now();
 
                 if (!hls) {
                     hls = new Hls({
@@ -317,22 +416,46 @@
                     hls.loadSource(hlsUrl);
                     hls.attachMedia(audioPlayer);
 
+                    // Playlist parsed (başarılı)
                     hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                        const loadTime = Date.now() - startTime;
+                        addLog('✅ Playlist yüklendi (cache\'li)', 'success');
+                        addLog(`⚡ Hız: ${loadTime}ms`, 'speed');
+
                         statusText.innerHTML = '<span class="status-indicator"></span>Şarkı Çalıyor - Güvenli Akış Aktif';
                         statusText.classList.add('active');
                         audioPlayer.play();
                         isPlaying = true;
                     });
 
-                    hls.on(Hls.Events.FRAG_LOADED, function() {
-                        chunksLoaded++;
-                        chunkCountEl.textContent = chunksLoaded;
+                    // Key loaded (şifre çözüldü)
+                    hls.on(Hls.Events.KEY_LOADED, function() {
+                        addLog('🔑 Şifreleme anahtarı alındı', 'success');
                     });
 
+                    // Chunk loaded (parça yüklendi)
+                    hls.on(Hls.Events.FRAG_LOADED, function(event, data) {
+                        chunksLoaded++;
+                        chunkCountEl.textContent = chunksLoaded;
+
+                        if (chunksLoaded <= 3) {
+                            addLog(`📦 Parça #${chunksLoaded} yüklendi (10 saniye)`, 'success');
+                        }
+                    });
+
+                    // Chunk loading (parça yükleniyor)
+                    hls.on(Hls.Events.FRAG_LOADING, function(event, data) {
+                        if (chunksLoaded < 3) {
+                            addLog(`⏳ Parça #${chunksLoaded + 1} yükleniyor...`, 'info');
+                        }
+                    });
+
+                    // Error handling (sadece basit mesaj)
                     hls.on(Hls.Events.ERROR, function (event, data) {
                         if (data.fatal) {
                             statusText.textContent = 'Hata oluştu. Lütfen tekrar deneyin.';
                             statusText.classList.remove('active');
+                            addLog('❌ Yükleme hatası - Tekrar deneyin', 'warning');
                         }
                     });
                 } else {
@@ -340,6 +463,7 @@
                     isPlaying = true;
                     statusText.innerHTML = '<span class="status-indicator"></span>Şarkı Çalıyor - Güvenli Akış Aktif';
                     statusText.classList.add('active');
+                    addLog('▶️ Devam ediliyor', 'success');
                 }
 
             } else if (audioPlayer.canPlayType('application/vnd.apple.mpegurl')) {
@@ -348,8 +472,10 @@
                 isPlaying = true;
                 statusText.innerHTML = '<span class="status-indicator"></span>Şarkı Çalıyor - Güvenli Akış Aktif';
                 statusText.classList.add('active');
+                addLog('✅ Safari/iOS native HLS', 'success');
             } else {
                 statusText.textContent = 'Tarayıcınız desteklemiyor. Chrome, Firefox veya Safari kullanın.';
+                addLog('❌ Tarayıcı desteklemiyor', 'warning');
             }
         }
 

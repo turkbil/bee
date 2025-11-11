@@ -228,17 +228,30 @@
                                                                 </audio>
                                                             </div>
 
-                                                            {{-- HLS Conversion Status --}}
+                                                            {{-- HLS Conversion Status + Preview Player --}}
                                                             @if(isset($inputs['hls_path']) && $inputs['hls_path'])
-                                                                <div class="mt-2">
-                                                                    <div class="alert alert-success mb-0 py-1 px-2">
-                                                                        <small class="d-flex align-items-center">
-                                                                            <i class="fa fa-shield-alt me-1"></i>
-                                                                            <strong>HLS Aktif</strong>
-                                                                            @if(isset($inputs['is_encrypted']) && $inputs['is_encrypted'])
-                                                                                <span class="ms-2 badge bg-green">🔐 Encrypted</span>
-                                                                            @endif
-                                                                        </small>
+                                                                <div class="mt-3">
+                                                                    <div class="alert alert-success mb-2 py-2 px-3">
+                                                                        <div class="d-flex align-items-center justify-content-between">
+                                                                            <div>
+                                                                                <i class="fa fa-shield-alt me-1"></i>
+                                                                                <strong>HLS Streaming Hazır</strong>
+                                                                                @if(isset($inputs['is_encrypted']) && $inputs['is_encrypted'])
+                                                                                    <span class="ms-2 badge bg-green">🔐 Şifreli</span>
+                                                                                @endif
+                                                                            </div>
+                                                                            <small class="text-muted">Cache'li, hızlı yükleme</small>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {{-- HLS Preview Player (CDN'den HLS.js yükle) --}}
+                                                                    <div class="card bg-light">
+                                                                        <div class="card-body p-2">
+                                                                            <small class="text-muted d-block mb-1">
+                                                                                <i class="fa fa-headphones"></i> Güvenli Streaming Önizleme:
+                                                                            </small>
+                                                                            <audio id="hlsPreview" controls class="w-100" style="height: 35px;"></audio>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             @endif
@@ -352,6 +365,11 @@
 
 
     @push('scripts')
+        {{-- HLS.js CDN --}}
+        @if(isset($inputs['hls_path']) && $inputs['hls_path'])
+            <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        @endif
+
         {{-- 🎯 MODEL & MODULE SETUP --}}
         <script>
             window.currentModelId = {{ $songId ?? 'null' }};
@@ -360,6 +378,27 @@
 
             // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
             document.addEventListener('DOMContentLoaded', function() {
+                @if(isset($inputs['hls_path']) && $inputs['hls_path'])
+                    // 🎵 HLS Preview Player
+                    const hlsPreview = document.getElementById('hlsPreview');
+                    if (hlsPreview && typeof Hls !== 'undefined') {
+                        const hlsUrl = '{{ url("/stream/play/" . basename(dirname($inputs["hls_path"])) . "/playlist.m3u8") }}';
+
+                        if (Hls.isSupported()) {
+                            const hls = new Hls({
+                                enableWorker: true,
+                                lowLatencyMode: false,
+                            });
+                            hls.loadSource(hlsUrl);
+                            hls.attachMedia(hlsPreview);
+                            console.log('✅ HLS Preview ready (cache\'li)');
+                        } else if (hlsPreview.canPlayType('application/vnd.apple.mpegurl')) {
+                            hlsPreview.src = hlsUrl;
+                            console.log('✅ Native HLS support (Safari)');
+                        }
+                    }
+                @endif
+
                 Livewire.on('restore-active-tab', () => {
                     console.log('🔄 Tab restore tetiklendi (validation error)');
 

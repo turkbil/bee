@@ -178,6 +178,12 @@
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
+                                        <a href="{{ route('admin.muzibu.playlist.songs', $playlist->playlist_id) }}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="{{ __('muzibu::admin.playlist.manage_songs') }}"
+                                            style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                            <i class="fas fa-music link-secondary fa-lg"></i>
+                                        </a>
                                         <x-ai-translation :entity-type="'playlist'" :entity-id="$playlist->playlist_id"
                                             tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')
@@ -188,11 +194,6 @@
                                                 <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a href="{{ route('admin.muzibu.playlist.songs', $playlist->playlist_id) }}"
-                                                    class="dropdown-item">
-                                                    <i class="fas fa-music me-2"></i>
-                                                    {{ __('muzibu::admin.playlist.manage_songs') }}
-                                                </a>
                                                 <a href="javascript:void(0);"
                                                     wire:click="$dispatch('showDeleteModal', {
                                                     module: 'playlist',

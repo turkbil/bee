@@ -563,6 +563,38 @@ $(document).ready(function() {
 
 @push('styles')
 <style>
+/* Kompakt Liste - Daha fazla şarkı */
+.list-group-item {
+    padding: 0.5rem 0.75rem !important;
+}
+
+.list-group-item .avatar {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.list-group-item .avatar i {
+    font-size: 0.875rem;
+}
+
+.list-group-item strong {
+    font-size: 0.875rem;
+}
+
+.list-group-item small {
+    font-size: 0.75rem;
+}
+
+.list-group-item .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.list-group-item .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+}
+
 /* Sortable styles */
 .sortable-ghost {
     opacity: 0.4;
@@ -571,6 +603,10 @@ $(document).ready(function() {
 
 .sortable-chosen {
     background-color: #e7f3ff;
+}
+
+.sortable-handle {
+    font-size: 1rem !important;
 }
 
 .sortable-handle:hover {

@@ -171,58 +171,108 @@
             opacity: 0.9;
         }
         .console-panel {
-            background: #1e1e1e;
+            background: #0a0e27;
             border-radius: 12px;
             margin-top: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 30px rgba(0,255,0,0.2);
+            border: 1px solid #00ff00;
         }
         .console-header {
-            background: #2d2d2d;
-            padding: 12px 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #00ff00;
-            font-weight: 600;
-            font-size: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #00ff00;
         }
         .console-clear {
-            background: #dc3545;
-            color: white;
-            border: none;
+            background: transparent;
+            color: #ff006e;
+            border: 2px solid #ff006e;
             padding: 5px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
         }
         .console-clear:hover {
-            background: #c82333;
+            background: #ff006e;
+            color: white;
         }
         .console-body {
-            padding: 15px;
-            max-height: 200px;
+            padding: 20px;
+            max-height: 300px;
             overflow-y: auto;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 14px;
             color: #00ff00;
+            background: #0a0e27;
+        }
+        .console-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .console-body::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        .console-body::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 4px;
         }
         .console-log {
-            margin-bottom: 8px;
-            line-height: 1.5;
+            margin-bottom: 10px;
+            line-height: 1.6;
+            animation: slideIn 0.3s ease-out;
+            padding: 5px;
+            border-left: 3px solid transparent;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         .console-log.success {
             color: #00ff00;
+            border-left-color: #00ff00;
+            text-shadow: 0 0 10px rgba(0,255,0,0.5);
         }
         .console-log.info {
-            color: #00bfff;
+            color: #00d9ff;
+            border-left-color: #00d9ff;
+            text-shadow: 0 0 10px rgba(0,217,255,0.5);
         }
         .console-log.warning {
-            color: #ffa500;
+            color: #ff9f1c;
+            border-left-color: #ff9f1c;
+            text-shadow: 0 0 10px rgba(255,159,28,0.5);
         }
         .console-log.speed {
             color: #ffff00;
             font-weight: bold;
+            border-left-color: #ffff00;
+            text-shadow: 0 0 15px rgba(255,255,0,0.8);
+            animation: pulse 1s infinite;
+        }
+        .console-log.chunk {
+            color: #ff006e;
+            border-left-color: #ff006e;
+            text-shadow: 0 0 10px rgba(255,0,110,0.5);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         .highlight {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
@@ -262,7 +312,6 @@
 
             <p class="status-text" id="statusText">Dinlemeye hazır</p>
 
-            {{-- Console Log Panel --}}
             <div class="console-panel" id="consolePanel">
                 <div class="console-header">
                     <span>⚡ Sistem Durumu</span>
@@ -297,58 +346,6 @@
                     <div class="info-title">Hız</div>
                     <div class="info-value">Cache'li</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="security-section">
-            <h2 class="security-title">🔒 Güvenlik Özellikleri</h2>
-
-            <div class="highlight">
-                <h3>⚠️ ÖNEMLİ BİLGİ</h3>
-                <p>Bu sistemde müzikler tam dosya olarak indirilemiyor. Şarkı küçük parçalara bölünüyor ve şifreli olarak akıtılıyor. Kullanıcı sadece dinleyebilir, kopyalayamaz!</p>
-            </div>
-
-            <div class="security-grid">
-                <div class="security-card">
-                    <h3>✅ Parçalı Akış</h3>
-                    <p>Şarkı 10 saniyelik parçalara bölünür. Tam dosya kullanıcıya asla gönderilmez.</p>
-                </div>
-
-                <div class="security-card">
-                    <h3>✅ AES-128 Şifreleme</h3>
-                    <p>Her parça şifrelenir. İndirse bile açamaz, dinleyemez.</p>
-                </div>
-
-                <div class="security-card">
-                    <h3>✅ Otomatik Silme</h3>
-                    <p>Çalınan parçalar tarayıcı belleğinde hemen silinir.</p>
-                </div>
-
-                <div class="security-card">
-                    <h3>✅ Hızlı Yükleme</h3>
-                    <p>Parçalar cache'lenir. İkinci dinlemede anında başlar.</p>
-                </div>
-
-                <div class="security-card">
-                    <h3>✅ Güvenli Anahtar</h3>
-                    <p>Şifre anahtarı özel sunucudan güvenli olarak alınır.</p>
-                </div>
-
-                <div class="security-card danger">
-                    <h3>❌ Sağ Tık İndiremez</h3>
-                    <p>Tarayıcıda "Farklı Kaydet" çalışmaz. Link korumalı.</p>
-                </div>
-
-                <div class="security-card danger">
-                    <h3>❌ URL Kopyalanamaz</h3>
-                    <p>Parça linkleri sadece o an için geçerli. Daha sonra açılamaz.</p>
-                </div>
-            </div>
-
-            <div class="highlight" style="margin-top: 30px;">
-                <h3>🎯 Sonuç</h3>
-                <p><strong>Kullanıcı müziği sadece dinleyebilir, indiremez!</strong><br>
-                Spotify, Apple Music gibi platformların kullandığı profesyonel koruma sistemi.</p>
             </div>
         </div>
 
@@ -433,21 +430,20 @@
                         addLog('🔑 Şifreleme anahtarı alındı', 'success');
                     });
 
-                    // Chunk loaded (parça yüklendi)
+                    // Chunk loading (parça yükleniyor) - HER CHUNK
+                    hls.on(Hls.Events.FRAG_LOADING, function(event, data) {
+                        addLog(`[LOADING] >>> chunk_${String(chunksLoaded).padStart(3, '0')}.ts`, 'info');
+                    });
+
+                    // Chunk loaded (parça yüklendi) - HER CHUNK
                     hls.on(Hls.Events.FRAG_LOADED, function(event, data) {
                         chunksLoaded++;
                         chunkCountEl.textContent = chunksLoaded;
 
-                        if (chunksLoaded <= 3) {
-                            addLog(`📦 Parça #${chunksLoaded} yüklendi (10 saniye)`, 'success');
-                        }
-                    });
+                        const chunkSize = (data.frag.stats.total / 1024).toFixed(2);
+                        const loadTime = data.frag.stats.loading.end - data.frag.stats.loading.start;
 
-                    // Chunk loading (parça yükleniyor)
-                    hls.on(Hls.Events.FRAG_LOADING, function(event, data) {
-                        if (chunksLoaded < 3) {
-                            addLog(`⏳ Parça #${chunksLoaded + 1} yükleniyor...`, 'info');
-                        }
+                        addLog(`[DECRYPT] <<< chunk_${String(chunksLoaded - 1).padStart(3, '0')}.ts | ${chunkSize}KB | ${loadTime}ms`, 'chunk');
                     });
 
                     // Error handling (sadece basit mesaj)

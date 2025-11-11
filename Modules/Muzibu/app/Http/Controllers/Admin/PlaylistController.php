@@ -59,7 +59,7 @@ class PlaylistController extends Controller
         $offset = request('offset', 0);
         $limit = 50;
 
-        $query = \Modules\Muzibu\App\Models\Song::active()
+        $query = \Modules\Muzibu\App\Models\Song::where('is_active', true)
             ->with(['album.artist', 'genre'])
             ->whereNotIn('song_id', function($q) use ($id) {
                 $q->select('song_id')

@@ -629,17 +629,23 @@ $(document).ready(function() {
     $('#search-playlist').on('keyup', function() {
         const search = $(this).val().toLowerCase();
 
-        $('#sortable-playlist .sortable-item').each(function() {
-            const $item = $(this);
-            const title = $item.find('strong').text().toLowerCase();
-            const artist = $item.find('small').text().toLowerCase();
+        if (search === '') {
+            // Boşsa hepsini göster
+            $('#sortable-playlist .sortable-item').show();
+        } else {
+            // Filtrele
+            $('#sortable-playlist .sortable-item').each(function() {
+                const $item = $(this);
+                const title = $item.find('strong').text().toLowerCase();
+                const artist = $item.find('small').text().toLowerCase();
 
-            if (title.includes(search) || artist.includes(search)) {
-                $item.show();
-            } else {
-                $item.hide();
-            }
-        });
+                if (title.includes(search) || artist.includes(search)) {
+                    $item.show();
+                } else {
+                    $item.hide();
+                }
+            });
+        }
     });
 
     // Notification fonksiyonları

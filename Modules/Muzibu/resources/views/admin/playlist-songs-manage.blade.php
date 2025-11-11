@@ -7,8 +7,7 @@
 
 @section('content')
     <!-- Dual-List Container -->
-    <div class="page-body">
-        <div class="row g-4">
+    <div class="row g-4">
             <!-- SOL KOLON: TÜM ŞARKILAR -->
             <div class="col-md-6">
                 <div class="card">
@@ -96,7 +95,6 @@
                 </div>
             </div>
         </div>
-    </div>
 @endsection
 
 @push('scripts')

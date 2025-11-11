@@ -1,231 +1,40 @@
-(index):64 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
-(anonymous) @ (index):64
-cdn.min.js:1 Alpine Expression Error: missing ) after argument list
+🎵 Muzibu Müzik Akışı
+Şifreli HLS Ses Akış Sistemi
 
-Expression: "{
-          hls: null,
-          isPlaying: false,
-          chunksLoaded: 0,
-          streamStatus: 'Ready',
-          logs: [],
-
-          addLog(message, type = 'info') {
-              const time = new Date().toLocaleTimeString('tr-TR');
-              this.logs.push({ time, message, type });
-              this.$nextTick(() => {
-                  const consoleBody = this.$refs.consoleBody;
-                  consoleBody.scrollTop = consoleBody.scrollHeight;
-              });
-          },
-
-          clearConsole() {
-              this.logs = [];
-              this.addLog('Console temizlendi', 'info');
-          },
-
-          startDemo() {
-              if (this.isPlaying) {
-                  this.$refs.audioPlayer.pause();
-                  this.isPlaying = false;
-                  this.streamStatus = 'Paused';
-                  this.addLog('⏸ Duraklatıldı', 'warning');
-                  return;
-              }
-
-              if (Hls.isSupported()) {
-                  this.addLog('⏳ Playlist yükleniyor...', 'info');
-                  const startTime = Date.now();
-
-                  if (!this.hls) {
-                      this.hls = new Hls({ enableWorker: true, lowLatencyMode: false });
-                      this.hls.loadSource('https://tuufi.com/stream/play/M5sxjFPOXZgIfARp/playlist.m3u8');
-                      this.hls.attachMedia(this.$refs.audioPlayer);
-
-                      this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                          const loadTime = Date.now() - startTime;
-                          this.addLog('✅ Playlist yüklendi (cache\\'li)', 'success');
-                          this.addLog(`⚡ Hız: ${loadTime}ms`, 'speed');
-                          this.streamStatus = 'Playing';
-                          this.$refs.audioPlayer.play();
-                          this.isPlaying = true;
-                      });
-
-                      this.hls.on(Hls.Events.KEY_LOADED, () => {
-                          this.addLog('🔑 Şifreleme anahtarı alındı', 'success');
-                      });
-
-                      this.hls.on(Hls.Events.FRAG_LOADING, () => {
-                          this.addLog(`[LOADING] >>> chunk_${String(this.chunksLoaded).padStart(3, '0')}.ts`, 'info');
-                      });
-
-                      this.hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
-                          this.chunksLoaded++;
-                          const chunkSize = (data.frag.stats.total / 1024).toFixed(2);
-                          const loadTime = data.frag.stats.loading.end - data.frag.stats.loading.start;
-                          this.addLog(`[DECRYPT] <<< chunk_${String(this.chunksLoaded - 1).padStart(3, '0')}.ts | ${chunkSize}KB | ${loadTime}ms`, 'chunk');
-                      });
-
-                      this.hls.on(Hls.Events.ERROR, (event, data) => {
-                          if (data.fatal) {
-                              this.streamStatus = 'Error';
-                              this.addLog('❌ Yükleme hatası - Tekrar deneyin', 'warning');
-                          }
-                      });
-                  } else {
-                      this.$refs.audioPlayer.play();
-                      this.isPlaying = true;
-                      this.streamStatus = 'Playing';
-                      this.addLog('▶️ Devam ediliyor', 'success');
-                  }
-              }
-          },
-
-          init() {
-              this.addLog('✅ Sistem hazır', 'success');
-              this.addLog('🔐 AES-128 şifreleme aktif', 'success');
-          }
-      }"
-
- <body class=​"bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen p-6" x-data=​"{
-          hls:​ null,
-          isPlaying:​ false,
-          chunksLoaded:​ 0,
-          streamStatus:​ 'Ready',
-          logs:​ []​,
-
-          addLog(message, type = 'info')​ {
-              const time = new Date()​.toLocaleTimeString('tr-TR')​;​
-              this.logs.push({ time, message, type }​)​;​
-              this.$nextTick(()​ => {
-                  const consoleBody = this.$refs.consoleBody;​
-                  consoleBody.scrollTop = consoleBody.scrollHeight;​
-              }​)​;​
-          }​,
-
-          clearConsole()​ {
-              this.logs = []​;​
-              this.addLog('Console temizlendi', 'info')​;​
-          }​,
-
-          startDemo()​ {
-              if (this.isPlaying)​ {
-                  this.$refs.audioPlayer.pause()​;​
-                  this.isPlaying = false;​
-                  this.streamStatus = 'Paused';​
-                  this.addLog('⏸ Duraklatıldı', 'warning')​;​
-                  return;​
-              }​
-
-              if (Hls.isSupported()​)​ {
-                  this.addLog('⏳ Playlist yükleniyor...', 'info')​;​
-                  const startTime = Date.now()​;​
-
-                  if (!this.hls)​ {
-                      this.hls = new Hls({ enableWorker:​ true, lowLatencyMode:​ false }​)​;​
-                      this.hls.loadSource('https:​/​/​tuufi.com/​stream/​play/​M5sxjFPOXZgIfARp/​playlist.m3u8')​;​
-                      this.hls.attachMedia(this.$refs.audioPlayer)​;​
-
-                      this.hls.on(Hls.Events.MANIFEST_PARSED, ()​ => {
-                          const loadTime = Date.now()​ - startTime;​
-                          this.addLog('✅ Playlist yüklendi (cache\\'li)​', 'success')​;​
-                          this.addLog(`⚡ Hız:​ ${loadTime}​ms`, 'speed')​;​
-                          this.streamStatus = 'Playing';​
-                          this.$refs.audioPlayer.play()​;​
-                          this.isPlaying = true;​
-                      }​)​;​
-
-                      this.hls.on(Hls.Events.KEY_LOADED, ()​ => {
-                          this.addLog('🔑 Şifreleme anahtarı alındı', 'success')​;​
-                      }​)​;​
-
-                      this.hls.on(Hls.Events.FRAG_LOADING, ()​ => {
-                          this.addLog(`[LOADING]​ >>> chunk_${String(this.chunksLoaded)​.padStart(3, '0')​}​.ts`, 'info')​;​
-                      }​)​;​
-
-                      this.hls.on(Hls.Events.FRAG_LOADED, (event, data)​ => {
-                          this.chunksLoaded++;​
-                          const chunkSize = (data.frag.stats.total /​ 1024)​.toFixed(2)​;​
-                          const loadTime = data.frag.stats.loading.end - data.frag.stats.loading.start;​
-                          this.addLog(`[DECRYPT]​ <<< chunk_${String(this.chunksLoaded - 1)​.padStart(3, '0')​}​.ts | ${chunkSize}​KB | ${loadTime}​ms`, 'chunk')​;​
-                      }​)​;​
-
-                      this.hls.on(Hls.Events.ERROR, (event, data)​ => {
-                          if (data.fatal)​ {
-                              this.streamStatus = 'Error';​
-                              this.addLog('❌ Yükleme hatası - Tekrar deneyin', 'warning')​;​
-                          }​
-                      }​)​;​
-                  }​ else {
-                      this.$refs.audioPlayer.play()​;​
-                      this.isPlaying = true;​
-                      this.streamStatus = 'Playing';​
-                      this.addLog('▶️ Devam ediliyor', 'success')​;​
-                  }​
-              }​
-          }​,
-
-          init()​ {
-              this.addLog('✅ Sistem hazır', 'success')​;​
-              this.addLog('🔐 AES-128 şifreleme aktif', 'success')​;​
-          }​
-      }​">​…​</body>​
-re @ cdn.min.js:1
-cdn.min.js:1 Alpine Expression Error: isPlaying is not defined
-
-Expression: "isPlaying ? '⏸ Duraklat' : '▶️ Demo Şarkıyı Dinle'"
-
- <span x-text=​"isPlaying ? '⏸ Duraklat' :​ '▶️ Demo Şarkıyı Dinle'">​</span>​
-re @ cdn.min.js:1
-cdn.min.js:1 Alpine Expression Error: streamStatus is not defined
-
-Expression: "streamStatus === 'Playing' ? 'text-emerald-400 font-bold' : 'text-cyan-400'"
-
- <p class=​"text-center text-lg mb-8" :class=​"streamStatus === 'Playing' ? 'text-emerald-400 font-bold' :​ 'text-cyan-400'" x-text=​"streamStatus === 'Ready' ? 'Dinlemeye hazır' :​
-                       streamStatus === 'Playing' ? '🎵 Şarkı Çalıyor - Güvenli Akış Aktif' :​
-                       streamStatus === 'Paused' ? 'Duraklatıldı' :​ 'Hata'">​</p>​
-re @ cdn.min.js:1
-cdn.min.js:1 Alpine Expression Error: streamStatus is not defined
-
-Expression: "streamStatus === 'Ready' ? 'Dinlemeye hazır' :
-                       streamStatus === 'Playing' ? '🎵 Şarkı Çalıyor - Güvenli Akış Aktif' :
-                       streamStatus === 'Paused' ? 'Duraklatıldı' : 'Hata'"
-
- <p class=​"text-center text-lg mb-8" :class=​"streamStatus === 'Playing' ? 'text-emerald-400 font-bold' :​ 'text-cyan-400'" x-text=​"streamStatus === 'Ready' ? 'Dinlemeye hazır' :​
-                       streamStatus === 'Playing' ? '🎵 Şarkı Çalıyor - Güvenli Akış Aktif' :​
-                       streamStatus === 'Paused' ? 'Duraklatıldı' :​ 'Hata'">​</p>​
-re @ cdn.min.js:1
-cdn.min.js:1 Alpine Expression Error: logs is not defined
-
-Expression: "logs"
-
- <template x-for=​"log in logs" :key=​"log.time + log.message">​…​</template>​
-re @ cdn.min.js:1
-cdn.min.js:1 Alpine Expression Error: chunksLoaded is not defined
-
-Expression: "chunksLoaded"
-
- <div class=​"text-emerald-400 text-3xl font-bold drop-shadow-[0_0_15px_rgba(16,185,129,0.5)​]​" x-text=​"chunksLoaded">​</div>​
-re @ cdn.min.js:1
-cdn.min.js:1 Alpine Expression Error: streamStatus is not defined
-
-Expression: "streamStatus"
-
- <div class=​"text-emerald-400 text-3xl font-bold drop-shadow-[0_0_15px_rgba(16,185,129,0.5)​]​" x-text=​"streamStatus">​</div>​
-re @ cdn.min.js:1
-cdn.min.js:5 Uncaught SyntaxError: missing ) after argument list
-cdn.min.js:5 Uncaught ReferenceError: isPlaying is not defined
-cdn.min.js:5 Uncaught ReferenceError: streamStatus is not defined
-cdn.min.js:5 Uncaught ReferenceError: streamStatus is not defined
-cdn.min.js:5 Uncaught ReferenceError: logs is not defined
-cdn.min.js:5 Uncaught ReferenceError: chunksLoaded is not defined
-cdn.min.js:5 Uncaught ReferenceError: streamStatus is not defined
-favicon.ico:1  Failed to load resource: the server responded with a status of 404 ()
-cdn.min.js:1 Alpine Expression Error: startDemo is not defined
-
-Expression: "startDemo()"
-
- <button @click=​"startDemo()​" class=​"w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:​from-emerald-600 hover:​to-cyan-600
-                           text-white font-bold py-4 px-8 rounded-full text-xl mb-6
-                           transform transition hover:​scale-105 shadow-[0_0_30px_rgba(16,185,129,0.4)​]​">​…​</button>​
-re @ cdn.min.js:1
-cdn.min.js:5 Uncaught ReferenceError: startDemo is not defined
+⏸ Duraklat
+Yüklenen Bölüm
+7
+Durum
+Hata
+Şifreleme
+AES-128
+SİSTEM KAYITLARI
+TEMİZLE
+[14:32:39] ✅ Sistem hazır
+[14:32:39] 🔐 AES-128 şifreleme aktif
+[14:33:23] ⏳ Playlist yükleniyor...
+[14:33:25] ✅ Playlist yüklendi (1328ms)
+[14:33:25] [YÜKLEME] >>> parça_000.ts
+[14:33:25] 🔑 Şifreleme anahtarı alındı
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_000.ts | 173.88KB | 3.199999988079071ms | 54337.5KB/s
+[14:33:25] [YÜKLEME] >>> parça_001.ts
+[14:33:25] 🔑 Şifreleme anahtarı alındı
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_001.ts | 170.56KB | 1.4000000059604645ms | 121828.6KB/s
+[14:33:25] [YÜKLEME] >>> parça_002.ts
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_002.ts | 173.88KB | 0.9000000059604645ms | 193200.0KB/s
+[14:33:25] [YÜKLEME] >>> parça_003.ts
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_003.ts | 173.88KB | 0.7999999821186066ms | 217350.0KB/s
+[14:33:25] [YÜKLEME] >>> parça_004.ts
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_004.ts | 173.88KB | 1.100000023841858ms | 158072.7KB/s
+[14:33:25] [YÜKLEME] >>> parça_005.ts
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_005.ts | 173.88KB | 1.0999999940395355ms | 158072.7KB/s
+[14:33:25] [YÜKLEME] >>> parça_006.ts
+[14:33:25] [ŞİFRE ÇÖZÜLDÜ] <<< parça_006.ts | 173.88KB | 0.9000000059604645ms | 193200.0KB/s
+[14:33:25] ❌ Akış hatası - Lütfen tekrar deneyin
+[14:33:26] ⏱ 0.0s / 219.9s (0.0%) | Bölüm: 0
+[14:33:27] ⏱ 0.0s / 219.9s (0.0%) | Bölüm: 0
+[14:33:28] ⏱ 0.0s / 219.9s (0.0%) | Bölüm: 0
+[14:33:29] ⏱ 0.0s / 219.9s (0.0%) | Bölüm: 0
+[14:33:30] ⏱ 0.0s / 219.9s (0.0%) | Bölüm: 0
+[14:33:31] ⏱ 0.0s / 219.9s (0.0%) | Bölüm: 0
+© 2025 Muzibu - Güvenli Müzik Akışı

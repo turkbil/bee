@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilePond Şarkı Upload Tasarımları</title>
+
+    <!-- Tabler.io CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        .design-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            border: 2px solid transparent;
+        }
+
+        .design-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            border-color: var(--tblr-primary);
+        }
+
+        .design-preview {
+            height: 300px;
+            background: linear-gradient(135deg, var(--tblr-bg-surface) 0%, var(--tblr-bg-surface-secondary) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .design-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .design-card:hover .design-preview::before {
+            opacity: 1;
+        }
+
+        .design-icon {
+            font-size: 80px;
+            color: var(--tblr-primary);
+            transition: all 0.3s;
+        }
+
+        .design-card:hover .design-icon {
+            transform: scale(1.1);
+            color: var(--tblr-primary-darken);
+        }
+
+        .badge-feature {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, var(--tblr-primary) 0%, var(--tblr-primary-darken) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            border-radius: 0 0 24px 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="page-wrapper">
+            <!-- Header -->
+            <div class="header-gradient">
+                <div class="container-xl">
+                    <div class="text-center">
+                        <i class="fa fa-palette fs-1 mb-3"></i>
+                        <h1 class="mb-2">FilePond Şarkı Upload Tasarımları</h1>
+                        <p class="fs-4 opacity-75 mb-0">3 Farklı Tasarım Alternatifi - Canlı Demo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-xl pb-5">
+                <div class="row g-4 mb-5">
+                    <!-- Design 1: Minimal & Clean -->
+                    <div class="col-lg-4 col-md-6">
+                        <a href="song-upload-design-1.html" class="text-decoration-none">
+                            <div class="card design-card shadow-sm">
+                                <div class="design-preview">
+                                    <i class="fa fa-feather design-icon"></i>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h2 class="card-title mb-0">Tasarım 1</h2>
+                                        <span class="badge bg-blue-lt text-blue">Mevcut</span>
+                                    </div>
+                                    <h3 class="fs-4 mb-3">Minimal & Clean</h3>
+                                    <p class="text-muted mb-3">
+                                        Sade ve temiz görünüm. Mevcut sistemdeki tasarım.
+                                        Split layout ile upload ve preview yan yana.
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge badge-feature bg-success-lt text-success">
+                                            <i class="fa fa-check me-1"></i> Basit
+                                        </span>
+                                        <span class="badge badge-feature bg-info-lt text-info">
+                                            <i class="fa fa-layout-split me-1"></i> Split Layout
+                                        </span>
+                                        <span class="badge badge-feature bg-warning-lt text-warning">
+                                            <i class="fa fa-eye me-1"></i> Minimal
+                                        </span>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="btn btn-primary w-100">
+                                            <i class="fa fa-external-link-alt me-2"></i>
+                                            Demo'yu Görüntüle
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Design 2: Modern Card Style -->
+                    <div class="col-lg-4 col-md-6">
+                        <a href="song-upload-design-2.html" class="text-decoration-none">
+                            <div class="card design-card shadow-sm">
+                                <div class="design-preview">
+                                    <i class="fa fa-sparkles design-icon"></i>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h2 class="card-title mb-0">Tasarım 2</h2>
+                                        <span class="badge bg-purple-lt text-purple">Yeni</span>
+                                    </div>
+                                    <h3 class="fs-4 mb-3">Modern Card Style</h3>
+                                    <p class="text-muted mb-3">
+                                        Gradient'ler, shadow'lar ve modern card design.
+                                        Gradient background'lu song card ile premium görünüm.
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge badge-feature bg-purple-lt text-purple">
+                                            <i class="fa fa-palette me-1"></i> Gradient
+                                        </span>
+                                        <span class="badge badge-feature bg-pink-lt text-pink">
+                                            <i class="fa fa-gem me-1"></i> Premium
+                                        </span>
+                                        <span class="badge badge-feature bg-cyan-lt text-cyan">
+                                            <i class="fa fa-layer-group me-1"></i> Shadow
+                                        </span>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="btn btn-purple w-100">
+                                            <i class="fa fa-external-link-alt me-2"></i>
+                                            Demo'yu Görüntüle
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Design 3: Side-by-Side Premium -->
+                    <div class="col-lg-4 col-md-6">
+                        <a href="song-upload-design-3.html" class="text-decoration-none">
+                            <div class="card design-card shadow-sm">
+                                <div class="design-preview">
+                                    <i class="fa fa-crown design-icon"></i>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h2 class="card-title mb-0">Tasarım 3</h2>
+                                        <span class="badge bg-yellow-lt text-yellow">
+                                            <i class="fa fa-star me-1"></i> Önerilen
+                                        </span>
+                                    </div>
+                                    <h3 class="fs-4 mb-3">Side-by-Side Premium</h3>
+                                    <p class="text-muted mb-3">
+                                        Her zaman yan yana layout. Waveform görseli ile animasyonlu preview.
+                                        Control panel ile detaylı ayarlar.
+                                    </p>
+
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge badge-feature bg-yellow-lt text-yellow">
+                                            <i class="fa fa-waveform-lines me-1"></i> Waveform
+                                        </span>
+                                        <span class="badge badge-feature bg-teal-lt text-teal">
+                                            <i class="fa fa-columns me-1"></i> Always Split
+                                        </span>
+                                        <span class="badge badge-feature bg-orange-lt text-orange">
+                                            <i class="fa fa-sliders me-1"></i> Controls
+                                        </span>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <div class="btn btn-warning w-100">
+                                            <i class="fa fa-external-link-alt me-2"></i>
+                                            Demo'yu Görüntüle
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fa fa-table me-2"></i>
+                            Özellik Karşılaştırması
+                        </h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Özellik</th>
+                                        <th class="text-center">Tasarım 1<br><small class="text-muted">Minimal</small></th>
+                                        <th class="text-center">Tasarım 2<br><small class="text-muted">Modern</small></th>
+                                        <th class="text-center">Tasarım 3<br><small class="text-muted">Premium</small></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>FilePond Drag & Drop</strong></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Audio Preview Player</strong></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Split Layout (Yan Yana)</strong></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Gradient Background</strong></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Waveform Animation</strong></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Always Side-by-Side</strong></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Info Badges</strong></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Control Panel</strong></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-times text-muted fs-4"></i></td>
+                                        <td class="text-center"><i class="fa fa-check text-success fs-3"></i></td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td><strong>Karmaşıklık</strong></td>
+                                        <td class="text-center"><span class="badge bg-success">Basit</span></td>
+                                        <td class="text-center"><span class="badge bg-warning">Orta</span></td>
+                                        <td class="text-center"><span class="badge bg-danger">İleri</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div class="alert alert-info mt-4">
+                    <div class="d-flex">
+                        <div>
+                            <i class="fa fa-info-circle fs-2 me-3"></i>
+                        </div>
+                        <div>
+                            <h4 class="alert-title">Demo Bilgisi</h4>
+                            <p class="mb-0">
+                                Tüm tasarımlar <strong>canlı FilePond</strong> kütüphanesi ile çalışır.
+                                Dosya seçtiğinizde otomatik "upload" simülasyonu başlar (1.5 saniye) ve
+                                preview card görünür. Gerçek sistemde Livewire ile backend'e yüklenir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler.io JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+</body>
+</html>

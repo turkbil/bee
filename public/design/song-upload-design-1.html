@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasarım 1: Minimal & Clean (Mevcut)</title>
+
+    <!-- Tabler.io CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- FilePond CSS -->
+    <link href="https://unpkg.com/filepond@4/dist/filepond.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
+
+    <!-- Pretty Checkbox -->
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet">
+
+    <style>
+        /* FilePond Custom Styling */
+        .filepond--root {
+            font-family: var(--tblr-font-sans-serif);
+            min-height: 200px !important;
+        }
+
+        .filepond--panel-root {
+            background-color: var(--tblr-bg-surface);
+            border: 2px dashed var(--tblr-border-color) !important;
+            border-radius: 8px;
+            min-height: 200px !important;
+        }
+
+        .filepond--drop-label {
+            color: var(--tblr-body-color);
+            min-height: 200px !important;
+        }
+
+        .filepond--drop-label label {
+            padding: 1.5rem;
+        }
+
+        .filepond--label-action {
+            color: var(--tblr-primary) !important;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .filepond--root[data-style-panel-layout="compact"] {
+            min-height: 200px !important;
+        }
+
+        .filepond--root[data-style-panel-layout="compact"] .filepond--item {
+            margin: 0.5rem;
+        }
+
+        .filepond--credits {
+            display: none !important;
+        }
+
+        .song-card-with-hover:hover .song-delete-btn {
+            opacity: 1 !important;
+        }
+
+        body {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="page-wrapper">
+            <div class="container-xl py-4">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 class="mb-2">Tasarım 1: Minimal & Clean</h1>
+                        <p class="text-muted">Mevcut tasarım - Sade ve temiz görünüm</p>
+                        <a href="song-upload-designs.html" class="btn btn-outline-secondary btn-sm">← Tüm Tasarımlara Dön</a>
+                    </div>
+                </div>
+
+                <!-- Design Preview Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Şarkı Yönetimi</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- ŞARKI DOSYASI & SÜRE -->
+                        <div class="row mb-4">
+                            <!-- Şarkı Dosyası Yükleme -->
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label required">
+                                        Şarkı Dosyası
+                                    </label>
+
+                                    <!-- Split Layout: FilePond Upload + Current Song -->
+                                    <div class="row g-3" id="uploadArea">
+                                        <!-- FilePond Upload Area -->
+                                        <div class="col-md-12" id="pondColumn">
+                                            <input type="file" class="filepond-audio" accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg">
+                                        </div>
+
+                                        <!-- Current Song (appears after upload) -->
+                                        <div class="col-md-6 d-none" id="songCardColumn">
+                                            <div class="card position-relative song-card-with-hover" style="min-height: 200px;">
+                                                <!-- X Button -->
+                                                <button
+                                                    onclick="removeSong()"
+                                                    class="btn btn-icon btn-sm position-absolute song-delete-btn"
+                                                    type="button"
+                                                    style="top: 8px; right: 8px; z-index: 10; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
+                                                    <i class="fa fa-times text-danger"></i>
+                                                </button>
+
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="avatar bg-success-lt me-3">
+                                                            <i class="fa fa-music"></i>
+                                                        </div>
+                                                        <div class="flex-fill">
+                                                            <div class="fw-bold text-truncate" style="max-width: 180px;" id="songFileName">
+                                                                song-name.mp3
+                                                            </div>
+                                                            <small class="text-muted" id="songDuration">
+                                                                03:45
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Audio Player -->
+                                                    <div>
+                                                        <audio controls class="w-100" style="height: 35px;" id="audioPlayer">
+                                                            <source src="" type="audio/mpeg">
+                                                        </audio>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SÜRE (Duration) -->
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Süre
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="0" min="0" value="225">
+                                        <span class="input-group-text">saniye</span>
+                                    </div>
+                                </div>
+
+                                <!-- Öne Çıkan -->
+                                <div class="mt-4">
+                                    <div class="pretty p-default p-curve p-toggle p-smooth">
+                                        <input type="checkbox" id="is_featured" checked>
+                                        <div class="state p-warning p-on ms-2">
+                                            <label>Öne Çıkan</label>
+                                        </div>
+                                        <div class="state p-off ms-2">
+                                            <label>Normal</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler.io JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
+    <!-- FilePond JS -->
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="https://unpkg.com/filepond@4/dist/filepond.min.js"></script>
+
+    <script>
+        // Register FilePond plugins
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize
+        );
+
+        // Create FilePond instance
+        const pond = FilePond.create(document.querySelector('.filepond-audio'), {
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/flac', 'audio/m4a', 'audio/ogg'],
+            maxFileSize: '100MB',
+            stylePanelLayout: 'compact',
+            credits: false,
+            allowRevert: true,
+            instantUpload: false,
+            labelIdle: `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 1.5rem;">
+                    <div style="margin-bottom: 1rem;">
+                        <i class="fa fa-music" style="font-size: 48px; color: var(--tblr-muted);"></i>
+                    </div>
+                    <h4 class="mb-1">Şarkı Dosyasını Sürükle ve Bırak</h4>
+                    <p class="text-muted mb-2">veya <span class="filepond--label-action">tıklayarak dosya seç</span></p>
+                    <small class="text-muted d-block">MP3, WAV, FLAC, M4A, OGG <span class="mx-1">•</span> Max 100MB</small>
+                </div>
+            `,
+            labelFileProcessing: 'Yükleniyor',
+            labelFileProcessingComplete: 'Yükleme tamamlandı',
+            server: {
+                process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    // Simulate upload
+                    setTimeout(() => {
+                        load(file.name);
+                    }, 1500);
+                },
+                revert: (uniqueFileId, load, error) => {
+                    load();
+                }
+            },
+            onaddfile: (error, file) => {
+                if (!error) {
+                    // Show song card after upload
+                    setTimeout(() => {
+                        showSongCard(file);
+                    }, 1600);
+                }
+            }
+        });
+
+        function showSongCard(file) {
+            const pondColumn = document.getElementById('pondColumn');
+            const songCardColumn = document.getElementById('songCardColumn');
+
+            // Change layout to split
+            pondColumn.classList.remove('col-md-12');
+            pondColumn.classList.add('col-md-6');
+            songCardColumn.classList.remove('d-none');
+
+            // Update song info
+            document.getElementById('songFileName').textContent = file.filename;
+
+            // Create audio URL for preview
+            const audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.src = URL.createObjectURL(file.file);
+
+            // Hide FilePond after short delay
+            setTimeout(() => {
+                pond.removeFiles();
+            }, 1000);
+        }
+
+        function removeSong() {
+            const pondColumn = document.getElementById('pondColumn');
+            const songCardColumn = document.getElementById('songCardColumn');
+
+            // Revert layout
+            pondColumn.classList.remove('col-md-6');
+            pondColumn.classList.add('col-md-12');
+            songCardColumn.classList.add('d-none');
+
+            // Clear audio
+            document.getElementById('audioPlayer').src = '';
+        }
+    </script>
+</body>
+</html>

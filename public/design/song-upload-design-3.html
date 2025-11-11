@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasarım 3: Side-by-Side Premium</title>
+
+    <!-- Tabler.io CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- FilePond CSS -->
+    <link href="https://unpkg.com/filepond@4/dist/filepond.min.css" rel="stylesheet">
+
+    <!-- Pretty Checkbox -->
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet">
+
+    <style>
+        /* FilePond Premium Styling */
+        .filepond--root {
+            font-family: var(--tblr-font-sans-serif);
+            min-height: 280px !important;
+        }
+
+        .filepond--panel-root {
+            background: white;
+            border: 2px solid var(--tblr-border-color);
+            border-radius: 12px;
+            min-height: 280px !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .filepond--root:hover .filepond--panel-root {
+            border-color: var(--tblr-primary);
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+
+        .filepond--drop-label {
+            color: var(--tblr-body-color);
+            min-height: 280px !important;
+        }
+
+        .filepond--drop-label label {
+            padding: 2rem;
+        }
+
+        .filepond--label-action {
+            color: white !important;
+            background: var(--tblr-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .filepond--label-action:hover {
+            background: var(--tblr-primary-darken);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .filepond--credits {
+            display: none !important;
+        }
+
+        .premium-song-card {
+            background: white;
+            border: 1px solid var(--tblr-border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            min-height: 280px;
+        }
+
+        .premium-song-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border-color: var(--tblr-primary);
+        }
+
+        .premium-song-card:hover .song-delete-btn {
+            opacity: 1 !important;
+        }
+
+        .waveform-visual {
+            height: 60px;
+            background: linear-gradient(90deg, var(--tblr-primary-lt) 0%, var(--tblr-primary) 50%, var(--tblr-primary-lt) 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-bar {
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            background: var(--tblr-primary);
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { height: 20%; }
+            50% { height: 80%; }
+        }
+
+        body {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-badge {
+            background: var(--tblr-bg-surface);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .control-panel {
+            background: var(--tblr-bg-surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--tblr-border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="page-wrapper">
+            <div class="container-xl py-4">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 class="mb-2">Tasarım 3: Side-by-Side Premium</h1>
+                        <p class="text-muted">Her zaman yan yana + Waveform görseli + Premium detaylar</p>
+                        <a href="song-upload-designs.html" class="btn btn-outline-secondary btn-sm">← Tüm Tasarımlara Dön</a>
+                    </div>
+                </div>
+
+                <!-- Design Preview Card -->
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fa fa-headphones me-2 text-primary"></i>
+                            Şarkı Yönetimi
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- ŞARKI DOSYASI -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label class="form-label fs-4 fw-bold mb-3">
+                                    <i class="fa fa-upload me-2 text-primary"></i>
+                                    Şarkı Dosyası
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Always Side-by-Side Layout -->
+                        <div class="row g-4 mb-4">
+                            <!-- FilePond Upload Area (Always Left) -->
+                            <div class="col-md-6">
+                                <input type="file" class="filepond-audio-3" accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg">
+                            </div>
+
+                            <!-- Song Preview (Always Right) -->
+                            <div class="col-md-6">
+                                <div class="premium-song-card position-relative" id="songPreview3">
+                                    <!-- Empty State -->
+                                    <div class="h-100 d-flex flex-column align-items-center justify-content-center text-center p-4" id="emptyState3">
+                                        <div class="feature-icon bg-primary-lt text-primary mb-3">
+                                            <i class="fa fa-music"></i>
+                                        </div>
+                                        <h4 class="text-muted mb-2">Önizleme</h4>
+                                        <p class="text-muted small mb-0">Şarkı yüklendiğinde burada görünecek</p>
+                                    </div>
+
+                                    <!-- Loaded State (Hidden by default) -->
+                                    <div class="d-none h-100" id="loadedState3">
+                                        <!-- X Button -->
+                                        <button
+                                            onclick="removeSong3()"
+                                            class="btn btn-icon btn-sm position-absolute song-delete-btn"
+                                            type="button"
+                                            style="top: 12px; right: 12px; z-index: 10; width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; background: var(--tblr-danger); border: none; opacity: 0; transition: opacity 0.3s; border-radius: 8px;">
+                                            <i class="fa fa-trash text-white"></i>
+                                        </button>
+
+                                        <div class="p-4">
+                                            <!-- Song Info -->
+                                            <div class="d-flex align-items-start mb-3">
+                                                <div class="feature-icon bg-success-lt text-success me-3">
+                                                    <i class="fa fa-check"></i>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <div class="fw-bold fs-5 mb-1 text-truncate" style="max-width: 250px;" id="songFileName3">
+                                                        song-name.mp3
+                                                    </div>
+                                                    <div class="d-flex gap-2 flex-wrap">
+                                                        <span class="stat-badge text-primary">
+                                                            <i class="fa fa-file-audio me-1"></i>
+                                                            MP3
+                                                        </span>
+                                                        <span class="stat-badge text-info">
+                                                            <i class="fa fa-clock me-1"></i>
+                                                            <span id="songDuration3">03:45</span>
+                                                        </span>
+                                                        <span class="stat-badge text-success">
+                                                            <i class="fa fa-check-circle me-1"></i>
+                                                            Yüklendi
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Waveform Visual -->
+                                            <div class="waveform-visual mb-3">
+                                                <div class="waveform-bar" style="left: 10%; animation-delay: 0s;"></div>
+                                                <div class="waveform-bar" style="left: 20%; animation-delay: 0.1s;"></div>
+                                                <div class="waveform-bar" style="left: 30%; animation-delay: 0.2s;"></div>
+                                                <div class="waveform-bar" style="left: 40%; animation-delay: 0.3s;"></div>
+                                                <div class="waveform-bar" style="left: 50%; animation-delay: 0.4s;"></div>
+                                                <div class="waveform-bar" style="left: 60%; animation-delay: 0.3s;"></div>
+                                                <div class="waveform-bar" style="left: 70%; animation-delay: 0.2s;"></div>
+                                                <div class="waveform-bar" style="left: 80%; animation-delay: 0.1s;"></div>
+                                                <div class="waveform-bar" style="left: 90%; animation-delay: 0s;"></div>
+                                            </div>
+
+                                            <!-- Audio Player -->
+                                            <div class="bg-surface p-3 rounded">
+                                                <audio controls class="w-100" style="height: 40px;" id="audioPlayer3">
+                                                    <source src="" type="audio/mpeg">
+                                                </audio>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTROL PANEL -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="control-panel">
+                                    <div class="row g-3">
+                                        <!-- Süre -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold mb-2">
+                                                <i class="fa fa-stopwatch me-2 text-info"></i>
+                                                Şarkı Süresi
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-clock"></i>
+                                                </span>
+                                                <input type="number" class="form-control" placeholder="0" min="0" value="225">
+                                                <span class="input-group-text">saniye</span>
+                                            </div>
+                                            <small class="text-muted d-block mt-1">
+                                                <i class="fa fa-magic me-1"></i>
+                                                Otomatik tespit edilir, manuel düzenleyebilirsiniz
+                                            </small>
+                                        </div>
+
+                                        <!-- Öne Çıkan -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold mb-2">
+                                                <i class="fa fa-star me-2 text-warning"></i>
+                                                Görünürlük Ayarı
+                                            </label>
+                                            <div class="d-flex align-items-center h-100">
+                                                <div class="pretty p-switch p-fill">
+                                                    <input type="checkbox" id="is_featured3" checked>
+                                                    <div class="state p-warning">
+                                                        <label class="fs-4 ms-3">
+                                                            <i class="fa fa-star me-2"></i>
+                                                            Öne Çıkan Şarkı
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler.io JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
+    <!-- FilePond JS -->
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="https://unpkg.com/filepond@4/dist/filepond.min.js"></script>
+
+    <script>
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize
+        );
+
+        const pond3 = FilePond.create(document.querySelector('.filepond-audio-3'), {
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/flac', 'audio/m4a', 'audio/ogg'],
+            maxFileSize: '100MB',
+            stylePanelLayout: 'compact',
+            credits: false,
+            allowRevert: true,
+            instantUpload: false,
+            labelIdle: `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; padding: 2rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <i class="fa fa-cloud-upload" style="font-size: 64px; color: var(--tblr-primary);"></i>
+                    </div>
+                    <h3 class="mb-3" style="color: var(--tblr-primary);">Dosyayı Buraya Sürükleyin</h3>
+                    <p class="text-muted mb-3">veya</p>
+                    <div class="mb-3">
+                        <span class="filepond--label-action">Bilgisayardan Seçin</span>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap justify-content-center">
+                        <span class="badge bg-primary">MP3</span>
+                        <span class="badge bg-info">WAV</span>
+                        <span class="badge bg-success">FLAC</span>
+                        <span class="badge bg-warning">M4A</span>
+                        <span class="badge bg-danger">OGG</span>
+                    </div>
+                    <small class="text-muted mt-3">Maksimum 100MB</small>
+                </div>
+            `,
+            labelFileProcessing: 'Yükleniyor',
+            labelFileProcessingComplete: 'Yükleme tamamlandı',
+            server: {
+                process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    setTimeout(() => load(file.name), 1500);
+                },
+                revert: (uniqueFileId, load, error) => {
+                    load();
+                }
+            },
+            onaddfile: (error, file) => {
+                if (!error) {
+                    setTimeout(() => showSongCard3(file), 1600);
+                }
+            }
+        });
+
+        function showSongCard3(file) {
+            const emptyState = document.getElementById('emptyState3');
+            const loadedState = document.getElementById('loadedState3');
+
+            emptyState.classList.add('d-none');
+            loadedState.classList.remove('d-none');
+
+            document.getElementById('songFileName3').textContent = file.filename;
+
+            const audioPlayer = document.getElementById('audioPlayer3');
+            audioPlayer.src = URL.createObjectURL(file.file);
+
+            setTimeout(() => pond3.removeFiles(), 1000);
+        }
+
+        function removeSong3() {
+            const emptyState = document.getElementById('emptyState3');
+            const loadedState = document.getElementById('loadedState3');
+
+            loadedState.classList.add('d-none');
+            emptyState.classList.remove('d-none');
+
+            document.getElementById('audioPlayer3').src = '';
+        }
+    </script>
+</body>
+</html>

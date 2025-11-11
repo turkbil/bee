@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="tr" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasarım 2: Modern Card Style</title>
+
+    <!-- Tabler.io CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- FilePond CSS -->
+    <link href="https://unpkg.com/filepond@4/dist/filepond.min.css" rel="stylesheet">
+
+    <!-- Pretty Checkbox -->
+    <link href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css" rel="stylesheet">
+
+    <style>
+        /* FilePond Modern Styling */
+        .filepond--root {
+            font-family: var(--tblr-font-sans-serif);
+            min-height: 250px !important;
+        }
+
+        .filepond--panel-root {
+            background: linear-gradient(135deg, var(--tblr-bg-surface) 0%, var(--tblr-bg-surface-secondary) 100%);
+            border: 3px dashed var(--tblr-primary) !important;
+            border-radius: 16px;
+            min-height: 250px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .filepond--root:hover .filepond--panel-root {
+            border-color: var(--tblr-primary-darken) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .filepond--drop-label {
+            color: var(--tblr-body-color);
+            min-height: 250px !important;
+        }
+
+        .filepond--drop-label label {
+            padding: 2rem;
+        }
+
+        .filepond--label-action {
+            color: var(--tblr-primary) !important;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            background: var(--tblr-primary-lt);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .filepond--label-action:hover {
+            background: var(--tblr-primary);
+            color: white !important;
+        }
+
+        .filepond--credits {
+            display: none !important;
+        }
+
+        .song-card-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .song-card-modern:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .song-card-modern:hover .song-delete-btn {
+            opacity: 1 !important;
+        }
+
+        .info-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        body {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+        }
+
+        .stats-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="page-wrapper">
+            <div class="container-xl py-4">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 class="mb-2">Tasarım 2: Modern Card Style</h1>
+                        <p class="text-muted">Gradient'ler, shadow'lar ve modern card design</p>
+                        <a href="song-upload-designs.html" class="btn btn-outline-secondary btn-sm">← Tüm Tasarımlara Dön</a>
+                    </div>
+                </div>
+
+                <!-- Design Preview Card -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0 text-white">
+                            <i class="fa fa-music me-2"></i>
+                            Şarkı Yönetimi
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Info Badge -->
+                        <div class="alert alert-info d-flex align-items-center mb-4">
+                            <i class="fa fa-info-circle me-3 fs-3"></i>
+                            <div>
+                                <strong>Desteklenen Formatlar:</strong> MP3, WAV, FLAC, M4A, OGG
+                                <span class="mx-2">•</span>
+                                <strong>Maksimum Boyut:</strong> 100MB
+                            </div>
+                        </div>
+
+                        <!-- ŞARKI DOSYASI & SÜRE -->
+                        <div class="row mb-4">
+                            <!-- Şarkı Dosyası Yükleme -->
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label fs-4 fw-bold mb-3">
+                                        <i class="fa fa-cloud-upload-alt me-2 text-primary"></i>
+                                        Şarkı Dosyası
+                                    </label>
+
+                                    <!-- Split Layout -->
+                                    <div class="row g-4" id="uploadArea2">
+                                        <!-- FilePond Upload Area -->
+                                        <div class="col-md-12" id="pondColumn2">
+                                            <input type="file" class="filepond-audio-2" accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg">
+                                        </div>
+
+                                        <!-- Current Song (modern gradient card) -->
+                                        <div class="col-md-6 d-none" id="songCardColumn2">
+                                            <div class="song-card-modern position-relative" style="min-height: 250px;">
+                                                <!-- X Button -->
+                                                <button
+                                                    onclick="removeSong2()"
+                                                    class="btn btn-icon btn-sm position-absolute song-delete-btn"
+                                                    type="button"
+                                                    style="top: 12px; right: 12px; z-index: 10; width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.3); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.4); opacity: 0; transition: all 0.3s; border-radius: 8px;">
+                                                    <i class="fa fa-times text-white"></i>
+                                                </button>
+
+                                                <div class="p-4">
+                                                    <div class="info-badge">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="me-3">
+                                                                <div class="avatar avatar-lg bg-white text-primary">
+                                                                    <i class="fa fa-music fs-2"></i>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex-fill">
+                                                                <div class="fw-bold fs-5 text-truncate" style="max-width: 200px;" id="songFileName2">
+                                                                    song-name.mp3
+                                                                </div>
+                                                                <div class="d-flex align-items-center mt-1">
+                                                                    <i class="fa fa-clock me-2"></i>
+                                                                    <span id="songDuration2">03:45</span>
+                                                                    <span class="mx-2">•</span>
+                                                                    <i class="fa fa-file-audio me-1"></i>
+                                                                    <span>MP3</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Audio Player -->
+                                                    <div class="mt-3">
+                                                        <div class="bg-white bg-opacity-25 rounded p-3">
+                                                            <audio controls class="w-100" style="height: 40px; filter: invert(1);" id="audioPlayer2">
+                                                                <source src="" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SÜRE & ÖNE ÇIKAN -->
+                            <div class="col-md-4">
+                                <!-- Süre -->
+                                <div class="mb-4">
+                                    <div class="stats-card">
+                                        <label class="form-label fs-5 fw-bold mb-3">
+                                            <i class="fa fa-hourglass-half me-2 text-info"></i>
+                                            Şarkı Süresi
+                                        </label>
+                                        <div class="input-group input-group-lg">
+                                            <input type="number" class="form-control" placeholder="0" min="0" value="225">
+                                            <span class="input-group-text">
+                                                <i class="fa fa-stopwatch me-1"></i>
+                                                saniye
+                                            </span>
+                                        </div>
+                                        <small class="text-muted d-block mt-2">
+                                            <i class="fa fa-magic me-1"></i>
+                                            Otomatik tespit edilir
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Öne Çıkan -->
+                                <div class="mb-3">
+                                    <div class="stats-card">
+                                        <label class="form-label fs-5 fw-bold mb-3">
+                                            <i class="fa fa-star me-2 text-warning"></i>
+                                            Görünürlük
+                                        </label>
+                                        <div class="pretty p-default p-curve p-toggle p-smooth p-bigger">
+                                            <input type="checkbox" id="is_featured2" checked>
+                                            <div class="state p-warning p-on">
+                                                <label class="ms-2 fs-4">
+                                                    <i class="fa fa-star text-warning me-2"></i>
+                                                    Öne Çıkan
+                                                </label>
+                                            </div>
+                                            <div class="state p-off">
+                                                <label class="ms-2 fs-4">
+                                                    <i class="fa fa-star-o me-2"></i>
+                                                    Normal
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler.io JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
+    <!-- FilePond JS -->
+    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
+    <script src="https://unpkg.com/filepond@4/dist/filepond.min.js"></script>
+
+    <script>
+        FilePond.registerPlugin(
+            FilePondPluginFileValidateType,
+            FilePondPluginFileValidateSize
+        );
+
+        const pond2 = FilePond.create(document.querySelector('.filepond-audio-2'), {
+            acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/flac', 'audio/m4a', 'audio/ogg'],
+            maxFileSize: '100MB',
+            stylePanelLayout: 'compact',
+            credits: false,
+            allowRevert: true,
+            instantUpload: false,
+            labelIdle: `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; padding: 2rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <i class="fa fa-cloud-upload-alt" style="font-size: 64px; color: var(--tblr-primary);"></i>
+                    </div>
+                    <h3 class="mb-2" style="color: var(--tblr-primary);">Şarkı Dosyasını Sürükle</h3>
+                    <p class="text-muted mb-3">veya <span class="filepond--label-action">buraya tıklayın</span></p>
+                    <div class="d-flex gap-2 flex-wrap justify-content-center">
+                        <span class="badge bg-primary-lt">MP3</span>
+                        <span class="badge bg-primary-lt">WAV</span>
+                        <span class="badge bg-primary-lt">FLAC</span>
+                        <span class="badge bg-primary-lt">M4A</span>
+                        <span class="badge bg-primary-lt">OGG</span>
+                    </div>
+                </div>
+            `,
+            labelFileProcessing: 'Yükleniyor',
+            labelFileProcessingComplete: 'Yükleme tamamlandı',
+            server: {
+                process: (fieldName, file, metadata, load, error, progress, abort) => {
+                    setTimeout(() => load(file.name), 1500);
+                },
+                revert: (uniqueFileId, load, error) => {
+                    load();
+                }
+            },
+            onaddfile: (error, file) => {
+                if (!error) {
+                    setTimeout(() => showSongCard2(file), 1600);
+                }
+            }
+        });
+
+        function showSongCard2(file) {
+            const pondColumn = document.getElementById('pondColumn2');
+            const songCardColumn = document.getElementById('songCardColumn2');
+
+            pondColumn.classList.remove('col-md-12');
+            pondColumn.classList.add('col-md-6');
+            songCardColumn.classList.remove('d-none');
+
+            document.getElementById('songFileName2').textContent = file.filename;
+
+            const audioPlayer = document.getElementById('audioPlayer2');
+            audioPlayer.src = URL.createObjectURL(file.file);
+
+            setTimeout(() => pond2.removeFiles(), 1000);
+        }
+
+        function removeSong2() {
+            const pondColumn = document.getElementById('pondColumn2');
+            const songCardColumn = document.getElementById('songCardColumn2');
+
+            pondColumn.classList.remove('col-md-6');
+            pondColumn.classList.add('col-md-12');
+            songCardColumn.classList.add('d-none');
+
+            document.getElementById('audioPlayer2').src = '';
+        }
+    </script>
+</body>
+</html>

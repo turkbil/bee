@@ -56,9 +56,11 @@ class PlaylistController extends Controller
     public function getAvailableSongs($id)
     {
         $search = request('search', '');
+        $offset = request('offset', 0);
+        $limit = 50;
 
         $query = \Modules\Muzibu\App\Models\Song::active()
-            ->with(['album.artist'])
+            ->with(['album.artist', 'genre'])
             ->whereNotIn('song_id', function($q) use ($id) {
                 $q->select('song_id')
                   ->from('muzibu_playlist_song')
@@ -69,14 +71,26 @@ class PlaylistController extends Controller
         if ($search) {
             $searchTerm = '%' . $search . '%';
             $query->where(function ($q) use ($searchTerm) {
+                // Şarkı adı
                 $q->where('title', 'like', $searchTerm)
+                  // Şarkı sözleri
+                  ->orWhere('lyrics', 'like', $searchTerm)
+                  // Sanatçı
                   ->orWhereHas('album.artist', fn($artistQuery) =>
                       $artistQuery->where('title', 'like', $searchTerm)
+                  )
+                  // Albüm
+                  ->orWhereHas('album', fn($albumQuery) =>
+                      $albumQuery->where('title', 'like', $searchTerm)
+                  )
+                  // Genre/Tür
+                  ->orWhereHas('genre', fn($genreQuery) =>
+                      $genreQuery->where('title', 'like', $searchTerm)
                   );
             });
         }
 
-        $songs = $query->limit(100)->get()->map(function($song) {
+        $songs = $query->offset($offset)->limit($limit)->get()->map(function($song) {
             $title = $song->getTranslated('title', app()->getLocale());
             $artistTitle = $song->album?->artist?->getTranslated('title', app()->getLocale()) ?? 'Unknown';
 

@@ -103,6 +103,10 @@ $(document).ready(function() {
     let availableSongs = [];
     let playlistSongs = [];
     let sortable = null;
+    let availableSongsOffset = 0;
+    let availableSongsLoading = false;
+    let availableSongsHasMore = true;
+    let currentSearch = '';
 
     // İlk yükleme
     loadPlaylistInfo();
@@ -122,26 +126,70 @@ $(document).ready(function() {
         });
     }
 
-    // Kullanılabilir şarkıları yükle
-    function loadAvailableSongs(search = '') {
+    // Kullanılabilir şarkıları yükle (Infinite Scroll)
+    function loadAvailableSongs(search = '', append = false) {
+        if (availableSongsLoading) return;
+
+        // Yeni search ise offset'i sıfırla
+        if (search !== currentSearch) {
+            availableSongsOffset = 0;
+            availableSongsHasMore = true;
+            currentSearch = search;
+            append = false;
+        }
+
+        if (!availableSongsHasMore && append) return;
+
+        availableSongsLoading = true;
+
         $.ajax({
             url: `/admin/muzibu/playlist/api/${playlistId}/available`,
-            data: { search: search },
+            data: {
+                search: search,
+                offset: availableSongsOffset
+            },
             beforeSend: function() {
-                if (search === '') {
+                if (!append) {
                     $('#available-songs-container').html(`
                         <div class="text-center p-5">
                             <div class="spinner-border text-primary"></div>
                             <div class="mt-2 text-muted">{{ __('admin.loading') }}...</div>
                         </div>
                     `);
+                } else {
+                    // Append loading indicator
+                    if (!$('#loading-more').length) {
+                        $('#available-songs-container .list-group').append(`
+                            <div id="loading-more" class="text-center p-3">
+                                <div class="spinner-border spinner-border-sm text-primary"></div>
+                            </div>
+                        `);
+                    }
                 }
             },
             success: function(data) {
-                availableSongs = data;
-                renderAvailableSongs();
+                availableSongsLoading = false;
+                $('#loading-more').remove();
+
+                if (data.length < 50) {
+                    availableSongsHasMore = false;
+                }
+
+                if (append) {
+                    // Append to existing
+                    availableSongs = availableSongs.concat(data);
+                    renderAvailableSongs(true);
+                } else {
+                    // Replace
+                    availableSongs = data;
+                    renderAvailableSongs(false);
+                }
+
+                availableSongsOffset += data.length;
             },
             error: function() {
+                availableSongsLoading = false;
+                $('#loading-more').remove();
                 showError('{{ __("admin.error_loading_data") }}');
             }
         });
@@ -171,16 +219,16 @@ $(document).ready(function() {
     }
 
     // Kullanılabilir şarkıları render et
-    function renderAvailableSongs() {
+    function renderAvailableSongs(append = false) {
         const search = $('#search-available').val().toLowerCase();
         const filtered = availableSongs.filter(song =>
             song.title.toLowerCase().includes(search) ||
             (song.artist && song.artist.toLowerCase().includes(search))
         );
 
-        $('#available-count').text(filtered.length);
+        $('#available-count').text(availableSongs.length);
 
-        if (filtered.length === 0) {
+        if (filtered.length === 0 && !append) {
             $('#available-songs-container').html(`
                 <div class="empty py-5">
                     <div class="empty-icon">
@@ -192,33 +240,71 @@ $(document).ready(function() {
             return;
         }
 
-        let html = '<div class="list-group list-group-flush">';
-        filtered.forEach(song => {
-            html += `
-                <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <div class="d-flex align-items-center">
-                                <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
-                                <div>
-                                    <strong class="d-block">${song.title}</strong>
-                                    <small class="text-muted">${song.artist || '{{ __("admin.unknown") }}'} ${song.duration ? '· ' + song.duration : ''}</small>
+        let html = '';
+
+        if (append) {
+            // Sadece yeni eklenen şarkıları render et
+            const existingIds = new Set($('#available-songs-container [data-song-id]').map(function() {
+                return parseInt($(this).data('song-id'));
+            }).get());
+
+            filtered.forEach(song => {
+                if (!existingIds.has(song.id)) {
+                    html += `
+                        <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                        <div>
+                                            <strong class="d-block">${song.title}</strong>
+                                            <small class="text-muted">${song.artist || '{{ __("admin.unknown") }}'} ${song.duration ? '· ' + song.duration : ''}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-sm btn-success add-song-btn" data-song-id="${song.id}">
+                                        <i class="fas fa-plus me-1"></i>
+                                        {{ __('admin.add') }}
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <button class="btn btn-sm btn-success add-song-btn" data-song-id="${song.id}">
-                                <i class="fas fa-plus me-1"></i>
-                                {{ __('admin.add') }}
-                            </button>
+                    `;
+                }
+            });
+
+            $('#available-songs-container .list-group').append(html);
+        } else {
+            // Full render
+            html = '<div class="list-group list-group-flush">';
+            filtered.forEach(song => {
+                html += `
+                    <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                    <div>
+                                        <strong class="d-block">${song.title}</strong>
+                                        <small class="text-muted">${song.artist || '{{ __("admin.unknown") }}'} ${song.duration ? '· ' + song.duration : ''}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-sm btn-success add-song-btn" data-song-id="${song.id}">
+                                    <i class="fas fa-plus me-1"></i>
+                                    {{ __('admin.add') }}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
-        });
-        html += '</div>';
+                `;
+            });
+            html += '</div>';
 
-        $('#available-songs-container').html(html);
+            $('#available-songs-container').html(html);
+        }
     }
 
     // Playlist şarkılarını render et
@@ -517,11 +603,26 @@ $(document).ready(function() {
 
         searchAvailableTimeout = setTimeout(() => {
             if (search.length >= 2 || search.length === 0) {
-                loadAvailableSongs(search);
+                loadAvailableSongs(search, false);
             } else {
-                renderAvailableSongs();
+                renderAvailableSongs(false);
             }
         }, 300);
+    });
+
+    // SOL TARAF: Infinite Scroll
+    $('#available-songs-container').on('scroll', function() {
+        const container = $(this);
+        const scrollTop = container.scrollTop();
+        const scrollHeight = container[0].scrollHeight;
+        const clientHeight = container.height();
+
+        // Bottom'a 100px kala load et
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
+            if (availableSongsHasMore && !availableSongsLoading) {
+                loadAvailableSongs(currentSearch, true);
+            }
+        }
     });
 
     // SAĞ TARAF: Arama (Client-side) - instant filter

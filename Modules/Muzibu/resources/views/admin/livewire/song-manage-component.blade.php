@@ -344,8 +344,10 @@
                         maxFileSize: '100MB',
                         stylePanelLayout: 'compact',
                         credits: false,
+                        allowRevert: true,
+                        instantUpload: false,
                         labelIdle: `
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 1rem;">
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 1.5rem;">
                                 <div style="margin-bottom: 1rem;">
                                     <i class="fa fa-music" style="font-size: 48px; color: var(--tblr-muted);"></i>
                                 </div>
@@ -372,8 +374,27 @@
                             process: (fieldName, file, metadata, load, error, progress, abort) => {
                                 // Livewire dosya upload'ı otomatik olarak çalışacak
                                 load(file.name);
+                            },
+                            revert: (uniqueFileId, load, error) => {
+                                // Remove file - Livewire handle eder
+                                load();
+                            }
+                        },
+                        onprocessfile: (error, file) => {
+                            if (!error) {
+                                // Upload tamamlandı - Livewire event trigger
+                                console.log('✅ FilePond file processed:', file.filename);
+                                // Livewire'ı refresh et ki audio player görsün
+                                window.livewire.emit('refreshComponent');
                             }
                         }
+                    });
+
+                    // Livewire refresh event listener
+                    document.addEventListener('livewire:load', function() {
+                        Livewire.on('refreshComponent', () => {
+                            pond.removeFiles();
+                        });
                     });
 
                     console.log('✅ FilePond audio uploader initialized');

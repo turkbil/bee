@@ -13,25 +13,42 @@
 // FilePond Custom Styling - Dark/Light Mode Compatible
 .filepond--root {
     font-family: var(--tblr-font-sans-serif);
-    min-height: 200px;
+    min-height: 200px !important;
 }
 
 .filepond--panel-root {
     background-color: var(--tblr-bg-surface);
-    border: 2px dashed var(--tblr-border-color);
+    border: 2px dashed var(--tblr-border-color) !important;
     border-radius: 8px;
-    min-height: 200px;
+    min-height: 200px !important;
 }
 
 .filepond--drop-label {
     color: var(--tblr-body-color);
-    min-height: 200px;
+    min-height: 200px !important;
+
+    label {
+        padding: 1.5rem;
+    }
 }
 
 .filepond--label-action {
-    color: var(--tblr-primary);
+    color: var(--tblr-primary) !important;
     text-decoration: underline;
     cursor: pointer;
+}
+
+// Compact mode için özel ayarlar
+.filepond--root[data-style-panel-layout="compact"] {
+    min-height: 200px !important;
+
+    .filepond--item {
+        margin: 0.5rem;
+    }
+
+    .filepond--drop-label {
+        min-height: 200px !important;
+    }
 }
 
 .filepond--item-panel {

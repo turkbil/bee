@@ -106,7 +106,11 @@
                     const buffered = audioPlayer.buffered.end(audioPlayer.buffered.length - 1);
                     const bufferAhead = (buffered - audioPlayer.currentTime).toFixed(1);
                     const bufferPercent = ((buffered / audioPlayer.duration) * 100).toFixed(0);
-                    log(`📊 Buffer: ${bufferAhead}s önde | %${bufferPercent} tamponlandı`, 'text-purple-400');
+
+                    // %100 veya 0s ise log atma (sonsuz döngü önleme)
+                    if (bufferPercent < 100 && bufferAhead > 1) {
+                        log(`📊 Buffer: ${bufferAhead}s önde | %${bufferPercent} tamponlandı`, 'text-purple-400');
+                    }
                 }
             }, 2000);
         }
@@ -197,6 +201,29 @@
             } else {
                 log('❌ HLS desteklenmiyor - Chrome/Firefox kullanın', 'text-red-400');
             }
+        });
+
+        // Audio event listeners
+        audioPlayer.addEventListener('pause', () => {
+            if (isPlaying) {
+                stopMonitors();
+            }
+        });
+
+        audioPlayer.addEventListener('play', () => {
+            if (isPlaying) {
+                startProgressMonitor();
+                startBufferMonitor();
+            }
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            isPlaying = false;
+            stopMonitors();
+            streamStatusEl.textContent = 'Tamamlandı';
+            playBtn.textContent = '▶️ Demo Şarkıyı Çal';
+            log('✅ Şarkı tamamlandı', 'text-green-400');
+            log(`🎉 Toplam ${chunksLoaded} bölüm çalındı`, 'text-green-400');
         });
 
         // Initial log

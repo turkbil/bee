@@ -139,11 +139,18 @@ class HLSService
     ): string {
         $ffmpeg = '/usr/bin/ffmpeg';
 
+        // ⚡ ÖZEL: Orijinal bitrate'i tespit et (kalite kaybı minimize)
+        $originalBitrate = $this->detectBitrate($inputFile);
+        $targetBitrate = $this->calculateTargetBitrate($originalBitrate);
+
         $cmd = [
             $ffmpeg,
             '-i', escapeshellarg($inputFile),
             '-c:a', 'aac', // Audio codec: AAC (HLS standart)
-            '-b:a', '320k', // Bitrate: 320kbps (CD kalitesi - EN İYİ)
+            '-b:a', $targetBitrate, // Orijinale yakın bitrate (minimal kalite kaybı)
+            '-profile:a', 'aac_low', // AAC-LC profil (en iyi kalite/uyumluluk)
+            '-ar', '48000', // Sample rate: 48kHz (orijinali koru)
+            '-ac', '2', // Stereo
             '-vn', // Video stream yok
             '-hls_time', self::CHUNK_DURATION, // Chunk süresi
             '-hls_list_size', 0, // Tüm chunk'ları listele
@@ -275,5 +282,60 @@ class HLSService
         }
 
         return null;
+    }
+
+    /**
+     * FFprobe ile orijinal ses bitrate'ini tespit et
+     *
+     * @param string $inputFile MP3 dosya yolu
+     * @return int Bitrate (bps)
+     */
+    protected function detectBitrate(string $inputFile): int
+    {
+        $ffprobe = '/usr/bin/ffprobe';
+
+        $cmd = [
+            $ffprobe,
+            '-v', 'quiet',
+            '-print_format', 'json',
+            '-show_format',
+            escapeshellarg($inputFile)
+        ];
+
+        $output = shell_exec(implode(' ', $cmd));
+        $data = json_decode($output, true);
+
+        // Bitrate'i al (bit/s)
+        $bitrate = $data['format']['bit_rate'] ?? 128000;
+
+        return (int) $bitrate;
+    }
+
+    /**
+     * Orijinal bitrate'e göre hedef AAC bitrate hesapla
+     *
+     * Mantık: Orijinale yakın kalacak şekilde encode et (minimal kalite kaybı)
+     * AAC daha verimli olduğu için aynı kaliteyi daha düşük bitrate'de sağlar
+     *
+     * @param int $originalBitrate Orijinal bitrate (bps)
+     * @return string Target bitrate (k suffix)
+     */
+    protected function calculateTargetBitrate(int $originalBitrate): string
+    {
+        $kbps = round($originalBitrate / 1000);
+
+        // Bitrate mapping (orijinale yakın tut)
+        if ($kbps <= 128) {
+            return '128k';
+        } elseif ($kbps <= 160) {
+            return '160k';
+        } elseif ($kbps <= 192) {
+            return '192k';
+        } elseif ($kbps <= 256) {
+            return '256k';
+        } else {
+            // Maksimum 256kbps (AAC için yeterli)
+            return '256k';
+        }
     }
 }

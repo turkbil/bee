@@ -129,7 +129,7 @@
                         {{-- ŞARKI DOSYASI & SÜRE - Tabler.io Design --}}
                         <div class="row mb-4">
                             {{-- Şarkı Dosyası Yükleme - FilePond --}}
-                            <div class="col-md-12">
+                            <div class="col-md-8">
                                 <div class="mb-3">
                                     <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
@@ -146,11 +146,11 @@
                                         <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
                                     @enderror
 
-                                    {{-- Current File Info --}}
+                                    {{-- Current File Info + Audio Player --}}
                                     @if($inputs['file_path'] ?? null)
                                         <div class="card mt-3">
                                             <div class="card-body">
-                                                <div class="d-flex align-items-center justify-content-between">
+                                                <div class="d-flex align-items-center justify-content-between mb-3">
                                                     <div class="d-flex align-items-center">
                                                         <div class="avatar bg-success-lt me-3">
                                                             <i class="fa fa-music"></i>
@@ -166,16 +166,13 @@
                                                         <i class="fa fa-times"></i> {{ __('muzibu::admin.song.remove') }}
                                                     </button>
                                                 </div>
-                                                <div class="mt-3">
-                                                    <audio controls class="w-100">
-                                                        <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
-                                                    </audio>
-                                                </div>
+                                                <audio controls class="w-100">
+                                                    <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
+                                                </audio>
                                             </div>
                                         </div>
                                     @endif
                                 </div>
-                            </div>
                             </div>
 
                             {{-- SÜRE (Duration) - Manuel düzenlenebilir --}}
@@ -316,14 +313,16 @@
                     const pond = FilePond.create(audioInput, {
                         acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/flac', 'audio/m4a', 'audio/ogg'],
                         maxFileSize: '100MB',
-                        labelIdle: '<i class="fa fa-music fa-2x mb-2"></i><br>Şarkı Dosyasını Sürükle & Bırak<br><span class="filepond--label-action">Dosya Seç</span><br><small>MP3, WAV, FLAC, M4A, OGG - Max 100MB</small>',
+                        stylePanelLayout: 'compact',
+                        credits: false,
+                        labelIdle: '<div style="text-align: center; padding: 2rem;"><i class="fa fa-music fa-3x mb-3" style="color: var(--tblr-muted);"></i><h4 class="mb-2">Şarkı Dosyasını Sürükle & Bırak</h4><p style="color: var(--tblr-muted);">veya <span class="filepond--label-action">Dosya Seç</span></p><small style="color: var(--tblr-muted);">MP3, WAV, FLAC, M4A, OGG • Max 100MB</small></div>',
                         labelFileProcessing: 'Yükleniyor',
                         labelFileProcessingComplete: 'Yükleme tamamlandı',
                         labelFileProcessingAborted: 'Yükleme iptal edildi',
                         labelFileProcessingError: 'Yükleme hatası',
-                        labelTapToCancel: 'iptal etmek için tıkla',
-                        labelTapToRetry: 'tekrar denemek için tıkla',
-                        labelTapToUndo: 'geri almak için tıkla',
+                        labelTapToCancel: 'iptal',
+                        labelTapToRetry: 'tekrar dene',
+                        labelTapToUndo: 'geri al',
                         labelButtonRemoveItem: 'Kaldır',
                         labelButtonAbortItemLoad: 'İptal',
                         labelButtonRetryItemLoad: 'Tekrar Dene',

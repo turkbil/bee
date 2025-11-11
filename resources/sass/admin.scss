@@ -10,6 +10,42 @@
 @import '~filepond/dist/filepond.min.css';
 @import '~filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 
+// FilePond Custom Styling - Dark/Light Mode Compatible
+.filepond--root {
+    font-family: var(--tblr-font-sans-serif);
+}
+
+.filepond--panel-root {
+    background-color: var(--tblr-bg-surface);
+    border: 2px dashed var(--tblr-border-color);
+}
+
+.filepond--drop-label {
+    color: var(--tblr-body-color);
+}
+
+.filepond--label-action {
+    color: var(--tblr-primary);
+    text-decoration: underline;
+}
+
+.filepond--item-panel {
+    background-color: var(--tblr-bg-surface-secondary);
+}
+
+.filepond--drip-blob {
+    background-color: var(--tblr-primary);
+}
+
+.filepond--file-action-button {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+// Hide "Powered by FilePond"
+.filepond--credits {
+    display: none !important;
+}
+
 .admin-custom {
     // Add custom admin styles here if needed
 }

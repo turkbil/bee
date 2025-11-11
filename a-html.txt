@@ -1,996 +1,231 @@
-hls.js@latest:1 [log] > Debug logs enabled for "Hls instance" in hls.js version 1.6.14
-hls.js@latest:1 [log] > stopLoad
-hls.js@latest:1 [log] > loadSource:https://ixtif.com/stream/play/FNFtHaLfv93qxavw/playlist.m3u8
-hls.js@latest:1 [log] > [interstitials]: clear schedule state
-hls.js@latest:1 [log] > [stream-controller]: Trigger BUFFER_RESET
-hls.js@latest:1 [log] > attachMedia
-hls.js@latest:1 [log] > [buffer-controller]: created media source: MediaSource
-hls.js@latest:1 [log] > [buffer-controller]: Media source opened
-hls.js@latest:1 [log] > [buffer-controller]: checkPendingTracks (pending: 0 codec events expected: 0) {}
-hls.js@latest:1 [log] > [level-controller]: manifest loaded, 1 level(s) found, first bitrate: 0
-hls.js@latest:1 [log] > [buffer-controller]: 1 bufferCodec event(s) expected.
-hls.js@latest:1 [log] > auto startLoad with configured startPosition -1
-hls.js@latest:1 [log] > startLoad(-1)
-hls.js@latest:1 [log] > [level-controller]: Switching to level 0 (SDR @0) from level -1
-hls.js@latest:1 [log] > [stream-controller]: STOPPED->IDLE
-hls.js@latest:1 [log] > [subtitle-stream-controller]: STOPPED->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Level 0 loaded [0,21][part-21--1], cc [0, 0] duration:219.86130600000004
-hls.js@latest:1 [log] > [stream-controller]: setting startPosition to 0 by default
-hls.js@latest:1 [log] > [interstitials]: [checkStart] Advancing timeline position to 0
-hls.js@latest:1 [log] > [interstitials]: setSchedulePosition 0, undefined ([primary: 0.00-219.86]) pos: 0
-hls.js@latest:1 [log] > [interstitials]: INTERSTITIALS_BUFFERED_TO_BOUNDARY [primary: 0.00-219.86]
-hls.js@latest:1 [log] > [interstitials]: resuming [primary: 0.00-219.86]
-hls.js@latest:1 [log] > [interstitials]: [attachPrimary] Advancing timeline position to 0
-hls.js@latest:1 [log] > [buffer-controller]: Updating MediaSource duration to 219.861
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
-test-hls-player.html:1 Access to XMLHttpRequest at 'https://tuufi.com/stream/key/FNFtHaLfv93qxavw' from origin 'https://ixtif.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hls.js@latest:1 [error] > 0 while loading https://tuufi.com/stream/key/FNFtHaLfv93qxavw
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-r.onLevelLoaded @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handlePlaylistLoaded @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [warn] > [content-steering]: Could not resolve keyLoadError ("HTTP Error 0 loading key ") with content-steering for Pathway: . levels: 1 priorities: ["."] penalized: {".":2967.7999999970198}
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-r.onLevelLoaded @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handlePlaylistLoaded @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING->FRAG_LOADING_WAITING_RETRY
-hls.js@latest:1 [warn] > [stream-controller]: Fragment 0 of main 0 errored with keyLoadError, retrying loading 1/8 in 1000ms
-r.onFragmentOrKeyLoadError @ hls.js@latest:1
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-r.onLevelLoaded @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handlePlaylistLoaded @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1  GET https://tuufi.com/stream/key/FNFtHaLfv93qxavw net::ERR_FAILED 404 (Not Found)
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-r.onLevelLoaded @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handlePlaylistLoaded @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING_WAITING_RETRY->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
-test-hls-player.html:1 Access to XMLHttpRequest at 'https://tuufi.com/stream/key/FNFtHaLfv93qxavw' from origin 'https://ixtif.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hls.js@latest:1 [error] > 0 while loading https://tuufi.com/stream/key/FNFtHaLfv93qxavw
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [warn] > [content-steering]: Could not resolve keyLoadError ("HTTP Error 0 loading key ") with content-steering for Pathway: . levels: 1 priorities: ["."] penalized: {".":2967.7999999970198}
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING->FRAG_LOADING_WAITING_RETRY
-hls.js@latest:1 [warn] > [stream-controller]: Fragment 0 of main 0 errored with keyLoadError, retrying loading 2/8 in 1000ms
-r.onFragmentOrKeyLoadError @ hls.js@latest:1
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1  GET https://tuufi.com/stream/key/FNFtHaLfv93qxavw net::ERR_FAILED 404 (Not Found)
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING_WAITING_RETRY->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
-test-hls-player.html:1 Access to XMLHttpRequest at 'https://tuufi.com/stream/key/FNFtHaLfv93qxavw' from origin 'https://ixtif.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hls.js@latest:1 [error] > 0 while loading https://tuufi.com/stream/key/FNFtHaLfv93qxavw
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [warn] > [content-steering]: Could not resolve keyLoadError ("HTTP Error 0 loading key ") with content-steering for Pathway: . levels: 1 priorities: ["."] penalized: {".":2967.7999999970198}
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING->FRAG_LOADING_WAITING_RETRY
-hls.js@latest:1 [warn] > [stream-controller]: Fragment 0 of main 0 errored with keyLoadError, retrying loading 3/8 in 1000ms
-r.onFragmentOrKeyLoadError @ hls.js@latest:1
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1  GET https://tuufi.com/stream/key/FNFtHaLfv93qxavw net::ERR_FAILED 404 (Not Found)
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-test-hls-player.html:1 Uncaught (in promise) AbortError: The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING_WAITING_RETRY->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
-test-hls-player.html:1 Access to XMLHttpRequest at 'https://tuufi.com/stream/key/FNFtHaLfv93qxavw' from origin 'https://ixtif.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hls.js@latest:1 [error] > 0 while loading https://tuufi.com/stream/key/FNFtHaLfv93qxavw
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [warn] > [content-steering]: Could not resolve keyLoadError ("HTTP Error 0 loading key ") with content-steering for Pathway: . levels: 1 priorities: ["."] penalized: {".":2967.7999999970198}
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING->FRAG_LOADING_WAITING_RETRY
-hls.js@latest:1 [warn] > [stream-controller]: Fragment 0 of main 0 errored with keyLoadError, retrying loading 4/8 in 1000ms
-r.onFragmentOrKeyLoadError @ hls.js@latest:1
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1  GET https://tuufi.com/stream/key/FNFtHaLfv93qxavw net::ERR_FAILED 404 (Not Found)
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING_WAITING_RETRY->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
-test-hls-player.html:1 Access to XMLHttpRequest at 'https://tuufi.com/stream/key/FNFtHaLfv93qxavw' from origin 'https://ixtif.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hls.js@latest:1 [error] > 0 while loading https://tuufi.com/stream/key/FNFtHaLfv93qxavw
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [warn] > [content-steering]: Could not resolve keyLoadError ("HTTP Error 0 loading key ") with content-steering for Pathway: . levels: 1 priorities: ["."] penalized: {".":2967.7999999970198}
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING->FRAG_LOADING_WAITING_RETRY
-hls.js@latest:1 [warn] > [stream-controller]: Fragment 0 of main 0 errored with keyLoadError, retrying loading 5/8 in 1000ms
-r.onFragmentOrKeyLoadError @ hls.js@latest:1
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1  GET https://tuufi.com/stream/key/FNFtHaLfv93qxavw net::ERR_FAILED 404 (Not Found)
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING_WAITING_RETRY->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
-test-hls-player.html:1 Access to XMLHttpRequest at 'https://tuufi.com/stream/key/FNFtHaLfv93qxavw' from origin 'https://ixtif.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-hls.js@latest:1 [error] > 0 while loading https://tuufi.com/stream/key/FNFtHaLfv93qxavw
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [warn] > [content-steering]: Could not resolve keyLoadError ("HTTP Error 0 loading key ") with content-steering for Pathway: . levels: 1 priorities: ["."] penalized: {".":2967.7999999970198}
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING->FRAG_LOADING_WAITING_RETRY
-hls.js@latest:1 [warn] > [stream-controller]: Fragment 0 of main 0 errored with keyLoadError, retrying loading 6/8 in 1000ms
-r.onFragmentOrKeyLoadError @ hls.js@latest:1
-r.onError @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-r.handleFragLoadError @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-Promise.catch
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1  GET https://tuufi.com/stream/key/FNFtHaLfv93qxavw net::ERR_FAILED 404 (Not Found)
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-(anonymous) @ hls.js@latest:1
-r.loadKeyHTTP @ hls.js@latest:1
-r.loadInternal @ hls.js@latest:1
-r.load @ hls.js@latest:1
-r._doFragLoad @ hls.js@latest:1
-r._loadFragForPlayback @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.loadFragment @ hls.js@latest:1
-r.doTickIdle @ hls.js@latest:1
-r.doTick @ hls.js@latest:1
-r.tick @ hls.js@latest:1
-setInterval
-r.setInterval @ hls.js@latest:1
-r.startLoad @ hls.js@latest:1
-t.startLoad @ hls.js@latest:1
-t.checkAutostartLoad @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.handleTrackOrLevelPlaylist @ hls.js@latest:1
-onSuccess @ hls.js@latest:1
-t.readystatechange @ hls.js@latest:1
-XMLHttpRequest.send
-t.openAndSendXhr @ hls.js@latest:1
-t.loadInternal @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.load @ hls.js@latest:1
-t.onManifestLoading @ hls.js@latest:1
-o.emit @ hls.js@latest:1
-t.emit @ hls.js@latest:1
-t.trigger @ hls.js@latest:1
-t.loadSource @ hls.js@latest:1
-loadStream @ test-hls-player.html:214
-onclick @ test-hls-player.html:172
-hls.js@latest:1 [log] > [stream-controller]: FRAG_LOADING_WAITING_RETRY->IDLE
-hls.js@latest:1 [log] > [stream-controller]: Loading key for 0 of [0-21], level 0
-hls.js@latest:1 [log] > [stream-controller]: IDLE->KEY_LOADING
-hls.js@latest:1 [log] > [key-loader]: Loading URI: https://tuufi.com/stream/key/FNFtHaLfv93qxavw from main 0
-hls.js@latest:1 [log] > [stream-controller]: Loading main sn: 0 of level 0 (frag:[0.000-10.005]) cc: 0 [0-21], target: 0
-hls.js@latest:1 [log] > [stream-controller]: KEY_LOADING->FRAG_LOADING
+(index):64 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+(anonymous) @ (index):64
+cdn.min.js:1 Alpine Expression Error: missing ) after argument list
+
+Expression: "{
+          hls: null,
+          isPlaying: false,
+          chunksLoaded: 0,
+          streamStatus: 'Ready',
+          logs: [],
+
+          addLog(message, type = 'info') {
+              const time = new Date().toLocaleTimeString('tr-TR');
+              this.logs.push({ time, message, type });
+              this.$nextTick(() => {
+                  const consoleBody = this.$refs.consoleBody;
+                  consoleBody.scrollTop = consoleBody.scrollHeight;
+              });
+          },
+
+          clearConsole() {
+              this.logs = [];
+              this.addLog('Console temizlendi', 'info');
+          },
+
+          startDemo() {
+              if (this.isPlaying) {
+                  this.$refs.audioPlayer.pause();
+                  this.isPlaying = false;
+                  this.streamStatus = 'Paused';
+                  this.addLog('⏸ Duraklatıldı', 'warning');
+                  return;
+              }
+
+              if (Hls.isSupported()) {
+                  this.addLog('⏳ Playlist yükleniyor...', 'info');
+                  const startTime = Date.now();
+
+                  if (!this.hls) {
+                      this.hls = new Hls({ enableWorker: true, lowLatencyMode: false });
+                      this.hls.loadSource('https://tuufi.com/stream/play/M5sxjFPOXZgIfARp/playlist.m3u8');
+                      this.hls.attachMedia(this.$refs.audioPlayer);
+
+                      this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                          const loadTime = Date.now() - startTime;
+                          this.addLog('✅ Playlist yüklendi (cache\\'li)', 'success');
+                          this.addLog(`⚡ Hız: ${loadTime}ms`, 'speed');
+                          this.streamStatus = 'Playing';
+                          this.$refs.audioPlayer.play();
+                          this.isPlaying = true;
+                      });
+
+                      this.hls.on(Hls.Events.KEY_LOADED, () => {
+                          this.addLog('🔑 Şifreleme anahtarı alındı', 'success');
+                      });
+
+                      this.hls.on(Hls.Events.FRAG_LOADING, () => {
+                          this.addLog(`[LOADING] >>> chunk_${String(this.chunksLoaded).padStart(3, '0')}.ts`, 'info');
+                      });
+
+                      this.hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+                          this.chunksLoaded++;
+                          const chunkSize = (data.frag.stats.total / 1024).toFixed(2);
+                          const loadTime = data.frag.stats.loading.end - data.frag.stats.loading.start;
+                          this.addLog(`[DECRYPT] <<< chunk_${String(this.chunksLoaded - 1).padStart(3, '0')}.ts | ${chunkSize}KB | ${loadTime}ms`, 'chunk');
+                      });
+
+                      this.hls.on(Hls.Events.ERROR, (event, data) => {
+                          if (data.fatal) {
+                              this.streamStatus = 'Error';
+                              this.addLog('❌ Yükleme hatası - Tekrar deneyin', 'warning');
+                          }
+                      });
+                  } else {
+                      this.$refs.audioPlayer.play();
+                      this.isPlaying = true;
+                      this.streamStatus = 'Playing';
+                      this.addLog('▶️ Devam ediliyor', 'success');
+                  }
+              }
+          },
+
+          init() {
+              this.addLog('✅ Sistem hazır', 'success');
+              this.addLog('🔐 AES-128 şifreleme aktif', 'success');
+          }
+      }"
+
+ <body class=​"bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen p-6" x-data=​"{
+          hls:​ null,
+          isPlaying:​ false,
+          chunksLoaded:​ 0,
+          streamStatus:​ 'Ready',
+          logs:​ []​,
+
+          addLog(message, type = 'info')​ {
+              const time = new Date()​.toLocaleTimeString('tr-TR')​;​
+              this.logs.push({ time, message, type }​)​;​
+              this.$nextTick(()​ => {
+                  const consoleBody = this.$refs.consoleBody;​
+                  consoleBody.scrollTop = consoleBody.scrollHeight;​
+              }​)​;​
+          }​,
+
+          clearConsole()​ {
+              this.logs = []​;​
+              this.addLog('Console temizlendi', 'info')​;​
+          }​,
+
+          startDemo()​ {
+              if (this.isPlaying)​ {
+                  this.$refs.audioPlayer.pause()​;​
+                  this.isPlaying = false;​
+                  this.streamStatus = 'Paused';​
+                  this.addLog('⏸ Duraklatıldı', 'warning')​;​
+                  return;​
+              }​
+
+              if (Hls.isSupported()​)​ {
+                  this.addLog('⏳ Playlist yükleniyor...', 'info')​;​
+                  const startTime = Date.now()​;​
+
+                  if (!this.hls)​ {
+                      this.hls = new Hls({ enableWorker:​ true, lowLatencyMode:​ false }​)​;​
+                      this.hls.loadSource('https:​/​/​tuufi.com/​stream/​play/​M5sxjFPOXZgIfARp/​playlist.m3u8')​;​
+                      this.hls.attachMedia(this.$refs.audioPlayer)​;​
+
+                      this.hls.on(Hls.Events.MANIFEST_PARSED, ()​ => {
+                          const loadTime = Date.now()​ - startTime;​
+                          this.addLog('✅ Playlist yüklendi (cache\\'li)​', 'success')​;​
+                          this.addLog(`⚡ Hız:​ ${loadTime}​ms`, 'speed')​;​
+                          this.streamStatus = 'Playing';​
+                          this.$refs.audioPlayer.play()​;​
+                          this.isPlaying = true;​
+                      }​)​;​
+
+                      this.hls.on(Hls.Events.KEY_LOADED, ()​ => {
+                          this.addLog('🔑 Şifreleme anahtarı alındı', 'success')​;​
+                      }​)​;​
+
+                      this.hls.on(Hls.Events.FRAG_LOADING, ()​ => {
+                          this.addLog(`[LOADING]​ >>> chunk_${String(this.chunksLoaded)​.padStart(3, '0')​}​.ts`, 'info')​;​
+                      }​)​;​
+
+                      this.hls.on(Hls.Events.FRAG_LOADED, (event, data)​ => {
+                          this.chunksLoaded++;​
+                          const chunkSize = (data.frag.stats.total /​ 1024)​.toFixed(2)​;​
+                          const loadTime = data.frag.stats.loading.end - data.frag.stats.loading.start;​
+                          this.addLog(`[DECRYPT]​ <<< chunk_${String(this.chunksLoaded - 1)​.padStart(3, '0')​}​.ts | ${chunkSize}​KB | ${loadTime}​ms`, 'chunk')​;​
+                      }​)​;​
+
+                      this.hls.on(Hls.Events.ERROR, (event, data)​ => {
+                          if (data.fatal)​ {
+                              this.streamStatus = 'Error';​
+                              this.addLog('❌ Yükleme hatası - Tekrar deneyin', 'warning')​;​
+                          }​
+                      }​)​;​
+                  }​ else {
+                      this.$refs.audioPlayer.play()​;​
+                      this.isPlaying = true;​
+                      this.streamStatus = 'Playing';​
+                      this.addLog('▶️ Devam ediliyor', 'success')​;​
+                  }​
+              }​
+          }​,
+
+          init()​ {
+              this.addLog('✅ Sistem hazır', 'success')​;​
+              this.addLog('🔐 AES-128 şifreleme aktif', 'success')​;​
+          }​
+      }​">​…​</body>​
+re @ cdn.min.js:1
+cdn.min.js:1 Alpine Expression Error: isPlaying is not defined
+
+Expression: "isPlaying ? '⏸ Duraklat' : '▶️ Demo Şarkıyı Dinle'"
+
+ <span x-text=​"isPlaying ? '⏸ Duraklat' :​ '▶️ Demo Şarkıyı Dinle'">​</span>​
+re @ cdn.min.js:1
+cdn.min.js:1 Alpine Expression Error: streamStatus is not defined
+
+Expression: "streamStatus === 'Playing' ? 'text-emerald-400 font-bold' : 'text-cyan-400'"
+
+ <p class=​"text-center text-lg mb-8" :class=​"streamStatus === 'Playing' ? 'text-emerald-400 font-bold' :​ 'text-cyan-400'" x-text=​"streamStatus === 'Ready' ? 'Dinlemeye hazır' :​
+                       streamStatus === 'Playing' ? '🎵 Şarkı Çalıyor - Güvenli Akış Aktif' :​
+                       streamStatus === 'Paused' ? 'Duraklatıldı' :​ 'Hata'">​</p>​
+re @ cdn.min.js:1
+cdn.min.js:1 Alpine Expression Error: streamStatus is not defined
+
+Expression: "streamStatus === 'Ready' ? 'Dinlemeye hazır' :
+                       streamStatus === 'Playing' ? '🎵 Şarkı Çalıyor - Güvenli Akış Aktif' :
+                       streamStatus === 'Paused' ? 'Duraklatıldı' : 'Hata'"
+
+ <p class=​"text-center text-lg mb-8" :class=​"streamStatus === 'Playing' ? 'text-emerald-400 font-bold' :​ 'text-cyan-400'" x-text=​"streamStatus === 'Ready' ? 'Dinlemeye hazır' :​
+                       streamStatus === 'Playing' ? '🎵 Şarkı Çalıyor - Güvenli Akış Aktif' :​
+                       streamStatus === 'Paused' ? 'Duraklatıldı' :​ 'Hata'">​</p>​
+re @ cdn.min.js:1
+cdn.min.js:1 Alpine Expression Error: logs is not defined
+
+Expression: "logs"
+
+ <template x-for=​"log in logs" :key=​"log.time + log.message">​…​</template>​
+re @ cdn.min.js:1
+cdn.min.js:1 Alpine Expression Error: chunksLoaded is not defined
+
+Expression: "chunksLoaded"
+
+ <div class=​"text-emerald-400 text-3xl font-bold drop-shadow-[0_0_15px_rgba(16,185,129,0.5)​]​" x-text=​"chunksLoaded">​</div>​
+re @ cdn.min.js:1
+cdn.min.js:1 Alpine Expression Error: streamStatus is not defined
+
+Expression: "streamStatus"
+
+ <div class=​"text-emerald-400 text-3xl font-bold drop-shadow-[0_0_15px_rgba(16,185,129,0.5)​]​" x-text=​"streamStatus">​</div>​
+re @ cdn.min.js:1
+cdn.min.js:5 Uncaught SyntaxError: missing ) after argument list
+cdn.min.js:5 Uncaught ReferenceError: isPlaying is not defined
+cdn.min.js:5 Uncaught ReferenceError: streamStatus is not defined
+cdn.min.js:5 Uncaught ReferenceError: streamStatus is not defined
+cdn.min.js:5 Uncaught ReferenceError: logs is not defined
+cdn.min.js:5 Uncaught ReferenceError: chunksLoaded is not defined
+cdn.min.js:5 Uncaught ReferenceError: streamStatus is not defined
+favicon.ico:1  Failed to load resource: the server responded with a status of 404 ()
+cdn.min.js:1 Alpine Expression Error: startDemo is not defined
+
+Expression: "startDemo()"
+
+ <button @click=​"startDemo()​" class=​"w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:​from-emerald-600 hover:​to-cyan-600
+                           text-white font-bold py-4 px-8 rounded-full text-xl mb-6
+                           transform transition hover:​scale-105 shadow-[0_0_30px_rgba(16,185,129,0.4)​]​">​…​</button>​
+re @ cdn.min.js:1
+cdn.min.js:5 Uncaught ReferenceError: startDemo is not defined

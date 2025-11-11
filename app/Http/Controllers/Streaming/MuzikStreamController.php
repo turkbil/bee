@@ -31,8 +31,18 @@ class MuzikStreamController extends Controller
      * @param string $songHash
      * @return \Illuminate\Http\Response
      */
-    public function getEncryptionKey(string $songHash)
+    public function getEncryptionKey(string $songHash, Request $request)
     {
+        // CORS preflight (OPTIONS request)
+        if ($request->isMethod('options')) {
+            return response('', 200, [
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Max-Age' => '86400',
+            ]);
+        }
+
         try {
             // TODO: Token validation + rate limiting ekle
             // TODO: User authentication kontrol et
@@ -50,6 +60,9 @@ class MuzikStreamController extends Controller
                 'Content-Type' => 'application/octet-stream',
                 'Cache-Control' => 'no-store, no-cache, must-revalidate',
                 'Pragma' => 'no-cache',
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type',
             ]);
 
         } catch (\Exception $e) {
@@ -69,8 +82,18 @@ class MuzikStreamController extends Controller
      * @param string $filename playlist.m3u8 veya chunk_001.ts
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function streamFile(string $songHash, string $filename)
+    public function streamFile(string $songHash, string $filename, Request $request)
     {
+        // CORS preflight (OPTIONS request)
+        if ($request->isMethod('options')) {
+            return response('', 200, [
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Max-Age' => '86400',
+            ]);
+        }
+
         try {
             // Dosya yolu
             $filePath = storage_path('app/public/' . HLSService::HLS_STORAGE_PATH . '/' . $songHash . '/' . $filename);

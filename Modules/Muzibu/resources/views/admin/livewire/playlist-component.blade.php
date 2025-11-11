@@ -188,6 +188,11 @@
                                                 <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="{{ route('admin.muzibu.playlist.songs', $playlist->playlist_id) }}"
+                                                    class="dropdown-item">
+                                                    <i class="fas fa-music me-2"></i>
+                                                    {{ __('muzibu::admin.playlist.manage_songs') }}
+                                                </a>
                                                 <a href="javascript:void(0);"
                                                     wire:click="$dispatch('showDeleteModal', {
                                                     module: 'playlist',

@@ -23,4 +23,14 @@ class PlaylistController extends Controller
             'playlistId' => $id
         ]);
     }
+
+    /**
+     * Playlist Şarkı Yönetim Sayfası (Dual-List)
+     */
+    public function manageSongs($id)
+    {
+        return view('muzibu::admin.playlist-songs-manage', [
+            'playlistId' => $id
+        ]);
+    }
 }

@@ -186,4 +186,26 @@ return [
         'remove_audio_confirm' => 'Are you sure you want to remove this audio file?',
         'song_url_slug' => 'Song URL',
     ],
+
+    // Playlist
+    'playlist' => [
+        'search_placeholder' => 'Search playlist...',
+        'title_field' => 'Playlist Name',
+        'status' => 'Status',
+        'no_results' => 'No playlist found matching your criteria',
+        'no_playlists_found' => 'No playlists found',
+        // Song Management
+        'songs_management' => 'Song Management',
+        'manage_songs' => 'Manage Songs',
+        'all_songs' => 'All Songs',
+        'playlist_songs' => 'Playlist Songs',
+        'search_songs_placeholder' => 'Search song, artist or album...',
+        'added' => 'Added',
+        'no_songs_found' => 'No songs found',
+        'try_different_search' => 'Try different search terms',
+        'showing_songs' => 'Showing :count songs',
+        'no_songs_in_playlist' => 'No songs added yet',
+        'add_songs_from_left' => 'You can add songs from the list on the left',
+        'total_duration' => 'Total Duration',
+    ],
 ];

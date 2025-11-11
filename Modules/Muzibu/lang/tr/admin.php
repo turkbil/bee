@@ -188,6 +188,19 @@ return [
     'user_playlist' => 'Kullanıcı Listesi',
     'radio_mode' => 'Radyo Modu',
     'playlist_mode' => 'Liste Modu',
+    // Şarkı Yönetimi
+    'songs_management' => 'Şarkı Yönetimi',
+    'manage_songs' => 'Şarkıları Düzenle',
+    'all_songs' => 'Tüm Şarkılar',
+    'playlist_songs' => 'Playlist Şarkıları',
+    'search_songs_placeholder' => 'Şarkı, sanatçı veya albüm ara...',
+    'added' => 'Eklendi',
+    'no_songs_found' => 'Şarkı bulunamadı',
+    'try_different_search' => 'Farklı arama terimleri deneyin',
+    'showing_songs' => ':count şarkı gösteriliyor',
+    'no_songs_in_playlist' => 'Henüz şarkı eklenmedi',
+    'add_songs_from_left' => 'Sol taraftaki listeden şarkı ekleyebilirsiniz',
+    'total_duration' => 'Toplam Süre',
 ],
 
 // Radios (Radyolar)

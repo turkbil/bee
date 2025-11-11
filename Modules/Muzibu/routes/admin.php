@@ -78,6 +78,10 @@ Route::middleware(['admin', 'tenant'])
                         Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'manage'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
+
+                        Route::get('/songs/{id}', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'manageSongs'])
+                            ->middleware('module.permission:muzibu,update')
+                            ->name('songs');
                     });
 
                 // Sectors - Livewire

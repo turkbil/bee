@@ -142,7 +142,8 @@
 
                 if (!hls) {
                     hls = new Hls();
-                    hls.loadSource('https://ixtif.com/stream/play/M5sxjFPOXZgIfARp/playlist.m3u8');
+                    // Version parameter ile cache bypass (320kbps kalite güncellemesi)
+                    hls.loadSource('https://ixtif.com/stream/play/M5sxjFPOXZgIfARp/playlist.m3u8?v=320');
                     hls.attachMedia(audioPlayer);
 
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {

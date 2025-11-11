@@ -71,21 +71,31 @@ class PlaylistController extends Controller
         if ($search) {
             $searchTerm = '%' . $search . '%';
             $query->where(function ($q) use ($searchTerm) {
-                // Şarkı adı
-                $q->where('title', 'like', $searchTerm)
-                  // Şarkı sözleri
-                  ->orWhere('lyrics', 'like', $searchTerm)
-                  // Sanatçı
+                // Şarkı adı (JSON field - tüm diller)
+                $q->where('title->tr', 'like', $searchTerm)
+                  ->orWhere('title->en', 'like', $searchTerm)
+                  ->orWhere('title->ar', 'like', $searchTerm)
+                  // Şarkı sözleri (JSON field - tüm diller)
+                  ->orWhere('lyrics->tr', 'like', $searchTerm)
+                  ->orWhere('lyrics->en', 'like', $searchTerm)
+                  ->orWhere('lyrics->ar', 'like', $searchTerm)
+                  // Sanatçı (JSON field - tüm diller)
                   ->orWhereHas('album.artist', fn($artistQuery) =>
-                      $artistQuery->where('title', 'like', $searchTerm)
+                      $artistQuery->where('title->tr', 'like', $searchTerm)
+                          ->orWhere('title->en', 'like', $searchTerm)
+                          ->orWhere('title->ar', 'like', $searchTerm)
                   )
-                  // Albüm
+                  // Albüm (JSON field - tüm diller)
                   ->orWhereHas('album', fn($albumQuery) =>
-                      $albumQuery->where('title', 'like', $searchTerm)
+                      $albumQuery->where('title->tr', 'like', $searchTerm)
+                          ->orWhere('title->en', 'like', $searchTerm)
+                          ->orWhere('title->ar', 'like', $searchTerm)
                   )
-                  // Genre/Tür
+                  // Genre/Tür (JSON field - tüm diller)
                   ->orWhereHas('genre', fn($genreQuery) =>
-                      $genreQuery->where('title', 'like', $searchTerm)
+                      $genreQuery->where('title->tr', 'like', $searchTerm)
+                          ->orWhere('title->en', 'like', $searchTerm)
+                          ->orWhere('title->ar', 'like', $searchTerm)
                   );
             });
         }

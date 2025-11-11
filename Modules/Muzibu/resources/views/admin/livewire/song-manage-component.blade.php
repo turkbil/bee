@@ -128,121 +128,54 @@
 
                         {{-- ŞARKI DOSYASI & SÜRE - Tabler.io Design --}}
                         <div class="row mb-4">
-                            {{-- Şarkı Dosyası Yükleme --}}
-                            <div class="col-md-8">
+                            {{-- Şarkı Dosyası Yükleme - FilePond --}}
+                            <div class="col-md-12">
                                 <div class="mb-3">
                                     <label class="form-label required">
                                         {{ __('muzibu::admin.song.audio_file') }}
                                     </label>
 
-                                    {{-- CSS for Hover Effect (Global scope) --}}
-                                    <style>
-                                        .song-card-with-hover:hover .song-delete-btn {
-                                            opacity: 1 !important;
-                                        }
-                                    </style>
+                                    {{-- FilePond Input --}}
+                                    <input
+                                        type="file"
+                                        class="filepond-audio"
+                                        wire:model="audioFile"
+                                        accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
 
-                                    {{-- Split Layout: Upload + Current Song --}}
-                                    <div x-data="{
-                                        isDragging: false,
-                                        handleDrop(e) {
-                                            this.isDragging = false;
-                                            const files = e.dataTransfer.files;
-                                            if (files.length > 0) {
-                                                $refs.fileInput.files = files;
-                                                $refs.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-                                            }
-                                        }
-                                    }">
-                                        {{-- Hidden File Input --}}
-                                        <input
-                                            type="file"
-                                            x-ref="fileInput"
-                                            wire:model="audioFile"
-                                            class="d-none"
-                                            accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
+                                    @error('audioFile')
+                                        <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
+                                    @enderror
 
-                                        <div class="row g-3">
-                                            {{-- Upload Area - Full width if no file, half width if file exists --}}
-                                            <div class="{{ ($inputs['file_path'] ?? null) ? 'col-md-6' : 'col-md-12' }}">
-                                                <div
-                                                    @click="$refs.fileInput.click()"
-                                                    @dragover.prevent="isDragging = true"
-                                                    @dragleave.prevent="isDragging = false"
-                                                    @drop.prevent="handleDrop($event)"
-                                                    :class="{ 'border-primary bg-primary-lt': isDragging }"
-                                                    class="border border-2 border-dashed rounded p-4 text-center cursor-pointer"
-                                                    style="cursor: pointer; transition: all 0.2s; min-height: 200px;">
-
-                                                    <div class="mb-3">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mx-auto">
-                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                            <polyline points="17 8 12 3 7 8"></polyline>
-                                                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                                                        </svg>
-                                                    </div>
-
-                                                    <h4 class="mb-1">{{ __('muzibu::admin.song.drag_drop_audio') }}</h4>
-                                                    <p class="text-muted mb-2">{{ __('muzibu::admin.song.or_click_browse') }}</p>
-
-                                                    <small class="text-muted d-block">
-                                                        {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
-                                                        <span class="mx-1">•</span>
-                                                        {{ __('muzibu::admin.song.max_size') }}: 100MB
-                                                    </small>
-                                                </div>
-                                            </div>
-
-                                            {{-- Current Song (appears only when file is uploaded) --}}
-                                            @if($inputs['file_path'] ?? null)
-                                                <div class="col-md-6" wire:key="audio-card-{{ $inputs['file_path'] }}">
-                                                    <div class="card position-relative song-card-with-hover" style="min-height: 200px;">
-                                                        {{-- X Button (Gallery Style - Hover to Show) --}}
-                                                        <button
-                                                            wire:click="removeAudio"
-                                                            class="btn btn-icon btn-sm position-absolute song-delete-btn"
-                                                            type="button"
-                                                            style="top: 8px; right: 8px; z-index: 10; width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.95); border: 1px solid #dee2e6; opacity: 0; transition: opacity 0.2s;">
-                                                            <i class="fa fa-times text-danger"></i>
-                                                        </button>
-
-                                                        <div class="card-body p-3">
-                                                            <div class="d-flex align-items-center mb-3">
-                                                                <div class="avatar bg-success-lt me-3">
-                                                                    <i class="fa fa-music"></i>
-                                                                </div>
-                                                                <div class="flex-fill">
-                                                                    <div class="fw-bold text-truncate" style="max-width: 180px;">
-                                                                        {{ $inputs['file_path'] }}
-                                                                    </div>
-                                                                    <small class="text-muted">
-                                                                        {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
-                                                                    </small>
-                                                                </div>
-                                                            </div>
-
-                                                            {{-- Audio Player --}}
-                                                            <div>
-                                                                <audio controls class="w-100" style="height: 35px;">
-                                                                    <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
-                                                                </audio>
-                                                            </div>
+                                    {{-- Current File Info --}}
+                                    @if($inputs['file_path'] ?? null)
+                                        <div class="card mt-3">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar bg-success-lt me-3">
+                                                            <i class="fa fa-music"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="fw-bold">{{ $inputs['file_path'] }}</div>
+                                                            <small class="text-muted">
+                                                                {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
+                                                            </small>
                                                         </div>
                                                     </div>
+                                                    <button wire:click="removeAudio" type="button" class="btn btn-danger btn-sm">
+                                                        <i class="fa fa-times"></i> {{ __('muzibu::admin.song.remove') }}
+                                                    </button>
                                                 </div>
-                                            @endif
+                                                <div class="mt-3">
+                                                    <audio controls class="w-100">
+                                                        <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
+                                                    </audio>
+                                                </div>
+                                            </div>
                                         </div>
-
-                                        @error('audioFile')
-                                            <div class="invalid-feedback d-block mt-2">{{ $message }}</div>
-                                        @enderror
-
-                                        {{-- Upload Progress --}}
-                                        <div wire:loading wire:target="audioFile" class="progress progress-sm mt-2">
-                                            <div class="progress-bar progress-bar-indeterminate"></div>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
+                            </div>
                             </div>
 
                             {{-- SÜRE (Duration) - Manuel düzenlenebilir --}}
@@ -371,6 +304,45 @@
                         }, delay);
                     }
                 });
+            });
+        </script>
+
+        {{-- 🎵 FILEPOND AUDIO UPLOAD --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const audioInput = document.querySelector('.filepond-audio');
+
+                if (audioInput && typeof FilePond !== 'undefined') {
+                    const pond = FilePond.create(audioInput, {
+                        acceptedFileTypes: ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/flac', 'audio/m4a', 'audio/ogg'],
+                        maxFileSize: '100MB',
+                        labelIdle: '<i class="fa fa-music fa-2x mb-2"></i><br>Şarkı Dosyasını Sürükle & Bırak<br><span class="filepond--label-action">Dosya Seç</span><br><small>MP3, WAV, FLAC, M4A, OGG - Max 100MB</small>',
+                        labelFileProcessing: 'Yükleniyor',
+                        labelFileProcessingComplete: 'Yükleme tamamlandı',
+                        labelFileProcessingAborted: 'Yükleme iptal edildi',
+                        labelFileProcessingError: 'Yükleme hatası',
+                        labelTapToCancel: 'iptal etmek için tıkla',
+                        labelTapToRetry: 'tekrar denemek için tıkla',
+                        labelTapToUndo: 'geri almak için tıkla',
+                        labelButtonRemoveItem: 'Kaldır',
+                        labelButtonAbortItemLoad: 'İptal',
+                        labelButtonRetryItemLoad: 'Tekrar Dene',
+                        labelButtonAbortItemProcessing: 'İptal',
+                        labelButtonUndoItemProcessing: 'Geri Al',
+                        labelButtonRetryItemProcessing: 'Tekrar Dene',
+                        labelButtonProcessItem: 'Yükle',
+                        server: {
+                            process: (fieldName, file, metadata, load, error, progress, abort) => {
+                                // Livewire dosya upload'ı otomatik olarak çalışacak
+                                load(file.name);
+                            }
+                        }
+                    });
+
+                    console.log('✅ FilePond audio uploader initialized');
+                } else {
+                    console.warn('⚠️ FilePond not found or audio input not present');
+                }
             });
         </script>
 

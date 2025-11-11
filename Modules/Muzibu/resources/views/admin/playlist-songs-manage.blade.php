@@ -6,7 +6,6 @@
 @endpush
 
 @section('content')
-<div class="container-xl">
     <!-- Dual-List Container -->
     <div class="page-body">
         <div class="row g-4">
@@ -98,7 +97,6 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @push('scripts')

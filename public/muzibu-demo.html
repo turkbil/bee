@@ -126,6 +126,12 @@
                         log(`[ŞİFRE ÇÖZÜLDÜ] <<< parça_${String(chunksLoaded - 1).padStart(3, '0')}.ts | ${size}KB | ${time}ms`, 'text-pink-400');
                     });
 
+                    // Chunk playing (şu an çalıyor)
+                    hls.on(Hls.Events.FRAG_CHANGED, (event, data) => {
+                        const currentChunk = Math.floor(audioPlayer.currentTime / 10);
+                        log(`[ÇALIYOR] ♫ parça_${String(currentChunk).padStart(3, '0')}.ts → ${audioPlayer.currentTime.toFixed(1)}s`, 'text-yellow-400');
+                    });
+
                     hls.on(Hls.Events.ERROR, (event, data) => {
                         if (data.fatal) {
                             streamStatusEl.textContent = 'Hata';

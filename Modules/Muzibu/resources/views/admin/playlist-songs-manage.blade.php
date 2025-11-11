@@ -26,8 +26,11 @@
                                 <span class="input-icon-addon">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" id="search-available" class="form-control"
+                                <input type="text" id="search-available" class="form-control" style="padding-right: 2.5rem;"
                                        placeholder="{{ __('muzibu::admin.playlist.search_songs_placeholder') }}">
+                                <span class="input-icon-addon" style="right: 0; cursor: pointer; z-index: 10; pointer-events: auto;" id="clear-available-search">
+                                    <i class="fas fa-times text-muted" style="display: none;"></i>
+                                </span>
                             </div>
                         </div>
 
@@ -66,8 +69,11 @@
                                 <span class="input-icon-addon">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" id="search-playlist" class="form-control"
+                                <input type="text" id="search-playlist" class="form-control" style="padding-right: 2.5rem;"
                                        placeholder="{{ __('muzibu::admin.playlist.search_in_playlist') }}">
+                                <span class="input-icon-addon" style="right: 0; cursor: pointer; z-index: 10; pointer-events: auto;" id="clear-playlist-search">
+                                    <i class="fas fa-times text-muted" style="display: none;"></i>
+                                </span>
                             </div>
                         </div>
 
@@ -157,17 +163,17 @@ $(document).ready(function() {
             },
             beforeSend: function() {
                 if (!append) {
+                    // Minimal loading - sadece küçük spinner
                     $('#available-songs-container').html(`
-                        <div class="text-center p-5">
-                            <div class="spinner-border text-primary"></div>
-                            <div class="mt-2 text-muted">{{ __('admin.loading') }}...</div>
+                        <div class="text-center p-3">
+                            <div class="spinner-border spinner-border-sm text-primary"></div>
                         </div>
                     `);
                 } else {
                     // Append loading indicator
                     if (!$('#loading-more').length) {
                         $('#available-songs-container .list-group').append(`
-                            <div id="loading-more" class="text-center p-3">
+                            <div id="loading-more" class="text-center p-2">
                                 <div class="spinner-border spinner-border-sm text-primary"></div>
                             </div>
                         `);
@@ -607,17 +613,30 @@ $(document).ready(function() {
 
     // SOL TARAF: Arama (Backend) - debounce
     let searchAvailableTimeout;
-    $('#search-available').on('keyup', function() {
+    $('#search-available').on('keyup input', function() {
         clearTimeout(searchAvailableTimeout);
         const search = $(this).val();
 
+        // X ikonunu göster/gizle
+        if (search.length > 0) {
+            $('#clear-available-search i').show();
+        } else {
+            $('#clear-available-search i').hide();
+        }
+
         searchAvailableTimeout = setTimeout(() => {
-            if (search.length >= 2 || search.length === 0) {
+            // Boşsa veya 2+ karakterse backend'den yükle
+            if (search.length === 0 || search.length >= 2) {
                 loadAvailableSongs(search, false);
-            } else {
-                renderAvailableSongs(false);
             }
-        }, 300);
+            // 1 karakterse hiçbir şey yapma (kullanıcı yazmaya devam edecek)
+        }, 150); // Hızlı yanıt için 150ms
+    });
+
+    // SOL TARAF: Clear button
+    $('#clear-available-search').on('click', function() {
+        $('#search-available').val('').trigger('input');
+        $('#clear-available-search i').hide();
     });
 
     // SOL TARAF: Infinite Scroll
@@ -636,8 +655,15 @@ $(document).ready(function() {
     });
 
     // SAĞ TARAF: Arama (Client-side) - instant filter
-    $('#search-playlist').on('keyup', function() {
+    $('#search-playlist').on('keyup input', function() {
         const search = $(this).val().toLowerCase();
+
+        // X ikonunu göster/gizle
+        if (search.length > 0) {
+            $('#clear-playlist-search i').show();
+        } else {
+            $('#clear-playlist-search i').hide();
+        }
 
         if (search === '') {
             // Boşsa hepsini göster
@@ -656,6 +682,12 @@ $(document).ready(function() {
                 }
             });
         }
+    });
+
+    // SAĞ TARAF: Clear button
+    $('#clear-playlist-search').on('click', function() {
+        $('#search-playlist').val('').trigger('input');
+        $('#clear-playlist-search i').hide();
     });
 
     // Notification fonksiyonları

@@ -196,7 +196,9 @@ class HLSService
         $keyInfoPath = $storagePath . '/enc.keyinfo';
 
         // Key URI (HTTP endpoint - token-based auth)
-        $keyUri = url("/stream/key/{$songHash}");
+        // Tenant domain kullan (tuufi.com yerine ixtif.com)
+        $domain = tenant() ? tenant()->domains->first()->domain : request()->getHost();
+        $keyUri = request()->getScheme() . "://{$domain}/stream/key/{$songHash}";
 
         // IV (initialization vector) - opsiyonel, 16 byte hex
         $iv = bin2hex(random_bytes(16));

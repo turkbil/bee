@@ -314,8 +314,8 @@ class HLSService
     /**
      * Orijinal bitrate'e göre hedef AAC bitrate hesapla
      *
-     * Mantık: Orijinale yakın kalacak şekilde encode et (minimal kalite kaybı)
-     * AAC daha verimli olduğu için aynı kaliteyi daha düşük bitrate'de sağlar
+     * Mantık: Orijinal kaliteyi ASLA düşürme, her zaman korumaya çalış
+     * AAC daha verimli codec ama yüksek kaliteli kaynaklarda orijinali kullan
      *
      * @param int $originalBitrate Orijinal bitrate (bps)
      * @return string Target bitrate (k suffix)
@@ -324,7 +324,7 @@ class HLSService
     {
         $kbps = round($originalBitrate / 1000);
 
-        // Bitrate mapping (orijinale yakın tut)
+        // Bitrate mapping (orijinale eşit veya daha yüksek)
         if ($kbps <= 128) {
             return '128k';
         } elseif ($kbps <= 160) {
@@ -333,9 +333,11 @@ class HLSService
             return '192k';
         } elseif ($kbps <= 256) {
             return '256k';
+        } elseif ($kbps <= 320) {
+            return '320k';
         } else {
-            // Maksimum 256kbps (AAC için yeterli)
-            return '256k';
+            // Yüksek kalite (lossless vb.) - orijinal bitrate'i kullan
+            return $kbps . 'k';
         }
     }
 }

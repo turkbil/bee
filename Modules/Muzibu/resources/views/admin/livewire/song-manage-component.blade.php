@@ -345,7 +345,8 @@
                         stylePanelLayout: 'compact',
                         credits: false,
                         allowRevert: true,
-                        instantUpload: false,
+                        instantUpload: true, // ✅ Otomatik upload
+                        allowProcess: true,
                         labelIdle: `
                             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 1.5rem;">
                                 <div style="margin-bottom: 1rem;">
@@ -372,32 +373,42 @@
                         labelButtonProcessItem: 'Yükle',
                         server: {
                             process: (fieldName, file, metadata, load, error, progress, abort) => {
+                                console.log('🎵 FilePond processing file:', file.name);
                                 // Livewire dosya upload'ı otomatik olarak çalışacak
                                 load(file.name);
                             },
                             revert: (uniqueFileId, load, error) => {
-                                // Remove file - Livewire handle eder
+                                console.log('🗑️ FilePond revert file');
                                 load();
+                            }
+                        },
+                        onaddfile: (error, file) => {
+                            if (!error) {
+                                console.log('📁 File added:', file.filename);
                             }
                         },
                         onprocessfile: (error, file) => {
                             if (!error) {
-                                // Upload tamamlandı - Livewire event trigger
                                 console.log('✅ FilePond file processed:', file.filename);
-                                // Livewire'ı refresh et ki audio player görsün
-                                window.livewire.emit('refreshComponent');
+
+                                // Livewire'a dosya yüklendi sinyali gönder
+                                setTimeout(() => {
+                                    console.log('🔄 Triggering Livewire refresh...');
+                                    @this.call('$refresh');
+                                }, 500);
                             }
                         }
                     });
 
-                    // Livewire refresh event listener
-                    document.addEventListener('livewire:load', function() {
-                        Livewire.on('refreshComponent', () => {
+                    // Livewire file upload complete listener
+                    window.addEventListener('livewire-upload-finish', event => {
+                        console.log('✅ Livewire upload finished!');
+                        setTimeout(() => {
                             pond.removeFiles();
-                        });
+                        }, 1000);
                     });
 
-                    console.log('✅ FilePond audio uploader initialized');
+                    console.log('✅ FilePond audio uploader initialized (instant upload: true)');
                 } else {
                     console.warn('⚠️ FilePond not found or audio input not present');
                 }

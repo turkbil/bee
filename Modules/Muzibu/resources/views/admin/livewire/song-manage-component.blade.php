@@ -227,6 +227,21 @@
                                                                     <source src="{{ asset('storage/muzibu/songs/' . $inputs['file_path']) }}?v={{ time() }}" type="audio/mpeg">
                                                                 </audio>
                                                             </div>
+
+                                                            {{-- HLS Conversion Status --}}
+                                                            @if(isset($inputs['hls_path']) && $inputs['hls_path'])
+                                                                <div class="mt-2">
+                                                                    <div class="alert alert-success mb-0 py-1 px-2">
+                                                                        <small class="d-flex align-items-center">
+                                                                            <i class="fa fa-shield-alt me-1"></i>
+                                                                            <strong>HLS Aktif</strong>
+                                                                            @if(isset($inputs['is_encrypted']) && $inputs['is_encrypted'])
+                                                                                <span class="ms-2 badge bg-green">🔐 Encrypted</span>
+                                                                            @endif
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>

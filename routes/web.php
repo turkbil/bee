@@ -37,6 +37,18 @@ require __DIR__.'/admin/web.php';
 
 // 🧹 Test route'ları arşivlendi
 
+// 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
+Route::middleware([InitializeTenancy::class])->group(function () {
+    // Encryption key endpoint
+    Route::get('/stream/key/{songHash}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'getEncryptionKey'])
+        ->name('stream.key');
+
+    // HLS playlist ve chunk'lar
+    Route::get('/stream/play/{songHash}/{filename}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'streamFile'])
+        ->where('filename', '.*')
+        ->name('stream.play');
+});
+
 // STORAGE ROUTES - EN ÖNCE TANIMLANMALI (high priority)
 // Tenant medya dosyalarına erişim
 Route::middleware([InitializeTenancy::class])

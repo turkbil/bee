@@ -175,9 +175,29 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 'title' => $metadata['title'] ?? 'yok'
             ]);
 
+            // 🔐 HLS Conversion (Streaming + Encryption)
+            $hlsService = app(\App\Services\Muzibu\HLSService::class);
+            $hlsResult = $hlsService->convertToHLS('muzibu/songs/' . $filename, true);
+
+            if ($hlsResult['success']) {
+                $this->inputs['hls_path'] = $hlsResult['hls_path'];
+                $this->inputs['encryption_key'] = $hlsResult['encryption_key'];
+                $this->inputs['is_encrypted'] = $hlsResult['is_encrypted'];
+                $this->inputs['hls_converted_at'] = $hlsResult['converted_at'];
+
+                Log::info('🔐 HLS Conversion başarılı', [
+                    'hls_path' => $hlsResult['hls_path'],
+                    'encrypted' => $hlsResult['is_encrypted']
+                ]);
+            } else {
+                Log::warning('⚠️ HLS Conversion başarısız, MP3 kullanılacak', [
+                    'error' => $hlsResult['error'] ?? 'unknown'
+                ]);
+            }
+
             $this->dispatch('toast', [
                 'title' => 'Başarılı',
-                'message' => 'Şarkı dosyası yüklendi! Süre: ' . gmdate('i:s', $this->inputs['duration']),
+                'message' => 'Şarkı dosyası yüklendi! Süre: ' . gmdate('i:s', $this->inputs['duration']) . ($hlsResult['success'] ? ' (HLS aktif)' : ''),
                 'type' => 'success'
             ]);
 

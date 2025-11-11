@@ -59,13 +59,6 @@ class PlaylistController extends Controller
         $offset = request('offset', 0);
         $limit = 50;
 
-        // 🔍 DEBUG LOG
-        \Log::info('🎵 SEARCH DEBUG', [
-            'search' => $search,
-            'offset' => $offset,
-            'playlist_id' => $id
-        ]);
-
         $query = \Modules\Muzibu\App\Models\Song::where('is_active', true)
             ->with(['album.artist', 'genre'])
             ->whereNotIn('song_id', function($q) use ($id) {
@@ -97,14 +90,6 @@ class PlaylistController extends Controller
             });
         }
 
-        // 🔍 SQL Query'yi logla
-        $sqlQuery = $query->toSql();
-        $bindings = $query->getBindings();
-        \Log::info('🔍 SQL QUERY', [
-            'sql' => $sqlQuery,
-            'bindings' => $bindings
-        ]);
-
         $songs = $query->offset($offset)->limit($limit)->get()->map(function($song) {
             $title = $song->getTranslated('title', app()->getLocale());
             $artistTitle = $song->album?->artist?->getTranslated('title', app()->getLocale()) ?? 'Unknown';
@@ -120,12 +105,6 @@ class PlaylistController extends Controller
                 'cover_url' => $coverUrl
             ];
         });
-
-        // 🔍 Sonuç sayısını logla
-        \Log::info('✅ SEARCH RESULT', [
-            'count' => $songs->count(),
-            'first_3_songs' => $songs->take(3)->pluck('title', 'artist')
-        ]);
 
         return response()->json($songs);
     }

@@ -148,13 +148,6 @@ $(document).ready(function() {
 
         availableSongsLoading = true;
 
-        // 🔍 DEBUG: AJAX isteği
-        console.log('🎵 SEARCH REQUEST:', {
-            search: search,
-            offset: availableSongsOffset,
-            append: append
-        });
-
         $.ajax({
             url: `/admin/muzibu/playlist/api/${playlistId}/available`,
             data: {
@@ -183,12 +176,6 @@ $(document).ready(function() {
             success: function(data) {
                 availableSongsLoading = false;
                 $('#loading-more').remove();
-
-                // 🔍 DEBUG: AJAX cevabı
-                console.log('✅ SEARCH RESPONSE:', {
-                    count: data.length,
-                    first_3: data.slice(0, 3).map(s => `${s.title} - ${s.artist}`)
-                });
 
                 if (data.length < 50) {
                     availableSongsHasMore = false;

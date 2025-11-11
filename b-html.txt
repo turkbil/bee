@@ -1,98 +1,88 @@
-<div class="page-body">
-            <div class="container">
-                                <div class="container-xl">
-    <!-- Header -->
-    <div class="page-header d-print-none mb-4">
-        <div class="row g-2 align-items-center">
-            <div class="col">
-                <div class="page-pretitle">
-                    Şarkı Yönetimi
-                </div>
-                <h2 class="page-title" id="playlist-title">Relax &amp; Chill</h2>
-            </div>
-            <div class="col-auto ms-auto">
-                <a href="https://ixtif.com/admin/muzibu/playlist" class="btn btn-outline-secondary" style="border-radius: 0.25rem !important; transition: border-radius 0.15s;" data-loading-attached="true">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Geri
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dual-List Container -->
-    <div class="page-body">
-        <div class="row g-4">
-            <!-- SOL KOLON: TÜM ŞARKILAR -->
-            <div class="col-md-6">
-                <div class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <h3 class="card-title">
-                            <i class="fas fa-music me-2 text-muted"></i>
-                            Tüm Şarkılar
-                        </h3>
-                    </div>
-                    <div class="card-body p-0" style="border-radius: 0px !important;">
-                        <!-- Arama -->
-                        <div class="p-3 border-bottom">
-                            <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" id="search-available" class="form-control" placeholder="Şarkı, sanatçı veya albüm ara..." style="border-radius: 0.25rem !important;">
-                            </div>
+<div class="tubi-grid">
+      <div class="two columns small-horizontal-gutters">
+        <div class="row">
+          <!-- SOL KOLON: Playlist Şarkıları -->
+          <div class="tubi form segment">
+            <div class="tubi header">Playlist Şarkıları</div>
+            <div class="tubi double fitted divider"></div>
+            <form id="playlist_form" method="post">
+              <div class="field">
+                <div id="playlistSongList">
+                                      <div class="tubi relaxed divided list sortable ui-sortable">
+                                              <div class="item playlist-song" data-id="27248" id="node-27248">
+                          <div class="tubi right floated content">
+                            <button type="button" class="tubi mini icon button remove-song" data-id="27248">
+                              <i class="close icon"></i>
+                            </button>
+                          </div>
+                          <i class="music icon"></i>
+                          <div class="content">
+                            <div class="header">The Fate Of Ophelia</div>
+                            <div class="description">
+                              Muzibu Pop                               - Pop Mix Vol 1                            </div>
+                          </div>
                         </div>
-
-                        <!-- Şarkı Listesi -->
-                        <div id="available-songs-container" style="max-height: 600px; overflow-y: auto;">
-                        <div class="text-center p-5">
-                            <div class="spinner-border text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></div>
-                            <div class="mt-2 text-muted">Yükleniyor...</div>
+                                              <div class="item playlist-song" data-id="27249" id="node-27249">
+                          <div class="tubi right floated content">
+                            <button type="button" class="tubi mini icon button remove-song" data-id="27249">
+                              <i class="close icon"></i>
+                            </button>
+                          </div>
+                          <i class="music icon"></i>
+                          <div class="content">
+                            <div class="header">The Only One</div>
+                            <div class="description">
+                              Muzibu Pop                               - Pop Mix Vol 1                            </div>
+                          </div>
                         </div>
-                    </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="card-footer text-muted" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <small>
-                            <span id="available-count">0</span> muzibu::admin.playlist.songs_found
-                        </small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SAĞ KOLON: PLAYLIST ŞARKILARI -->
-            <div class="col-md-6">
-                <div class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <h3 class="card-title">
-                            <i class="fas fa-list-ol me-2 text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></i>
-                            Playlist Şarkıları
-                            <span class="badge bg-primary ms-2" id="playlist-count" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">0</span>
-                        </h3>
-                    </div>
-                    <div class="card-body p-0" style="border-radius: 0px !important;">
-                        <!-- Playlist Şarkı Listesi (Sortable) -->
-                        <div id="playlist-songs-container" style="max-height: 600px; overflow-y: auto;">
-                    <div class="text-center p-5">
-                        <div class="spinner-border text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></div>
-                        <div class="mt-2 text-muted">Yükleniyor...</div>
-                    </div>
-                </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="card-footer text-muted" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <small>
-                            <i class="fas fa-clock me-1"></i>
-                            Toplam Süre:
-                            <strong id="total-duration">00:00</strong>
-                        </small>
-                    </div>
-                </div>
-            </div>
+                                              <div class="item playlist-song" data-id="27251" id="node-27251">
+                          <div class="tubi right floated content">
+                            <button type="button" class="tubi mini icon button remove-song" data-id="27251">
+                              <i class="close icon"></i>
+                            </button>
+                          </div>
+                          <i class="music icon"></i>
+                          <div class="content">
+                            <div class="header">Who Knew</div>
+                            <div class="description">
+                              Muzibu Pop                               - Pop Mix Vol 1                            </div>
+                          </div>
+                        </div>
+                                              <div class="item playlist-song" data-id="27252" id="node-27252">
+                          <div class="tubi right floated content">
+                            <button type="button" class="tubi mini icon button remove-song" data-id="27252">
+                              <i class="close icon"></i>
+                            </button>
+                          </div>
+                          <i class="music icon"></i>
+                          <div class="content">
+                            <div class="header">Why Why Why</div>
+                            <div class="description">
+                              Muzibu Pop                               - Pop Mix Vol 1                            </div>
+                          </div>
+                        </div>
+                                          </div>
+                                  </div>
+              </div>
+            </form>
+          </div>
         </div>
+        <div class="row">
+          <!-- SAĞ KOLON: Tüm Şarkılar -->
+          <div class="tubi form segment">
+            <div class="tubi header">Şarkı Arama</div>
+            <div class="tubi double fitted divider"></div>
+            <div class="field">
+              <label>Şarkı Ara</label>
+              <div class="tubi input">
+                <input type="text" id="songSearchInput" placeholder="Şarkı, sanatçı veya albüm adı ara..." class="">
+              </div>
+              <div class="tubi message small">Alfabetik sıralı şarkılar listeleniyor. Şarkı, şarkı sözü, şarkıcı, albüm ve şarkı türü ilke arama yapabilirsiniz.</div>
+            </div>
+            <div class="field">
+              <div id="allSongsList"><div class="tubi relaxed divided list"><div class="item all-song" data-id="22086" data-title="1983"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="22086"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">1983</div><div class="description">Muzibu Hard Rock - Hard Psychedelic Rock Album</div></div></div><div class="item all-song" data-id="11713" data-title="3am confessions"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="11713"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">3AM Confessions</div><div class="description">Muzibu - Modern Pop Groove 1</div></div></div><div class="item all-song" data-id="25791" data-title="4 am"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="25791"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">4 AM</div><div class="description">Muzibu Pop Rock - Pop Rock Album Vol 3</div></div></div><div class="item all-song" data-id="5009" data-title="6am chill"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="5009"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">6Am Chill</div><div class="description">Muzibu - Lo Fi House 1</div></div></div><div class="item all-song" data-id="26780" data-title="7 days"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="26780"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">7 Days</div><div class="description">Meditative Ambient - Meditative Ambient Album</div></div></div><div class="item all-song" data-id="26240" data-title="7th heaven"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="26240"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">7th Heaven</div><div class="description">Muzibu Jazz - Smooth &amp; Jazzy Album</div></div></div><div class="item all-song" data-id="13846" data-title="808 pm at the beach"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="13846"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">808 PM At The Beach</div><div class="description">Muzibu - Modern Funk Deep House 2</div></div></div><div class="item all-song" data-id="12826" data-title="808s speak the truth"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="12826"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">808s Speak The Truth</div><div class="description">Muzibu - Instrumental Trap Beats / Hip-Hop 1</div></div></div><div class="item all-song" data-id="26241" data-title="97th &amp; columbus"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="26241"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">97th &amp; Columbus</div><div class="description">Muzibu Jazz - Smooth &amp; Jazzy Album</div></div></div><div class="item all-song" data-id="25094" data-title="99 problems"><div class="tubi right floated content"><button type="button" class="tubi mini icon button add-song" data-id="25094"><i class="plus icon"></i></button></div><i class="music icon"></i><div class="content"><div class="header">99 Problems</div><div class="description">Muzibu - Hip Hop Album</div></div></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
- 
-                            </div>
-        </div>

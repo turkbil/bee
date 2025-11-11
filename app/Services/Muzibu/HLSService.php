@@ -143,7 +143,7 @@ class HLSService
             $ffmpeg,
             '-i', escapeshellarg($inputFile),
             '-c:a', 'aac', // Audio codec: AAC (HLS standart)
-            '-b:a', '128k', // Bitrate: 128kbps (mobil uyumlu)
+            '-b:a', '320k', // Bitrate: 320kbps (CD kalitesi - EN İYİ)
             '-vn', // Video stream yok
             '-hls_time', self::CHUNK_DURATION, // Chunk süresi
             '-hls_list_size', 0, // Tüm chunk'ları listele

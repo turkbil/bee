@@ -59,6 +59,13 @@ class PlaylistController extends Controller
         $offset = request('offset', 0);
         $limit = 50;
 
+        // 🔍 DEBUG LOG
+        \Log::info('🎵 SEARCH DEBUG', [
+            'search' => $search,
+            'offset' => $offset,
+            'playlist_id' => $id
+        ]);
+
         $query = \Modules\Muzibu\App\Models\Song::where('is_active', true)
             ->with(['album.artist', 'genre'])
             ->whereNotIn('song_id', function($q) use ($id) {
@@ -69,36 +76,44 @@ class PlaylistController extends Controller
             ->orderBy('title');
 
         if ($search) {
-            $searchTerm = '%' . $search . '%';
+            $searchTerm = '%' . strtolower($search) . '%';
             $query->where(function ($q) use ($searchTerm) {
-                // Şarkı adı (JSON field - tüm diller)
-                $q->where('title->tr', 'like', $searchTerm)
-                  ->orWhere('title->en', 'like', $searchTerm)
-                  ->orWhere('title->ar', 'like', $searchTerm)
-                  // Şarkı sözleri (JSON field - tüm diller)
-                  ->orWhere('lyrics->tr', 'like', $searchTerm)
-                  ->orWhere('lyrics->en', 'like', $searchTerm)
-                  ->orWhere('lyrics->ar', 'like', $searchTerm)
-                  // Sanatçı (JSON field - tüm diller)
+                // Şarkı adı (JSON field - tüm diller) - CASE INSENSITIVE
+                $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', [$searchTerm])
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.ar"))) LIKE ?', [$searchTerm])
+                  // Şarkı sözleri (JSON field - tüm diller) - CASE INSENSITIVE
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, "$.tr"))) LIKE ?', [$searchTerm])
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, "$.en"))) LIKE ?', [$searchTerm])
+                  ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, "$.ar"))) LIKE ?', [$searchTerm])
+                  // Sanatçı (JSON field - tüm diller) - CASE INSENSITIVE
                   ->orWhereHas('album.artist', fn($artistQuery) =>
-                      $artistQuery->where('title->tr', 'like', $searchTerm)
-                          ->orWhere('title->en', 'like', $searchTerm)
-                          ->orWhere('title->ar', 'like', $searchTerm)
+                      $artistQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                          ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', [$searchTerm])
+                          ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.ar"))) LIKE ?', [$searchTerm])
                   )
-                  // Albüm (JSON field - tüm diller)
+                  // Albüm (JSON field - tüm diller) - CASE INSENSITIVE
                   ->orWhereHas('album', fn($albumQuery) =>
-                      $albumQuery->where('title->tr', 'like', $searchTerm)
-                          ->orWhere('title->en', 'like', $searchTerm)
-                          ->orWhere('title->ar', 'like', $searchTerm)
+                      $albumQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                          ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', [$searchTerm])
+                          ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.ar"))) LIKE ?', [$searchTerm])
                   )
-                  // Genre/Tür (JSON field - tüm diller)
+                  // Genre/Tür (JSON field - tüm diller) - CASE INSENSITIVE
                   ->orWhereHas('genre', fn($genreQuery) =>
-                      $genreQuery->where('title->tr', 'like', $searchTerm)
-                          ->orWhere('title->en', 'like', $searchTerm)
-                          ->orWhere('title->ar', 'like', $searchTerm)
+                      $genreQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
+                          ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.en"))) LIKE ?', [$searchTerm])
+                          ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.ar"))) LIKE ?', [$searchTerm])
                   );
             });
         }
+
+        // 🔍 SQL Query'yi logla
+        $sqlQuery = $query->toSql();
+        $bindings = $query->getBindings();
+        \Log::info('🔍 SQL QUERY', [
+            'sql' => $sqlQuery,
+            'bindings' => $bindings
+        ]);
 
         $songs = $query->offset($offset)->limit($limit)->get()->map(function($song) {
             $title = $song->getTranslated('title', app()->getLocale());
@@ -115,6 +130,12 @@ class PlaylistController extends Controller
                 'cover_url' => $coverUrl
             ];
         });
+
+        // 🔍 Sonuç sayısını logla
+        \Log::info('✅ SEARCH RESULT', [
+            'count' => $songs->count(),
+            'first_3_songs' => $songs->take(3)->pluck('title', 'artist')
+        ]);
 
         return response()->json($songs);
     }

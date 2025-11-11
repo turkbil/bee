@@ -142,6 +142,13 @@ $(document).ready(function() {
 
         availableSongsLoading = true;
 
+        // 🔍 DEBUG: AJAX isteği
+        console.log('🎵 SEARCH REQUEST:', {
+            search: search,
+            offset: availableSongsOffset,
+            append: append
+        });
+
         $.ajax({
             url: `/admin/muzibu/playlist/api/${playlistId}/available`,
             data: {
@@ -170,6 +177,12 @@ $(document).ready(function() {
             success: function(data) {
                 availableSongsLoading = false;
                 $('#loading-more').remove();
+
+                // 🔍 DEBUG: AJAX cevabı
+                console.log('✅ SEARCH RESPONSE:', {
+                    count: data.length,
+                    first_3: data.slice(0, 3).map(s => `${s.title} - ${s.artist}`)
+                });
 
                 if (data.length < 50) {
                     availableSongsHasMore = false;
@@ -220,11 +233,8 @@ $(document).ready(function() {
 
     // Kullanılabilir şarkıları render et
     function renderAvailableSongs(append = false) {
-        const search = $('#search-available').val().toLowerCase();
-        const filtered = availableSongs.filter(song =>
-            song.title.toLowerCase().includes(search) ||
-            (song.artist && song.artist.toLowerCase().includes(search))
-        );
+        // Backend zaten search yapmış, client-side filter gereksiz!
+        const filtered = availableSongs;
 
         $('#available-count').text(availableSongs.length);
 

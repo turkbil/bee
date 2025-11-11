@@ -296,10 +296,11 @@ $(document).ready(function() {
     }
 
     // Şarkı ekleme - ANINDA transfer (Semantic UI style)
-    $(document).on('click', '.add-song-btn', function() {
+    $(document).on('click', '.add-song-btn', function(e) {
+        e.preventDefault();
         const btn = $(this);
         const songId = btn.data('song-id');
-        const songItem = btn.closest('[data-song-id]');
+        const songItem = btn.closest('.list-group-item');
 
         // AJAX çağrısı (arka planda)
         $.ajax({
@@ -314,15 +315,11 @@ $(document).ready(function() {
                 availableSongs = availableSongs.filter(s => s.id !== songId);
 
                 // ANINDA TRANSFER: Sol → Sağ
-                // 1. Butonu değiştir (+ → ×)
-                songItem.find('.add-song-btn')
-                    .removeClass('btn-success add-song-btn')
-                    .addClass('btn-outline-danger remove-song-btn')
-                    .html('<i class="fas fa-times"></i>');
-
-                // 2. Sortable handle + position badge ekle
                 const newIndex = playlistSongs.length - 1;
-                songItem.find('.col-auto').first().before(`
+                const row = songItem.find('.row');
+
+                // 1. Sortable handle + position badge ekle (row başına)
+                row.find('.col').before(`
                     <div class="col-auto">
                         <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
                     </div>
@@ -330,6 +327,12 @@ $(document).ready(function() {
                         <span class="badge bg-secondary">${newIndex + 1}</span>
                     </div>
                 `);
+
+                // 2. Butonu değiştir (+ → ×)
+                songItem.find('.add-song-btn')
+                    .removeClass('btn-success add-song-btn')
+                    .addClass('btn-outline-danger remove-song-btn')
+                    .html('<i class="fas fa-times"></i>');
 
                 // 3. Class değiştir (available → playlist)
                 songItem.removeClass('list-group-item-action')
@@ -342,12 +345,12 @@ $(document).ready(function() {
                 // 5. Sağ listeye APPEND et
                 const playlistContainer = $('#sortable-playlist');
                 if (playlistContainer.length) {
-                    songItem.appendTo(playlistContainer);
+                    songItem.detach().appendTo(playlistContainer);
                     initSortable();
                 } else {
                     // Liste boşsa, container oluştur
                     $('#playlist-songs-container').html('<div id="sortable-playlist" class="list-group list-group-flush"></div>');
-                    songItem.appendTo('#sortable-playlist');
+                    songItem.detach().appendTo('#sortable-playlist');
                     initSortable();
                 }
 
@@ -363,10 +366,11 @@ $(document).ready(function() {
     });
 
     // Şarkı çıkarma - ANINDA transfer (Semantic UI style)
-    $(document).on('click', '.remove-song-btn', function() {
+    $(document).on('click', '.remove-song-btn', function(e) {
+        e.preventDefault();
         const btn = $(this);
         const songId = btn.data('song-id');
-        const songItem = btn.closest('[data-song-id]');
+        const songItem = btn.closest('.list-group-item');
 
         // AJAX çağrısı (arka planda)
         $.ajax({
@@ -402,7 +406,7 @@ $(document).ready(function() {
                 // 5. Sol listeye APPEND et
                 const availableContainer = $('#available-songs-container .list-group');
                 if (availableContainer.length) {
-                    songItem.appendTo(availableContainer);
+                    songItem.detach().appendTo(availableContainer);
                 } else {
                     // Liste boşsa yeniden oluştur
                     renderAvailableSongs();

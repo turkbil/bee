@@ -1,68 +1,393 @@
-multi-modal-manager.js?v=1762888290:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1762888290:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1762888290:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1762888290:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1762888290:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1762888290:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1762888290:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1762888290:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1762888290:13 ⏰ Load Time: 2025-11-11T19:11:31.316Z
-ai-seo-integration.js?v=1762888290:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1762888290:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1762888290:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1762888290:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1762888290:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1762888290:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1762888290:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1762888290:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1762888290:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-streaming-translation.js:33 ✅ Streaming translation is supported
-streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
-streaming-translation.js:15 🚀 Streaming Translation System initializing...
-streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-7:2600 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1762888290:839 ⚡ Livewire initialized
-ai-content-system.js?v=1762888290:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1762888290:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1762888290:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1762888290:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1762888290:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1762888290:558 🔒 attachButtonListeners SKIP - already attached
-7:2997 🚀 Enterprise Streaming Translation System Ready!
-7:3010 📝 Streaming translation not available - Using standard translation mode
-7:1 Attestation check for Topics on https://mc.yandex.com/ failed.
-ai-seo-integration.js?v=1762888290:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1762888290:558 🔒 attachButtonListeners SKIP - already attached
-plugins.js?v=1762888290:2  GET https://ixtif.com/admin/muzibu/playlist/api/7/selected 500 (Internal Server Error)
-send @ plugins.js?v=1762888290:2
-ajax @ plugins.js?v=1762888290:2
-loadPlaylistSongs @ 7:2708
-(anonymous) @ 7:2666
-e @ plugins.js?v=1762888290:2
-t @ plugins.js?v=1762888290:2
-setTimeout
-(anonymous) @ plugins.js?v=1762888290:2
-c @ plugins.js?v=1762888290:2
-fireWith @ plugins.js?v=1762888290:2
-fire @ plugins.js?v=1762888290:2
-c @ plugins.js?v=1762888290:2
-fireWith @ plugins.js?v=1762888290:2
-ready @ plugins.js?v=1762888290:2
-P @ plugins.js?v=1762888290:2
-plugins.js?v=1762888290:2  GET https://ixtif.com/admin/muzibu/playlist/api/7/available?search= 500 (Internal Server Error)
-send @ plugins.js?v=1762888290:2
-ajax @ plugins.js?v=1762888290:2
-loadAvailableSongs @ 7:2683
-(anonymous) @ 7:2665
-e @ plugins.js?v=1762888290:2
-t @ plugins.js?v=1762888290:2
-setTimeout
-(anonymous) @ plugins.js?v=1762888290:2
-c @ plugins.js?v=1762888290:2
-fireWith @ plugins.js?v=1762888290:2
-fire @ plugins.js?v=1762888290:2
-c @ plugins.js?v=1762888290:2
-fireWith @ plugins.js?v=1762888290:2
-ready @ plugins.js?v=1762888290:2
-P @ plugins.js?v=1762888290:2
-7:2637 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+<div class="container">
+                                <div class="container-xl">
+    <!-- Dual-List Container -->
+    <div class="page-body">
+        <div class="row g-4">
+            <!-- SOL KOLON: TÜM ŞARKILAR -->
+            <div class="col-md-6">
+                <div class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <h3 class="card-title">
+                            <i class="fas fa-music me-2 text-muted"></i>
+                            Tüm Şarkılar
+                        </h3>
+                    </div>
+                    <div class="card-body p-0" style="border-radius: 0px !important;">
+                        <!-- Arama -->
+                        <div class="p-3 border-bottom">
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="search-available" class="form-control" placeholder="Şarkı, sanatçı veya albüm ara..." style="border-radius: 0.25rem !important;">
+                            </div>
+                        </div>
+
+                        <!-- Şarkı Listesi -->
+                        <div id="available-songs-container" style="max-height: 600px; overflow-y: auto;"><div class="list-group list-group-flush">
+                <div class="list-group-item list-group-item-action" data-song-id="13">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Sessizlik</strong>
+                                    <small class="text-muted">Tarkan · 04:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item list-group-item-action" data-song-id="8">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Yakar Geçerim</strong>
+                                    <small class="text-muted">Ajda Pekkan · 03:40</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-success add-song-btn" data-song-id="8">
+                                <i class="fas fa-plus me-1"></i>
+                                Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item list-group-item-action" data-song-id="10">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Yaz Akşamları</strong>
+                                    <small class="text-muted">Tarkan · 03:30</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-success add-song-btn" data-song-id="10">
+                                <i class="fas fa-plus me-1"></i>
+                                Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item list-group-item-action" data-song-id="3">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">İkimizin Yerine</strong>
+                                    <small class="text-muted">Tarkan · 03:30</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-success add-song-btn" data-song-id="3">
+                                <i class="fas fa-plus me-1"></i>
+                                Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item list-group-item-action" data-song-id="1">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Şımarık</strong>
+                                    <small class="text-muted">Tarkan · 03:45</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-success add-song-btn" data-song-id="1">
+                                <i class="fas fa-plus me-1"></i>
+                                Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <button class="btn btn-sm btn-outline-danger remove-song-btn list-group-item-action" data-song-id="14">
+                                <i class="fas fa-times"></i>
+                            </button><button class="btn btn-sm btn-outline-danger remove-song-btn list-group-item-action" data-song-id="2">
+                                <i class="fas fa-times"></i>
+                            </button></div></div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer text-muted" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <small>
+                            <span id="available-count">6</span> muzibu::admin.playlist.songs_found
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAĞ KOLON: PLAYLIST ŞARKILARI -->
+            <div class="col-md-6">
+                <div class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <h3 class="card-title">
+                            <i class="fas fa-list-ol me-2 text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></i>
+                            Playlist Şarkıları
+                            <span class="badge bg-primary ms-2" id="playlist-count" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">8</span>
+                        </h3>
+                    </div>
+                    <div class="card-body p-0" style="border-radius: 0px !important;">
+                        <!-- Playlist Şarkı Listesi (Sortable) -->
+                        <div id="playlist-songs-container" style="max-height: 600px; overflow-y: auto;"><div id="sortable-playlist" class="list-group list-group-flush">
+                <div class="list-group-item sortable-item" data-song-id="14" data-position="0">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">1</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Enerji</strong>
+                                    <small class="text-muted">Tarkan · 02:45</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="2" data-position="1">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">2</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Bu Gece</strong>
+                                    <small class="text-muted">Tarkan · 03:18</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="4" data-position="2">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">3</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Geri Dön</strong>
+                                    <small class="text-muted">Sezen Aksu · 04:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="4">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="6" data-position="3">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">4</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Kaç Yıl Geçti</strong>
+                                    <small class="text-muted">Sezen Aksu · 03:50</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="6">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="5" data-position="4">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">5</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Hadi Bakalım</strong>
+                                    <small class="text-muted">Sezen Aksu · 03:35</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="5">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="11" data-position="5">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">6</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Gece Yolculuğu</strong>
+                                    <small class="text-muted">Tarkan · 03:15</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="11">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="9" data-position="6">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">7</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Petu0027r Oil</strong>
+                                    <small class="text-muted">Ajda Pekkan · 03:15</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="9">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="12" data-position="7">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">8</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Dans Et</strong>
+                                    <small class="text-muted">Tarkan · 03:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="12">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="list-group-item sortable-item" data-song-id="7" data-position="8">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge bg-secondary">9</span>
+                        </div>
+                        <div class="col">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
+                                <div>
+                                    <strong class="d-block">Süperstar</strong>
+                                    <small class="text-muted">Ajda Pekkan · 03:25</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="7">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <button class="btn btn-sm btn-success add-song-btn sortable-item" data-song-id="13" data-position="9">
+                                <i class="fas fa-plus me-1"></i>
+                                Ekle
+                            </button></div></div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer text-muted" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <small>
+                            <i class="fas fa-clock me-1"></i>
+                            Toplam Süre:
+                            <strong id="total-duration">28:20</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+                            </div>

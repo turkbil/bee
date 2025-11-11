@@ -60,6 +60,17 @@
                         </h3>
                     </div>
                     <div class="card-body p-0">
+                        <!-- Arama (Playlist) -->
+                        <div class="p-3 border-bottom">
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="search-playlist" class="form-control"
+                                       placeholder="{{ __('muzibu::admin.playlist.search_in_playlist') }}">
+                            </div>
+                        </div>
+
                         <!-- Playlist Şarkı Listesi (Sortable) -->
                         <div id="playlist-songs-container" style="max-height: 600px; overflow-y: auto;">
                             <div class="text-center p-5">
@@ -498,19 +509,36 @@ $(document).ready(function() {
         updateTotalDuration(totalSeconds);
     }
 
-    // Arama - debounce
-    let searchTimeout;
+    // SOL TARAF: Arama (Backend) - debounce
+    let searchAvailableTimeout;
     $('#search-available').on('keyup', function() {
-        clearTimeout(searchTimeout);
+        clearTimeout(searchAvailableTimeout);
         const search = $(this).val();
 
-        searchTimeout = setTimeout(() => {
+        searchAvailableTimeout = setTimeout(() => {
             if (search.length >= 2 || search.length === 0) {
                 loadAvailableSongs(search);
             } else {
                 renderAvailableSongs();
             }
         }, 300);
+    });
+
+    // SAĞ TARAF: Arama (Client-side) - instant filter
+    $('#search-playlist').on('keyup', function() {
+        const search = $(this).val().toLowerCase();
+
+        $('#sortable-playlist .sortable-item').each(function() {
+            const $item = $(this);
+            const title = $item.find('strong').text().toLowerCase();
+            const artist = $item.find('small').text().toLowerCase();
+
+            if (title.includes(search) || artist.includes(search)) {
+                $item.show();
+            } else {
+                $item.hide();
+            }
+        });
     });
 
     // Notification fonksiyonları

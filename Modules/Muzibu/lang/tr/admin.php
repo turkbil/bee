@@ -194,6 +194,7 @@ return [
     'all_songs' => 'Tüm Şarkılar',
     'playlist_songs' => 'Playlist Şarkıları',
     'search_songs_placeholder' => 'Şarkı, sanatçı veya albüm ara...',
+    'search_in_playlist' => 'Playlist içinde ara...',
     'added' => 'Eklendi',
     'no_songs_found' => 'Şarkı bulunamadı',
     'try_different_search' => 'Farklı arama terimleri deneyin',

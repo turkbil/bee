@@ -16,9 +16,23 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 {
     use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
-    protected $connection = 'tenant';
     protected $table = 'muzibu_songs';
     protected $primaryKey = 'song_id';
+
+    /**
+     * Dinamik connection resolver
+     * Central tenant ise mysql (default), değilse tenant connection
+     */
+    public function getConnectionName()
+    {
+        // Eğer tenant context'i varsa ve central değilse tenant connection kullan
+        if (function_exists('tenant') && tenant() && !tenant()->central) {
+            return 'tenant';
+        }
+
+        // Central tenant veya tenant yok ise default connection
+        return config('database.default');
+    }
 
     protected $fillable = [
         'album_id',

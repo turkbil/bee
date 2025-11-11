@@ -186,12 +186,15 @@ return [
     'edit' => 'Edit',
     'create' => 'Create',
     'update' => 'Update',
+    'add' => 'Add',
+    'remove' => 'Remove',
     'back' => 'Back',
     'next' => 'Next',
     'previous' => 'Previous',
     'close' => 'Close',
     'continue' => 'Continue',
     'finish' => 'Finish',
+    'unknown' => 'Unknown',
 
     // Confirmation
     'yes' => 'Yes',

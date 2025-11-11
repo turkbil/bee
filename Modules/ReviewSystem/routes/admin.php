@@ -15,16 +15,27 @@ Route::middleware(['admin', 'tenant'])
             ->name('reviewsystem.')
             ->group(function () {
                 // Tüm yorumlar
-                Route::get('/', ReviewComponent::class)->name('index');
+                Route::get('/', ReviewComponent::class)
+                    ->middleware('permission:reviewsystem.view')
+                    ->name('index');
 
                 // Onay bekleyenler
-                Route::get('/pending', PendingReviewsComponent::class)->name('pending');
+                Route::get('/pending', PendingReviewsComponent::class)
+                    ->middleware('permission:reviewsystem.view')
+                    ->name('pending');
 
                 // İstatistikler
-                Route::get('/statistics', ReviewStatisticsComponent::class)->name('statistics');
+                Route::get('/statistics', ReviewStatisticsComponent::class)
+                    ->middleware('permission:reviewsystem.view')
+                    ->name('statistics');
 
                 // Manuel yorum ekle/düzenle
-                Route::get('/add', ReviewManageComponent::class)->name('add');
-                Route::get('/edit/{id}', ReviewManageComponent::class)->name('edit');
+                Route::get('/add', ReviewManageComponent::class)
+                    ->middleware('permission:reviewsystem.create')
+                    ->name('add');
+
+                Route::get('/edit/{id}', ReviewManageComponent::class)
+                    ->middleware('permission:reviewsystem.update')
+                    ->name('edit');
             });
     });

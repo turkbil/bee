@@ -7,22 +7,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SongPlay extends BaseModel
 {
-    use HasFactory;
 
-    protected $table = 'muzibu_song_plays';
-    protected $primaryKey = 'id';
     /**
      * Dinamik connection resolver
      * Central tenant ise mysql (default), değilse tenant connection
      */
     public function getConnectionName()
     {
+        // Eğer tenant context'i varsa ve central değilse tenant connection kullan
         if (function_exists('tenant') && tenant() && !tenant()->central) {
             return 'tenant';
         }
+
+        // Central tenant veya tenant yok ise default connection
         return config('database.default');
     }
+    use HasFactory;
 
+    protected $table = 'muzibu_song_plays';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'song_id',

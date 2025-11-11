@@ -12,22 +12,25 @@ use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
 class Sector extends BaseModel implements HasMedia
 {
-    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes;
 
-    protected $table = 'muzibu_sectors';
-    protected $primaryKey = 'sector_id';
     /**
      * Dinamik connection resolver
      * Central tenant ise mysql (default), değilse tenant connection
      */
     public function getConnectionName()
     {
+        // Eğer tenant context'i varsa ve central değilse tenant connection kullan
         if (function_exists('tenant') && tenant() && !tenant()->central) {
             return 'tenant';
         }
+
+        // Central tenant veya tenant yok ise default connection
         return config('database.default');
     }
+    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes;
 
+    protected $table = 'muzibu_sectors';
+    protected $primaryKey = 'sector_id';
 
     protected $fillable = [
         'title',

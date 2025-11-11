@@ -50,6 +50,7 @@ class UserComponent extends Component
     {
         return array_merge([
             'refreshComponent' => '$refresh',
+            'itemDeleted' => '$refresh',
             'bulkProgressUpdate' => 'refreshBulkProgress',
             'bulkJobCompleted' => 'onBulkJobCompleted',
             'closeBulkModal' => 'closeBulkModal'

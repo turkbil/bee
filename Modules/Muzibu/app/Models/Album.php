@@ -16,9 +16,20 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
 {
     use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
-    protected $connection = 'tenant';
     protected $table = 'muzibu_albums';
     protected $primaryKey = 'album_id';
+
+    /**
+     * Dinamik connection resolver
+     * Central tenant ise mysql (default), değilse tenant connection
+     */
+    public function getConnectionName()
+    {
+        if (function_exists('tenant') && tenant() && !tenant()->central) {
+            return 'tenant';
+        }
+        return config('database.default');
+    }
 
     protected $fillable = [
         'artist_id',

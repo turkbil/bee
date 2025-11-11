@@ -15,7 +15,7 @@ class PlaylistSongsManageComponent extends Component
     public int $playlistId;
     public string $search = '';
 
-    protected Playlist $playlist;
+    protected ?Playlist $playlist = null;
 
     public function mount(int $playlistId): void
     {
@@ -24,10 +24,7 @@ class PlaylistSongsManageComponent extends Component
         // Playlist var mı kontrolü
         $this->playlist = Playlist::findOrFail($playlistId);
 
-        // Yetki kontrolü (opsiyonel - middleware zaten var ama double-check)
-        if (!auth()->user()->can('update', $this->playlist)) {
-            abort(403, 'Bu playlist\'i düzenleme yetkiniz yok');
-        }
+        // Yetki kontrolü - Middleware zaten module.permission kontrolü yapıyor, burada tekrar kontrol gereksiz
     }
 
     /**

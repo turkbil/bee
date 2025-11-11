@@ -12,29 +12,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
-class Artist extends BaseModel implements TranslatableEntity, HasMedia
+class Genre extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
-    protected $table = 'muzibu_artists';
-    protected $primaryKey = 'artist_id';
     /**
      * Dinamik connection resolver
      * Central tenant ise mysql (default), değilse tenant connection
      */
     public function getConnectionName()
     {
+        // Eğer tenant context'i varsa ve central değilse tenant connection kullan
         if (function_exists('tenant') && tenant() && !tenant()->central) {
             return 'tenant';
         }
+
+        // Central tenant veya tenant yok ise default connection
         return config('database.default');
     }
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
+    protected $table = 'muzibu_genres';
+    protected $primaryKey = 'genre_id';
 
     protected $fillable = [
         'title',
         'slug',
-        'bio',
+        'description',
         'media_id',
         'is_active',
     ];
@@ -42,7 +45,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     protected $casts = [
         'title' => 'array',
         'slug' => 'array',
-        'bio' => 'array',
+        'description' => 'array',
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -52,19 +55,18 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     /**
      * Çevrilebilir alanlar
      */
-    protected $translatable = ['title', 'slug', 'bio'];
+    protected $translatable = ['title', 'slug', 'description'];
 
     /**
-     * ID accessor - artist_id'yi id olarak döndür
+     * ID accessor - genre_id'yi id olarak döndür
      */
     public function getIdAttribute()
     {
-        return $this->artist_id;
+        return $this->genre_id;
     }
 
     /**
-     * Sluggable Ayarları - JSON çoklu dil desteği için devre dışı
-     * HasTranslations trait'inde generateSlugForLocale() kullanılacak
+     * Sluggable Ayarları
      */
     public function sluggable(): array
     {
@@ -80,39 +82,31 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Albüm ilişkisi
-     */
-    public function albums()
-    {
-        return $this->hasMany(Album::class, 'artist_id', 'artist_id');
-    }
-
-    /**
-     * Şarkı ilişkisi (albüm üzerinden)
+     * Şarkı ilişkisi
      */
     public function songs()
     {
-        return $this->hasManyThrough(Song::class, Album::class, 'artist_id', 'album_id', 'artist_id', 'album_id');
+        return $this->hasMany(Song::class, 'genre_id', 'genre_id');
     }
 
     /**
-     * Thumbmaker media ilişkisi (Artist photo)
-     * Not: Spatie'nin media() methodu ile çakışmamak için photoMedia() kullanıyoruz
+     * Thumbmaker media ilişkisi (Genre icon/image)
+     * Not: Spatie'nin media() methodu ile çakışmamak için iconMedia() kullanıyoruz
      */
-    public function photoMedia()
+    public function iconMedia()
     {
         return $this->belongsTo(\Modules\MediaManagement\App\Models\Media::class, 'media_id');
     }
 
     /**
-     * Artist photo URL'i (Thumbmaker helper ile)
+     * Genre icon URL'i (Thumbmaker helper ile)
      */
-    public function getPhotoUrl(?int $width = 400, ?int $height = 400): ?string
+    public function getIconUrl(?int $width = 300, ?int $height = 300): ?string
     {
         if (!$this->media_id) {
             return null;
         }
-        return thumb($this->photoMedia, $width, $height);
+        return thumb($this->iconMedia, $width, $height);
     }
 
     /**
@@ -125,8 +119,8 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackDescription(): ?string
     {
-        $bio = $this->getTranslated('bio', app()->getLocale());
-        return $bio ? \Illuminate\Support\Str::limit(strip_tags($bio), 160) : null;
+        $description = $this->getTranslated('description', app()->getLocale());
+        return $description ? \Illuminate\Support\Str::limit(strip_tags($description), 160) : null;
     }
 
     public function getSeoFallbackKeywords(): array
@@ -142,7 +136,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     public function getSeoFallbackCanonicalUrl(): ?string
     {
         $slug = $this->getTranslated('slug', app()->getLocale());
-        return $slug ? url('/muzibu/artist/' . ltrim($slug, '/')) : null;
+        return $slug ? url('/muzibu/genre/' . ltrim($slug, '/')) : null;
     }
 
     public function getSeoFallbackImage(): ?string
@@ -154,11 +148,10 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     {
         return [
             '@context' => 'https://schema.org',
-            '@type' => 'MusicGroup',
+            '@type' => 'MusicGenre',
             'name' => $this->getSeoFallbackTitle(),
             'description' => $this->getSeoFallbackDescription(),
             'url' => $this->getSeoFallbackCanonicalUrl(),
-            'image' => $this->getSeoFallbackImage(),
         ];
     }
 
@@ -169,7 +162,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     {
         return [
             'title' => 'text',
-            'bio' => 'html',
+            'description' => 'html',
             'slug' => 'auto',
         ];
     }
@@ -181,8 +174,8 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function afterTranslation(string $targetLanguage, array $translatedData): void
     {
-        \Log::info("Artist çevirisi tamamlandı", [
-            'artist_id' => $this->artist_id,
+        \Log::info("Genre çevirisi tamamlandı", [
+            'genre_id' => $this->genre_id,
             'target_language' => $targetLanguage,
             'translated_fields' => array_keys($translatedData),
         ]);
@@ -190,7 +183,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getPrimaryKeyName(): string
     {
-        return 'artist_id';
+        return 'genre_id';
     }
 
     /**
@@ -199,7 +192,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     protected function getMediaConfig(): array
     {
         return [
-            'photo' => [
+            'cover' => [
                 'type' => 'image',
                 'single_file' => true,
                 'max_items' => 1,
@@ -211,7 +204,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Artist için locale-aware URL
+     * Genre için locale-aware URL
      */
     public function getUrl(?string $locale = null): string
     {
@@ -220,9 +213,9 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/artist/{$slug}");
+            return url("/muzibu/genre/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/artist/{$slug}");
+        return url("/{$locale}/muzibu/genre/{$slug}");
     }
 }

@@ -118,4 +118,26 @@ return [
     'remove_audio_confirm' => 'هل أنت متأكد من إزالة ملف الصوت هذا؟',
     'song_url_slug' => 'رابط الأغنية',
 ],
+
+// Playlist
+'playlist' => [
+    'search_placeholder' => 'بحث عن قائمة تشغيل...',
+    'title_field' => 'اسم قائمة التشغيل',
+    'status' => 'الحالة',
+    'no_results' => 'لم يتم العثور على قائمة تشغيل تطابق معاييرك',
+    'no_playlists_found' => 'لم يتم العثور على قوائم تشغيل',
+    // Song Management
+    'songs_management' => 'إدارة الأغاني',
+    'manage_songs' => 'إدارة الأغاني',
+    'all_songs' => 'جميع الأغاني',
+    'playlist_songs' => 'أغاني قائمة التشغيل',
+    'search_songs_placeholder' => 'البحث عن أغنية أو فنان أو ألبوم...',
+    'added' => 'تمت الإضافة',
+    'no_songs_found' => 'لم يتم العثور على أغاني',
+    'try_different_search' => 'جرب مصطلحات بحث مختلفة',
+    'showing_songs' => 'عرض :count أغنية',
+    'no_songs_in_playlist' => 'لم تتم إضافة أغاني بعد',
+    'add_songs_from_left' => 'يمكنك إضافة أغاني من القائمة على اليسار',
+    'total_duration' => 'المدة الإجمالية',
+],
 ];

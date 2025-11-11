@@ -17,18 +17,22 @@ Route::middleware(['auth', 'tenant'])->prefix('admin')->name('admin.')->group(fu
     // MediaManagement index - Bilgilendirme sayfası
     Route::get('/mediamanagement', function () {
         return view('mediamanagement::admin.index');
-    })->name('mediamanagement.index');
+    })->middleware('permission:mediamanagement.view')
+      ->name('mediamanagement.index');
 
     // Thumbmaker Kullanım Kılavuzu
     Route::get('/mediamanagement/thumbmaker-guide', function () {
         return view('mediamanagement::admin.thumbmaker-guide');
-    })->name('mediamanagement.thumbmaker-guide');
+    })->middleware('permission:mediamanagement.view')
+      ->name('mediamanagement.thumbmaker-guide');
 
     Route::post('/mediamanagement/library/upload', \Modules\MediaManagement\App\Http\Controllers\Admin\MediaLibraryUploadController::class)
+        ->middleware('permission:mediamanagement.create')
         ->name('mediamanagement.library.upload');
 
     // Manual featured image upload - Livewire bypass for SSL issues
     Route::post('/mediamanagement/featured-upload', [\Modules\MediaManagement\App\Http\Livewire\Admin\UniversalMediaComponent::class, 'manualFeaturedUpload'])
+        ->middleware('permission:mediamanagement.create')
         ->name('mediamanagement.featured.upload');
 
 });

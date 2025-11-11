@@ -1,70 +1,98 @@
-multi-modal-manager.js?v=1762776529:13 🔧 Multi Modal Manager initialized
-multi-modal-manager.js?v=1762776529:186 ✅ Multi Modal Manager loaded
-simple-translation-modal.js?v=1762776529:1 🔧 Minimal Translation Modal loading...
-simple-translation-modal.js?v=1762776529:1014 ✅ AI Warning System Translation Modal loaded successfully
-ai-content-system.js?v=1762776529:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1762776529:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1762776529:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1762776529:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1762776529:13 ⏰ Load Time: 2025-11-10T12:08:50.181Z
-ai-seo-integration.js?v=1762776529:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1762776529:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1762776529:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1762776529:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1762776529:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1762776529:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1762776529:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1762776529:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1762776529:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-streaming-translation.js:33 ✅ Streaming translation is supported
-streaming-translation.js:21 🚀 Enterprise Streaming Translation System Ready!
-streaming-translation.js:15 🚀 Streaming Translation System initializing...
-streaming-translation.js:267 ✅ Enterprise Streaming Translation System loaded
-add:2580 ✅ Alpine.js Global Store initialized (Livewire bundled)
-simple-translation-modal.js?v=1762776529:839 ⚡ Livewire initialized
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: userId is not defined
+<div class="page-body">
+            <div class="container">
+                                <div class="container-xl">
+    <!-- Header -->
+    <div class="page-header d-print-none mb-4">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle">
+                    Şarkı Yönetimi
+                </div>
+                <h2 class="page-title" id="playlist-title">Relax &amp; Chill</h2>
+            </div>
+            <div class="col-auto ms-auto">
+                <a href="https://ixtif.com/admin/muzibu/playlist" class="btn btn-outline-secondary" style="border-radius: 0.25rem !important; transition: border-radius 0.15s;" data-loading-attached="true">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Geri
+                </a>
+            </div>
+        </div>
+    </div>
 
-Expression: "userId > 0"
+    <!-- Dual-List Container -->
+    <div class="page-body">
+        <div class="row g-4">
+            <!-- SOL KOLON: TÜM ŞARKILAR -->
+            <div class="col-md-6">
+                <div class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <h3 class="card-title">
+                            <i class="fas fa-music me-2 text-muted"></i>
+                            Tüm Şarkılar
+                        </h3>
+                    </div>
+                    <div class="card-body p-0" style="border-radius: 0px !important;">
+                        <!-- Arama -->
+                        <div class="p-3 border-bottom">
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="search-available" class="form-control" placeholder="Şarkı, sanatçı veya albüm ara..." style="border-radius: 0.25rem !important;">
+                            </div>
+                        </div>
 
- <input type=​"text" wire:model=​"authorName" class=​"form-control" placeholder=​"Örn:​ Ahmet Yılmaz" :disabled=​"userId > 0">​
-handleError @ livewire.js?id=df3a17f2:1123
-ai-content-system.js?v=1762776529:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1762776529:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1762776529:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1762776529:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1762776529:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1762776529:558 🔒 attachButtonListeners SKIP - already attached
-add:2677 🚀 Enterprise Streaming Translation System Ready!
-add:2690 📝 Streaming translation not available - Using standard translation mode
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: userId is not defined
-    at [Alpine] userId > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-ai-seo-integration.js?v=1762776529:558 🔒 attachButtonListeners SKIP - already attached
-add:1 Attestation check for Topics on https://mc.yandex.com/ failed.
-ai-seo-integration.js?v=1762776529:558 🔒 attachButtonListeners SKIP - already attached
-add:2617 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: userId is not defined
+                        <!-- Şarkı Listesi -->
+                        <div id="available-songs-container" style="max-height: 600px; overflow-y: auto;">
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></div>
+                            <div class="mt-2 text-muted">Yükleniyor...</div>
+                        </div>
+                    </div>
+                    </div>
 
-Expression: "userId > 0"
+                    <!-- Footer -->
+                    <div class="card-footer text-muted" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <small>
+                            <span id="available-count">0</span> muzibu::admin.playlist.songs_found
+                        </small>
+                    </div>
+                </div>
+            </div>
 
- <input type=​"text" wire:model=​"authorName" class=​"form-control" placeholder=​"Örn:​ Ahmet Yılmaz" :disabled=​"userId > 0">​
-handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: userId is not defined
-    at [Alpine] userId > 0 (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at livewire.js?id=df3a17f2:1956:26
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
+            <!-- SAĞ KOLON: PLAYLIST ŞARKILARI -->
+            <div class="col-md-6">
+                <div class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <h3 class="card-title">
+                            <i class="fas fa-list-ol me-2 text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></i>
+                            Playlist Şarkıları
+                            <span class="badge bg-primary ms-2" id="playlist-count" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">0</span>
+                        </h3>
+                    </div>
+                    <div class="card-body p-0" style="border-radius: 0px !important;">
+                        <!-- Playlist Şarkı Listesi (Sortable) -->
+                        <div id="playlist-songs-container" style="max-height: 600px; overflow-y: auto;">
+                    <div class="text-center p-5">
+                        <div class="spinner-border text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></div>
+                        <div class="mt-2 text-muted">Yükleniyor...</div>
+                    </div>
+                </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer text-muted" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <small>
+                            <i class="fas fa-clock me-1"></i>
+                            Toplam Süre:
+                            <strong id="total-duration">00:00</strong>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+                            </div>
+        </div>

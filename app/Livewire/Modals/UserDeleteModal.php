@@ -53,7 +53,7 @@ class UserDeleteModal extends Component
                'type' => 'danger',
            ]);
 
-           $this->dispatch('itemDeleted', $this->userId)->to('user-component');
+           $this->dispatch('itemDeleted', $this->userId)->to('usermanagement.user-component');
 
        } catch (\Exception $e) {
            DB::rollBack();

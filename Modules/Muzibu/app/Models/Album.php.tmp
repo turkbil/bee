@@ -12,34 +12,34 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
-class Playlist extends BaseModel implements TranslatableEntity, HasMedia
+class Album extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
-    protected $table = 'muzibu_playlists';
-    protected $primaryKey = 'playlist_id';
     /**
      * Dinamik connection resolver
      * Central tenant ise mysql (default), değilse tenant connection
      */
     public function getConnectionName()
     {
+        // Eğer tenant context'i varsa ve central değilse tenant connection kullan
         if (function_exists('tenant') && tenant() && !tenant()->central) {
             return 'tenant';
         }
+
+        // Central tenant veya tenant yok ise default connection
         return config('database.default');
     }
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
 
+    protected $table = 'muzibu_albums';
+    protected $primaryKey = 'album_id';
 
     protected $fillable = [
-        'user_id',
+        'artist_id',
         'title',
         'slug',
         'description',
         'media_id',
-        'is_system',
-        'is_public',
-        'is_radio',
         'is_active',
     ];
 
@@ -47,9 +47,6 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         'title' => 'array',
         'slug' => 'array',
         'description' => 'array',
-        'is_system' => 'boolean',
-        'is_public' => 'boolean',
-        'is_radio' => 'boolean',
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -62,11 +59,11 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     protected $translatable = ['title', 'slug', 'description'];
 
     /**
-     * ID accessor - playlist_id'yi id olarak döndür
+     * ID accessor - album_id'yi id olarak döndür
      */
     public function getIdAttribute()
     {
-        return $this->playlist_id;
+        return $this->album_id;
     }
 
     /**
@@ -86,92 +83,23 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Public playlist'leri getir
+     * Sanatçı ilişkisi
      */
-    public function scopePublic($query)
+    public function artist()
     {
-        return $query->where('is_public', true);
+        return $this->belongsTo(Artist::class, 'artist_id', 'artist_id');
     }
 
     /**
-     * System playlist'leri getir
-     */
-    public function scopeSystem($query)
-    {
-        return $query->where('is_system', true);
-    }
-
-    /**
-     * User playlist'leri getir
-     */
-    public function scopeUserPlaylists($query)
-    {
-        return $query->where('is_system', false);
-    }
-
-    /**
-     * Radio type playlist'leri getir
-     */
-    public function scopeRadios($query)
-    {
-        return $query->where('is_radio', true);
-    }
-
-    /**
-     * Kullanıcı ilişkisi
-     */
-    public function user()
-    {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
-    }
-
-    /**
-     * Şarkılar ilişkisi (many-to-many with position)
+     * Şarkılar ilişkisi
      */
     public function songs()
     {
-        return $this->belongsToMany(
-            Song::class,
-            'muzibu_playlist_song',
-            'playlist_id',
-            'song_id',
-            'playlist_id',
-            'song_id'
-        )->withPivot('position')->withTimestamps()->orderBy('muzibu_playlist_song.position');
+        return $this->hasMany(Song::class, 'album_id', 'album_id');
     }
 
     /**
-     * Sektörler ilişkisi (many-to-many)
-     */
-    public function sectors()
-    {
-        return $this->belongsToMany(
-            Sector::class,
-            'muzibu_playlist_sector',
-            'playlist_id',
-            'sector_id',
-            'playlist_id',
-            'sector_id'
-        );
-    }
-
-    /**
-     * Radyolar ilişkisi (many-to-many)
-     */
-    public function radios()
-    {
-        return $this->belongsToMany(
-            Radio::class,
-            'muzibu_playlist_radio',
-            'playlist_id',
-            'radio_id',
-            'playlist_id',
-            'radio_id'
-        );
-    }
-
-    /**
-     * Thumbmaker media ilişkisi (Playlist cover)
+     * Thumbmaker media ilişkisi (Album cover)
      * Not: Spatie'nin media() methodu ile çakışmamak için coverMedia() kullanıyoruz
      */
     public function coverMedia()
@@ -180,48 +108,14 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Playlist cover URL'i (Thumbmaker helper ile)
+     * Album cover URL'i (Thumbmaker helper ile)
      */
-    public function getCoverUrl(?int $width = 600, ?int $height = 600): ?string
+    public function getCoverUrl(?int $width = 800, ?int $height = 800): ?string
     {
         if (!$this->media_id) {
             return null;
         }
         return thumb($this->coverMedia, $width, $height);
-    }
-
-    /**
-     * Toplam süreyi hesapla
-     */
-    public function getTotalDuration(): int
-    {
-        return $this->songs->sum('duration');
-    }
-
-    /**
-     * Formatlanmış toplam süre (HH:MM:SS)
-     */
-    public function getFormattedTotalDuration(): string
-    {
-        $totalSeconds = $this->getTotalDuration();
-
-        $hours = floor($totalSeconds / 3600);
-        $minutes = floor(($totalSeconds % 3600) / 60);
-        $seconds = $totalSeconds % 60;
-
-        if ($hours > 0) {
-            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
-        }
-
-        return sprintf('%02d:%02d', $minutes, $seconds);
-    }
-
-    /**
-     * Şarkı sayısı
-     */
-    public function getSongsCount(): int
-    {
-        return $this->songs()->count();
     }
 
     /**
@@ -235,34 +129,25 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     public function getSeoFallbackDescription(): ?string
     {
         $description = $this->getTranslated('description', app()->getLocale());
-
-        if ($description) {
-            return \Illuminate\Support\Str::limit(strip_tags($description), 160);
-        }
-
-        // Fallback: Song count + Duration
-        $songsCount = $this->getSongsCount();
-        $duration = $this->getFormattedTotalDuration();
-
-        return "{$songsCount} şarkı - {$duration}";
+        return $description ? \Illuminate\Support\Str::limit(strip_tags($description), 160) : null;
     }
 
     public function getSeoFallbackKeywords(): array
     {
         $keywords = [];
 
-        // Playlist title
+        // Album title
         $title = $this->getSeoFallbackTitle();
         if ($title) {
             $words = array_filter(explode(' ', strtolower($title)), fn($word) => strlen($word) > 3);
             $keywords = array_merge($keywords, array_slice($words, 0, 3));
         }
 
-        // Genre from songs
-        $genres = $this->songs->pluck('genre.title')->unique()->take(2);
-        foreach ($genres as $genre) {
-            if ($genre) {
-                $keywords[] = strtolower($genre);
+        // Artist name
+        if ($this->artist) {
+            $artistName = $this->artist->getTranslated('title', app()->getLocale());
+            if ($artistName) {
+                $keywords[] = strtolower($artistName);
             }
         }
 
@@ -272,7 +157,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     public function getSeoFallbackCanonicalUrl(): ?string
     {
         $slug = $this->getTranslated('slug', app()->getLocale());
-        return $slug ? url('/muzibu/playlist/' . ltrim($slug, '/')) : null;
+        return $slug ? url('/muzibu/album/' . ltrim($slug, '/')) : null;
     }
 
     public function getSeoFallbackImage(): ?string
@@ -282,15 +167,31 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackSchemaMarkup(): ?array
     {
-        return [
+        $schema = [
             '@context' => 'https://schema.org',
-            '@type' => 'MusicPlaylist',
+            '@type' => 'MusicAlbum',
             'name' => $this->getSeoFallbackTitle(),
             'description' => $this->getSeoFallbackDescription(),
             'url' => $this->getSeoFallbackCanonicalUrl(),
             'image' => $this->getSeoFallbackImage(),
-            'numTracks' => $this->getSongsCount(),
         ];
+
+        // Add artist (byArtist)
+        if ($this->artist) {
+            $schema['byArtist'] = [
+                '@type' => 'MusicGroup',
+                'name' => $this->artist->getTranslated('title', app()->getLocale()),
+                'url' => $this->artist->getSeoFallbackCanonicalUrl(),
+            ];
+        }
+
+        // Add tracks count
+        $songsCount = $this->songs()->count();
+        if ($songsCount > 0) {
+            $schema['numTracks'] = $songsCount;
+        }
+
+        return $schema;
     }
 
     /**
@@ -312,10 +213,9 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function afterTranslation(string $targetLanguage, array $translatedData): void
     {
-        \Log::info("Playlist çevirisi tamamlandı", [
-            'playlist_id' => $this->playlist_id,
-            'user_id' => $this->user_id,
-            'is_system' => $this->is_system,
+        \Log::info("Album çevirisi tamamlandı", [
+            'album_id' => $this->album_id,
+            'artist_id' => $this->artist_id,
             'target_language' => $targetLanguage,
             'translated_fields' => array_keys($translatedData),
         ]);
@@ -323,7 +223,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getPrimaryKeyName(): string
     {
-        return 'playlist_id';
+        return 'album_id';
     }
 
     /**
@@ -344,7 +244,7 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Playlist için locale-aware URL
+     * Album için locale-aware URL
      */
     public function getUrl(?string $locale = null): string
     {
@@ -353,9 +253,9 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/playlist/{$slug}");
+            return url("/muzibu/album/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/playlist/{$slug}");
+        return url("/{$locale}/muzibu/album/{$slug}");
     }
 }

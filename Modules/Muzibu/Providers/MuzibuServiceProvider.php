@@ -69,6 +69,7 @@ class MuzibuServiceProvider extends ServiceProvider
         // Playlist Components
         Livewire::component('muzibu::admin.playlist-component', \Modules\Muzibu\App\Http\Livewire\Admin\PlaylistComponent::class);
         Livewire::component('muzibu::admin.playlist-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\PlaylistManageComponent::class);
+        Livewire::component('muzibu::admin.playlist-songs-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\PlaylistSongsManageComponent::class);
 
         // Radio Components
         Livewire::component('muzibu::admin.radio-component', \Modules\Muzibu\App\Http\Livewire\Admin\RadioComponent::class);

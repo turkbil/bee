@@ -13,9 +13,13 @@ Route::middleware(['admin', 'tenant'])
             ->name('favorite.')
             ->group(function () {
                 // Ana liste sayfası
-                Route::get('/', FavoriteComponent::class)->name('index');
+                Route::get('/', FavoriteComponent::class)
+                    ->middleware('permission:favorite.view')
+                    ->name('index');
 
                 // İstatistikler
-                Route::get('/statistics', FavoriteStatisticsComponent::class)->name('statistics');
+                Route::get('/statistics', FavoriteStatisticsComponent::class)
+                    ->middleware('permission:favorite.view')
+                    ->name('statistics');
             });
     });

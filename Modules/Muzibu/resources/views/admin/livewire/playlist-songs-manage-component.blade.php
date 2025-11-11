@@ -12,11 +12,15 @@
                         {{ __('muzibu::admin.playlist.songs_management') }}
                     </div>
                     <h2 class="page-title">
-                        {{ $playlist->getTranslated('title', app()->getLocale()) ?? $playlist->getTranslated('title', 'tr') }}
+                        @php
+                            $title = $playlist->getTranslated('title', app()->getLocale()) ?? $playlist->getTranslated('title', 'tr');
+                            $safeTitle = is_string($title) ? $title : (is_array($title) ? ($title[app()->getLocale()] ?? $title['tr'] ?? $title['en'] ?? reset($title) ?? 'Unknown') : 'Unknown');
+                        @endphp
+                        {{ $safeTitle }}
                     </h2>
                 </div>
                 <div class="col-auto ms-auto">
-                    <a href="{{ route('admin.muzibu.playlist') }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('admin.muzibu.playlist.index') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i>
                         {{ __('admin.back') }}
                     </a>

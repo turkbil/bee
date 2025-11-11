@@ -79,8 +79,34 @@ Route::middleware(['admin', 'tenant'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
 
-                        Route::get('/songs/{id}', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'manageSongs'])
+                        // AJAX API endpoints (önce tanımla, conflict önleme)
+                        Route::get('/api/{id}/info', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'getPlaylistInfo'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.info');
+
+                        Route::get('/api/{id}/available', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'getAvailableSongs'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.available');
+
+                        Route::get('/api/{id}/selected', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'getSelectedSongs'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('api.selected');
+
+                        Route::post('/api/{id}/add', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'addSongs'])
                             ->middleware('module.permission:muzibu,update')
+                            ->name('api.add');
+
+                        Route::post('/api/{id}/remove', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'removeSongs'])
+                            ->middleware('module.permission:muzibu,update')
+                            ->name('api.remove');
+
+                        Route::post('/api/{id}/reorder', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'reorderSongs'])
+                            ->middleware('module.permission:muzibu,update')
+                            ->name('api.reorder');
+
+                        // Playlist şarkı yönetim sayfası (en sona koy)
+                        Route::get('/songs/{id}', [\Modules\Muzibu\App\Http\Controllers\Admin\PlaylistController::class, 'manageSongs'])
+                            ->middleware('module.permission:muzibu,view')
                             ->name('songs');
                     });
 

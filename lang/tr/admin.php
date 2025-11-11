@@ -186,12 +186,15 @@ return [
     'edit' => 'Düzenle',
     'create' => 'Oluştur',
     'update' => 'Güncelle',
+    'add' => 'Ekle',
+    'remove' => 'Çıkar',
     'back' => 'Geri',
     'next' => 'İleri',
     'previous' => 'Önceki',
     'close' => 'Kapat',
     'continue' => 'Devam Et',
     'finish' => 'Tamamla',
+    'unknown' => 'Bilinmiyor',
     
     // Onay
     'yes' => 'Evet',

@@ -10,7 +10,6 @@ class MultiModalManager {
         this.backdrop = null;
         this.init();
         
-        console.log('🔧 Multi Modal Manager initialized');
     }
 
     init() {
@@ -51,7 +50,6 @@ class MultiModalManager {
         const modalId = modal.id || `modal-${Date.now()}`;
         this.activeModals.add(modalId);
         
-        console.log(`📂 Modal opened: ${modalId} (Active: ${this.activeModals.size})`);
 
         // Z-index management
         this.manageZIndex(modal);
@@ -64,7 +62,6 @@ class MultiModalManager {
         const modalId = modal.id || `modal-${Date.now()}`;
         this.activeModals.delete(modalId);
         
-        console.log(`📂 Modal closed: ${modalId} (Active: ${this.activeModals.size})`);
 
         // Cleanup if no modals
         if (this.activeModals.size === 0) {
@@ -116,7 +113,6 @@ class MultiModalManager {
     }
 
     closeAllModals() {
-        console.log('🧹 Closing all modals...');
 
         const modals = document.querySelectorAll('.modal.show');
         modals.forEach(modal => {
@@ -140,12 +136,10 @@ class MultiModalManager {
     }
 
     cleanup() {
-        console.log('🧹 Modal cleanup started...');
 
         // Ultra güçlü backdrop temizleme
         const backdrops = document.querySelectorAll('.modal-backdrop, [class*="backdrop"], [id*="backdrop"]');
         backdrops.forEach(backdrop => {
-            console.log('🗑️ Backdrop removing:', backdrop.className);
             backdrop.remove();
         });
 
@@ -167,7 +161,6 @@ class MultiModalManager {
         // Clear active modals
         this.activeModals.clear();
 
-        console.log('✅ Modal cleanup completed');
     }
 
     // Public methods
@@ -183,4 +176,3 @@ class MultiModalManager {
 // Global instance
 window.MultiModalManager = new MultiModalManager();
 
-console.log('✅ Multi Modal Manager loaded');

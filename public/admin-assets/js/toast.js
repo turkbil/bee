@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const currentMessage = toastData.title + toastData.message;
                 
                 if (currentTime - lastToastTime < TOAST_DEBOUNCE_TIME && lastToastMessage === currentMessage) {
-                    // console.log('🚫 Duplicate toast prevented:', currentMessage);
                     return;
                 }
                 

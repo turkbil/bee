@@ -12,13 +12,11 @@ class StreamingTranslation {
         this.queue = [];
         this.init();
         
-        console.log('🚀 Streaming Translation System initializing...');
     }
 
     init() {
         this.checkStreamingSupport();
         this.setupEventListeners();
-        console.log('🚀 Enterprise Streaming Translation System Ready!');
     }
 
     checkStreamingSupport() {
@@ -26,11 +24,9 @@ class StreamingTranslation {
         this.streamingSupported = typeof EventSource !== 'undefined';
         
         if (!this.streamingSupported) {
-            console.log('📝 Streaming translation not available - Using standard translation mode');
             return;
         }
 
-        console.log('✅ Streaming translation is supported');
     }
 
     setupEventListeners() {
@@ -88,7 +84,6 @@ class StreamingTranslation {
         };
 
         eventSource.addEventListener('complete', (event) => {
-            console.log('✅ Streaming translation completed');
             eventSource.close();
             this.isStreaming = false;
             this.onTranslationComplete();
@@ -218,12 +213,10 @@ class StreamingTranslation {
         if (window.showToast) {
             window.showToast('Çeviri tamamlandı!', 'success');
         } else {
-            console.log('✅ Translation completed successfully');
         }
     }
 
     async fallbackToStandardTranslation(data) {
-        console.log('📝 Using standard translation mode...');
         
         // Emit standard translation event
         document.dispatchEvent(new CustomEvent('translation:fallback', {
@@ -264,4 +257,3 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = StreamingTranslation;
 }
 
-console.log('✅ Enterprise Streaming Translation System loaded');

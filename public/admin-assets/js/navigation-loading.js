@@ -7,23 +7,19 @@ document.addEventListener('livewire:init', () => {
     
     // Cache Loading States - Quick Actions Button
     Livewire.on('cacheStarted', (event) => {
-        // console.log('🔄 Cache temizleme başladı, quick actions loading gösteriliyor...');
         showQuickActionsLoading();
     });
     
     Livewire.on('cacheFinished', (event) => {
-        console.log('✅ Cache temizleme bitti, quick actions loading gizleniyor...');
         hideQuickActionsLoading();
     });
     
     // Language Loading States - Language Switcher Button
     Livewire.on('languageStarted', (event) => {
-        // console.log('🌍 Dil değiştirme başladı, language loading gösteriliyor...');
         showLanguageSwitcherLoading();
     });
     
     Livewire.on('languageFinished', (event) => {
-        // console.log('🌍 Dil değiştirme bitti, language loading gizleniyor...');
         hideLanguageSwitcherLoading();
     });
 });
@@ -32,26 +28,20 @@ document.addEventListener('livewire:init', () => {
  * Quick Actions Button Loading
  */
 function showQuickActionsLoading() {
-    // console.log('🔄 showQuickActionsLoading çağrıldı');
     const icon = document.getElementById('quick-actions-icon');
     if (icon) {
-        console.log('✅ quick-actions-icon bulundu, spinner yapılıyor');
         icon.className = 'fa-solid fa-spinner fa-spin';
         icon.style.fontSize = '18px';
     } else {
-        console.log('❌ quick-actions-icon bulunamadı');
     }
 }
 
 function hideQuickActionsLoading() {
-    console.log('✅ hideQuickActionsLoading çağrıldı');
     const icon = document.getElementById('quick-actions-icon');
     if (icon) {
-        console.log('✅ quick-actions-icon bulundu, grid yapılıyor');
         icon.className = 'fa-solid fa-grid-2';
         icon.style.fontSize = '18px';
     } else {
-        console.log('❌ quick-actions-icon bulunamadı');
     }
 }
 

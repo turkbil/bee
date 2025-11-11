@@ -348,13 +348,13 @@
                         instantUpload: true, // ✅ Otomatik upload
                         allowProcess: true,
                         labelIdle: `
-                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; padding: 1.5rem;">
-                                <div style="margin-bottom: 1rem;">
-                                    <i class="fa fa-music" style="font-size: 48px; color: var(--tblr-muted);"></i>
+                            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; padding: 1rem;">
+                                <div style="margin-bottom: 0.75rem;">
+                                    <i class="fa fa-music" style="font-size: 36px; color: var(--tblr-muted);"></i>
                                 </div>
-                                <h4 class="mb-1">Şarkı Dosyasını Sürükle ve Bırak</h4>
-                                <p class="text-muted mb-2">veya <span class="filepond--label-action">tıklayarak dosya seç</span></p>
-                                <small class="text-muted d-block">MP3, WAV, FLAC, M4A, OGG <span class="mx-1">•</span> Max 100MB</small>
+                                <div class="fw-bold mb-1">Şarkı Dosyasını Sürükle ve Bırak</div>
+                                <div class="text-muted small mb-2">veya <span class="filepond--label-action">tıklayarak dosya seç</span></div>
+                                <small class="text-muted">MP3, WAV, FLAC, M4A, OGG • Max 100MB</small>
                             </div>
                         `,
                         labelFileProcessing: 'Yükleniyor',

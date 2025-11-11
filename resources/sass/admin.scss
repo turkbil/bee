@@ -13,22 +13,22 @@
 // FilePond Custom Styling - Dark/Light Mode Compatible
 .filepond--root {
     font-family: var(--tblr-font-sans-serif);
-    min-height: 200px !important;
+    min-height: 180px !important;
 }
 
 .filepond--panel-root {
     background-color: var(--tblr-bg-surface);
     border: 2px dashed var(--tblr-border-color) !important;
     border-radius: 8px;
-    min-height: 200px !important;
+    min-height: 180px !important;
 }
 
 .filepond--drop-label {
     color: var(--tblr-body-color);
-    min-height: 200px !important;
+    min-height: 180px !important;
 
     label {
-        padding: 1.5rem;
+        padding: 1rem !important;
     }
 }
 
@@ -36,18 +36,19 @@
     color: var(--tblr-primary) !important;
     text-decoration: underline;
     cursor: pointer;
+    font-weight: 500;
 }
 
 // Compact mode için özel ayarlar
 .filepond--root[data-style-panel-layout="compact"] {
-    min-height: 200px !important;
+    min-height: 180px !important;
 
     .filepond--item {
         margin: 0.5rem;
     }
 
     .filepond--drop-label {
-        min-height: 200px !important;
+        min-height: 180px !important;
     }
 }
 
@@ -71,6 +72,16 @@
 // Hide "Powered by FilePond"
 .filepond--credits {
     display: none !important;
+}
+
+// Hide process/upload buttons (we use instant upload)
+.filepond--file-action-button.filepond--action-process-item {
+    display: none !important;
+}
+
+// Hide bottom empty space
+.filepond--list {
+    min-height: 0 !important;
 }
 
 .admin-custom {

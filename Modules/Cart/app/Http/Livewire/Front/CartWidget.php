@@ -55,7 +55,11 @@ class CartWidget extends Component
         }
 
         if ($this->cart) {
-            $this->items = $this->cart->items()->where('is_active', true)->get();
+            // Eager load cartable relation (ShopProduct + medias)
+            $this->items = $this->cart->items()
+                ->where('is_active', true)
+                ->with(['cartable.medias'])
+                ->get();
             $this->itemCount = $this->items->sum('quantity');
             $this->total = (float) $this->cart->total;
 
@@ -84,12 +88,16 @@ class CartWidget extends Component
 
         if ($item) {
             $item->delete();
-            $this->cart->recalculate();
+            $this->cart->recalculateTotals();
         }
 
-        $this->refreshCart();
-        $this->dispatch('cartUpdated');
-        $this->dispatch('cart-item-removed', ['message' => 'Ürün sepetten çıkarıldı']);
+        $this->refreshCart($this->cart->cart_id);
+
+        // Browser event gönder (Alpine.js için)
+        $this->dispatchBrowserEvent('cart-updated', [
+            'cartId' => $this->cart->cart_id,
+            'itemCount' => $this->itemCount,
+        ]);
     }
 
     public function increaseQuantity(int $cartItemId)
@@ -103,10 +111,16 @@ class CartWidget extends Component
         if ($item) {
             $item->quantity += 1;
             $item->recalculate();
+            $this->cart->recalculateTotals();
         }
 
-        $this->refreshCart();
-        $this->dispatch('cartUpdated');
+        $this->refreshCart($this->cart->cart_id);
+
+        // Browser event gönder (Alpine.js için)
+        $this->dispatchBrowserEvent('cart-updated', [
+            'cartId' => $this->cart->cart_id,
+            'itemCount' => $this->itemCount,
+        ]);
     }
 
     public function decreaseQuantity(int $cartItemId)
@@ -124,11 +138,16 @@ class CartWidget extends Component
             } else {
                 $item->delete();
             }
-            $this->cart->recalculate();
+            $this->cart->recalculateTotals();
         }
 
-        $this->refreshCart();
-        $this->dispatch('cartUpdated');
+        $this->refreshCart($this->cart->cart_id);
+
+        // Browser event gönder (Alpine.js için)
+        $this->dispatchBrowserEvent('cart-updated', [
+            'cartId' => $this->cart->cart_id,
+            'itemCount' => $this->itemCount,
+        ]);
     }
 
     public function render()

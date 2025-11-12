@@ -20,13 +20,25 @@
         },
         async fetchCartCount() {
             try {
-                const response = await fetch('/api/cart/count');
+                // cart_id varsa parametreyle gönder
+                const url = this.cartId
+                    ? `/api/cart/count?cart_id=${this.cartId}`
+                    : '/api/cart/count';
+
+                const response = await fetch(url);
                 const data = await response.json();
                 if (data.success) {
                     this.itemCount = data.data.item_count || 0;
+
                     // localStorage'ı güncelle
                     localStorage.setItem('cart_item_count', this.itemCount);
                     console.log('🔄 CartWidget: Count updated from API:', this.itemCount);
+
+                    // cart_id varsa güncelle
+                    if (data.data.cart_id) {
+                        this.cartId = data.data.cart_id;
+                        localStorage.setItem('cart_id', this.cartId);
+                    }
 
                     // cart_id'yi Livewire'a gönder
                     if (this.cartId) {
@@ -99,13 +111,18 @@
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                                     @php
                                         $currency = $cart->currency_code ?? 'TRY';
+                                        $price = $item->unit_price;
+                                        // Virgülden sonra gereksiz .00 gösterme
+                                        $formattedPrice = $price == floor($price)
+                                            ? number_format($price, 0, ',', '.')
+                                            : rtrim(rtrim(number_format($price, 2, ',', '.'), '0'), ',');
                                     @endphp
                                     @if($currency === 'TRY')
-                                        {{ number_format($item->unit_price, 2, ',', '.') }} TRY
+                                        {{ $formattedPrice }} TL
                                     @elseif($currency === 'USD')
-                                        ${{ number_format($item->unit_price, 2) }}
+                                        ${{ $formattedPrice }}
                                     @else
-                                        {{ number_format($item->unit_price, 2, '.', ',') }} {{ $currency }}
+                                        {{ $formattedPrice }} {{ $currency }}
                                     @endif
                                 </p>
 
@@ -141,13 +158,17 @@
                         <span class="text-lg font-bold text-gray-900 dark:text-white">
                             @php
                                 $currency = $cart->currency_code ?? 'TRY';
+                                // Virgülden sonra gereksiz .00 gösterme
+                                $formattedTotal = $total == floor($total)
+                                    ? number_format($total, 0, ',', '.')
+                                    : rtrim(rtrim(number_format($total, 2, ',', '.'), '0'), ',');
                             @endphp
                             @if($currency === 'TRY')
-                                {{ number_format($total, 2, ',', '.') }} TRY
+                                {{ $formattedTotal }} TL
                             @elseif($currency === 'USD')
-                                ${{ number_format($total, 2) }}
+                                ${{ $formattedTotal }}
                             @else
-                                {{ number_format($total, 2, '.', ',') }} {{ $currency }}
+                                {{ $formattedTotal }} {{ $currency }}
                             @endif
                         </span>
                     </div>

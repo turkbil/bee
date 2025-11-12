@@ -177,10 +177,22 @@ class CartApiController extends Controller
     public function getCount(Request $request): JsonResponse
     {
         try {
-            $sessionId = session()->getId();
-            $customerId = auth()->check() ? auth()->id() : null;
+            // Önce localStorage'dan gelen cart_id'yi kontrol et
+            $cart = null;
+            if ($request->cart_id) {
+                $cart = \Modules\Cart\App\Models\Cart::find($request->cart_id);
+                \Log::info('🛒 CartAPI: getCount by cart_id', [
+                    'cart_id' => $request->cart_id,
+                    'found' => $cart ? 'yes' : 'no',
+                ]);
+            }
 
-            $cart = $this->cartService->getCart($customerId, $sessionId);
+            // Cart bulunamadıysa session ile bul
+            if (!$cart) {
+                $sessionId = session()->getId();
+                $customerId = auth()->check() ? auth()->id() : null;
+                $cart = $this->cartService->getCart($customerId, $sessionId);
+            }
 
             if ($cart) {
                 $itemCount = $cart->items()->where('is_active', true)->sum('quantity');
@@ -189,6 +201,7 @@ class CartApiController extends Controller
                     'data' => [
                         'item_count' => $itemCount,
                         'total' => $cart->total,
+                        'cart_id' => $cart->cart_id,  // Frontend için cart_id dön
                     ],
                 ]);
             }

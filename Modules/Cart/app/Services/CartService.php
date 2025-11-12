@@ -144,6 +144,12 @@ class CartService
             $cartItem->product_id = $item->product_id;
         }
 
+        // Currency code: ShopProduct'tan al (USD/TRY)
+        if (isset($item->currency_code) && $item->currency_code) {
+            $cartItem->cart->currency_code = $item->currency_code;
+            $cartItem->cart->save();
+        }
+
         // Customization options
         if (!empty($options['customization_options'])) {
             $cartItem->customization_options = $options['customization_options'];

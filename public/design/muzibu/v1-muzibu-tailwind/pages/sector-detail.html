@@ -169,7 +169,7 @@
 
             <!-- Playlists Tab -->
             <div x-show="activeTab === 'playlists'" class="px-8 pb-8">
-                <div class="grid grid-cols-4 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <template x-for="playlist in sectorPlaylists" :key="playlist.id">
                         <a href="playlist-detail.html" class="group bg-white/5 p-4 rounded-lg hover:bg-white/10 transition">
                             <div class="relative mb-4">
@@ -245,10 +245,9 @@
                     <div class="bg-white/5 rounded-xl p-8 mb-6">
                         <h2 class="text-2xl font-bold mb-4">Kafe & Restoran Müzikleri Hakkında</h2>
                         <p class="text-gray-300 mb-4">
-                            İşletmeniz için özenle seçilmiş, yasal ve telifsiz müzik koleksiyonumuz, müşterilerinize unutulmaz bir atmosfer yaşatmanıza yardımcı olur. 
-                            Tüm müziklerimiz işletme kullanımı için lisanslanmıştır.
+                            İşletmeniz için özenle seçilmiş telifsiz müzik koleksiyonumuz, müşterilerinize unutulmaz bir atmosfer yaşatmanıza yardımcı olur.
                         </p>
-                        <div class="grid grid-cols-3 gap-6 mt-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                             <div class="text-center">
                                 <div class="text-4xl font-bold text-spotify-green mb-2">2,450+</div>
                                 <div class="text-gray-400">Şarkı</div>
@@ -259,7 +258,7 @@
                             </div>
                             <div class="text-center">
                                 <div class="text-4xl font-bold text-spotify-green mb-2">%100</div>
-                                <div class="text-gray-400">Yasal & Telifsiz</div>
+                                <div class="text-gray-400">Telifsiz</div>
                             </div>
                         </div>
                     </div>
@@ -269,7 +268,7 @@
                         <ul class="space-y-3 text-gray-300">
                             <li class="flex items-start gap-3">
                                 <i class="fas fa-check-circle text-spotify-green mt-1"></i>
-                                <span><strong>Yasal Güvence:</strong> Tüm müzikler işletme kullanımı için lisanslıdır. Telif sorunu yaşamazsınız.</span>
+                                <span><strong>Telifsiz Müzik:</strong> Telif sorunu yaşamadan işletmenizde rahatça kullanabilirsiniz.</span>
                             </li>
                             <li class="flex items-start gap-3">
                                 <i class="fas fa-check-circle text-spotify-green mt-1"></i>
@@ -604,7 +603,7 @@
     </script>
 
     <!-- Fixed Navigation Buttons (Bottom Right) -->
-    <div class="fixed bottom-24 right-8 z-40 flex flex-col gap-3" x-data="{ navOpen: false }">
+    <div class="fixed bottom-24 right-8 z-[60] flex flex-col gap-3" x-data="{ navOpen: false }">
         <div x-show="navOpen" x-transition class="bg-spotify-gray rounded-xl shadow-2xl overflow-hidden border border-white/10 mb-2">
             <div class="p-2 max-w-xs">
                 <div class="px-3 py-2 text-xs text-gray-400 font-semibold border-b border-white/10 mb-2">DEMO SAYFALAR</div>

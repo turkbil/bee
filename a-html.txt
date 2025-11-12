@@ -1,85 +1,140 @@
-<div wire:id="Soa4BnJbTAam9qP9epxU" x-data="{
-        open: false,
-        itemCount: 0,
-        cartId: null,
-        loadFromLocalStorage() {
-            // localStorage'dan cart count ve cart_id oku
-            const stored = localStorage.getItem('cart_item_count');
-            const storedCartId = localStorage.getItem('cart_id');
-            if (stored) {
-                const count = parseInt(stored);
-                if (count &gt; 0) {
-                    this.itemCount = count;
-                    console.log('💾 CartWidget: Loaded from localStorage:', this.itemCount);
-                }
-            }
-            if (storedCartId) {
-                this.cartId = parseInt(storedCartId);
-                console.log('💾 CartWidget: Cart ID from localStorage:', this.cartId);
-            }
-        },
-        async fetchCartCount() {
-            try {
-                // cart_id varsa parametreyle gönder
-                const url = this.cartId
-                    ? `/api/cart/count?cart_id=${this.cartId}`
-                    : '/api/cart/count';
-
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.success) {
-                    this.itemCount = data.data.item_count || 0;
-
-                    // localStorage'ı güncelle
-                    localStorage.setItem('cart_item_count', this.itemCount);
-                    console.log('🔄 CartWidget: Count updated from API:', this.itemCount);
-
-                    // cart_id kontrolü
-                    if (data.data.cart_id) {
-                        // Geçerli cart_id var, güncelle
-                        this.cartId = data.data.cart_id;
-                        localStorage.setItem('cart_id', this.cartId);
-                    } else if (data.data.cart_id === null) {
-                        // cart_id null ise geçersiz, temizle
-                        console.warn('⚠️ CartWidget: Invalid cart_id, clearing localStorage');
-                        this.cartId = null;
-                        localStorage.removeItem('cart_id');
-                    }
-
-                    // Livewire'ı sadece ilk yüklemede refresh et (dropdown kapalıyken)
-                    if (this.cartId &amp;&amp; !this.open) {
-                        $wire.refreshCart(this.cartId);
-                    }
-                }
-            } catch (error) {
-                console.error('❌ CartWidget: fetchCartCount error', error);
-            }
-        }
-     }" x-init="loadFromLocalStorage(); fetchCartCount()" @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = parseInt($event.detail.itemCount) || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); }" class="relative" data-has-alpine-state="true" @cart-id-corrected.window="console.log('✅ CartWidget: cart_id düzeltildi', $event.detail); cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); if (!open) { $wire.refreshCart(cartId); }">
-    
-    <button @click="open = !open" type="button" class="relative flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-        <i class="fas fa-shopping-cart text-xl"></i>
-        <template x-if="itemCount &gt; 0">
-            <span x-text="itemCount" class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full">
-            </span>
-        </template><span x-text="itemCount" class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full" data-has-alpine-state="true">5</span>
-    </button>
-
-    
-    <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 z-50 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-
-        <div class="p-4">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-                Alışveriş Sepeti
-            </h3>
-
-            <!--[if BLOCK]><![endif]-->                <div class="py-8 text-center">
-                    <i class="fas fa-shopping-cart text-4x text-gray-400 mb-3"></i>
-                    <p class="text-gray-500 dark:text-gray-400">
-                        Sepetiniz boş
-                    </p>
-                </div>
-            <!--[if ENDBLOCK]><![endif]-->
-        </div>
-    </div>
-</div>
+clarity.js:2  POST https://b.clarity.ms/collect net::ERR_SSL_BAD_RECORD_MAC_ALERT
+ii @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+o @ clarity.js:2
+Promise.then
+c @ clarity.js:2
+(anonymous) @ clarity.js:2
+pt @ clarity.js:2
+ri @ clarity.js:2
+(anonymous) @ clarity.js:2
+setTimeout
+tt @ clarity.js:2
+ni @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+pt @ clarity.js:2
+zn @ clarity.js:2
+Vn @ clarity.js:2
+start @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+bu @ clarity.js:2
+Eu.ku.<computed> @ clarity.js:2
+Eu @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(index):15 [Web Share] Helper yüklendi. Destek: true
+(index):15 [Back to Top] Initialized - Position: Left Bottom
+(index):15 [PWA] Service Worker registered: https://ixtif.com/
+(index):15 🔄 CartWidget: Count updated from API: 0
+(index):15 ⚠️ CartWidget: Invalid cart_id, clearing localStorage
+console.warn @ (index):15
+fetchCartCount @ VM482:46
+await in fetchCartCount
+[Alpine] loadFromLocalStorage(); fetchCartCount() @ VM483:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3489
+(anonymous) @ livewire.js?id=df3a17f2:1909
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+5.2.0:2  GET https://ixtif.com/shop/ixtif-efl352-35-ton-li-ion-forklift net::ERR_ABORTED 500 (Internal Server Error)
+p @ 5.2.0:2
+(anonymous) @ 5.2.0:2
+setTimeout
+u @ 5.2.0:2
+(index):15 🤖 Auto-opening AI chat (desktop only)...
+(index):15 🛒 Alpine: addToCart clicked {productId: 241}
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
+(index):15 💾 localStorage: cart_item_count = 1
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received {itemCount: '1', cartId: 49}
+(index):15 ✅ Alpine: Success! Item count: 1
+5.2.0:2  GET https://ixtif.com/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet net::ERR_ABORTED 500 (Internal Server Error)
+p @ 5.2.0:2
+(anonymous) @ 5.2.0:2
+setTimeout
+u @ 5.2.0:2
+clarity.js:2  POST https://b.clarity.ms/collect net::ERR_SSL_BAD_RECORD_MAC_ALERT
+ii @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+o @ clarity.js:2
+Promise.then
+c @ clarity.js:2
+(anonymous) @ clarity.js:2
+pt @ clarity.js:2
+ri @ clarity.js:2
+(anonymous) @ clarity.js:2
+setTimeout
+tt @ clarity.js:2
+ni @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+pt @ clarity.js:2
+zn @ clarity.js:2
+Vn @ clarity.js:2
+start @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+bu @ clarity.js:2
+Eu.ku.<computed> @ clarity.js:2
+Eu @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(index):15 [Web Share] Helper yüklendi. Destek: true
+(index):15 [Back to Top] Initialized - Position: Left Bottom
+(index):15 [PWA] Service Worker registered: https://ixtif.com/
+(index):15 🔄 CartWidget: Count updated from API: 0
+(index):15 ⚠️ CartWidget: Invalid cart_id, clearing localStorage
+console.warn @ (index):15
+fetchCartCount @ VM482:46
+await in fetchCartCount
+[Alpine] loadFromLocalStorage(); fetchCartCount() @ VM483:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3489
+(anonymous) @ livewire.js?id=df3a17f2:1909
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+5.2.0:2  GET https://ixtif.com/shop/ixtif-efl352-35-ton-li-ion-forklift net::ERR_ABORTED 500 (Internal Server Error)
+p @ 5.2.0:2
+(anonymous) @ 5.2.0:2
+setTimeout
+u @ 5.2.0:2
+(index):15 🤖 Auto-opening AI chat (desktop only)...
+(index):15 🛒 Alpine: addToCart clicked {productId: 241}
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
+(index):15 💾 localStorage: cart_item_count = 1
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received {itemCount: '1', cartId: 49}
+(index):15 ✅ Alpine: Success! Item count: 1
+5.2.0:2  GET https://ixtif.com/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet net::ERR_ABORTED 500 (Internal Server Error)
+p @ 5.2.0:2
+(anonymous) @ 5.2.0:2
+setTimeout
+u @ 5.2.0:2

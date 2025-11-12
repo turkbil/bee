@@ -58,6 +58,7 @@
      }"
      x-init="loadFromLocalStorage(); fetchCartCount()"
      @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = parseInt($event.detail.itemCount) || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); }"
+     @cart-id-corrected.window="console.log('✅ CartWidget: cart_id düzeltildi', $event.detail); cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); if (!open) { $wire.refreshCart(cartId); }"
      class="relative">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"

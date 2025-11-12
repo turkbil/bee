@@ -32,6 +32,8 @@ class CartWidget extends Component
         \Log::info('🔄 CartWidget: refreshCart START', ['cart_id_param' => $cartId]);
 
         $cartService = app(CartService::class);
+        $sessionId = session()->getId();
+        $customerId = auth()->check() ? auth()->id() : null;
 
         // Önce parametre olarak gelen cart_id'yi kontrol et (Alpine.js'den gelecek)
         if ($cartId) {
@@ -41,11 +43,27 @@ class CartWidget extends Component
                 'cart_id' => $cartId,
                 'found' => $this->cart ? 'yes' : 'no',
             ]);
+
+            // Cart bulunamadıysa (geçersiz localStorage cart_id)
+            if (!$this->cart) {
+                \Log::warning('⚠️ CartWidget: Invalid cart_id from localStorage, trying session', [
+                    'invalid_cart_id' => $cartId,
+                    'session_id' => $sessionId,
+                ]);
+
+                // Session ile doğru cart'ı bul
+                $this->cart = $cartService->getCart($customerId, $sessionId);
+
+                // Doğru cart_id'yi frontend'e gönder (localStorage güncellensin)
+                if ($this->cart) {
+                    $this->dispatchBrowserEvent('cart-id-corrected', [
+                        'cartId' => $this->cart->cart_id,
+                        'message' => 'localStorage cart_id düzeltildi',
+                    ]);
+                }
+            }
         } else {
             // cart_id yoksa session/customer ile bul
-            $sessionId = session()->getId();
-            $customerId = auth()->check() ? auth()->id() : null;
-
             \Log::info('🔄 CartWidget: Getting cart by session', [
                 'session_id' => $sessionId,
                 'customer_id' => $customerId,

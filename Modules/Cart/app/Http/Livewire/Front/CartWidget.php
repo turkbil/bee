@@ -55,10 +55,10 @@ class CartWidget extends Component
         }
 
         if ($this->cart) {
-            // Eager load cartable relation (ShopProduct + medias)
+            // Eager load cartable relation (polymorphic)
             $this->items = $this->cart->items()
                 ->where('is_active', true)
-                ->with(['cartable.medias'])
+                ->with(['cartable'])
                 ->get();
             $this->itemCount = $this->items->sum('quantity');
             $this->total = (float) $this->cart->total;

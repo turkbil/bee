@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="cPBpd8RMYj5cvj7aaA5rMD3KJkquD2wL9sHXYEo6">
+    <meta name="csrf-token" content="oe3C6o2qqfwdrkgnClpr0bETGEGF8zhVuxMAgDOE">
 
     
     <script>
@@ -7872,7 +7872,7 @@ document.addEventListener('alpine:init', () => {
 
 
 <!-- Livewire Scripts -->
-<script src="/livewire/livewire.js?id=df3a17f2"   data-csrf="cPBpd8RMYj5cvj7aaA5rMD3KJkquD2wL9sHXYEo6" data-update-uri="/livewire/update" data-navigate-once="true"></script>
+<script src="/livewire/livewire.js?id=df3a17f2"   data-csrf="oe3C6o2qqfwdrkgnClpr0bETGEGF8zhVuxMAgDOE" data-update-uri="/livewire/update" data-navigate-once="true"></script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/lib/marked.umd.min.js"></script>

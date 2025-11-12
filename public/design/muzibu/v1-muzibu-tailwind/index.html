@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - İşletmelere Özel Telifsiz Müzik Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-dark': '#0a0e27',
+                        'muzibu-darker': '#06081a',
+                        'muzibu-purple': '#7c3aed',
+                        'muzibu-purple-light': '#a78bfa',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #06081a 0%, #0a0e27 100%);
+        }
+        .music-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .music-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.3);
+        }
+        .song-card:hover {
+            background: rgba(124, 58, 237, 0.1);
+        }
+        .play-button {
+            transition: all 0.3s ease;
+        }
+        .play-button:hover {
+            transform: scale(1.1);
+            background: #7c3aed !important;
+        }
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(124, 58, 237, 0.8);
+        }
+        /* Wave Animation */
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+        .wave-bar {
+            animation: wave 1s ease-in-out infinite;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body class="h-full bg-muzibu-darker text-white antialiased">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-muzibu-dark to-muzibu-darker border-r border-white/5 z-50 transform transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <!-- Logo -->
+            <div class="p-6 border-b border-white/5">
+                <a href="index.html" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-gradient-to-br from-muzibu-purple to-pink-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fas fa-music text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-muzibu-purple to-pink-500 bg-clip-text text-transparent">Muzibu</span>
+                </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto py-4 px-3">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="index.html" class="flex items-center px-4 py-3 rounded-lg bg-muzibu-purple/20 text-muzibu-purple-light border border-muzibu-purple/30 group">
+                            <i class="fas fa-home w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3 font-medium">Ana Sayfa</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/playlists.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-list w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Oynatma Listeleri</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/favorites.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-heart w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Favoriler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/albums.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-record-vinyl w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Albümler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/genres.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-guitar w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Türler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/sectors.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-building w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Sektörler</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/radio.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-broadcast-tower w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Radyolar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pages/pricing.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
+                            <i class="fas fa-tag w-5 text-center group-hover:scale-110 transition-transform"></i>
+                            <span class="ml-3">Fiyatlandırma</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Auth Buttons -->
+                <div class="mt-8 space-y-2">
+                    <a href="#" class="flex items-center px-4 py-3 rounded-lg bg-white/10 hover:bg-white/15 transition-all backdrop-blur-sm border border-white/10 group">
+                        <i class="fas fa-user-plus w-5 text-center group-hover:scale-110 transition-transform"></i>
+                        <span class="ml-3">Üye Ol</span>
+                    </a>
+                    <a href="#" class="flex items-center px-4 py-3 rounded-lg bg-gradient-to-r from-muzibu-purple to-pink-500 hover:from-muzibu-purple-light hover:to-pink-400 transition-all group">
+                        <i class="fas fa-sign-in-alt w-5 text-center group-hover:scale-110 transition-transform"></i>
+                        <span class="ml-3 font-medium">Giriş Yap</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 min-h-screen pb-32">
+        <!-- Top Bar -->
+        <div class="sticky top-0 z-40 bg-muzibu-darker/80 backdrop-blur-xl border-b border-white/5">
+            <div class="flex items-center justify-between px-8 py-4">
+                <div class="flex items-center space-x-4 flex-1 max-w-2xl">
+                    <!-- Search Bar -->
+                    <div class="relative flex-1">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="search" placeholder="Şarkı, albüm, playlist ara..." class="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-muzibu-purple/50 focus:border-muzibu-purple/50 transition-all">
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <button class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all">
+                        <i class="fas fa-bell text-gray-400"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-gradient-to-br from-muzibu-purple to-pink-500 flex items-center justify-center hover:scale-110 transition-transform">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="px-8 pt-8">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Featured Card -->
+                <div class="relative group cursor-pointer overflow-hidden rounded-2xl">
+                    <div class="absolute inset-0 bg-gradient-to-br from-muzibu-purple/20 to-pink-500/20 group-hover:from-muzibu-purple/30 group-hover:to-pink-500/30 transition-all"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800')] bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                    <div class="relative p-8">
+                        <span class="inline-block px-3 py-1 bg-muzibu-purple/30 backdrop-blur-sm rounded-full text-sm font-medium mb-4">Yeni Çıkan</span>
+                        <h2 class="text-3xl font-bold mb-4 line-clamp-2">Yasal, Telifsiz ve Sertifikalı Müzik Yayını Artık İşletmenizde</h2>
+                        <p class="text-gray-400 mb-6 line-clamp-2">İşletmeniz için özel hazırlanmış telifsiz müzik koleksiyonları</p>
+                        <button class="inline-flex items-center px-6 py-3 bg-white text-muzibu-dark rounded-xl font-medium hover:bg-opacity-90 transition-all group-hover:scale-105 transform">
+                            <span>Oku</span>
+                            <i class="fas fa-play ml-2 text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Releases -->
+                <div class="bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/10 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="text-xl font-bold">Yeni Çıkanlar</h4>
+                        <div class="flex gap-2">
+                            <button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm transition-all">Giriş Yap</button>
+                            <button class="px-4 py-2 bg-muzibu-purple hover:bg-muzibu-purple-light rounded-lg text-sm font-medium transition-all">Üye Ol</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                        <!-- Song Card 1 -->
+                        <div class="song-card flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer group">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="relative">
+                                    <button class="play-button w-12 h-12 bg-muzibu-purple/30 rounded-lg flex items-center justify-center group-hover:bg-muzibu-purple">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </button>
+                                    <span class="absolute -top-2 -right-2 w-6 h-6 bg-muzibu-darker rounded-full flex items-center justify-center text-xs font-bold border-2 border-muzibu-purple">01</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop" alt="Album" class="w-14 h-14 rounded-lg object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h6 class="font-medium text-white truncate group-hover:text-muzibu-purple-light transition-colors">Woodblock Print</h6>
+                                    <p class="text-sm text-gray-400 truncate">Muzibu Bossa Nova</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">3:45</span>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all group/fav">
+                                    <i class="far fa-heart text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
+                                </button>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                                    <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Song Card 2 -->
+                        <div class="song-card flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer group">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="relative">
+                                    <button class="play-button w-12 h-12 bg-muzibu-purple/30 rounded-lg flex items-center justify-center group-hover:bg-muzibu-purple">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </button>
+                                    <span class="absolute -top-2 -right-2 w-6 h-6 bg-muzibu-darker rounded-full flex items-center justify-center text-xs font-bold border-2 border-muzibu-purple">02</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop" alt="Album" class="w-14 h-14 rounded-lg object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h6 class="font-medium text-white truncate group-hover:text-muzibu-purple-light transition-colors">Voz Da Lapa</h6>
+                                    <p class="text-sm text-gray-400 truncate">Muzibu Bossa Nova</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">4:12</span>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all group/fav">
+                                    <i class="far fa-heart text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
+                                </button>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                                    <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Song Card 3 -->
+                        <div class="song-card flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer group">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="relative">
+                                    <button class="play-button w-12 h-12 bg-muzibu-purple/30 rounded-lg flex items-center justify-center group-hover:bg-muzibu-purple">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </button>
+                                    <span class="absolute -top-2 -right-2 w-6 h-6 bg-muzibu-darker rounded-full flex items-center justify-center text-xs font-bold border-2 border-muzibu-purple">03</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop" alt="Album" class="w-14 h-14 rounded-lg object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h6 class="font-medium text-white truncate group-hover:text-muzibu-purple-light transition-colors">Vou Te Contar</h6>
+                                    <p class="text-sm text-gray-400 truncate">Muzibu Bossa Nova</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">3:28</span>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all group/fav">
+                                    <i class="far fa-heart text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
+                                </button>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                                    <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Song Card 4 -->
+                        <div class="song-card flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer group">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="relative">
+                                    <button class="play-button w-12 h-12 bg-muzibu-purple/30 rounded-lg flex items-center justify-center group-hover:bg-muzibu-purple">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </button>
+                                    <span class="absolute -top-2 -right-2 w-6 h-6 bg-muzibu-darker rounded-full flex items-center justify-center text-xs font-bold border-2 border-muzibu-purple">04</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=80&h=80&fit=crop" alt="Album" class="w-14 h-14 rounded-lg object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h6 class="font-medium text-white truncate group-hover:text-muzibu-purple-light transition-colors">Verdade Em Paz</h6>
+                                    <p class="text-sm text-gray-400 truncate">Muzibu Bossa Nova</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">5:01</span>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all group/fav">
+                                    <i class="far fa-heart text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
+                                </button>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                                    <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Song Card 5 -->
+                        <div class="song-card flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all cursor-pointer group">
+                            <div class="flex items-center space-x-4 flex-1">
+                                <div class="relative">
+                                    <button class="play-button w-12 h-12 bg-muzibu-purple/30 rounded-lg flex items-center justify-center group-hover:bg-muzibu-purple">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </button>
+                                    <span class="absolute -top-2 -right-2 w-6 h-6 bg-muzibu-darker rounded-full flex items-center justify-center text-xs font-bold border-2 border-muzibu-purple">05</span>
+                                </div>
+                                <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=80&h=80&fit=crop" alt="Album" class="w-14 h-14 rounded-lg object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h6 class="font-medium text-white truncate group-hover:text-muzibu-purple-light transition-colors">Venha Para Mim</h6>
+                                    <p class="text-sm text-gray-400 truncate">Muzibu Bossa Nova</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">4:37</span>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all group/fav">
+                                    <i class="far fa-heart text-gray-400 group-hover/fav:text-red-500 transition-colors"></i>
+                                </button>
+                                <button class="w-9 h-9 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                                    <i class="fas fa-ellipsis-v text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Playlists Section -->
+        <section class="px-8 py-12">
+            <div class="flex items-center justify-between mb-6">
+                <h4 class="text-2xl font-bold">Son Eklenen Oynatma Listeleri</h4>
+                <a href="pages/playlists.html" class="text-sm text-muzibu-purple-light hover:text-muzibu-purple transition-colors">Tümünü Gör</a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <!-- Playlist Card 1 -->
+                <a href="pages/playlist-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&h=400&fit=crop" alt="Playlist" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-4 right-4 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Dinner Bossa Nova Playlist</h6>
+                    <p class="text-sm text-gray-400 mt-1">52 Şarkı</p>
+                </a>
+
+                <!-- Playlist Card 2 -->
+                <a href="pages/playlist-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop" alt="Playlist" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-4 right-4 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Pop Playlist</h6>
+                    <p class="text-sm text-gray-400 mt-1">87 Şarkı</p>
+                </a>
+
+                <!-- Playlist Card 3 -->
+                <a href="pages/playlist-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=400&h=400&fit=crop" alt="Playlist" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-4 right-4 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Chill Out Soul & Blues</h6>
+                    <p class="text-sm text-gray-400 mt-1">64 Şarkı</p>
+                </a>
+
+                <!-- Playlist Card 4 -->
+                <a href="pages/playlist-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400&h=400&fit=crop" alt="Playlist" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-4 right-4 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Jazz Classics</h6>
+                    <p class="text-sm text-gray-400 mt-1">92 Şarkı</p>
+                </a>
+
+                <!-- Playlist Card 5 -->
+                <a href="pages/playlist-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" alt="Playlist" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-4 right-4 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Electronic Vibes</h6>
+                    <p class="text-sm text-gray-400 mt-1">78 Şarkı</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Albums Section -->
+        <section class="px-8 py-12">
+            <div class="flex items-center justify-between mb-6">
+                <h4 class="text-2xl font-bold">Popüler Albümler</h4>
+                <a href="pages/albums.html" class="text-sm text-muzibu-purple-light hover:text-muzibu-purple transition-colors">Tümünü Gör</a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                <!-- Album Card 1 -->
+                <a href="pages/album-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop" alt="Album" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-3 right-3 w-10 h-10 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white text-sm group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Summer Vibes 2024</h6>
+                    <p class="text-xs text-gray-400 mt-1">Muzibu Collection</p>
+                </a>
+
+                <!-- Album Card 2 -->
+                <a href="pages/album-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1446057032654-9d8885db76c6?w=300&h=300&fit=crop" alt="Album" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-3 right-3 w-10 h-10 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white text-sm group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Acoustic Sessions</h6>
+                    <p class="text-xs text-gray-400 mt-1">Muzibu Artists</p>
+                </a>
+
+                <!-- Album Card 3 -->
+                <a href="pages/album-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=300&h=300&fit=crop" alt="Album" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-3 right-3 w-10 h-10 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white text-sm group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Night Rhythms</h6>
+                    <p class="text-xs text-gray-400 mt-1">Various Artists</p>
+                </a>
+
+                <!-- Album Card 4 -->
+                <a href="pages/album-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=300&fit=crop" alt="Album" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-3 right-3 w-10 h-10 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white text-sm group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Morning Coffee</h6>
+                    <p class="text-xs text-gray-400 mt-1">Cafe Music</p>
+                </a>
+
+                <!-- Album Card 5 -->
+                <a href="pages/album-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop" alt="Album" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-3 right-3 w-10 h-10 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white text-sm group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Rock Anthems</h6>
+                    <p class="text-xs text-gray-400 mt-1">Rock Classics</p>
+                </a>
+
+                <!-- Album Card 6 -->
+                <a href="pages/album-detail.html" class="music-card group">
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop" alt="Album" class="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <button class="absolute bottom-3 right-3 w-10 h-10 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:scale-110">
+                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h6 class="font-medium text-white text-sm group-hover:text-muzibu-purple-light transition-colors line-clamp-2">Urban Beats</h6>
+                    <p class="text-xs text-gray-400 mt-1">Hip Hop Mix</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Genres Section -->
+        <section class="px-8 py-12">
+            <div class="flex items-center justify-between mb-6">
+                <h4 class="text-2xl font-bold">Türlere Göre Keşfet</h4>
+                <a href="pages/genres.html" class="text-sm text-muzibu-purple-light hover:text-muzibu-purple transition-colors">Tümünü Gör</a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                <!-- Genre Card 1 -->
+                <a href="pages/genre-detail.html" class="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/20 hover:border-red-500/40 transition-all group">
+                    <i class="fas fa-drum text-4xl text-red-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h6 class="font-bold text-white">Jazz</h6>
+                    <p class="text-sm text-gray-400 mt-1">234 Şarkı</p>
+                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-all"></div>
+                </a>
+
+                <!-- Genre Card 2 -->
+                <a href="pages/genre-detail.html" class="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-blue-500/20 to-blue-600/10 border border-blue-500/20 hover:border-blue-500/40 transition-all group">
+                    <i class="fas fa-guitar text-4xl text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h6 class="font-bold text-white">Rock</h6>
+                    <p class="text-sm text-gray-400 mt-1">189 Şarkı</p>
+                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
+                </a>
+
+                <!-- Genre Card 3 -->
+                <a href="pages/genre-detail.html" class="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/20 hover:border-green-500/40 transition-all group">
+                    <i class="fas fa-music text-4xl text-green-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h6 class="font-bold text-white">Pop</h6>
+                    <p class="text-sm text-gray-400 mt-1">456 Şarkı</p>
+                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all"></div>
+                </a>
+
+                <!-- Genre Card 4 -->
+                <a href="pages/genre-detail.html" class="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 border border-yellow-500/20 hover:border-yellow-500/40 transition-all group">
+                    <i class="fas fa-headphones text-4xl text-yellow-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h6 class="font-bold text-white">Electronic</h6>
+                    <p class="text-sm text-gray-400 mt-1">312 Şarkı</p>
+                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition-all"></div>
+                </a>
+
+                <!-- Genre Card 5 -->
+                <a href="pages/genre-detail.html" class="relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/20 hover:border-purple-500/40 transition-all group">
+                    <i class="fas fa-compact-disc text-4xl text-purple-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <h6 class="font-bold text-white">Classical</h6>
+                    <p class="text-sm text-gray-400 mt-1">167 Şarkı</p>
+                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"></div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Fixed Music Player -->
+    <div id="musicPlayer" class="fixed bottom-0 left-64 right-0 h-24 bg-gradient-to-r from-muzibu-dark to-muzibu-darker backdrop-blur-xl border-t border-white/10 z-50">
+        <div class="h-full px-6 flex items-center justify-between gap-6">
+            <!-- Now Playing -->
+            <div class="flex items-center space-x-4 flex-1 min-w-0">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=64&h=64&fit=crop" alt="Playing" class="w-16 h-16 rounded-lg object-cover">
+                <div class="flex-1 min-w-0">
+                    <h6 class="font-medium text-white truncate">Woodblock Print</h6>
+                    <p class="text-sm text-gray-400 truncate">Muzibu Bossa Nova</p>
+                </div>
+                <button class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all group">
+                    <i class="far fa-heart text-gray-400 group-hover:text-red-500 transition-colors"></i>
+                </button>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="flex-1 max-w-2xl">
+                <div class="flex items-center justify-center gap-4 mb-2">
+                    <button class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-all group">
+                        <i class="fas fa-random text-gray-400 group-hover:text-white transition-colors text-sm"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-all group">
+                        <i class="fas fa-step-backward text-gray-400 group-hover:text-white transition-colors"></i>
+                    </button>
+                    <button class="w-14 h-14 rounded-full bg-white hover:bg-opacity-90 flex items-center justify-center transition-all hover:scale-105 group">
+                        <i class="fas fa-play text-muzibu-dark text-lg ml-0.5"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-all group">
+                        <i class="fas fa-step-forward text-gray-400 group-hover:text-white transition-colors"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-all group">
+                        <i class="fas fa-repeat text-gray-400 group-hover:text-white transition-colors text-sm"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-gray-400 w-10 text-right">1:24</span>
+                    <div class="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden cursor-pointer group">
+                        <div class="h-full w-1/3 bg-gradient-to-r from-muzibu-purple to-pink-500 relative">
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-400 w-10">3:45</span>
+                </div>
+            </div>
+
+            <!-- Volume & Options -->
+            <div class="flex items-center gap-2 flex-1 justify-end">
+                <button class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                    <i class="fas fa-list text-gray-400"></i>
+                </button>
+                <button class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center transition-all">
+                    <i class="fas fa-volume-up text-gray-400"></i>
+                </button>
+                <div class="w-24 h-1.5 bg-white/10 rounded-full overflow-hidden cursor-pointer group">
+                    <div class="h-full w-2/3 bg-white relative">
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Navigation Buttons (Right Bottom) -->
+    <div class="fixed bottom-32 right-8 flex flex-col gap-3 z-50">
+        <a href="../index.html" class="w-14 h-14 bg-gradient-to-br from-muzibu-purple to-pink-500 hover:from-muzibu-purple-light hover:to-pink-400 rounded-full flex items-center justify-center shadow-lg shadow-muzibu-purple/50 hover:scale-110 transition-all group" title="Tüm Tasarımlar">
+            <i class="fas fa-th text-white"></i>
+        </a>
+        <button onclick="previousDesign()" class="w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all border border-white/20" title="Önceki Tasarım">
+            <i class="fas fa-chevron-left text-white"></i>
+        </button>
+        <button onclick="nextDesign()" class="w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all border border-white/20" title="Sonraki Tasarım">
+            <i class="fas fa-chevron-right text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        // Design Navigation
+        const designs = [
+            'v1-muzibu-tailwind',
+            'v2-spotify-modern',
+            'v3-apple-minimal',
+            'v4-dark-premium',
+            'v5-glass-modern',
+            'v6-material-design',
+            'v7-neomorphism',
+            'v8-business-corporate',
+            'v9-vibrant-colorful',
+            'v10-minimalist-elegant'
+        ];
+
+        const currentDesign = 'v1-muzibu-tailwind';
+        const currentIndex = designs.indexOf(currentDesign);
+
+        function previousDesign() {
+            const prevIndex = currentIndex === 0 ? designs.length - 1 : currentIndex - 1;
+            window.location.href = `../${designs[prevIndex]}/index.html`;
+        }
+
+        function nextDesign() {
+            const nextIndex = (currentIndex + 1) % designs.length;
+            window.location.href = `../${designs[nextIndex]}/index.html`;
+        }
+
+        // Mobile Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.sidebar-toggler')) {
+                sidebar.classList.toggle('-translate-x-full');
+            }
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Playing animation
+        const playButtons = document.querySelectorAll('.play-button');
+        playButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // Toggle play/pause icon
+                const icon = btn.querySelector('i');
+                icon.classList.toggle('fa-play');
+                icon.classList.toggle('fa-pause');
+            });
+        });
+    </script>
+</body>
+</html>

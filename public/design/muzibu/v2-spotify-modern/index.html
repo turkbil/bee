@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Spotify Modern Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1db954',
+                        'spotify-green-dark': '#1aa34a',
+                        'spotify-black': '#121212',
+                        'spotify-gray': '#181818',
+                        'spotify-light-gray': '#282828',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Spotify Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .card-hover {
+            transition: background-color 0.3s ease;
+        }
+        .card-hover:hover {
+            background-color: #282828;
+        }
+        .play-button-spotify {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover .play-button-spotify {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Hide scrollbar but keep functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full bg-black text-white antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Left Sidebar -->
+        <aside class="w-64 bg-black flex flex-col">
+            <!-- Logo -->
+            <div class="p-6">
+                <a href="index.html" class="flex items-center space-x-2 group">
+                    <div class="w-10 h-10 bg-spotify-green rounded flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <i class="fas fa-music text-black"></i>
+                    </div>
+                    <span class="text-2xl font-bold">Muzibu</span>
+                </a>
+            </div>
+
+            <!-- Main Nav -->
+            <nav class="px-3 space-y-2">
+                <a href="index.html" class="flex items-center space-x-4 px-4 py-3 rounded-lg bg-spotify-light-gray text-white">
+                    <i class="fas fa-home text-xl w-6"></i>
+                    <span class="font-semibold">Ana Sayfa</span>
+                </a>
+                <a href="#" class="flex items-center space-x-4 px-4 py-3 rounded-lg text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-search text-xl w-6"></i>
+                    <span class="font-semibold">Ara</span>
+                </a>
+            </nav>
+
+            <!-- Library -->
+            <div class="mt-6 px-3">
+                <button class="flex items-center justify-between w-full px-4 py-3 text-gray-400 hover:text-white transition-colors">
+                    <div class="flex items-center space-x-4">
+                        <i class="fas fa-book text-xl w-6"></i>
+                        <span class="font-semibold">Kitaplığın</span>
+                    </div>
+                    <i class="fas fa-plus text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Library List -->
+            <div class="flex-1 overflow-y-auto hide-scrollbar mt-4 px-3 space-y-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Favoriler</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Son Çalınanlar</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Beğenilen Şarkılar</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Bossa Nova</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Jazz</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Cafe Music</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors rounded">Chill Vibes</a>
+            </div>
+
+            <!-- Auth Section -->
+            <div class="p-4 space-y-2 border-t border-gray-800">
+                <button class="w-full px-4 py-3 bg-white text-black rounded-full font-bold hover:scale-105 transition-transform">
+                    Üye Ol
+                </button>
+                <button class="w-full px-4 py-3 border-2 border-white rounded-full font-bold hover:scale-105 transition-transform">
+                    Giriş Yap
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gradient-to-b from-spotify-gray to-black">
+            <!-- Top Bar -->
+            <div class="sticky top-0 z-10 bg-spotify-black/80 backdrop-blur-md">
+                <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center space-x-4">
+                        <button class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <button class="px-6 py-2 text-sm font-bold text-gray-400 hover:text-white transition-colors">
+                            Premium'a geç
+                        </button>
+                        <button class="w-10 h-10 bg-black rounded-full flex items-center justify-center hover:bg-opacity-80 transition-colors">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-8 pb-32">
+                <!-- Good afternoon / evening -->
+                <section>
+                    <h1 class="text-3xl font-bold mb-6">İyi günler</h1>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Large Card 1 -->
+                        <a href="#" class="card-hover flex items-center bg-white/10 rounded overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop" alt="Playlist" class="w-20 h-20 object-cover">
+                            <div class="flex-1 px-4">
+                                <h3 class="font-semibold line-clamp-2">Beğenilen Şarkılar</h3>
+                            </div>
+                            <button class="play-button-spotify w-12 h-12 mr-4 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </a>
+
+                        <!-- Large Card 2 -->
+                        <a href="#" class="card-hover flex items-center bg-white/10 rounded overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop" alt="Playlist" class="w-20 h-20 object-cover">
+                            <div class="flex-1 px-4">
+                                <h3 class="font-semibold line-clamp-2">Dinner Bossa Nova</h3>
+                            </div>
+                            <button class="play-button-spotify w-12 h-12 mr-4 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </a>
+
+                        <!-- Large Card 3 -->
+                        <a href="#" class="card-hover flex items-center bg-white/10 rounded overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=80&h=80&fit=crop" alt="Playlist" class="w-20 h-20 object-cover">
+                            <div class="flex-1 px-4">
+                                <h3 class="font-semibold line-clamp-2">Chill Vibes</h3>
+                            </div>
+                            <button class="play-button-spotify w-12 h-12 mr-4 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </a>
+
+                        <!-- Large Card 4 -->
+                        <a href="#" class="card-hover flex items-center bg-white/10 rounded overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop" alt="Playlist" class="w-20 h-20 object-cover">
+                            <div class="flex-1 px-4">
+                                <h3 class="font-semibold line-clamp-2">Jazz Essentials</h3>
+                            </div>
+                            <button class="play-button-spotify w-12 h-12 mr-4 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </a>
+
+                        <!-- Large Card 5 -->
+                        <a href="#" class="card-hover flex items-center bg-white/10 rounded overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=80&h=80&fit=crop" alt="Playlist" class="w-20 h-20 object-cover">
+                            <div class="flex-1 px-4">
+                                <h3 class="font-semibold line-clamp-2">Rock Classics</h3>
+                            </div>
+                            <button class="play-button-spotify w-12 h-12 mr-4 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </a>
+
+                        <!-- Large Card 6 -->
+                        <a href="#" class="card-hover flex items-center bg-white/10 rounded overflow-hidden group">
+                            <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=80&h=80&fit=crop" alt="Playlist" class="w-20 h-20 object-cover">
+                            <div class="flex-1 px-4">
+                                <h3 class="font-semibold line-clamp-2">Cafe Acoustics</h3>
+                            </div>
+                            <button class="play-button-spotify w-12 h-12 mr-4 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Senin için yapıldı -->
+                <section>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold">Senin için yapıldı</h2>
+                        <a href="#" class="text-sm font-bold text-gray-400 hover:text-white transition-colors">Tümünü göster</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        <!-- Playlist Card -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop" alt="Playlist" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-2 line-clamp-1">Daily Mix 1</h3>
+                            <p class="text-sm text-gray-400 line-clamp-2">Muzibu Bossa Nova, Jazz Essentials ve diğerleri</p>
+                        </a>
+
+                        <!-- Playlist Card -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop" alt="Playlist" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-2 line-clamp-1">Discover Weekly</h3>
+                            <p class="text-sm text-gray-400 line-clamp-2">Senin müzik zevkine göre özel karışım</p>
+                        </a>
+
+                        <!-- Playlist Card -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=300&h=300&fit=crop" alt="Playlist" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-2 line-clamp-1">Release Radar</h3>
+                            <p class="text-sm text-gray-400 line-clamp-2">Takip ettiğin sanatçıların yeni yayınları</p>
+                        </a>
+
+                        <!-- Playlist Card -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=300&h=300&fit=crop" alt="Playlist" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-2 line-clamp-1">On Repeat</h3>
+                            <p class="text-sm text-gray-400 line-clamp-2">En çok dinlediğin şarkılar</p>
+                        </a>
+
+                        <!-- Playlist Card -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop" alt="Playlist" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-2 line-clamp-1">Repeat Rewind</h3>
+                            <p class="text-sm text-gray-400 line-clamp-2">Sürekli tekrar ettiğin klasikler</p>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Son eklenenler -->
+                <section>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold">Son eklenenler</h2>
+                        <a href="#" class="text-sm font-bold text-gray-400 hover:text-white transition-colors">Tümünü göster</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+                        <!-- Album Card 1 -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1446057032654-9d8885db76c6?w=200&h=200&fit=crop" alt="Album" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-sm mb-1 line-clamp-1">Summer Vibes</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2">Muzibu Collection</p>
+                        </a>
+
+                        <!-- Album Card 2 -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=200&h=200&fit=crop" alt="Album" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-sm mb-1 line-clamp-1">Night Rhythms</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2">Various Artists</p>
+                        </a>
+
+                        <!-- Album Card 3 -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=200&h=200&fit=crop" alt="Album" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-sm mb-1 line-clamp-1">Morning Coffee</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2">Cafe Music</p>
+                        </a>
+
+                        <!-- Album Card 4 -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=200&h=200&fit=crop" alt="Album" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-sm mb-1 line-clamp-1">Acoustic Tales</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2">Muzibu Originals</p>
+                        </a>
+
+                        <!-- Album Card 5 -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=200&h=200&fit=crop" alt="Album" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-sm mb-1 line-clamp-1">Urban Beats</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2">Hip Hop Mix</p>
+                        </a>
+
+                        <!-- Album Card 6 -->
+                        <a href="#" class="card-hover p-4 rounded-lg transition-all group">
+                            <div class="relative mb-4">
+                                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop" alt="Album" class="w-full aspect-square object-cover rounded-md shadow-lg">
+                                <button class="play-button-spotify absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center shadow-2xl hover:bg-spotify-green-dark hover:scale-110 transition-all">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold text-sm mb-1 line-clamp-1">Electronic Dreams</h3>
+                            <p class="text-xs text-gray-400 line-clamp-2">Muzibu Electronic</p>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Sektörler -->
+                <section>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold">Sektörler</h2>
+                        <a href="#" class="text-sm font-bold text-gray-400 hover:text-white transition-colors">Tümünü göster</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Sector Card 1 -->
+                        <a href="#" class="relative overflow-hidden rounded-lg aspect-square group">
+                            <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=300&h=300&fit=crop" alt="Restaurant" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h3 class="text-2xl font-bold">Restoran</h3>
+                            </div>
+                        </a>
+
+                        <!-- Sector Card 2 -->
+                        <a href="#" class="relative overflow-hidden rounded-lg aspect-square group">
+                            <img src="https://images.unsplash.com/photo-1445116572660-236099ec97a0?w=300&h=300&fit=crop" alt="Cafe" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h3 class="text-2xl font-bold">Kafe</h3>
+                            </div>
+                        </a>
+
+                        <!-- Sector Card 3 -->
+                        <a href="#" class="relative overflow-hidden rounded-lg aspect-square group">
+                            <img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=300&fit=crop" alt="Barber" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h3 class="text-2xl font-bold">Berber</h3>
+                            </div>
+                        </a>
+
+                        <!-- Sector Card 4 -->
+                        <a href="#" class="relative overflow-hidden rounded-lg aspect-square group">
+                            <img src="https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=300&h=300&fit=crop" alt="Gym" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h3 class="text-2xl font-bold">Spor Salonu</h3>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Fixed Player -->
+    <div class="fixed bottom-0 left-0 right-0 h-24 bg-spotify-gray border-t border-gray-800 z-50">
+        <div class="h-full px-4 flex items-center justify-between gap-4">
+            <!-- Now Playing -->
+            <div class="flex items-center space-x-4 flex-1 min-w-0">
+                <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=56&h=56&fit=crop" alt="Now Playing" class="w-14 h-14 rounded">
+                <div class="flex-1 min-w-0">
+                    <h6 class="font-medium text-sm truncate hover:underline cursor-pointer">Woodblock Print</h6>
+                    <p class="text-xs text-gray-400 truncate hover:underline cursor-pointer">Muzibu Bossa Nova</p>
+                </div>
+                <button class="w-8 h-8 flex items-center justify-center hover:text-spotify-green transition-colors">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="flex-1 max-w-2xl">
+                <div class="flex items-center justify-center gap-4 mb-2">
+                    <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-random text-sm"></i>
+                    </button>
+                    <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-transform">
+                        <i class="fas fa-play text-black ml-0.5"></i>
+                    </button>
+                    <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-repeat text-sm"></i>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400">1:24</span>
+                    <div class="flex-1 h-1 bg-gray-600 rounded-full overflow-hidden group cursor-pointer">
+                        <div class="h-full w-1/3 bg-white relative">
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-400">3:45</span>
+                </div>
+            </div>
+
+            <!-- Volume & Options -->
+            <div class="flex items-center gap-2 flex-1 justify-end">
+                <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-list-ul text-sm"></i>
+                </button>
+                <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <div class="w-24 h-1 bg-gray-600 rounded-full overflow-hidden group cursor-pointer">
+                    <div class="h-full w-2/3 bg-white relative">
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Navigation Buttons -->
+    <div class="fixed bottom-32 right-8 flex flex-col gap-3 z-50">
+        <a href="../index.html" class="w-14 h-14 bg-spotify-green hover:bg-spotify-green-dark rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all" title="Tüm Tasarımlar">
+            <i class="fas fa-th text-black"></i>
+        </a>
+        <button onclick="previousDesign()" class="w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all border border-white/20" title="Önceki Tasarım">
+            <i class="fas fa-chevron-left text-white"></i>
+        </button>
+        <button onclick="nextDesign()" class="w-14 h-14 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all border border-white/20" title="Sonraki Tasarım">
+            <i class="fas fa-chevron-right text-white"></i>
+        </button>
+    </div>
+
+    <script>
+        const designs = [
+            'v1-muzibu-tailwind',
+            'v2-spotify-modern',
+            'v3-apple-minimal',
+            'v4-dark-premium',
+            'v5-glass-modern',
+            'v6-material-design',
+            'v7-neomorphism',
+            'v8-business-corporate',
+            'v9-vibrant-colorful',
+            'v10-minimalist-elegant'
+        ];
+
+        const currentDesign = 'v2-spotify-modern';
+        const currentIndex = designs.indexOf(currentDesign);
+
+        function previousDesign() {
+            const prevIndex = currentIndex === 0 ? designs.length - 1 : currentIndex - 1;
+            window.location.href = `../${designs[prevIndex]}/index.html`;
+        }
+
+        function nextDesign() {
+            const nextIndex = (currentIndex + 1) % designs.length;
+            window.location.href = `../${designs[nextIndex]}/index.html`;
+        }
+    </script>
+</body>
+</html>

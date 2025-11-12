@@ -59,6 +59,12 @@
                             {{ __('muzibu::admin.playlist.playlist_songs') }}
                             <span class="badge bg-primary ms-2" id="playlist-count">0</span>
                         </h3>
+                        <div class="card-actions">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="shuffle-playlist-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('muzibu::admin.playlist.shuffle_songs') }}">
+                                <i class="fas fa-shuffle me-1"></i>
+                                {{ __('muzibu::admin.playlist.shuffle') }}
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body p-0">
                         <!-- Arama (Playlist) -->
@@ -560,6 +566,55 @@ $(document).ready(function() {
             }
         });
     }
+
+    // Playlist şarkılarını karıştır (shuffle)
+    $('#shuffle-playlist-btn').on('click', function() {
+        if (playlistSongs.length === 0) {
+            showError('{{ __("muzibu::admin.playlist.no_songs_to_shuffle") }}');
+            return;
+        }
+
+        const btn = $(this);
+        const originalHtml = btn.html();
+
+        // Loading state
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>{{ __("admin.shuffling") }}...');
+
+        // Fisher-Yates shuffle algorithm
+        const shuffled = [...playlistSongs];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        // Memory'yi güncelle
+        playlistSongs = shuffled;
+
+        // UI'ı güncelle
+        renderPlaylistSongs();
+
+        // Yeni sıralamayı backend'e kaydet
+        const newOrder = {};
+        playlistSongs.forEach((song, index) => {
+            newOrder[song.id] = index;
+        });
+
+        $.ajax({
+            url: `/admin/muzibu/playlist/api/${playlistId}/reorder`,
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            data: { order: newOrder },
+            success: function(response) {
+                btn.prop('disabled', false).html(originalHtml);
+                showToast('{{ __("admin.success") }}', '{{ __("muzibu::admin.playlist.shuffled_successfully") }}', 'success');
+            },
+            error: function() {
+                btn.prop('disabled', false).html(originalHtml);
+                showError('{{ __("admin.error_occurred") }}');
+                loadPlaylistSongs(); // Hata durumunda geri yükle
+            }
+        });
+    });
 
     // Toplam süreyi güncelle (server'dan gelen saniye)
     function updateTotalDuration(seconds) {

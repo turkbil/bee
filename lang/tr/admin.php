@@ -267,6 +267,7 @@ return [
     'loading' => 'Yükleniyor...',
     'saving' => 'Kaydediliyor...',
     'processing' => 'İşleniyor...',
+    'shuffling' => 'Karıştırılıyor',
     'success' => 'Başarılı',
     'error' => 'Hata',
     'warning' => 'Uyarı',

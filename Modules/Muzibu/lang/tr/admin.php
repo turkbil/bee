@@ -202,6 +202,11 @@ return [
     'no_songs_in_playlist' => 'Henüz şarkı eklenmedi',
     'add_songs_from_left' => 'Sol taraftaki listeden şarkı ekleyebilirsiniz',
     'total_duration' => 'Toplam Süre',
+    'shuffle' => 'Karıştır',
+    'shuffle_songs' => 'Şarkıları karıştır',
+    'shuffled_successfully' => 'Şarkılar başarıyla karıştırıldı',
+    'no_songs_to_shuffle' => 'Karıştırılacak şarkı yok',
+    'songs_found' => 'şarkı bulundu',
 ],
 
 // Radios (Radyolar)

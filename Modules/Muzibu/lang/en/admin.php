@@ -207,5 +207,11 @@ return [
         'no_songs_in_playlist' => 'No songs added yet',
         'add_songs_from_left' => 'You can add songs from the list on the left',
         'total_duration' => 'Total Duration',
+        'shuffle' => 'Shuffle',
+        'shuffle_songs' => 'Shuffle songs',
+        'shuffled_successfully' => 'Songs shuffled successfully',
+        'no_songs_to_shuffle' => 'No songs to shuffle',
+        'songs_found' => 'songs found',
+        'search_in_playlist' => 'Search in playlist...',
     ],
 ];

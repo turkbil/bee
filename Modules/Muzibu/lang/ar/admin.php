@@ -139,5 +139,11 @@ return [
     'no_songs_in_playlist' => 'لم تتم إضافة أغاني بعد',
     'add_songs_from_left' => 'يمكنك إضافة أغاني من القائمة على اليسار',
     'total_duration' => 'المدة الإجمالية',
+    'shuffle' => 'خلط',
+    'shuffle_songs' => 'خلط الأغاني',
+    'shuffled_successfully' => 'تم خلط الأغاني بنجاح',
+    'no_songs_to_shuffle' => 'لا توجد أغاني للخلط',
+    'songs_found' => 'أغنية تم العثور عليها',
+    'search_in_playlist' => 'البحث في قائمة التشغيل...',
 ],
 ];

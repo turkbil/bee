@@ -1,37 +1,38 @@
+(index):1 Attestation check for Topics on https://mc.yandex.com/ failed.
 (index):15 [Web Share] Helper yüklendi. Destek: true
 (index):15 [Back to Top] Initialized - Position: Left Bottom
+(index):15 💾 CartWidget: Cart ID from localStorage: 34
 (index):15 🔄 CartWidget: Count updated from API: 0
-sw.js:131 [Service Worker] Loaded successfully
-sw.js:27 [Service Worker] Installing...
 (index):15 [PWA] Service Worker registered: https://ixtif.com/
-sw.js:32 [Service Worker] Caching critical assets
-sw.js:43 [Service Worker] Activating...
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 1
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 1
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 2
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 2
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 3
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 3
-(index):15 🤖 Auto-opening AI chat (desktop only)...
 (index):15 🛒 Alpine: addToCart clicked {productId: 241}
 (index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
-(index):15 💾 localStorage: cart_item_count = 4
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received {itemCount: '4', cartId: 38}
-(index):15 ✅ Alpine: Success! Item count: 4
+livewire.js?id=df3a17f2:4294  POST https://ixtif.com/livewire/update 500 (Internal Server Error)
+sendRequest @ livewire.js?id=df3a17f2:4294
+send @ livewire.js?id=df3a17f2:4060
+(anonymous) @ livewire.js?id=df3a17f2:4205
+createAndSendNewPool @ livewire.js?id=df3a17f2:4201
+(anonymous) @ livewire.js?id=df3a17f2:4177
+(anonymous) @ livewire.js?id=df3a17f2:4240
+setTimeout
+bufferPoolingForFiveMs @ livewire.js?id=df3a17f2:4239
+add @ livewire.js?id=df3a17f2:4174
+requestCall @ livewire.js?id=df3a17f2:4256
+(anonymous) @ livewire.js?id=df3a17f2:4517
+fetchCartCount @ VM531:35
+await in fetchCartCount
+[Alpine] loadFromLocalStorage(); fetchCartCount() @ VM532:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3489
+(anonymous) @ livewire.js?id=df3a17f2:1909
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+(index):15 🛒 Alpine: addToCart clicked {productId: 130}
+(index):15 🛒 Alpine: Sending request to /api/cart/add

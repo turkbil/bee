@@ -14,7 +14,10 @@ class CartWidget extends Component
     public $items = [];
     public $cart = null;
 
-    protected $listeners = ['cartUpdated' => 'refreshCart'];
+    protected $listeners = [
+        'cartUpdated' => 'refreshCart',
+        'cart-updated' => 'refreshCart',
+    ];
 
     public function mount()
     {

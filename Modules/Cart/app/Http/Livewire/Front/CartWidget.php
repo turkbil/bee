@@ -80,7 +80,12 @@ class CartWidget extends Component
 
     public function removeItem(int $cartItemId)
     {
+        // Cart yoksa veya geçersizse işlem yapma
         if (!$this->cart) {
+            \Log::warning('⚠️ CartWidget: removeItem called but cart is null', [
+                'cart_item_id' => $cartItemId,
+            ]);
+            $this->refreshCart(); // Session ile cart bul
             return;
         }
 
@@ -102,7 +107,12 @@ class CartWidget extends Component
 
     public function increaseQuantity(int $cartItemId)
     {
+        // Cart yoksa veya geçersizse işlem yapma
         if (!$this->cart) {
+            \Log::warning('⚠️ CartWidget: increaseQuantity called but cart is null', [
+                'cart_item_id' => $cartItemId,
+            ]);
+            $this->refreshCart(); // Session ile cart bul
             return;
         }
 
@@ -125,7 +135,12 @@ class CartWidget extends Component
 
     public function decreaseQuantity(int $cartItemId)
     {
+        // Cart yoksa veya geçersizse işlem yapma
         if (!$this->cart) {
+            \Log::warning('⚠️ CartWidget: decreaseQuantity called but cart is null', [
+                'cart_item_id' => $cartItemId,
+            ]);
+            $this->refreshCart(); // Session ile cart bul
             return;
         }
 

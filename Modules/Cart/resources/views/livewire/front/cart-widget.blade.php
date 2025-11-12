@@ -57,15 +57,17 @@
         }
      }"
      x-init="loadFromLocalStorage(); fetchCartCount()"
-     @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = $event.detail.itemCount || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); $wire.refreshCart(cartId); }"
+     @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = parseInt($event.detail.itemCount) || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); $wire.refreshCart(cartId); }"
      class="relative">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"
             class="relative flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
         <i class="fas fa-shopping-cart text-xl"></i>
-        <span x-show="itemCount > 0" x-text="itemCount"
-              class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full">
-        </span>
+        <template x-if="itemCount > 0">
+            <span x-text="itemCount"
+                  class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full">
+            </span>
+        </template>
     </button>
 
     {{-- Cart Dropdown --}}

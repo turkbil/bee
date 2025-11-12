@@ -1,71 +1,63 @@
-sw.js:131 [Service Worker] Loaded successfully
-sw.js:27 [Service Worker] Installing...
-sw.js:32 [Service Worker] Caching critical assets
-sw.js:43 [Service Worker] Activating...
 (index):15 [Web Share] Helper yüklendi. Destek: true
 (index):15 [Back to Top] Initialized - Position: Left Bottom
-(index):15 💾 CartWidget: Loaded from localStorage: 4
-(index):15 💾 CartWidget: Cart ID from localStorage: 41
-clarity.js:2  POST https://b.clarity.ms/collect net::ERR_SSL_BAD_RECORD_MAC_ALERT
-ii @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-o @ clarity.js:2
-Promise.then
-c @ clarity.js:2
-(anonymous) @ clarity.js:2
-pt @ clarity.js:2
-ri @ clarity.js:2
-(anonymous) @ clarity.js:2
-setTimeout
-tt @ clarity.js:2
-ni @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-pt @ clarity.js:2
-zn @ clarity.js:2
-Vn @ clarity.js:2
-start @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-bu @ clarity.js:2
-Eu.ku.<computed> @ clarity.js:2
-Eu @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-(index):15 [PWA] Service Worker registered: https://ixtif.com/
 (index):15 🔄 CartWidget: Count updated from API: 0
-(index):15 🛒 Alpine: addToCart clicked {productId: 130}
+(index):15 🛒 Alpine: addToCart clicked Object
 (index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
+sw.js:131 [Service Worker] Loaded successfully
+(index):15 [PWA] Service Worker registered: https://ixtif.com/
+sw.js:27 [Service Worker] Installing...
+sw.js:32 [Service Worker] Caching critical assets
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 1
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 1
+sw.js:43 [Service Worker] Activating...
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 2
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 2
+/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet:1  Failed to load resource: the server responded with a status of 500 ()
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 3
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 3
+/shop/ixtif-ept20-15et2h-15-ton-elektrikli-transpalet-agm-yuksek-sasi-boslugu:1  Failed to load resource: the server responded with a status of 500 ()
+(index):15 🤖 Auto-opening AI chat (desktop only)...
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 4
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 4
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
 (index):15 💾 localStorage: cart_item_count = 5
 (index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received {itemCount: '5', cartId: 41}
+(index):15 🔄 CartWidget: cart-updated event received Object
 (index):15 ✅ Alpine: Success! Item count: 5
-5.2.0:2  GET https://ixtif.com/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet net::ERR_ABORTED 500 (Internal Server Error)
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 6
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 6
+5.2.0:2  GET https://ixtif.com/shop/ixtif-efl252-25-ton-li-ion-elektrikli-denge-agirlikli-forklift net::ERR_ABORTED 500 (Internal Server Error)
 p @ 5.2.0:2
 (anonymous) @ 5.2.0:2
 setTimeout
 u @ 5.2.0:2
-(index):15 🛒 Alpine: addToCart clicked {productId: 241}
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
-(index):15 💾 localStorage: cart_item_count = 6
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received {itemCount: '6', cartId: 41}
-(index):15 ✅ Alpine: Success! Item count: 6
-clarity.js:2  POST https://b.clarity.ms/collect net::ERR_SSL_BAD_RECORD_MAC_ALERT
-ii @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-(anonymous) @ clarity.js:2
-o @ clarity.js:2
-Promise.then
-c @ clarity.js:2
-(anonymous) @ clarity.js:2
-pt @ clarity.js:2
-ri @ clarity.js:2
-(anonymous) @ clarity.js:2
+5.2.0:2  GET https://ixtif.com/shop/ixtif-efl352-35-ton-li-ion-forklift net::ERR_ABORTED 500 (Internal Server Error)
+p @ 5.2.0:2
+(anonymous) @ 5.2.0:2
+setTimeout
+u @ 5.2.0:2

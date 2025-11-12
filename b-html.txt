@@ -1,7 +1,7 @@
 <div wire:id="qwGJf7o6Sw35HfZBMKaC" x-data="{
         open: false,
         itemCount: 6,
-        cartId: 41,
+        cartId: 42,
         loadFromLocalStorage() {
             // localStorage'dan cart count ve cart_id oku
             const stored = localStorage.getItem('cart_item_count');
@@ -34,10 +34,16 @@
                     localStorage.setItem('cart_item_count', this.itemCount);
                     console.log('🔄 CartWidget: Count updated from API:', this.itemCount);
 
-                    // cart_id varsa güncelle
+                    // cart_id kontrolü
                     if (data.data.cart_id) {
+                        // Geçerli cart_id var, güncelle
                         this.cartId = data.data.cart_id;
                         localStorage.setItem('cart_id', this.cartId);
+                    } else if (data.data.cart_id === null) {
+                        // cart_id null ise geçersiz, temizle
+                        console.warn('⚠️ CartWidget: Invalid cart_id, clearing localStorage');
+                        this.cartId = null;
+                        localStorage.removeItem('cart_id');
                     }
 
                     // cart_id'yi Livewire'a gönder
@@ -66,11 +72,9 @@
 
             <!--[if BLOCK]><![endif]-->                
                 <div class="space-y-3 max-h-96 overflow-y-auto">
-                    <!--[if BLOCK]><![endif]-->                        <div wire:key="cart-item-53" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                    <!--[if BLOCK]><![endif]-->                        <div wire:key="cart-item-57" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
                             
-                            <!--[if BLOCK]><![endif]-->                                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-box text-gray-400"></i>
-                                </div>
+                            <!--[if BLOCK]><![endif]-->                                <img src="https://ixtif.com/storage/tenant2/91/tbolberwyzugefhlmefwyfxvqulf742upjygvvvp.png" alt="İXTİF EPT20-15ET2H - 1.5 Ton Elektrikli Transpalet (AGM, Yüksek Şasi Boşluğu)" class="w-16 h-16 object-cover rounded-lg">
                             <!--[if ENDBLOCK]><![endif]-->
 
                             
@@ -85,26 +89,24 @@
 
                                 
                                 <div class="flex items-center gap-2 mt-2">
-                                    <button wire:click="decreaseQuantity(53)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                    <button wire:click="decreaseQuantity(57)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
                                         <i class="fas fa-minus text-xs"></i>
                                     </button>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
                                         2
                                     </span>
-                                    <button wire:click="increaseQuantity(53)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                    <button wire:click="increaseQuantity(57)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
                                         <i class="fas fa-plus text-xs"></i>
                                     </button>
-                                    <button wire:click="removeItem(53)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                                    <button wire:click="removeItem(57)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                                            <div wire:key="cart-item-54" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                                            <div wire:key="cart-item-58" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
                             
-                            <!--[if BLOCK]><![endif]-->                                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-box text-gray-400"></i>
-                                </div>
+                            <!--[if BLOCK]><![endif]-->                                <img src="https://ixtif.com/storage/tenant2/84/fmrhqn7nkvcoqea8ue2nrwfvydt31wgosx4fiupi.png" alt="İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet" class="w-16 h-16 object-cover rounded-lg">
                             <!--[if ENDBLOCK]><![endif]-->
 
                             
@@ -119,60 +121,24 @@
 
                                 
                                 <div class="flex items-center gap-2 mt-2">
-                                    <button wire:click="decreaseQuantity(54)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                    <button wire:click="decreaseQuantity(58)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
                                         <i class="fas fa-minus text-xs"></i>
                                     </button>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
                                         2
                                     </span>
-                                    <button wire:click="increaseQuantity(54)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                    <button wire:click="increaseQuantity(58)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
                                         <i class="fas fa-plus text-xs"></i>
                                     </button>
-                                    <button wire:click="removeItem(54)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                                    <button wire:click="removeItem(58)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                                            <div wire:key="cart-item-55" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                                            <div wire:key="cart-item-59" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
                             
-                            <!--[if BLOCK]><![endif]-->                                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-box text-gray-400"></i>
-                                </div>
-                            <!--[if ENDBLOCK]><![endif]-->
-
-                            
-                            <div class="flex-1 min-w-0">
-                                <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                    İXTİF F4 - 1.5 Ton Li-Ion Transpalet
-                                </h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                                                        <!--[if BLOCK]><![endif]-->                                        1.250 TL
-                                    <!--[if ENDBLOCK]><![endif]-->
-                                </p>
-
-                                
-                                <div class="flex items-center gap-2 mt-2">
-                                    <button wire:click="decreaseQuantity(55)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
-                                        <i class="fas fa-minus text-xs"></i>
-                                    </button>
-                                    <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
-                                        1
-                                    </span>
-                                    <button wire:click="increaseQuantity(55)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
-                                        <i class="fas fa-plus text-xs"></i>
-                                    </button>
-                                    <button wire:click="removeItem(55)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
-                                        <i class="fas fa-trash text-sm"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                                            <div wire:key="cart-item-56" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
-                            
-                            <!--[if BLOCK]><![endif]-->                                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-box text-gray-400"></i>
-                                </div>
+                            <!--[if BLOCK]><![endif]-->                                <img src="https://ixtif.com/storage/tenant2/100/yrupoh8ijw8hexoxvo3n5y6k6hj3ju9drypfm2dj.png" alt="İXTİF EPT20-20ETC - 2.0 Ton Soğuk Depo Transpalet" class="w-16 h-16 object-cover rounded-lg">
                             <!--[if ENDBLOCK]><![endif]-->
 
                             
@@ -187,16 +153,48 @@
 
                                 
                                 <div class="flex items-center gap-2 mt-2">
-                                    <button wire:click="decreaseQuantity(56)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                    <button wire:click="decreaseQuantity(59)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
                                         <i class="fas fa-minus text-xs"></i>
                                     </button>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
                                         1
                                     </span>
-                                    <button wire:click="increaseQuantity(56)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                    <button wire:click="increaseQuantity(59)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
                                         <i class="fas fa-plus text-xs"></i>
                                     </button>
-                                    <button wire:click="removeItem(56)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                                    <button wire:click="removeItem(59)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                                        <i class="fas fa-trash text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                                            <div wire:key="cart-item-60" class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                            
+                            <!--[if BLOCK]><![endif]-->                                <img src="https://ixtif.com/storage/tenant2/82/lep4ns74ctsp2gydkwetkw7xs1y01psfss4tf5u6.png" alt="İXTİF F4 - 1.5 Ton Li-Ion Transpalet" class="w-16 h-16 object-cover rounded-lg">
+                            <!--[if ENDBLOCK]><![endif]-->
+
+                            
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                    İXTİF F4 - 1.5 Ton Li-Ion Transpalet
+                                </h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                                                        <!--[if BLOCK]><![endif]-->                                        1.250 TL
+                                    <!--[if ENDBLOCK]><![endif]-->
+                                </p>
+
+                                
+                                <div class="flex items-center gap-2 mt-2">
+                                    <button wire:click="decreaseQuantity(60)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                        <i class="fas fa-minus text-xs"></i>
+                                    </button>
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
+                                        1
+                                    </span>
+                                    <button wire:click="increaseQuantity(60)" class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
+                                        <i class="fas fa-plus text-xs"></i>
+                                    </button>
+                                    <button wire:click="removeItem(60)" class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>

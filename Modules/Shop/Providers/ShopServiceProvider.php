@@ -12,10 +12,7 @@ use Modules\Shop\App\Http\Livewire\Admin\ShopBrandComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopBrandManageComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyComponent;
 use Modules\Shop\App\Http\Livewire\Admin\ShopCurrencyManageComponent;
-use Modules\Shop\App\Http\Livewire\Admin\ShopCartComponent;
 use Modules\Shop\App\Http\Livewire\Admin\HomepageProductsComponent;
-use Modules\Shop\App\Http\Livewire\Front\CartWidget;
-use Modules\Shop\App\Http\Livewire\Front\CartPage;
 use Modules\Shop\App\Http\Livewire\Front\AddToCartButton;
 use Modules\Shop\App\Http\Livewire\Front\AddressManager;
 use Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew;
@@ -69,12 +66,9 @@ class ShopServiceProvider extends ServiceProvider
         Livewire::component('shop-brand-manage-component', ShopBrandManageComponent::class);
         Livewire::component('shop-currency-component', ShopCurrencyComponent::class);
         Livewire::component('shop-currency-manage-component', ShopCurrencyManageComponent::class);
-        Livewire::component('shop-cart-component', ShopCartComponent::class);
         Livewire::component('homepage-products-component', HomepageProductsComponent::class);
 
-        // Front Livewire Components (Cart System)
-        Livewire::component('shop::front.cart-widget', CartWidget::class);
-        Livewire::component('shop::front.cart-page', CartPage::class);
+        // Front Livewire Components (Add to Cart)
         Livewire::component('shop::front.add-to-cart-button', AddToCartButton::class);
 
         // Front Livewire Components (Checkout System)
@@ -121,7 +115,7 @@ class ShopServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Shop\App\Services\ShopProductService::class);
         $this->app->singleton(\Modules\Shop\App\Services\ShopBrandService::class);
         $this->app->singleton(\Modules\Shop\App\Services\ShopProductVariantService::class);
-        $this->app->singleton(\Modules\Shop\App\Services\ShopCartService::class);
+        // ShopCartService removed - Cart modülü kullan
     }
 
     /**

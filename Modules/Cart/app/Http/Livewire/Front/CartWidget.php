@@ -55,7 +55,18 @@ class CartWidget extends Component
         }
 
         if ($this->cart) {
-            $this->items = $this->cart->items()->where('is_active', true)->get();
+            // Eager load polymorphic relations and product details
+            $this->items = $this->cart->items()
+                ->where('is_active', true)
+                ->with([
+                    'cartable',
+                    'product.medias',
+                    'product' => function ($query) {
+                        $query->select('product_id', 'title', 'slug');
+                    }
+                ])
+                ->get();
+
             $this->itemCount = $this->items->sum('quantity');
             $this->total = (float) $this->cart->total;
 
@@ -88,7 +99,15 @@ class CartWidget extends Component
         }
 
         $this->refreshCart();
-        $this->dispatch('cartUpdated');
+
+        // Alpine.js uyumlu event dispatch (kebab-case)
+        $this->dispatch('cart-updated', [
+            'cartId' => $this->cart->cart_id,
+            'itemCount' => $this->itemCount,
+            'total' => $this->total,
+            'currencyCode' => $this->cart->currency_code ?? 'TRY',
+        ]);
+
         $this->dispatch('cart-item-removed', ['message' => 'Ürün sepetten çıkarıldı']);
     }
 
@@ -106,7 +125,14 @@ class CartWidget extends Component
         }
 
         $this->refreshCart();
-        $this->dispatch('cartUpdated');
+
+        // Alpine.js uyumlu event dispatch
+        $this->dispatch('cart-updated', [
+            'cartId' => $this->cart->cart_id,
+            'itemCount' => $this->itemCount,
+            'total' => $this->total,
+            'currencyCode' => $this->cart->currency_code ?? 'TRY',
+        ]);
     }
 
     public function decreaseQuantity(int $cartItemId)
@@ -128,7 +154,14 @@ class CartWidget extends Component
         }
 
         $this->refreshCart();
-        $this->dispatch('cartUpdated');
+
+        // Alpine.js uyumlu event dispatch
+        $this->dispatch('cart-updated', [
+            'cartId' => $this->cart->cart_id,
+            'itemCount' => $this->itemCount,
+            'total' => $this->total,
+            'currencyCode' => $this->cart->currency_code ?? 'TRY',
+        ]);
     }
 
     public function render()

@@ -252,19 +252,21 @@ class CartItem extends BaseModel
 
         // 2. Backward compatibility: product_id varsa ShopProduct'tan al
         if ($this->product) {
-            // Spatie Media Library varsa
-            if (method_exists($this->product, 'getFirstMediaUrl')) {
-                $mediaUrl = $this->product->getFirstMediaUrl('products');
-                if ($mediaUrl) {
-                    return thumb($mediaUrl, 80, 80, ['scale' => 1]);
+            // Medias relation varsa (MediaManagement modülü)
+            if ($this->product->relationLoaded('medias') && $this->product->medias && $this->product->medias->isNotEmpty()) {
+                $firstMedia = $this->product->medias->first();
+                if ($firstMedia) {
+                    // thumb() helper Media model bekliyor
+                    return thumb($firstMedia, 80, 80, ['scale' => 1]);
                 }
             }
 
-            // Medias relation varsa
-            if ($this->product->medias && $this->product->medias->isNotEmpty()) {
-                $firstMedia = $this->product->medias->first();
-                if ($firstMedia && isset($firstMedia->file_path)) {
-                    return thumb($firstMedia->file_path, 80, 80, ['scale' => 1]);
+            // Spatie Media Library varsa (fallback)
+            if (method_exists($this->product, 'getFirstMediaUrl')) {
+                $mediaUrl = $this->product->getFirstMediaUrl('products');
+                if ($mediaUrl) {
+                    // URL string olduğu için asset() ile wrap et
+                    return $mediaUrl;
                 }
             }
         }

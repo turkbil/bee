@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albüm - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1db954',
+                        'spotify-green-dark': '#1aa34a',
+                        'spotify-black': '#121212',
+                        'spotify-gray': '#181818',
+                        'spotify-light-gray': '#282828',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Spotify Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white antialiased" x-data="albumDetailApp()">
+
+    <!-- Top CTA Bar (Guest only) -->
+    <div x-show="!isLoggedIn" x-transition class="fixed top-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm py-2 px-4 z-50 flex items-center justify-center gap-3">
+        <span>🎉 Günde 1 saat ücretsiz dinleyin! Kalan süre: <span x-text="formatListeningTime()"></span></span>
+        <button @click="showAuthModal = 'register'" class="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold hover:bg-gray-100 transition">Ücretsiz Başla</button>
+    </div>
+
+    <div class="flex h-screen" :class="!isLoggedIn ? 'pt-10' : ''">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-black/50 backdrop-blur-sm border-r border-white/10 flex flex-col z-40">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Muzibu</h1>
+            </div>
+            
+            <nav class="flex-1 px-3 space-y-1">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+                    <i class="fas fa-home w-5"></i>
+                    <span>Ana Sayfa</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+                    <i class="fas fa-search w-5"></i>
+                    <span>Ara</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+                    <i class="fas fa-list-ul w-5"></i>
+                    <span>Çalma Listeleri</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+                    <i class="fas fa-heart w-5"></i>
+                    <span>Favoriler</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-white/10">
+                    <i class="fas fa-compact-disc w-5"></i>
+                    <span>Albümler</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+                    <i class="fas fa-building w-5"></i>
+                    <span>Sektörler</span>
+                </a>
+            </nav>
+
+            <!-- User Section -->
+            <div class="p-4 border-t border-white/10">
+                <template x-if="!isLoggedIn">
+                    <div class="space-y-2">
+                        <button @click="showAuthModal = 'login'" class="w-full bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition">Giriş Yap</button>
+                        <button @click="showAuthModal = 'register'" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition">Üye Ol</button>
+                    </div>
+                </template>
+                <template x-if="isLoggedIn">
+                    <div x-data="{ userMenuOpen: false }" class="relative">
+                        <button @click="userMenuOpen = !userMenuOpen" class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                                DK
+                            </div>
+                            <div class="flex-1 text-left">
+                                <div class="font-semibold">Demo Kullanıcı</div>
+                                <div class="text-xs text-gray-400">Premium Üye</div>
+                            </div>
+                            <i class="fas fa-chevron-up text-gray-400"></i>
+                        </button>
+                        <div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition class="absolute bottom-full left-0 right-0 mb-2 bg-spotify-light-gray rounded-lg shadow-xl overflow-hidden">
+                            <a href="#" class="block px-4 py-3 hover:bg-white/10 transition">
+                                <i class="fas fa-user w-5 mr-2"></i> Profilim
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-white/10 transition">
+                                <i class="fas fa-cog w-5 mr-2"></i> Ayarlar
+                            </a>
+                            <button @click="logout()" class="w-full text-left px-4 py-3 hover:bg-white/10 transition border-t border-white/10">
+                                <i class="fas fa-sign-out-alt w-5 mr-2"></i> Çıkış Yap
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto hide-scrollbar pb-32">
+            
+            <!-- Album Header -->
+            <div class="relative bg-gradient-to-b from-blue-900/50 to-transparent">
+                <div class="px-8 pt-8 pb-6">
+                    <button onclick="history.back()" class="mb-6 flex items-center gap-2 text-gray-300 hover:text-white transition">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Geri Dön</span>
+                    </button>
+
+                    <div class="flex items-end gap-6">
+                        <img src="https://picsum.photos/seed/album1/400" alt="Album Cover" class="w-56 h-56 rounded-lg shadow-2xl">
+                        <div class="flex-1 pb-4">
+                            <div class="text-sm font-semibold uppercase tracking-wide mb-2">Albüm</div>
+                            <h1 class="text-7xl font-bold mb-6">World Music Radio</h1>
+                            <div class="flex items-center gap-4 mb-4">
+                                <img src="https://picsum.photos/seed/artist1/100" alt="Artist" class="w-8 h-8 rounded-full">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <a href="#" class="font-bold hover:underline">Jon Batiste</a>
+                                    <span>•</span>
+                                    <span class="text-gray-400">2023</span>
+                                    <span>•</span>
+                                    <span class="text-gray-400">18 şarkı</span>
+                                    <span>•</span>
+                                    <span class="text-gray-400">1 saat 2 dakika</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="px-8 py-6 flex items-center gap-4">
+                <button @click="playAll()" class="w-16 h-16 bg-spotify-green hover:bg-spotify-green-dark rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition">
+                    <i class="fas fa-play text-black text-2xl ml-1"></i>
+                </button>
+                <button @click="toggleAlbumFavorite()" class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
+                    <i :class="isAlbumFavorited ? 'fas fa-heart text-spotify-green' : 'far fa-heart'" class="text-3xl"></i>
+                </button>
+                <button x-data="{ addOpen: false }" @click="addOpen = !addOpen" class="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
+                    <i class="fas fa-plus text-2xl"></i>
+                    <div x-show="addOpen" @click.away="addOpen = false" x-transition class="absolute top-full left-0 mt-2 bg-spotify-light-gray rounded-lg shadow-xl overflow-hidden min-w-[200px]">
+                        <button @click="addToPlaylist('favorites')" class="w-full text-left px-4 py-3 hover:bg-white/10 transition">
+                            <i class="fas fa-heart w-5 mr-2"></i> Favorilere Ekle
+                        </button>
+                        <button @click="addToPlaylist('new')" class="w-full text-left px-4 py-3 hover:bg-white/10 transition">
+                            <i class="fas fa-plus w-5 mr-2"></i> Yeni Liste Oluştur
+                        </button>
+                    </div>
+                </button>
+                <button class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
+                    <i class="fas fa-ellipsis-h text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Songs List -->
+            <div class="px-8 pb-8">
+                <div class="mb-4 pb-2 border-b border-white/10 grid grid-cols-[auto_1fr_auto_auto] gap-4 px-4 text-sm text-gray-400 font-semibold">
+                    <div class="w-10 text-center">#</div>
+                    <div>BAŞLIK</div>
+                    <div class="w-20 text-center">DINLENME</div>
+                    <div class="w-20 text-center">SÜRE</div>
+                </div>
+
+                <div class="space-y-1">
+                    <template x-for="(song, index) in albumSongs" :key="song.id">
+                        <div @dblclick="playSong(index)" class="group grid grid-cols-[auto_1fr_auto_auto] gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition cursor-pointer">
+                            <!-- Index / Play Button -->
+                            <div class="w-10 flex items-center justify-center">
+                                <span x-show="currentSongIndex !== index" x-text="index + 1" class="text-gray-400 group-hover:hidden"></span>
+                                <button x-show="currentSongIndex !== index" @click="playSong(index)" class="hidden group-hover:block">
+                                    <i class="fas fa-play text-white"></i>
+                                </button>
+                                <button x-show="currentSongIndex === index" @click="togglePlay()">
+                                    <i :class="isPlaying ? 'fa-pause' : 'fa-play'" class="fas text-spotify-green"></i>
+                                </button>
+                            </div>
+
+                            <!-- Title & Artist -->
+                            <div class="min-w-0">
+                                <div class="font-semibold truncate mb-1" :class="currentSongIndex === index ? 'text-spotify-green' : 'text-white'" x-text="song.title"></div>
+                                <div class="text-sm text-gray-400 truncate" x-text="song.artist"></div>
+                            </div>
+
+                            <!-- Play Count -->
+                            <div class="flex items-center justify-center text-gray-400 text-sm">
+                                <span x-text="song.plays"></span>
+                            </div>
+
+                            <!-- Duration & Actions -->
+                            <div class="flex items-center justify-end gap-3">
+                                <button @click.stop="toggleSongFavorite(song.id)" class="w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:text-spotify-green transition">
+                                    <i :class="favorites.includes(song.id) ? 'fas fa-heart text-spotify-green' : 'far fa-heart'" class="text-lg"></i>
+                                </button>
+                                <span class="text-gray-400 text-sm w-12 text-center" x-text="song.duration"></span>
+                                <button class="w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:text-white transition">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Album Info Section -->
+                <div class="mt-12 pt-8 border-t border-white/10">
+                    <div class="flex items-start gap-6">
+                        <img src="https://picsum.photos/seed/artist1/200" alt="Artist" class="w-32 h-32 rounded-full shadow-xl">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-2">Jon Batiste Hakkında</h3>
+                            <p class="text-gray-400 mb-4">Grammy ödüllü Amerikalı müzisyen, şarkıcı ve besteci. Jazz, R&B, soul ve funk türlerinde eserler veren sanatçı, 2015'ten beri The Late Show with Stephen Colbert'in müzik direktörlüğünü yapıyor.</p>
+                            <div class="flex items-center gap-4 text-sm">
+                                <div>
+                                    <div class="text-2xl font-bold">8.2M</div>
+                                    <div class="text-gray-400">Aylık Dinleyici</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More Albums -->
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold mb-4">Jon Batiste'in Diğer Albümleri</h3>
+                        <div class="grid grid-cols-5 gap-4">
+                            <template x-for="i in 5" :key="i">
+                                <a href="#" class="group bg-white/5 p-4 rounded-lg hover:bg-white/10 transition">
+                                    <img :src="`https://picsum.photos/seed/album${i}/200`" class="w-full aspect-square rounded mb-3 shadow-lg">
+                                    <div class="font-semibold truncate mb-1" x-text="`Album ${i}`"></div>
+                                    <div class="text-sm text-gray-400 truncate">2022</div>
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Music Player (Fixed Bottom) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-spotify-gray border-t border-white/10 z-50">
+        <audio x-ref="audioPlayer" @timeupdate="updateProgress()" @ended="nextSong()" @loadedmetadata="setDuration()">
+            <source src="/readme/muzibu-modul/Calling on You.mp3" type="audio/mpeg">
+        </audio>
+
+        <div class="px-4 py-3">
+            <!-- Progress Bar -->
+            <div class="mb-3 flex items-center gap-2 text-xs text-gray-400">
+                <span x-text="formatTime(currentTime)">0:00</span>
+                <div class="flex-1 h-1 bg-white/10 rounded-full cursor-pointer group" @click="seek($event)">
+                    <div class="h-full bg-spotify-green rounded-full relative" :style="`width: ${progress}%`">
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                    </div>
+                </div>
+                <span x-text="formatTime(duration)">0:00</span>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <!-- Current Song Info -->
+                <div class="flex items-center gap-4 w-1/4">
+                    <img :src="albumSongs[currentSongIndex]?.cover" class="w-14 h-14 rounded object-cover">
+                    <div class="min-w-0">
+                        <div class="font-semibold text-sm truncate" x-text="albumSongs[currentSongIndex]?.title">Şarkı Seç</div>
+                        <div class="text-xs text-gray-400 truncate" x-text="albumSongs[currentSongIndex]?.artist">Sanatçı</div>
+                    </div>
+                    <button @click="toggleSongFavorite(albumSongs[currentSongIndex]?.id)" class="text-gray-400 hover:text-spotify-green transition">
+                        <i :class="favorites.includes(albumSongs[currentSongIndex]?.id) ? 'fas fa-heart text-spotify-green' : 'far fa-heart'"></i>
+                    </button>
+                </div>
+
+                <!-- Player Controls -->
+                <div class="flex flex-col items-center gap-2 w-2/4">
+                    <div class="flex items-center gap-4">
+                        <button @click="shuffle = !shuffle" :class="shuffle ? 'text-spotify-green' : 'text-gray-400'" class="hover:text-white transition">
+                            <i class="fas fa-random"></i>
+                        </button>
+                        <button @click="previousSong()" class="text-gray-400 hover:text-white transition">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button @click="togglePlay()" class="w-10 h-10 bg-white hover:scale-105 rounded-full flex items-center justify-center transition">
+                            <i :class="isPlaying ? 'fa-pause' : 'fa-play'" class="fas text-black" :class="isPlaying ? '' : 'ml-0.5'"></i>
+                        </button>
+                        <button @click="nextSong()" class="text-gray-400 hover:text-white transition">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                        <button @click="repeat = (repeat + 1) % 3" :class="repeat > 0 ? 'text-spotify-green' : 'text-gray-400'" class="hover:text-white transition relative">
+                            <i class="fas fa-redo"></i>
+                            <span x-show="repeat === 2" class="absolute -top-1 -right-1 w-3 h-3 bg-spotify-green rounded-full text-[8px] flex items-center justify-center text-black font-bold">1</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Volume Control -->
+                <div class="flex items-center justify-end gap-2 w-1/4">
+                    <i class="fas fa-volume-up text-gray-400"></i>
+                    <div class="w-24 h-1 bg-white/10 rounded-full cursor-pointer group" @click="setVolume($event)">
+                        <div class="h-full bg-white rounded-full relative" :style="`width: ${volume * 100}%`">
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login/Register Modal -->
+    <template x-if="showAuthModal">
+        <div class="fixed inset-0 bg-black/80 flex items-center justify-center z-[100]" @click.self="showAuthModal = null">
+            <div class="bg-spotify-gray rounded-xl p-8 max-w-md w-full mx-4">
+                <template x-if="showAuthModal === 'login'">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-6">Giriş Yap</h2>
+                        <div class="space-y-4">
+                            <input type="email" placeholder="E-posta" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <input type="password" placeholder="Şifre" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <button @click="login()" class="w-full bg-spotify-green hover:bg-spotify-green-dark text-black font-semibold py-3 rounded-full transition">Giriş Yap</button>
+                            <p class="text-center text-gray-400 text-sm">Hesabın yok mu? <button @click="showAuthModal = 'register'" class="text-spotify-green hover:underline">Üye Ol</button></p>
+                        </div>
+                    </div>
+                </template>
+                <template x-if="showAuthModal === 'register'">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2">Ücretsiz Kaydol</h2>
+                        <p class="text-gray-400 mb-6">7 gün ücretsiz premium deneyimi başlat</p>
+                        <div class="space-y-4">
+                            <input type="text" placeholder="Ad Soyad" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <input type="email" placeholder="E-posta" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <input type="password" placeholder="Şifre" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <button @click="register()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-full transition">Ücretsiz Başla</button>
+                            <p class="text-center text-gray-400 text-sm">Zaten üye misin? <button @click="showAuthModal = 'login'" class="text-spotify-green hover:underline">Giriş Yap</button></p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        function albumDetailApp() {
+            return {
+                // Login State
+                isLoggedIn: false,
+                showAuthModal: null,
+                listeningTimeToday: 0,
+                maxListeningTime: 3600,
+
+                // Album State
+                isAlbumFavorited: false,
+                albumSongs: [
+                    { id: 1, title: 'Calling on You', artist: 'Jon Batiste', plays: '12.5M', duration: '3:45', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 2, title: 'Butterfly', artist: 'Jon Batiste', plays: '8.3M', duration: '3:12', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 3, title: 'Worship', artist: 'Jon Batiste', plays: '6.1M', duration: '4:02', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 4, title: 'Running Away', artist: 'Jon Batiste', plays: '5.7M', duration: '3:28', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 5, title: 'Be Who You Are', artist: 'Jon Batiste', plays: '9.2M', duration: '3:55', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 6, title: 'Drink Water', artist: 'Jon Batiste', plays: '4.8M', duration: '2:48', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 7, title: 'Uneasy', artist: 'Jon Batiste', plays: '3.9M', duration: '3:33', cover: 'https://picsum.photos/seed/album1/200' },
+                    { id: 8, title: 'Master Power', artist: 'Jon Batiste', plays: '3.2M', duration: '4:15', cover: 'https://picsum.photos/seed/album1/200' },
+                ],
+
+                // Player State
+                isPlaying: false,
+                currentSongIndex: 0,
+                currentTime: 0,
+                duration: 0,
+                progress: 0,
+                volume: 0.7,
+                shuffle: false,
+                repeat: 0,
+                favorites: [],
+
+                init() {
+                    this.isLoggedIn = localStorage.getItem('muzibu_logged_in') === 'true';
+                    
+                    const savedFavorites = localStorage.getItem('muzibu_favorites');
+                    if (savedFavorites) {
+                        this.favorites = JSON.parse(savedFavorites);
+                    }
+
+                    const savedTime = parseInt(localStorage.getItem('muzibu_listening_time') || '0');
+                    const lastDate = localStorage.getItem('muzibu_last_date');
+                    const today = new Date().toDateString();
+                    
+                    if (lastDate !== today) {
+                        this.listeningTimeToday = 0;
+                        localStorage.setItem('muzibu_last_date', today);
+                    } else {
+                        this.listeningTimeToday = savedTime;
+                    }
+
+                    this.$refs.audioPlayer.volume = this.volume;
+
+                    setInterval(() => this.updateTime(), 1000);
+                },
+
+                login() {
+                    this.isLoggedIn = true;
+                    localStorage.setItem('muzibu_logged_in', 'true');
+                    this.showAuthModal = null;
+                },
+
+                logout() {
+                    this.isLoggedIn = false;
+                    localStorage.removeItem('muzibu_logged_in');
+                },
+
+                register() {
+                    this.login();
+                },
+
+                toggleAlbumFavorite() {
+                    this.isAlbumFavorited = !this.isAlbumFavorited;
+                },
+
+                toggleSongFavorite(songId) {
+                    const index = this.favorites.indexOf(songId);
+                    if (index > -1) {
+                        this.favorites.splice(index, 1);
+                    } else {
+                        this.favorites.push(songId);
+                    }
+                    localStorage.setItem('muzibu_favorites', JSON.stringify(this.favorites));
+                },
+
+                addToPlaylist(type) {
+                    console.log('Adding album to:', type);
+                },
+
+                playAll() {
+                    this.currentSongIndex = 0;
+                    this.playSong(0);
+                },
+
+                playSong(index) {
+                    if (!this.isLoggedIn && this.listeningTimeToday >= this.maxListeningTime) {
+                        this.showAuthModal = 'register';
+                        return;
+                    }
+                    this.currentSongIndex = index;
+                    this.$refs.audioPlayer.play();
+                    this.isPlaying = true;
+                },
+
+                togglePlay() {
+                    if (!this.isLoggedIn && this.listeningTimeToday >= this.maxListeningTime) {
+                        this.showAuthModal = 'register';
+                        return;
+                    }
+                    if (this.isPlaying) {
+                        this.$refs.audioPlayer.pause();
+                    } else {
+                        this.$refs.audioPlayer.play();
+                    }
+                    this.isPlaying = !this.isPlaying;
+                },
+
+                nextSong() {
+                    if (this.repeat === 2) {
+                        this.$refs.audioPlayer.currentTime = 0;
+                        this.$refs.audioPlayer.play();
+                    } else if (this.shuffle) {
+                        this.currentSongIndex = Math.floor(Math.random() * this.albumSongs.length);
+                        this.playSong(this.currentSongIndex);
+                    } else {
+                        this.currentSongIndex = (this.currentSongIndex + 1) % this.albumSongs.length;
+                        if (this.currentSongIndex === 0 && this.repeat === 0) {
+                            this.isPlaying = false;
+                        } else {
+                            this.playSong(this.currentSongIndex);
+                        }
+                    }
+                },
+
+                previousSong() {
+                    if (this.currentTime > 3) {
+                        this.$refs.audioPlayer.currentTime = 0;
+                    } else {
+                        this.currentSongIndex = (this.currentSongIndex - 1 + this.albumSongs.length) % this.albumSongs.length;
+                        this.playSong(this.currentSongIndex);
+                    }
+                },
+
+                updateProgress() {
+                    this.currentTime = this.$refs.audioPlayer.currentTime;
+                    this.progress = (this.currentTime / this.duration) * 100;
+                },
+
+                setDuration() {
+                    this.duration = this.$refs.audioPlayer.duration;
+                },
+
+                seek(event) {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    const percent = (event.clientX - rect.left) / rect.width;
+                    this.$refs.audioPlayer.currentTime = percent * this.duration;
+                },
+
+                setVolume(event) {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    this.volume = (event.clientX - rect.left) / rect.width;
+                    this.$refs.audioPlayer.volume = this.volume;
+                },
+
+                formatTime(seconds) {
+                    if (!seconds || isNaN(seconds)) return '0:00';
+                    const mins = Math.floor(seconds / 60);
+                    const secs = Math.floor(seconds % 60);
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                },
+
+                formatListeningTime() {
+                    const remaining = Math.max(0, this.maxListeningTime - this.listeningTimeToday);
+                    const mins = Math.floor(remaining / 60);
+                    const secs = remaining % 60;
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                },
+
+                updateTime() {
+                    if (!this.isLoggedIn && this.isPlaying) {
+                        this.listeningTimeToday++;
+                        localStorage.setItem('muzibu_listening_time', this.listeningTimeToday.toString());
+                        
+                        if (this.listeningTimeToday >= this.maxListeningTime) {
+                            this.$refs.audioPlayer.pause();
+                            this.isPlaying = false;
+                            this.showAuthModal = 'register';
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

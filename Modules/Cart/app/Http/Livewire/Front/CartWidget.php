@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Cart\App\Http\Livewire\Front;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Modules\Cart\App\Services\CartService;
 
@@ -13,8 +14,6 @@ class CartWidget extends Component
     public float $total = 0;
     public $items = [];
     public $cart = null;
-
-    protected $listeners = ['cartUpdated' => 'refreshCart'];
 
     public function mount()
     {
@@ -27,6 +26,7 @@ class CartWidget extends Component
         $this->refreshCart();
     }
 
+    #[On('cartUpdated')]
     public function refreshCart($cartId = null)
     {
         \Log::info('🔄 CartWidget: refreshCart START', ['cart_id_param' => $cartId]);

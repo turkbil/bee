@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Havale/EFT Bildirim Formu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors" x-data="{
+    orderNumber: 'T2TEST20251112053322A1B2C3',
+    orderAmount: 1225.00,
+    transferName: '',
+    transferDate: '',
+    bankName: '',
+    receipt: null,
+    notes: ''
+}">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>Geri
+                    </a>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                        <i class="fa-solid fa-money-bill-transfer text-green-600 mr-2"></i>
+                        Havale/EFT Bildirim Formu
+                    </h1>
+                </div>
+                <button @click="darkMode = !darkMode" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto space-y-6">
+            <!-- Sipariş Bilgileri -->
+            <div class="bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-green-100 mb-1">Sipariş Numarası</p>
+                        <p class="text-2xl font-bold font-mono" x-text="orderNumber"></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-green-100 mb-1">Ödenecek Tutar</p>
+                        <p class="text-3xl font-bold" x-text="'₺' + orderAmount.toFixed(2)"></p>
+                        <p class="text-xs text-green-100 mt-1">(%2 havale indirimi uygulandı)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banka Bilgileri -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-building-columns text-green-600 mr-2"></i>
+                    Banka Hesap Bilgilerimiz
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Banka:</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">İş Bankası</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Şube Kodu:</span>
+                                <span class="text-gray-900 dark:text-white">1234</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Hesap No:</span>
+                                <span class="text-gray-900 dark:text-white font-mono">0123456789</span>
+                            </div>
+                            <div class="border-t border-gray-200 dark:border-gray-600 pt-2 mt-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">IBAN:</span>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-gray-900 dark:text-white font-mono">TR12 0001 2345 6789 0123 4567 89</span>
+                                        <button onclick="navigator.clipboard.writeText('TR12 0001 2345 6789 0123 4567 89')" class="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded">
+                                            <i class="fa-solid fa-copy text-blue-600 text-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Alıcı:</span>
+                                <span class="text-gray-900 dark:text-white font-semibold">İxtif Endüstriyel Ekipman Ltd. Şti.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700">
+                        <div class="flex items-start space-x-2">
+                            <i class="fa-solid fa-triangle-exclamation text-yellow-600 mt-0.5"></i>
+                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                <p class="font-semibold mb-1">Önemli Uyarı</p>
+                                <p>Havale/EFT açıklamasına mutlaka <span class="font-mono bg-white dark:bg-gray-800 px-2 py-0.5 rounded" x-text="orderNumber"></span> sipariş numaranızı yazınız.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bildirim Formu -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-file-upload text-blue-600 mr-2"></i>
+                    Havale Bildirim Formu
+                </h2>
+
+                <form class="space-y-4">
+                    <!-- Havale Yapan Adı -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Havale Yapan Adı Soyadı / Firma Adı *
+                        </label>
+                        <input type="text" x-model="transferName" required
+                               placeholder="Havale yapan kişi/firma adı"
+                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Dekont üzerinde gözüken ad/firma adı
+                        </p>
+                    </div>
+
+                    <!-- Havale Tarihi -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Havale Tarihi *
+                            </label>
+                            <input type="date" x-model="transferDate" required
+                                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Banka *
+                            </label>
+                            <select x-model="bankName" required
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                <option value="">Seçiniz</option>
+                                <option value="isbank">İş Bankası</option>
+                                <option value="garanti">Garanti BBVA</option>
+                                <option value="ziraat">Ziraat Bankası</option>
+                                <option value="akbank">Akbank</option>
+                                <option value="halkbank">Halkbank</option>
+                                <option value="vakifbank">Vakıfbank</option>
+                                <option value="other">Diğer</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Dekont Yükleme -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Havale Dekont/Makbuz (Opsiyonel)
+                        </label>
+                        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-600 transition-colors">
+                            <input type="file" accept="image/*,.pdf" @change="receipt = $event.target.files[0]" class="hidden" id="receipt-upload">
+                            <label for="receipt-upload" class="cursor-pointer">
+                                <div class="space-y-2">
+                                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-400"></i>
+                                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Dekont Yükle</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">JPG, PNG veya PDF (Max 5MB)</p>
+                                </div>
+                            </label>
+                            <div x-show="receipt" x-cloak class="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-file-image text-green-600"></i>
+                                        <span class="text-sm text-gray-900 dark:text-white" x-text="receipt ? receipt.name : ''"></span>
+                                    </div>
+                                    <button @click="receipt = null; document.getElementById('receipt-upload').value = ''" class="text-red-600 hover:text-red-700">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Dekont yüklemek ödeme onayını hızlandırır
+                        </p>
+                    </div>
+
+                    <!-- Açıklama -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Ek Açıklama (Opsiyonel)
+                        </label>
+                        <textarea rows="3" x-model="notes"
+                                  placeholder="Varsa ek açıklamalarınızı buraya yazabilirsiniz..."
+                                  class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent"></textarea>
+                    </div>
+
+                    <!-- Gönder Butonu -->
+                    <div class="pt-4">
+                        <button type="submit" class="w-full px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Havale Bildirimini Gönder</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-info-circle text-blue-600 mt-0.5"></i>
+                        <div class="text-sm text-gray-700 dark:text-gray-300">
+                            <p class="font-semibold mb-1">Sonraki Adımlar</p>
+                            <ul class="list-disc list-inside space-y-1 text-xs">
+                                <li>Havale işleminizi gerçekleştirin</li>
+                                <li>Bu formu doldurup gönderin</li>
+                                <li>Ödemeniz kontrol edilip onaylanacaktır (1-2 iş günü)</li>
+                                <li>Onay sonrası siparişiniz kargoya verilecektir</li>
+                                <li>E-posta ve SMS ile bilgilendirileceksiniz</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

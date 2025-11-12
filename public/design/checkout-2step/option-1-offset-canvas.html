@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 1: Offset Canvas Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors" x-data="{
+    drawerOpen: false,
+    paymentMethod: 'credit_card',
+    installment: 1,
+    addresses: {
+        delivery: { name: '', phone: '', address: '', city: '', district: '' },
+        billing: { name: '', phone: '', address: '', city: '', district: '' },
+        sameAsDelivery: true
+    },
+    orderTotal: 1250.00,
+    installmentRates: [
+        { count: 1, rate: 0, total: 1250.00 },
+        { count: 2, rate: 0, total: 1250.00 },
+        { count: 3, rate: 2.5, total: 1281.25 },
+        { count: 6, rate: 5, total: 1312.50 },
+        { count: 9, rate: 8, total: 1350.00 },
+        { count: 12, rate: 12, total: 1400.00 }
+    ],
+    getInstallmentAmount() {
+        const selected = this.installmentRates.find(i => i.count == this.installment);
+        return selected ? (selected.total / selected.count).toFixed(2) : '0.00';
+    },
+    getInstallmentTotal() {
+        const selected = this.installmentRates.find(i => i.count == this.installment);
+        return selected ? selected.total.toFixed(2) : '0.00';
+    }
+}">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>Geri
+                    </a>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                        <i class="fa-solid fa-shopping-cart text-blue-600 mr-2"></i>
+                        Ödeme
+                    </h1>
+                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-semibold">
+                        Option 1: Offset Canvas
+                    </span>
+                </div>
+                <button @click="darkMode = !darkMode" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Left: Sipariş Özeti (Sticky) -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 sticky top-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                        <i class="fa-solid fa-receipt text-blue-600 mr-2"></i>
+                        Sipariş Özeti
+                    </h2>
+
+                    <!-- Ürünler -->
+                    <div class="space-y-3 mb-4 pb-4 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://via.placeholder.com/60" alt="Product" class="w-16 h-16 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Elektrikli Transpalet EPL185</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Adet: 1</p>
+                            </div>
+                            <span class="font-semibold text-gray-900 dark:text-white">₺1,250</span>
+                        </div>
+                    </div>
+
+                    <!-- Tutar Özeti -->
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600 dark:text-gray-400">Ara Toplam</span>
+                            <span class="text-gray-900 dark:text-white">₺1,250.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600 dark:text-gray-400">Kargo</span>
+                            <span class="text-green-600 font-semibold">Ücretsiz</span>
+                        </div>
+                        <div class="flex justify-between text-sm" x-show="paymentMethod === 'credit_card' && installment > 1">
+                            <span class="text-gray-600 dark:text-gray-400">Taksit Farkı</span>
+                            <span class="text-orange-600" x-text="'₺' + (getInstallmentTotal() - orderTotal).toFixed(2)"></span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam</span>
+                            <span class="text-2xl font-bold text-blue-600" x-text="paymentMethod === 'credit_card' ? '₺' + getInstallmentTotal() : '₺' + orderTotal.toFixed(2)"></span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-show="paymentMethod === 'credit_card' && installment > 1">
+                            <span x-text="installment + ' taksit x ₺' + getInstallmentAmount()"></span>
+                        </p>
+                    </div>
+
+                    <!-- Adres Bilgileri Butonu -->
+                    <button @click="drawerOpen = true" class="w-full mt-6 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-map-marker-alt text-blue-600"></i>
+                            <span class="font-semibold">Teslimat Adresi</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Ödeme Yöntemi ve iframe -->
+            <div class="lg:col-span-2">
+                <!-- Ödeme Yöntemi Seçimi -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                        <i class="fa-solid fa-credit-card text-blue-600 mr-2"></i>
+                        Ödeme Yöntemi
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Kredi Kartı -->
+                        <button @click="paymentMethod = 'credit_card'"
+                                :class="paymentMethod === 'credit_card' ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 dark:border-gray-600'"
+                                class="relative p-4 border-2 rounded-xl text-left hover:border-blue-600 transition-colors">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-credit-card text-2xl" :class="paymentMethod === 'credit_card' ? 'text-blue-600' : 'text-gray-400'"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 dark:text-white">Kredi Kartı</h3>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Taksit imkanı</p>
+                                    </div>
+                                </div>
+                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                     :class="paymentMethod === 'credit_card' ? 'border-blue-600' : 'border-gray-300 dark:border-gray-600'">
+                                    <div class="w-3 h-3 rounded-full bg-blue-600" x-show="paymentMethod === 'credit_card'"></div>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 mt-2">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" class="h-6">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="Mastercard" class="h-6">
+                            </div>
+                        </button>
+
+                        <!-- Havale/EFT -->
+                        <button @click="paymentMethod = 'bank_transfer'"
+                                :class="paymentMethod === 'bank_transfer' ? 'border-green-600 bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600'"
+                                class="relative p-4 border-2 rounded-xl text-left hover:border-green-600 transition-colors">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-building-columns text-2xl" :class="paymentMethod === 'bank_transfer' ? 'text-green-600' : 'text-gray-400'"></i>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 dark:text-white">Havale/EFT</h3>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">%2 indirimli</p>
+                                    </div>
+                                </div>
+                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                     :class="paymentMethod === 'bank_transfer' ? 'border-green-600' : 'border-gray-300 dark:border-gray-600'">
+                                    <div class="w-3 h-3 rounded-full bg-green-600" x-show="paymentMethod === 'bank_transfer'"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-green-600 dark:text-green-400 font-semibold">
+                                Havale ile ₺<span x-text="(orderTotal * 0.98).toFixed(2)"></span>
+                            </p>
+                        </button>
+                    </div>
+
+                    <!-- Taksit Seçenekleri (Sadece Kredi Kartı için) -->
+                    <div x-show="paymentMethod === 'credit_card'" x-cloak class="mt-6">
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">
+                            <i class="fa-solid fa-percentage text-blue-600 mr-2"></i>
+                            Taksit Seçenekleri
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <template x-for="item in installmentRates" :key="item.count">
+                                <button @click="installment = item.count"
+                                        :class="installment === item.count ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 dark:border-gray-600'"
+                                        class="p-3 border-2 rounded-lg hover:border-blue-600 transition-colors">
+                                    <div class="text-center">
+                                        <div class="text-lg font-bold text-gray-900 dark:text-white" x-text="item.count + 'x'"></div>
+                                        <div class="text-sm text-gray-900 dark:text-white" x-text="'₺' + (item.total / item.count).toFixed(2)"></div>
+                                        <div class="text-xs" :class="item.rate > 0 ? 'text-orange-600' : 'text-green-600'" x-text="item.rate > 0 ? '%' + item.rate + ' faiz' : 'Peşin fiyat'"></div>
+                                    </div>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ödeme Alanı -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                    <!-- Kredi Kartı: PayTR iframe -->
+                    <div x-show="paymentMethod === 'credit_card'" x-cloak>
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-700">
+                            <div class="flex items-center space-x-2 text-blue-800 dark:text-blue-200">
+                                <i class="fa-solid fa-lock"></i>
+                                <span class="text-sm font-semibold">Kart bilgilerinizi güvenli formdan giriniz</span>
+                            </div>
+                        </div>
+
+                        <!-- PayTR iframe Container -->
+                        <div class="relative bg-gray-50 dark:bg-gray-900" style="min-height: 800px;">
+                            <iframe
+                                src="https://www.paytr.com/odeme/guvenli/DEMO_TOKEN_HERE"
+                                class="w-full border-0"
+                                style="height: 800px; min-height: 800px;"
+                                frameborder="0"
+                                scrolling="yes">
+                            </iframe>
+
+                            <!-- Loading Placeholder -->
+                            <div class="absolute inset-0 bg-white dark:bg-gray-800 flex items-center justify-center pointer-events-none opacity-0">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+                                    <p class="text-gray-600 dark:text-gray-400">Ödeme formu yükleniyor...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Havale/EFT: Bildirim Formu -->
+                    <div x-show="paymentMethod === 'bank_transfer'" x-cloak>
+                        <div class="p-6">
+                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-6">
+                                <h3 class="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center">
+                                    <i class="fa-solid fa-info-circle mr-2"></i>
+                                    Havale/EFT Bilgileri
+                                </h3>
+                                <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                                    <div class="flex justify-between">
+                                        <span class="font-semibold">Banka:</span>
+                                        <span>İş Bankası</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="font-semibold">IBAN:</span>
+                                        <span class="font-mono">TR12 0001 2345 6789 0123 4567 89</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="font-semibold">Alıcı:</span>
+                                        <span>İxtif Endüstriyel Ekipman Ltd.</span>
+                                    </div>
+                                    <div class="flex justify-between border-t border-green-200 dark:border-green-700 pt-2 mt-2">
+                                        <span class="font-bold">Gönderilecek Tutar:</span>
+                                        <span class="text-lg font-bold text-green-700 dark:text-green-300" x-text="'₺' + (orderTotal * 0.98).toFixed(2)"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        Havale Yapan Ad Soyad
+                                    </label>
+                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="Havale yapan kişinin adı">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        Dekont/Makbuz Yükle (Opsiyonel)
+                                    </label>
+                                    <input type="file" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        Açıklama (Opsiyonel)
+                                    </label>
+                                    <textarea rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="Ek açıklama..."></textarea>
+                                </div>
+
+                                <button class="w-full px-6 py-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <span>Siparişi Onayla</span>
+                                </button>
+
+                                <p class="text-xs text-center text-gray-500 dark:text-gray-400">
+                                    Havale işleminizi yaptıktan sonra dekont bilgilerinizi yükleyebilirsiniz. Ödemeniz onaylandıktan sonra siparişiniz kargoya verilecektir.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offset Canvas (Drawer) - Adres Formu -->
+    <div x-show="drawerOpen"
+         x-cloak
+         @click.away="drawerOpen = false"
+         class="fixed inset-0 z-50 overflow-hidden"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        <!-- Drawer -->
+        <div class="fixed right-0 top-0 bottom-0 w-full md:w-[500px] bg-white dark:bg-gray-800 shadow-2xl overflow-y-auto"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="translate-x-full">
+
+            <!-- Drawer Header -->
+            <div class="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-6 z-10">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-map-marker-alt text-blue-600 mr-2"></i>
+                        Teslimat Bilgileri
+                    </h2>
+                    <button @click="drawerOpen = false" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                        <i class="fa-solid fa-times text-gray-500"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Drawer Content -->
+            <div class="p-6 space-y-6">
+                <!-- Teslimat Adresi -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-truck text-blue-600 mr-2"></i>
+                        Teslimat Adresi
+                    </h3>
+                    <div class="space-y-3">
+                        <input type="text" x-model="addresses.delivery.name" placeholder="Ad Soyad" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <input type="tel" x-model="addresses.delivery.phone" placeholder="Telefon" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <textarea rows="2" x-model="addresses.delivery.address" placeholder="Adres" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" x-model="addresses.delivery.city" placeholder="Şehir" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <input type="text" x-model="addresses.delivery.district" placeholder="İlçe" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fatura Adresi Checkbox -->
+                <div class="flex items-center space-x-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <input type="checkbox" x-model="addresses.sameAsDelivery" id="same-address" class="w-4 h-4 text-blue-600">
+                    <label for="same-address" class="text-sm text-gray-700 dark:text-gray-300">
+                        Fatura adresi teslimat adresi ile aynı
+                    </label>
+                </div>
+
+                <!-- Fatura Adresi -->
+                <div x-show="!addresses.sameAsDelivery" x-cloak>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-file-invoice text-green-600 mr-2"></i>
+                        Fatura Adresi
+                    </h3>
+                    <div class="space-y-3">
+                        <input type="text" x-model="addresses.billing.name" placeholder="Ad Soyad / Firma" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <input type="tel" x-model="addresses.billing.phone" placeholder="Telefon" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <textarea rows="2" x-model="addresses.billing.address" placeholder="Adres" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" x-model="addresses.billing.city" placeholder="Şehir" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <input type="text" x-model="addresses.billing.district" placeholder="İlçe" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kaydet Butonu -->
+                <button @click="drawerOpen = false" class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                    <i class="fa-solid fa-check mr-2"></i>
+                    Adresi Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

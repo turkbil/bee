@@ -1,0 +1,11 @@
+{
+    "name": "Cart",
+    "alias": "cart",
+    "description": "Universal shopping cart management - supports Shop, Subscription, Service modules",
+    "keywords": ["cart", "shopping", "basket", "universal", "management"],
+    "priority": 5,
+    "providers": [
+        "Modules\\Cart\\Providers\\CartServiceProvider"
+    ],
+    "files": []
+}

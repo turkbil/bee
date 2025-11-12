@@ -5,53 +5,59 @@ namespace Modules\Payment\App\Contracts;
 /**
  * Payable Interface
  *
- * Ödeme alabilen her model bu interface'i implement etmelidir.
- * ShopOrder, Subscription, Booking, Invoice vb.
+ * Bu interface'i implement eden modeller Payment sistemi ile ödeme alabilir.
+ *
+ * Kullanım Örnekleri:
+ * - ShopOrder (Shop modülü)
+ * - Membership (UserManagement modülü)
+ * - Subscription (gelecekte)
+ * - Invoice (gelecekte)
  */
 interface Payable
 {
     /**
-     * Ödeme tutarını döndür
-     */
-    public function getPaymentAmount(): float;
-
-    /**
-     * Para birimini döndür (TRY, USD, EUR vb.)
-     */
-    public function getPaymentCurrency(): string;
-
-    /**
-     * Ödeme yapan müşteriyi döndür (ad, email, telefon)
-     */
-    public function getPaymentCustomer(): array;
-
-    /**
-     * Sepet/Ürün bilgilerini döndür (PayTR için basket parametresi)
+     * Ödenecek tutarı döndür (float olarak)
      *
-     * @return array [
-     *   ['name' => 'Ürün 1', 'price' => 1500, 'quantity' => 1],
-     *   ['name' => 'Ürün 2', 'price' => 2500, 'quantity' => 2],
-     * ]
+     * @return float Ödeme tutarı (örn: 199.99)
      */
-    public function getPaymentBasket(): array;
+    public function getPayableAmount(): float;
 
     /**
      * Ödeme açıklamasını döndür
+     * (PayTR user_basket ve merchant_oid için kullanılır)
+     *
+     * @return string Açıklama (örn: "Sipariş #ORD-20251112-ABC123")
      */
-    public function getPaymentDescription(): string;
+    public function getPayableDescription(): string;
 
     /**
-     * Başarılı ödeme callback'i
+     * Ödemeyi yapan müşteri bilgilerini döndür
+     * (PayTR user_name, user_address, user_phone, email için kullanılır)
+     *
+     * @return array Müşteri bilgileri
+     * [
+     *     'name' => 'Ahmet Yılmaz',
+     *     'email' => 'ahmet@example.com',
+     *     'phone' => '+905551234567',
+     *     'address' => 'İstanbul, Türkiye'
+     * ]
      */
-    public function onPaymentCompleted($payment): void;
+    public function getPayableCustomer(): array;
 
     /**
-     * Başarısız ödeme callback'i
+     * Ödeme detaylarını döndür (opsiyonel, sepet içeriği için)
+     * (PayTR user_basket içeriği için kullanılır)
+     *
+     * @return array|null Sepet içeriği
+     * [
+     *     'items' => [
+     *         [
+     *             'name' => 'Ürün Adı',
+     *             'price' => 99.99,
+     *             'quantity' => 2
+     *         ]
+     *     ]
+     * ]
      */
-    public function onPaymentFailed($payment): void;
-
-    /**
-     * İptal edilen ödeme callback'i
-     */
-    public function onPaymentCancelled($payment): void;
+    public function getPayableDetails(): ?array;
 }

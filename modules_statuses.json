@@ -20,5 +20,6 @@
     "Search": true,
     "Payment": true,
     "Favorite": true,
-    "ReviewSystem": true
+    "ReviewSystem": true,
+    "Cart": true
 }

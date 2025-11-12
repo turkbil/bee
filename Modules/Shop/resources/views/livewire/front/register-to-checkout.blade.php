@@ -126,7 +126,7 @@
 
             {{-- Sepete Geri Dön --}}
             <div class="mt-4 text-center">
-                <a href="{{ route('shop.cart') }}" class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <a href="{{ route('cart.index') }}" class="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Sepete Geri Dön</span>
                 </a>

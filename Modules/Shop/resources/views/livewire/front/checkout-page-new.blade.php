@@ -424,18 +424,6 @@
                             </span>
                         </div>
 
-                        {{-- Kredi Kartı Komisyonu --}}
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400">
-                                <i class="fa-solid fa-credit-card text-xs mr-1"></i>
-                                Kredi Kartı Komisyonu (%4,99)
-                            </span>
-                            <span class="font-medium text-gray-900 dark:text-white">
-                                {{ number_format(round($creditCardFee), 0, ',', '.') }}
-                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
-                            </span>
-                        </div>
-
                     </div>
 
                     {{-- GENEL TOPLAM --}}
@@ -447,14 +435,69 @@
                         </span>
                     </div>
 
+                    {{-- Ödeme Yöntemi Seçimi --}}
+                    <div class="mb-6" x-data="{ paymentMethod: 'card' }">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                            <i class="fa-solid fa-wallet mr-2 text-blue-500"></i>
+                            Ödeme Yöntemi
+                        </h3>
+
+                        <div class="space-y-3">
+                            {{-- Kredi Kartı --}}
+                            <label class="flex items-start cursor-pointer group p-4 border-2 rounded-lg transition-all"
+                                :class="paymentMethod === 'card' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-gray-400'">
+                                <input type="radio" x-model="paymentMethod" value="card" class="mt-1 w-4 h-4 text-blue-600">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900 dark:text-white">
+                                            <i class="fa-solid fa-credit-card mr-2 text-blue-600"></i>
+                                            Kredi Kartı
+                                        </span>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">PayTR Güvencesiyle</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Visa, Mastercard, Troy kartlarınızla güvenli ödeme</p>
+                                </div>
+                            </label>
+
+                            {{-- Havale/EFT --}}
+                            <label class="flex items-start cursor-pointer group p-4 border-2 rounded-lg transition-all"
+                                :class="paymentMethod === 'bank_transfer' ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-gray-400'">
+                                <input type="radio" x-model="paymentMethod" value="bank_transfer" class="mt-1 w-4 h-4 text-green-600">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-semibold text-gray-900 dark:text-white">
+                                            <i class="fa-solid fa-money-bill-transfer mr-2 text-green-600"></i>
+                                            Havale / EFT
+                                        </span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Banka hesabımıza havale yaparak ödeme yapabilirsiniz</p>
+
+                                    {{-- Banka Bilgileri (Havale seçildiğinde göster) --}}
+                                    <div x-show="paymentMethod === 'bank_transfer'" x-collapse class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                                        <h4 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Banka Bilgileri:</h4>
+                                        <div class="space-y-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                            <p><strong>Banka:</strong> Türkiye İş Bankası</p>
+                                            <p><strong>Hesap Adı:</strong> İXTİF İÇ VE DIŞ TİCARET ANONİM ŞİRKETİ</p>
+                                            <p><strong>IBAN:</strong> <span class="font-mono bg-white dark:bg-gray-800 px-2 py-1 rounded">TR51 0006 4000 0011 0372 5092 58</span></p>
+                                            <p class="text-orange-600 dark:text-orange-400 mt-2">
+                                                <i class="fa-solid fa-info-circle mr-1"></i>
+                                                Havale açıklamasına sipariş numaranızı yazınız
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
                     {{-- Tek Checkbox (Combined Agreement) --}}
                     <div class="mb-4">
                         <label class="flex items-start cursor-pointer group">
                             <input type="checkbox" wire:model="agree_all"
                                 class="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
                             <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">
-                                <a href="/cayma-hakki" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
-                                <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni onaylıyorum.
+                                Ön Bilgilendirme <a href="/cayma-hakki" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Formu</a>'nu ve
+                                Mesafeli Satış <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Sözleşmesi</a>'ni onaylıyorum.
                                 <span class="text-red-500 dark:text-red-400 font-bold">*</span>
                             </span>
                         </label>
@@ -485,26 +528,19 @@
                         </div>
                     @endif
 
-                    {{-- TEST BUTONU - Livewire Çalışıyor mu? --}}
-                    <button type="button"
-                        wire:click="testButton"
-                        class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg mb-2">
-                        <i class="fa-solid fa-bug mr-2"></i>
-                        TEST: Livewire Çalışıyor mu?
-                    </button>
-
                     {{-- Ödemeye Geç Butonu --}}
-                    <button type="button"
-                        wire:click="proceedToPayment"
-                        wire:loading.attr="disabled"
-                        class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-credit-card mr-2"></i>
-                        <span wire:loading.remove wire:target="proceedToPayment">Ödemeye Geç</span>
-                        <span wire:loading wire:target="proceedToPayment">
-                            <i class="fa-solid fa-spinner fa-spin mr-1"></i>
-                            İşleniyor...
-                        </span>
-                    </button>
+                    <div x-data="{ paymentMethod: 'card' }">
+                        <button type="button"
+                            wire:click="testPayment"
+                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                            <template x-if="paymentMethod === 'card'">
+                                <span><i class="fa-solid fa-credit-card mr-2"></i> Kredi Kartı ile Öde</span>
+                            </template>
+                            <template x-if="paymentMethod === 'bank_transfer'">
+                                <span><i class="fa-solid fa-money-bill-transfer mr-2"></i> Sipariş Tamamla (Havale)</span>
+                            </template>
+                        </button>
+                    </div>
 
                     {{-- Güvenli Ödeme (Küçük) --}}
                     <div class="mt-3 text-center">

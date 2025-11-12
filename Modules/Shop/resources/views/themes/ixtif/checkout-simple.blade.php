@@ -31,7 +31,7 @@
             </div>
 
             <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <a href="{{ route('shop.cart') }}"
+                <a href="{{ route('cart.index') }}"
                    class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Sepete Geri Dön</span>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taksit Ayarları - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors" x-data="{
+    installments: [
+        { count: 1, enabled: true, rate: 0, label: 'Peşin' },
+        { count: 2, enabled: true, rate: 0, label: '2 Taksit' },
+        { count: 3, enabled: true, rate: 2.5, label: '3 Taksit' },
+        { count: 6, enabled: true, rate: 5, label: '6 Taksit' },
+        { count: 9, enabled: true, rate: 8, label: '9 Taksit' },
+        { count: 12, enabled: true, rate: 12, label: '12 Taksit' }
+    ],
+    maxInstallment: 12,
+    calculateTotal(amount, rate) {
+        return (amount + (amount * rate / 100)).toFixed(2);
+    }
+}">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
+                        <i class="fa-solid fa-arrow-left mr-2"></i>Geri
+                    </a>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                        <i class="fa-solid fa-percentage text-blue-600 mr-2"></i>
+                        Taksit Ayarları
+                    </h1>
+                </div>
+                <button @click="darkMode = !darkMode" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <!-- Genel Ayarlar -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-gear text-blue-600 mr-2"></i>
+                    Genel Ayarlar
+                </h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Maksimum Taksit Sayısı
+                        </label>
+                        <select x-model="maxInstallment" class="w-full md:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <option value="3">3 Taksit</option>
+                            <option value="6">6 Taksit</option>
+                            <option value="9">9 Taksit</option>
+                            <option value="12">12 Taksit</option>
+                        </select>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            PayTR'de izin verilen maksimum taksit sayısı
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                        <div class="flex items-start space-x-2">
+                            <i class="fa-solid fa-info-circle text-blue-600 mt-0.5"></i>
+                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                <p class="font-semibold mb-1">PayTR Entegrasyonu</p>
+                                <p>Bu ayarlar PayTR ödeme sistemi ile senkronize edilir. Taksit oranlarını bankanızla anlaştığınız oranlar doğrultusunda ayarlayın.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taksit Oranları -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-list text-blue-600 mr-2"></i>
+                        Taksit Oranları
+                    </h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        Her taksit seçeneği için faiz oranını belirleyin
+                    </p>
+                </div>
+
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <template x-for="(item, index) in installments" :key="index">
+                            <div class="flex items-center space-x-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-600 dark:hover:border-blue-400 transition-colors">
+                                <!-- Aktif/Pasif Toggle -->
+                                <div class="flex items-center">
+                                    <input type="checkbox" x-model="item.enabled" :id="'installment-' + index" class="w-5 h-5 text-blue-600 rounded">
+                                </div>
+
+                                <!-- Taksit Sayısı -->
+                                <div class="flex-shrink-0 w-24">
+                                    <label :for="'installment-' + index" class="font-bold text-gray-900 dark:text-white cursor-pointer" x-text="item.label"></label>
+                                </div>
+
+                                <!-- Faiz Oranı -->
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400 w-20">Faiz Oranı:</span>
+                                        <input type="number" x-model="item.rate" step="0.1" min="0" max="50"
+                                               :disabled="!item.enabled"
+                                               class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white w-24 disabled:opacity-50">
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Örnek Hesaplama -->
+                                <div class="flex-shrink-0 w-48 text-right">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">₺1,000 için:</p>
+                                    <p class="font-bold text-gray-900 dark:text-white">
+                                        <span x-text="item.count + ' x ₺' + (calculateTotal(1000, item.rate) / item.count).toFixed(2)"></span>
+                                    </p>
+                                    <p class="text-xs" :class="item.rate > 0 ? 'text-orange-600' : 'text-green-600'" x-text="'Toplam: ₺' + calculateTotal(1000, item.rate)"></p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banka Ayarları -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-building-columns text-blue-600 mr-2"></i>
+                    Banka Komisyon Oranları
+                </h2>
+
+                <div class="space-y-3">
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" class="h-8">
+                                <div>
+                                    <p class="font-semibold text-gray-900 dark:text-white">Visa</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Standart komisyon</p>
+                                </div>
+                            </div>
+                            <input type="number" value="2.5" step="0.1" class="px-3 py-1 w-24 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg" alt="Mastercard" class="h-8">
+                                <div>
+                                    <p class="font-semibold text-gray-900 dark:text-white">Mastercard</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Standart komisyon</p>
+                                </div>
+                            </div>
+                            <input type="number" value="2.5" step="0.1" class="px-3 py-1 w-24 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaydet Butonu -->
+            <div class="flex items-center justify-end space-x-4">
+                <button class="px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg transition-colors">
+                    <i class="fa-solid fa-rotate-left mr-2"></i>
+                    Sıfırla
+                </button>
+                <button class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors shadow-lg hover:shadow-xl">
+                    <i class="fa-solid fa-save mr-2"></i>
+                    Kaydet
+                </button>
+            </div>
+
+            <!-- Ön İzleme -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 text-white">
+                <h3 class="text-lg font-bold mb-4 flex items-center">
+                    <i class="fa-solid fa-eye mr-2"></i>
+                    Ön İzleme - Müşteri Görünümü
+                </h3>
+
+                <div class="bg-white/10 rounded-lg p-4 backdrop-blur">
+                    <p class="text-sm text-blue-100 mb-3">₺1,250.00 tutarındaki sipariş için:</p>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                        <template x-for="item in installments.filter(i => i.enabled && i.count <= maxInstallment)" :key="item.count">
+                            <div class="bg-white rounded-lg p-3 text-center">
+                                <div class="text-lg font-bold text-gray-900" x-text="item.count + 'x'"></div>
+                                <div class="text-sm text-gray-900" x-text="'₺' + (calculateTotal(1250, item.rate) / item.count).toFixed(2)"></div>
+                                <div class="text-xs mt-1" :class="item.rate > 0 ? 'text-orange-600' : 'text-green-600'" x-text="item.rate > 0 ? '%' + item.rate + ' faiz' : 'Peşin fiyat'"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

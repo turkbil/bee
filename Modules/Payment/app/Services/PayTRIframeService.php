@@ -14,49 +14,39 @@ class PayTRIframeService
      */
     public function prepareIframePayment(Payment $payment, array $userInfo, array $orderInfo): array
     {
-        $paymentMethod = $payment->paymentMethod;
+        // Settings'den PayTR credentials al (tenant-aware)
+        $merchantId = setting('paytr_merchant_id');
+        $merchantKey = setting('paytr_merchant_key');
+        $merchantSalt = setting('paytr_merchant_salt');
 
-        if (!$paymentMethod || $paymentMethod->gateway !== 'paytr') {
+        if (empty($merchantId) || empty($merchantKey) || empty($merchantSalt)) {
             return [
                 'success' => false,
-                'message' => 'Bu servis sadece PayTR için çalışır'
-            ];
-        }
-
-        $config = $paymentMethod->gateway_config;
-
-        if (empty($config['merchant_id']) || empty($config['merchant_key']) || empty($config['merchant_salt'])) {
-            return [
-                'success' => false,
-                'message' => 'PayTR merchant bilgileri eksik'
+                'message' => 'PayTR merchant bilgileri eksik. Lütfen admin panelden ayarları kontrol edin.'
             ];
         }
 
         try {
-            $merchantId = $config['merchant_id'];
-            $merchantKey = $config['merchant_key'];
-            $merchantSalt = $config['merchant_salt'];
+            // Test/Production mod (settings'den)
+            $testMode = setting('paytr_test_mode', false) ? '1' : '0';
 
-            // Test/Production mod
-            $testMode = $paymentMethod->gateway_mode === 'test' ? '1' : '0';
-
-            // Taksit ayarları - Sadece tek çekim
-            $maxInstallment = 0; // 0 = Sistem default taksit
+            // Taksit ayarları (settings'den)
+            $maxInstallment = (int) setting('paytr_max_installment', 0);
             $noInstallment = 0; // 0 = Taksit seçenekleri göster, 1 = Sadece tek çekim
 
             // Sepet içeriği (PayTR formatı)
             $basket = $this->prepareBasket($orderInfo);
 
             // Token oluşturma için hash string
-            $merchantOid = $payment->transaction_id;
+            $merchantOid = $payment->payment_number; // Sipariş numarası (benzersiz olmalı!)
             $userIp = request()->ip();
             $email = $userInfo['email'];
             $paymentAmount = (int) ($payment->amount * 100); // Kuruş cinsinden (9.99 TL = 999)
-            $currency = 'TL';
+            $currency = setting('paytr_currency', 'TL');
 
-            // Callback URL (success ve fail aynı olabilir)
-            $merchantOkUrl = route('payment.callback.paytr');
-            $merchantFailUrl = route('payment.callback.paytr');
+            // Callback URL (success ve fail)
+            $merchantOkUrl = route('payment.success');
+            $merchantFailUrl = route('shop.checkout') . '?payment=failed';
 
             // Hash string oluştur (DOĞRU SIRA!)
             // merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket + no_installment + max_installment + currency + test_mode
@@ -82,17 +72,22 @@ class PayTRIframeService
                 'user_phone' => $userInfo['phone'] ?? '',
                 'merchant_ok_url' => $merchantOkUrl,
                 'merchant_fail_url' => $merchantFailUrl,
-                'timeout_limit' => '30',
+                'timeout_limit' => setting('paytr_timeout_limit', '30'),
                 'currency' => $currency,
                 'test_mode' => $testMode,
+                'lang' => app()->getLocale() === 'tr' ? 'tr' : 'en',
             ];
 
-            Log::info('📦 PayTR iframe token request', [
-                'payment_id' => $payment->payment_id,
-                'merchant_oid' => $merchantOid,
-                'amount' => $payment->amount,
-                'test_mode' => $testMode,
-            ]);
+            // Debug mode aktifse loglama yap
+            if (setting('paytr_debug', false)) {
+                Log::info('📦 PayTR iframe token request', [
+                    'payment_id' => $payment->payment_id,
+                    'merchant_oid' => $merchantOid,
+                    'amount' => $payment->amount,
+                    'test_mode' => $testMode,
+                    'currency' => $currency,
+                ]);
+            }
 
             // PayTR API'sine token için istek gönder
             $ch = curl_init();
@@ -118,7 +113,9 @@ class PayTRIframeService
 
             $response = json_decode($result, true);
 
-            Log::info('📥 PayTR iframe token response', ['response' => $response]);
+            if (setting('paytr_debug', false)) {
+                Log::info('📥 PayTR iframe token response', ['response' => $response]);
+            }
 
             if (!$response || $response['status'] !== 'success') {
                 $errorMessage = $response['reason'] ?? 'Bilinmeyen hata';

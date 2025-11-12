@@ -43,22 +43,38 @@
 
 @push('scripts')
 <script>
+    console.log('🛒 AddToCartButton: Script loaded');
+
+    // cartUpdated event'ini dinle
+    window.addEventListener('cartUpdated', event => {
+        console.log('🔄 AddToCartButton: cartUpdated event received', event);
+    });
+
     window.addEventListener('product-added-to-cart', event => {
+        console.log('✅ AddToCartButton: product-added-to-cart event', event.detail);
+
         // Success toast (opsiyonel - Alpine.js notify component varsa kullan)
         if (typeof window.notify !== 'undefined') {
             window.notify('success', event.detail.message);
         } else {
-            console.log('✅', event.detail.message);
+            console.log('✅ SUCCESS:', event.detail.message);
         }
     });
 
     window.addEventListener('cart-error', event => {
+        console.error('❌ AddToCartButton: cart-error event', event.detail);
+
         // Error toast
         if (typeof window.notify !== 'undefined') {
             window.notify('error', event.detail.message);
         } else {
             alert(event.detail.message);
         }
+    });
+
+    // Livewire hook - component başlatıldığında
+    document.addEventListener('livewire:init', () => {
+        console.log('🎯 AddToCartButton: Livewire initialized');
     });
 </script>
 @endpush

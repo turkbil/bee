@@ -2,7 +2,7 @@
 // Modules/Payment/routes/web.php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Payment\App\Http\Controllers\PaymentCallbackController;
+use Modules\Payment\App\Http\Controllers\PayTRCallbackController;
 
 // ⚠️  FRONTEND ROUTES DynamicRouteService TARAFINDAN YÖNETİLİYOR
 // Bu dosyada sadece özel route'lar (homepayment gibi) tanımlanmalı
@@ -10,9 +10,8 @@ use Modules\Payment\App\Http\Controllers\PaymentCallbackController;
 
 // Ana sayfa route'u routes/web.php'de tanımlı
 
-// PayTR Callback Routes (public, CSRF exempt)
+// PayTR Callback Routes (public, CSRF exempt, no auth required)
+// NOT: Bu route'lar için VerifyCsrfToken middleware'de exception eklenmeli!
 Route::prefix('payment/callback')->name('payment.callback.')->group(function () {
-    Route::post('paytr', [PaymentCallbackController::class, 'paytr'])->name('paytr');
-    Route::get('success/{payment}', [PaymentCallbackController::class, 'success'])->name('success');
-    Route::get('fail/{payment}', [PaymentCallbackController::class, 'fail'])->name('fail');
+    Route::post('paytr', [PayTRCallbackController::class, 'handle'])->name('paytr');
 });

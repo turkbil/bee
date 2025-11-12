@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ödeme Başarısız</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors" x-data="{
+    orderNumber: 'T2TEST20251112053322A1B2C3',
+    orderAmount: 1250.00,
+    errorCode: 'ERR_PAYMENT_DECLINED',
+    errorMessage: 'Kartınız ödeme alınamadı. Lütfen banka ile iletişime geçin.',
+    commonErrors: [
+        { icon: 'fa-credit-card', title: 'Yetersiz Bakiye', desc: 'Kartınızda yeterli bakiye bulunmuyor' },
+        { icon: 'fa-ban', title: 'Kart Limiti', desc: 'Kart limitiniz aşılmış olabilir' },
+        { icon: 'fa-shield-halved', title: '3D Secure', desc: '3D Secure doğrulaması başarısız oldu' },
+        { icon: 'fa-clock', title: 'Zaman Aşımı', desc: 'İşlem zaman aşımına uğradı' }
+    ]
+}">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                    <i class="fa-solid fa-shopping-cart text-blue-600 mr-2"></i>
+                    ixtif.com
+                </h1>
+                <button @click="darkMode = !darkMode" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-3xl mx-auto">
+            <!-- Error Icon -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
+                    <i class="fa-solid fa-circle-xmark text-5xl text-red-600"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                    Ödeme Başarısız
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    Üzgünüz, ödemeniz gerçekleştirilemedi
+                </p>
+            </div>
+
+            <!-- Error Details -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 border-2 border-red-200 dark:border-red-700">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-triangle-exclamation text-red-600 text-2xl mt-1"></i>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-red-800 dark:text-red-200 mb-2">Hata Detayı</h3>
+                            <p class="text-gray-700 dark:text-gray-300 mb-3" x-text="errorMessage"></p>
+                            <div class="flex items-center space-x-2 text-sm">
+                                <span class="text-gray-600 dark:text-gray-400">Hata Kodu:</span>
+                                <code class="px-2 py-1 bg-white dark:bg-gray-800 rounded font-mono text-red-600" x-text="errorCode"></code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-3">
+                    <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Sipariş No:</span>
+                        <span class="font-mono text-gray-900 dark:text-white" x-text="orderNumber"></span>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Tutar:</span>
+                        <span class="font-bold text-gray-900 dark:text-white" x-text="'₺' + orderAmount.toFixed(2)"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Olası Sebepler -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-lightbulb text-yellow-600 mr-2"></i>
+                    Olası Sebepler
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <template x-for="error in commonErrors" :key="error.title">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <div class="flex items-start space-x-3">
+                                <i class="fa-solid text-orange-600 text-xl mt-1" :class="error.icon"></i>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 dark:text-white" x-text="error.title"></h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400" x-text="error.desc"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Çözüm Önerileri -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 text-white mb-6">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fa-solid fa-hand-holding-dollar mr-2"></i>
+                    Ne Yapmalısınız?
+                </h2>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-start space-x-3 bg-white/10 rounded-lg p-3 backdrop-blur">
+                        <i class="fa-solid fa-1 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs mt-0.5"></i>
+                        <div>
+                            <p class="font-semibold mb-1">Farklı Bir Kart Deneyin</p>
+                            <p class="text-blue-100 text-xs">Başka bir kredi kartı veya banka kartı kullanarak tekrar deneyebilirsiniz</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-white/10 rounded-lg p-3 backdrop-blur">
+                        <i class="fa-solid fa-2 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs mt-0.5"></i>
+                        <div>
+                            <p class="font-semibold mb-1">Kart Bilgilerini Kontrol Edin</p>
+                            <p class="text-blue-100 text-xs">Kart numarası, son kullanma tarihi ve CVV kodunu tekrar kontrol edin</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-white/10 rounded-lg p-3 backdrop-blur">
+                        <i class="fa-solid fa-3 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs mt-0.5"></i>
+                        <div>
+                            <p class="font-semibold mb-1">Bankanızla İletişime Geçin</p>
+                            <p class="text-blue-100 text-xs">Kartınızın internet alışverişine açık olduğunu ve limitini kontrol edin</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3 bg-white/10 rounded-lg p-3 backdrop-blur">
+                        <i class="fa-solid fa-4 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs mt-0.5"></i>
+                        <div>
+                            <p class="font-semibold mb-1">Havale/EFT ile Ödeme</p>
+                            <p class="text-blue-100 text-xs">Alternatif olarak %2 indirimli havale/EFT ile ödeme yapabilirsiniz</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eylemler -->
+            <div class="grid md:grid-cols-3 gap-4">
+                <a href="/shop/checkout" class="block p-6 bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg hover:shadow-xl transition-all text-white text-center group">
+                    <i class="fa-solid fa-rotate-right text-3xl mb-3 group-hover:rotate-180 transition-transform duration-500"></i>
+                    <p class="font-bold">Tekrar Dene</p>
+                    <p class="text-xs text-blue-100 mt-1">Ödemeyi tekrar dene</p>
+                </a>
+
+                <a href="/cart" class="block p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow text-center group">
+                    <i class="fa-solid fa-shopping-cart text-3xl text-gray-600 dark:text-gray-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-semibold text-gray-900 dark:text-white">Sepete Dön</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Sepeti kontrol et</p>
+                </a>
+
+                <a href="/" class="block p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow text-center group">
+                    <i class="fa-solid fa-home text-3xl text-gray-600 dark:text-gray-300 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-semibold text-gray-900 dark:text-white">Ana Sayfa</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Alışverişe devam et</p>
+                </a>
+            </div>
+
+            <!-- Yardım -->
+            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 text-center">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Yardıma mı ihtiyacınız var?</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">Müşteri hizmetlerimiz size yardımcı olmaktan mutluluk duyar</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="tel:+902161234567" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
+                        <i class="fa-solid fa-phone mr-2"></i>
+                        0216 123 45 67
+                    </a>
+                    <a href="https://wa.me/902161234567" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors inline-flex items-center">
+                        <i class="fa-brands fa-whatsapp mr-2"></i>
+                        WhatsApp
+                    </a>
+                    <a href="mailto:destek@ixtif.com" class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors inline-flex items-center">
+                        <i class="fa-solid fa-envelope mr-2"></i>
+                        E-posta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

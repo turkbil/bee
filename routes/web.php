@@ -10,10 +10,14 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
-// 🛒 SHOP PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
-// NOT: Bu route'lar Shop modülünde tanımlanabilirdi ama Livewire component'ler modül route'unda sorun yaşıyor
-Route::get('/shop/cart', \Modules\Shop\App\Http\Livewire\Front\CartPage::class)->name('shop.cart');
+// 🛒 SHOP & CART PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
+// NOT: Bu route'lar modülde tanımlanabilirdi ama Livewire component'ler modül route'unda catch-all'dan önce olmalı
+Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name('cart.index');
 Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
+Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
+
+// 💳 PAYMENT ROUTES
+Route::get('/payment/success', [\Modules\Payment\App\Http\Controllers\PaymentSuccessController::class, 'show'])->name('payment.success');
 
 // PDF Export - Wildcard'dan önce tanımlanmalı
 Route::middleware([InitializeTenancy::class, 'site'])

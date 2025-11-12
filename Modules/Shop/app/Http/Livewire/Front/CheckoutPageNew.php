@@ -3,7 +3,7 @@
 namespace Modules\Shop\App\Http\Livewire\Front;
 
 use Livewire\Component;
-use Modules\Shop\App\Services\ShopCartService;
+use Modules\Cart\App\Services\CartService;
 use Modules\Shop\App\Models\ShopCustomer;
 use Modules\Shop\App\Models\ShopCustomerAddress;
 use Modules\Shop\App\Models\ShopOrder;
@@ -54,11 +54,15 @@ class CheckoutPageNew extends Component
     // Agreements (Simplified - Single Checkbox)
     public $agree_all = false; // Combines KVKK, distance selling, preliminary info
 
-    // Payment Method
+    // Payment Method (OLD - deprecated)
     public $selectedPaymentMethodId = null;
     public $paymentMethods = [];
     public $selectedInstallment = 1; // Varsayılan tek çekim
     public $installmentFee = 0; // Taksit komisyonu
+
+    // Payment Gateway (NEW - Settings based)
+    public $selectedGateway = null; // 'paytr' veya 'bank_transfer'
+    public $availableGateways = []; // Gateway listesi
 
     // Summary
     public $subtotal = 0;
@@ -160,11 +164,11 @@ class CheckoutPageNew extends Component
             $this->selectedInstallment = 1; // Tek çekim
         }
 
-        // Genel ödeme yöntemi ücreti (sabit + yüzde)
-        $this->creditCardFee = $paymentMethod->calculateTotalFee($this->total);
+        // Kredi kartı komisyonu kaldırıldı
+        $this->creditCardFee = 0;
 
-        // Genel toplam = KDV dahil toplam + taksit ücreti + ödeme yöntemi ücreti
-        $this->grandTotal = $this->total + $this->installmentFee + $this->creditCardFee;
+        // Genel toplam = KDV dahil toplam + taksit ücreti
+        $this->grandTotal = $this->total + $this->installmentFee;
     }
 
     private function updateCustomerInfo()
@@ -185,26 +189,35 @@ class CheckoutPageNew extends Component
     {
         \Log::info('🔵 MOUNT CALLED', ['user_id' => Auth::id()]);
 
-        // ✅ Auth kontrolü artık route middleware'de yapılıyor (web.php'de auth middleware)
+        // BASİT TEST - Hata ayıklama için tüm işlemleri try-catch ile sarmala
+        try {
+            // ✅ Checkbox'ı sıfırla
+            $this->agree_all = false;
 
-        // ✅ Checkbox'ı sıfırla - Her checkout'ta kullanıcı sözleşmeleri yeniden onaylamalı
-        $this->agree_all = false;
+            $this->loadCart();
 
-        $this->loadCart();
+            // Sepet boşsa sepet sayfasına yönlendir (modal gösterme, sayfa zaten boş UI gösteriyor)
+            if (!$this->items || $this->items->count() === 0) {
+                \Log::warning('⚠️ EMPTY CART - Redirecting to cart page');
+                return redirect()->route('cart.index');
+            }
 
-        // Sepet boşsa sepet sayfasına yönlendir
-        if (!$this->items || $this->items->count() === 0) {
-            \Log::warning('⚠️ EMPTY CART - Redirecting to cart page');
-            return redirect()->route('shop.cart')->with('error', 'Sepetiniz boş');
+            // Müşteri var mı kontrol et
+            $this->loadOrCreateCustomer();
+
+            // Ödeme yöntemlerini yükle (OLD - deprecated)
+            $this->loadPaymentMethods();
+
+            // Yeni gateway sistemi yükle
+            $this->loadAvailableGateways();
+
+            \Log::info('✅ MOUNT COMPLETED');
+        } catch (\Exception $e) {
+            \Log::error('❌ MOUNT ERROR: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            session()->flash('error', 'Checkout yüklenirken hata oluştu: ' . $e->getMessage());
         }
-
-        // Müşteri var mı kontrol et
-        $this->loadOrCreateCustomer();
-
-        // Ödeme yöntemlerini yükle
-        $this->loadPaymentMethods();
-
-        \Log::info('✅ MOUNT COMPLETED');
     }
 
     public function loadPaymentMethods()
@@ -219,13 +232,38 @@ class CheckoutPageNew extends Component
         }
     }
 
+    /**
+     * Yeni gateway sistemi - Settings tabanlı
+     */
+    public function loadAvailableGateways()
+    {
+        $gatewayManager = app(\Modules\Payment\App\Services\PaymentGatewayManager::class);
+        $this->availableGateways = $gatewayManager->getAvailableGateways($this->total);
+
+        // Tek gateway varsa otomatik seç
+        if (count($this->availableGateways) === 1 && !$this->selectedGateway) {
+            $this->selectedGateway = $this->availableGateways[0]['code'];
+        }
+    }
+
     public function loadCart()
     {
-        $cartService = app(ShopCartService::class);
+        $cartService = app(CartService::class);
 
-        $this->cart = $cartService->getCurrentCart();
-        $this->items = $cartService->getItems();
-        $this->itemCount = (int) ($this->cart->items_count ?? 0);
+        // Session ve customer bilgisi
+        $sessionId = session()->getId();
+        $customerId = auth()->check() ? auth()->id() : null;
+
+        // Cart al
+        $this->cart = $cartService->getCart($customerId, $sessionId);
+
+        if ($this->cart) {
+            $this->items = $this->cart->items()->where('is_active', true)->get();
+            $this->itemCount = $this->items->sum('quantity');
+        } else {
+            $this->items = collect([]);
+            $this->itemCount = 0;
+        }
 
         // TRY cinsinden toplam hesapla
         $subtotalTRY = 0;
@@ -245,9 +283,9 @@ class CheckoutPageNew extends Component
         $this->taxAmount = $this->subtotal * $taxRate;
         $this->total = $this->subtotal + $this->taxAmount;
 
-        // Kredi kartı komisyonu (%4,99)
-        $this->creditCardFee = $this->total * 0.0499;
-        $this->grandTotal = $this->total + $this->creditCardFee;
+        // Kredi kartı komisyonu kaldırıldı
+        $this->creditCardFee = 0;
+        $this->grandTotal = $this->total;
 
         // ⚠️ Widget dispatch KALDIRıldı - Sonsuz döngü önleme!
         // Sadece sepet temizlendiğinde (proceedToPayment) dispatch edilecek
@@ -617,9 +655,11 @@ class CheckoutPageNew extends Component
             DB::commit();
 
             // Sepeti temizle (ödeme başlatıldı, geri dönüş yok)
-            $cartService = app(ShopCartService::class);
-            $cartService->clearCart();
-            $this->dispatch('cartUpdated');
+            if ($this->cart) {
+                $cartService = app(CartService::class);
+                $cartService->clearCart($this->cart);
+                $this->dispatch('cartUpdated');
+            }
 
             // PayTR Direct API - Kart formu modal aç
             $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
@@ -700,6 +740,55 @@ class CheckoutPageNew extends Component
     }
 
     /**
+     * Basit ödeme - Yeni sayfaya yönlendir
+     */
+    public function testPayment()
+    {
+        \Log::info('🧪 TEST PAYMENT START', [
+            'user_id' => Auth::id(),
+            'agree_all' => $this->agree_all ?? false,
+            'items_count' => $this->items ? $this->items->count() : 0,
+            'grandTotal' => $this->grandTotal
+        ]);
+
+        // TEST MOD - Validation KAPALI, direkt yönlendir
+        try {
+            // Basit sipariş numarası oluştur (ALFANUMERIK - PayTR kuralı!)
+            // Format: T{tenant}TEST{timestamp}{random}
+            $orderNumber = 'T' . tenant('id') . 'TEST' . date('YmdHis') . strtoupper(substr(md5(uniqid()), 0, 6));
+
+            // Fiyat bilgilerini session'a kaydet
+            session([
+                'test_payment_amount' => $this->grandTotal,
+                'test_payment_subtotal' => $this->subtotal,
+                'test_payment_tax' => $this->taxAmount,
+                'test_payment_item_count' => $this->itemCount,
+                'last_order_number' => $orderNumber, // Ödeme başarılı sayfası için
+            ]);
+
+            // Sepeti temizle (ödeme başlıyor)
+            if ($this->cart) {
+                $cartService = app(CartService::class);
+                $cartService->clearCart($this->cart);
+                $this->dispatch('cartUpdated');
+            }
+
+            \Log::info('✅ TEST: Redirecting to payment page', [
+                'order' => $orderNumber,
+                'amount' => $this->grandTotal,
+                'cart_cleared' => true
+            ]);
+
+            // Yeni ödeme sayfasına yönlendir
+            return redirect()->route('shop.payment.page', ['orderNumber' => $orderNumber]);
+        } catch (\Exception $e) {
+            \Log::error('❌ TEST PAYMENT ERROR: ' . $e->getMessage());
+            session()->flash('error', 'Test hatası: ' . $e->getMessage());
+            return;
+        }
+    }
+
+    /**
      * Ödemeye Geç - PayTR iframe modalını aç
      */
     public function proceedToPayment()
@@ -713,6 +802,7 @@ class CheckoutPageNew extends Component
             'contact_phone' => 'required|string|max:20',
             'agree_all' => 'accepted',
             'selectedPaymentMethodId' => 'required|exists:payment_methods,payment_method_id',
+            'selectedGateway' => 'nullable|string|in:paytr,bank_transfer', // Yeni gateway sistemi
         ];
 
         // Adres kontrolü
@@ -886,10 +976,15 @@ class CheckoutPageNew extends Component
                 $result = $iframeService->prepareIframePayment($payment, $userInfo, $orderInfo);
 
                 if ($result['success']) {
+                    // Sipariş numarasını session'a kaydet (PayTR callback için)
+                    session(['last_order_number' => $order->order_number]);
+
                     // Sepeti temizle (ödeme başladı)
-                    $cartService = app(ShopCartService::class);
-                    $cartService->clearCart();
-                    $this->dispatch('cartUpdated');
+                    if ($this->cart) {
+                        $cartService = app(CartService::class);
+                        $cartService->clearCart($this->cart);
+                        $this->dispatch('cartUpdated');
+                    }
 
                     DB::commit();
 
@@ -897,7 +992,10 @@ class CheckoutPageNew extends Component
                     $this->paymentIframeUrl = $result['iframe_url'];
                     $this->showPaymentModal = true;
 
-                    \Log::info('✅ PayTR iframe modal opened', ['url' => $result['iframe_url']]);
+                    \Log::info('✅ PayTR iframe modal opened', [
+                        'url' => $result['iframe_url'],
+                        'order_number' => $order->order_number
+                    ]);
                 } else {
                     DB::rollBack();
                     session()->flash('error', 'Ödeme hazırlanamadı: ' . $result['message']);

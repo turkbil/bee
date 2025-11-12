@@ -64,12 +64,16 @@
                                             
                                             @case('select')
                                                 @if(is_array($setting->options))
+                                                    @php
+                                                        // Support both flat and nested choices format
+                                                        $choices = isset($setting->options['choices']) ? $setting->options['choices'] : $setting->options;
+                                                    @endphp
                                                     <div class="form-floating mb-3">
-                                                        <select wire:model.defer="values.{{ $setting->id }}" 
+                                                        <select wire:model.defer="values.{{ $setting->id }}"
                                                             id="setting-{{ $setting->id }}"
                                                             class="form-select @error('values.' . $setting->id) is-invalid @enderror">
                                                             <option value="">{{ __('settingmanagement::admin.select_option') }}</option>
-                                                            @foreach($setting->options as $key => $label)
+                                                            @foreach($choices as $key => $label)
                                                                 <option value="{{ $key }}">{{ is_string($label) ? $label : json_encode($label) }}</option>
                                                             @endforeach
                                                         </select>

@@ -1,12 +1,37 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0;url='https://ixtif.com/login'" />
-
-        <title>Redirecting to https://ixtif.com/login</title>
-    </head>
-    <body>
-        Redirecting to <a href="https://ixtif.com/login">https://ixtif.com/login</a>.
-    </body>
-</html>
+(index):15 [Web Share] Helper yüklendi. Destek: true
+(index):15 [Back to Top] Initialized - Position: Left Bottom
+(index):15 🔄 CartWidget: Count updated from API: 0
+sw.js:131 [Service Worker] Loaded successfully
+sw.js:27 [Service Worker] Installing...
+(index):15 [PWA] Service Worker registered: https://ixtif.com/
+sw.js:32 [Service Worker] Caching critical assets
+sw.js:43 [Service Worker] Activating...
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 1
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 1
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 2
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 2
+(index):15 🛒 Alpine: addToCart clicked Object
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response Object
+(index):15 💾 localStorage: cart_item_count = 3
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received Object
+(index):15 ✅ Alpine: Success! Item count: 3
+(index):15 🤖 Auto-opening AI chat (desktop only)...
+(index):15 🛒 Alpine: addToCart clicked {productId: 241}
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
+(index):15 💾 localStorage: cart_item_count = 4
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received {itemCount: '4', cartId: 38}
+(index):15 ✅ Alpine: Success! Item count: 4

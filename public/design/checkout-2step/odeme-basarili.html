@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sipariş Tamamlandı!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        [x-cloak] { display: none !important; }
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti { animation: confetti 3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors" x-data="{
+    orderNumber: 'T2TEST20251112053322A1B2C3',
+    orderDate: '12 Kasım 2025, 14:35',
+    orderAmount: 1250.00,
+    installment: 3,
+    installmentAmount: 427.08,
+    deliveryAddress: 'Atatürk Mah. Endüstri Sk. No:45/A, 34758 Ataşehir/İstanbul',
+    deliveryDate: '15 Kasım 2025',
+    items: [
+        { name: 'Elektrikli Transpalet EPL185', qty: 1, price: 1250.00, image: 'https://via.placeholder.com/100' }
+    ]
+}">
+    <!-- Header -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                    <i class="fa-solid fa-shopping-cart text-blue-600 mr-2"></i>
+                    ixtif.com
+                </h1>
+                <button @click="darkMode = !darkMode" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600">
+                    <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto">
+            <!-- Success Icon -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full mb-4 animate-bounce">
+                    <i class="fa-solid fa-check-circle text-5xl text-green-600"></i>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                    Siparişiniz Alındı!
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400">
+                    Ödemeniz başarıyla tamamlandı. Teşekkür ederiz!
+                </p>
+            </div>
+
+            <!-- Order Details -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Sipariş Özeti -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-receipt text-blue-600 mr-2"></i>
+                        Sipariş Bilgileri
+                    </h2>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Sipariş No:</span>
+                            <span class="font-mono font-bold text-gray-900 dark:text-white" x-text="orderNumber"></span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Tarih:</span>
+                            <span class="text-gray-900 dark:text-white" x-text="orderDate"></span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Toplam Tutar:</span>
+                            <span class="text-xl font-bold text-green-600" x-text="'₺' + orderAmount.toFixed(2)"></span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg" x-show="installment > 1">
+                            <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">Taksit:</span>
+                            <span class="text-gray-900 dark:text-white" x-text="installment + ' x ₺' + installmentAmount.toFixed(2)"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                        <div class="flex items-start space-x-2">
+                            <i class="fa-solid fa-info-circle text-blue-600 mt-0.5"></i>
+                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                <p class="font-semibold mb-1">E-posta Gönderildi</p>
+                                <p class="text-xs">Sipariş detayları e-posta adresinize gönderilmiştir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teslimat Bilgileri -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-truck text-green-600 mr-2"></i>
+                        Teslimat Bilgileri
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Teslimat Adresi:</p>
+                            <p class="text-gray-900 dark:text-white" x-text="deliveryAddress"></p>
+                        </div>
+
+                        <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-calendar-check text-green-600 text-2xl"></i>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-600 dark:text-gray-400">Tahmini Teslimat:</p>
+                                    <p class="text-lg font-bold text-green-600" x-text="deliveryDate"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i class="fa-solid fa-box text-gray-400"></i>
+                            <span>Kargo: Ücretsiz</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-2">
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i class="fa-solid fa-circle-check text-green-600"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Sipariş hazırlanıyor</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i class="fa-regular fa-circle text-gray-400"></i>
+                            <span class="text-gray-500 dark:text-gray-400">Kargoya verilecek</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i class="fa-regular fa-circle text-gray-400"></i>
+                            <span class="text-gray-500 dark:text-gray-400">Teslim edilecek</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ürünler -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-box-open text-blue-600 mr-2"></i>
+                    Sipariş İçeriği
+                </h2>
+
+                <div class="space-y-4">
+                    <template x-for="item in items" :key="item.name">
+                        <div class="flex items-center space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <img :src="item.image" alt="Product" class="w-20 h-20 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-900 dark:text-white" x-text="item.name"></h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Adet: <span x-text="item.qty"></span></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-gray-900 dark:text-white" x-text="'₺' + item.price.toFixed(2)"></p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Eylemler -->
+            <div class="grid md:grid-cols-3 gap-4">
+                <a href="/" class="block p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow text-center group">
+                    <i class="fa-solid fa-home text-3xl text-blue-600 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-semibold text-gray-900 dark:text-white">Ana Sayfaya Dön</p>
+                </a>
+
+                <a href="/siparislerim" class="block p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow text-center group">
+                    <i class="fa-solid fa-list text-3xl text-green-600 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-semibold text-gray-900 dark:text-white">Siparişlerim</p>
+                </a>
+
+                <button onclick="window.print()" class="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow text-center group">
+                    <i class="fa-solid fa-print text-3xl text-purple-600 mb-3 group-hover:scale-110 transition-transform"></i>
+                    <p class="font-semibold text-gray-900 dark:text-white">Yazdır</p>
+                </button>
+            </div>
+
+            <!-- Yardım -->
+            <div class="mt-6 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg p-6 text-white text-center">
+                <h3 class="text-xl font-bold mb-2">Yardıma mı ihtiyacınız var?</h3>
+                <p class="text-sm text-blue-100 mb-4">Müşteri hizmetlerimiz size yardımcı olmaktan mutluluk duyar</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="tel:+902161234567" class="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors">
+                        <i class="fa-solid fa-phone mr-2"></i>
+                        0216 123 45 67
+                    </a>
+                    <a href="https://wa.me/902161234567" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fa-brands fa-whatsapp mr-2"></i>
+                        WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

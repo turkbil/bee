@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Aşamalı Checkout Tasarım Alternatifleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                <i class="fa-solid fa-shopping-cart text-blue-600 mr-3"></i>
+                2 Aşamalı Checkout Tasarım Alternatifleri
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">
+                Sepet → Checkout (Adres + Ödeme Birlikte)
+            </p>
+        </div>
+
+        <!-- Özellikler -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                <i class="fa-solid fa-check-circle text-green-600 mr-2"></i>
+                Tüm Alternatiflerde Ortak Özellikler
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-moon text-blue-600 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Dark/Light Mode</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Otomatik tema geçişi</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-mobile-screen text-blue-600 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Responsive</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Mobile, Tablet, Desktop</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-credit-card text-blue-600 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Havale + Kredi Kartı</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Müşteri ödeme yöntemini seçer</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-percentage text-blue-600 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Taksit Seçenekleri</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Dinamik taksit hesaplama</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-expand text-blue-600 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">PayTR iframe Full Height</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Minimum 800px yükseklik</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <i class="fa-solid fa-minimize text-blue-600 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Minimal Adres Formu</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Sadece gerekli alanlar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternatifler -->
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Option 1: Offset Canvas -->
+            <a href="option-1-offset-canvas.html" class="group">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+                        <i class="fa-solid fa-bars-staggered text-4xl mb-3"></i>
+                        <h3 class="text-xl font-bold">Option 1</h3>
+                        <p class="text-sm text-blue-100">Offset Canvas</p>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Yandan Açılan Drawer</h4>
+                        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Adres formu sağdan açılır
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Ana sayfa iframe'e odaklı
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Modern UX
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Mobile-friendly overlay
+                            </li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <span class="inline-flex items-center text-blue-600 font-semibold group-hover:translate-x-2 transition-transform">
+                                Önizle <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Option 2: Inline Minimal -->
+            <a href="option-2-inline-minimal.html" class="group">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
+                    <div class="bg-gradient-to-r from-green-600 to-green-700 p-6 text-white">
+                        <i class="fa-solid fa-align-left text-4xl mb-3"></i>
+                        <h3 class="text-xl font-bold">Option 2</h3>
+                        <p class="text-sm text-green-100">Inline Minimal</p>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Sayfa İçi Minimal Form</h4>
+                        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Tek sayfa, scroll yok
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Adres accordion şeklinde
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                En hızlı checkout
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Klasik UX
+                            </li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <span class="inline-flex items-center text-green-600 font-semibold group-hover:translate-x-2 transition-transform">
+                                Önizle <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Option 3: Tabs -->
+            <a href="option-3-tabs.html" class="group">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow">
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-6 text-white">
+                        <i class="fa-solid fa-folder-open text-4xl mb-3"></i>
+                        <h3 class="text-xl font-bold">Option 3</h3>
+                        <p class="text-sm text-purple-100">Tab Sistemi</p>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Sekme İle Geçiş</h4>
+                        <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Tab ile step geçişi
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Görsel progress bar
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Adım adım UX
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fa-solid fa-check text-green-600 mr-2"></i>
+                                Premium his
+                            </li>
+                        </ul>
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <span class="inline-flex items-center text-purple-600 font-semibold group-hover:translate-x-2 transition-transform">
+                                Önizle <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Ekstra Sayfalar -->
+        <div class="mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                <i class="fa-solid fa-tools text-orange-600 mr-2"></i>
+                Ek Dökümanlar
+            </h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="taksit-settings.html" class="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fa-solid fa-sliders text-2xl text-blue-600"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Taksit Ayarları</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Admin panel taksit ayarları interface</p>
+                    </div>
+                </a>
+                <a href="havale-bildirim.html" class="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fa-solid fa-money-bill-transfer text-2xl text-green-600"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Havale Bildirim Formu</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Havale ödeme sonrası bildirim formu</p>
+                    </div>
+                </a>
+                <a href="odeme-basarili.html" class="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fa-solid fa-circle-check text-2xl text-green-600"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Ödeme Başarılı</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Sipariş tamamlandı sayfası</p>
+                    </div>
+                </a>
+                <a href="odeme-basarisiz.html" class="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fa-solid fa-circle-xmark text-2xl text-red-600"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Ödeme Başarısız</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Ödeme hatası sayfası</p>
+                    </div>
+                </a>
+                <a href="taksit-tablosu.html" class="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fa-solid fa-receipt text-2xl text-blue-600"></i>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white">Taksit Tablosu</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">PayTR banka taksit seçenekleri</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 text-center text-gray-500 dark:text-gray-400 text-sm">
+            <p>
+                <i class="fa-solid fa-code mr-1"></i>
+                2 Aşamalı Checkout Tasarım Alternatifleri - ixtif.com
+            </p>
+        </div>
+    </div>
+</body>
+</html>

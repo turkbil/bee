@@ -8,6 +8,6 @@ class CheckoutRedirectController
 {
     public function redirect(): RedirectResponse
     {
-        return redirect()->route('shop.cart');
+        return redirect()->route('cart.index');
     }
 }

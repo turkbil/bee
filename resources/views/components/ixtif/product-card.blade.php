@@ -260,16 +260,71 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('addToCartButton', (productId) => ({
         loading: false,
         success: false,
-        addToCart() {
+        async addToCart() {
+            console.log('🛒 Alpine: addToCart clicked', { productId });
             this.loading = true;
-            window.dispatchEvent(new CustomEvent('add-to-cart', {
-                detail: { productId: productId, quantity: 1 }
-            }));
-            setTimeout(() => {
+
+            try {
+                // CSRF token
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                console.log('🛒 Alpine: Sending request to /api/cart/add');
+
+                // localStorage'dan cart_id al (session sorunu için)
+                const storedCartId = localStorage.getItem('cart_id');
+
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1,
+                        cart_id: storedCartId ? parseInt(storedCartId) : null  // cart_id gönder
+                    })
+                });
+
+                const data = await response.json();
+                console.log('🛒 Alpine: API Response', data);
+
+                if (data.success) {
+                    this.success = true;
+
+                    // localStorage'a cart bilgilerini kaydet (session sorunu için)
+                    localStorage.setItem('cart_item_count', data.data.item_count);
+                    localStorage.setItem('cart_id', data.data.cart_id);
+                    console.log('💾 localStorage: cart_item_count =', data.data.item_count);
+
+                    // CartWidget'ı güncelle - Livewire event dispatch
+                    if (typeof Livewire !== 'undefined') {
+                        Livewire.dispatch('cartUpdated');
+                        console.log('🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı');
+                    }
+
+                    // Browser event (Alpine.js için)
+                    window.dispatchEvent(new CustomEvent('cart-updated', {
+                        detail: {
+                            itemCount: data.data.item_count,
+                            cartId: data.data.cart_id
+                        }
+                    }));
+
+                    console.log('✅ Alpine: Success! Item count:', data.data.item_count);
+
+                    setTimeout(() => { this.success = false; }, 2000);
+                } else {
+                    console.error('❌ Alpine: API returned error', data.message);
+                    alert(data.message || 'Ürün sepete eklenirken hata oluştu');
+                }
+            } catch (error) {
+                console.error('❌ Alpine: Fetch error', error);
+                alert('Ürün sepete eklenirken hata oluştu');
+            } finally {
                 this.loading = false;
-                this.success = true;
-                setTimeout(() => { this.success = false; }, 2000);
-            }, 500);
+            }
         }
     }));
 });

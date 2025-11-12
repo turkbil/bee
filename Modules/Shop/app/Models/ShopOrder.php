@@ -82,44 +82,57 @@ class ShopOrder extends Model implements Payable
 
     // Payable Interface Implementation
 
-    public function getPaymentAmount(): float
+    /**
+     * Ödenecek tutarı döndür
+     */
+    public function getPayableAmount(): float
     {
         return (float) $this->total;
     }
 
-    public function getPaymentCurrency(): string
+    /**
+     * Ödeme açıklamasını döndür
+     */
+    public function getPayableDescription(): string
     {
-        return 'TRY'; // Shop için default TRY
+        return "Sipariş #" . $this->order_number;
     }
 
-    public function getPaymentCustomer(): array
+    /**
+     * Ödemeyi yapan müşteri bilgilerini döndür
+     */
+    public function getPayableCustomer(): array
     {
         return [
             'name' => $this->customer_name ?? 'Misafir',
             'email' => $this->customer_email ?? '',
             'phone' => $this->customer_phone ?? '',
-            'address' => $this->shipping_address ?? '',
-            'city' => $this->shipping_city ?? '',
+            'address' => ($this->shipping_address ?? '') . ' ' . ($this->shipping_city ?? ''),
         ];
     }
 
-    public function getPaymentBasket(): array
+    /**
+     * Ödeme detaylarını döndür (sepet içeriği)
+     */
+    public function getPayableDetails(): ?array
     {
-        $basket = [];
+        $items = [];
         foreach ($this->items as $item) {
-            $basket[] = [
+            $items[] = [
                 'name' => $item->product_title ?? 'Ürün',
                 'price' => (float) $item->price,
                 'quantity' => $item->quantity,
             ];
         }
-        return $basket;
+
+        return [
+            'items' => $items,
+            'amount' => (float) $this->total,
+            'description' => "Sipariş #" . $this->order_number,
+        ];
     }
 
-    public function getPaymentDescription(): string
-    {
-        return "Sipariş #" . $this->order_number;
-    }
+    // Ödeme durum callback metodları
 
     public function onPaymentCompleted($payment): void
     {

@@ -1,3 +1,67 @@
+clarity.js:2  POST https://b.clarity.ms/collect net::ERR_SSL_BAD_RECORD_MAC_ALERT
+ii @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+o @ clarity.js:2
+Promise.then
+c @ clarity.js:2
+(anonymous) @ clarity.js:2
+pt @ clarity.js:2
+ri @ clarity.js:2
+(anonymous) @ clarity.js:2
+setTimeout
+tt @ clarity.js:2
+ni @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+pt @ clarity.js:2
+zn @ clarity.js:2
+Vn @ clarity.js:2
+start @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+bu @ clarity.js:2
+Eu.ku.<computed> @ clarity.js:2
+Eu @ clarity.js:2
+(anonymous) @ clarity.js:2
+(anonymous) @ clarity.js:2
+(index):1 Attestation check for Topics on https://mc.yandex.com/ failed.
+(index):15 [Web Share] Helper yüklendi. Destek: true
+(index):15 [Back to Top] Initialized - Position: Left Bottom
+(index):15 💾 CartWidget: Cart ID from localStorage: 34
+(index):15 🔄 CartWidget: Count updated from API: 0
+(index):15 [PWA] Service Worker registered: https://ixtif.com/
+livewire.js?id=df3a17f2:4294  POST https://ixtif.com/livewire/update 500 (Internal Server Error)
+sendRequest @ livewire.js?id=df3a17f2:4294
+send @ livewire.js?id=df3a17f2:4060
+(anonymous) @ livewire.js?id=df3a17f2:4205
+createAndSendNewPool @ livewire.js?id=df3a17f2:4201
+(anonymous) @ livewire.js?id=df3a17f2:4177
+(anonymous) @ livewire.js?id=df3a17f2:4240
+setTimeout
+bufferPoolingForFiveMs @ livewire.js?id=df3a17f2:4239
+add @ livewire.js?id=df3a17f2:4174
+requestCall @ livewire.js?id=df3a17f2:4256
+(anonymous) @ livewire.js?id=df3a17f2:4517
+fetchCartCount @ VM1824:35
+await in fetchCartCount
+[Alpine] loadFromLocalStorage(); fetchCartCount() @ VM1825:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3489
+(anonymous) @ livewire.js?id=df3a17f2:1909
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
 # Illuminate\Database\Eloquent\RelationNotFoundException - Internal Server Error
 Call to undefined relationship [medias] on model [Modules\Shop\App\Models\ShopProduct].
 
@@ -14,91 +78,85 @@ ixtif.com
 4 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:939
 5 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:919
 6 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:885
-7 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Relations/Relation.php:212
-8 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Relations/Relation.php:175
-9 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:950
-10 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:919
-11 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:885
-12 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Relations/Relation.php:212
-13 - Modules/Cart/app/Http/Livewire/Front/CartWidget.php:71
-14 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
-15 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
-16 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
-17 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
-18 - vendor/livewire/livewire/src/Wrapped.php:23
-19 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:474
-20 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:101
-21 - vendor/livewire/livewire/src/LivewireManager.php:102
-22 - vendor/livewire/volt/src/LivewireManager.php:35
-23 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
-24 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
-25 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
-26 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
-27 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
-28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-29 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+7 - Modules/Cart/app/Http/Livewire/Front/CartWidget.php:78
+8 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
+9 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
+10 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
+11 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
+12 - vendor/livewire/livewire/src/Wrapped.php:23
+13 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:474
+14 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:101
+15 - vendor/livewire/livewire/src/LivewireManager.php:102
+16 - vendor/livewire/volt/src/LivewireManager.php:35
+17 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
+18 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
+19 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
+20 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
+21 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
+22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+23 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+25 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+27 - app/Http/Middleware/RootOnlyDebugbar.php:35
+28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+29 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
 30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-31 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+31 - app/Http/Middleware/DatabasePoolMiddleware.php:58
 32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-33 - app/Http/Middleware/RootOnlyDebugbar.php:35
+33 - app/Http/Middleware/SecurityHeaders.php:18
 34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-35 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+35 - app/Http/Middleware/CheckThemeStatus.php:40
 36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-37 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+37 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
 38 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-39 - app/Http/Middleware/SecurityHeaders.php:18
+39 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
 40 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-41 - app/Http/Middleware/CheckThemeStatus.php:40
+41 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
 42 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-43 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+43 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
 44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-45 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
-46 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-47 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
-48 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-49 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
-50 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-51 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
-52 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+45 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+46 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+48 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+50 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+52 - app/Http/Middleware/InitializeTenancy.php:97
 53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-54 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
-55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-56 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
-57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-58 - app/Http/Middleware/InitializeTenancy.php:97
-59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-61 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-62 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
-63 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
-64 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
-65 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
-66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-67 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+55 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+56 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+57 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+58 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+59 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+61 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+63 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+65 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
+66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+67 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
 68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-69 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+69 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
 70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-71 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
+71 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
 72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-73 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
+73 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
 74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-75 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+75 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
 76 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-77 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+77 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
 78 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-79 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+79 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
 80 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-81 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
-82 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-83 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
-84 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-85 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
-86 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-87 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-88 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
-89 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
-90 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
-91 - public/index.php:17
+81 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+82 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+83 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+84 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+85 - public/index.php:17
 
 ## Request
 
@@ -106,7 +164,7 @@ POST /livewire/update
 
 ## Headers
 
-* **cookie**: _fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlczVDBzejlkUEZBd0tCREFuQXg1REE9PSIsInZhbHVlIjoibmJqd002bEMvcmlLT2owV2pBWmorNWRxUjN6YjA2V2dWYmI3OE5CS3MvbnRac1JBeHFSeXBCZHFlaHZjMThxV3pqVGJTS0xzT082eUFwVGk2M1IrRGRueWRRdXhjV0dVTDZUWlIya0JBYVZMU3RUSk1tYjhQdExyZVZ2eVZjZldHQU5VSCtQeU90UDk4T1lhNFRVMUJxQ1RZZUVnVEVGNys4bjRKTkE5QnhuMmZSNFNvNjFpSmdjYnJjS29RbTRnYmVNS1F0T0FycDB6VGVwYmFJK0JndmFpS3hRN2tuR29qL3pwZVhpNk1PYz0iLCJtYWMiOiIxODNjMjk2NjY0ZDQ0ZjVmODQxNTlhYmVhYzQzZWEwZGQzZjA1YWFiYzI4OWIzMmI4NDM2Y2FkNTUzOTdmY2Q2IiwidGFnIjoiIn0%3D; _gcl_au=1.1.93943206.1762734713.2034743476.1762775966.1762778280; last_activity_read=1762807078; dark=auto; _clck=1gd0f2w%5E2%5Eg0y%5E0%5E2140; viewMode=grid; _ym_isad=2; _ym_visorc=w; _clsk=tl7b5p%5E1762983483007%5E12%5E1%5Eb.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6IkJqOGl2SUw1bi9NSnFIbTl6YTMwY3c9PSIsInZhbHVlIjoiTTJmMDhVMGtSUlJrempDR05rQXhHRXFoYnlzY3Fwb3J2VDZhTmpWWVM3VWl2TWV1STFqeXZqN2QveFAvMjZZVWgvb1dkaFh5Y0x1RE5kOHBIdEV4OEY3SGkwRFpHN3ZXVzdhZE41QWVIYkt6enBKZlRLU1BiSFhUcFdTa2pJNVUiLCJtYWMiOiIwMjhmMjM3NTJlMDkzMzYzN2FiNjgxOTBjYmVlZThkNDY1M2Y1NDhmZmE5MzE1Yzc2NWEzZjI5YzQ2ZGY0N2NkIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6ImpQRDZ4WmhIbGIwdm9ZQ2pXa1dxenc9PSIsInZhbHVlIjoiK3dNS3RVYUtoNGpBaG5yK2JJWHZuK0xnTytxODQvWk9BZlkrQy95VUdQTTRqYVdFUFE0bWwwWlFpK3JUblJBSVQrYXRZM3BSWVcyOU00TGxNT29uSFBDMjk4NXdlNkxRck1Td05YallWK2dXcUdnMEpiTmcyNys1OWhsTVplSzMiLCJtYWMiOiIxNWI3YzI2NGRhNWFlNDM1ZDNiZGRkMDVkOTQ3NGZhZTc4ZTE4ZWRkNGJhMTU4ZjczYmNmYzM1MTgzODk0NzZlIiwidGFnIjoiIn0%3D
+* **cookie**: _fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlczVDBzejlkUEZBd0tCREFuQXg1REE9PSIsInZhbHVlIjoibmJqd002bEMvcmlLT2owV2pBWmorNWRxUjN6YjA2V2dWYmI3OE5CS3MvbnRac1JBeHFSeXBCZHFlaHZjMThxV3pqVGJTS0xzT082eUFwVGk2M1IrRGRueWRRdXhjV0dVTDZUWlIya0JBYVZMU3RUSk1tYjhQdExyZVZ2eVZjZldHQU5VSCtQeU90UDk4T1lhNFRVMUJxQ1RZZUVnVEVGNys4bjRKTkE5QnhuMmZSNFNvNjFpSmdjYnJjS29RbTRnYmVNS1F0T0FycDB6VGVwYmFJK0JndmFpS3hRN2tuR29qL3pwZVhpNk1PYz0iLCJtYWMiOiIxODNjMjk2NjY0ZDQ0ZjVmODQxNTlhYmVhYzQzZWEwZGQzZjA1YWFiYzI4OWIzMmI4NDM2Y2FkNTUzOTdmY2Q2IiwidGFnIjoiIn0%3D; _gcl_au=1.1.93943206.1762734713.2034743476.1762775966.1762778280; last_activity_read=1762807078; dark=auto; _clck=1gd0f2w%5E2%5Eg0y%5E0%5E2140; viewMode=grid; _ym_isad=2; _ym_visorc=w; XSRF-TOKEN=eyJpdiI6IkxaOE1NRjJKS2ZNWkRHQkwwQmRuS3c9PSIsInZhbHVlIjoiN3JjVmFYT0t0YVNwQ0RXNWU3Mm9NWHVIbks3Vko2SGhzdkFoVmowU2g0cGVmbDhCVENTYmVBVXBLcWRRbVZtaVpNTkhFTE9nNDI1U3NpTGoyS0hialNrL2RScFFEbjhCcmluYW0ycDAzT0tXam8yNFc1dUlkSEZhVFdXWmlOTjciLCJtYWMiOiJlZDZkNGYwMjdjMWUxMmZlOTJmZDg5MTQyMzI5ZDlhNTVhM2FjZDJhYjkxMDA1ZjY0ODMwNzA2MzdiZWYxYWEzIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IjF3Z1JMUElybFpBd09kSHNnZWF6eWc9PSIsInZhbHVlIjoia1R5OWE1ZmJtMzY4enVqK3NKTFAzdXRjTWFCOTNxMVZlM1JXQzlIanJGOEkwVzhteWdDcENhcElYbXBEb1JwN1ZXYWU1REd0cWt2M0ZrQjljOFV1b294WGpaQksyVUtNdTZESGIybm40ZHo2am93SWRiQ0JSMVFEZzFGdThTZkoiLCJtYWMiOiI4ODZmOTU3ZTExYWMzODQwODZkN2UxOTM1MmJkY2I1NzJhYzhkZmIwZDBhODVlMGMyMzE3ZDE0MjIwZDc2ZTJkIiwidGFnIjoiIn0%3D; _clsk=tl7b5p%5E1762983628213%5E13%5E1%5Eb.clarity.ms%2Fcollect
 * **priority**: u=1, i
 * **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
 * **accept-encoding**: gzip, deflate, br, zstd
@@ -143,13 +201,14 @@ No route parameter data available.
 
 ## Database Queries
 
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (1.75 ms)
-* mysql - select * from `sessions` where `id` = 'YKS3gaPqc0FFhfseSDL1DtpslMhWRQM9HGhFrxpA' limit 1 (0.77 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.46 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.4 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.71 ms)
-* tenant - select * from `carts` where `customer_id` = 1 and `status` = 'active' and `carts`.`deleted_at` is null limit 1 (1.08 ms)
-* tenant - select * from `carts` where `carts`.`cart_id` = 34 and `carts`.`deleted_at` is null limit 1 (0.58 ms)
-* tenant - select * from `cart_items` where `cart_items`.`cart_id` = 34 and `cart_items`.`cart_id` is not null and `is_active` = 1 and `cart_items`.`deleted_at` is null (0.78 ms)
-* tenant - select * from `shop_products` where `shop_products`.`product_id` in (245, 130, 241) and `shop_products`.`deleted_at` is null (1.39 ms)
-* tenant - select `product_id`, `title`, `slug` from `shop_products` where `shop_products`.`product_id` in (130, 241, 245) and `shop_products`.`deleted_at` is null (1.63 ms)
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (3.99 ms)
+* mysql - select * from `sessions` where `id` = 'YKS3gaPqc0FFhfseSDL1DtpslMhWRQM9HGhFrxpA' limit 1 (0.8 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (1.91 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (3.59 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (1.43 ms)
+* tenant - select * from `carts` where `customer_id` = 1 and `status` = 'active' and `carts`.`deleted_at` is null limit 1 (1.04 ms)
+* tenant - select * from `carts` where `carts`.`cart_id` = 34 and `carts`.`deleted_at` is null limit 1 (0.68 ms)
+* tenant - select * from `cart_items` where `cart_items`.`cart_id` = 34 and `cart_items`.`cart_id` is not null and `is_active` = 1 and `cart_items`.`deleted_at` is null (1.2 ms)
+* tenant - select * from `shop_products` where `shop_products`.`product_id` in (245, 130, 241) and `shop_products`.`deleted_at` is null (1.43 ms)
+* tenant - select `product_id`, `title`, `slug` from `shop_products` where `shop_products`.`product_id` in (130, 241, 245) and `shop_products`.`deleted_at` is null (0.77 ms)
+* tenant - select * from `shop_products` where `product_id` in (245, 130, 241) and `shop_products`.`deleted_at` is null (1.76 ms)

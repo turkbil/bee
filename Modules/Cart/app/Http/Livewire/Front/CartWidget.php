@@ -69,21 +69,33 @@ class CartWidget extends Component
                 ])
                 ->get();
 
-            // Manually eager load medias if relation exists
+            // Manually eager load medias if relation exists (safe - try/catch)
             if ($this->items->isNotEmpty()) {
-                $productIds = $this->items->pluck('product_id')->filter()->unique();
-                if ($productIds->isNotEmpty()) {
-                    $products = \Modules\Shop\App\Models\ShopProduct::whereIn('product_id', $productIds)
-                        ->with('medias')
-                        ->get()
-                        ->keyBy('product_id');
+                try {
+                    $productIds = $this->items->pluck('product_id')->filter()->unique();
+                    if ($productIds->isNotEmpty()) {
+                        // Try to load with medias, fallback to without medias if relation doesn't exist
+                        $query = \Modules\Shop\App\Models\ShopProduct::whereIn('product_id', $productIds);
 
-                    // Attach medias to items' products
-                    foreach ($this->items as $item) {
-                        if ($item->product_id && isset($products[$item->product_id])) {
-                            $item->setRelation('product', $products[$item->product_id]);
+                        // Check if medias relation exists before using it
+                        if (method_exists(\Modules\Shop\App\Models\ShopProduct::class, 'medias')) {
+                            $query->with('medias');
+                        }
+
+                        $products = $query->get()->keyBy('product_id');
+
+                        // Attach products to items
+                        foreach ($this->items as $item) {
+                            if ($item->product_id && isset($products[$item->product_id])) {
+                                $item->setRelation('product', $products[$item->product_id]);
+                            }
                         }
                     }
+                } catch (\Exception $e) {
+                    \Log::warning('CartWidget: Error loading product medias', [
+                        'error' => $e->getMessage()
+                    ]);
+                    // Continue without medias - accessor will handle fallback
                 }
             }
 

@@ -61,7 +61,7 @@
                     @endif
 
                     <!-- Login Form -->
-                    <form method="POST" action="{{ route('login') }}" class="space-y-6" novalidate @submit="if(!validateForm()) { $event.preventDefault(); isLoading = false; } else { isLoading = true; }">
+                    <form method="POST" action="{{ route('login') }}" class="space-y-6" novalidate @submit="if(!validateForm()) { $event.preventDefault(); isLoading = false; } else { isLoading = true; clearCartLocalStorage(); }">
                         @csrf
                         
                         <!-- Email Field -->
@@ -260,6 +260,18 @@
                     this.validateField('password', password);
 
                     return !this.errors.email && !this.errors.password;
+                },
+
+                clearCartLocalStorage() {
+                    // Login başarılı olacak, guest cart localStorage'ını temizle
+                    // Backend merge yapacak, user cart'ı kullanılacak
+                    try {
+                        localStorage.removeItem('cart_id');
+                        localStorage.removeItem('cart_item_count');
+                        console.log('🛒 LOGIN: Cart localStorage temizlendi (merge için hazır)');
+                    } catch (e) {
+                        console.error('🛒 LOGIN: localStorage temizleme hatası', e);
+                    }
                 }
             }
         }

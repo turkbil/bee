@@ -107,6 +107,16 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
+        // 🛒 CART MERGE - Guest sepetini kullanıcı sepetine merge et
+        try {
+            $this->mergeGuestCartToUser($user->id);
+        } catch (\Exception $e) {
+            \Log::error('🛒 LOGIN: Cart merge error', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+
         // 🧹 LOGIN CACHE TEMİZLEME - Sadece user-specific cache'ler (development mode'da tüm sistem cache temizleme gereksiz)
         try {
             // Kullanıcı tercihlerine göre locale ayarla
@@ -347,15 +357,15 @@ class AuthenticatedSessionController extends Controller
         if (!class_exists('\Spatie\ResponseCache\Facades\ResponseCache')) {
             return;
         }
-        
+
         try {
             $tenant = tenant();
-            
+
             if ($tenant) {
                 // Sadece bu tenant'ın response cache tag'ini temizle
                 $tenantTag = 'tenant_' . $tenant->id . '_response_cache';
                 \Spatie\ResponseCache\Facades\ResponseCache::forget($tenantTag);
-                
+
                 \Log::info('🧹 TENANT RESPONSE CACHE CLEAR', [
                     'tenant_id' => $tenant->id,
                     'cache_tag' => $tenantTag
@@ -364,18 +374,78 @@ class AuthenticatedSessionController extends Controller
                 // Central domain için central tag'i temizle
                 $centralTag = 'central_response_cache';
                 \Spatie\ResponseCache\Facades\ResponseCache::forget($centralTag);
-                
+
                 \Log::info('🧹 CENTRAL RESPONSE CACHE CLEAR', [
                     'cache_tag' => $centralTag
                 ]);
             }
-            
+
         } catch (\Exception $e) {
             \Log::warning('Tenant response cache clear error: ' . $e->getMessage());
-            
+
             // Fallback: Tüm ResponseCache temizle
             \Spatie\ResponseCache\Facades\ResponseCache::clear();
             \Log::info('🧹 FALLBACK: Tüm ResponseCache temizlendi');
+        }
+    }
+
+    /**
+     * Guest sepetini kullanıcı sepetine merge et
+     */
+    protected function mergeGuestCartToUser(int $userId): void
+    {
+        if (!class_exists(\Modules\Cart\App\Services\CartService::class)) {
+            \Log::info('🛒 Cart module not available, skipping merge');
+            return;
+        }
+
+        try {
+            $cartService = app(\Modules\Cart\App\Services\CartService::class);
+            $sessionId = session()->getId();
+
+            \Log::info('🛒 LOGIN: Cart merge başladı', [
+                'user_id' => $userId,
+                'session_id' => $sessionId,
+            ]);
+
+            // Guest sepetini bul (session ile)
+            $guestCart = $cartService->getCart(null, $sessionId);
+
+            if (!$guestCart || $guestCart->items()->count() === 0) {
+                \Log::info('🛒 LOGIN: Guest sepeti boş, merge gerekmiyor', [
+                    'user_id' => $userId,
+                    'guest_cart_exists' => $guestCart ? 'yes' : 'no',
+                    'guest_cart_items' => $guestCart ? $guestCart->items()->count() : 0,
+                ]);
+                return;
+            }
+
+            // Kullanıcı sepetini bul veya oluştur
+            $userCart = $cartService->findOrCreateCart($userId, null);
+
+            \Log::info('🛒 LOGIN: Sepetler bulundu', [
+                'guest_cart_id' => $guestCart->cart_id,
+                'guest_cart_items' => $guestCart->items()->count(),
+                'user_cart_id' => $userCart->cart_id,
+                'user_cart_items' => $userCart->items()->count(),
+            ]);
+
+            // Guest sepeti ile user sepetini merge et
+            $cartService->mergeGuestCart($guestCart, $userCart);
+
+            \Log::info('🛒 LOGIN: Cart merge tamamlandı', [
+                'user_id' => $userId,
+                'merged_cart_id' => $userCart->cart_id,
+                'total_items' => $userCart->items()->where('is_active', true)->sum('quantity'),
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('🛒 LOGIN: Cart merge failed', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
         }
     }
 }

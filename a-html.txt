@@ -1,1 +1,136 @@
+# Livewire\Exceptions\EventHandlerDoesNotExist - Internal Server Error
+Handler for event cartUpdated does not exist
 
+PHP 8.3.27
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - vendor/livewire/livewire/src/Features/SupportEvents/SupportEvents.php:23
+1 - vendor/livewire/livewire/src/ComponentHook.php:41
+2 - vendor/livewire/livewire/src/ComponentHookRegistry.php:110
+3 - vendor/livewire/livewire/src/ComponentHookRegistry.php:65
+4 - vendor/livewire/livewire/src/EventBus.php:60
+5 - vendor/livewire/livewire/src/helpers.php:98
+6 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:453
+7 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:101
+8 - vendor/livewire/livewire/src/LivewireManager.php:102
+9 - vendor/livewire/volt/src/LivewireManager.php:35
+10 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
+11 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
+12 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
+13 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
+14 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
+15 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+16 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+17 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+18 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+19 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+20 - app/Http/Middleware/RootOnlyDebugbar.php:35
+21 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+22 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+23 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+24 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+25 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+26 - app/Http/Middleware/SecurityHeaders.php:18
+27 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+28 - app/Http/Middleware/CheckThemeStatus.php:40
+29 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+30 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+31 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+32 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+33 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+34 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+35 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+36 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+38 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+39 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+40 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+41 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+42 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+43 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+45 - app/Http/Middleware/InitializeTenancy.php:97
+46 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+48 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+49 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+50 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+51 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+52 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+54 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+55 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+56 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+58 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
+59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+60 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
+61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+62 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+63 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+64 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+65 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+66 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+67 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+68 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+69 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+70 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+72 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+73 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+75 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+76 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+77 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+78 - public/index.php:17
+
+## Request
+
+POST /livewire/update
+
+## Headers
+
+* **cookie**: _fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlczVDBzejlkUEZBd0tCREFuQXg1REE9PSIsInZhbHVlIjoibmJqd002bEMvcmlLT2owV2pBWmorNWRxUjN6YjA2V2dWYmI3OE5CS3MvbnRac1JBeHFSeXBCZHFlaHZjMThxV3pqVGJTS0xzT082eUFwVGk2M1IrRGRueWRRdXhjV0dVTDZUWlIya0JBYVZMU3RUSk1tYjhQdExyZVZ2eVZjZldHQU5VSCtQeU90UDk4T1lhNFRVMUJxQ1RZZUVnVEVGNys4bjRKTkE5QnhuMmZSNFNvNjFpSmdjYnJjS29RbTRnYmVNS1F0T0FycDB6VGVwYmFJK0JndmFpS3hRN2tuR29qL3pwZVhpNk1PYz0iLCJtYWMiOiIxODNjMjk2NjY0ZDQ0ZjVmODQxNTlhYmVhYzQzZWEwZGQzZjA1YWFiYzI4OWIzMmI4NDM2Y2FkNTUzOTdmY2Q2IiwidGFnIjoiIn0%3D; _gcl_au=1.1.93943206.1762734713.2034743476.1762775966.1762778280; last_activity_read=1762807078; dark=auto; _clck=1gd0f2w%5E2%5Eg0y%5E0%5E2140; viewMode=grid; _ym_isad=2; _ym_visorc=w; _clsk=tl7b5p%5E1762984639439%5E20%5E1%5Eb.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6IlAzRWlFWXVId3JlcDEvZzNHYjNEQnc9PSIsInZhbHVlIjoiaDhxYWs1RkZIeTV5emtsQlc2bDkvRVR3MVRPZjdMbFRzbkxWVmFmRmJIblFNWkMzOVBrejc2c2d2TnZUSngzRnF5bjhPaFBhWmRjaURNZnNsbjVzdzJVQytxbG85VkRwRDBuR2oxWGpEbTJtVGpGbCt0SkdPL3NuaW1aWFJhVUEiLCJtYWMiOiI5MmJiMTEzYjRlNmE1ODM1MzdiNDcwNGJiNTVhNjA5MGE4ODZlZjBjNWM1OGExYmZlMDM2NGUzYWI0NTg0YzBkIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6InhycTkvbGdWQ2VRU081NG5NWUlhc3c9PSIsInZhbHVlIjoicEE0L3dyeTI5dFk5QTJJOW54MHo2Mkl5SzJrV0xIZ1hORDFhN25uSFM1R3NqOGNrdEkvYTF2em13OStzdFExcmRkajI3SkdSald4TzRVNEZ1SDh5T085U2grUHpaaFFsVHBMdFBWTHJKSEpGemVCRkRqN1lZMW1OZ2ErenpRSk8iLCJtYWMiOiJmYzBhNDI0NzRiMTE4ODMyNjc5ODhlNzAxNjE4YzI3YTE4YjZmMGE2OWQ0Y2ZiZDQ5MTBjZGYwMDlmNjE0MjZiIiwidGFnIjoiIn0%3D
+* **priority**: u=1, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://ixtif.com/
+* **sec-fetch-dest**: empty
+* **sec-fetch-mode**: cors
+* **sec-fetch-site**: same-origin
+* **origin**: https://ixtif.com
+* **accept**: */*
+* **sec-ch-ua-mobile**: ?0
+* **x-livewire**: 
+* **content-type**: application/json
+* **dnt**: 1
+* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+* **sec-ch-ua-platform**: "macOS"
+* **content-length**: 630
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 92.44.119.135
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
+route name: livewire.update
+middleware: web
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (2.09 ms)
+* mysql - select * from `sessions` where `id` = 'YKS3gaPqc0FFhfseSDL1DtpslMhWRQM9HGhFrxpA' limit 1 (0.63 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.59 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.69 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.74 ms)
+* tenant - select * from `carts` where `customer_id` = 1 and `status` = 'active' and `carts`.`deleted_at` is null limit 1 (1.02 ms)

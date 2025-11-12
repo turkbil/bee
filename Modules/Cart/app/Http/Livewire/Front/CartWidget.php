@@ -26,9 +26,20 @@ class CartWidget extends Component
     public int $itemCount = 0;
     public float $total = 0.00;
 
+    /**
+     * Livewire event listeners
+     * camelCase ve kebab-case her ikisini de destekle
+     */
+    protected $listeners = [
+        'cartUpdated' => 'loadCart',      // camelCase (eski kod uyumluluğu)
+        'cart-updated' => 'loadCart',     // kebab-case (Alpine.js)
+        'cart-added' => 'loadCart',       // Yeni ürün eklendiğinde
+    ];
+
     // Component lifecycle
     public function mount()
     {
+        $this->items = collect([]); // Initialize collection
         $this->loadCart();
     }
 
@@ -236,14 +247,6 @@ class CartWidget extends Component
             ]);
         }
     }
-
-    /**
-     * Livewire event listener - Cart güncellendiğinde tetiklenir
-     */
-    protected $listeners = [
-        'cart-added' => 'loadCart',
-        'cart-updated' => 'loadCart',
-    ];
 
     public function render()
     {

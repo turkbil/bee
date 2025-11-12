@@ -39,7 +39,16 @@
         }
      }"
      x-init="loadFromLocalStorage(); fetchCartCount()"
-     @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = $event.detail.itemCount || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); $wire.refreshCart(cartId); }"
+     @cart-updated.window="
+        console.log('🔄 CartWidget: cart-updated event received', $event.detail);
+        itemCount = parseInt($event.detail.itemCount) || 0;
+        if ($event.detail.cartId) {
+            cartId = parseInt($event.detail.cartId);
+            localStorage.setItem('cart_id', cartId);
+            localStorage.setItem('cart_item_count', itemCount);
+            $wire.refreshCart(cartId);
+        }
+     "
      class="relative">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"

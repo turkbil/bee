@@ -1,3 +1,9 @@
+
+(index):15 [Web Share] Helper yüklendi. Destek: true
+(index):15 [Back to Top] Initialized - Position: Left Bottom
+(index):15 💾 CartWidget: Loaded from localStorage: 8
+(index):15 💾 CartWidget: Cart ID from localStorage: 34
+(index):15 🔄 CartWidget: Count updated from API: 0
 clarity.js:2  POST https://b.clarity.ms/collect net::ERR_SSL_BAD_RECORD_MAC_ALERT
 ii @ clarity.js:2
 (anonymous) @ clarity.js:2
@@ -29,186 +35,11 @@ Eu @ clarity.js:2
 (anonymous) @ clarity.js:2
 (anonymous) @ clarity.js:2
 (index):1 Attestation check for Topics on https://mc.yandex.com/ failed.
-(index):15 [Web Share] Helper yüklendi. Destek: true
-(index):15 [Back to Top] Initialized - Position: Left Bottom
-(index):15 💾 CartWidget: Cart ID from localStorage: 34
-(index):15 🔄 CartWidget: Count updated from API: 0
 (index):15 [PWA] Service Worker registered: https://ixtif.com/
-livewire.js?id=df3a17f2:4294  POST https://ixtif.com/livewire/update 500 (Internal Server Error)
-sendRequest @ livewire.js?id=df3a17f2:4294
-send @ livewire.js?id=df3a17f2:4060
-(anonymous) @ livewire.js?id=df3a17f2:4205
-createAndSendNewPool @ livewire.js?id=df3a17f2:4201
-(anonymous) @ livewire.js?id=df3a17f2:4177
-(anonymous) @ livewire.js?id=df3a17f2:4240
-setTimeout
-bufferPoolingForFiveMs @ livewire.js?id=df3a17f2:4239
-add @ livewire.js?id=df3a17f2:4174
-requestCall @ livewire.js?id=df3a17f2:4256
-(anonymous) @ livewire.js?id=df3a17f2:4517
-fetchCartCount @ VM1824:35
-await in fetchCartCount
-[Alpine] loadFromLocalStorage(); fetchCartCount() @ VM1825:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3489
-(anonymous) @ livewire.js?id=df3a17f2:1909
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-# Illuminate\Database\Eloquent\RelationNotFoundException - Internal Server Error
-Call to undefined relationship [medias] on model [Modules\Shop\App\Models\ShopProduct].
-
-PHP 8.3.27
-Laravel 12.32.5
-ixtif.com
-
-## Stack Trace
-
-0 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/RelationNotFoundException.php:35
-1 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:969
-2 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Relations/Relation.php:119
-3 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:965
-4 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:939
-5 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:919
-6 - vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php:885
-7 - Modules/Cart/app/Http/Livewire/Front/CartWidget.php:78
-8 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:36
-9 - vendor/laravel/framework/src/Illuminate/Container/Util.php:43
-10 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:96
-11 - vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php:35
-12 - vendor/livewire/livewire/src/Wrapped.php:23
-13 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:474
-14 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:101
-15 - vendor/livewire/livewire/src/LivewireManager.php:102
-16 - vendor/livewire/volt/src/LivewireManager.php:35
-17 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
-18 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
-19 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
-20 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
-21 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
-22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-23 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-25 - app/Http/Middleware/LivewireJsonSanitizer.php:43
-26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-27 - app/Http/Middleware/RootOnlyDebugbar.php:35
-28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-29 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
-30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-31 - app/Http/Middleware/DatabasePoolMiddleware.php:58
-32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-33 - app/Http/Middleware/SecurityHeaders.php:18
-34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-35 - app/Http/Middleware/CheckThemeStatus.php:40
-36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-37 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
-38 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-39 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
-40 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-41 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
-42 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-43 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
-44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-45 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
-46 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
-47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-48 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
-49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-50 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
-51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-52 - app/Http/Middleware/InitializeTenancy.php:97
-53 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-55 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-56 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
-57 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
-58 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
-59 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
-60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-61 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
-62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-63 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-65 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
-66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-67 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
-68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-69 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
-70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-71 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
-72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-73 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
-74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-75 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
-76 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-77 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
-78 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-79 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
-80 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-81 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-82 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
-83 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
-84 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
-85 - public/index.php:17
-
-## Request
-
-POST /livewire/update
-
-## Headers
-
-* **cookie**: _fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlczVDBzejlkUEZBd0tCREFuQXg1REE9PSIsInZhbHVlIjoibmJqd002bEMvcmlLT2owV2pBWmorNWRxUjN6YjA2V2dWYmI3OE5CS3MvbnRac1JBeHFSeXBCZHFlaHZjMThxV3pqVGJTS0xzT082eUFwVGk2M1IrRGRueWRRdXhjV0dVTDZUWlIya0JBYVZMU3RUSk1tYjhQdExyZVZ2eVZjZldHQU5VSCtQeU90UDk4T1lhNFRVMUJxQ1RZZUVnVEVGNys4bjRKTkE5QnhuMmZSNFNvNjFpSmdjYnJjS29RbTRnYmVNS1F0T0FycDB6VGVwYmFJK0JndmFpS3hRN2tuR29qL3pwZVhpNk1PYz0iLCJtYWMiOiIxODNjMjk2NjY0ZDQ0ZjVmODQxNTlhYmVhYzQzZWEwZGQzZjA1YWFiYzI4OWIzMmI4NDM2Y2FkNTUzOTdmY2Q2IiwidGFnIjoiIn0%3D; _gcl_au=1.1.93943206.1762734713.2034743476.1762775966.1762778280; last_activity_read=1762807078; dark=auto; _clck=1gd0f2w%5E2%5Eg0y%5E0%5E2140; viewMode=grid; _ym_isad=2; _ym_visorc=w; XSRF-TOKEN=eyJpdiI6IkxaOE1NRjJKS2ZNWkRHQkwwQmRuS3c9PSIsInZhbHVlIjoiN3JjVmFYT0t0YVNwQ0RXNWU3Mm9NWHVIbks3Vko2SGhzdkFoVmowU2g0cGVmbDhCVENTYmVBVXBLcWRRbVZtaVpNTkhFTE9nNDI1U3NpTGoyS0hialNrL2RScFFEbjhCcmluYW0ycDAzT0tXam8yNFc1dUlkSEZhVFdXWmlOTjciLCJtYWMiOiJlZDZkNGYwMjdjMWUxMmZlOTJmZDg5MTQyMzI5ZDlhNTVhM2FjZDJhYjkxMDA1ZjY0ODMwNzA2MzdiZWYxYWEzIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IjF3Z1JMUElybFpBd09kSHNnZWF6eWc9PSIsInZhbHVlIjoia1R5OWE1ZmJtMzY4enVqK3NKTFAzdXRjTWFCOTNxMVZlM1JXQzlIanJGOEkwVzhteWdDcENhcElYbXBEb1JwN1ZXYWU1REd0cWt2M0ZrQjljOFV1b294WGpaQksyVUtNdTZESGIybm40ZHo2am93SWRiQ0JSMVFEZzFGdThTZkoiLCJtYWMiOiI4ODZmOTU3ZTExYWMzODQwODZkN2UxOTM1MmJkY2I1NzJhYzhkZmIwZDBhODVlMGMyMzE3ZDE0MjIwZDc2ZTJkIiwidGFnIjoiIn0%3D; _clsk=tl7b5p%5E1762983628213%5E13%5E1%5Eb.clarity.ms%2Fcollect
-* **priority**: u=1, i
-* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
-* **accept-encoding**: gzip, deflate, br, zstd
-* **referer**: https://ixtif.com/
-* **sec-fetch-dest**: empty
-* **sec-fetch-mode**: cors
-* **sec-fetch-site**: same-origin
-* **origin**: https://ixtif.com
-* **accept**: */*
-* **sec-ch-ua-mobile**: ?0
-* **x-livewire**: 
-* **content-type**: application/json
-* **dnt**: 1
-* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
-* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
-* **sec-ch-ua-platform**: "macOS"
-* **cache-control**: no-cache
-* **pragma**: no-cache
-* **content-length**: 568
-* **connection**: close
-* **x-accel-internal**: /internal-nginx-static-location
-* **x-real-ip**: 92.44.119.135
-* **host**: ixtif.com
-
-## Route Context
-
-controller: Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
-route name: livewire.update
-middleware: web
-
-## Route Parameters
-
-No route parameter data available.
-
-## Database Queries
-
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (3.99 ms)
-* mysql - select * from `sessions` where `id` = 'YKS3gaPqc0FFhfseSDL1DtpslMhWRQM9HGhFrxpA' limit 1 (0.8 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (1.91 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (3.59 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (1.43 ms)
-* tenant - select * from `carts` where `customer_id` = 1 and `status` = 'active' and `carts`.`deleted_at` is null limit 1 (1.04 ms)
-* tenant - select * from `carts` where `carts`.`cart_id` = 34 and `carts`.`deleted_at` is null limit 1 (0.68 ms)
-* tenant - select * from `cart_items` where `cart_items`.`cart_id` = 34 and `cart_items`.`cart_id` is not null and `is_active` = 1 and `cart_items`.`deleted_at` is null (1.2 ms)
-* tenant - select * from `shop_products` where `shop_products`.`product_id` in (245, 130, 241) and `shop_products`.`deleted_at` is null (1.43 ms)
-* tenant - select `product_id`, `title`, `slug` from `shop_products` where `shop_products`.`product_id` in (130, 241, 245) and `shop_products`.`deleted_at` is null (0.77 ms)
-* tenant - select * from `shop_products` where `product_id` in (245, 130, 241) and `shop_products`.`deleted_at` is null (1.76 ms)
+(index):15 🛒 Alpine: addToCart clicked {productId: 130}
+(index):15 🛒 Alpine: Sending request to /api/cart/add
+(index):15 🛒 Alpine: API Response {success: true, message: 'Ürün sepete eklendi!', data: {…}}
+(index):15 💾 localStorage: cart_item_count = 9
+(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
+(index):15 🔄 CartWidget: cart-updated event received {itemCount: '9', cartId: 34}
+(index):15 ✅ Alpine: Success! Item count: 9

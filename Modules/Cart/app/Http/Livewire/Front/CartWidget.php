@@ -85,7 +85,6 @@ class CartWidget extends Component
             \Log::warning('⚠️ CartWidget: removeItem called but cart is null', [
                 'cart_item_id' => $cartItemId,
             ]);
-            $this->refreshCart(); // Session ile cart bul
             return;
         }
 
@@ -94,11 +93,17 @@ class CartWidget extends Component
         if ($item) {
             $item->delete();
             $this->cart->recalculateTotals();
+
+            // Items ve count'u manuel güncelle (refreshCart çağırma!)
+            $this->items = $this->cart->items()
+                ->where('is_active', true)
+                ->with(['cartable'])
+                ->get();
+            $this->itemCount = $this->items->sum('quantity');
+            $this->total = (float) $this->cart->total;
         }
 
-        $this->refreshCart($this->cart->cart_id);
-
-        // Browser event gönder (Alpine.js için)
+        // Browser event gönder (Alpine.js badge'ini güncelle)
         $this->dispatchBrowserEvent('cart-updated', [
             'cartId' => $this->cart->cart_id,
             'itemCount' => $this->itemCount,
@@ -112,7 +117,6 @@ class CartWidget extends Component
             \Log::warning('⚠️ CartWidget: increaseQuantity called but cart is null', [
                 'cart_item_id' => $cartItemId,
             ]);
-            $this->refreshCart(); // Session ile cart bul
             return;
         }
 
@@ -122,11 +126,17 @@ class CartWidget extends Component
             $item->quantity += 1;
             $item->recalculate();
             $this->cart->recalculateTotals();
+
+            // Items ve count'u manuel güncelle (refreshCart çağırma!)
+            $this->items = $this->cart->items()
+                ->where('is_active', true)
+                ->with(['cartable'])
+                ->get();
+            $this->itemCount = $this->items->sum('quantity');
+            $this->total = (float) $this->cart->total;
         }
 
-        $this->refreshCart($this->cart->cart_id);
-
-        // Browser event gönder (Alpine.js için)
+        // Browser event gönder (Alpine.js badge'ini güncelle)
         $this->dispatchBrowserEvent('cart-updated', [
             'cartId' => $this->cart->cart_id,
             'itemCount' => $this->itemCount,
@@ -140,7 +150,6 @@ class CartWidget extends Component
             \Log::warning('⚠️ CartWidget: decreaseQuantity called but cart is null', [
                 'cart_item_id' => $cartItemId,
             ]);
-            $this->refreshCart(); // Session ile cart bul
             return;
         }
 
@@ -151,14 +160,21 @@ class CartWidget extends Component
                 $item->quantity -= 1;
                 $item->recalculate();
             } else {
+                // Quantity 1 iken - yapınca removeItem gibi çalış
                 $item->delete();
             }
             $this->cart->recalculateTotals();
+
+            // Items ve count'u manuel güncelle (refreshCart çağırma!)
+            $this->items = $this->cart->items()
+                ->where('is_active', true)
+                ->with(['cartable'])
+                ->get();
+            $this->itemCount = $this->items->sum('quantity');
+            $this->total = (float) $this->cart->total;
         }
 
-        $this->refreshCart($this->cart->cart_id);
-
-        // Browser event gönder (Alpine.js için)
+        // Browser event gönder (Alpine.js badge'ini güncelle)
         $this->dispatchBrowserEvent('cart-updated', [
             'cartId' => $this->cart->cart_id,
             'itemCount' => $this->itemCount,

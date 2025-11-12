@@ -46,8 +46,8 @@
                         localStorage.removeItem('cart_id');
                     }
 
-                    // cart_id'yi Livewire'a gönder
-                    if (this.cartId) {
+                    // Livewire'ı sadece ilk yüklemede refresh et (dropdown kapalıyken)
+                    if (this.cartId && !this.open) {
                         $wire.refreshCart(this.cartId);
                     }
                 }
@@ -57,7 +57,7 @@
         }
      }"
      x-init="loadFromLocalStorage(); fetchCartCount()"
-     @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = parseInt($event.detail.itemCount) || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); $wire.refreshCart(cartId); }"
+     @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = parseInt($event.detail.itemCount) || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); }"
      class="relative">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"

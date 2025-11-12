@@ -63,12 +63,29 @@ class CartWidget extends Component
                 ->where('is_active', true)
                 ->with([
                     'cartable',
-                    'product.medias',
                     'product' => function ($query) {
                         $query->select('product_id', 'title', 'slug');
                     }
                 ])
                 ->get();
+
+            // Manually eager load medias if relation exists
+            if ($this->items->isNotEmpty()) {
+                $productIds = $this->items->pluck('product_id')->filter()->unique();
+                if ($productIds->isNotEmpty()) {
+                    $products = \Modules\Shop\App\Models\ShopProduct::whereIn('product_id', $productIds)
+                        ->with('medias')
+                        ->get()
+                        ->keyBy('product_id');
+
+                    // Attach medias to items' products
+                    foreach ($this->items as $item) {
+                        if ($item->product_id && isset($products[$item->product_id])) {
+                            $item->setRelation('product', $products[$item->product_id]);
+                        }
+                    }
+                }
+            }
 
             $this->itemCount = $this->items->sum('quantity');
             $this->total = (float) $this->cart->total;

@@ -278,7 +278,5 @@
         @include('seomanagement::admin.components.universal-seo-scripts', [
             'availableLanguages' => $availableLanguages,
         ])
-
-        @include('ai::admin.components.universal-ai-content-scripts')
     @endpush
 </div>

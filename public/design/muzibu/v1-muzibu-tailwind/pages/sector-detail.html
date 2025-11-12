@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albüm - Muzibu</title>
+    <title>Sektör - Muzibu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -28,7 +28,7 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white antialiased" x-data="albumDetailApp()">
+<body class="h-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white antialiased" x-data="sectorDetailApp()">
 
     <!-- Top CTA Bar (Guest only) -->
     <div x-show="!isLoggedIn" x-transition class="fixed top-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm py-2 px-4 z-50 flex items-center justify-center gap-3">
@@ -61,11 +61,11 @@
                     <i class="fas fa-heart w-5"></i>
                     <span>Favoriler</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-white/10">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
                     <i class="fas fa-compact-disc w-5"></i>
                     <span>Albümler</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-white bg-white/10">
                     <i class="fas fa-building w-5"></i>
                     <span>Sektörler</span>
                 </a>
@@ -110,8 +110,8 @@
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto hide-scrollbar pb-32">
             
-            <!-- Album Header -->
-            <div class="relative bg-gradient-to-b from-blue-900/50 to-transparent">
+            <!-- Sector Header -->
+            <div class="relative bg-gradient-to-b from-orange-900/50 to-transparent">
                 <div class="px-8 pt-8 pb-6">
                     <button onclick="history.back()" class="mb-6 flex items-center gap-2 text-gray-300 hover:text-white transition">
                         <i class="fas fa-arrow-left"></i>
@@ -119,21 +119,19 @@
                     </button>
 
                     <div class="flex items-end gap-6">
-                        <img src="https://picsum.photos/seed/album1/400" alt="Album Cover" class="w-56 h-56 rounded-lg shadow-2xl">
+                        <div class="w-56 h-56 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 shadow-2xl flex items-center justify-center">
+                            <i class="fas fa-coffee text-white text-7xl"></i>
+                        </div>
                         <div class="flex-1 pb-4">
-                            <div class="text-sm font-semibold uppercase tracking-wide mb-2">Albüm</div>
-                            <h1 class="text-7xl font-bold mb-6">World Music Radio</h1>
-                            <div class="flex items-center gap-4 mb-4">
-                                <img src="https://picsum.photos/seed/artist1/100" alt="Artist" class="w-8 h-8 rounded-full">
-                                <div class="flex items-center gap-2 text-sm">
-                                    <a href="#" class="font-bold hover:underline">Jon Batiste</a>
-                                    <span>•</span>
-                                    <span class="text-gray-400">2023</span>
-                                    <span>•</span>
-                                    <span class="text-gray-400">18 şarkı</span>
-                                    <span>•</span>
-                                    <span class="text-gray-400">1 saat 2 dakika</span>
-                                </div>
+                            <div class="text-sm font-semibold uppercase tracking-wide mb-2">Sektör</div>
+                            <h1 class="text-7xl font-bold mb-6">Kafe & Restoran</h1>
+                            <p class="text-gray-300 mb-4">İşletmeniz için özenle seçilmiş, yasal ve telifsiz müzikler. Müşterilerinize keyifli bir atmosfer sunun.</p>
+                            <div class="flex items-center gap-2 text-sm text-gray-400">
+                                <span class="font-semibold text-white">Muzibu</span>
+                                <span>•</span>
+                                <span>2,450 şarkı</span>
+                                <span>•</span>
+                                <span>156 saat</span>
                             </div>
                         </div>
                     </div>
@@ -145,37 +143,61 @@
                 <button @click="playAll()" class="w-16 h-16 bg-spotify-green hover:bg-spotify-green-dark rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition">
                     <i class="fas fa-play text-black text-2xl ml-1"></i>
                 </button>
-                <button @click="toggleAlbumFavorite()" class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
-                    <i :class="isAlbumFavorited ? 'fas fa-heart text-spotify-green' : 'far fa-heart'" class="text-3xl"></i>
+                <button @click="shuffle = true; playAll()" class="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full flex items-center gap-2 transition">
+                    <i class="fas fa-random"></i>
+                    <span>Karıştır</span>
                 </button>
-                <button x-data="{ addOpen: false }" @click="addOpen = !addOpen" class="relative w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
-                    <i class="fas fa-plus text-2xl"></i>
-                    <div x-show="addOpen" @click.away="addOpen = false" x-transition class="absolute top-full left-0 mt-2 bg-spotify-light-gray rounded-lg shadow-xl overflow-hidden min-w-[200px]">
-                        <button @click="addToPlaylist('favorites')" class="w-full text-left px-4 py-3 hover:bg-white/10 transition">
-                            <i class="fas fa-heart w-5 mr-2"></i> Favorilere Ekle
-                        </button>
-                        <button @click="addToPlaylist('new')" class="w-full text-left px-4 py-3 hover:bg-white/10 transition">
-                            <i class="fas fa-plus w-5 mr-2"></i> Yeni Liste Oluştur
-                        </button>
-                    </div>
-                </button>
-                <button class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
-                    <i class="fas fa-ellipsis-h text-2xl"></i>
+                <button @click="toggleSectorFavorite()" class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-white hover:scale-110 transition">
+                    <i :class="isSectorFavorited ? 'fas fa-heart text-spotify-green' : 'far fa-heart'" class="text-3xl"></i>
                 </button>
             </div>
 
-            <!-- Songs List -->
-            <div class="px-8 pb-8">
-                <div class="mb-4 pb-2 border-b border-white/10 grid grid-cols-[auto_1fr_auto_auto] gap-4 px-4 text-sm text-gray-400 font-semibold">
+            <!-- Tabs -->
+            <div class="px-8 mb-6">
+                <div class="flex gap-4 border-b border-white/10">
+                    <button @click="activeTab = 'playlists'" :class="activeTab === 'playlists' ? 'text-white border-b-2 border-spotify-green' : 'text-gray-400'" class="px-4 py-3 font-semibold transition">
+                        Çalma Listeleri
+                    </button>
+                    <button @click="activeTab = 'songs'" :class="activeTab === 'songs' ? 'text-white border-b-2 border-spotify-green' : 'text-gray-400'" class="px-4 py-3 font-semibold transition">
+                        Tüm Şarkılar
+                    </button>
+                    <button @click="activeTab = 'info'" :class="activeTab === 'info' ? 'text-white border-b-2 border-spotify-green' : 'text-gray-400'" class="px-4 py-3 font-semibold transition">
+                        Sektör Bilgisi
+                    </button>
+                </div>
+            </div>
+
+            <!-- Playlists Tab -->
+            <div x-show="activeTab === 'playlists'" class="px-8 pb-8">
+                <div class="grid grid-cols-4 gap-6">
+                    <template x-for="playlist in sectorPlaylists" :key="playlist.id">
+                        <a href="playlist-detail.html" class="group bg-white/5 p-4 rounded-lg hover:bg-white/10 transition">
+                            <div class="relative mb-4">
+                                <img :src="playlist.cover" class="w-full aspect-square rounded shadow-lg mb-4">
+                                <button @click.prevent="playPlaylist(playlist.id)" class="absolute bottom-4 right-4 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition shadow-xl">
+                                    <i class="fas fa-play text-black ml-0.5"></i>
+                                </button>
+                            </div>
+                            <div class="font-semibold mb-1 truncate" x-text="playlist.title"></div>
+                            <div class="text-sm text-gray-400 truncate" x-text="playlist.description"></div>
+                        </a>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Songs Tab -->
+            <div x-show="activeTab === 'songs'" class="px-8 pb-8">
+                <div class="mb-4 pb-2 border-b border-white/10 grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-4 text-sm text-gray-400 font-semibold">
                     <div class="w-10 text-center">#</div>
                     <div>BAŞLIK</div>
-                    <div class="w-20 text-center">DINLENME</div>
+                    <div>ALBÜM</div>
                     <div class="w-20 text-center">SÜRE</div>
+                    <div class="w-10"></div>
                 </div>
 
                 <div class="space-y-1">
-                    <template x-for="(song, index) in albumSongs" :key="song.id">
-                        <div @dblclick="playSong(index)" class="group grid grid-cols-[auto_1fr_auto_auto] gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition cursor-pointer">
+                    <template x-for="(song, index) in sectorSongs" :key="song.id">
+                        <div @dblclick="playSong(index)" class="group grid grid-cols-[auto_1fr_1fr_auto_auto] gap-4 px-4 py-3 rounded-lg hover:bg-white/5 transition cursor-pointer">
                             <!-- Index / Play Button -->
                             <div class="w-10 flex items-center justify-center">
                                 <span x-show="currentSongIndex !== index" x-text="index + 1" class="text-gray-400 group-hover:hidden"></span>
@@ -188,58 +210,88 @@
                             </div>
 
                             <!-- Title & Artist -->
-                            <div class="min-w-0">
-                                <div class="font-semibold truncate mb-1" :class="currentSongIndex === index ? 'text-spotify-green' : 'text-white'" x-text="song.title"></div>
-                                <div class="text-sm text-gray-400 truncate" x-text="song.artist"></div>
+                            <div class="flex items-center gap-3 min-w-0">
+                                <img :src="song.cover" :alt="song.title" class="w-12 h-12 rounded object-cover">
+                                <div class="min-w-0">
+                                    <div class="font-semibold truncate" :class="currentSongIndex === index ? 'text-spotify-green' : 'text-white'" x-text="song.title"></div>
+                                    <div class="text-sm text-gray-400 truncate" x-text="song.artist"></div>
+                                </div>
                             </div>
 
-                            <!-- Play Count -->
+                            <!-- Album -->
+                            <div class="flex items-center text-gray-400 text-sm truncate">
+                                <span x-text="song.album"></span>
+                            </div>
+
+                            <!-- Duration -->
                             <div class="flex items-center justify-center text-gray-400 text-sm">
-                                <span x-text="song.plays"></span>
+                                <span x-text="song.duration"></span>
                             </div>
 
-                            <!-- Duration & Actions -->
-                            <div class="flex items-center justify-end gap-3">
-                                <button @click.stop="toggleSongFavorite(song.id)" class="w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:text-spotify-green transition">
+                            <!-- Actions -->
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
+                                <button @click.stop="toggleSongFavorite(song.id)" class="w-8 h-8 flex items-center justify-center hover:text-spotify-green transition">
                                     <i :class="favorites.includes(song.id) ? 'fas fa-heart text-spotify-green' : 'far fa-heart'" class="text-lg"></i>
-                                </button>
-                                <span class="text-gray-400 text-sm w-12 text-center" x-text="song.duration"></span>
-                                <button class="w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 hover:text-white transition">
-                                    <i class="fas fa-ellipsis-h"></i>
                                 </button>
                             </div>
                         </div>
                     </template>
                 </div>
+            </div>
 
-                <!-- Album Info Section -->
-                <div class="mt-12 pt-8 border-t border-white/10">
-                    <div class="flex items-start gap-6">
-                        <img src="https://picsum.photos/seed/artist1/200" alt="Artist" class="w-32 h-32 rounded-full shadow-xl">
-                        <div class="flex-1">
-                            <h3 class="text-2xl font-bold mb-2">Jon Batiste Hakkında</h3>
-                            <p class="text-gray-400 mb-4">Grammy ödüllü Amerikalı müzisyen, şarkıcı ve besteci. Jazz, R&B, soul ve funk türlerinde eserler veren sanatçı, 2015'ten beri The Late Show with Stephen Colbert'in müzik direktörlüğünü yapıyor.</p>
-                            <div class="flex items-center gap-4 text-sm">
-                                <div>
-                                    <div class="text-2xl font-bold">8.2M</div>
-                                    <div class="text-gray-400">Aylık Dinleyici</div>
-                                </div>
+            <!-- Info Tab -->
+            <div x-show="activeTab === 'info'" class="px-8 pb-8">
+                <div class="max-w-4xl">
+                    <div class="bg-white/5 rounded-xl p-8 mb-6">
+                        <h2 class="text-2xl font-bold mb-4">Kafe & Restoran Müzikleri Hakkında</h2>
+                        <p class="text-gray-300 mb-4">
+                            İşletmeniz için özenle seçilmiş, yasal ve telifsiz müzik koleksiyonumuz, müşterilerinize unutulmaz bir atmosfer yaşatmanıza yardımcı olur. 
+                            Tüm müziklerimiz işletme kullanımı için lisanslanmıştır.
+                        </p>
+                        <div class="grid grid-cols-3 gap-6 mt-6">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-spotify-green mb-2">2,450+</div>
+                                <div class="text-gray-400">Şarkı</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-spotify-green mb-2">156</div>
+                                <div class="text-gray-400">Saat Müzik</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-spotify-green mb-2">%100</div>
+                                <div class="text-gray-400">Yasal & Telifsiz</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- More Albums -->
-                    <div class="mt-8">
-                        <h3 class="text-xl font-bold mb-4">Jon Batiste'in Diğer Albümleri</h3>
-                        <div class="grid grid-cols-5 gap-4">
-                            <template x-for="i in 5" :key="i">
-                                <a href="#" class="group bg-white/5 p-4 rounded-lg hover:bg-white/10 transition">
-                                    <img :src="`https://picsum.photos/seed/album${i}/200`" class="w-full aspect-square rounded mb-3 shadow-lg">
-                                    <div class="font-semibold truncate mb-1" x-text="`Album ${i}`"></div>
-                                    <div class="text-sm text-gray-400 truncate">2022</div>
-                                </a>
-                            </template>
-                        </div>
+                    <div class="bg-white/5 rounded-xl p-8 mb-6">
+                        <h3 class="text-xl font-bold mb-4">✅ Neden Muzibu?</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-spotify-green mt-1"></i>
+                                <span><strong>Yasal Güvence:</strong> Tüm müzikler işletme kullanımı için lisanslıdır. Telif sorunu yaşamazsınız.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-spotify-green mt-1"></i>
+                                <span><strong>Profesyonel Küratörlük:</strong> Müzik uzmanları tarafından sektörünüze özel seçilmiş parçalar.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-spotify-green mt-1"></i>
+                                <span><strong>Sürekli Güncel:</strong> Her ay yeni şarkılar ekleniyor, playlist'ler güncelleniyor.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-spotify-green mt-1"></i>
+                                <span><strong>Farklı Atmosferler:</strong> Sabah, öğle, akşam için farklı çalma listeleri.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl p-8 border border-blue-500/30">
+                        <h3 class="text-xl font-bold mb-2">🎯 İşletmeniz İçin Özel Fiyatlandırma</h3>
+                        <p class="text-gray-300 mb-4">Kurumsal müşterilerimize özel çözümler ve fiyatlar sunuyoruz.</p>
+                        <button @click="showAuthModal = 'register'" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-full font-semibold transition">
+                            Kurumsal Teklif Al
+                        </button>
                     </div>
                 </div>
             </div>
@@ -269,13 +321,13 @@
             <div class="flex items-center justify-between">
                 <!-- Current Song Info -->
                 <div class="flex items-center gap-4 w-1/4">
-                    <img :src="albumSongs[currentSongIndex]?.cover" class="w-14 h-14 rounded object-cover">
+                    <img :src="sectorSongs[currentSongIndex]?.cover" class="w-14 h-14 rounded object-cover">
                     <div class="min-w-0">
-                        <div class="font-semibold text-sm truncate" x-text="albumSongs[currentSongIndex]?.title">Şarkı Seç</div>
-                        <div class="text-xs text-gray-400 truncate" x-text="albumSongs[currentSongIndex]?.artist">Sanatçı</div>
+                        <div class="font-semibold text-sm truncate" x-text="sectorSongs[currentSongIndex]?.title">Şarkı Seç</div>
+                        <div class="text-xs text-gray-400 truncate" x-text="sectorSongs[currentSongIndex]?.artist">Sanatçı</div>
                     </div>
-                    <button @click="toggleSongFavorite(albumSongs[currentSongIndex]?.id)" class="text-gray-400 hover:text-spotify-green transition">
-                        <i :class="favorites.includes(albumSongs[currentSongIndex]?.id) ? 'fas fa-heart text-spotify-green' : 'far fa-heart'"></i>
+                    <button @click="toggleSongFavorite(sectorSongs[currentSongIndex]?.id)" class="text-gray-400 hover:text-spotify-green transition">
+                        <i :class="favorites.includes(sectorSongs[currentSongIndex]?.id) ? 'fas fa-heart text-spotify-green' : 'far fa-heart'"></i>
                     </button>
                 </div>
 
@@ -334,10 +386,10 @@
                         <h2 class="text-2xl font-bold mb-2">Ücretsiz Kaydol</h2>
                         <p class="text-gray-400 mb-6">7 gün ücretsiz premium deneyimi başlat</p>
                         <div class="space-y-4">
-                            <input type="text" placeholder="Ad Soyad" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <input type="text" placeholder="İşletme Adı" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
                             <input type="email" placeholder="E-posta" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
-                            <input type="password" placeholder="Şifre" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
-                            <button @click="register()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-full transition">Ücretsiz Başla</button>
+                            <input type="tel" placeholder="Telefon" class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:border-spotify-green">
+                            <button @click="register()" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-full transition">Kurumsal Teklif Al</button>
                             <p class="text-center text-gray-400 text-sm">Zaten üye misin? <button @click="showAuthModal = 'login'" class="text-spotify-green hover:underline">Giriş Yap</button></p>
                         </div>
                     </div>
@@ -347,7 +399,7 @@
     </template>
 
     <script>
-        function albumDetailApp() {
+        function sectorDetailApp() {
             return {
                 // Login State
                 isLoggedIn: false,
@@ -355,17 +407,26 @@
                 listeningTimeToday: 0,
                 maxListeningTime: 3600,
 
-                // Album State
-                isAlbumFavorited: false,
-                albumSongs: [
-                    { id: 1, title: 'Calling on You', artist: 'Jon Batiste', plays: '12.5M', duration: '3:45', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 2, title: 'Butterfly', artist: 'Jon Batiste', plays: '8.3M', duration: '3:12', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 3, title: 'Worship', artist: 'Jon Batiste', plays: '6.1M', duration: '4:02', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 4, title: 'Running Away', artist: 'Jon Batiste', plays: '5.7M', duration: '3:28', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 5, title: 'Be Who You Are', artist: 'Jon Batiste', plays: '9.2M', duration: '3:55', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 6, title: 'Drink Water', artist: 'Jon Batiste', plays: '4.8M', duration: '2:48', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 7, title: 'Uneasy', artist: 'Jon Batiste', plays: '3.9M', duration: '3:33', cover: 'https://picsum.photos/seed/album1/200' },
-                    { id: 8, title: 'Master Power', artist: 'Jon Batiste', plays: '3.2M', duration: '4:15', cover: 'https://picsum.photos/seed/album1/200' },
+                // Sector State
+                activeTab: 'playlists',
+                isSectorFavorited: false,
+                sectorPlaylists: [
+                    { id: 1, title: 'Sabah Kahvesi', description: 'Sabah saatlerine özel yumuşak melodiler', cover: 'https://picsum.photos/seed/cafe1/300' },
+                    { id: 2, title: 'Öğle Keyfi', description: 'Öğle yemeği için enerji veren parçalar', cover: 'https://picsum.photos/seed/cafe2/300' },
+                    { id: 3, title: 'Akşam Atmosferi', description: 'Akşam saatlerine romantik dokunuş', cover: 'https://picsum.photos/seed/cafe3/300' },
+                    { id: 4, title: 'Caz Klasikleri', description: 'Sofistike mekan havası için jazz', cover: 'https://picsum.photos/seed/cafe4/300' },
+                    { id: 5, title: 'Akustik Seçkiler', description: 'Sıcak ve samimi akustik şarkılar', cover: 'https://picsum.photos/seed/cafe5/300' },
+                    { id: 6, title: 'Lounge Mix', description: 'Modern lounge müzikleri', cover: 'https://picsum.photos/seed/cafe6/300' },
+                    { id: 7, title: 'Bossa Nova', description: 'Latin esintili hafif müzikler', cover: 'https://picsum.photos/seed/cafe7/300' },
+                    { id: 8, title: 'İndie Favoriler', description: 'Alternatif ve indie rock seçkileri', cover: 'https://picsum.photos/seed/cafe8/300' },
+                ],
+                sectorSongs: [
+                    { id: 1, title: 'Morning Coffee', artist: 'Jazz Cafe Ensemble', album: 'Cafe Classics', duration: '3:45', cover: 'https://picsum.photos/seed/song1/200' },
+                    { id: 2, title: 'Smooth Lounge', artist: 'Lounge Masters', album: 'Chill Vibes', duration: '4:20', cover: 'https://picsum.photos/seed/song2/200' },
+                    { id: 3, title: 'Acoustic Dreams', artist: 'The Folk Trio', album: 'Unplugged', duration: '3:12', cover: 'https://picsum.photos/seed/song3/200' },
+                    { id: 4, title: 'Bossa Sunset', artist: 'Brazilian Waves', album: 'Tropical Nights', duration: '3:58', cover: 'https://picsum.photos/seed/song4/200' },
+                    { id: 5, title: 'Jazz Piano', artist: 'Bill Evans Trio', album: 'Sunday Sessions', duration: '5:23', cover: 'https://picsum.photos/seed/song5/200' },
+                    { id: 6, title: 'Indie Soul', artist: 'Urban Hearts', album: 'City Lights', duration: '3:34', cover: 'https://picsum.photos/seed/song6/200' },
                 ],
 
                 // Player State
@@ -418,8 +479,8 @@
                     this.login();
                 },
 
-                toggleAlbumFavorite() {
-                    this.isAlbumFavorited = !this.isAlbumFavorited;
+                toggleSectorFavorite() {
+                    this.isSectorFavorited = !this.isSectorFavorited;
                 },
 
                 toggleSongFavorite(songId) {
@@ -432,8 +493,9 @@
                     localStorage.setItem('muzibu_favorites', JSON.stringify(this.favorites));
                 },
 
-                addToPlaylist(type) {
-                    console.log('Adding album to:', type);
+                playPlaylist(playlistId) {
+                    console.log('Playing playlist:', playlistId);
+                    this.playAll();
                 },
 
                 playAll() {
@@ -469,10 +531,10 @@
                         this.$refs.audioPlayer.currentTime = 0;
                         this.$refs.audioPlayer.play();
                     } else if (this.shuffle) {
-                        this.currentSongIndex = Math.floor(Math.random() * this.albumSongs.length);
+                        this.currentSongIndex = Math.floor(Math.random() * this.sectorSongs.length);
                         this.playSong(this.currentSongIndex);
                     } else {
-                        this.currentSongIndex = (this.currentSongIndex + 1) % this.albumSongs.length;
+                        this.currentSongIndex = (this.currentSongIndex + 1) % this.sectorSongs.length;
                         if (this.currentSongIndex === 0 && this.repeat === 0) {
                             this.isPlaying = false;
                         } else {
@@ -485,7 +547,7 @@
                     if (this.currentTime > 3) {
                         this.$refs.audioPlayer.currentTime = 0;
                     } else {
-                        this.currentSongIndex = (this.currentSongIndex - 1 + this.albumSongs.length) % this.albumSongs.length;
+                        this.currentSongIndex = (this.currentSongIndex - 1 + this.sectorSongs.length) % this.sectorSongs.length;
                         this.playSong(this.currentSongIndex);
                     }
                 },
@@ -552,10 +614,10 @@
                 <a href="playlist-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
                     <i class="fas fa-list text-spotify-green"></i><span class="text-sm">Playlist Detay</span>
                 </a>
-                <a href="album-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left bg-white/10">
+                <a href="album-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
                     <i class="fas fa-record-vinyl text-pink-400"></i><span class="text-sm">Album Detay</span>
                 </a>
-                <a href="sector-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                <a href="sector-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left bg-white/10">
                     <i class="fas fa-building text-green-400"></i><span class="text-sm">Sektör Detay</span>
                 </a>
                 <div class="border-t border-white/10 mt-2 pt-2">

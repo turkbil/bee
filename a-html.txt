@@ -1,56 +1,85 @@
-(index):15 [Web Share] Helper yüklendi. Destek: true
-(index):15 [Back to Top] Initialized - Position: Left Bottom
-(index):15 🔄 CartWidget: Count updated from API: 0
-(index):15 ⚠️ CartWidget: Invalid cart_id, clearing localStorage
-console.warn @ (index):15
-sw.js:131 [Service Worker] Loaded successfully
-sw.js:27 [Service Worker] Installing...
-(index):15 [PWA] Service Worker registered: https://ixtif.com/
-sw.js:32 [Service Worker] Caching critical assets
-sw.js:43 [Service Worker] Activating...
-/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet:1  Failed to load resource: the server responded with a status of 500 ()
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-/shop/ixtif-efl352-35-ton-li-ion-forklift:1  Failed to load resource: the server responded with a status of 500 ()
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 1
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 1
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 2
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 2
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 3
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 3
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 4
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 4
-(index):15 🤖 Auto-opening AI chat (desktop only)...
-/shop/ixtif-ept20-15et2h-15-ton-elektrikli-transpalet-agm-yuksek-sasi-boslugu:1  Failed to load resource: the server responded with a status of 500 ()
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 5
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 5
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 6
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 6
+<div wire:id="Soa4BnJbTAam9qP9epxU" x-data="{
+        open: false,
+        itemCount: 0,
+        cartId: null,
+        loadFromLocalStorage() {
+            // localStorage'dan cart count ve cart_id oku
+            const stored = localStorage.getItem('cart_item_count');
+            const storedCartId = localStorage.getItem('cart_id');
+            if (stored) {
+                const count = parseInt(stored);
+                if (count &gt; 0) {
+                    this.itemCount = count;
+                    console.log('💾 CartWidget: Loaded from localStorage:', this.itemCount);
+                }
+            }
+            if (storedCartId) {
+                this.cartId = parseInt(storedCartId);
+                console.log('💾 CartWidget: Cart ID from localStorage:', this.cartId);
+            }
+        },
+        async fetchCartCount() {
+            try {
+                // cart_id varsa parametreyle gönder
+                const url = this.cartId
+                    ? `/api/cart/count?cart_id=${this.cartId}`
+                    : '/api/cart/count';
+
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.success) {
+                    this.itemCount = data.data.item_count || 0;
+
+                    // localStorage'ı güncelle
+                    localStorage.setItem('cart_item_count', this.itemCount);
+                    console.log('🔄 CartWidget: Count updated from API:', this.itemCount);
+
+                    // cart_id kontrolü
+                    if (data.data.cart_id) {
+                        // Geçerli cart_id var, güncelle
+                        this.cartId = data.data.cart_id;
+                        localStorage.setItem('cart_id', this.cartId);
+                    } else if (data.data.cart_id === null) {
+                        // cart_id null ise geçersiz, temizle
+                        console.warn('⚠️ CartWidget: Invalid cart_id, clearing localStorage');
+                        this.cartId = null;
+                        localStorage.removeItem('cart_id');
+                    }
+
+                    // Livewire'ı sadece ilk yüklemede refresh et (dropdown kapalıyken)
+                    if (this.cartId &amp;&amp; !this.open) {
+                        $wire.refreshCart(this.cartId);
+                    }
+                }
+            } catch (error) {
+                console.error('❌ CartWidget: fetchCartCount error', error);
+            }
+        }
+     }" x-init="loadFromLocalStorage(); fetchCartCount()" @cart-updated.window="console.log('🔄 CartWidget: cart-updated event received', $event.detail); itemCount = parseInt($event.detail.itemCount) || 0; if ($event.detail.cartId) { cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); localStorage.setItem('cart_item_count', itemCount); }" class="relative" data-has-alpine-state="true" @cart-id-corrected.window="console.log('✅ CartWidget: cart_id düzeltildi', $event.detail); cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); if (!open) { $wire.refreshCart(cartId); }">
+    
+    <button @click="open = !open" type="button" class="relative flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+        <i class="fas fa-shopping-cart text-xl"></i>
+        <template x-if="itemCount &gt; 0">
+            <span x-text="itemCount" class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full">
+            </span>
+        </template><span x-text="itemCount" class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full" data-has-alpine-state="true">5</span>
+    </button>
+
+    
+    <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 z-50 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+
+        <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                Alışveriş Sepeti
+            </h3>
+
+            <!--[if BLOCK]><![endif]-->                <div class="py-8 text-center">
+                    <i class="fas fa-shopping-cart text-4x text-gray-400 mb-3"></i>
+                    <p class="text-gray-500 dark:text-gray-400">
+                        Sepetiniz boş
+                    </p>
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        </div>
+    </div>
+</div>

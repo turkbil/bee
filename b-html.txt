@@ -1,25 +1,25 @@
-
 (index):15 [Web Share] Helper yüklendi. Destek: true
 (index):15 [Back to Top] Initialized - Position: Left Bottom
 (index):15 🔄 CartWidget: Count updated from API: 0
 (index):15 ⚠️ CartWidget: Invalid cart_id, clearing localStorage
 console.warn @ (index):15
+sw.js:131 [Service Worker] Loaded successfully
+sw.js:27 [Service Worker] Installing...
+(index):15 [PWA] Service Worker registered: https://ixtif.com/
+sw.js:32 [Service Worker] Caching critical assets
 (index):15 🛒 Alpine: addToCart clicked Object
 (index):15 🛒 Alpine: Sending request to /api/cart/add
+sw.js:43 [Service Worker] Activating...
 (index):15 🛒 Alpine: API Response Object
 (index):15 💾 localStorage: cart_item_count = 1
 (index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
 (index):15 🔄 CartWidget: cart-updated event received Object
 (index):15 ✅ Alpine: Success! Item count: 1
-/shop/ixtif-efl352-35-ton-li-ion-forklift:1  Failed to load resource: the server responded with a status of 500 ()
-sw.js:131 [Service Worker] Loaded successfully
-sw.js:27 [Service Worker] Installing...
-(index):15 [PWA] Service Worker registered: https://ixtif.com/
-sw.js:32 [Service Worker] Caching critical assets
+/shop/ixtif-ept20-15et2h-15-ton-elektrikli-transpalet-agm-yuksek-sasi-boslugu:1  Failed to load resource: the server responded with a status of 500 ()
+/shop/ixtif-efl252-25-ton-li-ion-elektrikli-denge-agirlikli-forklift:1  Failed to load resource: the server responded with a status of 500 ()
 /shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet:1  Failed to load resource: the server responded with a status of 500 ()
 (index):15 🛒 Alpine: addToCart clicked Object
 (index):15 🛒 Alpine: Sending request to /api/cart/add
-sw.js:43 [Service Worker] Activating...
 (index):15 🛒 Alpine: API Response Object
 (index):15 💾 localStorage: cart_item_count = 2
 (index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
@@ -45,26 +45,5 @@ sw.js:43 [Service Worker] Activating...
 (index):15 🛒 Alpine: API Response Object
 (index):15 💾 localStorage: cart_item_count = 5
 (index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received ObjectcartId: 44itemCount: "5"[[Prototype]]: Object
+(index):15 🔄 CartWidget: cart-updated event received Object
 (index):15 ✅ Alpine: Success! Item count: 5
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 6
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 6
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 7
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 7
-(index):15 🛒 Alpine: addToCart clicked Object
-(index):15 🛒 Alpine: Sending request to /api/cart/add
-(index):15 🛒 Alpine: API Response Object
-(index):15 💾 localStorage: cart_item_count = 8
-(index):15 🔔 Alpine: Livewire.dispatch(cartUpdated) çağrıldı
-(index):15 🔄 CartWidget: cart-updated event received Object
-(index):15 ✅ Alpine: Success! Item count: 8

@@ -238,22 +238,181 @@
             </div>
         </section>
 
-        <!-- YENİ ÇIKANLAR - GENİŞLETİLMİŞ -->
-        <section class="px-8 py-8">
-            <div class="mb-6 flex items-center justify-between">
-                <div>
-                    <h3 class="text-3xl font-bold mb-2">Yeni Çıkan Şarkılar</h3>
-                    <p class="text-gray-400">Haftalık güncellenen telifsiz müzikler</p>
-                </div>
-                <div x-show="!isLoggedIn" class="flex gap-3">
-                    <button @click="showAuthModal = 'register'" class="px-6 py-3 bg-muzibu-purple hover:bg-muzibu-purple-light rounded-xl font-medium transition-all">Tüm Şarkılara Eriş</button>
-                </div>
+        <!-- POPÜLER PLAYLIST'LER (Logged in only) -->
+        <section x-show="isLoggedIn" x-transition class="px-8 py-6">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold mb-2">Popüler Playlist'ler</h3>
+                <p class="text-gray-400">En çok dinlenen çalma listeleri</p>
             </div>
+            <div class="grid grid-cols-4 gap-4">
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist1/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Akustik Favoriler</h4>
+                    <p class="text-sm text-gray-400 truncate">42 şarkı • 2 saat 47 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist2/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Caz Klasikleri</h4>
+                    <p class="text-sm text-gray-400 truncate">68 şarkı • 4 saat 12 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist3/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Lounge & Chill</h4>
+                    <p class="text-sm text-gray-400 truncate">35 şarkı • 2 saat 15 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist4/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">İndie Rock</h4>
+                    <p class="text-sm text-gray-400 truncate">52 şarkı • 3 saat 8 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist5/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Bossa Nova</h4>
+                    <p class="text-sm text-gray-400 truncate">28 şarkı • 1 saat 45 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist6/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Elektronik Ambient</h4>
+                    <p class="text-sm text-gray-400 truncate">45 şarkı • 3 saat 22 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist7/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Piano Solo</h4>
+                    <p class="text-sm text-gray-400 truncate">31 şarkı • 2 saat 5 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist8/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">World Music</h4>
+                    <p class="text-sm text-gray-400 truncate">58 şarkı • 3 saat 48 dakika</p>
+                </a>
+            </div>
+        </section>
 
-            <div class="grid grid-cols-1 gap-3">
+        <!-- SEKTÖREL MÜZİKLER (Logged in only) -->
+        <section x-show="isLoggedIn" x-transition class="px-8 py-6">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold mb-2">İşletmenize Özel Müzikler</h3>
+                <p class="text-gray-400">Sektörünüze göre özel seçilmiş yasal ve telifsiz müzikler</p>
+            </div>
+            <div class="grid grid-cols-3 gap-6">
+                <a href="pages/sector-detail.html" class="group relative overflow-hidden rounded-2xl h-56 bg-gradient-to-br from-orange-500 to-red-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between">
+                        <i class="fas fa-coffee text-white text-5xl opacity-20"></i>
+                        <div>
+                            <h4 class="text-2xl font-bold text-white mb-2">Kafe & Restoran</h4>
+                            <p class="text-white/90 text-sm">2,450 şarkı • 156 saat</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="pages/sector-detail.html" class="group relative overflow-hidden rounded-2xl h-56 bg-gradient-to-br from-blue-500 to-purple-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between">
+                        <i class="fas fa-shopping-bag text-white text-5xl opacity-20"></i>
+                        <div>
+                            <h4 class="text-2xl font-bold text-white mb-2">Mağaza & Butik</h4>
+                            <p class="text-white/90 text-sm">1,820 şarkı • 118 saat</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="pages/sector-detail.html" class="group relative overflow-hidden rounded-2xl h-56 bg-gradient-to-br from-pink-500 to-purple-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between">
+                        <i class="fas fa-cut text-white text-5xl opacity-20"></i>
+                        <div>
+                            <h4 class="text-2xl font-bold text-white mb-2">Kuaför & Spa</h4>
+                            <p class="text-white/90 text-sm">1,340 şarkı • 92 saat</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="pages/sector-detail.html" class="group relative overflow-hidden rounded-2xl h-56 bg-gradient-to-br from-green-500 to-teal-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between">
+                        <i class="fas fa-dumbbell text-white text-5xl opacity-20"></i>
+                        <div>
+                            <h4 class="text-2xl font-bold text-white mb-2">Spor Salonu</h4>
+                            <p class="text-white/90 text-sm">980 şarkı • 68 saat</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="pages/sector-detail.html" class="group relative overflow-hidden rounded-2xl h-56 bg-gradient-to-br from-yellow-500 to-orange-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between">
+                        <i class="fas fa-hotel text-white text-5xl opacity-20"></i>
+                        <div>
+                            <h4 class="text-2xl font-bold text-white mb-2">Otel & Lobi</h4>
+                            <p class="text-white/90 text-sm">2,150 şarkı • 142 saat</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="pages/sector-detail.html" class="group relative overflow-hidden rounded-2xl h-56 bg-gradient-to-br from-indigo-500 to-blue-500">
+                    <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all"></div>
+                    <div class="absolute inset-0 p-6 flex flex-col justify-between">
+                        <i class="fas fa-stethoscope text-white text-5xl opacity-20"></i>
+                        <div>
+                            <h4 class="text-2xl font-bold text-white mb-2">Klinik & Hastane</h4>
+                            <p class="text-white/90 text-sm">720 şarkı • 52 saat</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- ŞARKI LİSTELERİ - İKİ KOLON -->
+        <section class="px-8 py-8">
+            <div class="grid grid-cols-2 gap-6">
+
+                <!-- YENİ ÇIKAN ŞARKILAR -->
+                <div>
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">🆕 Yeni Çıkan Şarkılar</h3>
+                        <p class="text-gray-400 text-sm">Haftalık güncellenen telifsiz müzikler</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
                 <template x-for="(song, index) in songs" :key="index">
-                    <div class="flex items-center justify-between p-5 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group/song border border-white/5">
-                        <div class="flex items-center space-x-5 flex-1" @click="handleSongClick(index)">
+                    <div class="grid grid-cols-2 gap-4 items-center p-5 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group/song border border-white/5">
+                        <div class="flex items-center gap-4" @click="handleSongClick(index)">
                             <button class="w-14 h-14 bg-muzibu-purple/40 rounded-xl flex items-center justify-center group-hover/song:bg-muzibu-purple transition-all shadow-lg">
                                 <i :class="currentSongIndex === index && isPlaying ? 'fa-pause' : 'fa-play'" class="fas text-white text-lg ml-0.5"></i>
                             </button>
@@ -262,13 +421,13 @@
                                 <h6 class="font-bold text-lg text-white truncate mb-1" x-text="song.title"></h6>
                                 <p class="text-sm text-gray-400 truncate" x-text="song.artist"></p>
                             </div>
-                            <div x-show="!isLoggedIn" class="flex items-center gap-2 text-sm px-4 py-2 bg-yellow-400/10 text-yellow-400 rounded-lg">
-                                <i class="fas fa-clock"></i>
-                                <span>Kalan: <span x-text="formatListeningTime()"></span></span>
+                            <div x-show="!isLoggedIn" class="flex items-center gap-2 text-sm px-3 py-1.5 bg-yellow-400/10 text-yellow-400 rounded-lg whitespace-nowrap">
+                                <i class="fas fa-clock text-xs"></i>
+                                <span class="text-xs">Kalan: <span x-text="formatListeningTime()"></span></span>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-end gap-3">
                             <span class="text-sm text-gray-400 font-medium" x-text="song.duration"></span>
                             <button @click="handleFavoriteClick('song', index)" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
                                 <i :class="isFavorite('song', index) ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-gray-400 text-lg'"></i>
@@ -296,6 +455,69 @@
                         </div>
                     </div>
                 </template>
+                    </div>
+                </div>
+
+                <!-- POPÜLER ŞARKILAR -->
+                <div>
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">🔥 Popüler Şarkılar</h3>
+                        <p class="text-gray-400 text-sm">En çok dinlenen telifsiz müzikler</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <template x-for="(song, index) in popularSongs" :key="index">
+                            <div class="grid grid-cols-2 gap-4 items-center p-5 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group/song border border-white/5">
+                                <div class="flex items-center gap-4" @click="handlePopularClick(index)">
+                                    <button class="w-14 h-14 bg-orange-500/40 rounded-xl flex items-center justify-center group-hover/song:bg-orange-500 transition-all shadow-lg">
+                                        <i :class="currentPopularIndex === index && isPlayingPopular ? 'fa-pause' : 'fa-play'" class="fas text-white text-lg ml-0.5"></i>
+                                    </button>
+                                    <img :src="song.cover" :alt="song.title" class="w-16 h-16 rounded-xl object-cover shadow-lg">
+                                    <div class="flex-1 min-w-0">
+                                        <h6 class="font-bold text-lg text-white truncate mb-1" x-text="song.title"></h6>
+                                        <p class="text-sm text-gray-400 truncate" x-text="song.artist"></p>
+                                    </div>
+                                    <div x-show="!isLoggedIn" class="flex items-center gap-2 text-sm px-3 py-1.5 bg-yellow-400/10 text-yellow-400 rounded-lg whitespace-nowrap">
+                                        <i class="fas fa-clock text-xs"></i>
+                                        <span class="text-xs">Kalan: <span x-text="formatListeningTime()"></span></span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-end gap-3">
+                                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                                        <i class="fas fa-play text-xs"></i>
+                                        <span x-text="song.plays"></span>
+                                    </div>
+                                    <span class="text-sm text-gray-400 font-medium" x-text="song.duration"></span>
+                                    <button @click="togglePopularFavorite(index)" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
+                                        <i :class="isFavorite('popular', index) ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-gray-400 text-lg'"></i>
+                                    </button>
+                                    <div class="relative" x-data="{ playlistMenu: false }">
+                                        <button @click="playlistMenu = !playlistMenu" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
+                                            <i class="fas fa-plus text-gray-400 text-lg"></i>
+                                        </button>
+                                        <div x-show="playlistMenu" @click.away="playlistMenu = false" x-transition class="absolute right-0 bottom-full mb-2 w-56 bg-muzibu-dark border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                                            <div class="p-2">
+                                                <div class="px-3 py-2 text-xs text-gray-400 font-semibold">Playlist'e Ekle</div>
+                                                <button @click="addToPlaylist(index, 'Favoriler'); playlistMenu = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                                    <i class="fas fa-heart text-red-400"></i><span class="text-sm">Favoriler</span>
+                                                </button>
+                                                <button @click="addToPlaylist(index, 'Çalma Listem'); playlistMenu = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                                    <i class="fas fa-music text-muzibu-purple"></i><span class="text-sm">Çalma Listem</span>
+                                                </button>
+                                                <hr class="my-2 border-white/10">
+                                                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                                    <i class="fas fa-plus text-green-400"></i><span class="text-sm">Yeni Playlist</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -450,7 +672,7 @@
     </div>
 
 <script>
-function muzibuApp(){return{isLoggedIn:false,isPlaying:false,currentSongIndex:0,currentTime:0,duration:0,volume:0.7,muted:false,shuffle:false,repeat:false,showAuthModal:null,listeningTimeToday:0,maxListeningTime:3600,songs:[{title:'Calling on You',artist:'Muzibu Bossa Nova',duration:'3:45',cover:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Summer Breeze',artist:'Muzibu Jazz',duration:'4:12',cover:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Night Vibes',artist:'Muzibu Lounge',duration:'3:28',cover:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Morning Coffee',artist:'Muzibu Acoustic',duration:'5:01',cover:'https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Smooth Groove',artist:'Muzibu Soul',duration:'4:37',cover:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'}],favorites:{song:[],playlist:[],album:[],radio:[],sector:[]},get currentSong(){return this.songs[this.currentSongIndex]||this.songs[0]},init(){this.isLoggedIn=localStorage.getItem('muzibu_logged_in')==='true';const savedTime=parseInt(localStorage.getItem('muzibu_listening_time')||'0');const lastDate=localStorage.getItem('muzibu_last_date');const today=new Date().toDateString();if(lastDate!==today){this.listeningTimeToday=0;localStorage.setItem('muzibu_last_date',today);localStorage.setItem('muzibu_listening_time','0')}else{this.listeningTimeToday=savedTime}},login(){this.isLoggedIn=true;localStorage.setItem('muzibu_logged_in','true')},logout(){this.isLoggedIn=false;localStorage.removeItem('muzibu_logged_in')},handleSongClick(index){if(!this.isLoggedIn){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0){this.showAuthModal='register';return}}this.playSong(index)},handleFavoriteClick(type,index){if(!this.isLoggedIn){this.showAuthModal='register';return}this.toggleFavorite(type,index)},playSong(index){this.currentSongIndex=index;this.$refs.audioPlayer.load();this.$refs.audioPlayer.play();this.isPlaying=true},togglePlay(){if(this.isPlaying){this.$refs.audioPlayer.pause()}else{this.$refs.audioPlayer.play()}this.isPlaying=!this.isPlaying},nextSong(){this.currentSongIndex=(this.currentSongIndex+1)%this.songs.length;this.playSong(this.currentSongIndex)},previousSong(){this.currentSongIndex=this.currentSongIndex===0?this.songs.length-1:this.currentSongIndex-1;this.playSong(this.currentSongIndex)},toggleShuffle(){this.shuffle=!this.shuffle},toggleRepeat(){this.repeat=!this.repeat},toggleMute(){this.muted=!this.muted;this.$refs.audioPlayer.muted=this.muted},seekTo(e){const rect=e.currentTarget.getBoundingClientRect();this.$refs.audioPlayer.currentTime=((e.clientX-rect.left)/rect.width)*this.duration},setVolume(e){const rect=e.currentTarget.getBoundingClientRect();this.volume=(e.clientX-rect.left)/rect.width;this.$refs.audioPlayer.volume=this.volume},formatTime(seconds){if(!seconds||isNaN(seconds))return'0:00';const mins=Math.floor(seconds/60);const secs=Math.floor(seconds%60);return`${mins}:${secs.toString().padStart(2,'0')}`},formatListeningTime(){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0)return'0 dk';const mins=Math.floor(remaining/60);return`${mins} dk`},updateTime(){this.currentTime=this.$refs.audioPlayer.currentTime;this.duration=this.$refs.audioPlayer.duration;if(!this.isLoggedIn&&this.isPlaying){this.listeningTimeToday++;localStorage.setItem('muzibu_listening_time',this.listeningTimeToday.toString());if(this.listeningTimeToday>=this.maxListeningTime){this.$refs.audioPlayer.pause();this.isPlaying=false;this.showAuthModal='register'}}},toggleFavorite(type,index){const idx=this.favorites[type].indexOf(index);if(idx>-1){this.favorites[type].splice(idx,1)}else{this.favorites[type].push(index)}},isFavorite(type,index){return this.favorites[type].includes(index)},addToPlaylist(songIndex,playlistName){alert(`"${this.songs[songIndex].title}" → "${playlistName}" eklendi!`)}}}
+function muzibuApp(){return{isLoggedIn:false,isPlaying:false,isPlayingPopular:false,currentSongIndex:0,currentPopularIndex:0,currentTime:0,duration:0,volume:0.7,muted:false,shuffle:false,repeat:false,showAuthModal:null,listeningTimeToday:0,maxListeningTime:3600,songs:[{title:'Calling on You',artist:'Muzibu Bossa Nova',duration:'3:45',cover:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Summer Breeze',artist:'Muzibu Jazz',duration:'4:12',cover:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Night Vibes',artist:'Muzibu Lounge',duration:'3:28',cover:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Morning Coffee',artist:'Muzibu Acoustic',duration:'5:01',cover:'https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Smooth Groove',artist:'Muzibu Soul',duration:'4:37',cover:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'}],popularSongs:[{title:'Jazz Piano Dreams',artist:'Muzibu Classics',plays:'2.4M',duration:'4:05',cover:'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=80&h=80&fit=crop'},{title:'Acoustic Sunset',artist:'Muzibu Guitar',plays:'1.8M',duration:'3:52',cover:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=80&h=80&fit=crop'},{title:'Lo-Fi Beats',artist:'Muzibu Hip-Hop',plays:'3.1M',duration:'3:15',cover:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop'},{title:'Bossa Vibes',artist:'Muzibu Latin',plays:'1.6M',duration:'4:28',cover:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop'},{title:'Electronic Chill',artist:'Muzibu EDM',plays:'2.9M',duration:'5:12',cover:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop'}],favorites:{song:[],popular:[],playlist:[],album:[],radio:[],sector:[]},get currentSong(){return this.songs[this.currentSongIndex]||this.songs[0]},init(){this.isLoggedIn=localStorage.getItem('muzibu_logged_in')==='true';const savedTime=parseInt(localStorage.getItem('muzibu_listening_time')||'0');const lastDate=localStorage.getItem('muzibu_last_date');const today=new Date().toDateString();if(lastDate!==today){this.listeningTimeToday=0;localStorage.setItem('muzibu_last_date',today);localStorage.setItem('muzibu_listening_time','0')}else{this.listeningTimeToday=savedTime}},login(){this.isLoggedIn=true;localStorage.setItem('muzibu_logged_in','true')},logout(){this.isLoggedIn=false;localStorage.removeItem('muzibu_logged_in')},handleSongClick(index){if(!this.isLoggedIn){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0){this.showAuthModal='register';return}}this.playSong(index)},handleFavoriteClick(type,index){if(!this.isLoggedIn){this.showAuthModal='register';return}this.toggleFavorite(type,index)},handlePopularClick(index){if(!this.isLoggedIn){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0){this.showAuthModal='register';return}}this.currentPopularIndex=index;this.$refs.audioPlayer.load();this.$refs.audioPlayer.play();this.isPlayingPopular=true;this.isPlaying=false},togglePopularFavorite(index){if(!this.isLoggedIn){this.showAuthModal='register';return}this.toggleFavorite('popular',index)},playSong(index){this.currentSongIndex=index;this.$refs.audioPlayer.load();this.$refs.audioPlayer.play();this.isPlaying=true},togglePlay(){if(this.isPlaying){this.$refs.audioPlayer.pause()}else{this.$refs.audioPlayer.play()}this.isPlaying=!this.isPlaying},nextSong(){this.currentSongIndex=(this.currentSongIndex+1)%this.songs.length;this.playSong(this.currentSongIndex)},previousSong(){this.currentSongIndex=this.currentSongIndex===0?this.songs.length-1:this.currentSongIndex-1;this.playSong(this.currentSongIndex)},toggleShuffle(){this.shuffle=!this.shuffle},toggleRepeat(){this.repeat=!this.repeat},toggleMute(){this.muted=!this.muted;this.$refs.audioPlayer.muted=this.muted},seekTo(e){const rect=e.currentTarget.getBoundingClientRect();this.$refs.audioPlayer.currentTime=((e.clientX-rect.left)/rect.width)*this.duration},setVolume(e){const rect=e.currentTarget.getBoundingClientRect();this.volume=(e.clientX-rect.left)/rect.width;this.$refs.audioPlayer.volume=this.volume},formatTime(seconds){if(!seconds||isNaN(seconds))return'0:00';const mins=Math.floor(seconds/60);const secs=Math.floor(seconds%60);return`${mins}:${secs.toString().padStart(2,'0')}`},formatListeningTime(){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0)return'0 dk';const mins=Math.floor(remaining/60);return`${mins} dk`},updateTime(){this.currentTime=this.$refs.audioPlayer.currentTime;this.duration=this.$refs.audioPlayer.duration;if(!this.isLoggedIn&&this.isPlaying){this.listeningTimeToday++;localStorage.setItem('muzibu_listening_time',this.listeningTimeToday.toString());if(this.listeningTimeToday>=this.maxListeningTime){this.$refs.audioPlayer.pause();this.isPlaying=false;this.showAuthModal='register'}}},toggleFavorite(type,index){const idx=this.favorites[type].indexOf(index);if(idx>-1){this.favorites[type].splice(idx,1)}else{this.favorites[type].push(index)}},isFavorite(type,index){return this.favorites[type].includes(index)},addToPlaylist(songIndex,playlistName){alert(`"${this.songs[songIndex].title}" → "${playlistName}" eklendi!`)}}}
 </script>
 </body>
 </html>

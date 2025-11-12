@@ -497,5 +497,35 @@
             }
         }
     </script>
+
+    <!-- Fixed Navigation Buttons (Bottom Right) -->
+    <div class="fixed bottom-24 right-8 z-40 flex flex-col gap-3" x-data="{ navOpen: false }">
+        <div x-show="navOpen" x-transition class="bg-spotify-gray rounded-xl shadow-2xl overflow-hidden border border-white/10 mb-2">
+            <div class="p-2 max-w-xs">
+                <div class="px-3 py-2 text-xs text-gray-400 font-semibold border-b border-white/10 mb-2">DEMO SAYFALAR</div>
+                <a href="../index.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                    <i class="fas fa-home text-spotify-green"></i><span class="text-sm">Ana Sayfa</span>
+                </a>
+                <a href="playlist-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left bg-white/10">
+                    <i class="fas fa-list text-spotify-green"></i><span class="text-sm">Playlist Detay</span>
+                </a>
+                <a href="album-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                    <i class="fas fa-record-vinyl text-pink-400"></i><span class="text-sm">Album Detay</span>
+                </a>
+                <a href="sector-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                    <i class="fas fa-building text-green-400"></i><span class="text-sm">Sektör Detay</span>
+                </a>
+                <div class="border-t border-white/10 mt-2 pt-2">
+                    <button @click="isLoggedIn = !isLoggedIn; navOpen = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                        <i class="fas fa-user-circle text-blue-400"></i>
+                        <span class="text-sm" x-text="isLoggedIn ? 'Çıkış Yap (Test)' : 'Giriş Yap (Test)'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button @click="navOpen = !navOpen" class="w-14 h-14 bg-spotify-gray hover:bg-spotify-light-gray rounded-full flex items-center justify-center shadow-lg border border-white/20 transition-all">
+            <i :class="navOpen ? 'fa-times' : 'fa-bars'" class="fas text-white"></i>
+        </button>
+    </div>
 </body>
 </html>

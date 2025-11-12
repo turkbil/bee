@@ -34,10 +34,16 @@
                     localStorage.setItem('cart_item_count', this.itemCount);
                     console.log('🔄 CartWidget: Count updated from API:', this.itemCount);
 
-                    // cart_id varsa güncelle
+                    // cart_id kontrolü
                     if (data.data.cart_id) {
+                        // Geçerli cart_id var, güncelle
                         this.cartId = data.data.cart_id;
                         localStorage.setItem('cart_id', this.cartId);
+                    } else if (data.data.cart_id === null) {
+                        // cart_id null ise geçersiz, temizle
+                        console.warn('⚠️ CartWidget: Invalid cart_id, clearing localStorage');
+                        this.cartId = null;
+                        localStorage.removeItem('cart_id');
                     }
 
                     // cart_id'yi Livewire'a gönder

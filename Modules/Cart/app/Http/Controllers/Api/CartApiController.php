@@ -187,11 +187,18 @@ class CartApiController extends Controller
                 ]);
             }
 
-            // Cart bulunamadıysa session ile bul
+            // Cart bulunamadıysa session ile bul veya oluştur
             if (!$cart) {
                 $sessionId = session()->getId();
                 $customerId = auth()->check() ? auth()->id() : null;
                 $cart = $this->cartService->getCart($customerId, $sessionId);
+
+                // Geçersiz cart_id varsa temizle (frontend localStorage'ı güncellesin)
+                if ($request->cart_id && !$cart) {
+                    \Log::warning('🛒 CartAPI: Invalid cart_id, will clear', [
+                        'invalid_cart_id' => $request->cart_id,
+                    ]);
+                }
             }
 
             if ($cart) {
@@ -206,11 +213,13 @@ class CartApiController extends Controller
                 ]);
             }
 
+            // Cart yok, localStorage'ı temizle
             return response()->json([
                 'success' => true,
                 'data' => [
                     'item_count' => 0,
                     'total' => 0,
+                    'cart_id' => null,  // null dönünce frontend temizleyecek
                 ],
             ]);
         } catch (\Exception $e) {

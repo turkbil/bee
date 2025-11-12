@@ -8,123 +8,74 @@ use Livewire\Component;
 use Modules\Cart\App\Services\CartService;
 use Modules\Shop\App\Models\ShopProduct;
 
+/**
+ * AddToCartButton - SIFIRDAN BASIT
+ *
+ * Sadece: Ürün ekle → Event gönder
+ */
 class AddToCartButton extends Component
 {
     public int $productId;
-    public ?int $variantId = null;
     public int $quantity = 1;
-    public string $buttonText = 'Sepete Ekle';
-    public string $buttonClass = 'btn btn-primary';
-    public bool $showQuantity = false;
     public bool $isAdding = false;
 
-    protected $rules = [
-        'quantity' => 'required|integer|min:1',
-    ];
-
-    public function mount(
-        int $productId,
-        ?int $variantId = null,
-        int $quantity = 1,
-        string $buttonText = 'Sepete Ekle',
-        string $buttonClass = 'btn btn-primary',
-        bool $showQuantity = false
-    ) {
+    public function mount(int $productId, int $quantity = 1)
+    {
         $this->productId = $productId;
-        $this->variantId = $variantId;
         $this->quantity = $quantity;
-        $this->buttonText = $buttonText;
-        $this->buttonClass = $buttonClass;
-        $this->showQuantity = $showQuantity;
     }
 
+    /**
+     * Sepete ekle - EN BASIT HAL
+     */
     public function addToCart()
     {
-        \Log::info('🛒 AddToCart: START', [
-            'product_id' => $this->productId,
-            'quantity' => $this->quantity,
-            'variant_id' => $this->variantId,
-        ]);
-
-        $this->validate();
-
         $this->isAdding = true;
 
         try {
-            // Cart modülünün polymorphic CartService'ini kullan
+            // Cart service
             $cartService = app(CartService::class);
-            \Log::info('🛒 AddToCart: CartService initialized');
 
             // Ürünü al
             $product = ShopProduct::findOrFail($this->productId);
-            \Log::info('🛒 AddToCart: Product loaded', [
-                'product_id' => $product->product_id,
-                'sku' => $product->sku,
-                'base_price' => $product->base_price,
-                'final_price' => $product->final_price ?? 'NULL',
-            ]);
 
-            // Session ve customer bilgisi
+            // Session/Customer
             $sessionId = session()->getId();
             $customerId = auth()->check() ? auth()->id() : null;
-            \Log::info('🛒 AddToCart: Session info', [
-                'session_id' => $sessionId,
-                'customer_id' => $customerId,
-            ]);
 
-            // Sepeti al veya oluştur
+            // Cart bul/oluştur
             $cart = $cartService->findOrCreateCart($customerId, $sessionId);
-            \Log::info('🛒 AddToCart: Cart loaded/created', [
-                'cart_id' => $cart->cart_id,
-                'status' => $cart->status,
-            ]);
 
-            // Polymorphic olarak ürünü ekle
-            $options = [];
-            if ($this->variantId) {
-                $options['customization_options'] = ['variant_id' => $this->variantId];
-            }
+            // Ürünü ekle
+            $cartItem = $cartService->addItem($cart, $product, $this->quantity, []);
 
-            $cartItem = $cartService->addItem($cart, $product, $this->quantity, $options);
-            \Log::info('🛒 AddToCart: Item added to cart', [
-                'cart_item_id' => $cartItem->cart_item_id,
-                'quantity' => $cartItem->quantity,
-                'unit_price' => $cartItem->unit_price,
-                'total' => $cartItem->total,
-            ]);
-
-            // Sepet güncel bilgilerini al
+            // Cart'ı refresh et
             $cart->refresh();
+
+            // Item count hesapla
             $itemCount = $cart->items()->where('is_active', true)->sum('quantity');
 
-            // Alpine.js uyumlu browser event gönder (kebab-case)
-            $this->dispatchBrowserEvent('cart-updated', [
+            // Browser event gönder (Alpine.js yakalayacak)
+            $this->dispatchBrowserEvent('cart-item-added', [
                 'cartId' => $cart->cart_id,
                 'itemCount' => $itemCount,
-                'total' => (float) $cart->total,
-                'currencyCode' => $cart->currency_code ?? 'TRY',
+                'cartItemId' => $cartItem->cart_item_id,
+                'productName' => $product->getTranslated('title', app()->getLocale()),
+                'productImage' => $cartItem->item_image,
+                'productPrice' => $cartItem->unit_price,
+                'quantity' => $cartItem->quantity,
             ]);
-            \Log::info('🛒 AddToCart: cart-updated browser event dispatched (Alpine.js)', [
+
+            \Log::info('✅ AddToCart SUCCESS', [
+                'product_id' => $this->productId,
                 'cart_id' => $cart->cart_id,
                 'item_count' => $itemCount,
             ]);
 
-            // Notification
-            $this->dispatchBrowserEvent('notify', [
-                'type' => 'success',
-                'message' => 'Ürün sepete eklendi!',
-            ]);
-
-            // Quantity'yi reset et
-            if (!$this->showQuantity) {
-                $this->quantity = 1;
-            }
-
-            \Log::info('🛒 AddToCart: SUCCESS - Cart updated');
         } catch (\Exception $e) {
-            \Log::error('🛒 AddToCart: ERROR', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+            \Log::error('❌ AddToCart ERROR', [
+                'product_id' => $this->productId,
+                'error' => $e->getMessage(),
             ]);
 
             $this->dispatchBrowserEvent('notify', [
@@ -133,18 +84,6 @@ class AddToCartButton extends Component
             ]);
         } finally {
             $this->isAdding = false;
-        }
-    }
-
-    public function increaseQuantity()
-    {
-        $this->quantity++;
-    }
-
-    public function decreaseQuantity()
-    {
-        if ($this->quantity > 1) {
-            $this->quantity--;
         }
     }
 

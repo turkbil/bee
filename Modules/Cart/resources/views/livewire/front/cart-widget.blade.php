@@ -1,28 +1,32 @@
-{{-- Cart Widget - Sıfırdan Temiz Kod --}}
+{{-- CartWidget - SIFIRDAN BASIT --}}
 <div
     x-data="{
         open: false,
-        itemCount: @entangle('itemCount'),
-
-        init() {
-            console.log('🛒 CartWidget Alpine.js initialized', {
-                itemCount: this.itemCount
-            });
-
-            // localStorage'a yaz
-            localStorage.setItem('cart_item_count', this.itemCount);
-            @if($cart)
-                localStorage.setItem('cart_id', {{ $cart->cart_id }});
-            @endif
-        }
+        itemCount: {{ $itemCount }},
+        items: @js($items)
     }"
-    @cart-updated.window="
-        console.log('🔔 cart-updated event received', $event.detail);
-        itemCount = parseInt($event.detail.itemCount) || 0;
-        localStorage.setItem('cart_item_count', itemCount);
-        if ($event.detail.cartId) {
-            localStorage.setItem('cart_id', $event.detail.cartId);
+    @cart-item-added.window="
+        console.log('🔔 cart-item-added event', $event.detail);
+
+        // Item count güncelle
+        itemCount = parseInt($event.detail.itemCount);
+
+        // Yeni item'ı ekle (eğer listede yoksa)
+        const existingIndex = items.findIndex(i => i.cart_item_id === $event.detail.cartItemId);
+        if (existingIndex === -1) {
+            items.push({
+                cart_item_id: $event.detail.cartItemId,
+                name: $event.detail.productName,
+                image: $event.detail.productImage,
+                price: $event.detail.productPrice,
+                quantity: $event.detail.quantity
+            });
+        } else {
+            // Quantity güncelle
+            items[existingIndex].quantity = $event.detail.quantity;
         }
+
+        console.log('✅ CartWidget updated:', { itemCount, itemsCount: items.length });
     "
     class="relative">
 
@@ -41,7 +45,7 @@
         </span>
     </button>
 
-    {{-- Dropdown - Sadece open=true ise göster --}}
+    {{-- Dropdown --}}
     <div
         x-show="open"
         @click.away="open = false"
@@ -59,120 +63,48 @@
                 Alışveriş Sepeti
             </h3>
 
-            @if($items->isEmpty())
-                {{-- Boş sepet durumu --}}
-                <div class="py-8 text-center">
-                    <i class="fas fa-shopping-cart text-4xl text-gray-400 mb-3"></i>
-                    <p class="text-gray-500 dark:text-gray-400">
-                        Sepetiniz boş
-                    </p>
-                </div>
-            @else
-                {{-- Cart Items --}}
-                <div class="space-y-3 max-h-96 overflow-y-auto">
-                    @foreach($items as $item)
-                        <div
-                            wire:key="cart-item-{{ $item->cart_item_id }}"
-                            class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+            {{-- Boş sepet --}}
+            <div x-show="items.length === 0" class="py-8 text-center">
+                <i class="fas fa-shopping-cart text-4xl text-gray-400 mb-3"></i>
+                <p class="text-gray-500 dark:text-gray-400">
+                    Sepetiniz boş
+                </p>
+            </div>
 
-                            {{-- Item Image --}}
-                            @php
-                                $itemImage = $item->item_image ?? null;
-                            @endphp
-
-                            @if($itemImage)
-                                <img
-                                    src="{{ $itemImage }}"
-                                    alt="{{ $item->item_name }}"
-                                    class="w-16 h-16 object-cover rounded-lg">
-                            @else
-                                <div class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-box text-gray-400"></i>
-                                </div>
-                            @endif
-
-                            {{-- Item Info --}}
-                            <div class="flex-1 min-w-0">
-                                <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                    {{ $item->item_name }}
-                                </h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                    @php
-                                        $currency = $cart->currency_code ?? 'TRY';
-                                        $price = $item->unit_price ?? 0;
-                                    @endphp
-
-                                    @if($currency === 'TRY')
-                                        {{ number_format($price, 2, ',', '.') }} TRY
-                                    @elseif($currency === 'USD')
-                                        ${{ number_format($price, 2) }}
-                                    @else
-                                        {{ number_format($price, 2) }} {{ $currency }}
-                                    @endif
-                                </p>
-
-                                {{-- Quantity Controls --}}
-                                <div class="flex items-center gap-2 mt-2">
-                                    {{-- Decrease Button --}}
-                                    <button
-                                        wire:click="decreaseQuantity({{ $item->cart_item_id }})"
-                                        class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
-                                        <i class="fas fa-minus text-xs"></i>
-                                    </button>
-
-                                    {{-- Quantity Display --}}
-                                    <span class="text-sm font-medium text-gray-900 dark:text-white px-2">
-                                        {{ $item->quantity }}
-                                    </span>
-
-                                    {{-- Increase Button --}}
-                                    <button
-                                        wire:click="increaseQuantity({{ $item->cart_item_id }})"
-                                        class="w-6 h-6 flex items-center justify-center bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded transition-colors">
-                                        <i class="fas fa-plus text-xs"></i>
-                                    </button>
-
-                                    {{-- Remove Button --}}
-                                    <button
-                                        wire:click="removeItem({{ $item->cart_item_id }})"
-                                        class="ml-auto text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
-                                        <i class="fas fa-trash text-sm"></i>
-                                    </button>
-                                </div>
-                            </div>
+            {{-- Item listesi --}}
+            <div x-show="items.length > 0" class="space-y-3 max-h-96 overflow-y-auto">
+                <template x-for="item in items" :key="item.cart_item_id">
+                    <div class="flex gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors">
+                        {{-- Item Image --}}
+                        <div x-show="item.image" class="w-16 h-16">
+                            <img :src="item.image" :alt="item.name" class="w-full h-full object-cover rounded-lg">
                         </div>
-                    @endforeach
-                </div>
+                        <div x-show="!item.image" class="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-box text-gray-400"></i>
+                        </div>
 
-                {{-- Cart Footer --}}
-                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
-                            Toplam:
-                        </span>
-                        <span class="text-lg font-bold text-gray-900 dark:text-white">
-                            @php
-                                $currency = $cart->currency_code ?? 'TRY';
-                            @endphp
-
-                            @if($currency === 'TRY')
-                                {{ number_format($total, 2, ',', '.') }} TRY
-                            @elseif($currency === 'USD')
-                                ${{ number_format($total, 2) }}
-                            @else
-                                {{ number_format($total, 2) }} {{ $currency }}
-                            @endif
-                        </span>
+                        {{-- Item Info --}}
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate" x-text="item.name"></h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                <span x-text="parseFloat(item.price).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })"></span> TRY
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                Adet: <span x-text="item.quantity"></span>
+                            </p>
+                        </div>
                     </div>
+                </template>
+            </div>
 
-                    {{-- Sepeti Görüntüle Button --}}
-                    <a
-                        href="{{ route('cart.index') }}"
-                        class="block w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white text-center rounded-lg font-medium transition-colors">
-                        Sepeti Görüntüle
-                    </a>
-                </div>
-            @endif
+            {{-- Sepeti Görüntüle Button (items varsa) --}}
+            <div x-show="items.length > 0" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <a
+                    href="{{ route('cart.index') }}"
+                    class="block w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white text-center rounded-lg font-medium transition-colors">
+                    Sepeti Görüntüle
+                </a>
+            </div>
         </div>
     </div>
 </div>

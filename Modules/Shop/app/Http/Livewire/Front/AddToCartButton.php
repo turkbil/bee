@@ -97,22 +97,22 @@ class AddToCartButton extends Component
             $cart->refresh();
             $itemCount = $cart->items()->where('is_active', true)->sum('quantity');
 
-            // Alpine.js uyumlu event gönder (kebab-case)
-            $this->dispatch('cart-updated', [
+            // Alpine.js uyumlu browser event gönder (kebab-case)
+            $this->dispatchBrowserEvent('cart-updated', [
                 'cartId' => $cart->cart_id,
                 'itemCount' => $itemCount,
                 'total' => (float) $cart->total,
                 'currencyCode' => $cart->currency_code ?? 'TRY',
             ]);
-            \Log::info('🛒 AddToCart: cart-updated event dispatched (Alpine.js)', [
+            \Log::info('🛒 AddToCart: cart-updated browser event dispatched (Alpine.js)', [
                 'cart_id' => $cart->cart_id,
                 'item_count' => $itemCount,
             ]);
 
-            $this->dispatch('product-added-to-cart', [
+            // Notification
+            $this->dispatchBrowserEvent('notify', [
+                'type' => 'success',
                 'message' => 'Ürün sepete eklendi!',
-                'productId' => $this->productId,
-                'cartId' => $cart->cart_id,
             ]);
 
             // Quantity'yi reset et
@@ -127,7 +127,8 @@ class AddToCartButton extends Component
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            $this->dispatch('cart-error', [
+            $this->dispatchBrowserEvent('notify', [
+                'type' => 'error',
                 'message' => 'Hata: ' . $e->getMessage(),
             ]);
         } finally {

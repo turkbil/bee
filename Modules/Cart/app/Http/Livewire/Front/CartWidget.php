@@ -6,195 +6,244 @@ namespace Modules\Cart\App\Http\Livewire\Front;
 
 use Livewire\Component;
 use Modules\Cart\App\Services\CartService;
+use Modules\Cart\App\Models\Cart;
 
+/**
+ * CartWidget - Temiz, Sıfırdan Cart Sistemi
+ *
+ * Özellikler:
+ * - Badge item count gösterimi
+ * - Dropdown ile item listesi
+ * - Increase/Decrease/Remove operations
+ * - Alpine.js ile sync
+ * - localStorage ile persistence
+ */
 class CartWidget extends Component
 {
-    public int $itemCount = 0;
-    public float $total = 0;
+    // Cart state
+    public ?Cart $cart = null;
     public $items = [];
-    public $cart = null;
+    public int $itemCount = 0;
+    public float $total = 0.00;
 
-    protected $listeners = [
-        'cartUpdated' => 'refreshCart',
-        'cart-updated' => 'refreshCart',
-    ];
-
+    // Component lifecycle
     public function mount()
     {
-        $this->items = collect([]); // Initialize collection
-        $this->refreshCart();
+        $this->loadCart();
     }
 
     public function hydrate()
     {
-        $this->refreshCart();
+        $this->loadCart();
     }
 
-    public function refreshCart($cartId = null)
+    /**
+     * Cart'ı yükle - Tek source of truth
+     */
+    public function loadCart(): void
     {
-        \Log::info('🔄 CartWidget: refreshCart START', ['cart_id_param' => $cartId]);
+        try {
+            $cartService = app(CartService::class);
 
-        $cartService = app(CartService::class);
-
-        // Önce parametre olarak gelen cart_id'yi kontrol et (Alpine.js'den gelecek)
-        if ($cartId) {
-            // cart_id varsa direkt cart'ı bul
-            $this->cart = \Modules\Cart\App\Models\Cart::find($cartId);
-            \Log::info('🔄 CartWidget: Cart loaded by ID', [
-                'cart_id' => $cartId,
-                'found' => $this->cart ? 'yes' : 'no',
-            ]);
-        } else {
-            // cart_id yoksa session/customer ile bul
+            // Session ve user bilgisi al
             $sessionId = session()->getId();
             $customerId = auth()->check() ? auth()->id() : null;
 
-            \Log::info('🔄 CartWidget: Getting cart by session', [
+            \Log::info('🛒 CartWidget: loadCart START', [
                 'session_id' => $sessionId,
                 'customer_id' => $customerId,
             ]);
 
+            // Cart'ı bul
             $this->cart = $cartService->getCart($customerId, $sessionId);
-        }
 
-        if ($this->cart) {
-            // Eager load polymorphic relations and product details
-            $this->items = $this->cart->items()
-                ->where('is_active', true)
-                ->with([
-                    'cartable',
-                    'product' => function ($query) {
-                        $query->select('product_id', 'title', 'slug');
-                    }
-                ])
-                ->get();
+            if ($this->cart) {
+                // Items yükle (aktif olanlar)
+                $this->items = $this->cart->items()
+                    ->where('is_active', true)
+                    ->with(['cartable'])
+                    ->get();
 
-            // Manually eager load medias if relation exists (safe - try/catch)
-            if ($this->items->isNotEmpty()) {
-                try {
-                    $productIds = $this->items->pluck('product_id')->filter()->unique();
-                    if ($productIds->isNotEmpty()) {
-                        // Try to load with medias, fallback to without medias if relation doesn't exist
-                        $query = \Modules\Shop\App\Models\ShopProduct::whereIn('product_id', $productIds);
+                // Totals hesapla
+                $this->itemCount = $this->items->sum('quantity');
+                $this->total = (float) $this->cart->total;
 
-                        // Check if medias relation exists before using it
-                        if (method_exists(\Modules\Shop\App\Models\ShopProduct::class, 'medias')) {
-                            $query->with('medias');
-                        }
+                \Log::info('🛒 CartWidget: Cart loaded', [
+                    'cart_id' => $this->cart->cart_id,
+                    'item_count' => $this->itemCount,
+                    'total' => $this->total,
+                ]);
+            } else {
+                // Boş state
+                $this->cart = null;
+                $this->items = collect([]);
+                $this->itemCount = 0;
+                $this->total = 0.00;
 
-                        $products = $query->get()->keyBy('product_id');
-
-                        // Attach products to items
-                        foreach ($this->items as $item) {
-                            if ($item->product_id && isset($products[$item->product_id])) {
-                                $item->setRelation('product', $products[$item->product_id]);
-                            }
-                        }
-                    }
-                } catch (\Exception $e) {
-                    \Log::warning('CartWidget: Error loading product medias', [
-                        'error' => $e->getMessage()
-                    ]);
-                    // Continue without medias - accessor will handle fallback
-                }
+                \Log::info('🛒 CartWidget: No cart found - empty state');
             }
-
-            $this->itemCount = $this->items->sum('quantity');
-            $this->total = (float) $this->cart->total;
-
-            \Log::info('🔄 CartWidget: Cart loaded', [
-                'cart_id' => $this->cart->cart_id,
-                'item_count' => $this->itemCount,
-                'total' => $this->total,
-                'items' => $this->items->count(),
+        } catch (\Exception $e) {
+            \Log::error('🛒 CartWidget: loadCart ERROR', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
-        } else {
+
+            // Error state - boş göster
+            $this->cart = null;
             $this->items = collect([]);
             $this->itemCount = 0;
-            $this->total = 0;
-
-            \Log::info('🔄 CartWidget: No cart found - empty state');
+            $this->total = 0.00;
         }
     }
 
-    public function removeItem(int $cartItemId)
+    /**
+     * Item miktarını artır
+     */
+    public function increaseQuantity(int $cartItemId): void
     {
-        if (!$this->cart) {
-            return;
-        }
-
-        $item = $this->cart->items()->find($cartItemId);
-
-        if ($item) {
-            $item->delete();
-            $this->cart->recalculate();
-        }
-
-        $this->refreshCart();
-
-        // Alpine.js uyumlu event dispatch (kebab-case)
-        $this->dispatch('cart-updated', [
-            'cartId' => $this->cart->cart_id,
-            'itemCount' => $this->itemCount,
-            'total' => $this->total,
-            'currencyCode' => $this->cart->currency_code ?? 'TRY',
-        ]);
-
-        $this->dispatch('cart-item-removed', ['message' => 'Ürün sepetten çıkarıldı']);
-    }
-
-    public function increaseQuantity(int $cartItemId)
-    {
-        if (!$this->cart) {
-            return;
-        }
-
-        $item = $this->cart->items()->find($cartItemId);
-
-        if ($item) {
-            $item->quantity += 1;
-            $item->recalculate();
-        }
-
-        $this->refreshCart();
-
-        // Alpine.js uyumlu event dispatch
-        $this->dispatch('cart-updated', [
-            'cartId' => $this->cart->cart_id,
-            'itemCount' => $this->itemCount,
-            'total' => $this->total,
-            'currencyCode' => $this->cart->currency_code ?? 'TRY',
-        ]);
-    }
-
-    public function decreaseQuantity(int $cartItemId)
-    {
-        if (!$this->cart) {
-            return;
-        }
-
-        $item = $this->cart->items()->find($cartItemId);
-
-        if ($item) {
-            if ($item->quantity > 1) {
-                $item->quantity -= 1;
-                $item->recalculate();
-            } else {
-                $item->delete();
+        try {
+            if (!$this->cart) {
+                return;
             }
-            $this->cart->recalculate();
+
+            $item = $this->cart->items()->find($cartItemId);
+
+            if ($item) {
+                $item->quantity += 1;
+                $item->recalculate();
+                $this->cart->recalculateTotals();
+
+                \Log::info('🛒 CartWidget: Quantity increased', [
+                    'cart_item_id' => $cartItemId,
+                    'new_quantity' => $item->quantity,
+                ]);
+            }
+
+            // Reload cart state
+            $this->loadCart();
+
+            // Alpine.js event dispatch
+            $this->dispatchBrowserEvent('cart-updated', [
+                'cartId' => $this->cart->cart_id,
+                'itemCount' => $this->itemCount,
+                'total' => $this->total,
+                'currencyCode' => $this->cart->currency_code ?? 'TRY',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('🛒 CartWidget: increaseQuantity ERROR', [
+                'cart_item_id' => $cartItemId,
+                'error' => $e->getMessage(),
+            ]);
         }
-
-        $this->refreshCart();
-
-        // Alpine.js uyumlu event dispatch
-        $this->dispatch('cart-updated', [
-            'cartId' => $this->cart->cart_id,
-            'itemCount' => $this->itemCount,
-            'total' => $this->total,
-            'currencyCode' => $this->cart->currency_code ?? 'TRY',
-        ]);
     }
+
+    /**
+     * Item miktarını azalt (quantity=1 ise sil)
+     */
+    public function decreaseQuantity(int $cartItemId): void
+    {
+        try {
+            if (!$this->cart) {
+                return;
+            }
+
+            $item = $this->cart->items()->find($cartItemId);
+
+            if ($item) {
+                if ($item->quantity > 1) {
+                    $item->quantity -= 1;
+                    $item->recalculate();
+                } else {
+                    // Quantity=1 ise direkt sil
+                    $item->delete();
+                }
+
+                $this->cart->recalculateTotals();
+
+                \Log::info('🛒 CartWidget: Quantity decreased', [
+                    'cart_item_id' => $cartItemId,
+                    'new_quantity' => $item->quantity ?? 0,
+                ]);
+            }
+
+            // Reload cart state
+            $this->loadCart();
+
+            // Alpine.js event dispatch
+            $this->dispatchBrowserEvent('cart-updated', [
+                'cartId' => $this->cart ? $this->cart->cart_id : null,
+                'itemCount' => $this->itemCount,
+                'total' => $this->total,
+                'currencyCode' => $this->cart ? ($this->cart->currency_code ?? 'TRY') : 'TRY',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('🛒 CartWidget: decreaseQuantity ERROR', [
+                'cart_item_id' => $cartItemId,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Item'ı sepetten kaldır
+     */
+    public function removeItem(int $cartItemId): void
+    {
+        try {
+            if (!$this->cart) {
+                return;
+            }
+
+            $item = $this->cart->items()->find($cartItemId);
+
+            if ($item) {
+                $item->delete();
+                $this->cart->recalculateTotals();
+
+                \Log::info('🛒 CartWidget: Item removed', [
+                    'cart_item_id' => $cartItemId,
+                ]);
+
+                // Success notification
+                $this->dispatchBrowserEvent('notify', [
+                    'type' => 'success',
+                    'message' => 'Ürün sepetten çıkarıldı',
+                ]);
+            }
+
+            // Reload cart state
+            $this->loadCart();
+
+            // Alpine.js event dispatch
+            $this->dispatchBrowserEvent('cart-updated', [
+                'cartId' => $this->cart ? $this->cart->cart_id : null,
+                'itemCount' => $this->itemCount,
+                'total' => $this->total,
+                'currencyCode' => $this->cart ? ($this->cart->currency_code ?? 'TRY') : 'TRY',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('🛒 CartWidget: removeItem ERROR', [
+                'cart_item_id' => $cartItemId,
+                'error' => $e->getMessage(),
+            ]);
+
+            $this->dispatchBrowserEvent('notify', [
+                'type' => 'error',
+                'message' => 'Ürün kaldırılırken hata oluştu',
+            ]);
+        }
+    }
+
+    /**
+     * Livewire event listener - Cart güncellendiğinde tetiklenir
+     */
+    protected $listeners = [
+        'cart-added' => 'loadCart',
+        'cart-updated' => 'loadCart',
+    ];
 
     public function render()
     {

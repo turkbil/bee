@@ -1,96 +1,13 @@
-<div x-data="{
-        open: false,
-        itemCount: {{ $itemCount ?? 0 }},
-        cartId: {{ $cart->cart_id ?? 'null' }},
-        loadFromLocalStorage() {
-            // localStorage'dan cart count ve cart_id oku
-            const stored = localStorage.getItem('cart_item_count');
-            const storedCartId = localStorage.getItem('cart_id');
-            if (stored) {
-                const count = parseInt(stored);
-                if (count > 0) {
-                    this.itemCount = count;
-                    console.log('💾 CartWidget: Loaded from localStorage:', this.itemCount);
-                }
-            }
-            if (storedCartId) {
-                this.cartId = parseInt(storedCartId);
-                console.log('💾 CartWidget: Cart ID from localStorage:', this.cartId);
-            }
-        },
-        async fetchCartCount() {
-            try {
-                // cart_id varsa parametreyle gönder
-                const url = this.cartId
-                    ? `/api/cart/count?cart_id=${this.cartId}`
-                    : '/api/cart/count';
-
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.success) {
-                    this.itemCount = data.data.item_count || 0;
-
-                    // localStorage'ı güncelle
-                    localStorage.setItem('cart_item_count', this.itemCount);
-                    console.log('🔄 CartWidget: Count updated from API:', this.itemCount);
-
-                    // cart_id kontrolü
-                    if (data.data.cart_id) {
-                        // Geçerli cart_id var, güncelle
-                        this.cartId = data.data.cart_id;
-                        localStorage.setItem('cart_id', this.cartId);
-                    } else if (data.data.cart_id === null) {
-                        // cart_id null ise geçersiz, temizle
-                        console.warn('⚠️ CartWidget: Invalid cart_id, clearing localStorage');
-                        this.cartId = null;
-                        localStorage.removeItem('cart_id');
-                    }
-
-                    // Livewire'ı sadece ilk yüklemede refresh et (dropdown kapalıyken)
-                    if (this.cartId && !this.open) {
-                        $wire.refreshCart(this.cartId);
-                    }
-                }
-            } catch (error) {
-                console.error('❌ CartWidget: fetchCartCount error', error);
-            }
-        }
-     }"
-     x-init="loadFromLocalStorage(); fetchCartCount()"
-     @cart-updated.window="
-        console.log('🔄 CartWidget: cart-updated event received', $event.detail);
-        itemCount = parseInt($event.detail.itemCount) || 0;
-        if ($event.detail.cartId) {
-            cartId = $event.detail.cartId;
-            localStorage.setItem('cart_id', cartId);
-            localStorage.setItem('cart_item_count', itemCount);
-            // Livewire component'i güncelle (dropdown açık değilse)
-            if (!open) {
-                $wire.refreshCart(cartId);
-                console.log('🔄 CartWidget: Livewire refreshCart çağrıldı', cartId);
-            }
-        }
-     "
-     @cart-id-corrected.window="console.log('✅ CartWidget: cart_id düzeltildi', $event.detail); cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); if (!open) { $wire.refreshCart(cartId); }"
-     @cart-count-changed.window="
-        console.log('🔢 CartWidget: count changed (CRUD)', $event.detail);
-        itemCount = parseInt($event.detail.itemCount) || 0;
-        if ($event.detail.cartId) {
-            cartId = $event.detail.cartId;
-            localStorage.setItem('cart_id', cartId);
-            localStorage.setItem('cart_item_count', itemCount);
-        }
-     "
-     class="relative">
+<div x-data="{ open: false }" class="relative">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"
             class="relative flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
         <i class="fas fa-shopping-cart text-xl"></i>
-        <template x-if="itemCount > 0">
-            <span x-text="itemCount"
-                  class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full">
+        @if($itemCount > 0)
+            <span class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-primary-600 rounded-full">
+                {{ $itemCount }}
             </span>
-        </template>
+        @endif
     </button>
 
     {{-- Cart Dropdown --}}
@@ -112,7 +29,7 @@
 
             @if($items->isEmpty())
                 <div class="py-8 text-center">
-                    <i class="fas fa-shopping-cart text-4x text-gray-400 mb-3"></i>
+                    <i class="fas fa-shopping-cart text-4xl text-gray-400 mb-3"></i>
                     <p class="text-gray-500 dark:text-gray-400">
                         {{ __('cart::front.cart_empty') }}
                     </p>
@@ -212,3 +129,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Livewire event listener - Sepete ürün eklendiğinde refresh
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('cartUpdated', () => {
+            console.log('🔄 CartWidget: Livewire cartUpdated event received');
+            @this.call('refreshCart');
+        });
+    });
+</script>

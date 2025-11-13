@@ -17,67 +17,28 @@ class CartWidget extends Component
 
     public function mount()
     {
-        $this->items = collect([]); // Initialize collection
-        $this->refreshCart();
-    }
-
-    public function hydrate()
-    {
         $this->refreshCart();
     }
 
     #[On('cartUpdated')]
-    public function refreshCart($cartId = null)
+    public function refreshCart()
     {
-        \Log::info('🔄 CartWidget: refreshCart START', ['cart_id_param' => $cartId]);
+        \Log::info('🔄 CartWidget: refreshCart called');
 
         $cartService = app(CartService::class);
         $sessionId = session()->getId();
         $customerId = auth()->check() ? auth()->id() : null;
 
-        // Önce parametre olarak gelen cart_id'yi kontrol et (Alpine.js'den gelecek)
-        if ($cartId) {
-            // cart_id varsa direkt cart'ı bul
-            $this->cart = \Modules\Cart\App\Models\Cart::find($cartId);
-            \Log::info('🔄 CartWidget: Cart loaded by ID', [
-                'cart_id' => $cartId,
-                'found' => $this->cart ? 'yes' : 'no',
-            ]);
-
-            // Cart bulunamadıysa (geçersiz localStorage cart_id)
-            if (!$this->cart) {
-                \Log::warning('⚠️ CartWidget: Invalid cart_id from localStorage, trying session', [
-                    'invalid_cart_id' => $cartId,
-                    'session_id' => $sessionId,
-                ]);
-
-                // Session ile doğru cart'ı bul
-                $this->cart = $cartService->getCart($customerId, $sessionId);
-
-                // Doğru cart_id'yi frontend'e gönder (localStorage güncellensin)
-                if ($this->cart) {
-                    $this->dispatchBrowserEvent('cart-id-corrected', [
-                        'cartId' => $this->cart->cart_id,
-                        'message' => 'localStorage cart_id düzeltildi',
-                    ]);
-                }
-            }
-        } else {
-            // cart_id yoksa session/customer ile bul
-            \Log::info('🔄 CartWidget: Getting cart by session', [
-                'session_id' => $sessionId,
-                'customer_id' => $customerId,
-            ]);
-
-            $this->cart = $cartService->getCart($customerId, $sessionId);
-        }
+        // Session ile cart bul/oluştur
+        $this->cart = $cartService->findOrCreateCart($customerId, $sessionId);
 
         if ($this->cart) {
-            // Eager load cartable relation (polymorphic)
+            // Items yükle
             $this->items = $this->cart->items()
                 ->where('is_active', true)
                 ->with(['cartable'])
                 ->get();
+
             $this->itemCount = $this->items->sum('quantity');
             $this->total = (float) $this->cart->total;
 
@@ -85,24 +46,22 @@ class CartWidget extends Component
                 'cart_id' => $this->cart->cart_id,
                 'item_count' => $this->itemCount,
                 'total' => $this->total,
-                'items' => $this->items->count(),
             ]);
         } else {
             $this->items = collect([]);
             $this->itemCount = 0;
             $this->total = 0;
 
-            \Log::info('🔄 CartWidget: No cart found - empty state');
+            \Log::warning('⚠️ CartWidget: No cart found');
         }
     }
 
     public function removeItem(int $cartItemId)
     {
-        // Cart yoksa veya geçersizse işlem yapma
+        \Log::info('🗑️ CartWidget: removeItem', ['cart_item_id' => $cartItemId]);
+
         if (!$this->cart) {
-            \Log::warning('⚠️ CartWidget: removeItem called but cart is null', [
-                'cart_item_id' => $cartItemId,
-            ]);
+            \Log::warning('⚠️ CartWidget: No cart');
             return;
         }
 
@@ -111,30 +70,18 @@ class CartWidget extends Component
         if ($item) {
             $item->delete();
             $this->cart->recalculateTotals();
+            $this->refreshCart();
 
-            // Items ve count'u manuel güncelle (refreshCart çağırma!)
-            $this->items = $this->cart->items()
-                ->where('is_active', true)
-                ->with(['cartable'])
-                ->get();
-            $this->itemCount = $this->items->sum('quantity');
-            $this->total = (float) $this->cart->total;
+            \Log::info('✅ CartWidget: Item removed');
         }
-
-        // Browser event gönder (Alpine.js badge'ini güncelle - Livewire refresh YOK!)
-        $this->dispatchBrowserEvent('cart-count-changed', [
-            'cartId' => $this->cart->cart_id,
-            'itemCount' => $this->itemCount,
-        ]);
     }
 
     public function increaseQuantity(int $cartItemId)
     {
-        // Cart yoksa veya geçersizse işlem yapma
+        \Log::info('➕ CartWidget: increaseQuantity', ['cart_item_id' => $cartItemId]);
+
         if (!$this->cart) {
-            \Log::warning('⚠️ CartWidget: increaseQuantity called but cart is null', [
-                'cart_item_id' => $cartItemId,
-            ]);
+            \Log::warning('⚠️ CartWidget: No cart');
             return;
         }
 
@@ -144,30 +91,18 @@ class CartWidget extends Component
             $item->quantity += 1;
             $item->recalculate();
             $this->cart->recalculateTotals();
+            $this->refreshCart();
 
-            // Items ve count'u manuel güncelle (refreshCart çağırma!)
-            $this->items = $this->cart->items()
-                ->where('is_active', true)
-                ->with(['cartable'])
-                ->get();
-            $this->itemCount = $this->items->sum('quantity');
-            $this->total = (float) $this->cart->total;
+            \Log::info('✅ CartWidget: Quantity increased', ['new_qty' => $item->quantity]);
         }
-
-        // Browser event gönder (Alpine.js badge'ini güncelle - Livewire refresh YOK!)
-        $this->dispatchBrowserEvent('cart-count-changed', [
-            'cartId' => $this->cart->cart_id,
-            'itemCount' => $this->itemCount,
-        ]);
     }
 
     public function decreaseQuantity(int $cartItemId)
     {
-        // Cart yoksa veya geçersizse işlem yapma
+        \Log::info('➖ CartWidget: decreaseQuantity', ['cart_item_id' => $cartItemId]);
+
         if (!$this->cart) {
-            \Log::warning('⚠️ CartWidget: decreaseQuantity called but cart is null', [
-                'cart_item_id' => $cartItemId,
-            ]);
+            \Log::warning('⚠️ CartWidget: No cart');
             return;
         }
 
@@ -178,25 +113,14 @@ class CartWidget extends Component
                 $item->quantity -= 1;
                 $item->recalculate();
             } else {
-                // Quantity 1 iken - yapınca removeItem gibi çalış
+                // Quantity 1 iken - = removeItem
                 $item->delete();
             }
             $this->cart->recalculateTotals();
+            $this->refreshCart();
 
-            // Items ve count'u manuel güncelle (refreshCart çağırma!)
-            $this->items = $this->cart->items()
-                ->where('is_active', true)
-                ->with(['cartable'])
-                ->get();
-            $this->itemCount = $this->items->sum('quantity');
-            $this->total = (float) $this->cart->total;
+            \Log::info('✅ CartWidget: Quantity decreased');
         }
-
-        // Browser event gönder (Alpine.js badge'ini güncelle - Livewire refresh YOK!)
-        $this->dispatchBrowserEvent('cart-count-changed', [
-            'cartId' => $this->cart->cart_id,
-            'itemCount' => $this->itemCount,
-        ]);
     }
 
     public function render()

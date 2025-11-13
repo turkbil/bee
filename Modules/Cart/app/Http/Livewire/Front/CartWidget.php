@@ -121,8 +121,8 @@ class CartWidget extends Component
             $this->total = (float) $this->cart->total;
         }
 
-        // Browser event gönder (Alpine.js badge'ini güncelle)
-        $this->dispatchBrowserEvent('cart-updated', [
+        // Browser event gönder (Alpine.js badge'ini güncelle - Livewire refresh YOK!)
+        $this->dispatchBrowserEvent('cart-count-changed', [
             'cartId' => $this->cart->cart_id,
             'itemCount' => $this->itemCount,
         ]);
@@ -154,8 +154,8 @@ class CartWidget extends Component
             $this->total = (float) $this->cart->total;
         }
 
-        // Browser event gönder (Alpine.js badge'ini güncelle)
-        $this->dispatchBrowserEvent('cart-updated', [
+        // Browser event gönder (Alpine.js badge'ini güncelle - Livewire refresh YOK!)
+        $this->dispatchBrowserEvent('cart-count-changed', [
             'cartId' => $this->cart->cart_id,
             'itemCount' => $this->itemCount,
         ]);
@@ -192,8 +192,8 @@ class CartWidget extends Component
             $this->total = (float) $this->cart->total;
         }
 
-        // Browser event gönder (Alpine.js badge'ini güncelle)
-        $this->dispatchBrowserEvent('cart-updated', [
+        // Browser event gönder (Alpine.js badge'ini güncelle - Livewire refresh YOK!)
+        $this->dispatchBrowserEvent('cart-count-changed', [
             'cartId' => $this->cart->cart_id,
             'itemCount' => $this->itemCount,
         ]);

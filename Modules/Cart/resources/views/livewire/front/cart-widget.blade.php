@@ -72,6 +72,15 @@
         }
      "
      @cart-id-corrected.window="console.log('✅ CartWidget: cart_id düzeltildi', $event.detail); cartId = $event.detail.cartId; localStorage.setItem('cart_id', cartId); if (!open) { $wire.refreshCart(cartId); }"
+     @cart-count-changed.window="
+        console.log('🔢 CartWidget: count changed (CRUD)', $event.detail);
+        itemCount = parseInt($event.detail.itemCount) || 0;
+        if ($event.detail.cartId) {
+            cartId = $event.detail.cartId;
+            localStorage.setItem('cart_id', cartId);
+            localStorage.setItem('cart_item_count', itemCount);
+        }
+     "
      class="relative">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"

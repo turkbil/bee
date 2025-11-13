@@ -108,7 +108,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto hide-scrollbar pb-32">
+        <main class="flex-1 overflow-y-auto hide-scrollbar pb-40">
             
             <!-- Album Header -->
             <div class="relative bg-gradient-to-b from-blue-900/50 to-transparent">
@@ -231,12 +231,17 @@
                     <!-- More Albums -->
                     <div class="mt-8">
                         <h3 class="text-xl font-bold mb-4">Jon Batiste'in Diğer Albümleri</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <div class="space-y-2">
                             <template x-for="i in 5" :key="i">
-                                <a href="#" class="group bg-white/5 p-4 rounded-lg hover:bg-white/10 transition">
-                                    <img :src="`https://picsum.photos/seed/album${i}/200`" class="w-full aspect-square rounded mb-3 shadow-lg">
-                                    <div class="font-semibold truncate mb-1" x-text="`Album ${i}`"></div>
-                                    <div class="text-sm text-gray-400 truncate">2022</div>
+                                <a href="#" class="group flex items-center gap-4 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all">
+                                    <img :src="`https://picsum.photos/seed/album${i}/200`" class="w-16 h-16 rounded-lg shadow-lg">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold text-white truncate mb-1" x-text="`Album ${i}`"></div>
+                                        <div class="text-sm text-gray-400">2022 • Jon Batiste</div>
+                                    </div>
+                                    <button class="w-10 h-10 bg-white/5 hover:bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </button>
                                 </a>
                             </template>
                         </div>

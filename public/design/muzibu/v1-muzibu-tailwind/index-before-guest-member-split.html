@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="muzibuApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - İşletmenize Yasal ve Telifsiz Müzik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-dark': '#0a0e27',
+                        'muzibu-darker': '#06081a',
+                        'muzibu-purple': '#7c3aed',
+                        'muzibu-purple-light': '#a78bfa',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #06081a 0%, #0a0e27 100%); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.5); border-radius: 4px; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .float-animation { animation: float 6s ease-in-out infinite; }
+        @keyframes wave { 0%, 100% { height: 12px; } 50% { height: 24px; } }
+    </style>
+</head>
+<body class="h-full bg-muzibu-darker text-white antialiased">
+
+    <!-- Top CTA Bar (Guest only) -->
+    <div x-show="!isLoggedIn" x-transition class="fixed top-0 left-0 right-0 bg-gradient-to-r from-muzibu-purple to-pink-500 z-50 py-3 px-6 shadow-lg">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-gift text-white text-xl"></i>
+                <span class="font-semibold text-white">🎉 Günde 1 saat ücretsiz dinleyin! <span class="opacity-75 text-sm">Kalan süre: <span x-text="formatListeningTime()"></span></span></span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button @click="showAuthModal = 'login'" class="px-6 py-2 bg-white text-muzibu-purple rounded-lg font-semibold hover:bg-opacity-90 transition-all">Giriş Yap</button>
+                <button @click="showAuthModal = 'register'" class="px-6 py-2 bg-muzibu-darker text-white rounded-lg font-semibold hover:bg-opacity-80 transition-all border border-white/20">7 Gün Ücretsiz</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 z-40 h-full w-64 bg-gradient-to-b from-muzibu-dark to-muzibu-darker border-r border-white/5" :class="isLoggedIn ? 'top-0' : 'top-14'">
+        <div class="flex flex-col h-full">
+            <div class="p-6 border-b border-white/5">
+                <a href="index.html" class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-muzibu-purple to-pink-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-music text-white text-lg"></i>
+                    </div>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-muzibu-purple to-pink-500 bg-clip-text text-transparent">Muzibu</span>
+                </a>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto py-4 px-3">
+                <ul class="space-y-1">
+                    <li><a href="index.html" class="flex items-center px-4 py-3 rounded-lg bg-muzibu-purple/20 text-muzibu-purple-light border border-muzibu-purple/30"><i class="fas fa-home w-5"></i><span class="ml-3 font-medium">Ana Sayfa</span></a></li>
+                    <li><a href="pages/playlists.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"><i class="fas fa-list w-5"></i><span class="ml-3">Playlistler</span></a></li>
+                    <li><a href="pages/favorites.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"><i class="fas fa-heart w-5"></i><span class="ml-3">Favoriler</span></a></li>
+                    <li><a href="pages/albums.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"><i class="fas fa-record-vinyl w-5"></i><span class="ml-3">Albümler</span></a></li>
+                    <li><a href="pages/genres.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"><i class="fas fa-guitar w-5"></i><span class="ml-3">Türler</span></a></li>
+                    <li><a href="pages/sectors.html" class="flex items-center px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"><i class="fas fa-building w-5"></i><span class="ml-3">Sektörler</span></a></li>
+                </ul>
+
+                <div x-show="!isLoggedIn" x-transition class="mt-8 space-y-2">
+                    <button @click="showAuthModal = 'register'" class="w-full flex items-center px-4 py-3 rounded-lg bg-white/10 hover:bg-white/15 transition-all"><i class="fas fa-user-plus w-5"></i><span class="ml-3">Üye Ol</span></button>
+                    <button @click="showAuthModal = 'login'" class="w-full flex items-center px-4 py-3 rounded-lg bg-gradient-to-r from-muzibu-purple to-pink-500 hover:from-muzibu-purple-light hover:to-pink-400 transition-all"><i class="fas fa-sign-in-alt w-5"></i><span class="ml-3 font-medium">Giriş Yap</span></button>
+                </div>
+
+                <div x-show="isLoggedIn" x-transition class="mt-8 p-4 bg-white/5 rounded-xl border border-white/10">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-muzibu-purple to-pink-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-white truncate">Demo Kullanıcı</div>
+                            <div class="text-xs text-green-400 flex items-center gap-1">
+                                <i class="fas fa-crown"></i> Premium
+                            </div>
+                        </div>
+                    </div>
+                    <button @click="logout()" class="w-full px-3 py-2 bg-red-500/10 text-red-400 rounded-lg text-sm hover:bg-red-500/20 transition-all">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Çıkış Yap
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 min-h-screen pb-32" :class="isLoggedIn ? 'pt-0' : 'pt-16'">
+        <!-- Top Bar -->
+        <div class="sticky z-30 bg-muzibu-darker/95 backdrop-blur-xl border-b border-white/5" :class="isLoggedIn ? 'top-0' : 'top-14'">
+            <div class="flex items-center justify-between px-8 py-5">
+                <div class="relative flex-1 max-w-2xl" x-data="{ searchOpen: false, searchQuery: '' }">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="search" x-model="searchQuery" @focus="searchOpen = true" @click.away="searchOpen = false" placeholder="Şarkı, albüm, playlist ara..." class="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-muzibu-purple/50 transition-all">
+                    <div x-show="searchOpen && searchQuery.length > 0" x-transition class="absolute top-full left-0 right-0 mt-2 bg-muzibu-dark border border-white/10 rounded-xl shadow-2xl max-h-96 overflow-y-auto">
+                        <div class="p-2">
+                            <div class="px-3 py-2 text-xs text-gray-400 font-semibold">ŞARKILAR</div>
+                            <template x-for="i in 3">
+                                <button @click="playSong(0); searchOpen = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+                                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=40&h=40&fit=crop" class="w-10 h-10 rounded">
+                                    <div class="flex-1 text-left">
+                                        <div class="text-sm font-medium text-white">Calling on You</div>
+                                        <div class="text-xs text-gray-400">Muzibu Bossa Nova</div>
+                                    </div>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all relative">
+                        <i class="fas fa-bell text-gray-400"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <div class="relative" x-data="{ userMenuOpen: false }">
+                        <button @click="userMenuOpen = !userMenuOpen" class="w-10 h-10 rounded-full bg-gradient-to-br from-muzibu-purple to-pink-500 flex items-center justify-center hover:opacity-80 transition-all">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </button>
+                        <div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition class="absolute top-full right-0 mt-2 w-56 bg-muzibu-dark border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+                            <div class="p-2">
+                                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                    <i class="fas fa-user-circle text-gray-400"></i><span class="text-sm">Profil</span>
+                                </button>
+                                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                    <i class="fas fa-cog text-gray-400"></i><span class="text-sm">Ayarlar</span>
+                                </button>
+                                <hr class="my-2 border-white/10">
+                                <button @click="logout(); userMenuOpen = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left text-red-400">
+                                    <i class="fas fa-sign-out-alt"></i><span class="text-sm">Çıkış Yap</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MARKETING HERO (Guest only) -->
+        <section x-show="!isLoggedIn" x-transition class="relative px-8 pt-12 pb-16 overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-0 left-0 w-96 h-96 bg-muzibu-purple rounded-full filter blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 w-96 h-96 bg-pink-500 rounded-full filter blur-3xl"></div>
+            </div>
+            <div class="relative grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full">
+                            <i class="fas fa-check-circle text-green-400"></i><span class="text-sm font-medium text-green-300">MSG Lisanslı</span>
+                        </div>
+                        <div class="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full">
+                            <i class="fas fa-shield-alt text-blue-400"></i><span class="text-sm font-medium text-blue-300">100% Yasal</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                            <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">İşletmeniz İçin</span><br>
+                            <span class="bg-gradient-to-r from-muzibu-purple via-pink-500 to-muzibu-purple-light bg-clip-text text-transparent">Yasal & Telifsiz Müzik</span>
+                        </h1>
+                        <p class="text-xl text-gray-300 max-w-xl">25.000+ telifsiz şarkı. Telif cezalarından kurtulun, müşterilerinize keyifli bir atmosfer sunun.</p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="text-center p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-3xl font-bold text-muzibu-purple-light">25K+</div>
+                            <div class="text-sm text-gray-400 mt-1">Şarkı</div>
+                        </div>
+                        <div class="text-center p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-3xl font-bold text-green-400">5K+</div>
+                            <div class="text-sm text-gray-400 mt-1">İşletme</div>
+                        </div>
+                        <div class="text-center p-4 bg-white/5 rounded-xl border border-white/10">
+                            <div class="text-3xl font-bold text-pink-400">200+</div>
+                            <div class="text-sm text-gray-400 mt-1">Playlist</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <button @click="showAuthModal = 'register'" class="px-8 py-4 bg-gradient-to-r from-muzibu-purple to-pink-500 rounded-xl font-bold text-lg hover:from-muzibu-purple-light hover:to-pink-400 transition-all">
+                            <i class="fas fa-rocket mr-2"></i>7 Gün Ücretsiz Dene
+                        </button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl border border-white/20 p-8 shadow-2xl">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="relative">
+                                <img :src="currentSong.cover" class="w-20 h-20 rounded-xl" alt="Now Playing">
+                                <div class="absolute inset-0 bg-muzibu-purple/20 rounded-xl flex items-center justify-center">
+                                    <div class="flex gap-1">
+                                        <div class="w-1 bg-white rounded-full" style="height: 12px; animation: wave 1s ease-in-out infinite"></div>
+                                        <div class="w-1 bg-white rounded-full" style="height: 20px; animation: wave 1s ease-in-out infinite; animation-delay: 0.1s"></div>
+                                        <div class="w-1 bg-white rounded-full" style="height: 16px; animation: wave 1s ease-in-out infinite; animation-delay: 0.2s"></div>
+                                        <div class="w-1 bg-white rounded-full" style="height: 24px; animation: wave 1s ease-in-out infinite; animation-delay: 0.3s"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm text-gray-400 mb-1">Şu an çalıyor</div>
+                                <div class="font-bold text-lg" x-text="currentSong.title"></div>
+                                <div class="text-sm text-gray-400" x-text="currentSong.artist"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                                <div class="text-2xl font-bold text-muzibu-purple-light mb-1">25.847</div>
+                                <div class="text-xs text-gray-400">Toplam Şarkı</div>
+                            </div>
+                            <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                                <div class="text-2xl font-bold text-green-400 mb-1">18</div>
+                                <div class="text-xs text-gray-400">Farklı Tür</div>
+                            </div>
+                        </div>
+                        <div class="absolute -top-6 -right-6 w-16 h-16 bg-gradient-to-br from-muzibu-purple to-pink-500 rounded-2xl flex items-center justify-center shadow-xl float-animation">
+                            <i class="fas fa-music text-white text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Welcome Message (Logged in only) -->
+        <section x-show="isLoggedIn" x-transition class="px-8 pt-8">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-4xl font-bold mb-2">Hoşgeldin, Demo Kullanıcı 👋</h2>
+                    <p class="text-gray-400">Son kaldığın yerden devam et veya yeni müzikler keşfet</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HERO SLIDER (Guest only) -->
+        <section x-show="!isLoggedIn" x-transition class="px-8 pt-8" x-data="{ currentSlide: 0, slides: 3 }">
+            <div class="relative overflow-hidden rounded-3xl">
+                <!-- Slide 1 -->
+                <div x-show="currentSlide === 0" x-transition class="relative h-96 bg-gradient-to-r from-purple-600 to-pink-600">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-1/2 px-12">
+                            <div class="inline-block px-4 py-1 bg-white/20 rounded-full text-sm font-semibold mb-4">🎉 YENİ</div>
+                            <h2 class="text-5xl font-bold mb-4">7 Gün Ücretsiz Premium</h2>
+                            <p class="text-xl text-white/90 mb-6">25.000+ telifsiz müziğe sınırsız erişim. Kredi kartı gerektirmez!</p>
+                            <button @click="showAuthModal = 'register'" class="px-8 py-4 bg-white text-purple-600 rounded-xl font-bold hover:bg-gray-100 transition-all">Hemen Başla</button>
+                        </div>
+                        <div class="w-1/2 flex items-center justify-center">
+                            <i class="fas fa-music text-white/20 text-9xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div x-show="currentSlide === 1" x-transition class="relative h-96 bg-gradient-to-r from-blue-600 to-cyan-600">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-1/2 px-12">
+                            <div class="inline-block px-4 py-1 bg-white/20 rounded-full text-sm font-semibold mb-4">💼 İŞLETMELER İÇİN</div>
+                            <h2 class="text-5xl font-bold mb-4">Özel Fiyat Teklifi</h2>
+                            <p class="text-xl text-white/90 mb-6">Kurumsal müşterilerimiz için özel indirimli paketler</p>
+                            <button @click="showAuthModal = 'register'" class="px-8 py-4 bg-white text-blue-600 rounded-xl font-bold hover:bg-gray-100 transition-all">Teklif Al</button>
+                        </div>
+                        <div class="w-1/2 flex items-center justify-center">
+                            <i class="fas fa-building text-white/20 text-9xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div x-show="currentSlide === 2" x-transition class="relative h-96 bg-gradient-to-r from-orange-600 to-red-600">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-1/2 px-12">
+                            <div class="inline-block px-4 py-1 bg-white/20 rounded-full text-sm font-semibold mb-4">🎵 YENİ ÇIKANLAR</div>
+                            <h2 class="text-5xl font-bold mb-4">Bu Hafta 150+ Yeni Şarkı</h2>
+                            <p class="text-xl text-white/90 mb-6">Haftalık güncellenen telifsiz müzik arşivi</p>
+                            <button @click="showAuthModal = 'register'" class="px-8 py-4 bg-white text-orange-600 rounded-xl font-bold hover:bg-gray-100 transition-all">Keşfet</button>
+                        </div>
+                        <div class="w-1/2 flex items-center justify-center">
+                            <i class="fas fa-compact-disc text-white/20 text-9xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slider Controls -->
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+                    <button @click="currentSlide = 0" :class="currentSlide === 0 ? 'bg-white w-8' : 'bg-white/50 w-2'" class="h-2 rounded-full transition-all"></button>
+                    <button @click="currentSlide = 1" :class="currentSlide === 1 ? 'bg-white w-8' : 'bg-white/50 w-2'" class="h-2 rounded-full transition-all"></button>
+                    <button @click="currentSlide = 2" :class="currentSlide === 2 ? 'bg-white w-8' : 'bg-white/50 w-2'" class="h-2 rounded-full transition-all"></button>
+                </div>
+
+                <!-- Arrow Navigation -->
+                <button @click="currentSlide = currentSlide > 0 ? currentSlide - 1 : slides - 1" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all">
+                    <i class="fas fa-chevron-left text-white"></i>
+                </button>
+                <button @click="currentSlide = currentSlide < slides - 1 ? currentSlide + 1 : 0" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all">
+                    <i class="fas fa-chevron-right text-white"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- YENİ ALBÜMLER (Logged in only) - Dinamik İçerik -->
+        <section x-show="isLoggedIn" x-transition class="px-8 py-6">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold mb-2">🆕 Yeni Albümler</h3>
+                <p class="text-gray-400">Bu hafta eklenen taze albümler</p>
+            </div>
+            <div class="grid grid-cols-4 gap-4">
+                <template x-for="i in 8" :key="i">
+                    <a href="pages/album-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/newalbum${i}/300`" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                            <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                                <i class="fas fa-play text-white ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-white mb-1 truncate" x-text="`Yeni Albüm ${i}`"></h4>
+                        <p class="text-sm text-gray-400 truncate">Çeşitli Sanatçılar</p>
+                    </a>
+                </template>
+            </div>
+        </section>
+
+        <!-- TRENDING ŞARKILAR (Logged in only) - Dinamik İçerik -->
+        <section x-show="isLoggedIn" x-transition class="px-8 py-6">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold mb-2">🔥 Trend Şarkılar</h3>
+                <p class="text-gray-400">Şu an en çok dinlenen müzikler</p>
+            </div>
+            <div class="grid grid-cols-4 gap-4">
+                <template x-for="i in 8" :key="i">
+                    <div class="bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5 cursor-pointer">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/trending${i}/300`" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                            <div class="absolute top-2 left-2 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center font-bold text-sm">
+                                <span x-text="i"></span>
+                            </div>
+                        </div>
+                        <h4 class="font-bold text-white mb-1 truncate" x-text="`Trend Şarkı ${i}`"></h4>
+                        <p class="text-sm text-gray-400 truncate">Popüler Sanatçı</p>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- POPÜLER PLAYLIST'LER (Logged in only) -->
+        <section x-show="isLoggedIn" x-transition class="px-8 py-6">
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold mb-2">Popüler Playlist'ler</h3>
+                <p class="text-gray-400">En çok dinlenen çalma listeleri</p>
+            </div>
+            <div class="grid grid-cols-4 gap-4">
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist1/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Akustik Favoriler</h4>
+                    <p class="text-sm text-gray-400 truncate">42 şarkı • 2 saat 47 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist2/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Caz Klasikleri</h4>
+                    <p class="text-sm text-gray-400 truncate">68 şarkı • 4 saat 12 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist3/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Lounge & Chill</h4>
+                    <p class="text-sm text-gray-400 truncate">35 şarkı • 2 saat 15 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist4/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">İndie Rock</h4>
+                    <p class="text-sm text-gray-400 truncate">52 şarkı • 3 saat 8 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist5/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Bossa Nova</h4>
+                    <p class="text-sm text-gray-400 truncate">28 şarkı • 1 saat 45 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist6/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Elektronik Ambient</h4>
+                    <p class="text-sm text-gray-400 truncate">45 şarkı • 3 saat 22 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist7/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">Piano Solo</h4>
+                    <p class="text-sm text-gray-400 truncate">31 şarkı • 2 saat 5 dakika</p>
+                </a>
+                <a href="pages/playlist-detail.html" class="group bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-all border border-white/5">
+                    <div class="relative mb-4">
+                        <img src="https://picsum.photos/seed/playlist8/300" class="w-full aspect-square rounded-lg shadow-lg mb-3">
+                        <button class="absolute bottom-3 right-3 w-12 h-12 bg-muzibu-purple rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-xl">
+                            <i class="fas fa-play text-white ml-0.5"></i>
+                        </button>
+                    </div>
+                    <h4 class="font-bold text-white mb-1 truncate">World Music</h4>
+                    <p class="text-sm text-gray-400 truncate">58 şarkı • 3 saat 48 dakika</p>
+                </a>
+            </div>
+        </section>
+
+
+        <!-- ŞARKI LİSTELERİ - İKİ KOLON -->
+        <section class="px-8 py-8">
+            <div class="grid grid-cols-2 gap-6">
+
+                <!-- YENİ ÇIKAN ŞARKILAR -->
+                <div>
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">🆕 Yeni Çıkan Şarkılar</h3>
+                        <p class="text-gray-400 text-sm">Haftalık güncellenen telifsiz müzikler</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                <template x-for="(song, index) in songs" :key="index">
+                    <div class="grid grid-cols-2 gap-4 items-center p-5 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group/song border border-white/5">
+                        <div class="flex items-center gap-4" @click="handleSongClick(index)">
+                            <button class="w-14 h-14 bg-muzibu-purple/40 rounded-xl flex items-center justify-center group-hover/song:bg-muzibu-purple transition-all shadow-lg">
+                                <i :class="currentSongIndex === index && isPlaying ? 'fa-pause' : 'fa-play'" class="fas text-white text-lg ml-0.5"></i>
+                            </button>
+                            <img :src="song.cover" :alt="song.title" class="w-16 h-16 rounded-xl object-cover shadow-lg">
+                            <div class="flex-1 min-w-0">
+                                <h6 class="font-bold text-lg text-white truncate mb-1" x-text="song.title"></h6>
+                                <p class="text-sm text-gray-400 truncate" x-text="song.artist"></p>
+                            </div>
+                            <div x-show="!isLoggedIn" class="flex items-center gap-2 text-sm px-3 py-1.5 bg-yellow-400/10 text-yellow-400 rounded-lg whitespace-nowrap">
+                                <i class="fas fa-clock text-xs"></i>
+                                <span class="text-xs">Kalan: <span x-text="formatListeningTime()"></span></span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3">
+                            <span class="text-sm text-gray-400 font-medium" x-text="song.duration"></span>
+                            <button @click="handleFavoriteClick('song', index)" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
+                                <i :class="isFavorite('song', index) ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-gray-400 text-lg'"></i>
+                            </button>
+                            <div class="relative" x-data="{ playlistMenu: false }">
+                                <button @click="playlistMenu = !playlistMenu" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
+                                    <i class="fas fa-plus text-gray-400 text-lg"></i>
+                                </button>
+                                <div x-show="playlistMenu" @click.away="playlistMenu = false" x-transition class="absolute right-0 bottom-full mb-2 w-56 bg-muzibu-dark border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                                    <div class="p-2">
+                                        <div class="px-3 py-2 text-xs text-gray-400 font-semibold">Playlist'e Ekle</div>
+                                        <button @click="addToPlaylist(index, 'Favoriler'); playlistMenu = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                            <i class="fas fa-heart text-red-400"></i><span class="text-sm">Favoriler</span>
+                                        </button>
+                                        <button @click="addToPlaylist(index, 'Çalma Listem'); playlistMenu = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                            <i class="fas fa-music text-muzibu-purple"></i><span class="text-sm">Çalma Listem</span>
+                                        </button>
+                                        <hr class="my-2 border-white/10">
+                                        <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                            <i class="fas fa-plus text-green-400"></i><span class="text-sm">Yeni Playlist</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                    </div>
+                </div>
+
+                <!-- POPÜLER ŞARKILAR -->
+                <div>
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">🔥 Popüler Şarkılar</h3>
+                        <p class="text-gray-400 text-sm">En çok dinlenen telifsiz müzikler</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <template x-for="(song, index) in popularSongs" :key="index">
+                            <div class="grid grid-cols-2 gap-4 items-center p-5 rounded-xl bg-white/5 hover:bg-white/10 transition-all cursor-pointer group/song border border-white/5">
+                                <div class="flex items-center gap-4" @click="handlePopularClick(index)">
+                                    <button class="w-14 h-14 bg-orange-500/40 rounded-xl flex items-center justify-center group-hover/song:bg-orange-500 transition-all shadow-lg">
+                                        <i :class="currentPopularIndex === index && isPlayingPopular ? 'fa-pause' : 'fa-play'" class="fas text-white text-lg ml-0.5"></i>
+                                    </button>
+                                    <img :src="song.cover" :alt="song.title" class="w-16 h-16 rounded-xl object-cover shadow-lg">
+                                    <div class="flex-1 min-w-0">
+                                        <h6 class="font-bold text-lg text-white truncate mb-1" x-text="song.title"></h6>
+                                        <p class="text-sm text-gray-400 truncate" x-text="song.artist"></p>
+                                    </div>
+                                    <div x-show="!isLoggedIn" class="flex items-center gap-2 text-sm px-3 py-1.5 bg-yellow-400/10 text-yellow-400 rounded-lg whitespace-nowrap">
+                                        <i class="fas fa-clock text-xs"></i>
+                                        <span class="text-xs">Kalan: <span x-text="formatListeningTime()"></span></span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-end gap-3">
+                                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                                        <i class="fas fa-play text-xs"></i>
+                                        <span x-text="song.plays"></span>
+                                    </div>
+                                    <span class="text-sm text-gray-400 font-medium" x-text="song.duration"></span>
+                                    <button @click="togglePopularFavorite(index)" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
+                                        <i :class="isFavorite('popular', index) ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-gray-400 text-lg'"></i>
+                                    </button>
+                                    <div class="relative" x-data="{ playlistMenu: false }">
+                                        <button @click="playlistMenu = !playlistMenu" class="w-11 h-11 rounded-xl hover:bg-white/10 flex items-center justify-center transition-all">
+                                            <i class="fas fa-plus text-gray-400 text-lg"></i>
+                                        </button>
+                                        <div x-show="playlistMenu" @click.away="playlistMenu = false" x-transition class="absolute right-0 bottom-full mb-2 w-56 bg-muzibu-dark border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+                                            <div class="p-2">
+                                                <div class="px-3 py-2 text-xs text-gray-400 font-semibold">Playlist'e Ekle</div>
+                                                <button @click="addToPlaylist(index, 'Favoriler'); playlistMenu = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                                    <i class="fas fa-heart text-red-400"></i><span class="text-sm">Favoriler</span>
+                                                </button>
+                                                <button @click="addToPlaylist(index, 'Çalma Listem'); playlistMenu = false" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                                    <i class="fas fa-music text-muzibu-purple"></i><span class="text-sm">Çalma Listem</span>
+                                                </button>
+                                                <hr class="my-2 border-white/10">
+                                                <button class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                                                    <i class="fas fa-plus text-green-400"></i><span class="text-sm">Yeni Playlist</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Pricing (Guest only) -->
+        <section x-show="!isLoggedIn" x-transition class="px-8 py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Size Uygun Planı Seçin</h2>
+                <p class="text-xl text-gray-400">Tüm planlarda esnek iptal seçeneği</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all">
+                    <div class="text-sm text-green-400 font-semibold mb-2">DENEME</div>
+                    <div class="text-4xl font-bold mb-2">Ücretsiz</div>
+                    <p class="text-gray-400 mb-6 text-sm">7 gün tam erişim</p>
+                    <button @click="showAuthModal = 'register'" class="w-full px-6 py-3 bg-green-500/20 border border-green-500/30 text-green-300 rounded-xl font-medium hover:bg-green-500/30 transition-all mb-6">Hemen Başla</button>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Tüm özellikler</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> 25.000+ şarkı</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Kredi kartı gerektirmez</li>
+                    </ul>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all">
+                    <div class="text-sm text-muzibu-purple-light font-semibold mb-2">AYLIK</div>
+                    <div class="text-4xl font-bold mb-2">₺299<span class="text-lg text-gray-400">/ay</span></div>
+                    <p class="text-gray-400 mb-6 text-sm">Esnek ödeme, istediğin zaman iptal</p>
+                    <button @click="showAuthModal = 'register'" class="w-full px-6 py-3 bg-white/10 border border-white/20 rounded-xl font-medium hover:bg-white/20 transition-all mb-6">Başla</button>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Tüm özellikler</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> 25.000+ telifsiz müzik</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Sınırsız çalma listesi</li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-to-br from-muzibu-purple/20 to-pink-500/20 border-2 border-muzibu-purple rounded-2xl p-8 relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-muzibu-purple rounded-full text-sm font-semibold">EN POPüLER</div>
+                    <div class="text-sm text-muzibu-purple-light font-semibold mb-2">YILLIK</div>
+                    <div class="text-4xl font-bold mb-2">₺2.999<span class="text-lg text-gray-400">/yıl</span></div>
+                    <p class="text-gray-400 mb-2 text-sm">Aylık ₺249,92</p>
+                    <div class="inline-block px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold mb-4">%17 İNDİRİM</div>
+                    <button @click="showAuthModal = 'register'" class="w-full px-6 py-3 bg-gradient-to-r from-muzibu-purple to-pink-500 rounded-xl font-bold hover:from-muzibu-purple-light hover:to-pink-400 transition-all mb-6">Başla</button>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Tüm özellikler</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> 25.000+ telifsiz müzik</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Sınırsız çalma listesi</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> 12 ay sabit fiyat garantisi</li>
+                    </ul>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all">
+                    <div class="text-sm text-orange-400 font-semibold mb-2">KURUMSAL</div>
+                    <div class="text-4xl font-bold mb-2">Özel Teklif</div>
+                    <p class="text-gray-400 mb-6 text-sm">Zincir işletmeler için</p>
+                    <button @click="showAuthModal = 'register'" class="w-full px-6 py-3 bg-white/10 border border-white/20 rounded-xl font-medium hover:bg-white/20 transition-all mb-6">Teklif Al</button>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Özel indirimli fiyat</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Size özel çalma listeleri</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Müşteri temsilcisi desteği</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Özel kampanyalar</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Player -->
+    <div class="fixed bottom-0 left-64 right-0 h-24 bg-gradient-to-r from-muzibu-dark to-muzibu-darker backdrop-blur-xl border-t border-white/10 z-50">
+        <div class="h-full px-6 flex items-center justify-between gap-6">
+            <div class="flex items-center space-x-4 flex-1 min-w-0">
+                <img :src="currentSong.cover" class="w-16 h-16 rounded-lg shadow-lg">
+                <div class="flex-1 min-w-0">
+                    <h6 class="font-bold truncate" x-text="currentSong.title"></h6>
+                    <p class="text-sm text-gray-400 truncate" x-text="currentSong.artist"></p>
+                </div>
+                <button @click="handleFavoriteClick('song', currentSongIndex)" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center">
+                    <i :class="isFavorite('song', currentSongIndex) ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-400'"></i>
+                </button>
+            </div>
+            <div class="flex-1 max-w-2xl">
+                <div class="flex items-center justify-center gap-4 mb-2">
+                    <button @click="toggleShuffle" :class="shuffle ? 'text-muzibu-purple' : 'text-gray-400'" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center"><i class="fas fa-random text-sm"></i></button>
+                    <button @click="previousSong" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center"><i class="fas fa-step-backward text-gray-400"></i></button>
+                    <button @click="togglePlay" class="w-14 h-14 rounded-full bg-white hover:bg-opacity-90 flex items-center justify-center shadow-lg">
+                        <i :class="isPlaying ? 'fa-pause' : 'fa-play'" class="fas text-muzibu-dark text-lg ml-0.5"></i>
+                    </button>
+                    <button @click="nextSong" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center"><i class="fas fa-step-forward text-gray-400"></i></button>
+                    <button @click="toggleRepeat" :class="repeat ? 'text-muzibu-purple' : 'text-gray-400'" class="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center"><i class="fas fa-repeat text-sm"></i></button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-gray-400 w-10 text-right" x-text="formatTime(currentTime)"></span>
+                    <div class="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden cursor-pointer group" @click="seekTo($event)">
+                        <div class="h-full bg-gradient-to-r from-muzibu-purple to-pink-500 relative" :style="`width: ${(currentTime / duration) * 100}%`">
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100"></div>
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-400 w-10" x-text="formatTime(duration)"></span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 flex-1 justify-end">
+                <button @click="toggleMute" class="w-10 h-10 rounded-lg hover:bg-white/10 flex items-center justify-center">
+                    <i :class="muted ? 'fa-volume-mute' : 'fa-volume-up'" class="fas text-gray-400"></i>
+                </button>
+                <div class="w-24 h-1.5 bg-white/10 rounded-full overflow-hidden cursor-pointer group" @click="setVolume($event)">
+                    <div class="h-full bg-white relative" :style="`width: ${volume * 100}%`">
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <audio x-ref="audioPlayer" @timeupdate="updateTime" @ended="nextSong" :src="currentSong.file"></audio>
+    </div>
+
+    <!-- Modal -->
+    <div x-show="showAuthModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100]" x-transition>
+        <div @click.away="showAuthModal = null" class="bg-muzibu-dark border border-white/10 rounded-2xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold mb-6" x-text="showAuthModal === 'login' ? 'Giriş Yap' : 'Ücretsiz Kayıt Ol'"></h3>
+            <div class="space-y-4 mb-6">
+                <input type="email" placeholder="E-posta" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-muzibu-purple/50">
+                <input type="password" placeholder="Şifre" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-muzibu-purple/50">
+            </div>
+            <button @click="login(); showAuthModal = null" class="w-full px-6 py-4 bg-gradient-to-r from-muzibu-purple to-pink-500 rounded-xl font-bold mb-4">
+                <span x-text="showAuthModal === 'login' ? 'Giriş Yap' : 'Kayıt Ol'"></span>
+            </button>
+            <button @click="showAuthModal = showAuthModal === 'login' ? 'register' : 'login'" class="w-full text-sm text-gray-400 hover:text-white">
+                <span x-text="showAuthModal === 'login' ? 'Hesabın yok mu? Kayıt ol' : 'Zaten hesabın var mı? Giriş yap'"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Nav Buttons -->
+    <div class="fixed bottom-32 right-8 flex flex-col gap-3 z-50" x-data="{ navOpen: false }">
+        <a href="../index.html" class="w-14 h-14 bg-gradient-to-br from-muzibu-purple to-pink-500 rounded-full flex items-center justify-center shadow-lg hover:opacity-80 transition-all"><i class="fas fa-th text-white"></i></a>
+        <div class="relative">
+            <button @click="navOpen = !navOpen" class="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/20 hover:bg-white/20 transition-all">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div x-show="navOpen" @click.away="navOpen = false" x-transition class="absolute right-16 bottom-0 w-56 bg-muzibu-dark border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+                <div class="p-2">
+                    <div class="px-3 py-2 text-xs text-gray-400 font-semibold">GÖRÜNÜM</div>
+                    <button @click="isLoggedIn ? logout() : login(); navOpen = false" class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                        <span class="text-sm" x-text="isLoggedIn ? 'Giriş Yapmış' : 'Giriş Yapmamış'"></span>
+                        <i :class="isLoggedIn ? 'fa-toggle-on text-green-400' : 'fa-toggle-off text-gray-400'" class="fas"></i>
+                    </button>
+                    <hr class="my-2 border-white/10">
+                    <div class="px-3 py-2 text-xs text-gray-400 font-semibold">İÇ SAYFALAR</div>
+                    <a href="pages/playlist-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                        <i class="fas fa-list text-muzibu-purple"></i><span class="text-sm">Playlist Detay</span>
+                    </a>
+                    <a href="pages/album-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                        <i class="fas fa-record-vinyl text-pink-400"></i><span class="text-sm">Album Detay</span>
+                    </a>
+                    <a href="pages/sector-detail.html" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/5 transition-all text-left">
+                        <i class="fas fa-building text-green-400"></i><span class="text-sm">Sektör Detay</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <button onclick="location.href='../v10-minimalist-elegant/index.html'" class="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/20 hover:bg-white/20 transition-all"><i class="fas fa-chevron-left text-white"></i></button>
+        <button onclick="location.href='../v2-spotify-modern/index.html'" class="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/20 hover:bg-white/20 transition-all"><i class="fas fa-chevron-right text-white"></i></button>
+    </div>
+
+<script>
+function muzibuApp(){return{isLoggedIn:false,isPlaying:false,isPlayingPopular:false,currentSongIndex:0,currentPopularIndex:0,currentTime:0,duration:0,volume:0.7,muted:false,shuffle:false,repeat:false,showAuthModal:null,listeningTimeToday:0,maxListeningTime:3600,songs:[{title:'Calling on You',artist:'Muzibu Bossa Nova',duration:'3:45',cover:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Summer Breeze',artist:'Muzibu Jazz',duration:'4:12',cover:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Night Vibes',artist:'Muzibu Lounge',duration:'3:28',cover:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Morning Coffee',artist:'Muzibu Acoustic',duration:'5:01',cover:'https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'},{title:'Smooth Groove',artist:'Muzibu Soul',duration:'4:37',cover:'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=80&h=80&fit=crop',file:'/readme/muzibu-modul/Calling on You.mp3'}],popularSongs:[{title:'Jazz Piano Dreams',artist:'Muzibu Classics',plays:'2.4M',duration:'4:05',cover:'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=80&h=80&fit=crop'},{title:'Acoustic Sunset',artist:'Muzibu Guitar',plays:'1.8M',duration:'3:52',cover:'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=80&h=80&fit=crop'},{title:'Lo-Fi Beats',artist:'Muzibu Hip-Hop',plays:'3.1M',duration:'3:15',cover:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=80&h=80&fit=crop'},{title:'Bossa Vibes',artist:'Muzibu Latin',plays:'1.6M',duration:'4:28',cover:'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=80&h=80&fit=crop'},{title:'Electronic Chill',artist:'Muzibu EDM',plays:'2.9M',duration:'5:12',cover:'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80&h=80&fit=crop'}],favorites:{song:[],popular:[],playlist:[],album:[],radio:[],sector:[]},get currentSong(){return this.songs[this.currentSongIndex]||this.songs[0]},init(){this.isLoggedIn=localStorage.getItem('muzibu_logged_in')==='true';const savedTime=parseInt(localStorage.getItem('muzibu_listening_time')||'0');const lastDate=localStorage.getItem('muzibu_last_date');const today=new Date().toDateString();if(lastDate!==today){this.listeningTimeToday=0;localStorage.setItem('muzibu_last_date',today);localStorage.setItem('muzibu_listening_time','0')}else{this.listeningTimeToday=savedTime}},login(){this.isLoggedIn=true;localStorage.setItem('muzibu_logged_in','true')},logout(){this.isLoggedIn=false;localStorage.removeItem('muzibu_logged_in')},handleSongClick(index){if(!this.isLoggedIn){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0){this.showAuthModal='register';return}}this.playSong(index)},handleFavoriteClick(type,index){if(!this.isLoggedIn){this.showAuthModal='register';return}this.toggleFavorite(type,index)},handlePopularClick(index){if(!this.isLoggedIn){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0){this.showAuthModal='register';return}}this.currentPopularIndex=index;this.$refs.audioPlayer.load();this.$refs.audioPlayer.play();this.isPlayingPopular=true;this.isPlaying=false},togglePopularFavorite(index){if(!this.isLoggedIn){this.showAuthModal='register';return}this.toggleFavorite('popular',index)},playSong(index){this.currentSongIndex=index;this.$refs.audioPlayer.load();this.$refs.audioPlayer.play();this.isPlaying=true},togglePlay(){if(this.isPlaying){this.$refs.audioPlayer.pause()}else{this.$refs.audioPlayer.play()}this.isPlaying=!this.isPlaying},nextSong(){this.currentSongIndex=(this.currentSongIndex+1)%this.songs.length;this.playSong(this.currentSongIndex)},previousSong(){this.currentSongIndex=this.currentSongIndex===0?this.songs.length-1:this.currentSongIndex-1;this.playSong(this.currentSongIndex)},toggleShuffle(){this.shuffle=!this.shuffle},toggleRepeat(){this.repeat=!this.repeat},toggleMute(){this.muted=!this.muted;this.$refs.audioPlayer.muted=this.muted},seekTo(e){const rect=e.currentTarget.getBoundingClientRect();this.$refs.audioPlayer.currentTime=((e.clientX-rect.left)/rect.width)*this.duration},setVolume(e){const rect=e.currentTarget.getBoundingClientRect();this.volume=(e.clientX-rect.left)/rect.width;this.$refs.audioPlayer.volume=this.volume},formatTime(seconds){if(!seconds||isNaN(seconds))return'0:00';const mins=Math.floor(seconds/60);const secs=Math.floor(seconds%60);return`${mins}:${secs.toString().padStart(2,'0')}`},formatListeningTime(){const remaining=this.maxListeningTime-this.listeningTimeToday;if(remaining<=0)return'0 dk';const mins=Math.floor(remaining/60);return`${mins} dk`},updateTime(){this.currentTime=this.$refs.audioPlayer.currentTime;this.duration=this.$refs.audioPlayer.duration;if(!this.isLoggedIn&&this.isPlaying){this.listeningTimeToday++;localStorage.setItem('muzibu_listening_time',this.listeningTimeToday.toString());if(this.listeningTimeToday>=this.maxListeningTime){this.$refs.audioPlayer.pause();this.isPlaying=false;this.showAuthModal='register'}}},toggleFavorite(type,index){const idx=this.favorites[type].indexOf(index);if(idx>-1){this.favorites[type].splice(idx,1)}else{this.favorites[type].push(index)}},isFavorite(type,index){return this.favorites[type].includes(index)},addToPlaylist(songIndex,playlistName){alert(`"${this.songs[songIndex].title}" → "${playlistName}" eklendi!`)}}}
+</script>
+</body>
+</html>

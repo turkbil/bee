@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="albumApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Detail - Glassmorphism</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-strong">
+        <div class="px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="../index.html" class="text-2xl font-black">MUZIBU</a>
+                <button onclick="history.back()" class="text-white/70 hover:text-white">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="glass-strong rounded-3xl p-8 mb-8">
+                <div class="flex items-center gap-8">
+                    <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300" class="w-64 h-64 rounded-2xl shadow-2xl">
+                    <div class="flex-1">
+                        <div class="text-sm text-white/60 mb-2">ALBUM</div>
+                        <h1 class="text-5xl font-black mb-4">Chill Beats Vol. 1</h1>
+                        <div class="flex items-center gap-4 text-white/80 mb-6">
+                            <span>Various Artists</span>
+                            <span>•</span>
+                            <span>2024</span>
+                            <span>•</span>
+                            <span>30 songs</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button @click="playAlbum()" class="px-8 py-3 bg-white text-purple-600 rounded-full font-bold hover:scale-105 transition-all">
+                                <i class="fas fa-play mr-2"></i> Play Album
+                            </button>
+                            <button @click="toggleFavorite()" class="w-12 h-12 glass rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                                <i :class="isFavorited ? 'fas fa-heart text-pink-500' : 'far fa-heart'"></i>
+                            </button>
+                            <button class="w-12 h-12 glass rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <template x-for="i in 30" :key="i">
+                    <div @click="playSong(i)" class="glass-strong rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-all cursor-pointer group">
+                        <div class="w-12 text-center">
+                            <span x-show="!isPlaying(i)" class="text-white/60 group-hover:hidden" x-text="i"></span>
+                            <i x-show="!isPlaying(i)" class="fas fa-play hidden group-hover:block"></i>
+                            <i x-show="isPlaying(i)" class="fas fa-volume-up text-purple-400"></i>
+                        </div>
+                        <img :src="`https://picsum.photos/seed/album${i}/80`" class="w-16 h-16 rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-bold" x-text="'Track Title ' + i"></h4>
+                            <p class="text-sm text-white/60">Artist Name</p>
+                        </div>
+                        <div class="text-white/60">3:45</div>
+                        <button @click.stop="toggleSongFavorite(i)" class="w-10 h-10 glass rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                            <i :class="isSongFavorited(i) ? 'fas fa-heart text-pink-500' : 'far fa-heart'" class="text-sm"></i>
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+            <div class="glass-strong rounded-2xl p-8 mt-8">
+                <h3 class="text-2xl font-bold mb-6">More Like This</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <template x-for="i in 4" :key="'similar-'+i">
+                        <div class="cursor-pointer hover:scale-105 transition-all">
+                            <img :src="`https://picsum.photos/seed/similar${i}/300`" class="w-full aspect-square rounded-xl mb-3">
+                            <h4 class="font-bold text-sm" x-text="'Similar Album ' + i"></h4>
+                            <p class="text-xs text-white/60">Various Artists</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function albumApp() {
+            return {
+                isFavorited: false,
+                currentSong: null,
+                songFavorites: [],
+                init() {},
+                playAlbum() { this.currentSong = 1; },
+                playSong(id) { this.currentSong = id; },
+                isPlaying(id) { return this.currentSong === id; },
+                toggleFavorite() { this.isFavorited = !this.isFavorited; },
+                toggleSongFavorite(id) {
+                    if (this.songFavorites.includes(id)) {
+                        this.songFavorites = this.songFavorites.filter(s => s !== id);
+                    } else {
+                        this.songFavorites.push(id);
+                    }
+                },
+                isSongFavorited(id) { return this.songFavorites.includes(id); }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="playlistApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Detail - Muzibu Netflix Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'netflix-red': '#e50914',
+                        'netflix-black': '#141414',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-netflix-black text-white">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
+        <div class="px-12 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="../index.html" class="text-netflix-red text-3xl font-black">MUZIBU</a>
+                <button onclick="history.back()" class="text-white/60 hover:text-white">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative h-[60vh] -mt-20">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1920" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-netflix-black to-transparent"></div>
+        </div>
+
+        <div class="relative h-full flex items-end px-12 pb-12">
+            <div>
+                <div class="text-sm text-white/60 mb-2">PLAYLIST</div>
+                <h1 class="text-7xl font-black mb-4">Cafe Vibes</h1>
+                <p class="text-xl text-white/80 mb-6 max-w-2xl">Perfect background music for cafes and restaurants. Smooth, relaxing, royalty-free.</p>
+                <div class="flex items-center gap-4">
+                    <button @click="playPlaylist()" class="px-8 py-3 bg-white text-black rounded font-bold flex items-center gap-2 hover:bg-white/80">
+                        <i class="fas fa-play"></i> Play All
+                    </button>
+                    <button @click="shuffle()" class="px-6 py-3 bg-white/20 backdrop-blur rounded font-bold flex items-center gap-2 hover:bg-white/30">
+                        <i class="fas fa-random"></i> Shuffle
+                    </button>
+                    <button @click="toggleFavorite()" class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30">
+                        <i :class="isFavorited ? 'fas fa-heart text-netflix-red' : 'far fa-heart'"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="px-12 py-12">
+        <div class="space-y-2">
+            <template x-for="i in 30" :key="i">
+                <div @click="playSong(i)" class="group flex items-center gap-4 p-4 rounded hover:bg-white/5 cursor-pointer">
+                    <div class="w-12 text-center">
+                        <span x-show="!isPlaying(i)" class="text-white/60 group-hover:text-white" x-text="i"></span>
+                        <i x-show="isPlaying(i)" class="fas fa-volume-up text-netflix-red"></i>
+                    </div>
+                    <img :src="`https://picsum.photos/seed/pl${i}/56`" class="w-14 h-14 rounded">
+                    <div class="flex-1">
+                        <div class="font-semibold" x-text="'Song Title ' + i"></div>
+                        <div class="text-sm text-white/60">Artist Name</div>
+                    </div>
+                    <div class="text-sm text-white/60">3:25</div>
+                    <button @click.stop="toggleSongFavorite(i)" class="opacity-0 group-hover:opacity-100">
+                        <i :class="isSongFavorited(i) ? 'fas fa-heart text-netflix-red' : 'far fa-heart text-white/60 hover:text-white'"></i>
+                    </button>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <script>
+        function playlistApp() {
+            return {
+                isFavorited: false,
+                currentSong: null,
+                songFavorites: [],
+                init() {},
+                playPlaylist() { this.currentSong = 1; },
+                shuffle() { console.log('Shuffled'); },
+                playSong(id) { this.currentSong = id; },
+                isPlaying(id) { return this.currentSong === id; },
+                toggleFavorite() { this.isFavorited = !this.isFavorited; },
+                toggleSongFavorite(id) {
+                    if (this.songFavorites.includes(id)) {
+                        this.songFavorites = this.songFavorites.filter(s => s !== id);
+                    } else {
+                        this.songFavorites.push(id);
+                    }
+                },
+                isSongFavorited(id) { return this.songFavorites.includes(id); }
+            }
+        }
+    </script>
+
+</body>
+</html>

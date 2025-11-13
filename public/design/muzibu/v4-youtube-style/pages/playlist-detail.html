@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="playlistApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Detail - YouTube Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'yt-red': '#ff0000',
+                        'yt-dark': '#0f0f0f',
+                        'yt-secondary': '#212121',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-yt-dark text-white">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-yt-dark/95 backdrop-blur border-b border-white/10">
+        <div class="px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="../index.html" class="flex items-center gap-2">
+                    <i class="fab fa-youtube text-yt-red text-3xl"></i>
+                    <span class="text-xl font-black">MUZIBU</span>
+                </a>
+                <button onclick="history.back()" class="text-white/60 hover:text-white">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20 pb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 p-6">
+
+            <!-- LEFT: PLAYLIST INFO -->
+            <div class="lg:sticky lg:top-24 h-fit">
+                <div class="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-2xl p-8 text-center">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400" class="w-full aspect-square rounded-xl mb-6 shadow-2xl">
+                    <h1 class="text-3xl font-black mb-2">Cafe Vibes</h1>
+                    <p class="text-white/80 mb-6">Perfect background music for your cafe. Smooth, relaxing, royalty-free.</p>
+
+                    <div class="flex items-center justify-center gap-4 text-sm text-white/60 mb-6">
+                        <span><i class="fas fa-music mr-1"></i> 45 songs</span>
+                        <span>•</span>
+                        <span><i class="fas fa-clock mr-1"></i> 2h 30min</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button @click="playAll()" class="w-full px-6 py-3 bg-yt-red rounded-full font-bold flex items-center justify-center gap-2 hover:bg-red-600 transition-all">
+                            <i class="fas fa-play"></i> Play All
+                        </button>
+                        <button @click="shuffle()" class="w-full px-6 py-3 bg-white/20 backdrop-blur rounded-full font-bold flex items-center justify-center gap-2 hover:bg-white/30 transition-all">
+                            <i class="fas fa-random"></i> Shuffle
+                        </button>
+                        <button @click="toggleFavorite()" class="w-full px-6 py-3 bg-white/10 backdrop-blur rounded-full font-bold flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
+                            <i :class="isFavorited ? 'fas fa-heart text-yt-red' : 'far fa-heart'"></i>
+                            <span x-text="isFavorited ? 'Favorited' : 'Add to Favorites'"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: SONGS LIST (YouTube playlist style) -->
+            <div class="lg:col-span-2">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold">Tracks</h2>
+                    <div class="flex items-center gap-2">
+                        <button class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium">
+                            <i class="fas fa-sort-amount-down mr-2"></i> Sort
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <template x-for="i in 45" :key="i">
+                        <div @click="playSong(i)" class="group flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition-all">
+
+                            <!-- Index/Play Button -->
+                            <div class="w-12 text-center flex-shrink-0">
+                                <span x-show="!isPlaying(i)" class="text-white/60 group-hover:hidden" x-text="i"></span>
+                                <i x-show="!isPlaying(i)" class="fas fa-play hidden group-hover:block text-white"></i>
+                                <i x-show="isPlaying(i)" class="fas fa-volume-up text-yt-red"></i>
+                            </div>
+
+                            <!-- Thumbnail -->
+                            <div class="relative flex-shrink-0">
+                                <img :src="`https://picsum.photos/seed/playlist${i}/120`" class="w-24 h-14 rounded object-cover">
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <i class="fas fa-play text-white text-xl"></i>
+                                </div>
+                            </div>
+
+                            <!-- Song Info -->
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-semibold truncate group-hover:text-yt-red transition-colors" x-text="'Song Title ' + i"></h4>
+                                <p class="text-sm text-white/60 truncate">Artist Name</p>
+                            </div>
+
+                            <!-- Duration -->
+                            <div class="text-sm text-white/60 flex-shrink-0">3:25</div>
+
+                            <!-- Actions (hover) -->
+                            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                                <button @click.stop="toggleSongFavorite(i)" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full">
+                                    <i :class="isSongFavorited(i) ? 'fas fa-heart text-yt-red' : 'far fa-heart text-white/60'" class="text-sm"></i>
+                                </button>
+                                <button @click.stop="showMenu(i)" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full">
+                                    <i class="fas fa-ellipsis-v text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function playlistApp() {
+            return {
+                isFavorited: false,
+                currentSong: null,
+                songFavorites: [],
+
+                init() {},
+
+                playAll() {
+                    console.log('Playing all');
+                    this.currentSong = 1;
+                },
+
+                shuffle() {
+                    console.log('Shuffled');
+                },
+
+                playSong(id) {
+                    this.currentSong = id;
+                },
+
+                isPlaying(id) {
+                    return this.currentSong === id;
+                },
+
+                toggleFavorite() {
+                    this.isFavorited = !this.isFavorited;
+                },
+
+                toggleSongFavorite(id) {
+                    if (this.songFavorites.includes(id)) {
+                        this.songFavorites = this.songFavorites.filter(s => s !== id);
+                    } else {
+                        this.songFavorites.push(id);
+                    }
+                },
+
+                isSongFavorited(id) {
+                    return this.songFavorites.includes(id);
+                },
+
+                showMenu(id) {
+                    console.log('Show menu for:', id);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

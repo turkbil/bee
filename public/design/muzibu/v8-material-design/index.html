@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="materialApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu V8 - Material Design 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'md-primary': '#6200ee',
+                        'md-secondary': '#03dac6',
+                        'md-surface': '#1e1e1e',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #121212;
+        }
+        .elevation-1 {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .elevation-2 {
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        .elevation-3 {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        }
+        .elevation-4 {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }
+        .ripple {
+            position: relative;
+            overflow: hidden;
+            transform: translate3d(0, 0, 0);
+        }
+        .ripple:after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            transform: scale(10, 10);
+            opacity: 0;
+            transition: transform .5s, opacity 1s;
+        }
+        .ripple:active:after {
+            transform: scale(0, 0);
+            opacity: .3;
+            transition: 0s;
+        }
+        .fab {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fab:hover {
+            box-shadow: 0 14px 28px rgba(98,0,238,0.4), 0 10px 10px rgba(98,0,238,0.3);
+            transform: scale(1.1);
+        }
+        .card-hover {
+            transition: all 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="h-full text-white pb-24">
+
+    <!-- TOP APP BAR (Material Design) -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-md-surface elevation-2">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button class="md:hidden w-12 h-12 flex items-center justify-center ripple rounded-full hover:bg-white/10">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="../index.html" class="text-2xl font-bold text-md-primary">MUZIBU</a>
+            </div>
+
+            <div class="flex-1 max-w-2xl mx-8 hidden md:block">
+                <div class="relative">
+                    <input type="text" placeholder="Search 25,000+ songs..." class="w-full px-6 py-3 bg-white/10 rounded-full text-white outline-none focus:bg-white/15 transition-all">
+                    <button class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center ripple rounded-full hover:bg-white/10">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button class="w-12 h-12 flex items-center justify-center ripple rounded-full hover:bg-white/10">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button @click="isLoggedIn = !isLoggedIn" class="w-12 h-12 bg-md-primary ripple rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="pt-20 px-4">
+
+        <!-- HERO CARD (Material Design Elevated Card) -->
+        <div class="max-w-7xl mx-auto mb-8">
+            <div class="bg-gradient-to-r from-md-primary to-purple-700 rounded-3xl p-8 md:p-12 elevation-3">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full text-sm font-bold mb-4">
+                            <i class="fas fa-fire text-orange-400"></i> Featured Collection
+                        </div>
+                        <h1 class="text-5xl font-bold mb-4">Premium Music<br>for Your Business</h1>
+                        <p class="text-lg text-white/90 mb-8">25,000+ royalty-free songs for cafes, restaurants, and more.</p>
+                        <div class="flex items-center gap-4">
+                            <button @click="playContent('hero')" class="px-8 py-4 bg-white text-md-primary rounded-full font-bold ripple elevation-1 hover:elevation-3">
+                                <i class="fas fa-play mr-2"></i> Play Now
+                            </button>
+                            <button class="px-8 py-4 bg-white/10 backdrop-blur rounded-full font-bold ripple">
+                                Browse
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="w-full rounded-2xl elevation-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK ACCESS CHIPS (Material Design Chips) -->
+        <div class="max-w-7xl mx-auto mb-8">
+            <div class="flex gap-3 overflow-x-auto pb-2" style="scrollbar-width: none;">
+                <template x-for="chip in ['All', 'Cafe', 'Restaurant', 'Lounge', 'Barber', 'Gym', 'Mall', 'Office']" :key="chip">
+                    <button @click="activeChip = chip" :class="activeChip === chip ? 'bg-md-primary text-white' : 'bg-white/10 text-white/80'" class="px-6 py-2 rounded-full font-medium whitespace-nowrap ripple transition-all hover:bg-md-primary/80">
+                        <span x-text="chip"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <!-- TRENDING PLAYLISTS (Material Cards) -->
+        <div class="max-w-7xl mx-auto mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold">Trending Playlists</h2>
+                <button class="text-md-secondary font-semibold flex items-center gap-2 ripple px-4 py-2 rounded-lg hover:bg-white/5">
+                    View All <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <template x-for="i in 8" :key="'trending-'+i">
+                    <div class="card-hover bg-md-surface rounded-2xl elevation-1 overflow-hidden cursor-pointer group" @click="goToDetail('playlist', i)">
+                        <div class="relative">
+                            <img :src="`https://picsum.photos/seed/trending${i}/400`" class="w-full aspect-square object-cover">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button class="w-16 h-16 bg-md-primary rounded-full flex items-center justify-center fab">
+                                    <i class="fas fa-play text-white text-xl ml-1"></i>
+                                </button>
+                            </div>
+                            <button @click.stop="toggleFavorite('trending', i)" class="absolute top-3 right-3 w-10 h-10 bg-black/60 backdrop-blur rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                <i :class="isFavorite('trending', i) ? 'fas fa-heart text-red-500' : 'far fa-heart'" class="text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold mb-1 truncate" x-text="'Playlist ' + i"></h3>
+                            <p class="text-white/60 text-sm truncate">45 songs • 2h 30min</p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- TOP ALBUMS -->
+        <div class="max-w-7xl mx-auto mb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold">Top Albums</h2>
+                <button class="text-md-secondary font-semibold flex items-center gap-2 ripple px-4 py-2 rounded-lg hover:bg-white/5">
+                    View All <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <template x-for="i in 12" :key="'album-'+i">
+                    <div class="card-hover bg-md-surface rounded-2xl elevation-1 p-4 cursor-pointer group" @click="goToDetail('album', i)">
+                        <div class="relative mb-3">
+                            <img :src="`https://picsum.photos/seed/album${i}/300`" class="w-full aspect-square rounded-xl">
+                            <button class="absolute inset-0 m-auto w-12 h-12 bg-md-primary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all fab">
+                                <i class="fas fa-play text-white ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-sm truncate" x-text="'Album ' + i"></h4>
+                        <p class="text-white/60 text-xs truncate">Various Artists</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- MEMBER CTA -->
+        <div x-show="!isLoggedIn" x-transition class="max-w-7xl mx-auto mb-12">
+            <div class="bg-gradient-to-r from-md-primary to-md-secondary rounded-3xl p-12 text-center elevation-3">
+                <i class="fas fa-crown text-6xl text-yellow-300 mb-6"></i>
+                <h3 class="text-4xl font-bold mb-4">Upgrade to Premium</h3>
+                <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">Get unlimited access to 25,000+ royalty-free songs. Perfect for any business.</p>
+                <button @click="isLoggedIn = true" class="px-12 py-4 bg-white text-md-primary rounded-full font-bold text-lg ripple elevation-2 hover:elevation-4">
+                    Start Free Trial
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM NAVIGATION (Material Design) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-md-surface elevation-4 z-40">
+        <div class="flex items-center justify-around py-3">
+            <button @click="activeTab = 'home'" :class="activeTab === 'home' ? 'text-md-primary' : 'text-white/60'" class="flex flex-col items-center gap-1 ripple px-6 py-2 rounded-lg">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs font-medium">Home</span>
+            </button>
+            <button @click="activeTab = 'search'" :class="activeTab === 'search' ? 'text-md-primary' : 'text-white/60'" class="flex flex-col items-center gap-1 ripple px-6 py-2 rounded-lg">
+                <i class="fas fa-search text-xl"></i>
+                <span class="text-xs font-medium">Search</span>
+            </button>
+            <button @click="activeTab = 'library'" :class="activeTab === 'library' ? 'text-md-primary' : 'text-white/60'" class="flex flex-col items-center gap-1 ripple px-6 py-2 rounded-lg">
+                <i class="fas fa-book text-xl"></i>
+                <span class="text-xs font-medium">Library</span>
+            </button>
+            <button @click="activeTab = 'profile'" :class="activeTab === 'profile' ? 'text-md-primary' : 'text-white/60'" class="flex flex-col items-center gap-1 ripple px-6 py-2 rounded-lg">
+                <i class="fas fa-user text-xl"></i>
+                <span class="text-xs font-medium">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- FAB (Floating Action Button) -->
+    <button x-show="currentlyPlaying" @click="showPlayer = !showPlayer" class="fixed bottom-24 right-6 w-16 h-16 bg-md-primary rounded-full flex items-center justify-center fab elevation-3 z-50">
+        <i :class="showPlayer ? 'fas fa-times' : 'fas fa-play'" class="text-white text-xl"></i>
+    </button>
+
+    <!-- MINI PLAYER (Material Card) -->
+    <div x-show="currentlyPlaying && showPlayer" x-transition class="fixed bottom-40 right-6 w-80 bg-md-surface rounded-2xl elevation-4 overflow-hidden z-50">
+        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400" class="w-full aspect-video object-cover">
+        <div class="p-4">
+            <h4 class="font-bold mb-1">Now Playing</h4>
+            <p class="text-white/60 text-sm mb-4">Chill Beats Mix</p>
+            <div class="flex items-center justify-center gap-6">
+                <button class="ripple w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button @click="currentlyPlaying = false" class="w-12 h-12 bg-md-primary rounded-full flex items-center justify-center ripple">
+                    <i class="fas fa-pause text-white"></i>
+                </button>
+                <button class="ripple w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Navigation Buttons -->
+    <div class="fixed bottom-24 left-6 flex flex-col gap-3 z-40">
+        <a href="../index.html" class="w-14 h-14 bg-md-surface elevation-2 hover:elevation-3 rounded-full flex items-center justify-center transition-all ripple">
+            <i class="fas fa-home"></i>
+        </a>
+        <a href="../v7-glassmorphism/index.html" class="w-14 h-14 bg-md-surface elevation-2 hover:elevation-3 rounded-full flex items-center justify-center transition-all ripple">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <a href="../v9-neomorphism/index.html" class="w-14 h-14 bg-md-surface elevation-2 hover:elevation-3 rounded-full flex items-center justify-center transition-all ripple">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+
+    <script>
+        function materialApp() {
+            return {
+                isLoggedIn: false,
+                currentlyPlaying: false,
+                showPlayer: true,
+                activeTab: 'home',
+                activeChip: 'All',
+                favorites: [],
+
+                init() {
+                    console.log('Material Design Muzibu initialized');
+                },
+
+                playContent(type, id) {
+                    console.log('Playing:', type, id);
+                    this.currentlyPlaying = true;
+                },
+
+                toggleFavorite(type, id) {
+                    const key = `${type}-${id}`;
+                    if (this.favorites.includes(key)) {
+                        this.favorites = this.favorites.filter(f => f !== key);
+                    } else {
+                        this.favorites.push(key);
+                    }
+                },
+
+                isFavorite(type, id) {
+                    return this.favorites.includes(`${type}-${id}`);
+                },
+
+                goToDetail(type, id) {
+                    window.location.href = `pages/${type}-detail.html?id=${id}`;
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

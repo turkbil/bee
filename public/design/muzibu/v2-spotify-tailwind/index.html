@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="spotifyApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Spotify Style | İşletmenize Yasal Müzik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1db954',
+                        'spotify-black': '#000000',
+                        'spotify-gray': '#121212',
+                        'spotify-light-gray': '#181818',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Circular', -apple-system, BlinkMacSystemFont, sans-serif; }
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+        .hover-lift { transition: transform 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-8px); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="h-full bg-spotify-black text-white">
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 bottom-20 w-64 bg-spotify-black border-r border-white/10 overflow-y-auto z-40">
+        <div class="p-6">
+            <a href="../index.html" class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center">
+                    <i class="fas fa-music text-black text-lg"></i>
+                </div>
+                <span class="text-2xl font-black">Muzibu</span>
+            </a>
+
+            <nav class="space-y-2">
+                <a href="index.html" class="flex items-center gap-4 px-4 py-3 rounded-lg bg-spotify-light-gray text-white font-semibold">
+                    <i class="fas fa-home text-xl w-6"></i>
+                    <span>Ana Sayfa</span>
+                </a>
+                <a href="pages/search.html" class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                    <i class="fas fa-search text-xl w-6"></i>
+                    <span>Ara</span>
+                </a>
+                <a href="pages/library.html" class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                    <i class="fas fa-book text-xl w-6"></i>
+                    <span>Kitaplığın</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 space-y-2">
+                <a href="pages/playlists.html" class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                    <i class="fas fa-plus-square text-xl w-6"></i>
+                    <span>Çalma Listesi Oluştur</span>
+                </a>
+                <a href="pages/favorites.html" class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all">
+                    <i class="fas fa-heart text-xl w-6 text-spotify-green"></i>
+                    <span>Beğenilen Şarkılar</span>
+                </a>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-white/10">
+                <h3 class="px-4 text-xs font-bold text-white/50 uppercase tracking-wider mb-3">Sektörler</h3>
+                <template x-for="sektor in ['Kafe', 'Restoran', 'Berber', 'Lounge', 'Spor Salonu', 'AVM', 'Ofis', 'Spa']" :key="sektor">
+                    <a href="#" @click.prevent="filterBySector(sektor)" :class="activeSector === sektor ? 'text-spotify-green' : 'text-white/70 hover:text-white'" class="block px-4 py-2 text-sm hover:bg-white/5 rounded-lg transition-all">
+                        <span x-text="sektor"></span>
+                    </a>
+                </template>
+            </div>
+
+            <!-- Premium CTA -->
+            <div x-show="!isPremium" x-transition class="mt-6 mx-4 p-4 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl">
+                <h4 class="font-bold mb-2">Premium'a Geç</h4>
+                <p class="text-xs text-white/90 mb-3">Rekl amsız müzik dinle. Çevrimdışı dinle. İstediğin zaman çal.</p>
+                <button @click="isPremium = true" class="w-full px-4 py-2 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-all">
+                    Ücretsiz Dene
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 pb-32 pt-4 px-6">
+
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-4">
+                <button onclick="history.back()" class="w-10 h-10 bg-black/40 rounded-full flex items-center justify-center hover:bg-black/60 transition-all">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button onclick="history.forward()" class="w-10 h-10 bg-black/40 rounded-full flex items-center justify-center hover:bg-black/60 transition-all">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button @click="isPremium = !isPremium" class="px-6 py-2 bg-white text-black rounded-full font-bold text-sm hover:scale-105 transition-all">
+                    <template x-if="!isPremium">Premium'a Geç</template>
+                    <template x-if="isPremium">Premium Üye</template>
+                </button>
+                <button @click="showProfile = !showProfile" class="w-10 h-10 bg-black rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Greeting Section -->
+        <div class="mb-8 slide-in">
+            <h1 class="text-4xl font-black mb-2">
+                <span x-text="getGreeting()"></span>
+            </h1>
+            <p class="text-white/70">İşletmeniz için en iyi müzikler burada</p>
+        </div>
+
+        <!-- Quick Access (Spotify-style big tiles) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            <template x-for="i in 6" :key="'quick-'+i">
+                <a href="#" @click.prevent="playQuickAccess(i)" class="group flex items-center gap-4 bg-white/10 hover:bg-white/20 rounded-lg overflow-hidden transition-all">
+                    <img :src="`https://picsum.photos/seed/quick${i}/80`" class="w-20 h-20 object-cover">
+                    <div class="flex-1 pr-4">
+                        <h3 class="font-bold truncate" x-text="'Playlist ' + i"></h3>
+                        <p class="text-sm text-white/70 truncate">Müzib u Koleksiyonu</p>
+                    </div>
+                    <button class="w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all mr-4 shadow-xl">
+                        <i class="fas fa-play text-black ml-0.5"></i>
+                    </button>
+                </a>
+            </template>
+        </div>
+
+        <!-- Kaldığın Yerden Devam Et (Jump Back In) -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Kaldığın Yerden Devam Et</h2>
+                <a href="pages/recent.html" class="text-sm text-white/70 hover:text-white font-semibold">Tümünü Göster</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <template x-for="i in 6" :key="'recent-'+i">
+                    <div class="group p-4 bg-spotify-light-gray hover:bg-white/10 rounded-lg cursor-pointer transition-all hover-lift">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/recent${i}/300`" class="w-full aspect-square rounded-lg shadow-xl object-cover">
+                            <button @click.stop="playSong(i)" class="absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-2xl hover:scale-110">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-white mb-1 truncate" x-text="'Playlist ' + i"></h3>
+                        <p class="text-sm text-white/70 truncate">2 saat önce çaldın</p>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- Sana Özel (Made For You) -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Sana Özel</h2>
+                <a href="pages/made-for-you.html" class="text-sm text-white/70 hover:text-white font-semibold">Tümünü Göster</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <template x-for="i in 6" :key="'made-'+i">
+                    <div class="group p-4 bg-spotify-light-gray hover:bg-white/10 rounded-lg cursor-pointer transition-all hover-lift">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/made${i}/300`" class="w-full aspect-square rounded-lg shadow-xl object-cover">
+                            <button @click.stop="playSong(i)" class="absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-2xl hover:scale-110">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-white mb-1 truncate" x-text="'Keşif Mix ' + i"></h3>
+                        <p class="text-sm text-white/70 line-clamp-2">Sana özel hazırlandı • Muzibu</p>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- Popüler Playlistler -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Popüler Playlistler</h2>
+                <a href="pages/playlists.html" class="text-sm text-white/70 hover:text-white font-semibold">Tümünü Göster</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <template x-for="i in 12" :key="'popular-'+i">
+                    <a :href="'pages/playlist-detail.html?id=' + i" class="group p-4 bg-spotify-light-gray hover:bg-white/10 rounded-lg cursor-pointer transition-all hover-lift">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/popular${i}/300`" class="w-full aspect-square rounded-lg shadow-xl object-cover">
+                            <button @click.stop="playSong(i)" class="absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-2xl hover:scale-110">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-white mb-1 truncate" x-text="'Playlist ' + i"></h3>
+                        <p class="text-sm text-white/70 line-clamp-2">45 şarkı • 2s 30dk</p>
+                    </a>
+                </template>
+            </div>
+        </section>
+
+        <!-- Albümler -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">Yeni Albümler</h2>
+                <a href="pages/albums.html" class="text-sm text-white/70 hover:text-white font-semibold">Tümünü Göster</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                <template x-for="i in 6" :key="'album-'+i">
+                    <a :href="'pages/album-detail.html?id=' + i" class="group p-4 bg-spotify-light-gray hover:bg-white/10 rounded-lg cursor-pointer transition-all hover-lift">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/album${i}/300`" class="w-full aspect-square rounded-lg shadow-xl object-cover">
+                            <button @click.stop="playSong(i)" class="absolute bottom-2 right-2 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-2xl hover:scale-110">
+                                <i class="fas fa-play text-black ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-white mb-1 truncate" x-text="'Albüm ' + i"></h3>
+                        <p class="text-sm text-white/70 truncate">Çeşitli Sanatçılar</p>
+                    </a>
+                </template>
+            </div>
+        </section>
+
+        <!-- İşletmeniz İçin (Business Sectors) -->
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold">İşletmeniz İçin</h2>
+                <a href="pages/sectors.html" class="text-sm text-white/70 hover:text-white font-semibold">Tümünü Göster</a>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <template x-for="sector in [
+                    {name: 'Kafe', icon: '☕', color: 'from-amber-600 to-orange-600'},
+                    {name: 'Restoran', icon: '🍽️', color: 'from-red-600 to-pink-600'},
+                    {name: 'Berber', icon: '✂️', color: 'from-blue-600 to-cyan-600'},
+                    {name: 'Lounge', icon: '🎭', color: 'from-purple-600 to-indigo-600'},
+                    {name: 'Spor Salonu', icon: '💪', color: 'from-green-600 to-emerald-600'},
+                    {name: 'AVM', icon: '🛍️', color: 'from-pink-600 to-rose-600'},
+                    {name: 'Ofis', icon: '💼', color: 'from-gray-600 to-slate-600'},
+                    {name: 'Spa', icon: '🧖', color: 'from-teal-600 to-cyan-600'}
+                ]" :key="sector.name">
+                    <a :href="'pages/sector-detail.html?name=' + sector.name" class="group relative h-48 rounded-lg overflow-hidden cursor-pointer hover-lift">
+                        <div class="absolute inset-0 bg-gradient-to-br" :class="sector.color"></div>
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
+                        <div class="relative h-full flex flex-col items-center justify-center p-6 text-center">
+                            <div class="text-6xl mb-3" x-text="sector.icon"></div>
+                            <h3 class="text-xl font-bold text-white" x-text="sector.name"></h3>
+                        </div>
+                    </a>
+                </template>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Player Bar (Fixed Bottom) -->
+    <div class="fixed bottom-0 left-0 right-0 h-20 bg-spotify-light-gray border-t border-white/10 z-50">
+        <div class="h-full flex items-center justify-between px-4">
+            <!-- Now Playing -->
+            <div class="flex items-center gap-4 flex-1 min-w-0">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80" class="w-14 h-14 rounded">
+                <div class="min-w-0">
+                    <div class="font-semibold text-sm truncate">Şu An Çalıyor</div>
+                    <div class="text-xs text-white/70 truncate">Muzibu Koleksiyonu</div>
+                </div>
+                <button @click="toggleFavorite()" class="ml-2">
+                    <i :class="isFavorited ? 'fas fa-heart text-spotify-green' : 'far fa-heart text-white/70 hover:text-white'" class="text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Player Controls -->
+            <div class="flex-1 max-w-2xl">
+                <div class="flex items-center justify-center gap-4 mb-2">
+                    <button class="text-white/70 hover:text-white"><i class="fas fa-random text-sm"></i></button>
+                    <button class="text-white/70 hover:text-white"><i class="fas fa-step-backward"></i></button>
+                    <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                        <i class="fas fa-pause text-black"></i>
+                    </button>
+                    <button class="text-white/70 hover:text-white"><i class="fas fa-step-forward"></i></button>
+                    <button class="text-white/70 hover:text-white"><i class="fas fa-redo text-sm"></i></button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-white/70">1:23</span>
+                    <div class="flex-1 h-1 bg-white/20 rounded-full group cursor-pointer">
+                        <div class="h-full bg-white rounded-full w-1/3 group-hover:bg-spotify-green"></div>
+                    </div>
+                    <span class="text-xs text-white/70">3:45</span>
+                </div>
+            </div>
+
+            <!-- Volume & More -->
+            <div class="flex items-center gap-4 flex-1 justify-end">
+                <button class="text-white/70 hover:text-white"><i class="fas fa-list"></i></button>
+                <button class="text-white/70 hover:text-white"><i class="fas fa-desktop"></i></button>
+                <div class="flex items-center gap-2">
+                    <button class="text-white/70 hover:text-white"><i class="fas fa-volume-up"></i></button>
+                    <div class="w-24 h-1 bg-white/20 rounded-full group cursor-pointer hidden lg:block">
+                        <div class="h-full bg-white rounded-full w-2/3 group-hover:bg-spotify-green"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Navigation Buttons -->
+    <div class="fixed bottom-24 right-6 flex flex-col gap-3 z-40">
+        <a href="../index.html" class="w-14 h-14 bg-spotify-gray hover:bg-white/20 rounded-full flex items-center justify-center transition-all shadow-xl">
+            <i class="fas fa-home"></i>
+        </a>
+        <a href="../v1-muzibu-tailwind/index.html" class="w-14 h-14 bg-spotify-gray hover:bg-white/20 rounded-full flex items-center justify-center transition-all shadow-xl">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <a href="../v3-apple-minimalist/index.html" class="w-14 h-14 bg-spotify-gray hover:bg-white/20 rounded-full flex items-center justify-center transition-all shadow-xl">
+            <i class="fas fa-chevron-right"></i>
+        </a>
+    </div>
+
+    <script>
+        function spotifyApp() {
+            return {
+                isPremium: false,
+                showProfile: false,
+                isFavorited: false,
+                activeSector: null,
+
+                init() {
+                    console.log('Spotify-style Muzibu initialized');
+                },
+
+                getGreeting() {
+                    const hour = new Date().getHours();
+                    if (hour < 12) return 'Günaydın';
+                    if (hour < 18) return 'İyi Günler';
+                    return 'İyi Akşamlar';
+                },
+
+                playQuickAccess(id) {
+                    console.log('Quick play:', id);
+                },
+
+                playSong(id) {
+                    console.log('Playing:', id);
+                },
+
+                toggleFavorite() {
+                    this.isFavorited = !this.isFavorited;
+                },
+
+                filterBySector(sector) {
+                    this.activeSector = sector;
+                    console.log('Filter by:', sector);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

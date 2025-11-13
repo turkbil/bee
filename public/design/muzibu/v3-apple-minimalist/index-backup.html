@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="muzibuApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu V3 - Apple Music Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'apple-red': '#fc3c44',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: #000;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .carousel-item {
+            scroll-snap-align: start;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full bg-black text-white">
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 glass p-6">
+        <div class="mb-8">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-apple-red to-red-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-music text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-bold">Muzibu</span>
+            </a>
+        </div>
+
+        <nav class="space-y-1">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10 text-white font-semibold">
+                <i class="fas fa-play-circle w-5"></i>Listen Now
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/60 hover:text-white">
+                <i class="fas fa-search w-5"></i>Browse
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/60 hover:text-white">
+                <i class="fas fa-broadcast-tower w-5"></i>Radio
+            </a>
+            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/60 hover:text-white">
+                <i class="fas fa-book w-5"></i>Library
+            </a>
+        </nav>
+
+        <div class="mt-8">
+            <button class="w-full px-4 py-3 bg-gradient-to-r from-apple-red to-red-600 rounded-full text-white font-bold hover:opacity-90">
+                Try it Free
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="ml-64 pb-32">
+        <!-- Top Bar -->
+        <div class="sticky top-0 z-30 glass px-8 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-3xl font-bold">Listen Now</h1>
+                <div class="flex items-center gap-4">
+                    <button class="w-10 h-10 glass rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO: Featured Album (BÜYÜK ARTWORK!) -->
+        <section class="px-8 py-12">
+            <div class="glass rounded-3xl p-12 flex items-center gap-12">
+                <div class="w-80 h-80 rounded-3xl overflow-hidden shadow-2xl flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <div class="text-sm text-white/60 mb-2">FEATURED PLAYLIST</div>
+                    <h2 class="text-6xl font-black mb-4">Chill Vibes</h2>
+                    <p class="text-xl text-white/80 mb-6">Relax with these smooth tracks. Updated weekly.</p>
+                    <div class="flex items-center gap-4">
+                        <button class="px-8 py-3 bg-apple-red rounded-full text-white font-bold flex items-center gap-2 hover:scale-105 transition-all">
+                            <i class="fas fa-play"></i> Play
+                        </button>
+                        <button class="w-12 h-12 glass rounded-full flex items-center justify-center">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOP CHARTS CAROUSEL (Horizontal Scroll!) -->
+        <section class="px-8 py-8">
+            <h3 class="text-3xl font-bold mb-6">Top Charts</h3>
+            <div class="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4">
+                <template x-for="i in 8" :key="i">
+                    <div class="carousel-item flex-shrink-0 w-96">
+                        <div class="glass rounded-2xl p-6 flex items-center gap-6 hover:bg-white/10 transition-all">
+                            <div class="w-24 h-24 rounded-xl overflow-hidden">
+                                <img :src="`https://picsum.photos/seed/chart${i}/100`" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-2xl font-black mb-1" x-text="i"></div>
+                                <div class="font-bold text-lg" x-text="'Top Song ' + i"></div>
+                                <div class="text-sm text-white/60">Artist Name</div>
+                            </div>
+                            <button class="w-12 h-12 bg-apple-red rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
+                                <i class="fas fa-play text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- MADE FOR YOU (2-Column Large Cards) -->
+        <section class="px-8 py-8">
+            <h3 class="text-3xl font-bold mb-6">Made For You</h3>
+            <div class="grid grid-cols-2 gap-6">
+                <template x-for="i in 2" :key="i">
+                    <div class="glass rounded-2xl overflow-hidden group cursor-pointer">
+                        <div class="flex items-center">
+                            <div class="w-48 h-48">
+                                <img :src="`https://picsum.photos/seed/made${i}/200`" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 p-8">
+                                <h4 class="text-2xl font-bold mb-2" x-text="'Your Mix ' + i"></h4>
+                                <p class="text-white/60 mb-4">Personalized playlist based on your taste</p>
+                                <button class="px-6 py-2 bg-white/10 rounded-full text-sm font-semibold group-hover:bg-apple-red transition-all">
+                                    Play
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- RECENTLY PLAYED (Horizontal Large Cards) -->
+        <section class="px-8 py-8">
+            <h3 class="text-3xl font-bold mb-6">Recently Played</h3>
+            <div class="grid grid-cols-4 gap-6">
+                <template x-for="i in 4" :key="i">
+                    <div class="group cursor-pointer">
+                        <div class="relative mb-4">
+                            <img :src="`https://picsum.photos/seed/recent${i}/300`" class="w-full aspect-square rounded-2xl">
+                            <button class="absolute bottom-4 right-4 w-14 h-14 bg-apple-red rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all shadow-2xl">
+                                <i class="fas fa-play text-white ml-1"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-lg mb-1" x-text="'Album ' + i"></h4>
+                        <p class="text-sm text-white/60">Artist Name</p>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Player Bar -->
+    <div class="fixed bottom-0 left-64 right-0 glass px-8 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4 w-1/3">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56" class="w-16 h-16 rounded-xl">
+                <div>
+                    <div class="font-semibold">Song Title</div>
+                    <div class="text-sm text-white/60">Artist</div>
+                </div>
+                <button class="text-white/60 hover:text-apple-red">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 max-w-2xl">
+                <div class="flex items-center justify-center gap-6 mb-2">
+                    <button class="text-white/60 hover:text-white"><i class="fas fa-random"></i></button>
+                    <button class="text-white/60 hover:text-white"><i class="fas fa-step-backward"></i></button>
+                    <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                        <i class="fas fa-play text-black ml-0.5"></i>
+                    </button>
+                    <button class="text-white/60 hover:text-white"><i class="fas fa-step-forward"></i></button>
+                    <button class="text-white/60 hover:text-white"><i class="fas fa-redo"></i></button>
+                </div>
+                <div class="h-1 bg-white/10 rounded-full">
+                    <div class="h-full bg-apple-red rounded-full w-1/3"></div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-1/3 justify-end">
+                <button class="text-white/60 hover:text-white"><i class="fas fa-volume-up"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="fixed bottom-28 right-6 flex flex-col gap-3 z-50">
+        <a href="../index.html" class="w-14 h-14 glass hover:bg-apple-red rounded-full flex items-center justify-center">
+            <i class="fas fa-home text-white"></i>
+        </a>
+        <a href="../v2-muzibu-tailwind/index.html" class="w-14 h-14 glass hover:bg-apple-red rounded-full flex items-center justify-center">
+            <i class="fas fa-chevron-left text-white"></i>
+        </a>
+        <a href="../v4-netflix-style/index.html" class="w-14 h-14 glass hover:bg-apple-red rounded-full flex items-center justify-center">
+            <i class="fas fa-chevron-right text-white"></i>
+        </a>
+    </div>
+
+    <script>
+        function muzibuApp() {
+            return {
+                isLoggedIn: false,
+                init() {}
+            }
+        }
+    </script>
+
+</body>
+</html>

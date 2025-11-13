@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="appleApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Apple Music Tarzı | İşletmenize Yasal Müzik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'apple-red': '#fa233b',
+                        'apple-bg': '#000000',
+                        'apple-card': '#1c1c1e',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .glass { background: rgba(28,28,30,0.72); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); }
+        .hover-scale { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hover-scale:hover { transform: scale(1.05); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hover-lift { transition: all 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    </style>
+</head>
+<body class="h-full bg-apple-bg text-white overflow-x-hidden">
+
+    <!-- Top Navigation (Glass) -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
+        <div class="max-w-[1800px] mx-auto px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-10">
+                <a href="../index.html" class="text-2xl font-semibold tracking-tight">Muzibu</a>
+                <div class="hidden md:flex gap-8 text-sm font-medium">
+                    <a href="#" class="text-white transition hover:text-apple-red">Keşfet</a>
+                    <a href="#" class="text-white/60 transition hover:text-white">Radyo</a>
+                    <a href="#" class="text-white/60 transition hover:text-white">Kitaplık</a>
+                    <a href="#" class="text-white/60 transition hover:text-white">Sektörler</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="relative hidden md:block">
+                    <input type="text" placeholder="Şarkı, albüm, sanatçı ara..." 
+                           class="w-80 pl-10 pr-4 py-2 bg-white/10 rounded-full text-sm outline-none focus:bg-white/15 transition">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/50 text-sm"></i>
+                </div>
+                <button class="px-6 py-2 bg-apple-red rounded-full text-sm font-semibold hover:bg-red-600 transition">
+                    Hemen Dene
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-16 pb-32">
+        
+        <!-- Hero: Featured Large Artwork -->
+        <section class="px-8 py-16">
+            <div class="max-w-[1800px] mx-auto glass rounded-3xl p-16 flex gap-16 items-center">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=800&fit=crop" 
+                     class="w-96 h-96 rounded-2xl shadow-2xl object-cover">
+                <div class="flex-1">
+                    <div class="text-xs text-apple-red font-bold uppercase tracking-wider mb-4">Öne Çıkan Playlist</div>
+                    <h1 class="text-7xl font-black mb-6 leading-tight">Chill Vibes<br>İşletmeniz İçin</h1>
+                    <p class="text-xl text-white/70 mb-8 max-w-2xl">
+                        Rahatla, dinlen. Kafe, restoran ve tüm işletmeler için özenle seçilmiş 25.000+ şarkı.
+                    </p>
+                    <div class="flex gap-4">
+                        <button @click="playing = !playing" class="px-10 py-4 bg-apple-red rounded-full text-lg font-semibold hover:bg-red-600 transition">
+                            <i class="fas fa-play mr-2"></i> Şimdi Çal
+                        </button>
+                        <button class="px-10 py-4 glass rounded-full text-lg font-semibold hover:bg-white/10 transition">
+                            <i class="fas fa-share-alt mr-2"></i> Paylaş
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- En Çok Dinlenenler (Charts) -->
+        <section class="px-8 py-12">
+            <div class="max-w-[1800px] mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-4xl font-bold">En Çok Dinlenenler</h2>
+                    <a href="#" class="text-apple-red text-sm font-semibold hover:underline">Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                </div>
+                <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4">
+                    <template x-for="i in 10">
+                        <div class="flex-shrink-0 w-[480px] glass rounded-2xl p-8 flex gap-8 items-center cursor-pointer hover-lift group">
+                            <div class="text-6xl font-black text-white/10 group-hover:text-apple-red/30 transition w-20 text-center" x-text="i"></div>
+                            <img :src="'https://picsum.photos/seed/chart'+i+'/120/120'" class="w-28 h-28 rounded-xl shadow-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-xl font-bold mb-1 truncate" x-text="'Rahatlatıcı Melodi ' + i"></h3>
+                                <p class="text-sm text-white/60 mb-2">Muzibu Koleksiyonu</p>
+                                <div class="flex items-center gap-3 text-xs text-white/50">
+                                    <span><i class="fas fa-play mr-1"></i> 1.2M dinlenme</span>
+                                    <span>•</span>
+                                    <span><i class="fas fa-clock mr-1"></i> 45 dk</span>
+                                </div>
+                            </div>
+                            <button class="w-16 h-16 bg-apple-red rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <i class="fas fa-play text-white text-lg ml-1"></i>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- Senin İçin (For You) -->
+        <section class="px-8 py-12">
+            <div class="max-w-[1800px] mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-4xl font-bold">Senin İçin</h2>
+                    <a href="#" class="text-apple-red text-sm font-semibold hover:underline">Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <template x-for="i in 2">
+                        <div class="glass rounded-3xl p-10 flex gap-10 items-center cursor-pointer hover-lift group">
+                            <img :src="'https://picsum.photos/seed/foryou'+i+'/300/300'" class="w-64 h-64 rounded-2xl shadow-xl object-cover">
+                            <div class="flex-1">
+                                <div class="text-xs text-apple-red font-bold uppercase tracking-wider mb-3">Size Özel Karışım</div>
+                                <h3 class="text-4xl font-bold mb-4" x-text="'Mix ' + i + ': Chill & Focus'"></h3>
+                                <p class="text-white/60 mb-6">İşletmeniz için özenle hazırlanmış playlist.</p>
+                                <button class="px-8 py-3 bg-apple-red rounded-full font-semibold hover:bg-red-600 transition">
+                                    <i class="fas fa-play mr-2"></i> Çal
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yeni Çıkanlar -->
+        <section class="px-8 py-12">
+            <div class="max-w-[1800px] mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-4xl font-bold">Yeni Çıkanlar</h2>
+                    <a href="#" class="text-apple-red text-sm font-semibold hover:underline">Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                </div>
+                <div class="grid grid-cols-6 gap-6">
+                    <template x-for="i in 12">
+                        <div class="group cursor-pointer">
+                            <div class="relative mb-4">
+                                <img :src="'https://picsum.photos/seed/new'+i+'/300/300'" 
+                                     class="w-full aspect-square rounded-2xl shadow-lg object-cover hover-scale">
+                                <button class="absolute bottom-4 right-4 w-14 h-14 bg-apple-red rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
+                                    <i class="fas fa-play text-white ml-1"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-1 truncate" x-text="'Yeni Albüm ' + i"></h3>
+                            <p class="text-sm text-white/60 truncate">Sanatçı</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popüler Playlistler -->
+        <section class="px-8 py-12">
+            <div class="max-w-[1800px] mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-4xl font-bold">Popüler Playlistler</h2>
+                    <a href="#" class="text-apple-red text-sm font-semibold hover:underline">Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i></a>
+                </div>
+                <div class="grid grid-cols-6 gap-6">
+                    <template x-for="i in 18">
+                        <div class="group cursor-pointer">
+                            <div class="relative mb-4">
+                                <img :src="'https://picsum.photos/seed/playlist'+i+'/300/300'" 
+                                     class="w-full aspect-square rounded-2xl shadow-lg object-cover hover-scale">
+                                <button class="absolute bottom-4 right-4 w-14 h-14 bg-apple-red rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
+                                    <i class="fas fa-play text-white ml-1"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-bold mb-1 truncate" x-text="'Playlist ' + i"></h3>
+                            <p class="text-sm text-white/60 truncate">25 şarkı • 1.5 saat</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sektörlere Göre -->
+        <section class="px-8 py-12">
+            <div class="max-w-[1800px] mx-auto">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-4xl font-bold">İşletmeniz İçin</h2>
+                    <p class="text-white/60">Sektörünüze özel müzik seçenekleri</p>
+                </div>
+                <div class="grid grid-cols-4 gap-6">
+                    <template x-for="sector in [
+                        {name: 'Kafe & Kahvehane', icon: '☕', emoji: 'coffee', color: 'from-amber-600 via-orange-600 to-red-600'},
+                        {name: 'Restoran', icon: '🍽️', emoji: 'restaurant', color: 'from-red-600 via-pink-600 to-purple-600'},
+                        {name: 'Lounge & Bar', icon: '🍸', emoji: 'lounge', color: 'from-purple-600 via-indigo-600 to-blue-600'},
+                        {name: 'Berber & Kuaför', icon: '💈', emoji: 'barber', color: 'from-blue-600 via-cyan-600 to-teal-600'},
+                        {name: 'AVM & Market', icon: '🛍️', emoji: 'mall', color: 'from-teal-600 via-green-600 to-emerald-600'},
+                        {name: 'Spor Salonu', icon: '💪', emoji: 'gym', color: 'from-emerald-600 via-lime-600 to-yellow-600'},
+                        {name: 'Otel & Spa', icon: '🏨', emoji: 'hotel', color: 'from-yellow-600 via-amber-600 to-orange-600'},
+                        {name: 'Ofis & Workspace', icon: '💼', emoji: 'office', color: 'from-gray-600 via-slate-600 to-zinc-600'}
+                    ]">
+                        <a href="#" class="group relative h-56 rounded-3xl overflow-hidden cursor-pointer hover-lift">
+                            <div class="absolute inset-0 bg-gradient-to-br" :class="sector.color"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute inset-0 p-8 flex flex-col justify-end">
+                                <div class="text-7xl mb-4 transform group-hover:scale-110 transition" x-text="sector.icon"></div>
+                                <h3 class="text-2xl font-bold mb-2" x-text="sector.name"></h3>
+                                <p class="text-sm text-white/80">150+ özel playlist</p>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mini Player (Glassmorphic, bottom floating) -->
+    <div x-show="playing" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-full"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-full"
+         class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[600px] glass rounded-3xl shadow-2xl overflow-hidden border border-white/10 z-50">
+        <div class="p-6">
+            <div class="flex items-center gap-6 mb-6">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200" 
+                     class="w-20 h-20 rounded-xl shadow-lg object-cover">
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-lg mb-1 truncate">Chill Vibes Playlist</h4>
+                    <p class="text-sm text-white/60 truncate">Muzibu Collection</p>
+                </div>
+                <button @click="playing = false" class="w-10 h-10 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-times text-white/60"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center justify-center gap-8 mb-4">
+                <button class="w-10 h-10 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="w-16 h-16 bg-white rounded-full hover:bg-white/90 transition shadow-lg">
+                    <i class="fas fa-pause text-black text-xl"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-4 text-xs text-white/60">
+                <span>2:15</span>
+                <div class="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-apple-red rounded-full" style="width: 45%"></div>
+                </div>
+                <span>5:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Navigation Buttons (Bottom Right) -->
+    <div class="fixed bottom-8 right-8 flex flex-col gap-3 z-40">
+        <a href="../index.html" 
+           class="w-14 h-14 glass hover:bg-white/20 rounded-full flex items-center justify-center transition shadow-lg">
+            <i class="fas fa-home text-lg"></i>
+        </a>
+        <a href="../v2-spotify-tailwind/index.html" 
+           class="w-14 h-14 glass hover:bg-apple-red rounded-full flex items-center justify-center transition shadow-lg">
+            <i class="fas fa-chevron-left text-lg"></i>
+        </a>
+        <a href="../v4-youtube-style/index.html" 
+           class="w-14 h-14 glass hover:bg-apple-red rounded-full flex items-center justify-center transition shadow-lg">
+            <i class="fas fa-chevron-right text-lg"></i>
+        </a>
+    </div>
+
+    <script>
+        function appleApp() {
+            return {
+                playing: false,
+                init() {
+                    console.log('Muzibu Apple Music Style initialized');
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

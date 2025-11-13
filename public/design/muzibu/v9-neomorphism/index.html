@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="neoApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu V9 - Neomorphism Soft UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #e0e5ec;
+        }
+        .neo-raised {
+            background: #e0e5ec;
+            box-shadow: 9px 9px 16px rgba(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+        }
+        .neo-pressed {
+            background: #e0e5ec;
+            box-shadow: inset 6px 6px 10px rgba(163,177,198,0.6), inset -6px -6px 10px rgba(255,255,255, 0.5);
+        }
+        .neo-flat {
+            background: #e0e5ec;
+            box-shadow: 5px 5px 10px rgba(163,177,198,0.5), -5px -5px 10px rgba(255,255,255, 0.8);
+        }
+        .neo-hover {
+            transition: all 0.3s ease;
+        }
+        .neo-hover:hover {
+            box-shadow: 12px 12px 20px rgba(163,177,198,0.7), -12px -12px 20px rgba(255,255,255, 0.6);
+            transform: translateY(-2px);
+        }
+        .text-neo {
+            color: #5f6c7b;
+        }
+        .text-neo-dark {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body class="h-full text-neo-dark">
+
+    <!-- TOP NAV (Neomorphic) -->
+    <nav class="sticky top-0 z-50 neo-raised">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="../index.html" class="text-2xl font-black text-neo-dark">MUZIBU</a>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#" class="text-neo-dark font-semibold">Ana Sayfa</a>
+                    <a href="#" class="text-neo">Gözat</a>
+                    <a href="#" class="text-neo">Kitaplığım</a>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="hidden md:block neo-pressed rounded-full px-6 py-3">
+                    <input type="text" placeholder="Şarkı ara..." class="bg-transparent text-neo-dark outline-none placeholder-neo">
+                </div>
+                <button @click="isLoggedIn = !isLoggedIn" class="w-12 h-12 neo-raised rounded-full flex items-center justify-center neo-hover">
+                    <i class="fas fa-user text-neo-dark"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="px-6 py-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="neo-raised rounded-3xl p-12">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-6 py-3 neo-pressed rounded-full text-sm font-bold mb-6">
+                            <i class="fas fa-crown text-yellow-600"></i> Öne Çıkan Koleksiyon
+                        </div>
+                        <h1 class="text-6xl font-black mb-6 text-neo-dark">İşletmeniz İçin<br>Premium Müzik</h1>
+                        <p class="text-xl text-neo mb-8">25.000+ telifsiz şarkı. Kafe, restoran ve daha fazlası için mükemmel.</p>
+                        <div class="flex items-center gap-4">
+                            <button @click="playContent('hero')" class="px-8 py-4 neo-raised rounded-full font-bold neo-hover">
+                                <i class="fas fa-play mr-2"></i> Şimdi Çal
+                            </button>
+                            <button class="px-8 py-4 neo-pressed rounded-full font-bold">
+                                Gözat
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="neo-raised rounded-2xl p-4">
+                            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="w-full rounded-xl">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KATEGOR İLER (Neomorphic Buttons) -->
+    <section class="px-6 py-8">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold mb-6 text-neo-dark">Sektöre Göre Gözat</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <template x-for="sektor in ['Kafe', 'Restoran', 'Berber', 'Lounge', 'Spor Salonu', 'AVM', 'Ofis', 'Spa']" :key="sektor">
+                    <button @click="filterSector(sektor)" class="neo-raised rounded-2xl p-8 text-center neo-hover">
+                        <div class="text-5xl mb-4">
+                            <span x-show="sektor === 'Kafe'">☕</span>
+                            <span x-show="sektor === 'Restoran'">🍽️</span>
+                            <span x-show="sektor === 'Berber'">✂️</span>
+                            <span x-show="sektor === 'Lounge'">🎭</span>
+                            <span x-show="sektor === 'Spor Salonu'">💪</span>
+                            <span x-show="sektor === 'AVM'">🛍️</span>
+                            <span x-show="sektor === 'Ofis'">💼</span>
+                            <span x-show="sektor === 'Spa'">🧖</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-neo-dark" x-text="sektor"></h3>
+                    </button>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- TREND PLAYLISTLER -->
+    <section class="px-6 py-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-neo-dark">Trend Playlistler</h2>
+                <a href="#" class="text-neo font-semibold">Tümünü Gör →</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <template x-for="i in 8" :key="'trend-'+i">
+                    <div class="neo-raised rounded-2xl p-4 neo-hover cursor-pointer group">
+                        <div class="relative mb-4 neo-pressed rounded-xl p-3">
+                            <img :src="`https://picsum.photos/seed/neo${i}/400`" class="w-full aspect-square rounded-lg">
+                            <button class="absolute inset-0 m-auto w-16 h-16 neo-raised rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                <i class="fas fa-play text-neo-dark text-xl ml-1"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-neo-dark mb-1" x-text="'Playlist ' + i"></h3>
+                        <p class="text-neo text-sm">45 şarkı • 2s 30dk</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOP ALBÜMLER -->
+    <section class="px-6 py-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-neo-dark">En İyi Albümler</h2>
+                <a href="#" class="text-neo font-semibold">Tümünü Gör →</a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <template x-for="i in 12" :key="'album-'+i">
+                    <div class="neo-raised rounded-2xl p-4 neo-hover cursor-pointer group">
+                        <div class="relative mb-3 neo-pressed rounded-xl p-2">
+                            <img :src="`https://picsum.photos/seed/album${i}/300`" class="w-full aspect-square rounded-lg">
+                            <button class="absolute inset-0 m-auto w-12 h-12 neo-raised rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                <i class="fas fa-play text-neo-dark ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-bold text-sm text-neo-dark truncate" x-text="'Albüm ' + i"></h4>
+                        <p class="text-neo text-xs truncate">Çeşitli Sanatçılar</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <!-- ÜYE OL CTA -->
+    <section x-show="!isLoggedIn" x-transition class="px-6 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="neo-raised rounded-3xl p-12 text-center">
+                <i class="fas fa-crown text-6xl text-yellow-600 mb-6"></i>
+                <h3 class="text-4xl font-bold text-neo-dark mb-4">Premium'a Yükselt</h3>
+                <p class="text-xl text-neo mb-8">25.000+ telifsiz şarkıya sınırsız erişim. Her işletme için mükemmel.</p>
+                <button @click="isLoggedIn = true" class="px-12 py-4 neo-raised rounded-full font-bold text-lg neo-hover">
+                    Ücretsiz Dene
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- MİNİ PLAYER -->
+    <div x-show="currentlyPlaying" x-transition class="fixed bottom-6 left-6 right-6 neo-raised rounded-2xl p-4 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="neo-pressed rounded-lg p-2">
+                    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=80" class="w-14 h-14 rounded">
+                </div>
+                <div>
+                    <div class="font-bold text-neo-dark">Şu An Çalıyor</div>
+                    <div class="text-neo text-sm">Muzibu Koleksiyonu</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <button class="w-12 h-12 neo-raised rounded-full flex items-center justify-center neo-hover">
+                    <i class="fas fa-step-backward text-neo-dark"></i>
+                </button>
+                <button @click="currentlyPlaying = false" class="w-14 h-14 neo-pressed rounded-full flex items-center justify-center">
+                    <i class="fas fa-pause text-neo-dark"></i>
+                </button>
+                <button class="w-12 h-12 neo-raised rounded-full flex items-center justify-center neo-hover">
+                    <i class="fas fa-step-forward text-neo-dark"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="w-10 h-10 neo-raised rounded-full flex items-center justify-center neo-hover">
+                    <i class="fas fa-heart text-neo-dark"></i>
+                </button>
+                <button @click="currentlyPlaying = false" class="w-10 h-10 neo-raised rounded-full flex items-center justify-center neo-hover">
+                    <i class="fas fa-times text-neo-dark"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Navigation -->
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+        <a href="../index.html" class="w-14 h-14 neo-raised rounded-full flex items-center justify-center neo-hover">
+            <i class="fas fa-home text-neo-dark"></i>
+        </a>
+        <a href="../v8-material-design/index.html" class="w-14 h-14 neo-raised rounded-full flex items-center justify-center neo-hover">
+            <i class="fas fa-chevron-left text-neo-dark"></i>
+        </a>
+        <a href="../v10-retro-vinyl/index.html" class="w-14 h-14 neo-raised rounded-full flex items-center justify-center neo-hover">
+            <i class="fas fa-chevron-right text-neo-dark"></i>
+        </a>
+    </div>
+
+    <script>
+        function neoApp() {
+            return {
+                isLoggedIn: false,
+                currentlyPlaying: false,
+                init() {},
+                playContent(type, id) {
+                    this.currentlyPlaying = true;
+                },
+                filterSector(sektor) {
+                    console.log('Filtre:', sektor);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

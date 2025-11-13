@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="albumApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Detail - Muzibu Netflix Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'netflix-red': '#e50914',
+                        'netflix-black': '#141414',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #141414;
+        }
+    </style>
+</head>
+<body class="h-full bg-netflix-black text-white">
+
+    <!-- Top Nav -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur">
+        <div class="px-12 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="../index.html" class="text-netflix-red text-3xl font-black tracking-tight">MUZIBU</a>
+                <button onclick="history.back()" class="flex items-center gap-2 text-white/60 hover:text-white">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
+            <button class="w-10 h-10 bg-netflix-red rounded flex items-center justify-center">
+                <i class="fas fa-user text-sm"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-[70vh] -mt-20">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&h=1080&fit=crop" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-transparent"></div>
+        </div>
+
+        <div class="relative h-full flex items-end px-12 pb-12">
+            <div class="flex items-end gap-8">
+                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300" class="w-64 h-64 rounded-lg shadow-2xl">
+                <div>
+                    <div class="text-sm text-white/60 mb-2">ALBUM</div>
+                    <h1 class="text-6xl font-black mb-4">Chill Beats Vol. 1</h1>
+                    <div class="flex items-center gap-4 text-sm text-white/80 mb-6">
+                        <span>Various Artists</span>
+                        <span>•</span>
+                        <span>2024</span>
+                        <span>•</span>
+                        <span>25 songs</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button @click="playAlbum()" class="px-8 py-3 bg-white text-black rounded font-bold flex items-center gap-2 hover:bg-white/80 transition-all">
+                            <i class="fas fa-play"></i> Play Album
+                        </button>
+                        <button @click="toggleFavorite()" class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30">
+                            <i :class="isFavorited ? 'fas fa-heart text-netflix-red' : 'far fa-heart text-white'"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Songs List -->
+    <section class="px-12 py-12">
+        <h2 class="text-2xl font-bold mb-6">Tracks</h2>
+        <div class="space-y-2">
+            <template x-for="i in 25" :key="i">
+                <div class="group flex items-center gap-4 p-4 rounded hover:bg-white/5 cursor-pointer transition-all">
+                    <div class="w-12 text-center text-white/60 group-hover:text-white">
+                        <span x-show="!isPlaying(i)" x-text="i"></span>
+                        <i x-show="isPlaying(i)" class="fas fa-volume-up text-netflix-red"></i>
+                    </div>
+                    <img :src="`https://picsum.photos/seed/song${i}/56`" class="w-14 h-14 rounded">
+                    <div class="flex-1">
+                        <div class="font-semibold" x-text="'Track Title ' + i"></div>
+                        <div class="text-sm text-white/60">Artist Name</div>
+                    </div>
+                    <div class="text-sm text-white/60">3:45</div>
+                    <button @click.stop="toggleSongFavorite(i)" class="opacity-0 group-hover:opacity-100 transition-all">
+                        <i :class="isSongFavorited(i) ? 'fas fa-heart text-netflix-red' : 'far fa-heart text-white/60 hover:text-white'"></i>
+                    </button>
+                    <button @click.stop="playSong(i)" class="w-10 h-10 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-105">
+                        <i class="fas fa-play text-black text-sm ml-0.5"></i>
+                    </button>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- More Like This -->
+    <section class="px-12 py-12">
+        <h2 class="text-2xl font-bold mb-6">More Like This</h2>
+        <div class="grid grid-cols-6 gap-4">
+            <template x-for="i in 6" :key="i">
+                <div class="group cursor-pointer" @click="goToAlbum(i)">
+                    <img :src="`https://picsum.photos/seed/similar${i}/300`" class="w-full aspect-square rounded mb-3 group-hover:opacity-80 transition-all">
+                    <h4 class="font-semibold text-sm" x-text="'Similar Album ' + i"></h4>
+                    <p class="text-xs text-white/60">Various Artists</p>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <script>
+        function albumApp() {
+            return {
+                isFavorited: false,
+                currentSong: null,
+                songFavorites: [],
+
+                init() {},
+
+                playAlbum() {
+                    console.log('Playing album');
+                    this.currentSong = 1;
+                },
+
+                playSong(id) {
+                    console.log('Playing song:', id);
+                    this.currentSong = id;
+                },
+
+                isPlaying(id) {
+                    return this.currentSong === id;
+                },
+
+                toggleFavorite() {
+                    this.isFavorited = !this.isFavorited;
+                },
+
+                toggleSongFavorite(id) {
+                    if (this.songFavorites.includes(id)) {
+                        this.songFavorites = this.songFavorites.filter(s => s !== id);
+                    } else {
+                        this.songFavorites.push(id);
+                    }
+                },
+
+                isSongFavorited(id) {
+                    return this.songFavorites.includes(id);
+                },
+
+                goToAlbum(id) {
+                    window.location.href = `album-detail.html?id=${id}`;
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

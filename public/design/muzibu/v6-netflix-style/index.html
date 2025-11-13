@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="netflixApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu V4 - Netflix Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'netflix-red': '#e50914',
+                        'netflix-black': '#141414',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #141414;
+        }
+        .row-container {
+            scroll-behavior: smooth;
+        }
+        .row-container::-webkit-scrollbar {
+            display: none;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: scale(1.3) translateZ(0);
+            z-index: 50;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in {
+            animation: fadeInUp 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="h-full bg-netflix-black text-white">
+
+    <!-- Top Nav (Fixed) -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black via-black/80 to-transparent">
+        <div class="px-12 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="index.html" class="text-netflix-red text-3xl font-black tracking-tight">MUZIBU</a>
+                <div class="flex items-center gap-6 text-sm">
+                    <a href="#" class="text-white font-semibold">Home</a>
+                    <a href="#" class="text-white/60 hover:text-white">Playlists</a>
+                    <a href="#" class="text-white/60 hover:text-white">Albums</a>
+                    <a href="#" class="text-white/60 hover:text-white">My List</a>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <button class="text-white text-xl">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="text-white text-xl">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button @click="isLoggedIn = !isLoggedIn" class="w-10 h-10 bg-netflix-red rounded flex items-center justify-center">
+                    <i class="fas fa-user text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO FEATURED (Full Width Billboard) -->
+    <section class="relative h-screen -mt-20">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920&h=1080&fit=crop" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-transparent"></div>
+        </div>
+
+        <div class="relative h-full flex items-center px-12 max-w-4xl">
+            <div class="animate-fade-in">
+                <div class="mb-4">
+                    <span class="px-3 py-1 bg-netflix-red text-white text-xs font-bold rounded">NEW</span>
+                </div>
+                <h1 class="text-7xl font-black mb-6 leading-tight">Chill Beats Collection</h1>
+                <p class="text-xl text-white/90 mb-8 leading-relaxed max-w-2xl">
+                    The ultimate playlist for your business. Smooth, relaxing, and 100% royalty-free music.
+                </p>
+                <div class="flex items-center gap-4">
+                    <button @click="playContent('featured')" class="px-10 py-4 bg-white text-black rounded text-lg font-bold flex items-center gap-3 hover:bg-white/80 transition-all">
+                        <i class="fas fa-play"></i> Play
+                    </button>
+                    <button class="px-10 py-4 bg-white/20 backdrop-blur text-white rounded text-lg font-bold flex items-center gap-3 hover:bg-white/30 transition-all">
+                        <i class="fas fa-info-circle"></i> More Info
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTINUE LISTENING (Members Only) -->
+    <section x-show="isLoggedIn" x-transition class="px-12 py-8 -mt-32 relative z-10">
+        <h2 class="text-2xl font-bold mb-4">Continue Listening</h2>
+        <div class="flex gap-2 overflow-x-auto row-container pb-4">
+            <template x-for="i in 8" :key="'continue-'+i">
+                <div class="card-hover flex-shrink-0 w-80 bg-zinc-900 rounded overflow-hidden cursor-pointer relative group">
+                    <div class="flex items-center">
+                        <img :src="`https://picsum.photos/seed/continue${i}/120`" class="w-32 h-32 object-cover">
+                        <div class="flex-1 p-4">
+                            <h4 class="font-bold mb-1" x-text="'Playlist ' + i"></h4>
+                            <p class="text-sm text-white/60">Last played 2h ago</p>
+                        </div>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
+                        <div class="h-full bg-netflix-red" :style="`width: ${(i * 10)}%`"></div>
+                    </div>
+                    <!-- Play Button on Hover -->
+                    <button @click.stop="playContent('continue', i)" class="absolute inset-0 m-auto w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-2xl">
+                        <i class="fas fa-play text-black text-xl ml-1"></i>
+                    </button>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- TOP 10 IN YOUR AREA -->
+    <section class="px-12 py-8">
+        <h2 class="text-2xl font-bold mb-4">Top 10 in Your Business</h2>
+        <div class="flex gap-2 overflow-x-auto row-container pb-4">
+            <template x-for="i in 10" :key="'top10-'+i">
+                <div class="card-hover flex-shrink-0 w-64 rounded overflow-hidden cursor-pointer relative group">
+                    <div class="relative">
+                        <img :src="`https://picsum.photos/seed/top${i}/300/450`" class="w-full aspect-[2/3] object-cover">
+                        <!-- Large Number Badge -->
+                        <div class="absolute -left-4 -bottom-4 text-[12rem] font-black text-white leading-none" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.8), -2px -2px 8px rgba(0,0,0,0.8);" x-text="i"></div>
+                        <!-- Play Button -->
+                        <button @click.stop="playContent('top10', i)" class="absolute inset-0 m-auto w-16 h-16 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-2xl">
+                            <i class="fas fa-play text-black text-xl ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- TRENDING NOW -->
+    <section class="px-12 py-8">
+        <h2 class="text-2xl font-bold mb-4">Trending Now</h2>
+        <div class="flex gap-2 overflow-x-auto row-container pb-4">
+            <template x-for="i in 10" :key="'trending-'+i">
+                <div class="card-hover flex-shrink-0 w-80 rounded overflow-hidden cursor-pointer relative group" @click="goToDetail('album', i)">
+                    <img :src="`https://picsum.photos/seed/trending${i}/320/180`" class="w-full aspect-video object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all">
+                        <div class="absolute bottom-0 left-0 right-0 p-4">
+                            <h4 class="font-bold text-lg mb-1" x-text="'Album ' + i"></h4>
+                            <p class="text-sm text-white/80">Artist Name</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button @click.stop="playContent('trending', i)" class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-white/80">
+                                    <i class="fas fa-play text-black text-sm ml-0.5"></i>
+                                </button>
+                                <button @click.stop="addToList(i)" class="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30">
+                                    <i class="fas fa-plus text-white text-sm"></i>
+                                </button>
+                                <button @click.stop="toggleFavorite('trending', i)" class="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30">
+                                    <i :class="isFavorite('trending', i) ? 'fas fa-heart text-netflix-red' : 'far fa-heart text-white'" class="text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- NEW RELEASES -->
+    <section class="px-12 py-8">
+        <h2 class="text-2xl font-bold mb-4">New Releases</h2>
+        <div class="flex gap-2 overflow-x-auto row-container pb-4">
+            <template x-for="i in 10" :key="'new-'+i">
+                <div class="card-hover flex-shrink-0 w-64 rounded overflow-hidden cursor-pointer relative group" @click="goToDetail('album', i)">
+                    <img :src="`https://picsum.photos/seed/new${i}/300`" class="w-full aspect-square object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all">
+                        <div class="absolute bottom-0 left-0 right-0 p-4">
+                            <h4 class="font-bold mb-1" x-text="'Album ' + i"></h4>
+                            <p class="text-sm text-white/80">2024</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button @click.stop="playContent('new', i)" class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-white/80">
+                                    <i class="fas fa-play text-black text-sm ml-0.5"></i>
+                                </button>
+                                <button @click.stop="toggleFavorite('new', i)" class="w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30">
+                                    <i :class="isFavorite('new', i) ? 'fas fa-heart text-netflix-red' : 'far fa-heart text-white'" class="text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- POPULAR PLAYLISTS -->
+    <section class="px-12 py-8">
+        <h2 class="text-2xl font-bold mb-4">Popular Playlists</h2>
+        <div class="flex gap-2 overflow-x-auto row-container pb-4">
+            <template x-for="i in 10" :key="'popular-'+i">
+                <div class="card-hover flex-shrink-0 w-64 rounded overflow-hidden cursor-pointer relative group" @click="goToDetail('playlist', i)">
+                    <img :src="`https://picsum.photos/seed/popular${i}/300`" class="w-full aspect-square object-cover">
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                        <button @click.stop="playContent('popular', i)" class="w-16 h-16 bg-white rounded-full flex items-center justify-center hover:bg-white/80 transform scale-90 group-hover:scale-100 transition-all">
+                            <i class="fas fa-play text-black text-xl ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- Fixed Mini Player (Bottom) -->
+    <div x-show="currentlyPlaying" x-transition class="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-white/10 px-6 py-3 z-50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56" class="w-14 h-14 rounded">
+                <div>
+                    <div class="font-semibold text-sm">Now Playing</div>
+                    <div class="text-xs text-white/60">Muzibu Collection</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="text-white/60 hover:text-white"><i class="fas fa-step-backward"></i></button>
+                <button @click="currentlyPlaying = false" class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-all">
+                    <i class="fas fa-pause text-black"></i>
+                </button>
+                <button class="text-white/60 hover:text-white"><i class="fas fa-step-forward"></i></button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="text-white/60 hover:text-white"><i class="fas fa-volume-up"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="fixed bottom-20 right-6 flex flex-col gap-3 z-40">
+        <a href="../index.html" class="w-14 h-14 bg-zinc-900 hover:bg-netflix-red rounded-full flex items-center justify-center transition-all">
+            <i class="fas fa-home text-white"></i>
+        </a>
+        <a href="../v3-apple-minimalist/index.html" class="w-14 h-14 bg-zinc-900 hover:bg-netflix-red rounded-full flex items-center justify-center transition-all">
+            <i class="fas fa-chevron-left text-white"></i>
+        </a>
+        <a href="../v5-instagram-style/index.html" class="w-14 h-14 bg-zinc-900 hover:bg-netflix-red rounded-full flex items-center justify-center transition-all">
+            <i class="fas fa-chevron-right text-white"></i>
+        </a>
+    </div>
+
+    <script>
+        function netflixApp() {
+            return {
+                isLoggedIn: false,
+                currentlyPlaying: false,
+                favorites: [],
+
+                init() {
+                    console.log('Netflix-style Muzibu initialized');
+                },
+
+                playContent(type, id) {
+                    console.log('Playing:', type, id);
+                    this.currentlyPlaying = true;
+                },
+
+                addToList(id) {
+                    console.log('Added to My List:', id);
+                },
+
+                toggleFavorite(type, id) {
+                    const key = `${type}-${id}`;
+                    if (this.favorites.includes(key)) {
+                        this.favorites = this.favorites.filter(f => f !== key);
+                    } else {
+                        this.favorites.push(key);
+                    }
+                },
+
+                isFavorite(type, id) {
+                    return this.favorites.includes(`${type}-${id}`);
+                },
+
+                goToDetail(type, id) {
+                    window.location.href = `pages/${type}-detail.html?id=${id}`;
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

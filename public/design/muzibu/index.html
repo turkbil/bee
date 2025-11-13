@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Design Gallery - 10 Farklı Tasarım Konsepti</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .design-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .design-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .badge {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto mb-12">
+        <div class="text-center mb-8">
+            <h1 class="text-6xl font-black text-white mb-4">
+                🎵 Muzibu Tasarım Galerisi
+            </h1>
+            <p class="text-2xl text-white/90 mb-6">10 Farklı Müzik Platformu Tasarım Konsepti</p>
+            <div class="flex items-center justify-center gap-4 text-white/80">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-palette"></i>
+                    10 Benzersiz Tasarım
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-mobile-alt"></i>
+                    Responsive
+                </span>
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-code"></i>
+                    Tailwind + Alpine.js
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Design Grid -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        <!-- V1: Muzibu Adapte -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-purple-600 to-pink-600 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">🎨</div>
+                        <h3 class="text-2xl font-bold mb-2">V1: Muzibu Original</h3>
+                        <p class="text-white/90">Guest/Member Split Layout</p>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">
+                    ✅ COMPLETE
+                </span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Muzibu Original Adapte</h3>
+                <p class="text-gray-600 text-sm mb-4">Orijinal Muzibu.com tasarımından uyarlama. Üye/Misafir ayrımı, hero slider, featured content.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">Hero Slider</span>
+                    <span class="px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded">Guest/Member</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Song Lists</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v1-muzibu-tailwind/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V2: Spotify Style -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-green-600 to-emerald-800 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">🎧</div>
+                        <h3 class="text-2xl font-bold mb-2">V2: Spotify Style</h3>
+                        <p class="text-white/90">Modern Card-Based Layout</p>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">
+                    ✅ COMPLETE
+                </span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Spotify Modern Tasarım</h3>
+                <p class="text-gray-600 text-sm mb-4">Spotify yeşili, hero carousel, canlı kartlar, yatay kaydırma. Sabit çalıcı bar.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Carousel</span>
+                    <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded">Kartlar</span>
+                    <span class="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded">Player Bar</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v2-muzibu-tailwind/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-800 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3: Apple Music - COMPLETE -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">🍎</div>
+                        <h3 class="text-2xl font-bold mb-2">V3: Apple Music</h3>
+                        <p class="text-white/90">Clean Minimalist Design</p>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">
+                    ✅ COMPLETE
+                </span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Apple Music Minimalist</h3>
+                <p class="text-gray-600 text-sm mb-4">Temiz, minimal, glassmorphism efektleri. Büyük artwork, carousel.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Glassmorphism</span>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Minimal</span>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Temiz</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v3-apple-minimalist/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-900 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V4: YouTube Music -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-gray-900 to-red-600 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">▶️</div>
+                        <h3 class="text-2xl font-bold mb-2">V4: YouTube Music</h3>
+                        <p class="text-white/90">Grid + Sidebar + Chips</p>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">
+                    ✅ COMPLETE
+                </span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">YouTube Music Grid Tasarım</h3>
+                <p class="text-gray-600 text-sm mb-4">Sidebar navigasyon, video grid düzeni, chip filtreleri, mini player.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Sidebar</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Grid</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Chip Filtre</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Mini Player</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v4-youtube-style/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-gray-900 to-red-600 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V6-V10: Diğer Tasarımlar -->
+
+        <!-- V6: YouTube Music -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-gray-900 to-red-600 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">▶️</div>
+                        <h3 class="text-2xl font-bold mb-2">V6: YouTube Music</h3>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">
+                    ✅ COMPLETE
+                </span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">YouTube Music Grid Tasarım</h3>
+                <p class="text-gray-600 text-sm mb-4">Sidebar navigasyon, video grid düzeni, chip filtreleri, mini player.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Sidebar</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Grid</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Chip Filtre</span>
+                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Mini Player</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v6-youtube-style/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-gray-900 to-red-600 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V7: Glassmorphism -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">💎</div>
+                        <h3 class="text-2xl font-bold mb-2">V7: Glassmorphism</h3>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">
+                    ✅ COMPLETE
+                </span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Glassmorphism Premium</h3>
+                <p class="text-gray-600 text-sm mb-4">Blur arka plan, 3D kart hover'ları, yüzen elementler, gradient kaplama.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">Glass UI</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">3D Kartlar</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">Blur</span>
+                    <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">Floating</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v7-glassmorphism/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V8: Material Design -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-blue-600 to-indigo-700 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">🎨</div>
+                        <h3 class="text-2xl font-bold mb-2">V8: Material Design</h3>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">✅ COMPLETE</span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Material Design 3</h3>
+                <p class="text-gray-600 text-sm mb-4">FAB buton, elevation gölgeler, ripple efektler, alt navigasyon, material kartlar.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">FAB</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Elevation</span>
+                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Ripple</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v8-material-design/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V9: Neomorphism -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-gray-200 to-gray-400 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-gray-700 p-6">
+                        <div class="text-6xl mb-4">🌙</div>
+                        <h3 class="text-2xl font-bold mb-2">V9: Neomorphism</h3>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">✅ COMPLETE</span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Neomorphism Yumuşak UI</h3>
+                <p class="text-gray-600 text-sm mb-4">Yumuşak gölgeler, kabartmalı elementler, yükseltilmiş/basılı efektler.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Yumuşak Gölge</span>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Kabartma</span>
+                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Raised</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v9-neomorphism/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-gray-200 to-gray-400 text-gray-800 rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- V10: Retro Vinyl -->
+        <div class="design-card rounded-2xl overflow-hidden shadow-xl">
+            <div class="relative h-64 bg-gradient-to-br from-yellow-400 via-pink-500 to-purple-600 overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white p-6">
+                        <div class="text-6xl mb-4">🎸</div>
+                        <h3 class="text-2xl font-bold mb-2">V10: Retro Vinyl</h3>
+                    </div>
+                </div>
+                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full badge">✅ COMPLETE</span>
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-bold mb-2 text-gray-800">Retro Vinyl & Neon 80s</h3>
+                <p class="text-gray-600 text-sm mb-4">Neon yazılar, vinyl plaklar, 80'ler retro, pixel fontlar, gradient animasyonlar.</p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded">Neon</span>
+                    <span class="px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded">Vinyl</span>
+                    <span class="px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded">80s Retro</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="v10-retro-vinyl/index.html" class="flex-1 px-4 py-2 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 text-white rounded-lg text-center font-semibold hover:opacity-90 transition-all">
+                        <i class="fas fa-eye mr-2"></i>Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-7xl mx-auto mt-12 text-center text-white/80">
+        <p class="text-sm">🤖 <a href="https://claude.com/claude-code" class="underline hover:text-white">Claude Code</a> ile oluşturuldu</p>
+        <p class="text-xs mt-2">Muzibu Müzik Platformu - Tasarım Galerisi © 2025</p>
+    </div>
+
+</body>
+</html>

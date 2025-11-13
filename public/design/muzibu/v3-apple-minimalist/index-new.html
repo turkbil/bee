@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="appleApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Apple Music Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { 'apple-red': '#fa233b', 'apple-bg': '#000000' } } } }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; }
+        .glass { background: rgba(28,28,30,0.72); backdrop-filter: blur(40px); }
+        .hover-scale:hover { transform: scale(1.05); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="../index.html" class="text-xl font-semibold">Muzibu</a>
+                <div class="hidden md:flex gap-6 text-sm">
+                    <a href="#" class="text-white">Keşfet</a>
+                    <a href="#" class="text-white/60 hover:text-white">Radyo</a>
+                    <a href="#" class="text-white/60 hover:text-white">Kitaplık</a>
+                </div>
+            </div>
+            <button class="px-4 py-1.5 bg-apple-red rounded-full text-sm font-semibold">Dene</button>
+        </div>
+    </nav>
+    <main class="pt-14 pb-32">
+        <section class="px-6 py-12">
+            <div class="max-w-7xl mx-auto glass rounded-3xl p-12 flex gap-12 items-center">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600" class="w-80 rounded-2xl shadow-2xl">
+                <div>
+                    <div class="text-xs text-apple-red font-semibold uppercase mb-3">Öne Çıkan</div>
+                    <h1 class="text-6xl font-bold mb-4">Chill Vibes</h1>
+                    <p class="text-lg text-white/70 mb-6">Rahatla, dinlen. İşletmeniz için mükemmel.</p>
+                    <button class="px-8 py-3 bg-apple-red rounded-full font-semibold">Çal</button>
+                </div>
+            </div>
+        </section>
+        <section class="px-6 py-8">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6">En Çok Dinlenenler</h2>
+                <div class="flex gap-6 overflow-x-auto no-scrollbar">
+                    <template x-for="i in 10">
+                        <div class="flex-shrink-0 w-96 glass rounded-2xl p-6 flex gap-6">
+                            <div class="text-5xl font-black text-white/20" x-text="i"></div>
+                            <img :src="'https://picsum.photos/seed/chart'+i+'/120'" class="w-24 h-24 rounded-xl">
+                            <div>
+                                <h3 class="font-bold" x-text="'Şarkı '+i"></h3>
+                                <p class="text-sm text-white/60">Sanatçı</p>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <section class="px-6 py-8">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6">Yeni Çıkanlar</h2>
+                <div class="grid grid-cols-6 gap-6">
+                    <template x-for="i in 12">
+                        <div class="group">
+                            <img :src="'https://picsum.photos/seed/new'+i+'/300'" class="w-full rounded-xl mb-3 hover-scale">
+                            <h3 class="font-semibold" x-text="'Albüm '+i"></h3>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        function appleApp() { return { init() {} } }
+    </script>
+</body>
+</html>

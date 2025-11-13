@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr" x-data="ytApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - YouTube Music Tarzı | 25.000+ Şarkı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body { 
+            font-family: 'Roboto', Arial, sans-serif; 
+            background: #0f0f0f; 
+        }
+        ::-webkit-scrollbar { width: 12px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0f0f; }
+        ::-webkit-scrollbar-thumb { background: #3f3f3f; border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4f4f4f; }
+        .video-card:hover .play-overlay { opacity: 1; }
+        .play-overlay { transition: opacity 0.2s ease; }
+        .chip { transition: all 0.2s ease; }
+        .chip:hover { transform: translateY(-1px); }
+    </style>
+</head>
+<body class="text-white">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="fixed left-0 top-0 bottom-0 w-64 bg-black border-r border-white/10 overflow-y-auto z-40">
+        <div class="p-6">
+            <!-- Logo -->
+            <a href="../index.html" class="flex items-center gap-3 mb-8 hover:opacity-80 transition">
+                <i class="fab fa-youtube text-red-600 text-3xl"></i>
+                <span class="text-2xl font-black tracking-tight">MUZIBU</span>
+            </a>
+            
+            <!-- Main Navigation -->
+            <nav class="space-y-2 mb-8">
+                <a href="#" class="flex items-center gap-4 px-4 py-3 rounded-lg bg-white/10 hover:bg-white/15 transition">
+                    <i class="fas fa-home text-xl w-6"></i>
+                    <span class="font-medium">Ana Sayfa</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition">
+                    <i class="fas fa-compass text-xl w-6"></i>
+                    <span class="font-medium">Keşfet</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition">
+                    <i class="fas fa-book text-xl w-6"></i>
+                    <span class="font-medium">Kitaplık</span>
+                </a>
+                <a href="#" class="flex items-center gap-4 px-4 py-3 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition">
+                    <i class="fas fa-fire text-xl w-6"></i>
+                    <span class="font-medium">Trendler</span>
+                </a>
+            </nav>
+            
+            <!-- Playlists Section -->
+            <div class="mt-6 pt-6 border-t border-white/10">
+                <h3 class="px-4 text-xs text-white/50 uppercase tracking-wider mb-3 font-bold">Playlistlerim</h3>
+                <template x-for="i in 8">
+                    <a href="#" class="flex items-center gap-3 px-4 py-2 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition group">
+                        <img :src="'https://picsum.photos/seed/pl'+i+'/40'" class="w-10 h-10 rounded object-cover">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm font-medium truncate group-hover:text-white transition" x-text="'Playlist '+i"></div>
+                            <div class="text-xs text-white/50">25 şarkı</div>
+                        </div>
+                    </a>
+                </template>
+            </div>
+            
+            <!-- Liked Songs -->
+            <div class="mt-6 pt-6 border-t border-white/10">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/5 hover:text-white rounded-lg transition">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded flex items-center justify-center">
+                        <i class="fas fa-heart text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium">Beğendiklerim</div>
+                        <div class="text-xs text-white/50">145 şarkı</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Top Navigation Bar -->
+    <nav class="fixed top-0 left-64 right-0 z-50 bg-black/95 backdrop-blur border-b border-white/10">
+        <div class="px-6 py-3 flex items-center justify-between">
+            <!-- Search Bar (Center) -->
+            <div class="flex-1 max-w-2xl mx-8">
+                <div class="flex bg-white/10 rounded-full overflow-hidden hover:bg-white/15 transition">
+                    <input type="text" 
+                           placeholder="25.000+ şarkı, albüm, sanatçı ara..." 
+                           class="flex-1 px-6 py-2.5 bg-transparent outline-none text-sm">
+                    <button class="px-6 py-2.5 border-l border-white/20 hover:bg-white/10 transition">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- User Profile -->
+            <button class="w-10 h-10 bg-red-600 rounded-full hover:bg-red-700 transition flex items-center justify-center">
+                <i class="fas fa-user text-sm"></i>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Main Content Area -->
+    <main class="ml-64 pt-16">
+        
+        <!-- Chip Filters (Sticky) -->
+        <div class="sticky top-16 z-30 bg-black border-b border-white/10">
+            <div class="px-6 py-3 flex gap-3 overflow-x-auto">
+                <button @click="filter='all'" 
+                        :class="filter==='all'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    <i class="fas fa-home mr-2"></i>Tümü
+                </button>
+                <button @click="filter='cafe'" 
+                        :class="filter==='cafe'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    ☕ Kafe
+                </button>
+                <button @click="filter='restaurant'" 
+                        :class="filter==='restaurant'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    🍽️ Restoran
+                </button>
+                <button @click="filter='lounge'" 
+                        :class="filter==='lounge'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    🍸 Lounge
+                </button>
+                <button @click="filter='barber'" 
+                        :class="filter==='barber'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    💈 Berber
+                </button>
+                <button @click="filter='mall'" 
+                        :class="filter==='mall'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    🛍️ AVM
+                </button>
+                <button @click="filter='gym'" 
+                        :class="filter==='gym'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    💪 Spor Salonu
+                </button>
+                <button @click="filter='hotel'" 
+                        :class="filter==='hotel'?'bg-white text-black':'bg-white/10 hover:bg-white/20'" 
+                        class="chip px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
+                    🏨 Otel
+                </button>
+            </div>
+        </div>
+        
+        <!-- Content Grid -->
+        <div class="p-6 pb-32">
+            
+            <!-- Öne Çıkanlar Section -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold">Öne Çıkanlar</h2>
+                    <a href="#" class="text-sm text-white/60 hover:text-white transition">
+                        Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <template x-for="i in 4">
+                        <div class="cursor-pointer video-card group">
+                            <div class="relative mb-3 rounded-xl overflow-hidden bg-white/5">
+                                <img :src="'https://picsum.photos/seed/featured'+i+'/480/270'" class="w-full aspect-video object-cover">
+                                <div class="play-overlay absolute inset-0 bg-black/60 opacity-0 flex items-center justify-center">
+                                    <button @click="playing = true" class="w-20 h-20 bg-white/90 rounded-full hover:bg-white transition">
+                                        <i class="fas fa-play text-black text-2xl ml-1"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute top-3 left-3 px-2 py-1 bg-red-600 rounded text-xs font-bold">
+                                    ÖNE ÇIKAN
+                                </div>
+                                <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 rounded text-xs font-bold">
+                                    1:25:30
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <img :src="'https://picsum.photos/seed/ch'+i+'/40'" class="w-10 h-10 rounded-full object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold line-clamp-2 mb-1 group-hover:text-white transition" x-text="'Özel Karışım '+i"></h3>
+                                    <div class="text-sm text-white/60">
+                                        <div>Muzibu Koleksiyonu</div>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span>50 şarkı</span>
+                                            <span>•</span>
+                                            <span>1.5 saat</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- En Popüler Playlistler -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold">En Popüler Playlistler</h2>
+                    <a href="#" class="text-sm text-white/60 hover:text-white transition">
+                        Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <template x-for="i in 8">
+                        <div class="cursor-pointer video-card group">
+                            <div class="relative mb-3 rounded-xl overflow-hidden bg-white/5">
+                                <img :src="'https://picsum.photos/seed/popular'+i+'/480/270'" class="w-full aspect-video object-cover">
+                                <div class="play-overlay absolute inset-0 bg-black/60 opacity-0 flex items-center justify-center">
+                                    <button @click="playing = true" class="w-16 h-16 bg-white/90 rounded-full hover:bg-white transition">
+                                        <i class="fas fa-play text-black text-xl ml-1"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 rounded text-xs font-bold">
+                                    45:20
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <img :src="'https://picsum.photos/seed/artist'+i+'/40'" class="w-10 h-10 rounded-full object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold line-clamp-2 mb-1 group-hover:text-white transition" x-text="'Chill Beats Mix '+i"></h3>
+                                    <div class="text-sm text-white/60">
+                                        <div>Muzibu Collection</div>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <i class="fas fa-play text-xs"></i>
+                                            <span>125K görüntüleme</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Yeni Albümler -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold">Yeni Albümler</h2>
+                    <a href="#" class="text-sm text-white/60 hover:text-white transition">
+                        Tümünü Gör <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                    </a>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <template x-for="i in 12">
+                        <div class="cursor-pointer video-card group">
+                            <div class="relative mb-3 rounded-xl overflow-hidden bg-white/5">
+                                <img :src="'https://picsum.photos/seed/album'+i+'/480/270'" class="w-full aspect-video object-cover">
+                                <div class="play-overlay absolute inset-0 bg-black/60 opacity-0 flex items-center justify-center">
+                                    <button @click="playing = true" class="w-16 h-16 bg-white/90 rounded-full hover:bg-white transition">
+                                        <i class="fas fa-play text-black text-xl ml-1"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute top-3 left-3 px-2 py-1 bg-blue-600 rounded text-xs font-bold">
+                                    YENİ
+                                </div>
+                                <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 rounded text-xs font-bold">
+                                    38:15
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <img :src="'https://picsum.photos/seed/newartist'+i+'/40'" class="w-10 h-10 rounded-full object-cover">
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold line-clamp-2 mb-1 group-hover:text-white transition" x-text="'Yeni Albüm '+i"></h3>
+                                    <div class="text-sm text-white/60">
+                                        <div>Various Artists</div>
+                                        <div>2025 • 15 şarkı</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Sektörlere Göre Playlistler -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold">İşletmeniz İçin Seçtiklerimiz</h2>
+                    <p class="text-sm text-white/60">Sektörünüze özel hazırlanmış playlistler</p>
+                </div>
+                <div class="grid grid-cols-4 gap-4">
+                    <template x-for="sector in [
+                        {name: 'Kafe Müzikleri', icon: '☕', color: 'from-amber-600 to-orange-600'},
+                        {name: 'Restoran Atmosferi', icon: '🍽️', color: 'from-red-600 to-pink-600'},
+                        {name: 'Lounge Vibes', icon: '🍸', color: 'from-purple-600 to-indigo-600'},
+                        {name: 'Berber Salonları', icon: '💈', color: 'from-blue-600 to-cyan-600'},
+                        {name: 'AVM Arka Plan', icon: '🛍️', color: 'from-teal-600 to-green-600'},
+                        {name: 'Spor Salonu Energy', icon: '💪', color: 'from-emerald-600 to-lime-600'},
+                        {name: 'Otel Relax', icon: '🏨', color: 'from-yellow-600 to-amber-600'},
+                        {name: 'Ofis Konsantrasyon', icon: '💼', color: 'from-gray-600 to-slate-600'}
+                    ]">
+                        <div class="cursor-pointer video-card group">
+                            <div class="relative mb-3 rounded-xl overflow-hidden">
+                                <div class="aspect-video bg-gradient-to-br" :class="sector.color"></div>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform" x-text="sector.icon"></div>
+                                    <h3 class="font-bold text-lg" x-text="sector.name"></h3>
+                                </div>
+                                <div class="play-overlay absolute inset-0 bg-black/60 opacity-0 flex items-center justify-center">
+                                    <button @click="playing = true" class="w-16 h-16 bg-white/90 rounded-full hover:bg-white transition">
+                                        <i class="fas fa-play text-black text-xl ml-1"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 rounded text-xs font-bold">
+                                    25 playlist
+                                </div>
+                            </div>
+                            <div class="text-sm text-white/60 px-2">
+                                <div>200+ özenle seçilmiş şarkı</div>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <i class="fas fa-users text-xs"></i>
+                                    <span>Binlerce işletme kullanıyor</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+    
+    <!-- Mini Player (Floating Bottom-Right) -->
+    <div x-show="playing" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-full"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-full"
+         class="fixed bottom-6 right-6 w-96 bg-zinc-900 rounded-xl shadow-2xl overflow-hidden border border-white/10 z-50">
+        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400" class="w-full aspect-video object-cover">
+        <div class="p-4">
+            <div class="flex items-center gap-3 mb-3">
+                <img src="https://picsum.photos/56" class="w-12 h-12 rounded-full object-cover">
+                <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-sm truncate">Şu An Çalıyor</div>
+                    <div class="text-xs text-white/60 truncate">Muzibu Collection</div>
+                </div>
+                <button @click="playing = false" class="w-8 h-8 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-times text-white/60 text-sm"></i>
+                </button>
+            </div>
+            <div class="flex items-center justify-center gap-6 mb-3">
+                <button class="w-8 h-8 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button @click="playing = false" class="w-12 h-12 bg-white rounded-full hover:bg-white/90 transition">
+                    <i class="fas fa-pause text-black text-sm"></i>
+                </button>
+                <button class="w-8 h-8 rounded-full hover:bg-white/10 transition">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-white/60">
+                <span>2:15</span>
+                <div class="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-600 rounded-full" style="width: 45%"></div>
+                </div>
+                <span>5:00</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Navigation Buttons (Bottom Right) -->
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-40" :class="playing ? 'mr-[26rem]' : ''">
+        <a href="../index.html" 
+           class="w-14 h-14 bg-zinc-900 hover:bg-red-600 rounded-full flex items-center justify-center transition shadow-lg border border-white/10">
+            <i class="fas fa-home text-lg"></i>
+        </a>
+        <a href="../v3-apple-minimalist/index.html" 
+           class="w-14 h-14 bg-zinc-900 hover:bg-red-600 rounded-full flex items-center justify-center transition shadow-lg border border-white/10">
+            <i class="fas fa-chevron-left text-lg"></i>
+        </a>
+        <a href="../v5-instagram-style/index.html" 
+           class="w-14 h-14 bg-zinc-900 hover:bg-red-600 rounded-full flex items-center justify-center transition shadow-lg border border-white/10">
+            <i class="fas fa-chevron-right text-lg"></i>
+        </a>
+    </div>
+    
+    <script>
+        function ytApp() {
+            return {
+                filter: 'all',
+                playing: false,
+                init() {
+                    console.log('Muzibu YouTube Music Style - Initialized');
+                }
+            }
+        }
+    </script>
+    
+</body>
+</html>

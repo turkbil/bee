@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full" x-data="albumApp()" x-init="init()">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Detail - YouTube Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'yt-red': '#ff0000',
+                        'yt-dark': '#0f0f0f',
+                        'yt-secondary': '#212121',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-yt-dark text-white">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-yt-dark/95 backdrop-blur border-b border-white/10">
+        <div class="px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="../index.html" class="flex items-center gap-2">
+                    <i class="fab fa-youtube text-yt-red text-3xl"></i>
+                    <span class="text-xl font-black">MUZIBU</span>
+                </a>
+                <button onclick="history.back()" class="text-white/60 hover:text-white">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO BANNER (YouTube video banner style) -->
+    <div class="relative h-64 mt-16 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1920" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-yt-dark via-yt-dark/50 to-transparent"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 -mt-32 relative z-10">
+
+        <!-- ALBUM INFO (YouTube channel header style) -->
+        <div class="flex items-end gap-8 mb-8">
+            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300" class="w-48 h-48 rounded-2xl shadow-2xl flex-shrink-0">
+            <div class="flex-1 pb-4">
+                <div class="text-sm text-white/60 mb-2">ALBUM</div>
+                <h1 class="text-5xl font-black mb-4">Chill Beats Vol. 1</h1>
+                <div class="flex items-center gap-4 text-white/80 mb-6">
+                    <span>Various Artists</span>
+                    <span>•</span>
+                    <span>2024</span>
+                    <span>•</span>
+                    <span>30 songs</span>
+                    <span>•</span>
+                    <span>1h 45min</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button @click="playAlbum()" class="px-8 py-3 bg-yt-red rounded-full text-white font-bold flex items-center gap-2 hover:bg-red-600 transition-all">
+                        <i class="fas fa-play"></i> Play Album
+                    </button>
+                    <button @click="toggleFavorite()" class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i :class="isFavorited ? 'fas fa-heart text-yt-red' : 'far fa-heart text-white'"></i>
+                    </button>
+                    <button class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center hover:bg-white/30 transition-all">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS (YouTube tabs style) -->
+        <div class="border-b border-white/10 mb-8">
+            <div class="flex gap-8">
+                <button @click="activeTab = 'tracks'" :class="activeTab === 'tracks' ? 'border-yt-red text-white' : 'border-transparent text-white/60 hover:text-white'" class="px-4 py-3 border-b-2 font-bold transition-all">
+                    Tracks
+                </button>
+                <button @click="activeTab = 'about'" :class="activeTab === 'about' ? 'border-yt-red text-white' : 'border-transparent text-white/60 hover:text-white'" class="px-4 py-3 border-b-2 font-bold transition-all">
+                    About
+                </button>
+            </div>
+        </div>
+
+        <!-- TRACKS TAB -->
+        <div x-show="activeTab === 'tracks'" class="pb-20">
+            <div class="space-y-2">
+                <template x-for="i in 30" :key="i">
+                    <div @click="playSong(i)" class="group flex items-center gap-4 p-3 rounded-lg hover:bg-white/5 cursor-pointer transition-all">
+
+                        <!-- Index/Play -->
+                        <div class="w-12 text-center flex-shrink-0">
+                            <span x-show="!isPlaying(i)" class="text-white/60 group-hover:hidden" x-text="i"></span>
+                            <i x-show="!isPlaying(i)" class="fas fa-play hidden group-hover:block text-white"></i>
+                            <i x-show="isPlaying(i)" class="fas fa-volume-up text-yt-red"></i>
+                        </div>
+
+                        <!-- Thumbnail -->
+                        <div class="relative flex-shrink-0">
+                            <img :src="`https://picsum.photos/seed/album${i}/120`" class="w-24 h-14 rounded object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-play text-white text-xl"></i>
+                            </div>
+                        </div>
+
+                        <!-- Song Info -->
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-semibold truncate group-hover:text-yt-red transition-colors" x-text="'Track Title ' + i"></h4>
+                            <p class="text-sm text-white/60 truncate">Artist Name</p>
+                        </div>
+
+                        <!-- Duration -->
+                        <div class="text-sm text-white/60 flex-shrink-0">3:45</div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                            <button @click.stop="toggleSongFavorite(i)" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full">
+                                <i :class="isSongFavorited(i) ? 'fas fa-heart text-yt-red' : 'far fa-heart text-white/60'" class="text-sm"></i>
+                            </button>
+                            <button @click.stop="addToQueue(i)" class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full">
+                                <i class="fas fa-plus text-sm"></i>
+                            </button>
+                            <button class="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full">
+                                <i class="fas fa-ellipsis-v text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- ABOUT TAB -->
+        <div x-show="activeTab === 'about'" class="pb-20">
+            <div class="max-w-3xl">
+                <h3 class="text-2xl font-bold mb-4">About This Album</h3>
+                <p class="text-white/80 leading-relaxed mb-6">
+                    Perfect background music for cafes, restaurants, and businesses. This collection features smooth, relaxing tracks that create the ideal atmosphere for your customers.
+                </p>
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div>
+                        <div class="text-sm text-white/60 mb-1">Released</div>
+                        <div class="font-semibold">2024</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-white/60 mb-1">Total Duration</div>
+                        <div class="font-semibold">1h 45min</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-white/60 mb-1">Genre</div>
+                        <div class="font-semibold">Chill, Lounge</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-white/60 mb-1">License</div>
+                        <div class="font-semibold">100% Royalty-Free</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMILAR ALBUMS -->
+            <h3 class="text-2xl font-bold mb-6">More Like This</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <template x-for="i in 6" :key="'similar-'+i">
+                    <div class="cursor-pointer group">
+                        <div class="relative mb-3">
+                            <img :src="`https://picsum.photos/seed/similar${i}/300`" class="w-full aspect-square rounded-lg mb-3 group-hover:opacity-80 transition-opacity">
+                            <button class="absolute inset-0 m-auto w-12 h-12 bg-yt-red rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                <i class="fas fa-play text-white ml-0.5"></i>
+                            </button>
+                        </div>
+                        <h4 class="font-semibold text-sm truncate" x-text="'Similar Album ' + i"></h4>
+                        <p class="text-xs text-white/60 truncate">Various Artists</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function albumApp() {
+            return {
+                isFavorited: false,
+                currentSong: null,
+                songFavorites: [],
+                activeTab: 'tracks',
+
+                init() {},
+
+                playAlbum() {
+                    console.log('Playing album');
+                    this.currentSong = 1;
+                },
+
+                playSong(id) {
+                    console.log('Playing song:', id);
+                    this.currentSong = id;
+                },
+
+                isPlaying(id) {
+                    return this.currentSong === id;
+                },
+
+                toggleFavorite() {
+                    this.isFavorited = !this.isFavorited;
+                },
+
+                toggleSongFavorite(id) {
+                    if (this.songFavorites.includes(id)) {
+                        this.songFavorites = this.songFavorites.filter(s => s !== id);
+                    } else {
+                        this.songFavorites.push(id);
+                    }
+                },
+
+                isSongFavorited(id) {
+                    return this.songFavorites.includes(id);
+                },
+
+                addToQueue(id) {
+                    console.log('Added to queue:', id);
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

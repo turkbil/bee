@@ -39,6 +39,9 @@ class PromptGenerator
         // Ultra quality enhancement
         $prompt .= " Ultra detailed, 8K resolution, photorealistic, cinematic lighting, masterpiece quality, sharp focus, professional photography.";
 
+        // Text-free rules
+        $prompt .= " No text or minimal text in image. If text is required, use Turkish language only. Generic names, no brand names or trademarks.";
+
         return $prompt;
     }
 
@@ -61,6 +64,9 @@ class PromptGenerator
         // Product photography enhancement
         $prompt .= " Clean white background, studio lighting, commercial photography style.";
         $prompt .= " Ultra detailed, 8K resolution, photorealistic, sharp focus, professional product photography, e-commerce ready, masterpiece quality.";
+
+        // Text-free rules
+        $prompt .= " No text or brand names on product. If text is required, use Turkish language only. Generic product design, no trademarks or copyrighted logos.";
 
         return $prompt;
     }
@@ -87,6 +93,9 @@ class PromptGenerator
         // Portfolio quality enhancement
         $prompt .= " Modern, professional, creative design style.";
         $prompt .= " Ultra detailed, 8K resolution, artistic masterpiece, cinematic composition, visually stunning, portfolio-ready, award-winning quality.";
+
+        // Text-free rules
+        $prompt .= " Minimal or no text in image. If text is required, use Turkish language only. Generic design elements, no brand names or copyrighted content.";
 
         return $prompt;
     }

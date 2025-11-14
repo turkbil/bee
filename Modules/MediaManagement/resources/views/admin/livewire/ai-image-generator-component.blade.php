@@ -55,7 +55,10 @@
                                 {{ $isGenerating ? 'disabled' : '' }}
                             ></textarea>
                             @error('prompt') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <small class="form-hint">Minimum 10 karakter. Detaylı ve açıklayıcı olun.</small>
+                            <small class="form-hint">
+                                <strong>Önemli:</strong> Görselde yazı/text olmamalı. Eğer yazı gerekiyorsa Türkçe olmalı.
+                                Marka ismi, logo kullanmayın - genel isimler kullanın.
+                            </small>
                         </div>
 
                         @if($companyName)

@@ -33,11 +33,8 @@ class AiImageGeneratorComponent extends Component
         $this->loadCredits();
         $this->loadHistory();
 
-        // Tenant firma ismini al
-        $tenant = tenant();
-        if ($tenant && isset($tenant->name)) {
-            $this->companyName = $tenant->name;
-        }
+        // Settings'ten firma ismini al
+        $this->companyName = setting('company_name', '');
     }
 
     public function loadCredits()

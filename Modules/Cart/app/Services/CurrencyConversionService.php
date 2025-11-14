@@ -71,7 +71,8 @@ class CurrencyConversionService
             return $this->fetchExchangeRateFromDatabase($currencyCode);
         });
 
-        return $rate;
+        // Ensure float type (cache might return string)
+        return floatval($rate);
     }
 
     /**
@@ -88,8 +89,9 @@ class CurrencyConversionService
                 ->where('is_active', true)
                 ->first();
 
-            if ($currency && $currency->exchange_rate > 0) {
-                return (float) $currency->exchange_rate;
+            if ($currency && isset($currency->exchange_rate) && $currency->exchange_rate > 0) {
+                // Ensure float conversion (database decimal can be string)
+                return floatval($currency->exchange_rate);
             }
         }
 
@@ -107,7 +109,7 @@ class CurrencyConversionService
             'rate' => $rate,
         ]);
 
-        return $rate;
+        return (float) $rate;
     }
 
     /**

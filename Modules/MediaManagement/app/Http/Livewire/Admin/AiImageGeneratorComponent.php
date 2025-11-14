@@ -32,8 +32,8 @@ class AiImageGeneratorComponent extends Component
         $this->loadCredits();
         $this->loadHistory();
 
-        // Settings'ten site adını al (kısa - prompt için uygun)
-        $this->companyName = setting('site_name', '');
+        // Header'daki gibi site title'ı al
+        $this->companyName = settings('site_title', config('app.name'));
     }
 
     public function loadCredits()

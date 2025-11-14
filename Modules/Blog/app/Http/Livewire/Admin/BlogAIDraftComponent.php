@@ -2,6 +2,7 @@
 
 namespace Modules\Blog\App\Http\Livewire\Admin;
 
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Blog\App\Models\BlogAIDraft;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
  *
  * AI taslak üretimi ve seçim UI'ı
  */
+#[Layout('admin.layout')]
 class BlogAIDraftComponent extends Component
 {
     use WithPagination;
@@ -227,6 +229,6 @@ class BlogAIDraftComponent extends Component
         return view('blog::admin.livewire.blog-ai-draft-component', [
             'drafts' => $drafts,
             'creditBalance' => $creditBalance,
-        ])->layout('layouts.admin');
+        ]);
     }
 }

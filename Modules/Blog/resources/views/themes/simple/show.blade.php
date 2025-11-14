@@ -5,9 +5,7 @@
 @endphp
 @extends('themes.' . $themeName . '.layouts.app')
 
-@push('head')
-{!! \App\Services\SEOService::getAllSchemas($item) !!}
-@endpush
+{{-- Schema auto-renders in header.blade.php - No need for manual @push --}}
 
 @section('module_content')
     @php

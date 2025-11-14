@@ -85,6 +85,10 @@
     {{-- ❌ REMOVED: Google Analytics & Yandex - Now auto-loaded via marketing.auto-platforms component --}}
 
     {{-- Dynamic Content Areas --}}
+    {{-- 🤖 Universal Schema Auto-Render (Dynamic for ALL modules) --}}
+    @if(isset($item) && is_object($item) && method_exists($item, 'getUniversalSchemas'))
+        {!! \App\Services\SEOService::getAllSchemas($item) !!}
+    @endif
     @stack('head')
     @stack('styles')
 

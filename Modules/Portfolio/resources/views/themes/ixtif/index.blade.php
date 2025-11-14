@@ -9,13 +9,17 @@
     <div class="relative" x-data="portfoliosList()" x-init="init()">
 
         {{-- Glass Subheader Component --}}
+        @php
+            $breadcrumbs = [
+                ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
+                ['label' => $moduleTitle ?? __('portfolio::front.general.portfolios')]
+            ];
+        @endphp
+
         @include('themes.ixtif.layouts.partials.glass-subheader', [
             'title' => $moduleTitle ?? __('portfolio::front.general.portfolios'),
             'icon' => 'fa-solid fa-briefcase',
-            'breadcrumbs' => [
-                ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
-                ['label' => $moduleTitle ?? __('portfolio::front.general.portfolios')]
-            ]
+            'breadcrumbs' => $breadcrumbs
         ])
 
         <div class="py-20">

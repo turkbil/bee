@@ -16,7 +16,7 @@
     $tagList = $item->tag_list ?? [];
 @endphp
 
-{!! \App\Services\SEOService::getAllSchemas($item) !!}
+{{-- Schema auto-renders in header.blade.php - No need for manual render --}}
 
 {{-- Open Graph Meta Tags --}}
 <meta property="og:type" content="article">

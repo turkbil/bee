@@ -50,7 +50,7 @@ class CartWidget extends Component
         } else {
             $this->items = collect([]);
             $this->itemCount = 0;
-            $this->total = 0;
+            $this->total = 0.0;
 
             \Log::warning('⚠️ CartWidget: No cart found');
         }

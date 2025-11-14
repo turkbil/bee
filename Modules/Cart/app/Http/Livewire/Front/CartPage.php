@@ -36,13 +36,13 @@ class CartPage extends Component
         if ($this->cart) {
             $this->items = $this->cart->items()->where('is_active', true)->get();
             $this->itemCount = $this->items->sum('quantity');
-            $this->subtotal = $this->cart->subtotal;
-            $this->total = $this->cart->total;
+            $this->subtotal = (float) $this->cart->subtotal;
+            $this->total = (float) $this->cart->total;
         } else {
             $this->items = collect([]);
             $this->itemCount = 0;
-            $this->subtotal = 0;
-            $this->total = 0;
+            $this->subtotal = 0.0;
+            $this->total = 0.0;
         }
     }
 

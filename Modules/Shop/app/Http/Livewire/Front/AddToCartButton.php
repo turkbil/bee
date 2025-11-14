@@ -20,10 +20,42 @@ class AddToCartButton extends Component
     public int $quantity = 1;
     public bool $isAdding = false;
 
-    public function mount(int $productId, int $quantity = 1)
+    // UI Properties
+    public bool $showQuantity = false;
+    public string $buttonText = 'Sepete Ekle';
+    public string $buttonClass = 'px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors';
+
+    public function mount(
+        int $productId,
+        int $quantity = 1,
+        bool $showQuantity = false,
+        string $buttonText = 'Sepete Ekle',
+        string $buttonClass = 'px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors'
+    )
     {
         $this->productId = $productId;
         $this->quantity = $quantity;
+        $this->showQuantity = $showQuantity;
+        $this->buttonText = $buttonText;
+        $this->buttonClass = $buttonClass;
+    }
+
+    /**
+     * Quantity artır
+     */
+    public function increaseQuantity()
+    {
+        $this->quantity++;
+    }
+
+    /**
+     * Quantity azalt
+     */
+    public function decreaseQuantity()
+    {
+        if ($this->quantity > 1) {
+            $this->quantity--;
+        }
     }
 
     /**
@@ -66,16 +98,21 @@ class AddToCartButton extends Component
             // Item count hesapla
             $itemCount = $cart->items()->where('is_active', true)->sum('quantity');
 
-            // Browser event gönder (Alpine.js yakalayacak)
-            $this->dispatchBrowserEvent('cart-item-added', [
-                'cartId' => $cart->cart_id,
-                'itemCount' => $itemCount,
-                'cartItemId' => $cartItem->cart_item_id,
-                'productName' => $product->getTranslated('title', app()->getLocale()),
-                'productImage' => $cartItem->item_image,
-                'productPrice' => $cartItem->unit_price,
-                'quantity' => $cartItem->quantity,
-            ]);
+            // 1️⃣ Global Livewire event → CartWidget refresh için
+            $this->dispatch('cartUpdated');
+
+            // 2️⃣ Browser window event → Success notification için (CartPage dinliyor)
+            $this->js(sprintf(
+                'window.dispatchEvent(new CustomEvent("cart-updated", { detail: %s }))',
+                json_encode([
+                    'cartId' => $cart->cart_id,
+                    'itemCount' => $itemCount,
+                    'message' => 'Ürün sepete eklendi!',
+                    'productName' => $product->getTranslated('title', app()->getLocale()),
+                    'productPrice' => $cartItem->unit_price,
+                    'quantity' => $cartItem->quantity,
+                ])
+            ));
 
             \Log::info('✅ AddToCart SUCCESS', [
                 'product_id' => $this->productId,
@@ -89,10 +126,13 @@ class AddToCartButton extends Component
                 'error' => $e->getMessage(),
             ]);
 
-            $this->dispatchBrowserEvent('notify', [
-                'type' => 'error',
-                'message' => 'Hata: ' . $e->getMessage(),
-            ]);
+            // Browser window event → Error notification için
+            $this->js(sprintf(
+                'window.dispatchEvent(new CustomEvent("cart-error", { detail: %s }))',
+                json_encode([
+                    'message' => 'Hata: ' . $e->getMessage(),
+                ])
+            ));
         } finally {
             $this->isAdding = false;
         }

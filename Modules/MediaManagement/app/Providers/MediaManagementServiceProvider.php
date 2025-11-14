@@ -45,6 +45,11 @@ class MediaManagementServiceProvider extends ServiceProvider
             'mediamanagement::media-library-manager',
             \Modules\MediaManagement\App\Http\Livewire\Admin\MediaLibraryManager::class
         );
+
+        \Livewire\Livewire::component(
+            'mediamanagement::ai-image-generator',
+            \Modules\MediaManagement\App\Http\Livewire\Admin\AiImageGeneratorComponent::class
+        );
     }
 
     /**

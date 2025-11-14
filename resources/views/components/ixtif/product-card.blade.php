@@ -315,6 +315,10 @@ document.addEventListener('alpine:init', () => {
                 // CSRF token
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
+                // 🔑 localStorage'dan cart_id al (varsa)
+                const cartId = localStorage.getItem('cart_id');
+                console.log('🛒 Alpine: Current cart_id from localStorage:', cartId);
+
                 console.log('🛒 Alpine: Sending request to /api/cart/add');
 
                 const response = await fetch('/api/cart/add', {
@@ -326,7 +330,8 @@ document.addEventListener('alpine:init', () => {
                     },
                     body: JSON.stringify({
                         product_id: productId,
-                        quantity: 1
+                        quantity: 1,
+                        cart_id: cartId ? parseInt(cartId) : null  // 🔑 cart_id gönder
                     })
                 });
 
@@ -335,6 +340,12 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.success) {
                     this.success = true;
+
+                    // 🔑 API'den dönen cart_id'yi localStorage'a kaydet
+                    if (data.data && data.data.cart_id) {
+                        localStorage.setItem('cart_id', data.data.cart_id);
+                        console.log('💾 Alpine: cart_id saved to localStorage:', data.data.cart_id);
+                    }
 
                     // CartWidget'ı güncelle - Livewire event dispatch
                     if (typeof Livewire !== 'undefined') {
@@ -355,6 +366,19 @@ document.addEventListener('alpine:init', () => {
             }
         }
     }));
+
+    // 🔄 Sayfa yüklendiğinde localStorage cart_id ile sepeti senkronize et
+    document.addEventListener('DOMContentLoaded', () => {
+        const cartId = localStorage.getItem('cart_id');
+        if (cartId && typeof Livewire !== 'undefined') {
+            console.log('🔄 Page Init: Found cart_id in localStorage, refreshing CartWidget...', cartId);
+            // CartWidget'ı refresh et (Livewire event)
+            setTimeout(() => {
+                Livewire.dispatch('cartUpdated');
+                console.log('✅ Page Init: CartWidget refresh triggered');
+            }, 500); // Livewire init bekle
+        }
+    });
 });
 </script>
 @endonce

@@ -8,6 +8,7 @@ use Modules\Blog\App\Http\Livewire\Admin\BlogComponent;
 use Modules\Blog\App\Http\Livewire\Admin\BlogManageComponent;
 use Modules\Blog\App\Http\Livewire\Admin\BlogCategoryComponent;
 use Modules\Blog\App\Http\Livewire\Admin\BlogCategoryManageComponent;
+use Modules\Blog\App\Http\Livewire\Admin\BlogAiDraftComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -48,6 +49,7 @@ class BlogServiceProvider extends ServiceProvider
         Livewire::component('blog-manage-component', BlogManageComponent::class);
         Livewire::component('blog-category-component', BlogCategoryComponent::class);
         Livewire::component('blog-category-manage-component', BlogCategoryManageComponent::class);
+        Livewire::component('blog-ai-draft-component', BlogAiDraftComponent::class);
     }
 
     /**

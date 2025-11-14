@@ -1,4 +1,5 @@
-<div class="container-xl">
+<div>
+    <div class="container-xl">
     {{-- Header --}}
     <div class="page-header d-print-none">
         <div class="row align-items-center">
@@ -273,4 +274,6 @@
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>

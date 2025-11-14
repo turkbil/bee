@@ -18,6 +18,16 @@ class BlogAIDraftComponent extends Component
 {
     use WithPagination;
 
+    /**
+     * Component name override
+     * Default: blog-a-i-draft-component
+     * Override: blog-ai-draft-component
+     */
+    public static function getName(): string
+    {
+        return 'modules.blog.app.http.livewire.admin.blog-ai-draft-component';
+    }
+
     public int $draftCount = 100;
     public array $selectedDrafts = [];
     public bool $isGenerating = false;

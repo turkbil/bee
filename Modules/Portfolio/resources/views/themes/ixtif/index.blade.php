@@ -8,33 +8,15 @@
 @section('module_content')
     <div class="relative" x-data="portfoliosList()" x-init="init()">
 
-        {{-- Glassmorphism Subheader --}}
-        <section class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-8 md:py-12 px-4 md:px-6 shadow-2xl">
-            <div class="container mx-auto">
-                <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-stretch">
-                    <!-- Left: Title & Breadcrumb -->
-                    <div class="flex flex-col justify-between">
-                        <div class="flex items-center gap-6">
-                            <i class="fa-solid fa-briefcase text-6xl text-blue-600 dark:text-blue-400 drop-shadow-lg"></i>
-                            <div>
-                                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
-                                    {{ $moduleTitle ?? __('portfolio::front.general.portfolios') }}
-                                </h1>
-                                <!-- Breadcrumb -->
-                                <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                                    <a href="/" class="no-underline hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5">
-                                        <i class="fa-solid fa-home text-xs"></i>
-                                        <span>Ana Sayfa</span>
-                                    </a>
-                                    <i class="fa-solid fa-chevron-right text-xs opacity-50"></i>
-                                    <span class="font-semibold text-gray-900 dark:text-white">{{ $moduleTitle ?? __('portfolio::front.general.portfolios') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        {{-- Glass Subheader Component --}}
+        @include('themes.ixtif.layouts.partials.glass-subheader', [
+            'title' => $moduleTitle ?? __('portfolio::front.general.portfolios'),
+            'icon' => 'fa-solid fa-briefcase',
+            'breadcrumbs' => [
+                ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
+                ['label' => $moduleTitle ?? __('portfolio::front.general.portfolios')]
+            ]
+        ])
 
         <div class="py-20">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">

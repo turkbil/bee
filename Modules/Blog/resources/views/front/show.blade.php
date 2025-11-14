@@ -16,7 +16,7 @@
     $tagList = $item->tag_list ?? [];
 @endphp
 
-{!! \App\Services\SEOService::getPageSchema($item) !!}
+{!! \App\Services\SEOService::getAllSchemas($item) !!}
 
 {{-- Open Graph Meta Tags --}}
 <meta property="og:type" content="article">
@@ -36,45 +36,15 @@
 @if($featuredImageUrl)
 <meta name="twitter:image" content="{{ $featuredImageUrl }}">
 @endif
-
-{{-- JSON-LD Structured Data --}}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "{{ $metaTitle }}",
-  "description": "{{ $metaExcerpt }}",
-  "url": "{{ $item->getUrl($metaLocale) }}",
-  "datePublished": "{{ $item->published_at ? $item->published_at->toISOString() : $item->created_at->toISOString() }}",
-  "dateModified": "{{ $item->updated_at->toISOString() }}",
-  @if($featuredImageUrl)
-  "image": {
-    "@type": "ImageObject",
-    "url": "{{ $featuredImageUrl }}",
-    "width": 1200,
-    "height": 630
-  },
-  @endif
-  "author": {
-    "@type": "Person",
-    "name": "{{ config('app.name') }}"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "{{ config('app.name') }}",
-    "url": "{{ url('/') }}"
-  },
-  @if($item->category)
-  "articleSection": "{{ $item->category->getTranslated('name', $metaLocale) }}",
-  @endif
-  @if(!empty($tagList))
-  "keywords": "{{ implode(', ', $tagList) }}",
-  @endif
-  "wordCount": {{ $wordCount }}
-}
-</script>
 @endpush
 
 @section('module_content')
-    @include('blog::themes.{{ $activeThemeName }}.partials.show-content', ['item' => $item])
+    @php
+        // Theme fallback: try active theme, then simple
+        $partialView = 'blog::themes.' . $themeName . '.partials.show-content';
+        if (!view()->exists($partialView)) {
+            $partialView = 'blog::themes.simple.partials.show-content';
+        }
+    @endphp
+    @include($partialView, ['item' => $item])
 @endsection

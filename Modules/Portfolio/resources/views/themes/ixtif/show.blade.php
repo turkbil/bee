@@ -6,31 +6,38 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
+    @php
+        $currentLocale = app()->getLocale();
+        $title = $item->getTranslated('title', $currentLocale);
+        $body = $item->getTranslated('body', $currentLocale);
+
+        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+        $indexSlug = $moduleSlugService->getMultiLangSlug('Portfolio', 'index', $currentLocale);
+        $defaultLocale = get_tenant_default_locale();
+        $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
+        $portfolioIndexUrl = $localePrefix . '/' . $indexSlug;
+
+        // Medya verilerini çek
+        $featuredImage = $item->getFirstMedia('featured_image');
+        $galleryImages = $item->getMedia('gallery');
+
+        // Breadcrumbs
+        $breadcrumbsArray = [
+            ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
+            ['label' => 'Portföy', 'url' => url($portfolioIndexUrl)],
+            ['label' => $title]
+        ];
+    @endphp
+
+    {{-- Glass Subheader Component --}}
+    @include('themes.ixtif.layouts.partials.glass-subheader', [
+        'title' => $title,
+        'icon' => 'fa-solid fa-briefcase',
+        'breadcrumbs' => $breadcrumbsArray
+    ])
+
     <div class="min-h-screen">
-        @php
-            $currentLocale = app()->getLocale();
-            $title = $item->getTranslated('title', $currentLocale);
-            $body = $item->getTranslated('body', $currentLocale);
-
-            $moduleSlugService = app(\App\Services\ModuleSlugService::class);
-            $indexSlug = $moduleSlugService->getMultiLangSlug('Portfolio', 'index', $currentLocale);
-            $defaultLocale = get_tenant_default_locale();
-            $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
-            $portfolioIndexUrl = $localePrefix . '/' . $indexSlug;
-
-            // Medya verilerini çek
-            $featuredImage = $item->getFirstMedia('featured_image');
-            $galleryImages = $item->getMedia('gallery');
-        @endphp
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-            {{-- Sayfa Başlığı --}}
-            <header class="mb-8 md:mb-12">
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                    {{ $title }}
-                </h1>
-                <div class="h-1 w-20 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
-            </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-8 lg:gap-10">
                 {{-- Ana Görsel - Sol Taraf --}}

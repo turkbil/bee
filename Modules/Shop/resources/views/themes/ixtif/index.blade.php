@@ -7,41 +7,21 @@
 
 @section('module_content')
     <div class="relative" x-data="shopIndexPage()" x-init="init()">
-        {{-- Header Section - Glassmorphism Subheader (Design 7 - Exact Copy) --}}
+        {{-- Glass Subheader Component --}}
         @if($selectedCategory)
-            <section class="py-12">
-                <!-- FULL WIDTH Container -->
-                <div class="w-full">
-                    <!-- Inner Container max-w-7xl -->
-                    <div class="container mx-auto px-4 max-w-7xl">
-                        <!-- Main Card with Bottom Shadow -->
-                        <div class="bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.3)]">
-                            <div class="grid lg:grid-cols-[1fr_400px] gap-8 items-stretch">
-                                <!-- Left: Title & Breadcrumb -->
-                                <div class="flex flex-col justify-between">
-                                    <div class="flex items-center gap-6 mb-6">
-                                        @if($selectedCategory->icon_class)
-                                            <i class="{{ $selectedCategory->icon_class }} text-6xl text-white drop-shadow-lg"></i>
-                                        @endif
-                                        <div>
-                                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-3">{{ $selectedCategory->getTranslated('title') }}</h1>
-                                            <!-- Breadcrumb -->
-                                            <div class="flex items-center gap-2 text-sm text-white/90">
-                                                <a href="{{ route('shop.index') }}" class="hover:text-white transition flex items-center gap-1.5">
-                                                    <i class="fa-solid fa-home text-xs"></i>
-                                                    <span>Ana Sayfa</span>
-                                                </a>
-                                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                                <a href="{{ route('shop.index') }}" class="hover:text-white transition">Ürünler</a>
-                                                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
-                                                <span class="font-semibold">{{ $selectedCategory->getTranslated('title') }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            @php
+                $breadcrumbs = [
+                    ['label' => 'Ana Sayfa', 'url' => route('shop.index'), 'icon' => 'fa-home'],
+                    ['label' => 'Ürünler', 'url' => route('shop.index')],
+                    ['label' => $selectedCategory->getTranslated('title')]
+                ];
+            @endphp
 
-                                <!-- Right: Search & Sort - No Card -->
-                                <div class="flex flex-col justify-center space-y-3">
+            @include('themes.ixtif.layouts.partials.glass-subheader', [
+                'title' => $selectedCategory->getTranslated('title'),
+                'icon' => $selectedCategory->icon_class ?? 'fa-solid fa-box',
+                'breadcrumbs' => $breadcrumbs,
+                'rightSlot' => '<div class="flex flex-col justify-center space-y-3">
                                     <!-- Search - ÜSTTE -->
                                     <div class="relative">
                                         <form action="{{ url()->current() }}" method="GET">

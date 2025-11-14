@@ -6,9 +6,16 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @push('head')
-{!! \App\Services\SEOService::getPageSchema($item) !!}
+{!! \App\Services\SEOService::getAllSchemas($item) !!}
 @endpush
 
 @section('module_content')
-    @include('blog::themes.{{ $activeThemeName }}.partials.show-content', ['item' => $item])
+    @php
+        // Theme fallback: try active theme, then simple
+        $partialView = 'blog::themes.' . $themeName . '.partials.show-content';
+        if (!view()->exists($partialView)) {
+            $partialView = 'blog::themes.simple.partials.show-content';
+        }
+    @endphp
+    @include($partialView, ['item' => $item])
 @endsection

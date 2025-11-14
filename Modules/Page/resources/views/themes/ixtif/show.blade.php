@@ -7,7 +7,14 @@
 
 @section('module_content')
 @if(isset($is_homepage) && $is_homepage)
-    @include('page::themes.ixtif.homepage')
+    @php
+        // Theme fallback for homepage
+        $homepageView = 'page::themes.' . $themeName . '.homepage';
+        if (!view()->exists($homepageView)) {
+            $homepageView = 'page::themes.simple.homepage';
+        }
+    @endphp
+    @include($homepageView)
 @else
     @php
         $currentLocale = app()->getLocale();

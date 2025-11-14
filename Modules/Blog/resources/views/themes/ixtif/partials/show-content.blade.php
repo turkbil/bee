@@ -60,23 +60,29 @@
 
 <x-blog.reading-progress target=".content-body" />
 
+{{-- Glass Subheader Component --}}
+@php
+    $breadcrumbsArray = [
+        ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
+        ['label' => 'Blog', 'url' => url($blogIndexUrl)]
+    ];
+    if($categoryName) {
+        $breadcrumbsArray[] = ['label' => $categoryName];
+    }
+    $breadcrumbsArray[] = ['label' => $title];
+@endphp
+
+@include('themes.ixtif.layouts.partials.glass-subheader', [
+    'title' => $title,
+    'icon' => 'fa-solid fa-newspaper',
+    'breadcrumbs' => $breadcrumbsArray
+])
+
 <div class="min-h-screen bg-white dark:bg-gray-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
-        {{-- Başlık --}}
+        {{-- Meta Info Only (Başlık glass-subheader'da) --}}
         <header class="mb-8 md:mb-12">
-            @if($categoryName)
-                <div class="mb-4">
-                    <span class="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                        {{ $categoryName }}
-                    </span>
-                </div>
-            @endif
-
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                {{ $title }}
-            </h1>
-            <div class="h-1 w-20 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full mb-6"></div>
 
             @if($excerpt)
                 <p class="text-xl leading-relaxed text-gray-600 dark:text-gray-400 mb-8">

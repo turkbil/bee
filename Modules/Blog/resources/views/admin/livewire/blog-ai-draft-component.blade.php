@@ -11,12 +11,6 @@
                 </h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
-                {{-- Kredi Bakiyesi --}}
-                <div class="badge badge-lg bg-green text-white me-2">
-                    <i class="ti ti-coin"></i>
-                    {{ number_format($creditBalance, 2) }} Kredi
-                </div>
-
                 {{-- Taslak Üret Butonu --}}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateDraftsModal" @if($isGenerating) disabled @endif>
                     <i class="ti ti-plus"></i>

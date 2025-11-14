@@ -7303,7 +7303,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Blog\\App\\Exceptions\\BlogValidationException' => __DIR__ . '/../..' . '/Modules/Blog/app/Exceptions/BlogValidationException.php',
         'Modules\\Blog\\App\\Http\\Controllers\\Api\\BlogApiController' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Controllers/Api/BlogApiController.php',
         'Modules\\Blog\\App\\Http\\Controllers\\Front\\BlogController' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Controllers/Front/BlogController.php',
-        'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogAIDraftComponent' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Livewire/Admin/BlogAIDraftComponent.php',
+        'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogAiDraftComponent' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Livewire/Admin/BlogAiDraftComponent.php',
         'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogCategoryComponent' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Livewire/Admin/BlogCategoryComponent.php',
         'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogCategoryManageComponent' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Livewire/Admin/BlogCategoryManageComponent.php',
         'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogComponent' => __DIR__ . '/../..' . '/Modules/Blog/app/Http/Livewire/Admin/BlogComponent.php',

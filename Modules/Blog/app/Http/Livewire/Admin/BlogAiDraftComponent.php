@@ -214,12 +214,8 @@ class BlogAiDraftComponent extends Component
             ->latest()
             ->paginate(20);
 
-        // Kredi bakiyesi
-        $creditBalance = tenant()->ai_credits_balance ?? 0;
-
         return view('blog::admin.livewire.blog-ai-draft-component', [
             'drafts' => $drafts,
-            'creditBalance' => $creditBalance,
         ]);
     }
 }

@@ -5844,7 +5844,7 @@ return array(
     'Modules\\Blog\\App\\Exceptions\\BlogValidationException' => $baseDir . '/Modules/Blog/app/Exceptions/BlogValidationException.php',
     'Modules\\Blog\\App\\Http\\Controllers\\Api\\BlogApiController' => $baseDir . '/Modules/Blog/app/Http/Controllers/Api/BlogApiController.php',
     'Modules\\Blog\\App\\Http\\Controllers\\Front\\BlogController' => $baseDir . '/Modules/Blog/app/Http/Controllers/Front/BlogController.php',
-    'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogAIDraftComponent' => $baseDir . '/Modules/Blog/app/Http/Livewire/Admin/BlogAIDraftComponent.php',
+    'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogAiDraftComponent' => $baseDir . '/Modules/Blog/app/Http/Livewire/Admin/BlogAiDraftComponent.php',
     'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogCategoryComponent' => $baseDir . '/Modules/Blog/app/Http/Livewire/Admin/BlogCategoryComponent.php',
     'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogCategoryManageComponent' => $baseDir . '/Modules/Blog/app/Http/Livewire/Admin/BlogCategoryManageComponent.php',
     'Modules\\Blog\\App\\Http\\Livewire\\Admin\\BlogComponent' => $baseDir . '/Modules/Blog/app/Http/Livewire/Admin/BlogComponent.php',

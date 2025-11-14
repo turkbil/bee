@@ -136,25 +136,84 @@ class BlogAIContentWriter
         // Firma & İletişim Bilgileri
         $companyContext = '';
         if (!empty($context['company_info'])) {
-            $companyContext .= "\n\n**FİRMA BİLGİLERİ (Blog yazısında kullanılacak):**\n";
-            $companyContext .= "- Firma Adı: " . ($context['company_info']['name'] ?? 'N/A') . "\n";
+            $companyContext .= "\n\n**FİRMA BİLGİLERİ (Blog yazısında ZORUNLU kullanılacak - EN AZ 3 KEZ!):**\n";
+            $companyContext .= "- Firma Adı: **" . ($context['company_info']['name'] ?? 'N/A') . "** (Bu adı MUTLAKA kullan!)\n";
             $companyContext .= "- Site Başlığı: " . ($context['company_info']['title'] ?? 'N/A') . "\n";
             $companyContext .= "- Website: " . ($context['company_info']['website'] ?? 'N/A') . "\n";
         }
         if (!empty($context['contact_info'])) {
-            $companyContext .= "\n**İLETİŞİM BİLGİLERİ (CTA'da kullanılacak):**\n";
-            $companyContext .= "- Email: " . ($context['contact_info']['email'] ?? 'N/A') . "\n";
-            $companyContext .= "- Telefon: " . ($context['contact_info']['phone'] ?? 'N/A') . "\n";
+            $companyContext .= "\n**İLETİŞİM BİLGİLERİ (CTA'da ZORUNLU kullanılacak):**\n";
+            $companyContext .= "- Email: **" . ($context['contact_info']['email'] ?? 'N/A') . "** (CTA'da ekle!)\n";
+            $companyContext .= "- Telefon: **" . ($context['contact_info']['phone'] ?? 'N/A') . "** (CTA'da ekle!)\n";
+            $companyContext .= "- Adres: " . ($context['contact_info']['address'] ?? 'N/A') . "\n";
         }
 
         $systemMessage = $prompt . $companyContext . "\n\n**TASLAK BİLGİLERİ:**\n" . json_encode($draftContext, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         try {
-            $userPrompt = "Lütfen bu taslak için tam blog yazısı oluştur. JSON formatında döndür: {title, content, excerpt, faq_data, howto_data}. \n\nfaq_data: En az 5-10 adet soru-cevap içermeli. Format: [{\"question\":{\"tr\":\"...\"}, \"answer\":{\"tr\":\"...\"}}]\n\nhowto_data: Adım adım kılavuz. Format: {\"name\":{\"tr\":\"...\"}, \"description\":{\"tr\":\"...\"}, \"steps\":[{\"name\":{\"tr\":\"...\"}, \"text\":{\"tr\":\"...\"}}]}";
+            $userPrompt = <<<'USER_PROMPT'
+Lütfen bu taslak için tam blog yazısı oluştur.
+
+🔴 ZORUNLU GEREKSINIMLER:
+
+1. **KELIME SAYISI:** Minimum 1800-2000 kelime (Daha az KABUL EDİLMEZ!)
+
+2. **FIRMA ADI KULLANIMI (ZORUNLU!):**
+   - Firma adını ({company_info.name}) EN AZ 3 KEZ kullan!
+   - İlk 200 kelimede 1 kez
+   - Orta bölümde 1 kez
+   - Sonuç/CTA'da 1 kez
+
+   Örnek: "{company_info.name} olarak, endüstriyel ekipman sektöründe..."
+
+3. **CTA BÖLÜMÜNde İLETİŞİM (ZORUNLU!):**
+   - Sonuç bölümünde iletişim bilgilerini HTML listesi olarak ekle:
+   ```html
+   <h2>İletişim ve Destek</h2>
+   <p>{company_info.name} olarak, profesyonel destek sağlıyoruz. Bizimle iletişime geçin:</p>
+   <ul>
+     <li><strong>Telefon:</strong> {contact_info.phone}</li>
+     <li><strong>Email:</strong> {contact_info.email}</li>
+   </ul>
+   ```
+
+4. **FAQ (ZORUNLU!):**
+   - EN AZ 7-10 adet soru-cevap
+   - Her cevap 80-120 kelime
+   - Konuyla ilgili, gerçek kullanıcı soruları
+
+5. **HOWTO (ZORUNLU!):**
+   - Adım adım kılavuz (minimum 5 adım)
+   - Her adım net ve uygulanabilir
+
+6. **CÜMLE UZUNLUĞU:**
+   - Maximum 20 kelime/cümle
+   - Kısa ve net paragraflar
+
+📋 JSON ÇIKTI FORMATI:
+{
+  "title": "...",
+  "content": "HTML içerik (H2, H3, p, ul, li, strong kullan)",
+  "excerpt": "150-180 karakter özet",
+  "faq_data": [
+    {"question": {"tr": "..."}, "answer": {"tr": "80-120 kelime cevap"}}
+  ],
+  "howto_data": {
+    "name": {"tr": "..."},
+    "description": {"tr": "..."},
+    "steps": [
+      {"name": {"tr": "..."}, "text": {"tr": "..."}}
+    ]
+  }
+}
+
+⚠️ DİKKAT: Firma adı kullanmadan, iletişim bilgisi eklemeden, FAQ/HowTo olmadan içerik REDDEDILIR!
+USER_PROMPT;
+
             $response = $this->openaiService->ask($userPrompt, false, [
                 'custom_prompt' => $systemMessage,
-                'temperature' => 0.8,
-                'max_tokens' => 8000,
+                'temperature' => 0.7,
+                'max_tokens' => 12000,
             ]);
 
             // ask() metodu direkt string döndürür

@@ -63,7 +63,9 @@ class Tenant2Prompts
 
 ---
 
-## 🏢 FİRMA BİLGİSİ KULLANIMI (ZORUNLU)
+## 🏢 FİRMA BİLGİSİ KULLANIMI (ZORUNLU - UYMADIĞIN TAKDİRDE İÇERİK REDDEDİLİR!)
+
+### ⚠️ KRİTİK: Bu kurallar ZORUNLUDUR ve MUTLAKA uyulmalıdır!
 
 ### Firma Bilgileri Context'ten Alınacak:
 - **Firma Adı**: {company_info.name}
@@ -74,36 +76,132 @@ class Tenant2Prompts
 - **Telefon**: {contact_info.phone}
 - **Adres**: {contact_info.address}
 
-### KURALLAR:
+---
 
-★ **Firma Adından Bahsetme Zorunluluğu**:
-  - Blog yazısında EN AZ 2-3 kez firma adından bahset
-  - İlk bahsetme: İlk 300 kelime içinde
-  - Son bahsetme: Sonuç/CTA bölümünde
+## ⭐ ZORUNLU KURALLAR - MUTLAKA UYULACAK!
 
-★ **Kullanım Örnekleri**:
-  ✅ "Firma adı, endüstriyel ekipman sektöründe..."
-  ✅ "Firma adı olarak, müşterilerimize..."
-  ✅ "Daha fazla bilgi için firma ekibimizle iletişime geçebilirsiniz."
+### 1️⃣ FİRMA ADI KULLANIMI (ZORUNLU - MİNİMUM 3 KEZ!)
 
-★ **İletişim Bilgisi Ekleme**:
-  - Sonuç bölümünde MUTLAKA iletişim bilgisi ver
-  - CTA (Call-to-Action) cümlesi ekle
+**🔴 UYARI:** Firma adını EN AZ 3 KEZ kullanmak ZORUNLUDUR!
 
-★ **Otorite & Güvenilirlik Gösterimi**:
-  - "Firma adı olarak, profesyonel ekipman tedarikinde..."
-  - Firma adıyla uzmanlık vurgusu yap
+**Kullanım Yerleri:**
+1. **İlk 200 kelime içinde** (giriş paragrafı) - ZORUNLU
+2. **Orta bölümde** (teknik detay/açıklama kısmı) - ZORUNLU
+3. **Sonuç/CTA bölümünde** (kapanış) - ZORUNLU
 
-★ **YASAKLAR**:
-  ❌ Rakip firma adı kullanma
-  ❌ Genel ifadeler kullanma ("Bu firmalar", "Tedarikçiler")
-  ❌ İletişim bilgisi olmadan bitirme
+**✅ DOĞRU KULLANIM ÖRNEKLERİ:**
 
-### CTA (Call-to-Action) Zorunluluğu:
-Blog sonunda MUTLAKA bir CTA bölümü olmalı:
-- Ürün/hizmet hakkında daha fazla bilgi
-- İletişim kurmaya davet
-- Telefon + Email bilgisi
+**Giriş Paragrafı:**
+```
+"{company_info.name} olarak, endüstriyel ekipman sektöründe 15 yıllık tecrübemizle..."
+```
+
+**Orta Bölüm:**
+```
+"{company_info.name} uzman ekibi, forklift bakım süreçlerinde size profesyonel destek sağlar."
+"{company_info.name}'in sunduğu teknik servis hizmetleri ile..."
+```
+
+**Sonuç/CTA:**
+```
+"Daha fazla bilgi için {company_info.name}'i arayabilirsiniz."
+"{company_info.name} olarak, ihtiyaçlarınıza özel çözümler sunuyoruz."
+```
+
+**❌ YANLIŞ KULLANIM:**
+```
+❌ "Bizim firma..." (GENERİK!)
+❌ "Firmamız..." (FİRMA ADI YOK!)
+❌ "İşletmeniz için..." (FİRMA ADI YOK!)
+❌ "Profesyonel destek için bize ulaşın" (FİRMA ADI YOK!)
+```
+
+---
+
+### 2️⃣ İLETİŞİM BİLGİLERİ (ZORUNLU - TELEFON + EMAIL!)
+
+**🔴 UYARI:** CTA bölümünde MUTLAKA telefon VE email olmalı!
+
+**✅ DOĞRU CTA FORMATI:**
+```html
+<h2>İletişim ve Destek</h2>
+<p>{company_info.name} olarak, forklift bakım süreçlerinde profesyonel destek sağlıyoruz. Detaylı bilgi almak ve ihtiyaçlarınıza özel çözümler için bizimle iletişime geçin:</p>
+
+<ul>
+  <li><strong>Telefon:</strong> {contact_info.phone}</li>
+  <li><strong>Email:</strong> {contact_info.email}</li>
+  <li><strong>Adres:</strong> {contact_info.address}</li>
+</ul>
+
+<p>Uzman ekibimiz, sorularınızı yanıtlamak ve size en uygun çözümü sunmak için hazır!</p>
+```
+
+**❌ YANLIŞ CTA:**
+```html
+❌ "Bizimle iletişime geçin." (İLETİŞİM BİLGİSİ YOK!)
+❌ "Daha fazla bilgi için..." (TELEFON/EMAIL YOK!)
+❌ "İhtiyaçlarınız için..." (KİMLİK YOK!)
+```
+
+---
+
+### 3️⃣ OTORİTE & GÜVENİLİRLİK (FİRMA İLE VURGU)
+
+Firma adını kullanarak uzmanlık ve otorite göster:
+
+**✅ DOĞRU KULLANIM:**
+```
+"{company_info.name} olarak, endüstriyel ekipman tedarikinde 15 yıllık deneyimimizle..."
+"{company_info.name} uzman ekibi, CE ve ISO standartlarına uygun..."
+"{company_info.name}'in geniş ürün yelpazesi sayesinde..."
+```
+
+**❌ YANLIŞ KULLANIM:**
+```
+❌ "Profesyonel ekipler..." (FİRMA ADI YOK!)
+❌ "Sektörde deneyimli firmalar..." (SPESIFIK DEĞİL!)
+```
+
+---
+
+### 4️⃣ YASAKLAR (BUNLARI ASLA YAPMA!)
+
+❌ **Firma adı OLMADAN bitirme** → REDDEDİLİR!
+❌ **Genel "bizim firma" ifadeleri** → FİRMA ADI kullan!
+❌ **İletişim bilgisi OLMADAN CTA** → Telefon + Email ZORUNLU!
+❌ **Rakip firma adı kullanma** → Sadece {company_info.name}
+❌ **"Tedarikçiler", "firmalar" gibi genel terimler** → {company_info.name} kullan!
+
+---
+
+## 📊 KONTROL LİSTESİ (Blog yazmadan önce kontrol et!)
+
+Yazını göndermeden önce MUTLAKA şunları kontrol et:
+
+✅ **Firma adı minimum 3 kez kullanıldı mı?**
+   - [ ] İlk 200 kelimede 1 kez
+   - [ ] Orta bölümde 1 kez
+   - [ ] Sonuç/CTA'da 1 kez
+
+✅ **CTA bölümünde iletişim bilgileri var mı?**
+   - [ ] Telefon numarası
+   - [ ] Email adresi
+   - [ ] Firma adı
+
+✅ **Firma adıyla otorite gösterildi mi?**
+   - [ ] "... olarak" yapısı kullanıldı
+   - [ ] Uzmanlık vurgusu yapıldı
+
+---
+
+## 🎯 ÖZET: MUTLAKA HATIRLA!
+
+1. **Firma adı EN AZ 3 KEZ** kullanılacak!
+2. **CTA'da TELEFON + EMAIL** olacak!
+3. **İlk 200 kelimede firma adı** geçecek!
+4. **Sonuç bölümünde firma adı + iletişim** olacak!
+
+**Bu kurallara uyulmadığı takdirde içerik REDDEDILIR ve yeniden yazılması istenir!**
 
 RULES;
     }

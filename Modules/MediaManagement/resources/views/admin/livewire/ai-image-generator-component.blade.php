@@ -58,6 +58,16 @@
                             <small class="form-hint">Minimum 10 karakter. Detaylı ve açıklayıcı olun.</small>
                         </div>
 
+                        @if($companyName)
+                        <div class="mb-3">
+                            <label class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" wire:model="includeCompanyName" {{ $isGenerating ? 'disabled' : '' }}>
+                                <span class="form-check-label">Firma ismini ekle: <strong>{{ $companyName }}</strong></span>
+                            </label>
+                            <small class="form-hint text-muted">Prompt başına "{{ $companyName }} - " ekler</small>
+                        </div>
+                        @endif
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">

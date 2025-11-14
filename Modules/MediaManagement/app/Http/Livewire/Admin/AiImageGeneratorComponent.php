@@ -13,6 +13,8 @@ class AiImageGeneratorComponent extends Component
     public string $prompt = '';
     public string $size = '1792x1024';
     public string $quality = 'hd';
+    public string $companyName = '';
+    public bool $includeCompanyName = false;
     public ?string $generatedImageUrl = null;
     public ?int $generatedMediaId = null;
     public bool $isGenerating = false;
@@ -30,6 +32,12 @@ class AiImageGeneratorComponent extends Component
     {
         $this->loadCredits();
         $this->loadHistory();
+
+        // Tenant firma ismini al
+        $tenant = tenant();
+        if ($tenant && isset($tenant->name)) {
+            $this->companyName = $tenant->name;
+        }
     }
 
     public function loadCredits()
@@ -54,7 +62,13 @@ class AiImageGeneratorComponent extends Component
         try {
             $service = app(AIImageGenerationService::class);
 
-            $mediaItem = $service->generate($this->prompt, [
+            // Firma ismini prompt'a ekle
+            $finalPrompt = $this->prompt;
+            if ($this->includeCompanyName && !empty($this->companyName)) {
+                $finalPrompt = $this->companyName . ' - ' . $this->prompt;
+            }
+
+            $mediaItem = $service->generate($finalPrompt, [
                 'size' => $this->size,
                 'quality' => $this->quality,
             ]);
@@ -68,12 +82,7 @@ class AiImageGeneratorComponent extends Component
             $this->loadCredits();
             $this->loadHistory();
 
-            $this->dispatchBrowserEvent('image-generated', [
-                'url' => $this->generatedImageUrl,
-                'id' => $this->generatedMediaId,
-            ]);
-
-            session()->flash('success', __('Image generated successfully!'));
+            session()->flash('success', 'Görsel başarıyla oluşturuldu!');
 
         } catch (Exception $e) {
             $this->errorMessage = $e->getMessage();

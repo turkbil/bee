@@ -44,7 +44,9 @@ class BlogAiDraftComponent extends Component
     public function mount()
     {
         // Database'deki seçili taslakları component'e yükle
+        // SADECE henüz üretilmemiş taslakları yükle!
         $this->selectedDrafts = BlogAIDraft::where('is_selected', true)
+            ->where('is_generated', false) // Daha önce üretilmiş olanları HARIÇ TUT!
             ->pluck('id')
             ->toArray();
 
@@ -117,18 +119,26 @@ class BlogAiDraftComponent extends Component
      */
     public function toggleDraftSelection(int $draftId)
     {
+        $draft = BlogAIDraft::find($draftId);
+
+        // Daha önce üretilmiş taslak seçilemesin!
+        if ($draft && $draft->is_generated) {
+            $this->addError('selection', 'Bu taslak zaten kullanılmış! Yeni bir taslak seçin.');
+            return;
+        }
+
         if (in_array($draftId, $this->selectedDrafts)) {
             // Kaldır
             $this->selectedDrafts = array_diff($this->selectedDrafts, [$draftId]);
 
             // Database'de güncelle
-            BlogAIDraft::find($draftId)?->update(['is_selected' => false]);
+            $draft?->update(['is_selected' => false]);
         } else {
             // Ekle
             $this->selectedDrafts[] = $draftId;
 
             // Database'de güncelle
-            BlogAIDraft::find($draftId)?->update(['is_selected' => true]);
+            $draft?->update(['is_selected' => true]);
         }
     }
 

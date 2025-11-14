@@ -156,19 +156,22 @@
                     </thead>
                     <tbody>
                         @foreach($drafts as $draft)
-                            <tr>
+                            <tr @if($draft->is_generated) class="opacity-50 bg-light" style="pointer-events: none;" @endif>
                                 <td>
                                     <input
                                         type="checkbox"
                                         class="form-check-input"
                                         wire:click="toggleDraftSelection({{ $draft->id }})"
                                         @if(in_array($draft->id, $selectedDrafts)) checked @endif
-                                        @if($draft->is_generated) disabled @endif
+                                        @if($draft->is_generated) disabled title="Bu taslak zaten kullanılmış" @endif
                                     >
                                 </td>
                                 <td>
                                     <strong>{{ $draft->topic_keyword }}</strong>
                                     <div class="text-muted small">{{ Str::limit($draft->meta_description, 80) }}</div>
+                                    @if($draft->is_generated)
+                                        <div class="text-danger small"><i class="fas fa-ban"></i> Zaten kullanılmış</div>
+                                    @endif
                                 </td>
                                 <td>
                                     @if(!empty($draft->category_suggestions))

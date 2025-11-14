@@ -37,6 +37,14 @@ class CartItem extends BaseModel
         'in_stock',
         'stock_checked_at',
         'moved_from_wishlist',
+        // Display fields
+        'item_title',
+        'item_image',
+        'item_sku',
+        // Currency metadata
+        'original_currency',
+        'original_price',
+        'conversion_rate',
     ];
 
     protected $casts = [
@@ -53,6 +61,9 @@ class CartItem extends BaseModel
         'in_stock' => 'boolean',
         'moved_from_wishlist' => 'boolean',
         'stock_checked_at' => 'datetime',
+        // Currency metadata
+        'original_price' => 'decimal:2',
+        'conversion_rate' => 'decimal:4',
     ];
 
     /**

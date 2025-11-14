@@ -134,20 +134,56 @@ class CartService
         $discountAmount = $options['discount_amount'] ?? 0;
         $taxRate = $options['tax_rate'] ?? $this->getItemTaxRate($item);
 
+        // Currency dönüşümü (USD/EUR → TRY)
+        $originalCurrency = $options['currency'] ?? $this->getItemCurrency($item);
+        $originalPrice = $unitPrice;
+        $conversionRate = 1.0;
+
+        if ($originalCurrency && $originalCurrency !== 'TRY') {
+            $currencyService = app(CurrencyConversionService::class);
+
+            if ($currencyService->needsConversion($originalCurrency)) {
+                $converted = $currencyService->convertWithMetadata($unitPrice, $originalCurrency);
+                $unitPrice = $converted['converted_amount'];
+                $conversionRate = $converted['rate'];
+
+                Log::info('💱 Currency converted for cart item', [
+                    'original_amount' => $originalPrice,
+                    'original_currency' => $originalCurrency,
+                    'converted_amount' => $unitPrice,
+                    'rate' => $conversionRate,
+                ]);
+            }
+        }
+
         $cartItem->unit_price = $unitPrice;
         $cartItem->discount_amount = $discountAmount;
         $cartItem->final_price = $unitPrice - $discountAmount;
         $cartItem->tax_rate = $taxRate;
 
+        // Display bilgileri (migration sonrası aktif)
+        if (!empty($options['item_title'])) {
+            $cartItem->item_title = $options['item_title'];
+        }
+
+        if (!empty($options['item_image'])) {
+            $cartItem->item_image = $options['item_image'];
+        }
+
+        if (!empty($options['item_sku'])) {
+            $cartItem->item_sku = $options['item_sku'];
+        }
+
+        // Currency metadata (migration sonrası aktif)
+        if ($originalCurrency) {
+            $cartItem->original_currency = $originalCurrency;
+            $cartItem->original_price = $originalPrice;
+            $cartItem->conversion_rate = $conversionRate;
+        }
+
         // Backward compatibility: Shop Product için product_id
         if (method_exists($item, 'getAttribute') && $item->getAttribute('product_id')) {
             $cartItem->product_id = $item->product_id;
-        }
-
-        // Currency code: ShopProduct'tan al (USD/TRY)
-        if (isset($item->currency_code) && $item->currency_code) {
-            $cartItem->cart->currency_code = $item->currency_code;
-            $cartItem->cart->save();
         }
 
         // Customization options
@@ -211,6 +247,20 @@ class CartService
 
         // Default KDV %20
         return 20.0;
+    }
+
+    /**
+     * Item currency bilgisini al
+     */
+    protected function getItemCurrency($item): string
+    {
+        // ShopProduct için currency field
+        if (isset($item->currency) && $item->currency) {
+            return strtoupper($item->currency);
+        }
+
+        // Default: TRY
+        return 'TRY';
     }
 
     /**

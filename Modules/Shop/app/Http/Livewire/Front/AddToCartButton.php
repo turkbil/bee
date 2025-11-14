@@ -46,8 +46,16 @@ class AddToCartButton extends Component
             // Cart bul/oluştur
             $cart = $cartService->findOrCreateCart($customerId, $sessionId);
 
+            // Display bilgileri ve currency hazırla
+            $options = [
+                'item_title' => $product->getTranslated('title', app()->getLocale()),
+                'item_image' => $product->getFirstMediaUrl('main'),
+                'item_sku' => $product->sku,
+                'currency' => $product->currency ?? 'TRY',
+            ];
+
             // Ürünü ekle
-            $cartItem = $cartService->addItem($cart, $product, $this->quantity, []);
+            $cartItem = $cartService->addItem($cart, $product, $this->quantity, $options);
 
             // Cart'ı refresh et
             $cart->refresh();

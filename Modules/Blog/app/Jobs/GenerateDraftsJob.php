@@ -30,7 +30,7 @@ class GenerateDraftsJob implements ShouldQueue
     public function __construct(
         public int $count = 100
     ) {
-        $this->onQueue('blog-ai');
+        // Default queue kullan (worker tarafından dinleniyor)
     }
 
     /**

@@ -33,7 +33,7 @@ class GenerateBlogFromDraftJob implements ShouldQueue
         public BlogAIDraft $draft,
         public ?string $batchId = null
     ) {
-        $this->onQueue('blog-ai');
+        // Default queue kullan (worker tarafından dinleniyor)
     }
 
     /**

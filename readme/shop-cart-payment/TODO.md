@@ -176,11 +176,11 @@ tests/Feature/PaymentFlowTest.php
 
 | Görev | Durum | Tahmini Süre | Gerçek Süre | Notlar |
 |-------|-------|--------------|-------------|---------|
-| Currency Service | 🔴 Bekliyor | 3 saat | - | Kritik |
-| Display Fields | 🔴 Bekliyor | 1 saat | - | Kritik |
-| Bridge Service | 🟡 Bekliyor | 2 saat | - | - |
-| Address System | 🟡 Bekliyor | 3 saat | - | - |
-| Payment Fix | 🟡 Bekliyor | 2 saat | - | - |
+| Currency Service | ✅ Tamamlandı | 3 saat | 1 saat | Kritik - DONE |
+| Display Fields | ✅ Tamamlandı | 1 saat | 30 dk | Kritik - DONE |
+| Bridge Service | ✅ Tamamlandı | 2 saat | 45 dk | DONE |
+| Address System | 🟡 Bekliyor | 3 saat | - | Sonraki sprint |
+| Payment Fix | 🟡 Bekliyor | 2 saat | - | Sonraki sprint |
 
 ---
 

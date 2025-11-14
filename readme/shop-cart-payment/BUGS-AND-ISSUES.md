@@ -151,14 +151,14 @@ Para birimi sembolleri tutarsız ($ vs USD).
 
 | Bug ID | Kritiklik | Modül | Çözüm Süresi | Durum |
 |--------|-----------|-------|--------------|--------|
-| BUG-001 | 🔴 Kritik | Cart | 2 saat | ⏳ Bekliyor |
-| BUG-002 | 🔴 Kritik | Cart | 1 saat | ⏳ Bekliyor |
-| BUG-003 | 🔴 Kritik | Shop/Cart | 3 saat | ⏳ Bekliyor |
-| BUG-004 | 🟡 Orta | Cart | 1 saat | ⏳ Bekliyor |
-| BUG-005 | 🟡 Orta | Shop | 1 saat | ⏳ Bekliyor |
-| BUG-006 | 🟡 Orta | Cart | 2 saat | ⏳ Bekliyor |
-| BUG-007 | 🟢 Düşük | Cart | 30 dk | ⏳ Bekliyor |
-| BUG-008 | 🟢 Düşük | Shop | 30 dk | ⏳ Bekliyor |
+| BUG-001 | 🔴 Kritik | Cart | 2 saat | ✅ ÇÖZÜLDİ (1h) |
+| BUG-002 | 🔴 Kritik | Cart | 1 saat | ✅ ÇÖZÜLDİ (30m) |
+| BUG-003 | 🔴 Kritik | Shop/Cart | 3 saat | ⏳ Sonraki Sprint |
+| BUG-004 | 🟡 Orta | Cart | 1 saat | ⏳ Sonraki Sprint |
+| BUG-005 | 🟡 Orta | Shop | 1 saat | ⏳ Sonraki Sprint |
+| BUG-006 | 🟡 Orta | Cart | 2 saat | ⏳ Sonraki Sprint |
+| BUG-007 | 🟢 Düşük | Cart | 30 dk | ⏳ Backlog |
+| BUG-008 | 🟢 Düşük | Shop | 30 dk | ⏳ Backlog |
 
 ---
 

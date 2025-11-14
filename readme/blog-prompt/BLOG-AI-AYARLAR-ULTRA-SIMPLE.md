@@ -80,9 +80,95 @@ akülü istif makinesi
 
 ---
 
+## 🏢 TENANT-SPECIFIC PROMPT CUSTOMIZATION
+
+**🎯 Amaç:** Her tenant için farklı prompt ve context kullanabilme
+
+### Klasör Yapısı
+```
+Modules/Blog/app/Services/TenantPrompts/
+├── TenantPromptLoader.php       # Ana loader servisi
+├── DefaultPrompts.php           # Default prompt'lar (fallback)
+└── Tenants/
+    ├── Tenant2Prompts.php       # ixtif.com (shop odaklı)
+    └── Tenant3Prompts.php       # Gelecekteki tenant'lar
+```
+
+### Nasıl Çalışır?
+
+**1. TenantPromptLoader (Ana Servis)**
+- Tenant ID'yi al: `tenant('id')`
+- Tenant-specific dosya var mı kontrol et
+- Varsa: Tenant özel prompt kullan
+- Yoksa: Default prompt kullan (güvenli fallback)
+
+**2. Tenant2Prompts (ixtif.com için)**
+```php
+class Tenant2Prompts extends DefaultPrompts
+{
+    public function getDraftPrompt(): string
+    {
+        // Shop modülü odaklı prompt
+        // Kategoriler: Forklift, Transpalet, İstif Makinesi
+    }
+
+    public function getContext(): array
+    {
+        return [
+            'modules' => ['shop', 'references', 'services'],
+            'shop_categories' => ShopCategory::all(),
+            'focus' => 'industrial_equipment',
+            'keywords' => ['forklift', 'transpalet', 'istif makinesi']
+        ];
+    }
+}
+```
+
+**3. DefaultPrompts (Fallback)**
+- Genel sektör prompt'u
+- Setting Group 6, 10 kullanır
+- Yeni tenant'lar için güvenli
+
+### Avantajlar
+- ✅ **Tenant 2 (ixtif)**: Shop ürünleri, kategoriler, referanslar odaklı blog
+- ✅ **Tenant 3**: Farklı sektör → Farklı prompt
+- ✅ **Yeni tenant**: Dosya yoksa default kullanır → Sorun çıkmaz
+- ✅ **Özelleştirme**: Kod değişikliği gerektirmez
+
+### Örnek Kullanım
+```php
+// BlogAIDraftGenerator içinde
+$promptLoader = app(TenantPromptLoader::class);
+$prompt = $promptLoader->getDraftPrompt();       // Tenant'a göre dinamik
+$context = $promptLoader->getTenantContext();    // Tenant'a göre dinamik
+
+// OpenAI'a gönder
+OpenAI::chat()->create([
+    'messages' => [
+        ['role' => 'system', 'content' => $prompt],
+        ['role' => 'user', 'content' => json_encode($context)]
+    ]
+]);
+```
+
+### Tenant 2 (ixtif.com) Özelleştirmesi
+**Context'e eklenenler:**
+- Shop kategorileri (forklift, transpalet vb.)
+- Ürün verileri (en popüler ürünler)
+- Referans projeleri (müşteri hikayeleri)
+- Hizmetler (bakım, kiralama)
+
+**Prompt özellikleri:**
+- Endüstriyel ekipman odaklı
+- Teknik detaylar ağırlıklı
+- Ürün özellikleri entegrasyonu
+- B2B dil kullanımı
+
+---
+
 ## 🔧 PROMPT İÇİNDE OTOMATİK OLANLAR
 
-**Bu ayarlar müşteriye sorulmaz, kodda sabit:**
+**Bu ayarlar müşteriye sorulmaz, kodda sabit (TenantPromptLoader'dan yüklenir):**
 
 ### Konu Genişletme
 - **Genişletme**: Her zaman aktif

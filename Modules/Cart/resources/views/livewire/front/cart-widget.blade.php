@@ -1,4 +1,4 @@
-<div x-data="{ open: false }" class="relative">
+<div x-data="{ open: false }" class="relative" wire:key="cart-widget-{{ $cart?->cart_id ?? 'empty' }}">
     {{-- Cart Button --}}
     <button @click="open = !open" type="button"
             class="relative flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
@@ -130,12 +130,12 @@
     </div>
 </div>
 
+@script
 <script>
-    // Livewire event listener - Sepete ürün eklendiğinde refresh
-    document.addEventListener('livewire:initialized', () => {
-        Livewire.on('cartUpdated', () => {
-            console.log('🔄 CartWidget: Livewire cartUpdated event received');
-            @this.call('refreshCart');
-        });
+    // Listen for cartUpdated event and refresh
+    $wire.on('cartUpdated', () => {
+        console.log('🔄 CartWidget: Event received, calling refreshCart()');
+        $wire.refreshCart();
     });
 </script>
+@endscript

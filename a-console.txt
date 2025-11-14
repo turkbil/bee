@@ -1,11 +1,1 @@
-(index):15 [Web Share] Helper yüklendi. Destek: true
-(index):15 [Back to Top] Initialized - Position: Left Bottom
-(index):15 🔄 CartWidget: Count updated from API: 0
-sw.js:131 [Service Worker] Loaded successfully
-sw.js:27 [Service Worker] Installing...
-(index):15 [PWA] Service Worker registered: https://ixtif.com/
-sw.js:32 [Service Worker] Caching critical assets
-sw.js:43 [Service Worker] Activating...
-/shop/ixtif-ept20-20etc-20-ton-soguk-depo-transpalet:1  Failed to load resource: the server responded with a status of 500 ()
-/shop/ixtif-efl352-35-ton-li-ion-forklift:1  Failed to load resource: the server responded with a status of 500 ()
-(index):15 🤖 Auto-opening AI chat (desktop only)...
+

@@ -228,12 +228,15 @@
 @once
 <script>
 document.addEventListener('alpine:init', () => {
-    // Product card price component
-    Alpine.data('productCard', (hasTryPrice = false) => ({
+    // Product card price component WITH add to cart
+    Alpine.data('productCard', (hasTryPrice = false, productId = null) => ({
         priceHovered: false,
         showTryPrice: false,
         priceTimer: null,
         hasTryPrice: hasTryPrice,
+        productId: productId,
+        loading: false,
+        success: false,
         init() {
             if (this.hasTryPrice) {
                 this.startPriceCycle();
@@ -250,6 +253,50 @@ document.addEventListener('alpine:init', () => {
                     }, 1500); // TL: 1.5 saniye
                 }
             }, 4500); // Döngü: 4.5 saniye (USD 3s + TRY 1.5s)
+        },
+        async addToCart() {
+            console.log('🛒 Alpine: addToCart clicked', { productId: this.productId });
+            this.loading = true;
+
+            try {
+                const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                console.log('🛒 Alpine: Sending request to /api/cart/add');
+
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: this.productId,
+                        quantity: 1
+                    })
+                });
+
+                const data = await response.json();
+                console.log('🛒 Alpine: API Response', data);
+
+                if (data.success) {
+                    this.success = true;
+
+                    if (typeof Livewire !== 'undefined') {
+                        Livewire.dispatch('cartUpdated');
+                        console.log('✅ Alpine: Livewire.dispatch(cartUpdated)');
+                    }
+
+                    setTimeout(() => { this.success = false; }, 2000);
+                } else {
+                    console.error('❌ Alpine: API returned error', data.message);
+                    alert(data.message || 'Ürün sepete eklenirken hata oluştu');
+                }
+            } catch (error) {
+                console.error('❌ Alpine: Fetch error', error);
+                alert('Ürün sepete eklenirken hata oluştu');
+            } finally {
+                this.loading = false;
+            }
         },
         destroy() {
             if (this.priceTimer) clearInterval(this.priceTimer);
@@ -312,7 +359,7 @@ document.addEventListener('alpine:init', () => {
 </script>
 @endonce
 
-<div x-data="productCard({{ $productTryPrice ? 'true' : 'false' }})" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
+<div x-data="productCard({{ $productTryPrice ? 'true' : 'false' }}, {{ $productId }})" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
 
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}

@@ -30,17 +30,54 @@
 
 ## 🔨 DEVAM EDEN İŞLER
 
+### 0. Tenant-Specific Prompt Customization (ÖNCE!)
+
+**🎯 Amaç:** Her tenant için özelleştirilebilir AI prompt sistemi
+
+**Klasör Yapısı**:
+```
+Modules/Blog/app/Services/TenantPrompts/
+├── TenantPromptLoader.php       # Ana loader servisi
+├── DefaultPrompts.php           # Default prompt'lar
+└── Tenants/
+    ├── Tenant2Prompts.php       # ixtif.com (shop odaklı)
+    └── Tenant3Prompts.php       # Gelecekteki tenant'lar
+```
+
+**Görevler**:
+- [ ] TenantPromptLoader servisi oluştur
+  - [ ] getDraftPrompt() → Tenant ID'ye göre dinamik prompt
+  - [ ] getBlogContentPrompt() → Tenant ID'ye göre dinamik prompt
+  - [ ] getTenantContext() → Tenant'a özel ayarlar (modules, categories)
+- [ ] DefaultPrompts servisi oluştur (fallback)
+- [ ] Tenant2Prompts servisi oluştur (ixtif.com için shop odaklı)
+  - [ ] Shop kategorilerini context'e ekle
+  - [ ] Referanslar/Hizmetler modül bilgilerini ekle
+  - [ ] Forklift/Transpalet odaklı prompt
+
+**Avantajlar**:
+- ✅ Tenant 2 (ixtif): Shop, ürünler, kategoriler odaklı blog
+- ✅ Tenant 3: Farklı sektör, farklı prompt
+- ✅ Yeni tenant: Default kullanır, sorun çıkmaz
+- ✅ Kod değişikliği olmadan özelleştirme
+
+---
+
 ### 1. Blog AI Servis Geliştirme
 
 **Dosya**: `app/Services/BlogAI/BlogAIService.php` (oluşturulacak)
 
 **Görevler**:
 - [ ] AI provider entegrasyonu (mevcut System AI kullan)
+- [ ] **TenantPromptLoader entegrasyonu ekle** (ÖNCE!)
 - [ ] Konu genişletme servisi
   - [ ] Manuel konuları al
   - [ ] Ürün/kategori analizi yap (otomatik)
   - [ ] Sınırsız başlık üret (sektör boyutuna göre)
-  - [ ] Duplicate check (mevcut blog başlıklarını kontrol et)
+  - [ ] **DUPLICATE CHECK - KRİTİK:**
+    - [ ] Mevcut blog başlıklarını çek: `Blog::pluck('titles')`
+    - [ ] Mevcut draft'ları çek: `BlogAIDraft::pluck('topic_keyword')`
+    - [ ] AI'a "bunları tekrarlama" listesi gönder
 - [ ] Kategori seçim algoritması
   - [ ] Ürün kategorisi tespit (öncelikli)
   - [ ] İçerik analizi ile genel kategori belirleme
@@ -50,6 +87,22 @@
   - [ ] SEO optimizasyon (2025 standartları)
   - [ ] Stil rotasyonu (professional_only ayarına göre)
 - [ ] Queue entegrasyonu
+- [ ] **BATCH PROCESSING:**
+  - [ ] `BlogAIBatchProcessor` servisi oluştur
+  - [ ] Çoklu seçim için toplu işlem
+  - [ ] Progress tracking: `['total' => 10, 'completed' => 3]`
+- [ ] **ERROR HANDLING:**
+  - [ ] Job retry logic: 3 deneme, 60sn backoff
+  - [ ] Failed drafts tracking
+  - [ ] Error mesajları ve retry button
+
+### 1.5. Real-time Progress & Polling
+
+**Görevler**:
+- [ ] Livewire polling: `wire:poll.3s="checkBatchProgress"`
+- [ ] Progress bar UI komponenti
+- [ ] Failed items section
+- [ ] Retry mechanism için UI
 
 ### 2. Cron Job Kurulumu
 
@@ -72,18 +125,53 @@
 ### 4. Admin Panel Geliştirme
 
 **Görevler**:
+- [ ] **AI Draft Sayfası** (`/admin/blog/ai-drafts`)
+  - [ ] Taslak listesi (DataTable)
+  - [ ] Checkbox seçim sistemi
+  - [ ] Toplu işlem butonları
+  - [ ] Progress bar ve real-time update
+  - [ ] Error handling section
 - [ ] Blog listesinde AI üretilmiş badge göster
 - [ ] Kategori bazlı filtreleme
 - [ ] AI status dashboard (bugün kaç blog üretildi?)
+- [ ] **Settings Kontrolü** (`/admin/settingmanagement/values/18`)
+  - [ ] blog_ai_enabled kontrolü
+  - [ ] Günlük limit kontrolü
+  - [ ] Manuel konular kontrolü
+
+---
+
+## ⚙️ KONFIGÜRASYON
+
+### OpenAI API Settings:
+```php
+// config/modules/blog.php
+'openai' => [
+    'api_key' => env('OPENAI_API_KEY'),
+    'model' => 'gpt-4-turbo-preview',
+    'draft_temperature' => 0.7,    // Taslak için
+    'blog_temperature' => 0.8,     // Blog içeriği için
+    'draft_max_tokens' => 3000,    // Taslak token limiti
+    'blog_max_tokens' => 8000      // Blog token limiti
+]
+```
+
+### Queue Configuration:
+- Queue name: `blog-ai`
+- Worker: `php artisan queue:work --queue=blog-ai`
+- Retry: 3 attempts
+- Timeout: 300 seconds (5 dakika)
 
 ---
 
 ## 📋 ÖNCELİKLENDİRME (Sıralı)
 
+0. **TenantPromptLoader** oluştur (öncelik 0 - EN ÖNCE!)
 1. **BlogAIService** oluştur (öncelik 1)
-2. **Manuel üretim butonu + modal** ekle (öncelik 2)
-3. **Cron job** kur (öncelik 3)
-4. **Test et** - Manuel konu ekle, blog üret (öncelik 4)
+2. **AI Draft Sayfası** ekle (öncelik 2)
+3. **Manuel üretim butonu + modal** ekle (öncelik 3)
+4. **Cron job** kur (öncelik 4)
+5. **Test et** - Manuel konu ekle, blog üret (öncelik 5)
 
 ---
 
@@ -110,14 +198,16 @@
    - Kredi: 1.0/blog = **10.0 kredi**
    - `blogs` tablosuna kaydedilir, `status='draft'`
 
-### 💰 MALIYET ANALİZİ
+### 💰 MALIYET ANALİZİ (GÜNCELLENDI)
 
 ```
-100 Taslak (AŞAMA 1):   100 × 0.01 = 1.0 kredi
-10 Seçili Blog (AŞAMA 2): 10 × 1.0 = 10.0 kredi
-─────────────────────────────────────────────
-TOPLAM:                             11.0 kredi
+Araştırma (100 Taslak):   1.0 kredi (TOPLAM - adet fark etmez!)
+10 Seçili Blog:          10.0 kredi (1.0 × 10)
+───────────────────────────────────────────────────
+TOPLAM:                  11.0 kredi
 ```
+
+**NOT:** Araştırma maliyeti sabittir! 50 taslak da olsa, 100 taslak da olsa = 1.0 kredi
 
 **Avantajlar:**
 - ✅ Net maliyet (1 blog = 1 kredi, basit hesaplama)

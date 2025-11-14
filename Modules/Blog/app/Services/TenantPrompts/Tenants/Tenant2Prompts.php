@@ -3,6 +3,7 @@
 namespace Modules\Blog\App\Services\TenantPrompts\Tenants;
 
 use Illuminate\Support\Facades\File;
+use Modules\Blog\App\Services\TenantPrompts\DefaultPrompts;
 
 /**
  * Tenant 2 (iXtif) Blog AI Prompts
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\File;
  * iXtif.com için özel AI prompt'ları
  * readme/blog-prompt/ klasöründeki dökümanları kullanır
  */
-class Tenant2Prompts
+class Tenant2Prompts extends DefaultPrompts
 {
     protected string $promptPath;
 

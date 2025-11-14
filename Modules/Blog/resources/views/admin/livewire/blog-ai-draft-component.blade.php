@@ -117,8 +117,7 @@
                     <button
                         type="button"
                         class="btn btn-success me-2"
-                        wire:click="generateBlogs"
-                        @click="console.log('✅ YEŞİL BUTON CLICKED - Calling generateBlogs...')"
+                        wire:click.prevent="generateBlogs"
                         @if($isWriting) disabled @endif
                     >
                         <i class="fas fa-check"></i>

@@ -334,6 +334,7 @@ return array(
     'App\\Traits\\HasSeo' => $baseDir . '/app/Traits/HasSeo.php',
     'App\\Traits\\HasSlugManagement' => $baseDir . '/app/Traits/HasSlugManagement.php',
     'App\\Traits\\HasTranslations' => $baseDir . '/app/Traits/HasTranslations.php',
+    'App\\Traits\\HasUniversalSchemas' => $baseDir . '/app/Traits/HasUniversalSchemas.php',
     'App\\Traits\\HasUniversalTranslation' => $baseDir . '/app/Traits/HasUniversalTranslation.php',
     'App\\Traits\\PaginationHelper' => $baseDir . '/app/Traits/PaginationHelper.php',
     'App\\View\\Components\\AdminLayout' => $baseDir . '/app/View/Components/AdminLayout.php',

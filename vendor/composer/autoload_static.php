@@ -1793,6 +1793,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Traits\\HasSeo' => __DIR__ . '/../..' . '/app/Traits/HasSeo.php',
         'App\\Traits\\HasSlugManagement' => __DIR__ . '/../..' . '/app/Traits/HasSlugManagement.php',
         'App\\Traits\\HasTranslations' => __DIR__ . '/../..' . '/app/Traits/HasTranslations.php',
+        'App\\Traits\\HasUniversalSchemas' => __DIR__ . '/../..' . '/app/Traits/HasUniversalSchemas.php',
         'App\\Traits\\HasUniversalTranslation' => __DIR__ . '/../..' . '/app/Traits/HasUniversalTranslation.php',
         'App\\Traits\\PaginationHelper' => __DIR__ . '/../..' . '/app/Traits/PaginationHelper.php',
         'App\\View\\Components\\AdminLayout' => __DIR__ . '/../..' . '/app/View/Components/AdminLayout.php',

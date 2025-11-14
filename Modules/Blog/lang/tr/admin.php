@@ -5,6 +5,7 @@ return [
 'blogs' => 'Bloglar',
 'blog_management' => 'Blog Yönetimi',
 'new_blog' => 'Yeni Blog',
+'ai_drafts' => 'AI Taslaklar',
 'media_management' => 'Medya Yönetimi',
 'new_blog_pretitle' => 'Yeni Blog Oluştur',
 'edit_blog_pretitle' => 'Blog Düzenle',

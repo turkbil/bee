@@ -29,6 +29,13 @@
                     </a>
                 @endhasmoduleaccess
 
+                @hasmoduleaccess('blog', 'update')
+                    <a href="{{ route('admin.blog.ai-drafts') }}" class="dropdown-module-item btn btn-ghost-success">
+                        <i class="ti ti-robot me-2"></i>
+                        {{ __('blog::admin.ai_drafts') }}
+                    </a>
+                @endhasmoduleaccess
+
                 @hasmoduleaccess('blog', 'create')
                     <a href="{{ route('admin.blog.manage') }}" class="dropdown-module-item btn btn-primary">
                         {{ __('blog::admin.new_blog') }}

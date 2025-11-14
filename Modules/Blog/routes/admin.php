@@ -5,6 +5,7 @@ use Modules\Blog\App\Http\Livewire\Admin\BlogComponent;
 use Modules\Blog\App\Http\Livewire\Admin\BlogManageComponent;
 use Modules\Blog\App\Http\Livewire\Admin\BlogCategoryComponent;
 use Modules\Blog\App\Http\Livewire\Admin\BlogCategoryManageComponent;
+use Modules\Blog\App\Http\Livewire\Admin\BlogAIDraftComponent;
 
 // Admin rotaları
 Route::middleware(['admin', 'tenant'])
@@ -21,6 +22,11 @@ Route::middleware(['admin', 'tenant'])
                 Route::get('/manage/{id?}', BlogManageComponent::class)
                     ->middleware('module.permission:blog,update')
                     ->name('manage');
+
+                // AI Taslaklar route
+                Route::get('/ai-drafts', BlogAIDraftComponent::class)
+                    ->middleware('module.permission:blog,update')
+                    ->name('ai-drafts');
 
                 // Kategori route'ları
                 Route::prefix('category')

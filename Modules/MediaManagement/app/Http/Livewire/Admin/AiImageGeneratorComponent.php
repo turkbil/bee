@@ -14,7 +14,6 @@ class AiImageGeneratorComponent extends Component
     public string $size = '1792x1024';
     public string $quality = 'hd';
     public string $companyName = '';
-    public bool $includeCompanyName = false;
     public ?string $generatedImageUrl = null;
     public ?int $generatedMediaId = null;
     public bool $isGenerating = false;
@@ -59,9 +58,9 @@ class AiImageGeneratorComponent extends Component
         try {
             $service = app(AIImageGenerationService::class);
 
-            // Firma ismini prompt'a ekle
+            // Site adını otomatik ekle (varsa)
             $finalPrompt = $this->prompt;
-            if ($this->includeCompanyName && !empty($this->companyName)) {
+            if (!empty($this->companyName)) {
                 $finalPrompt = $this->companyName . ' - ' . $this->prompt;
             }
 

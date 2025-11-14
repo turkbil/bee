@@ -58,18 +58,11 @@
                             <small class="form-hint">
                                 <strong>Önemli:</strong> Görselde yazı/text olmamalı. Eğer yazı gerekiyorsa Türkçe olmalı.
                                 Marka ismi, logo kullanmayın - genel isimler kullanın.
+                                @if($companyName)
+                                    <br><strong>Not:</strong> Prompt başına otomatik olarak "{{ $companyName }} - " eklenecek.
+                                @endif
                             </small>
                         </div>
-
-                        @if($companyName)
-                        <div class="mb-3">
-                            <label class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" wire:model="includeCompanyName" {{ $isGenerating ? 'disabled' : '' }}>
-                                <span class="form-check-label">Firma ismini ekle: <strong>{{ $companyName }}</strong></span>
-                            </label>
-                            <small class="form-hint text-muted">Prompt başına "{{ $companyName }} - " ekler</small>
-                        </div>
-                        @endif
 
                         <div class="row">
                             <div class="col-md-6">

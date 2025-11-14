@@ -14,21 +14,12 @@ use Illuminate\Support\Facades\Log;
  * Blog AI Draft Component
  *
  * AI taslak üretimi ve seçim UI'ı
+ * Component name: blog-ai-draft-component (auto-generated from class name)
  */
 #[Layout('admin.layout')]
-class BlogAIDraftComponent extends Component
+class BlogAiDraftComponent extends Component
 {
     use WithPagination;
-
-    /**
-     * Component name override
-     * Default: blog-a-i-draft-component
-     * Override: blog-ai-draft-component
-     */
-    public function getName(): string
-    {
-        return 'modules.blog.app.http.livewire.admin.blog-ai-draft-component';
-    }
 
     public int $draftCount = 100;
     public array $selectedDrafts = [];

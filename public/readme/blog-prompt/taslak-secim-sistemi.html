@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI - Taslak Seçim Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-200" x-data="{ activeTab: 'overview', openAccordion: null }">
+
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+
+        <!-- Header -->
+        <div class="mb-8 border-b border-slate-700 pb-6">
+            <h1 class="text-4xl font-bold text-white mb-2">
+                <i class="fas fa-clipboard-check text-blue-500"></i>
+                Blog AI - Taslak Seçim Sistemi
+            </h1>
+            <p class="text-slate-400 text-lg">
+                AI üretilen 100 taslağı görüp seç, istediğini tam blog yap!
+            </p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+            <button @click="activeTab = 'overview'"
+                    :class="activeTab === 'overview' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                    class="px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap">
+                <i class="fas fa-home"></i> Genel Bakış
+            </button>
+            <button @click="activeTab = 'table'"
+                    :class="activeTab === 'table' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                    class="px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap">
+                <i class="fas fa-database"></i> Tablo Yapısı
+            </button>
+            <button @click="activeTab = 'workflow'"
+                    :class="activeTab === 'workflow' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                    class="px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap">
+                <i class="fas fa-sitemap"></i> Workflow
+            </button>
+            <button @click="activeTab = 'ui'"
+                    :class="activeTab === 'ui' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                    class="px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap">
+                <i class="fas fa-paint-brush"></i> Admin UI
+            </button>
+            <button @click="activeTab = 'code'"
+                    :class="activeTab === 'code' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                    class="px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap">
+                <i class="fas fa-code"></i> Kod Örnekleri
+            </button>
+            <button @click="activeTab = 'guide'"
+                    :class="activeTab === 'guide' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                    class="px-6 py-3 rounded-lg font-semibold transition whitespace-nowrap">
+                <i class="fas fa-book"></i> Rehber & İpuçları
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="bg-slate-800 rounded-lg p-6">
+
+            <!-- 1. GENEL BAKIŞ -->
+            <div x-show="activeTab === 'overview'" class="space-y-6">
+
+                <div class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-blue-700 rounded-lg p-6">
+                    <h2 class="text-2xl font-bold text-white mb-3">
+                        <i class="fas fa-lightbulb text-yellow-400"></i> Konsept
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed text-lg">
+                        <strong>Sorun:</strong> AI 100 blog üretirse hepsi gereksiz olabilir!<br>
+                        <strong>Çözüm:</strong> Önce 100 <strong>taslak başlık</strong> üret, admin seçsin, sonra sadece seçilenleri yaz!
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+
+                    <!-- Adım 1 -->
+                    <div class="bg-slate-700 rounded-lg p-5 border-l-4 border-green-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
+                            <h3 class="text-xl font-semibold text-white">AI Taslak Üret</h3>
+                        </div>
+                        <p class="text-slate-300">
+                            <i class="fas fa-robot text-green-400"></i> AI 100 blog başlığı + SEO meta + outline üretir
+                        </p>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <i class="fas fa-coins text-yellow-400"></i> Kredi: 0.01/taslak = <strong>1.0 kredi</strong>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2 -->
+                    <div class="bg-slate-700 rounded-lg p-5 border-l-4 border-blue-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
+                            <h3 class="text-xl font-semibold text-white">Admin Seçim</h3>
+                        </div>
+                        <p class="text-slate-300">
+                            <i class="fas fa-check-square text-blue-400"></i> Admin 100 başlıktan 10 tanesini checkbox ile seçer
+                        </p>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <i class="fas fa-mouse-pointer text-purple-400"></i> Checkbox UI + Önizleme
+                        </div>
+                    </div>
+
+                    <!-- Adım 3 -->
+                    <div class="bg-slate-700 rounded-lg p-5 border-l-4 border-orange-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-orange-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
+                            <h3 class="text-xl font-semibold text-white">Tam Blog Yaz</h3>
+                        </div>
+                        <p class="text-slate-300">
+                            <i class="fas fa-file-alt text-orange-400"></i> Sadece seçilen 10 taslak için AŞAMA 2 çalışır
+                        </p>
+                        <div class="mt-3 text-sm text-slate-400">
+                            <i class="fas fa-coins text-yellow-400"></i> Kredi: 1.0/blog = <strong>10.0 kredi</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Avantajlar -->
+                <div class="bg-green-900/30 border border-green-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-green-400 mb-3">
+                        <i class="fas fa-star"></i> Avantajlar
+                    </h3>
+                    <ul class="space-y-2 text-slate-300">
+                        <li><i class="fas fa-check text-green-400"></i> <strong>Düşük maliyet:</strong> 100 taslak = 1 kredi (ucuz!)</li>
+                        <li><i class="fas fa-check text-green-400"></i> <strong>Kalite kontrolü:</strong> Admin gereksiz içerikleri elemiş olur</li>
+                        <li><i class="fas fa-check text-green-400"></i> <strong>Verimlilik:</strong> Sadece seçilen 10 taslak için kredi harcanır (0.5 kredi)</li>
+                        <li><i class="fas fa-check text-green-400"></i> <strong>Esneklik:</strong> İstediğini seç, istemediğini sil</li>
+                    </ul>
+                </div>
+
+                <!-- Toplam Maliyet -->
+                <div class="bg-slate-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-3">
+                        <i class="fas fa-calculator text-yellow-400"></i> Örnek Maliyet Hesabı
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-600 p-4 rounded">
+                            <div class="text-slate-400 mb-2">100 Taslak Üretimi</div>
+                            <div class="text-2xl font-bold text-white">1.0 <span class="text-lg text-slate-400">kredi</span></div>
+                        </div>
+                        <div class="bg-slate-600 p-4 rounded">
+                            <div class="text-slate-400 mb-2">10 Seçili Blog Yazımı</div>
+                            <div class="text-2xl font-bold text-white">10.0 <span class="text-lg text-slate-400">kredi</span></div>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-blue-900/50 border border-blue-700 p-4 rounded">
+                        <div class="flex justify-between items-center">
+                            <span class="text-white font-semibold">Toplam Maliyet:</span>
+                            <span class="text-3xl font-bold text-blue-400">11.0 kredi</span>
+                        </div>
+                        <div class="text-sm text-slate-400 mt-2">
+                            <i class="fas fa-info-circle"></i> 1 blog = 1 kredi (net ve basit hesaplama!)
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 2. TABLO YAPISI -->
+            <div x-show="activeTab === 'table'" class="space-y-6">
+
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-5">
+                    <h2 class="text-2xl font-bold text-white mb-3">
+                        <i class="fas fa-database text-blue-400"></i> blog_ai_drafts Tablosu
+                    </h2>
+                    <p class="text-slate-300 mb-4">
+                        AI tarafından üretilen taslak başlıkları + AŞAMA 1 çıktısını saklar
+                    </p>
+                </div>
+
+                <!-- MİMARİ UYARI -->
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-3">
+                        <i class="fas fa-exclamation-triangle text-red-400"></i> ÖNEMLİ: Sistem Mimarisi Uyarısı
+                    </h3>
+                    <div class="bg-slate-800 border-l-4 border-red-500 p-4 mb-4">
+                        <div class="flex gap-3">
+                            <i class="fas fa-server text-red-400 text-2xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-bold text-white mb-2 text-lg">🚨 TENANT SİSTEMİ - ÇOK KRİTİK!</div>
+                                <div class="text-slate-300 text-sm space-y-1">
+                                    <p>⚠️ Bu bir <strong class="text-red-400">multi-tenant sistem</strong></p>
+                                    <p>⚠️ Her tenant'ın <strong class="text-yellow-400">AYRI DATABASE'i</strong> var (tenant-specific)</p>
+                                    <p>⚠️ <strong class="text-blue-400">AI kredi</strong> ve merkezi veriler <strong class="text-purple-400">CENTRAL database'de</strong></p>
+                                    <p>⚠️ <code class="bg-slate-900 px-2 py-1 rounded">blog_ai_drafts</code> tablosu <strong class="text-green-400">TENANT database'inde</strong> olmalı</p>
+                                    <p>⚠️ Migration: Hem <code class="bg-slate-900 px-2 py-1 rounded">database/migrations/</code> hem <code class="bg-slate-900 px-2 py-1 rounded">database/migrations/tenant/</code> oluştur!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-slate-300">
+                        <div class="flex gap-3">
+                            <i class="fas fa-database text-yellow-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">SEO Bilgileri → seo_settings Tablosu</div>
+                                <div class="text-sm">
+                                    <code class="bg-slate-900 px-2 py-1 rounded">blog_ai_drafts.seo_meta</code> JSON'ı sadece taslak saklamak için!<br>
+                                    Blog oluşturulurken SEO bilgileri <strong>polymorphic ilişki</strong> ile
+                                    <code class="bg-slate-900 px-2 py-1 rounded">seo_settings</code> tablosuna aktarılmalı.<br>
+                                    <span class="text-yellow-400">⚠️ Sistem mimarisini bozma!</span> Blog modeli zaten <code class="bg-slate-900 px-2 py-1 rounded">HasSeo</code> trait'i kullanıyor.<br>
+                                    <span class="text-red-400">🚫 Site adını manuel ekleme!</span> Sistem otomatik ekliyor (site_title setting'den).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-image text-blue-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Media → media Tablosu (Spatie Media Library)</div>
+                                <div class="text-sm">
+                                    Featured image ve galeri görselleri <strong>Spatie Media Library</strong> ile
+                                    <code class="bg-slate-900 px-2 py-1 rounded">media</code> tablosuna kaydedilmeli.<br>
+                                    Blog modeli zaten <code class="bg-slate-900 px-2 py-1 rounded">HasMediaManagement</code> trait'i kullanıyor.<br>
+                                    <span class="text-blue-400">💡 Collection'lar:</span> <code class="bg-slate-900 px-2 py-1 rounded">featured_image</code>, <code class="bg-slate-900 px-2 py-1 rounded">gallery</code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-cogs text-green-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">AI Blog İçeriğinde Kullanılabilecek Ayarlar</div>
+                                <div class="text-sm">
+                                    AI blog yazarken tenant ayarlarını kullanabilir:<br>
+                                    <span class="text-green-400">✓ Setting Group 6:</span>
+                                    <code class="bg-slate-900 px-2 py-1 rounded">https://ixtif.com/admin/settingmanagement/values/6</code><br>
+                                    <span class="text-green-400">✓ Setting Group 10:</span>
+                                    <code class="bg-slate-900 px-2 py-1 rounded">https://ixtif.com/admin/settingmanagement/values/10</code><br>
+                                    <span class="text-blue-400">💡 Kullanım:</span> Site bilgileri, iletişim detayları, markalaşma bilgilerini içeriğe dahil edebilir.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tablo Şeması -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-700 text-white">
+                                <th class="p-3 border border-slate-600">Kolon</th>
+                                <th class="p-3 border border-slate-600">Tip</th>
+                                <th class="p-3 border border-slate-600">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">id</td>
+                                <td class="p-3 border border-slate-600">BIGINT (PK)</td>
+                                <td class="p-3 border border-slate-600">Primary key</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">title</td>
+                                <td class="p-3 border border-slate-600">JSON</td>
+                                <td class="p-3 border border-slate-600">Çoklu dil başlık: {"tr": "...", "en": "..."}</td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">slug</td>
+                                <td class="p-3 border border-slate-600">JSON</td>
+                                <td class="p-3 border border-slate-600">Auto-generated slug</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">seo_meta</td>
+                                <td class="p-3 border border-slate-600">JSON</td>
+                                <td class="p-3 border border-slate-600">SEO title, description, keywords (AŞAMA 1)</td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">content_outline</td>
+                                <td class="p-3 border border-slate-600">JSON</td>
+                                <td class="p-3 border border-slate-600">İçerik yapısı: H2/H3 başlıklar, kelime sayısı</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">faq_questions</td>
+                                <td class="p-3 border border-slate-600">JSON</td>
+                                <td class="p-3 border border-slate-600">10 FAQ sorusu (AŞAMA 1)</td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">schema_plan</td>
+                                <td class="p-3 border border-slate-600">JSON</td>
+                                <td class="p-3 border border-slate-600">Schema.org plan (Article, FAQPage, vb.)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">blog_category_id</td>
+                                <td class="p-3 border border-slate-600">BIGINT (FK)</td>
+                                <td class="p-3 border border-slate-600">Otomatik seçilen kategori</td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">topic_source</td>
+                                <td class="p-3 border border-slate-600">ENUM</td>
+                                <td class="p-3 border border-slate-600">'manual', 'product_analysis', 'category_analysis'</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-yellow-400">is_selected</td>
+                                <td class="p-3 border border-slate-600">BOOLEAN</td>
+                                <td class="p-3 border border-slate-600"><strong>Admin checkbox seçimi!</strong></td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-yellow-400">is_generated</td>
+                                <td class="p-3 border border-slate-600">BOOLEAN</td>
+                                <td class="p-3 border border-slate-600">Tam blog yazıldı mı?</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">generated_blog_id</td>
+                                <td class="p-3 border border-slate-600">BIGINT (FK nullable)</td>
+                                <td class="p-3 border border-slate-600">Oluşturulan blog ID (blogs.blog_id)</td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">ai_cost</td>
+                                <td class="p-3 border border-slate-600">DECIMAL(10,4)</td>
+                                <td class="p-3 border border-slate-600">Kredi maliyeti (0.01 taslak için)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">created_at</td>
+                                <td class="p-3 border border-slate-600">TIMESTAMP</td>
+                                <td class="p-3 border border-slate-600">Oluşturulma tarihi</td>
+                            </tr>
+                            <tr class="bg-slate-750">
+                                <td class="p-3 border border-slate-600 font-mono text-green-400">updated_at</td>
+                                <td class="p-3 border border-slate-600">TIMESTAMP</td>
+                                <td class="p-3 border border-slate-600">Güncellenme tarihi</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Örnek JSON Yapısı -->
+                <div class="bg-slate-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-3">
+                        <i class="fas fa-code text-purple-400"></i> Örnek JSON Yapısı
+                    </h3>
+
+                    <div class="space-y-4">
+
+                        <!-- seo_meta -->
+                        <div>
+                            <div class="text-sm text-slate-400 mb-1">seo_meta:</div>
+                            <pre class="bg-slate-900 p-3 rounded overflow-x-auto text-sm"><code class="text-green-400">{
+  "tr": {
+    "title": "En İyi Transpalet Modelleri 2025",
+    "description": "2025 yılının en iyi transpalet modelleri...",
+    "keywords": ["transpalet", "pallet truck", "2025"]
+  },
+  "en": {
+    "title": "Best Pallet Truck Models 2025",
+    "description": "Best pallet truck models of 2025...",
+    "keywords": ["pallet truck", "transpalet", "2025"]
+  }
+}</code></pre>
+                        </div>
+
+                        <!-- content_outline -->
+                        <div>
+                            <div class="text-sm text-slate-400 mb-1">content_outline:</div>
+                            <pre class="bg-slate-900 p-3 rounded overflow-x-auto text-sm"><code class="text-blue-400">{
+  "tr": {
+    "h1": "En İyi Transpalet Modelleri 2025",
+    "sections": [
+      {
+        "h2": "Elektrikli Transpaletler",
+        "h3": ["Avantajları", "Dezavantajları", "Fiyat Karşılaştırması"],
+        "word_count": 400
+      },
+      {
+        "h2": "Manuel Transpaletler",
+        "h3": ["Kullanım Alanları", "Kapasite Seçimi"],
+        "word_count": 350
+      }
+    ],
+    "total_words": 2200
+  }
+}</code></pre>
+                        </div>
+
+                        <!-- faq_questions -->
+                        <div>
+                            <div class="text-sm text-slate-400 mb-1">faq_questions:</div>
+                            <pre class="bg-slate-900 p-3 rounded overflow-x-auto text-sm"><code class="text-yellow-400">{
+  "tr": [
+    "Transpalet fiyatları ne kadar?",
+    "Elektrikli mi manuel mi almalıyım?",
+    "Transpalet bakımı nasıl yapılır?"
+  ],
+  "en": [
+    "How much do pallet trucks cost?",
+    "Should I buy electric or manual?",
+    "How to maintain a pallet truck?"
+  ]
+}</code></pre>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 3. WORKFLOW -->
+            <div x-show="activeTab === 'workflow'" class="space-y-6">
+
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-sitemap text-green-400"></i> İşleyiş Akışı
+                </h2>
+
+                <!-- Akış Adımları -->
+                <div class="space-y-4">
+
+                    <!-- 1. Taslak Üretimi -->
+                    <div class="bg-green-900/30 border-l-4 border-green-500 p-5 rounded">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                            <h3 class="text-xl font-bold text-white">Taslak Üretimi Başlat</h3>
+                        </div>
+                        <div class="ml-13 space-y-2 text-slate-300">
+                            <p><i class="fas fa-chevron-right text-green-400"></i> <strong>Admin:</strong> "100 Taslak Üret" butonuna basar</p>
+                            <p><i class="fas fa-chevron-right text-green-400"></i> <strong>Sistem:</strong> Kredi kontrolü yapar (1.0 kredi)</p>
+                            <p><i class="fas fa-chevron-right text-green-400"></i> <strong>AI:</strong> Konu toplama servisi çalışır:</p>
+                            <div class="ml-6 bg-slate-700 p-3 rounded mt-2">
+                                <p class="text-sm"><i class="fas fa-cog text-blue-400"></i> Manuel konuları al (ayardan: blog_ai_topics)</p>
+                                <p class="text-sm"><i class="fas fa-cog text-blue-400"></i> Ürün kategorilerini analiz et</p>
+                                <p class="text-sm"><i class="fas fa-cog text-blue-400"></i> Ürün özelliklerini çek</p>
+                                <p class="text-sm"><i class="fas fa-cog text-blue-400"></i> Konu genişletme (sektör boyutuna göre 30-200 başlık)</p>
+                            </div>
+                            <p><i class="fas fa-chevron-right text-green-400"></i> <strong>AI (AŞAMA 1):</strong> Her konu için taslak oluştur:</p>
+                            <div class="ml-6 bg-slate-700 p-3 rounded mt-2 space-y-1">
+                                <p class="text-sm"><i class="fas fa-check text-green-400"></i> SEO meta (title, description, keywords)</p>
+                                <p class="text-sm"><i class="fas fa-check text-green-400"></i> Content outline (H2/H3, word count)</p>
+                                <p class="text-sm"><i class="fas fa-check text-green-400"></i> FAQ questions (10 adet)</p>
+                                <p class="text-sm"><i class="fas fa-check text-green-400"></i> Schema.org plan</p>
+                            </div>
+                            <p><i class="fas fa-chevron-right text-green-400"></i> <strong>Sistem:</strong> Taslakları <code class="bg-slate-900 px-2 py-1 rounded text-green-400">blog_ai_drafts</code> tablosuna kaydeder</p>
+                            <p><i class="fas fa-chevron-right text-green-400"></i> <strong>Kredi:</strong> 1.0 kredi düşülür (ai_use_credits)</p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Taslak Listesi -->
+                    <div class="bg-blue-900/30 border-l-4 border-blue-500 p-5 rounded">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                            <h3 class="text-xl font-bold text-white">Taslak Listesi Göster</h3>
+                        </div>
+                        <div class="ml-13 space-y-2 text-slate-300">
+                            <p><i class="fas fa-chevron-right text-blue-400"></i> <strong>Admin:</strong> <code class="bg-slate-900 px-2 py-1 rounded">/admin/blog/ai-drafts</code> sayfası açılır</p>
+                            <p><i class="fas fa-chevron-right text-blue-400"></i> <strong>Livewire Component:</strong> Taslakları listeler:</p>
+                            <div class="ml-6 bg-slate-700 p-3 rounded mt-2 space-y-1">
+                                <p class="text-sm"><i class="fas fa-table text-blue-400"></i> DataTable: 100 satır taslak</p>
+                                <p class="text-sm"><i class="fas fa-filter text-blue-400"></i> Filtre: Kategori, Kaynak, Seçim durumu</p>
+                                <p class="text-sm"><i class="fas fa-search text-blue-400"></i> Arama: Başlık arama</p>
+                                <p class="text-sm"><i class="fas fa-check-square text-blue-400"></i> Checkbox: Her satırda</p>
+                                <p class="text-sm"><i class="fas fa-eye text-blue-400"></i> Önizleme: Modal ile SEO + Outline</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Admin Seçim -->
+                    <div class="bg-purple-900/30 border-l-4 border-purple-500 p-5 rounded">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-purple-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                            <h3 class="text-xl font-bold text-white">Admin Seçim Yapar</h3>
+                        </div>
+                        <div class="ml-13 space-y-2 text-slate-300">
+                            <p><i class="fas fa-chevron-right text-purple-400"></i> <strong>Admin:</strong> İstediği taslakları checkbox ile seçer (örn: 10 tane)</p>
+                            <p><i class="fas fa-chevron-right text-purple-400"></i> <strong>Sistem:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-yellow-400">is_selected = true</code> olarak günceller</p>
+                            <p><i class="fas fa-chevron-right text-purple-400"></i> <strong>Admin:</strong> "Seçilenleri Yaz" butonuna basar</p>
+                        </div>
+                    </div>
+
+                    <!-- 4. Blog Yazımı -->
+                    <div class="bg-orange-900/30 border-l-4 border-orange-500 p-5 rounded">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">4</div>
+                            <h3 class="text-xl font-bold text-white">Tam Blog Yazımı (AŞAMA 2)</h3>
+                        </div>
+                        <div class="ml-13 space-y-2 text-slate-300">
+                            <p><i class="fas fa-chevron-right text-orange-400"></i> <strong>Sistem:</strong> Kredi kontrolü (10 blog × 1.0 = 10.0 kredi)</p>
+                            <p><i class="fas fa-chevron-right text-orange-400"></i> <strong>Queue Job:</strong> Her seçili taslak için:</p>
+                            <div class="ml-6 bg-slate-700 p-3 rounded mt-2 space-y-1">
+                                <p class="text-sm"><i class="fas fa-file-alt text-orange-400"></i> AŞAMA 2 prompt çağır (taslak + outline + FAQ)</p>
+                                <p class="text-sm"><i class="fas fa-file-alt text-orange-400"></i> 2000-2500 kelime blog içeriği üret</p>
+                                <p class="text-sm"><i class="fas fa-database text-orange-400"></i> <code class="bg-slate-900 px-2 py-1 rounded">blogs</code> tablosuna kaydet (status='draft')</p>
+                                <p class="text-sm"><i class="fas fa-shield-alt text-yellow-400"></i> SEO bilgilerini <code class="bg-slate-900 px-2 py-1 rounded">seo_settings</code> tablosuna kaydet (polymorphic)</p>
+                                <p class="text-sm"><i class="fas fa-image text-blue-400"></i> Media'ları <code class="bg-slate-900 px-2 py-1 rounded">media</code> tablosuna kaydet (Spatie)</p>
+                                <p class="text-sm"><i class="fas fa-link text-orange-400"></i> <code class="bg-slate-900 px-2 py-1 rounded">generated_blog_id</code> güncelle</p>
+                                <p class="text-sm"><i class="fas fa-check text-green-400"></i> <code class="bg-slate-900 px-2 py-1 rounded">is_generated = true</code></p>
+                            </div>
+                            <p><i class="fas fa-chevron-right text-orange-400"></i> <strong>Kredi:</strong> 1.0 kredi/blog düşülür</p>
+                        </div>
+                    </div>
+
+                    <!-- 5. Blog Yayınlama -->
+                    <div class="bg-cyan-900/30 border-l-4 border-cyan-500 p-5 rounded">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="bg-cyan-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">5</div>
+                            <h3 class="text-xl font-bold text-white">Blog İnceleme & Yayınlama</h3>
+                        </div>
+                        <div class="ml-13 space-y-2 text-slate-300">
+                            <p><i class="fas fa-chevron-right text-cyan-400"></i> <strong>Admin:</strong> <code class="bg-slate-900 px-2 py-1 rounded">/admin/blog</code> sayfasında AI-generated badge'li blogları görür</p>
+                            <p><i class="fas fa-chevron-right text-cyan-400"></i> <strong>Admin:</strong> Blog'u düzenler (gerekirse)</p>
+                            <p><i class="fas fa-chevron-right text-cyan-400"></i> <strong>Admin:</strong> <code class="bg-slate-900 px-2 py-1 rounded text-green-400">status = 'published'</code> yapar</p>
+                            <p><i class="fas fa-chevron-right text-cyan-400"></i> <strong>Sistem:</strong> Blog canlı yayına geçer!</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Toplam Kredi Hesabı -->
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-3">
+                        <i class="fas fa-coins"></i> Toplam Kredi Maliyeti
+                    </h3>
+                    <div class="bg-slate-900 p-4 rounded font-mono text-sm">
+                        <div class="text-green-400">// 100 Taslak Üretimi (AŞAMA 1)</div>
+                        <div class="text-white">100 × 0.01 = <span class="text-yellow-400 font-bold">1.0 kredi</span></div>
+
+                        <div class="text-green-400 mt-3">// 10 Seçili Blog Yazımı (AŞAMA 2)</div>
+                        <div class="text-white">10 × 1.0 = <span class="text-yellow-400 font-bold">10.0 kredi</span></div>
+
+                        <div class="text-green-400 mt-3">// Toplam</div>
+                        <div class="text-white text-xl">TOPLAM = <span class="text-yellow-400 font-bold">11.0 kredi</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 4. ADMIN UI -->
+            <div x-show="activeTab === 'ui'" class="space-y-6">
+
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-paint-brush text-purple-400"></i> Admin Panel UI Tasarımı
+                </h2>
+
+                <!-- Taslak Listesi Mockup -->
+                <div class="bg-slate-700 rounded-lg p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-white">AI Blog Taslakları</h3>
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold">
+                            <i class="fas fa-robot"></i> 100 Taslak Üret
+                        </button>
+                    </div>
+
+                    <!-- Üst Toolbar -->
+                    <div class="bg-slate-600 p-3 rounded mb-3 flex gap-3 items-center flex-wrap">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold">
+                            <i class="fas fa-pencil-alt"></i> Seçilenleri Yaz (3)
+                        </button>
+                        <button class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                        <div class="flex-1"></div>
+                        <input type="text" placeholder="Başlık ara..." class="bg-slate-700 text-white px-3 py-2 rounded border border-slate-500">
+                        <select class="bg-slate-700 text-white px-3 py-2 rounded border border-slate-500">
+                            <option>Tüm Kategoriler</option>
+                            <option>Forklift İncelemeleri</option>
+                            <option>Transpalet İncelemeleri</option>
+                        </select>
+                    </div>
+
+                    <!-- Tablo Mockup -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-600 text-white">
+                                    <th class="p-2 border border-slate-500">
+                                        <input type="checkbox" class="w-4 h-4">
+                                    </th>
+                                    <th class="p-2 border border-slate-500 text-left">Başlık</th>
+                                    <th class="p-2 border border-slate-500">Kategori</th>
+                                    <th class="p-2 border border-slate-500">Kaynak</th>
+                                    <th class="p-2 border border-slate-500">Durum</th>
+                                    <th class="p-2 border border-slate-500">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-300">
+                                <!-- Satır 1 - Seçili -->
+                                <tr class="bg-blue-900/30 hover:bg-blue-900/50">
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <input type="checkbox" checked class="w-4 h-4">
+                                    </td>
+                                    <td class="p-2 border border-slate-500">
+                                        <div class="font-semibold text-white">En İyi Transpalet Modelleri 2025</div>
+                                        <div class="text-xs text-slate-400">2025 yılının en iyi transpalet modelleri...</div>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-purple-600 text-white px-2 py-1 rounded text-xs">Transpalet</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs">Ürün Analizi</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">✓ Seçili</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs">
+                                            <i class="fas fa-eye"></i> Önizle
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Satır 2 - Seçili Değil -->
+                                <tr class="hover:bg-slate-600">
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <input type="checkbox" class="w-4 h-4">
+                                    </td>
+                                    <td class="p-2 border border-slate-500">
+                                        <div class="font-semibold text-white">Forklift Bakım Rehberi</div>
+                                        <div class="text-xs text-slate-400">Forklift bakımı için detaylı rehber...</div>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-orange-600 text-white px-2 py-1 rounded text-xs">Forklift</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Manuel Konu</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-slate-600 text-slate-300 px-2 py-1 rounded text-xs">Beklemede</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs">
+                                            <i class="fas fa-eye"></i> Önizle
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Satır 3 - Oluşturulmuş -->
+                                <tr class="bg-green-900/20 hover:bg-green-900/30">
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <input type="checkbox" disabled class="w-4 h-4">
+                                    </td>
+                                    <td class="p-2 border border-slate-500">
+                                        <div class="font-semibold text-white">İstif Makinesi Seçim Kriterleri</div>
+                                        <div class="text-xs text-slate-400">İstif makinesi seçerken dikkat edilmesi...</div>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-cyan-600 text-white px-2 py-1 rounded text-xs">İstif</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs">Ürün Analizi</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <span class="bg-green-600 text-white px-2 py-1 rounded text-xs">✓ Blog Yazıldı</span>
+                                    </td>
+                                    <td class="p-2 border border-slate-500 text-center">
+                                        <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs">
+                                            <i class="fas fa-external-link-alt"></i> Blog'a Git
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="text-slate-400 text-sm">1-3 / 100 taslak gösteriliyor</div>
+                        <div class="flex gap-2">
+                            <button class="bg-slate-600 hover:bg-slate-500 text-white px-3 py-1 rounded">Önceki</button>
+                            <button class="bg-blue-600 text-white px-3 py-1 rounded">1</button>
+                            <button class="bg-slate-600 hover:bg-slate-500 text-white px-3 py-1 rounded">2</button>
+                            <button class="bg-slate-600 hover:bg-slate-500 text-white px-3 py-1 rounded">3</button>
+                            <button class="bg-slate-600 hover:bg-slate-500 text-white px-3 py-1 rounded">Sonraki</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Önizleme Modal Mockup -->
+                <div class="bg-slate-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-3">Önizleme Modal</h3>
+                    <div class="bg-slate-800 border border-slate-600 rounded p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-bold text-white">Taslak Önizleme</h4>
+                            <button class="text-slate-400 hover:text-white">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+
+                        <!-- Tab'lar -->
+                        <div class="flex gap-2 mb-4 border-b border-slate-600 pb-2">
+                            <button class="px-3 py-2 bg-blue-600 text-white rounded-t">SEO Meta</button>
+                            <button class="px-3 py-2 text-slate-400 hover:bg-slate-700 rounded-t">İçerik Outline</button>
+                            <button class="px-3 py-2 text-slate-400 hover:bg-slate-700 rounded-t">FAQ</button>
+                            <button class="px-3 py-2 text-slate-400 hover:bg-slate-700 rounded-t">Schema</button>
+                        </div>
+
+                        <!-- SEO Meta Tab İçeriği -->
+                        <div class="space-y-3">
+                            <div>
+                                <div class="text-sm text-slate-400 mb-1">SEO Title (TR):</div>
+                                <div class="bg-slate-900 p-2 rounded text-white">En İyi Transpalet Modelleri 2025 | İxtif</div>
+                                <div class="text-xs text-slate-500 mt-1">Uzunluk: 42 karakter ✓</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-slate-400 mb-1">SEO Description (TR):</div>
+                                <div class="bg-slate-900 p-2 rounded text-white">2025 yılının en iyi transpalet modelleri, fiyatları ve özellikleri. Elektrikli ve manuel transpaletler hakkında detaylı inceleme.</div>
+                                <div class="text-xs text-slate-500 mt-1">Uzunluk: 156 karakter ✓</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-slate-400 mb-1">Keywords:</div>
+                                <div class="bg-slate-900 p-2 rounded text-white">transpalet, pallet truck, 2025, elektrikli transpalet, manuel transpalet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 5. KOD ÖRNEKLERİ -->
+            <div x-show="activeTab === 'code'" class="space-y-6">
+
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-code text-green-400"></i> Kod Örnekleri
+                </h2>
+
+                <!-- Migration -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Migration: blog_ai_drafts</h3>
+                    <pre class="bg-slate-900 p-4 rounded overflow-x-auto text-sm"><code class="text-green-400">Schema::create('blog_ai_drafts', function (Blueprint $table) {
+    $table->id();
+    $table->json('title')->comment('Çoklu dil başlık');
+    $table->json('slug')->comment('Auto-generated slug');
+    $table->json('seo_meta')->nullable()->comment('SEO title, desc, keywords');
+    $table->json('content_outline')->nullable()->comment('H2/H3 yapısı');
+    $table->json('faq_questions')->nullable()->comment('10 FAQ sorusu');
+    $table->json('schema_plan')->nullable()->comment('Schema.org plan');
+    $table->foreignId('blog_category_id')->nullable()
+        ->constrained('blog_categories', 'category_id')->nullOnDelete();
+    $table->enum('topic_source', ['manual', 'product_analysis', 'category_analysis'])
+        ->default('manual');
+    $table->boolean('is_selected')->default(false)->index();
+    $table->boolean('is_generated')->default(false)->index();
+    $table->foreignId('generated_blog_id')->nullable()
+        ->constrained('blogs', 'blog_id')->nullOnDelete();
+    $table->decimal('ai_cost', 10, 4)->default(0.01);
+    $table->timestamps();
+
+    // Indexes
+    $table->index(['is_selected', 'is_generated']);
+    $table->index('blog_category_id');
+});</code></pre>
+                </div>
+
+                <!-- Model -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Model: BlogAIDraft</h3>
+                    <pre class="bg-slate-900 p-4 rounded overflow-x-auto text-sm"><code class="text-blue-400">namespace App\Models;
+
+use App\Traits\HasTranslations;
+use Illuminate\Database\Eloquent\Model;
+
+class BlogAIDraft extends Model
+{
+    use HasTranslations;
+
+    protected $fillable = [
+        'title', 'slug', 'seo_meta', 'content_outline',
+        'faq_questions', 'schema_plan', 'blog_category_id',
+        'topic_source', 'is_selected', 'is_generated',
+        'generated_blog_id', 'ai_cost'
+    ];
+
+    protected $casts = [
+        'title' => 'array',
+        'slug' => 'array',
+        'seo_meta' => 'array',
+        'content_outline' => 'array',
+        'faq_questions' => 'array',
+        'schema_plan' => 'array',
+        'is_selected' => 'boolean',
+        'is_generated' => 'boolean',
+        'ai_cost' => 'decimal:4',
+    ];
+
+    protected $translatable = ['title', 'slug'];
+
+    // Scope: Seçili taslaklar
+    public function scopeSelected($query)
+    {
+        return $query->where('is_selected', true);
+    }
+
+    // Scope: Henüz blog yazılmamış
+    public function scopePending($query)
+    {
+        return $query->where('is_selected', true)
+                     ->where('is_generated', false);
+    }
+
+    // Relations
+    public function category()
+    {
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id', 'category_id');
+    }
+
+    public function generatedBlog()
+    {
+        return $this->belongsTo(Blog::class, 'generated_blog_id', 'blog_id');
+    }
+}</code></pre>
+                </div>
+
+                <!-- Service -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Service: BlogAIDraftGenerator</h3>
+                    <pre class="bg-slate-900 p-4 rounded overflow-x-auto text-sm"><code class="text-yellow-400">namespace App\Services\BlogAI;
+
+class BlogAIDraftGenerator
+{
+    public function generateDrafts(int $count = 100): array
+    {
+        // 1. Kredi kontrolü
+        $totalCost = $count * 0.01;
+        if (!ai_can_use_credits($totalCost)) {
+            throw new \Exception("Yetersiz kredi! Gerekli: {$totalCost}");
+        }
+
+        // 2. Konu toplama
+        $topics = $this->collectTopics($count);
+
+        // 3. Her konu için AŞAMA 1 çalıştır
+        $drafts = [];
+        foreach ($topics as $topic) {
+            $draft = $this->generateSingleDraft($topic);
+            $drafts[] = BlogAIDraft::create($draft);
+        }
+
+        // 4. Kredi düş
+        ai_use_credits($totalCost, null, [
+            'usage_type' => 'blog_draft_generation',
+            'draft_count' => $count,
+        ]);
+
+        return $drafts;
+    }
+
+    protected function collectTopics(int $count): array
+    {
+        $topics = [];
+
+        // Manuel konuları al
+        $manualTopics = json_decode(setting('blog_ai_topics'), true) ?? [];
+        $topics = array_merge($topics, $manualTopics);
+
+        // Ürün kategorisi analizi
+        $productTopics = $this->analyzeProductCategories();
+        $topics = array_merge($topics, $productTopics);
+
+        // Konu genişletme
+        $expandedTopics = $this->expandTopics($topics, $count);
+
+        return array_slice($expandedTopics, 0, $count);
+    }
+
+    protected function generateSingleDraft(array $topic): array
+    {
+        // AI AŞAMA 1 prompt çağır
+        $aiResponse = $this->callAIStage1($topic);
+
+        return [
+            'title' => $aiResponse['title'],
+            'slug' => $aiResponse['slug'],
+            'seo_meta' => $aiResponse['seo_meta'],
+            'content_outline' => $aiResponse['content_outline'],
+            'faq_questions' => $aiResponse['faq_questions'],
+            'schema_plan' => $aiResponse['schema_plan'],
+            'blog_category_id' => $this->selectCategory($topic),
+            'topic_source' => $topic['source'],
+            'ai_cost' => 0.01,
+        ];
+    }
+}</code></pre>
+                </div>
+
+                <!-- Livewire Component -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Livewire: BlogAIDraftComponent</h3>
+                    <pre class="bg-slate-900 p-4 rounded overflow-x-auto text-sm"><code class="text-purple-400">namespace Modules\Blog\App\Http\Livewire\Admin;
+
+use Livewire\Component;
+use Livewire\WithPagination;
+use App\Models\BlogAIDraft;
+
+class BlogAIDraftComponent extends Component
+{
+    use WithPagination;
+
+    public $selectedDrafts = [];
+    public $search = '';
+    public $categoryFilter = null;
+
+    public function toggleSelection($draftId)
+    {
+        $draft = BlogAIDraft::find($draftId);
+        $draft->update(['is_selected' => !$draft->is_selected]);
+    }
+
+    public function generateBlogs()
+    {
+        $selectedDrafts = BlogAIDraft::selected()->pending()->get();
+
+        if ($selectedDrafts->isEmpty()) {
+            session()->flash('error', 'Seçili taslak yok!');
+            return;
+        }
+
+        $totalCost = $selectedDrafts->count() * 1.0;
+
+        if (!ai_can_use_credits($totalCost)) {
+            session()->flash('error', "Yetersiz kredi! Gerekli: {$totalCost}");
+            return;
+        }
+
+        // Queue'ya gönder
+        foreach ($selectedDrafts as $draft) {
+            \App\Jobs\GenerateBlogFromDraft::dispatch($draft);
+        }
+
+        session()->flash('success', "{$selectedDrafts->count()} blog yazımı başlatıldı!");
+    }
+
+    public function render()
+    {
+        $drafts = BlogAIDraft::query()
+            ->when($this->search, fn($q) => $q->where('title', 'like', "%{$this->search}%"))
+            ->when($this->categoryFilter, fn($q) => $q->where('blog_category_id', $this->categoryFilter))
+            ->latest()
+            ->paginate(20);
+
+        return view('blog::admin.livewire.blog-ai-draft-component', compact('drafts'));
+    }
+}</code></pre>
+                </div>
+
+            </div>
+
+            <!-- 6. REHBER & İPUÇLARI -->
+            <div x-show="activeTab === 'guide'" class="space-y-6">
+
+                <h2 class="text-2xl font-bold text-white mb-4">
+                    <i class="fas fa-book text-purple-400"></i> Uygulama Rehberi & Best Practices
+                </h2>
+
+                <!-- Hızlı Başlangıç Kılavuzu -->
+                <div class="bg-gradient-to-r from-green-900/50 to-blue-900/50 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-rocket text-green-400"></i> Hızlı Başlangıç Kılavuzu
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex gap-3">
+                            <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Migration Çalıştır</div>
+                                <div class="text-slate-300 text-sm mt-1">
+                                    <code class="bg-slate-900 px-2 py-1 rounded">php artisan migrate</code> ve
+                                    <code class="bg-slate-900 px-2 py-1 rounded">php artisan tenants:migrate</code> komutlarını çalıştır
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">AI Ayarlarını Kontrol Et</div>
+                                <div class="text-slate-300 text-sm mt-1">
+                                    <code class="bg-slate-900 px-2 py-1 rounded">/admin/settingmanagement/values/18</code> adresinde
+                                    <strong>blog_ai_enabled = true</strong> olduğundan emin ol
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Kredi Kontrolü Yap</div>
+                                <div class="text-slate-300 text-sm mt-1">
+                                    Tenant'ın yeterli kredisi olduğundan emin ol (min. 2.0 kredi önerilir)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">4</div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">İlk Taslak Üretimini Başlat</div>
+                                <div class="text-slate-300 text-sm mt-1">
+                                    <code class="bg-slate-900 px-2 py-1 rounded">/admin/blog/ai-drafts</code> sayfasında
+                                    <strong>"100 Taslak Üret"</strong> butonuna tıkla
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Best Practices -->
+                <div class="bg-slate-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-star text-yellow-400"></i> Best Practices & Öneriler
+                    </h3>
+
+                    <div class="space-y-4">
+
+                        <!-- 1. Kredi Yönetimi -->
+                        <div class="bg-slate-600 p-4 rounded">
+                            <h4 class="font-bold text-white mb-2">
+                                <i class="fas fa-coins text-yellow-400"></i> Kredi Yönetimi
+                            </h4>
+                            <ul class="space-y-2 text-slate-300 text-sm">
+                                <li><i class="fas fa-check text-green-400"></i> <strong>Her üretim öncesi:</strong> Kredi bakiyesini kontrol et</li>
+                                <li><i class="fas fa-check text-green-400"></i> <strong>Toplu işlemler:</strong> 100 taslak + 50 blog = ~51.0 kredi ayır (1 blog = 1 kredi)</li>
+                                <li><i class="fas fa-check text-green-400"></i> <strong>Hata durumu:</strong> Kredi düşürme işlemi başarısız olursa transaction rollback edilir</li>
+                                <li><i class="fas fa-check text-green-400"></i> <strong>Kredi logları:</strong> <code class="bg-slate-900 px-2 py-1 rounded">ai_credit_usage</code> tablosundan takip et</li>
+                            </ul>
+                        </div>
+
+                        <!-- 2. Taslak Seçimi -->
+                        <div class="bg-slate-600 p-4 rounded">
+                            <h4 class="font-bold text-white mb-2">
+                                <i class="fas fa-check-square text-blue-400"></i> Akıllı Taslak Seçimi
+                            </h4>
+                            <ul class="space-y-2 text-slate-300 text-sm">
+                                <li><i class="fas fa-lightbulb text-yellow-400"></i> <strong>Kategori dengesi:</strong> Tüm kategorilerden eşit sayıda seç</li>
+                                <li><i class="fas fa-lightbulb text-yellow-400"></i> <strong>SEO analizi:</strong> SEO meta önizlemesini mutlaka incele</li>
+                                <li><i class="fas fa-lightbulb text-yellow-400"></i> <strong>Uzun vadeli plan:</strong> Sezonluk içerikler için zamanlama yap</li>
+                                <li><i class="fas fa-lightbulb text-yellow-400"></i> <strong>Çeşitlilik:</strong> Farklı topic_source'lardan karışık seç</li>
+                            </ul>
+                        </div>
+
+                        <!-- 3. Queue Yönetimi -->
+                        <div class="bg-slate-600 p-4 rounded">
+                            <h4 class="font-bold text-white mb-2">
+                                <i class="fas fa-tasks text-purple-400"></i> Queue & Performance
+                            </h4>
+                            <ul class="space-y-2 text-slate-300 text-sm">
+                                <li><i class="fas fa-cog text-blue-400"></i> <strong>Queue worker:</strong> En az 2 worker çalıştır (<code class="bg-slate-900 px-2 py-1 rounded">queue:work --tries=3</code>)</li>
+                                <li><i class="fas fa-cog text-blue-400"></i> <strong>Timeout:</strong> Blog yazımı için 300 saniye timeout ayarla</li>
+                                <li><i class="fas fa-cog text-blue-400"></i> <strong>Retry:</strong> AI hatası durumunda max 3 retry yap</li>
+                                <li><i class="fas fa-cog text-blue-400"></i> <strong>Monitoring:</strong> Failed jobs tablosunu düzenli kontrol et</li>
+                            </ul>
+                        </div>
+
+                        <!-- 4. Kategori Yönetimi -->
+                        <div class="bg-slate-600 p-4 rounded">
+                            <h4 class="font-bold text-white mb-2">
+                                <i class="fas fa-folder text-orange-400"></i> Kategori Stratejisi
+                            </h4>
+                            <ul class="space-y-2 text-slate-300 text-sm">
+                                <li><i class="fas fa-sitemap text-green-400"></i> <strong>Ürün kategorileri:</strong> AI otomatik tespit eder, manuel müdahale gereksiz</li>
+                                <li><i class="fas fa-sitemap text-green-400"></i> <strong>Genel kategori:</strong> Fallback "Genel" her zaman hazır olmalı</li>
+                                <li><i class="fas fa-sitemap text-green-400"></i> <strong>Yeni kategori:</strong> Kategori ekledikten sonra taslak üretimini yenile</li>
+                                <li><i class="fas fa-sitemap text-green-400"></i> <strong>Featured kategoriler:</strong> Öncelikli işaretlenmiş kategorilerden daha fazla taslak üret</li>
+                            </ul>
+                        </div>
+
+                        <!-- 5. SEO Optimizasyonu -->
+                        <div class="bg-slate-600 p-4 rounded">
+                            <h4 class="font-bold text-white mb-2">
+                                <i class="fas fa-search text-cyan-400"></i> SEO Best Practices
+                            </h4>
+                            <ul class="space-y-2 text-slate-300 text-sm">
+                                <li><i class="fas fa-chart-line text-green-400"></i> <strong>Title uzunluğu:</strong> 50-60 karakter (kontrol et!)</li>
+                                <li><i class="fas fa-chart-line text-green-400"></i> <strong>Description:</strong> 155-160 karakter, CTA içermeli</li>
+                                <li><i class="fas fa-chart-line text-green-400"></i> <strong>Slug:</strong> Türkçe karaktersiz, kısa, anlamlı</li>
+                                <li><i class="fas fa-chart-line text-green-400"></i> <strong>Keyword density:</strong> %1-2 aralığında (AI otomatik yapar)</li>
+                                <li><i class="fas fa-chart-line text-green-400"></i> <strong>Schema markup:</strong> Article + FAQPage mutlaka kullan</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Hata Yönetimi & Troubleshooting -->
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-400"></i> Hata Yönetimi & Troubleshooting
+                    </h3>
+
+                    <div class="space-y-4">
+
+                        <!-- Hata 1: Yetersiz Kredi -->
+                        <div class="bg-slate-700 p-4 rounded">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-times-circle text-red-400 text-xl mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-bold text-white mb-1">Hata: "Yetersiz Kredi"</div>
+                                    <div class="text-slate-300 text-sm mb-2">Tenant'ın AI kredi bakiyesi yetersiz.</div>
+                                    <div class="bg-slate-800 p-3 rounded">
+                                        <div class="text-xs text-slate-400 mb-1">Çözüm:</div>
+                                        <div class="text-sm text-green-400">
+                                            1. <code class="bg-slate-900 px-2 py-1 rounded">Tenant::find($id)->ai_credits_balance</code> kontrol et<br>
+                                            2. Kredi yükle veya işlem sayısını azalt<br>
+                                            3. Ayarlarda <code>blog_ai_daily_count</code> limitini düşür
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hata 2: AI Timeout -->
+                        <div class="bg-slate-700 p-4 rounded">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-clock text-yellow-400 text-xl mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-bold text-white mb-1">Hata: "AI Request Timeout"</div>
+                                    <div class="text-slate-300 text-sm mb-2">AI provider yanıt süresini aştı.</div>
+                                    <div class="bg-slate-800 p-3 rounded">
+                                        <div class="text-xs text-slate-400 mb-1">Çözüm:</div>
+                                        <div class="text-sm text-green-400">
+                                            1. Queue worker timeout'unu artır: <code class="bg-slate-900 px-2 py-1 rounded">--timeout=600</code><br>
+                                            2. Retry mekanizmasını kontrol et (max 3 deneme)<br>
+                                            3. AI provider status sayfasını kontrol et<br>
+                                            4. Batch boyutunu azalt (100 yerine 50 taslak üret)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hata 3: Duplicate Slug -->
+                        <div class="bg-slate-700 p-4 rounded">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-copy text-orange-400 text-xl mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-bold text-white mb-1">Hata: "Duplicate Slug"</div>
+                                    <div class="text-slate-300 text-sm mb-2">Aynı slug zaten mevcut.</div>
+                                    <div class="bg-slate-800 p-3 rounded">
+                                        <div class="text-xs text-slate-400 mb-1">Çözüm:</div>
+                                        <div class="text-sm text-green-400">
+                                            1. Slug'a timestamp ekle: <code class="bg-slate-900 px-2 py-1 rounded">transpalet-2025</code><br>
+                                            2. Mevcut blog başlıklarını kontrol et (duplicate check)<br>
+                                            3. AI'ya daha unique başlık ürettir
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hata 4: Queue Failed -->
+                        <div class="bg-slate-700 p-4 rounded">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-ban text-red-400 text-xl mt-1"></i>
+                                <div class="flex-1">
+                                    <div class="font-bold text-white mb-1">Hata: "Job Failed After 3 Attempts"</div>
+                                    <div class="text-slate-300 text-sm mb-2">Queue job 3 denemeden sonra başarısız.</div>
+                                    <div class="bg-slate-800 p-3 rounded">
+                                        <div class="text-xs text-slate-400 mb-1">Çözüm:</div>
+                                        <div class="text-sm text-green-400">
+                                            1. <code class="bg-slate-900 px-2 py-1 rounded">failed_jobs</code> tablosunu kontrol et<br>
+                                            2. Exception mesajını incele (payload'da)<br>
+                                            3. Manuel retry: <code class="bg-slate-900 px-2 py-1 rounded">php artisan queue:retry {job-id}</code><br>
+                                            4. Sorun devam ederse taslağı manuel sil ve yeniden üret
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Test & Quality Assurance -->
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-check-circle text-blue-400"></i> Test & Kalite Kontrol
+                    </h3>
+
+                    <div class="space-y-4">
+
+                        <!-- Test Senaryoları -->
+                        <div class="bg-slate-700 p-4 rounded">
+                            <h4 class="font-bold text-white mb-3">Test Senaryoları</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 1:</strong> 100 taslak üret → Kredi 1.0 düşmüş mü kontrol et
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 2:</strong> 10 taslak seç → Checkbox durumu doğru mu?
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 3:</strong> "Seçilenleri Yaz" → 10 blog oluştu mu? Kredi 0.5 düştü mü?
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 4:</strong> Oluşan blog'un <code class="bg-slate-900 px-2 py-1 rounded">status='draft'</code> olduğunu doğrula
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 5:</strong> <code class="bg-slate-900 px-2 py-1 rounded">generated_blog_id</code> ilişkisi kurulmuş mu?
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 6:</strong> SEO meta bilgileri doğru eklendi mi? (title, description, keywords)
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <input type="checkbox" class="mt-1" disabled>
+                                    <div class="flex-1 text-slate-300 text-sm">
+                                        <strong>Senaryo 7:</strong> Schema.org markup'ı geçerli mi? (JSON-LD validator kullan)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kalite Metrikleri -->
+                        <div class="bg-slate-700 p-4 rounded">
+                            <h4 class="font-bold text-white mb-3">Kalite Metrikleri</h4>
+                            <div class="grid md:grid-cols-2 gap-3">
+                                <div class="bg-slate-600 p-3 rounded">
+                                    <div class="text-slate-400 text-sm">Kelime Sayısı</div>
+                                    <div class="text-white font-bold text-lg">2000-2500 kelime</div>
+                                    <div class="text-xs text-slate-500">Minimum: 1800, Maksimum: 2700</div>
+                                </div>
+                                <div class="bg-slate-600 p-3 rounded">
+                                    <div class="text-slate-400 text-sm">Keyword Density</div>
+                                    <div class="text-white font-bold text-lg">%1-2</div>
+                                    <div class="text-xs text-slate-500">Kabul edilebilir: %0.8-2.5</div>
+                                </div>
+                                <div class="bg-slate-600 p-3 rounded">
+                                    <div class="text-slate-400 text-sm">Başlık Uzunluğu</div>
+                                    <div class="text-white font-bold text-lg">50-60 karakter</div>
+                                    <div class="text-xs text-slate-500">Max: 70 karakter</div>
+                                </div>
+                                <div class="bg-slate-600 p-3 rounded">
+                                    <div class="text-slate-400 text-sm">Meta Description</div>
+                                    <div class="text-white font-bold text-lg">155-160 karakter</div>
+                                    <div class="text-xs text-slate-500">Max: 170 karakter</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Performans İpuçları -->
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-tachometer-alt text-purple-400"></i> Performans Optimizasyonu
+                    </h3>
+
+                    <div class="space-y-3">
+                        <div class="flex gap-3">
+                            <i class="fas fa-bolt text-yellow-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Batch İşlemler</div>
+                                <div class="text-slate-300 text-sm">
+                                    100 taslağı tek seferde üretmek yerine 4×25'lik batch'lere böl.
+                                    Her batch sonrası 30 saniye bekle (AI rate limit)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-database text-blue-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Database İndexleme</div>
+                                <div class="text-slate-300 text-sm">
+                                    <code class="bg-slate-900 px-2 py-1 rounded">is_selected</code> ve
+                                    <code class="bg-slate-900 px-2 py-1 rounded">is_generated</code>
+                                    kolonları mutlaka index'lenmiş olmalı (migration'da mevcut)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-memory text-green-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Caching Stratejisi</div>
+                                <div class="text-slate-300 text-sm">
+                                    Kategori listesini cache'le (1 saat), her sorgu için DB'ye gitme.
+                                    <code class="bg-slate-900 px-2 py-1 rounded">Cache::remember('blog_categories', 3600, ...)</code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-tasks text-purple-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Queue Priority</div>
+                                <div class="text-slate-300 text-sm">
+                                    Blog yazım job'larını "low" priority queue'ya gönder.
+                                    Kritik işlemler (ödeme, sipariş) etkilenmesin.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Güvenlik Notları -->
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-5">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-shield-alt text-red-400"></i> Güvenlik & Rate Limiting
+                    </h3>
+
+                    <div class="space-y-3 text-slate-300">
+                        <div class="flex gap-3">
+                            <i class="fas fa-lock text-red-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Admin Yetkisi</div>
+                                <div class="text-sm">
+                                    Taslak üretimi ve blog yazımı sadece <strong>admin rolü</strong> ile erişilebilir olmalı.
+                                    Livewire component'te <code class="bg-slate-900 px-2 py-1 rounded">authorize()</code> kontrolü ekle.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-user-clock text-yellow-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Rate Limiting</div>
+                                <div class="text-sm">
+                                    Kullanıcı başına günlük max 5 taslak üretimi.
+                                    <code class="bg-slate-900 px-2 py-1 rounded">RateLimiter::for('draft-generation', fn() => Limit::perDay(5))</code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-ban text-orange-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">Tenant İzolasyonu</div>
+                                <div class="text-sm">
+                                    Her tenant sadece kendi taslak ve bloglarını görsün.
+                                    Global scope ile otomatik filtreleme yap.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <i class="fas fa-code text-cyan-400 text-xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="font-semibold text-white">XSS Koruması</div>
+                                <div class="text-sm">
+                                    AI üretilen içerik direkt render edilmemeli.
+                                    <code class="bg-slate-900 px-2 py-1 rounded">HTMLPurifier</code> ile temizle veya
+                                    <code class="bg-slate-900 px-2 py-1 rounded">strip_tags()</code> kullan.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

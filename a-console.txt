@@ -1,1 +1,26 @@
-
+ai-content-system.js?v=1763090839:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1763090839:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1763090839:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1763090839:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1763090839:13 ⏰ Load Time: 2025-11-14T03:27:20.023Z
+ai-seo-integration.js?v=1763090839:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1763090839:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1763090839:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1763090839:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1763090839:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1763090839:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1763090839:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1763090839:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1763090839:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+ai-drafts:2509 ✅ Alpine.js Global Store initialized (Livewire bundled)
+ai-content-system.js?v=1763090839:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1763090839:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1763090839:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1763090839:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1763090839:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1763090839:558 🔒 attachButtonListeners SKIP - already attached
+ai-drafts:2572 🚀 Enterprise Streaming Translation System Ready!
+ai-drafts:2585 📝 Streaming translation not available - Using standard translation mode
+ai-seo-integration.js?v=1763090839:558 🔒 attachButtonListeners SKIP - already attached
+ai-seo-integration.js?v=1763090839:558 🔒 attachButtonListeners SKIP - already attached
+ai-drafts:2546 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal

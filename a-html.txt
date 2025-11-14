@@ -1,1 +1,141 @@
 
+0216 755 3 555
+0501 005 67 58
+ İletişim
+iXtif
+Ürünler
+Hizmetler
+
+Kurumsal
+İletişim
+
+
+Internal Server Error
+
+Copy as Markdown
+Symfony\Component\ErrorHandler\Error\FatalError
+During class fetch: Uncaught ErrorException: include(/var/www/vhosts/tuufi.com/httpdocs/vendor/composer/../../Modules/Cart/app/Traits/HasAddresses.php): Failed to open stream: Permission denied in /var/www/vhosts/tuufi.com/httpdocs/vendor/composer/ClassLoader.php:576 Stack trace: #0 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError() #1 /var/www/vhosts/tuufi.com/httpdocs/vendor/composer/ClassLoader.php(576): Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}() #2 /var/www/vhosts/tuufi.com/httpdocs/vendor/composer/ClassLoader.php(576): include('...') #3 /var/www/vhosts/tuufi.com/httpdocs/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}() #4 /var/www/vhosts/tuufi.com/httpdocs/Modules/Cart/app/Models/Cart.php(13): Composer\Autoload\ClassLoader->loadClass() #5 /var/www/vhosts/tuufi.com/httpdocs/vendor/composer/ClassLoader.php(576): include('...') #6 /var/www/vhosts/tuufi.com/httpdocs/vendor/composer/ClassLoader.php(427): Composer\Autoload\{closure}() #7 /var/www/vhosts/tuufi.com/httpdocs/Modules/Cart/app/Services/CartService.php(46): Composer\Autoload\ClassLoader->loadClass() #8 /var/www/vhosts/tuufi.com/httpdocs/Modules/Cart/app/Http/Livewire/Front/CartWidget.php(33): Modules\Cart\App\Services\CartService->findOrCreateCart() #9 /var/www/vhosts/tuufi.com/httpdocs/Modules/Cart/app/Http/Livewire/Front/CartWidget.php(20): Modules\Cart\App\Http\Livewire\Front\CartWidget->refreshCart() #10 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Modules\Cart\App\Http\Livewire\Front\CartWidget->mount() #11 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Container/Util.php(43): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}() #12 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(96): Illuminate\Container\Util::unwrapIfClosure() #13 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\Container\BoundMethod::callBoundMethod() #14 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Wrapped.php(23): Illuminate\Container\BoundMethod::call() #15 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Features/SupportLifecycleHooks/SupportLifecycleHooks.php(134): Livewire\Wrapped->__call() #16 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Features/SupportLifecycleHooks/SupportLifecycleHooks.php(20): Livewire\Features\SupportLifecycleHooks\SupportLifecycleHooks->callHook() #17 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/ComponentHook.php(19): Livewire\Features\SupportLifecycleHooks\SupportLifecycleHooks->mount() #18 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/ComponentHookRegistry.php(45): Livewire\ComponentHook->callMount() #19 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/EventBus.php(60): Livewire\ComponentHookRegistry::Livewire\{closure}() #20 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/helpers.php(98): Livewire\EventBus->trigger() #21 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php(50): Livewire\trigger() #22 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/LivewireManager.php(73): Livewire\Mechanisms\HandleComponents\HandleComponents->mount() #23 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/volt/src/LivewireManager.php(23): Livewire\LivewireManager->mount() #24 /var/www/vhosts/tuufi.com/httpdocs/storage/framework/views/86323dd596dc0068f4cb82599671372c.php(639): Livewire\Volt\LivewireManager->mount() #25 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(123): require('...') #26 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(124): Illuminate\Filesystem\Filesystem::Illuminate\Filesystem\{closure}() #27 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire() #28 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php(22): Illuminate\View\Engines\PhpEngine->evaluatePath() #29 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(76): Livewire\Mechanisms\ExtendBlade\ExtendedCompilerEngine->evaluatePath() #30 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php(10): Illuminate\View\Engines\CompilerEngine->get() #31 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(208): Livewire\Mechanisms\ExtendBlade\ExtendedCompilerEngine->get() #32 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(191): Illuminate\View\View->getContents() #33 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(160): Illuminate\View\View->renderContents() #34 /var/www/vhosts/tuufi.com/httpdocs/storage/framework/views/8f7519c085b4761ee2a733cb02991719.php(1): Illuminate\View\View->render() #35 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(123): require('...') #36 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(124): Illuminate\Filesystem\Filesystem::Illuminate\Filesystem\{closure}() #37 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire() #38 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php(22): Illuminate\View\Engines\PhpEngine->evaluatePath() #39 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(76): Livewire\Mechanisms\ExtendBlade\ExtendedCompilerEngine->evaluatePath() #40 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php(10): Illuminate\View\Engines\CompilerEngine->get() #41 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(208): Livewire\Mechanisms\ExtendBlade\ExtendedCompilerEngine->get() #42 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(191): Illuminate\View\View->getContents() #43 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(160): Illuminate\View\View->renderContents() #44 /var/www/vhosts/tuufi.com/httpdocs/storage/framework/views/28d61a570f1d854d268a1f0973039ff0.php(671): Illuminate\View\View->render() #45 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(123): require('...') #46 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php(124): Illuminate\Filesystem\Filesystem::Illuminate\Filesystem\{closure}() #47 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php(57): Illuminate\Filesystem\Filesystem->getRequire() #48 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php(22): Illuminate\View\Engines\PhpEngine->evaluatePath() #49 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php(76): Livewire\Mechanisms\ExtendBlade\ExtendedCompilerEngine->evaluatePath() #50 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php(10): Illuminate\View\Engines\CompilerEngine->get() #51 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(208): Livewire\Mechanisms\ExtendBlade\ExtendedCompilerEngine->get() #52 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(191): Illuminate\View\View->getContents() #53 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/View.php(160): Illuminate\View\View->renderContents() #54 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Http/Response.php(78): Illuminate\View\View->render() #55 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Http/Response.php(34): Illuminate\Http\Response->setContent() #56 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(939): Illuminate\Http\Response->__construct() #57 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(906): Illuminate\Routing\Router::toResponse() #58 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(821): Illuminate\Routing\Router->prepareResponse() #59 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate\Routing\Router->Illuminate\Routing\{closure}() #60 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/PageTracker.php(39): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #61 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\PageTracker->handle() #62 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/FixResponseCacheHeaders.php(20): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #63 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\FixResponseCacheHeaders->handle() #64 /var/www/vhosts/tuufi.com/httpdocs/vendor/spatie/laravel-responsecache/src/Middlewares/CacheResponse.php(46): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #65 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Spatie\ResponseCache\Middlewares\CacheResponse->handle() #66 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/FrontendAutoSeoFillMiddleware.php(42): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #67 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\FrontendAutoSeoFillMiddleware->handle() #68 /var/www/vhosts/tuufi.com/httpdocs/Modules/LanguageManagement/app/Http/Middleware/SiteSetLocaleMiddleware.php(88): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #69 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Modules\LanguageManagement\app\Http\Middleware\SiteSetLocaleMiddleware->handle() #70 /var/www/vhosts/tuufi.com/httpdocs/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #71 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Barryvdh\Debugbar\Middleware\InjectDebugbar->handle() #72 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/LivewireJsonSanitizer.php(43): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #73 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\LivewireJsonSanitizer->handle() #74 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/RootOnlyDebugbar.php(35): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #75 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\RootOnlyDebugbar->handle() #76 /var/www/vhosts/tuufi.com/httpdocs/Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php(36): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #77 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Modules\TenantManagement\App\Http\Middleware\ResourceTrackingMiddleware->handle() #78 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/DatabasePoolMiddleware.php(58): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #79 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\DatabasePoolMiddleware->handle() #80 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/SecurityHeaders.php(18): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #81 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\SecurityHeaders->handle() #82 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/CheckThemeStatus.php(40): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #83 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\CheckThemeStatus->handle() #84 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/RedisHealthCheckMiddleware.php(23): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #85 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\RedisHealthCheckMiddleware->handle() #86 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #87 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Routing\Middleware\SubstituteBindings->handle() #88 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php(87): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #89 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Foundation\Http\Middleware\VerifyCsrfToken->handle() #90 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(48): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #91 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\View\Middleware\ShareErrorsFromSession->handle() #92 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(120): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #93 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php(63): Illuminate\Session\Middleware\StartSession->handleStatefulRequest() #94 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Session\Middleware\StartSession->handle() #95 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(36): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #96 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse->handle() #97 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php(74): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #98 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Cookie\Middleware\EncryptCookies->handle() #99 /var/www/vhosts/tuufi.com/httpdocs/app/Http/Middleware/InitializeTenancy.php(97): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #100 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): App\Http\Middleware\InitializeTenancy->handle() #101 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #102 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(821): Illuminate\Pipeline\Pipeline->then() #103 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(800): Illuminate\Routing\Router->runRouteWithinStack() #104 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(764): Illuminate\Routing\Router->runRoute() #105 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Routing/Router.php(753): Illuminate\Routing\Router->dispatchToRoute() #106 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate\Routing\Router->dispatch() #107 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(180): Illuminate\Foundation\Http\Kernel->Illuminate\Foundation\Http\{closure}() #108 /var/www/vhosts/tuufi.com/httpdocs/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #109 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Livewire\Features\SupportDisablingBackButtonCache\DisableBackButtonCacheMiddleware->handle() #110 /var/www/vhosts/tuufi.com/httpdocs/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php(59): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #111 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Barryvdh\Debugbar\Middleware\InjectDebugbar->handle() #112 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #113 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle() #114 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull->handle() #115 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #116 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(51): Illuminate\Foundation\Http\Middleware\TransformsRequest->handle() #117 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Foundation\Http\Middleware\TrimStrings->handle() #118 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php(27): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #119 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Http\Middleware\ValidatePostSize->handle() #120 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(109): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #121 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance->handle() #122 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(48): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #123 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Http\Middleware\HandleCors->handle() #124 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(58): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #125 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Http\Middleware\TrustProxies->handle() #126 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php(22): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #127 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks->handle() #128 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php(26): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #129 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\Http\Middleware\ValidatePathEncoding->handle() #130 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(137): Illuminate\Pipeline\Pipeline->Illuminate\Pipeline\{closure}() #131 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate\Pipeline\Pipeline->then() #132 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate\Foundation\Http\Kernel->sendRequestThroughRouter() #133 /var/www/vhosts/tuufi.com/httpdocs/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1220): Illuminate\Foundation\Http\Kernel->handle() #134 /var/www/vhosts/tuufi.com/httpdocs/public/index.php(17): Illuminate\Foundation\Application->handleRequest() #135 {main}
+
+LARAVEL
+12.32.5
+PHP
+8.3.27
+UNHANDLED
+CODE 0
+500
+GET
+https://ixtif.com
+
+Exception trace
+Modules\Cart\App\Models\Cart
+Modules/Cart/app/Models/Cart.php:13
+
+8use Illuminate\Database\Eloquent\Factories\HasFactory;
+9use Illuminate\Database\Eloquent\Relations\HasMany;
+10use Illuminate\Database\Eloquent\Relations\BelongsTo;
+11use Illuminate\Support\Str;
+12
+13class Cart extends BaseModel
+14{
+15    use HasFactory;
+16    use \Modules\Cart\App\Traits\HasAddresses;
+17
+18    protected $table = 'carts';
+19    protected $primaryKey = 'cart_id';
+20
+21    protected $fillable = [
+22        'customer_id',
+23        'session_id',
+24        'device_id',
+25
+Queries
+1-10 of 64
+mysql
+SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif'
+5.19ms
+mysql
+select * from `sessions` where `id` = 'pWHhaWvRTVY9278DZdeOyF43lx4oH4HckzsZkWeW' limit 1
+1.26ms
+mysql
+select * from `tenants` where `tenants`.`id` = 2 limit 1
+1.91ms
+tenant
+select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1
+3.8ms
+tenant
+select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User'
+2.02ms
+tenant
+select * from `pages` where `is_homepage` = 1 and `is_active` = 1 and `pages`.`deleted_at` is null limit 1
+1.72ms
+tenant
+select * from `shop_products` where `show_on_homepage` = 1 and `is_active` = 1 and `shop_products`.`deleted_at` is null order by COALESCE(homepage_sort_order, 999999) ASC, `product_id` desc
+5.58ms
+tenant
+select * from `shop_categories` where `shop_categories`.`category_id` in (1, 2, 44) and `shop_categories`.`deleted_at` is null
+1.59ms
+tenant
+select * from `shop_brands` where `shop_brands`.`brand_id` in (1) and `shop_brands`.`deleted_at` is null
+1.63ms
+tenant
+select * from `media` where `media`.`model_id` in (10, 19, 27, 49, 62, 84, 90, 126, 130, 144, 147, 150, 241, 245, 300, 307, 438) and `media`.`model_type` = 'Modules\Shop\App\Models\ShopProduct'
+2.45ms
+
+
+1
+2
+3
+4
+5
+6
+7
+
+
+Headers
+cookie
+_fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; remember_web_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6IlczVDBzejlkUEZBd0tCREFuQXg1REE9PSIsInZhbHVlIjoibmJqd002bEMvcmlLT2owV2pBWmorNWRxUjN6YjA2V2dWYmI3OE5CS3MvbnRac1JBeHFSeXBCZHFlaHZjMThxV3pqVGJTS0xzT082eUFwVGk2M1IrRGRueWRRdXhjV0dVTDZUWlIya0JBYVZMU3RUSk1tYjhQdExyZVZ2eVZjZldHQU5VSCtQeU90UDk4T1lhNFRVMUJxQ1RZZUVnVEVGNys4bjRKTkE5QnhuMmZSNFNvNjFpSmdjYnJjS29RbTRnYmVNS1F0T0FycDB6VGVwYmFJK0JndmFpS3hRN2tuR29qL3pwZVhpNk1PYz0iLCJtYWMiOiIxODNjMjk2NjY0ZDQ0ZjVmODQxNTlhYmVhYzQzZWEwZGQzZjA1YWFiYzI4OWIzMmI4NDM2Y2FkNTUzOTdmY2Q2IiwidGFnIjoiIn0%3D; _gcl_au=1.1.93943206.1762734713.2034743476.1762775966.1762778280; last_activity_read=1762807078; dark=auto; _ym_isad=2; viewMode=grid; _clck=1gd0f2w%5E2%5Eg10%5E0%5E2140; _ym_visorc=w; _clsk=jebffc%5E1763090840837%5E22%5E1%5Eb.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6Im9aVS90NkNzbkppK1JTQ1Z4WmFDSmc9PSIsInZhbHVlIjoidU9yZUVEQzhESFVpRnZXeDg1YjdGZUFWZzhPbUh2N0k1cHFHdHRoeHdFU0YwekFWVW1tdDNJbjN4Ukl5M3M2dzI4S0ZDUHhvaEJHRko1b2V2dk11ZzNPLzJhQjc3aVVhVU9YRWx3RFZycFhmT0IzMTJ3cDJsVERYckkwbEdkZ0ciLCJtYWMiOiI1NTEzMDAyNDg1MGEwNjQ5Mzk1M2I0ODUxODM0ZjU2MTZjOWU2NzJmYWQ1ZDAzNzM2Y2Q3MmE5NDU3ZjU3ZWFlIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IjViZDRBWDZkUXlScVpCemExUVN0NUE9PSIsInZhbHVlIjoiUW4wZVFTeGxvVXlhQkRkd0kyKzF1SWxzNWlDeldkYjA2SW9CSHlQQjQ2clMwK2wvK0k1RWZ5OVMzK0pFT1lOM290dFlFNUVncUlTdzZXR3Vyd1c1UEF1Kys0Vm8vNHg0bDVhdUdOa1pqN09DaFk4NnBBa1NLS1FYWTROZlFST2siLCJtYWMiOiJkMGI1ZmQ1NmM5MWNmOTNlYjgwZWNmMGIxYTE0MGJjZThkYWUyZWQ0Mjk5OWRiMmU2NmVjNGEyOWI1NGNiM2RmIiwidGFnIjoiIn0%3D
+priority
+u=0, i
+accept-language
+tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+accept-encoding
+gzip, deflate, br, zstd
+sec-fetch-dest
+empty
+sec-fetch-mode
+navigate
+sec-fetch-site
+same-origin
+sec-ch-ua-mobile
+?0
+sec-ch-ua
+"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+upgrade-insecure-requests
+1
+dnt
+1
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+user-agent
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+sec-ch-ua-platform
+"macOS"
+connection
+close
+x-accel-internal
+/internal-nginx-static-location
+x-real-ip
+92.44.119.135
+host
+ixtif.com
+Body
+// No request body
+Routing
+controller
+Modules\Page\App\Http\Controllers\Front\PageController@homepage
+route name
+home
+middleware
+web, site, page.tracker
+Routing parameters
+// No routing parameters

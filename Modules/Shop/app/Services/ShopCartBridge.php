@@ -110,11 +110,11 @@ class ShopCartBridge
      */
     protected function getProductTaxInfo(ShopProduct $product): array
     {
-        // Ürün bazlı KDV oranı (gelecekte eklenebilir)
-        $taxRate = 20.0; // Default %20 KDV
+        // Ürün bazlı KDV oranı
+        $taxRate = $product->tax_rate ?? 20.0; // Default %20 KDV
 
-        // TODO: Kategori bazlı veya ürün özelliği bazlı KDV sistemi
-        // if ($product->category->tax_rate) {
+        // TODO: Kategori bazlı KDV sistemi (gelecekte)
+        // if ($product->category && $product->category->tax_rate) {
         //     $taxRate = $product->category->tax_rate;
         // }
 

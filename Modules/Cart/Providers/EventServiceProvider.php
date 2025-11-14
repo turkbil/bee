@@ -11,7 +11,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        \Illuminate\Auth\Events\Login::class => [
+            \Modules\Cart\App\Listeners\MergeGuestCartOnLogin::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

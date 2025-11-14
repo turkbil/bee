@@ -7,6 +7,7 @@ namespace Modules\Shop\App\Http\Livewire\Front;
 use Livewire\Component;
 use Modules\Cart\App\Services\CartService;
 use Modules\Shop\App\Models\ShopProduct;
+use Modules\Shop\App\Services\ShopCartBridge;
 
 /**
  * AddToCartButton - SIFIRDAN BASIT
@@ -35,9 +36,16 @@ class AddToCartButton extends Component
         try {
             // Cart service
             $cartService = app(CartService::class);
+            $bridge = app(ShopCartBridge::class);
 
             // Ürünü al
             $product = ShopProduct::findOrFail($this->productId);
+
+            // Stok kontrolü
+            if (!$bridge->canAddToCart($product, $this->quantity)) {
+                $errors = $bridge->getCartItemErrors($product, $this->quantity);
+                throw new \Exception(implode(' ', $errors));
+            }
 
             // Session/Customer
             $sessionId = session()->getId();
@@ -46,13 +54,8 @@ class AddToCartButton extends Component
             // Cart bul/oluştur
             $cart = $cartService->findOrCreateCart($customerId, $sessionId);
 
-            // Display bilgileri ve currency hazırla
-            $options = [
-                'item_title' => $product->getTranslated('title', app()->getLocale()),
-                'item_image' => $product->getFirstMediaUrl('main'),
-                'item_sku' => $product->sku,
-                'currency' => $product->currency ?? 'TRY',
-            ];
+            // Display bilgileri ve currency hazırla (Bridge service kullan)
+            $options = $bridge->prepareProductForCart($product, $this->quantity);
 
             // Ürünü ekle
             $cartItem = $cartService->addItem($cart, $product, $this->quantity, $options);

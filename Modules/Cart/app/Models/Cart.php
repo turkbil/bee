@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 class Cart extends BaseModel
 {
     use HasFactory;
+    use \Modules\Cart\App\Traits\HasAddresses;
 
     protected $table = 'carts';
     protected $primaryKey = 'cart_id';
@@ -43,6 +44,9 @@ class Cart extends BaseModel
         'currency_id',
         'metadata',
         'last_activity_at',
+        // Address fields
+        'billing_address',
+        'shipping_address',
     ];
 
     protected $casts = [
@@ -60,6 +64,9 @@ class Cart extends BaseModel
         'abandoned_at' => 'datetime',
         'recovery_email_sent_at' => 'datetime',
         'last_activity_at' => 'datetime',
+        // Address fields
+        'billing_address' => 'array',
+        'shipping_address' => 'array',
     ];
 
     /**

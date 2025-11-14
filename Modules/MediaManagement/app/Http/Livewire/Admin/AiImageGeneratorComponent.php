@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 use Modules\AI\App\Services\AIImageGenerationService;
 
 #[Layout('admin.layout')]
-class AIImageGeneratorComponent extends Component
+class AiImageGeneratorComponent extends Component
 {
     public string $prompt = '';
     public string $size = '1792x1024';

@@ -7435,7 +7435,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\LanguageManagement\\app\\Services\\UrlPrefixService' => __DIR__ . '/../..' . '/Modules/LanguageManagement/app/Services/UrlPrefixService.php',
         'Modules\\MediaManagement\\App\\Http\\Controllers\\Admin\\MediaLibraryUploadController' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Http/Controllers/Admin/MediaLibraryUploadController.php',
         'Modules\\MediaManagement\\App\\Http\\Controllers\\ThumbmakerController' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Http/Controllers/ThumbmakerController.php',
-        'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\AIImageGeneratorComponent' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Http/Livewire/Admin/AIImageGeneratorComponent.php',
+        'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\AiImageGeneratorComponent' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Http/Livewire/Admin/AiImageGeneratorComponent.php',
         'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\MediaLibraryManager' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Http/Livewire/Admin/MediaLibraryManager.php',
         'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\UniversalMediaComponent' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Http/Livewire/Admin/UniversalMediaComponent.php',
         'Modules\\MediaManagement\\App\\Models\\MediaLibraryItem' => __DIR__ . '/../..' . '/Modules/MediaManagement/app/Models/MediaLibraryItem.php',

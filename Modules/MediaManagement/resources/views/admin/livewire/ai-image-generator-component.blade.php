@@ -28,12 +28,23 @@
     <div class="row row-cards">
         <!-- Generator Form -->
         <div class="col-lg-8">
-            <div class="card">
+            <div class="card" style="position: relative;">
                 <div class="card-header">
                     <h3 class="card-title">Yeni Görsel Oluştur</h3>
                 </div>
                 <div class="card-body">
                     <form wire:submit.prevent="generate">
+                        {{-- Loading Overlay --}}
+                        <div wire:loading wire:target="generate" class="overlay">
+                            <div class="text-center">
+                                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                                    <span class="visually-hidden">Yükleniyor...</span>
+                                </div>
+                                <h3 class="text-muted">Görsel Oluşturuluyor...</h3>
+                                <p class="text-muted">Bu işlem 30-60 saniye sürebilir.</p>
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label class="form-label required">Prompt</label>
                             <textarea
@@ -178,4 +189,26 @@
             </div>
         </div>
     </div>
+
+    <style>
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--tblr-body-bg);
+        opacity: 0.98;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+        border-radius: 0.5rem;
+    }
+
+    .overlay > div {
+        margin: auto;
+    }
+    </style>
 </div>

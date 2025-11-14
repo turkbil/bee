@@ -5976,7 +5976,7 @@ return array(
     'Modules\\LanguageManagement\\app\\Services\\UrlPrefixService' => $baseDir . '/Modules/LanguageManagement/app/Services/UrlPrefixService.php',
     'Modules\\MediaManagement\\App\\Http\\Controllers\\Admin\\MediaLibraryUploadController' => $baseDir . '/Modules/MediaManagement/app/Http/Controllers/Admin/MediaLibraryUploadController.php',
     'Modules\\MediaManagement\\App\\Http\\Controllers\\ThumbmakerController' => $baseDir . '/Modules/MediaManagement/app/Http/Controllers/ThumbmakerController.php',
-    'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\AIImageGeneratorComponent' => $baseDir . '/Modules/MediaManagement/app/Http/Livewire/Admin/AIImageGeneratorComponent.php',
+    'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\AiImageGeneratorComponent' => $baseDir . '/Modules/MediaManagement/app/Http/Livewire/Admin/AiImageGeneratorComponent.php',
     'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\MediaLibraryManager' => $baseDir . '/Modules/MediaManagement/app/Http/Livewire/Admin/MediaLibraryManager.php',
     'Modules\\MediaManagement\\App\\Http\\Livewire\\Admin\\UniversalMediaComponent' => $baseDir . '/Modules/MediaManagement/app/Http/Livewire/Admin/UniversalMediaComponent.php',
     'Modules\\MediaManagement\\App\\Models\\MediaLibraryItem' => $baseDir . '/Modules/MediaManagement/app/Models/MediaLibraryItem.php',

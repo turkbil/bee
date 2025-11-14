@@ -83,13 +83,34 @@ PROMPT;
      */
     public function getContext(): array
     {
+        // Site bilgileri (Group 6)
+        $siteTitle = setting('site_title') ?? setting('site_name') ?? config('app.name');
+        $siteSlogan = setting('site_slogan') ?? '';
+        $companyName = setting('company_name') ?? $siteTitle;
+
+        // İletişim bilgileri (Group 10)
+        $companyEmail = setting('company_email') ?? '';
+        $companyPhone = setting('company_phone') ?? '';
+        $companyAddress = setting('company_address') ?? '';
+        $companyWebsite = url('/');
+
+        // About/Hakkımızda
+        $aboutText = setting('about_text') ?? '';
+
         return [
-            'site_settings' => [
-                'group_6' => setting('site_title') ?? '',
-                'group_10' => setting('site_description') ?? '',
+            'company_info' => [
+                'name' => $companyName,
+                'title' => $siteTitle,
+                'slogan' => $siteSlogan,
+                'website' => $companyWebsite,
             ],
+            'contact_info' => [
+                'email' => $companyEmail,
+                'phone' => $companyPhone,
+                'address' => $companyAddress,
+            ],
+            'about' => $aboutText,
             'focus' => 'general',
-            'modules' => [],
         ];
     }
 }

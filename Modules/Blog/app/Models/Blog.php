@@ -6,6 +6,7 @@ use App\Models\BaseModel;
 use App\Models\Tag;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
+use App\Traits\HasUniversalSchemas;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
 class Blog extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement;
 
     protected $primaryKey = 'blog_id';
 
@@ -30,6 +31,8 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
         'status',
         'is_active',
         'blog_category_id',
+        'faq_data',
+        'howto_data',
     ];
 
     protected $casts = [
@@ -40,6 +43,8 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
         'published_at' => 'datetime',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'faq_data' => 'array',
+        'howto_data' => 'array',
     ];
 
     protected $appends = ['tag_list'];
@@ -575,5 +580,74 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
     public function getRelatedBlogs(int $limit = 6): \Illuminate\Support\Collection
     {
         return \App\Services\RelatedContentService::getRelatedBlogs($this, $limit);
+    }
+
+    /**
+     * Generate BreadcrumbList Schema for Blog
+     * Override from HasUniversalSchemas trait
+     *
+     * Structure: Home → Blog → Category (if exists) → Current Post
+     *
+     * @return array|null
+     */
+    public function getBreadcrumbSchema(): ?array
+    {
+        $locale = app()->getLocale();
+        $breadcrumbs = [];
+        $position = 1;
+
+        // 1. Home
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => __('Ana Sayfa'),
+            'item' => url('/')
+        ];
+
+        // 2. Blog Ana Sayfa
+        $moduleSlug = \App\Services\ModuleSlugService::getSlug('Blog', 'index');
+        $blogIndexUrl = $locale === get_tenant_default_locale()
+            ? url("/{$moduleSlug}")
+            : url("/{$locale}/{$moduleSlug}");
+
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position++,
+            'name' => __('Blog'),
+            'item' => $blogIndexUrl
+        ];
+
+        // 3. Category (varsa)
+        if ($this->category) {
+            $categoryName = $this->category->getTranslated('name', $locale);
+            $categorySlug = $this->category->getTranslated('slug', $locale);
+
+            if ($categoryName && $categorySlug) {
+                $categoryUrl = $locale === get_tenant_default_locale()
+                    ? url("/{$moduleSlug}/category/{$categorySlug}")
+                    : url("/{$locale}/{$moduleSlug}/category/{$categorySlug}");
+
+                $breadcrumbs[] = [
+                    '@type' => 'ListItem',
+                    'position' => $position++,
+                    'name' => $categoryName,
+                    'item' => $categoryUrl
+                ];
+            }
+        }
+
+        // 4. Current Blog Post
+        $breadcrumbs[] = [
+            '@type' => 'ListItem',
+            'position' => $position,
+            'name' => $this->getTranslated('title', $locale),
+            'item' => $this->getUrl($locale)
+        ];
+
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => $breadcrumbs
+        ];
     }
 }

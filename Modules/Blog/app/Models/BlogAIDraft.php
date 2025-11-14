@@ -43,6 +43,14 @@ class BlogAIDraft extends Model
     }
 
     /**
+     * Accessor: Topic başlığı
+     */
+    public function getTopicAttribute()
+    {
+        return $this->topic_keyword;
+    }
+
+    /**
      * Scope: Seçilen taslaklar
      */
     public function scopeSelected($query)

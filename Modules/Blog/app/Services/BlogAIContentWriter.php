@@ -47,11 +47,17 @@ class BlogAIContentWriter
         DB::beginTransaction();
 
         try {
+            // Slug oluştur (başlıktan)
+            $slug = \Illuminate\Support\Str::slug($blogData['title']);
+
             // Blog oluştur
             $blog = Blog::create([
                 'title' => ['tr' => $blogData['title']],
+                'slug' => $slug,
                 'body' => ['tr' => $blogData['content']],
                 'excerpt' => ['tr' => $blogData['excerpt']],
+                'faq_data' => $blogData['faq_data'], // Universal Schema: FAQ
+                'howto_data' => $blogData['howto_data'], // Universal Schema: HowTo
                 'status' => 'draft', // Admin onayına sunulacak
                 'is_active' => false,
                 'is_featured' => false,
@@ -127,17 +133,32 @@ class BlogAIContentWriter
             'meta_description' => $draft->meta_description,
         ];
 
-        $systemMessage = $prompt . "\n\n**TASLAK BİLGİLERİ:**\n" . json_encode($draftContext, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        // Firma & İletişim Bilgileri
+        $companyContext = '';
+        if (!empty($context['company_info'])) {
+            $companyContext .= "\n\n**FİRMA BİLGİLERİ (Blog yazısında kullanılacak):**\n";
+            $companyContext .= "- Firma Adı: " . ($context['company_info']['name'] ?? 'N/A') . "\n";
+            $companyContext .= "- Site Başlığı: " . ($context['company_info']['title'] ?? 'N/A') . "\n";
+            $companyContext .= "- Website: " . ($context['company_info']['website'] ?? 'N/A') . "\n";
+        }
+        if (!empty($context['contact_info'])) {
+            $companyContext .= "\n**İLETİŞİM BİLGİLERİ (CTA'da kullanılacak):**\n";
+            $companyContext .= "- Email: " . ($context['contact_info']['email'] ?? 'N/A') . "\n";
+            $companyContext .= "- Telefon: " . ($context['contact_info']['phone'] ?? 'N/A') . "\n";
+        }
+
+        $systemMessage = $prompt . $companyContext . "\n\n**TASLAK BİLGİLERİ:**\n" . json_encode($draftContext, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         try {
-            $response = $this->openaiService->generateCompletion([
-                'prompt' => "Lütfen bu taslak için tam blog yazısı oluştur. JSON formatında döndür: {title, content, excerpt}",
-                'system_message' => $systemMessage,
+            $userPrompt = "Lütfen bu taslak için tam blog yazısı oluştur. JSON formatında döndür: {title, content, excerpt, faq_data, howto_data}. \n\nfaq_data: En az 5-10 adet soru-cevap içermeli. Format: [{\"question\":{\"tr\":\"...\"}, \"answer\":{\"tr\":\"...\"}}]\n\nhowto_data: Adım adım kılavuz. Format: {\"name\":{\"tr\":\"...\"}, \"description\":{\"tr\":\"...\"}, \"steps\":[{\"name\":{\"tr\":\"...\"}, \"text\":{\"tr\":\"...\"}}]}";
+            $response = $this->openaiService->ask($userPrompt, false, [
+                'custom_prompt' => $systemMessage,
                 'temperature' => 0.8,
                 'max_tokens' => 8000,
             ]);
 
-            $content = $response['content'] ?? '';
+            // ask() metodu direkt string döndürür
+            $content = $response;
 
             // JSON parse
             $blogData = $this->parseAIResponse($content);
@@ -182,6 +203,8 @@ class BlogAIContentWriter
             'title' => $decoded['title'] ?? 'Başlıksız Blog',
             'content' => $decoded['content'] ?? '',
             'excerpt' => $decoded['excerpt'] ?? substr(strip_tags($decoded['content'] ?? ''), 0, 200),
+            'faq_data' => $decoded['faq_data'] ?? null,
+            'howto_data' => $decoded['howto_data'] ?? null,
         ];
     }
 }

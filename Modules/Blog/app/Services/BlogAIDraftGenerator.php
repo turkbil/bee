@@ -58,14 +58,15 @@ class BlogAIDraftGenerator
 
         try {
             // OpenAI API call (mevcut AI sistemini kullan)
-            $response = $this->openaiService->generateCompletion([
-                'prompt' => "Lütfen {$count} adet blog taslağı üret. JSON array formatında döndür.",
-                'system_message' => $systemMessage,
+            $userPrompt = "Lütfen {$count} adet blog taslağı üret. JSON array formatında döndür.";
+            $response = $this->openaiService->ask($userPrompt, false, [
+                'custom_prompt' => $systemMessage,
                 'temperature' => 0.7,
                 'max_tokens' => 3000,
             ]);
 
-            $content = $response['content'] ?? '';
+            // ask() metodu direkt string döndürür
+            $content = $response;
 
             // JSON parse
             $drafts = $this->parseAIResponse($content);
@@ -131,7 +132,7 @@ class BlogAIDraftGenerator
     protected function getCategories(): array
     {
         return BlogCategory::query()
-            ->where('status', 'active')
+            ->where('is_active', true)
             ->get()
             ->map(function ($cat) {
                 $title = is_array($cat->title) ? ($cat->title['tr'] ?? $cat->title['en'] ?? '') : $cat->title;
@@ -150,9 +151,28 @@ class BlogAIDraftGenerator
     protected function buildContextString(array $context, array $categories, array $existingTitles, array $existingDrafts, int $count): string
     {
         $contextString = "\n\n**CONTEXT BİLGİLERİ:**\n";
-        $contextString .= "- Tenant: " . ($context['tenant_name'] ?? 'Default') . "\n";
-        $contextString .= "- Sektör: " . ($context['sector'] ?? 'Genel') . "\n";
+
+        // Firma Bilgileri
+        if (!empty($context['company_info'])) {
+            $contextString .= "\n**FİRMA BİLGİLERİ:**\n";
+            $contextString .= "- Firma Adı: " . ($context['company_info']['name'] ?? 'N/A') . "\n";
+            $contextString .= "- Site Başlığı: " . ($context['company_info']['title'] ?? 'N/A') . "\n";
+            $contextString .= "- Slogan: " . ($context['company_info']['slogan'] ?? 'N/A') . "\n";
+            $contextString .= "- Website: " . ($context['company_info']['website'] ?? 'N/A') . "\n";
+        }
+
+        // İletişim Bilgileri
+        if (!empty($context['contact_info'])) {
+            $contextString .= "\n**İLETİŞİM BİLGİLERİ:**\n";
+            $contextString .= "- Email: " . ($context['contact_info']['email'] ?? 'N/A') . "\n";
+            $contextString .= "- Telefon: " . ($context['contact_info']['phone'] ?? 'N/A') . "\n";
+            $contextString .= "- Adres: " . ($context['contact_info']['address'] ?? 'N/A') . "\n";
+        }
+
+        $contextString .= "\n**SEKTÖR & HEDEF:**\n";
+        $contextString .= "- Sektör: " . ($context['industry'] ?? $context['sector'] ?? 'Genel') . "\n";
         $contextString .= "- Odak: " . ($context['focus'] ?? 'Genel içerik') . "\n";
+        $contextString .= "- Hedef Kitle: " . ($context['target_audience'] ?? 'Genel okuyucu') . "\n";
 
         if (!empty($context['keywords'])) {
             $contextString .= "- Anahtar Kelimeler: " . implode(', ', $context['keywords']) . "\n";
@@ -183,22 +203,45 @@ class BlogAIDraftGenerator
      */
     protected function parseAIResponse(string $content): array
     {
+        // OpenAI response'u log'la (debug için)
+        Log::info('🤖 OpenAI Raw Response', [
+            'content_length' => strlen($content),
+            'first_200_chars' => substr($content, 0, 200),
+            'last_200_chars' => substr($content, -200),
+        ]);
+
         // JSON extract (bazen markdown code block içinde geliyor)
         if (preg_match('/```json\s*(.*?)\s*```/s', $content, $matches)) {
             $content = $matches[1];
+            Log::info('✅ JSON code block found and extracted');
         } elseif (preg_match('/```\s*(.*?)\s*```/s', $content, $matches)) {
             $content = $matches[1];
+            Log::info('✅ Code block found and extracted');
         }
 
         $decoded = json_decode(trim($content), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::error('❌ JSON Parse Failed', [
+                'error' => json_last_error_msg(),
+                'content_sample' => substr(trim($content), 0, 500),
+            ]);
             throw new \Exception('AI response JSON parse error: ' . json_last_error_msg());
         }
 
         if (!is_array($decoded)) {
-            throw new \Exception('AI response is not an array');
+            Log::error('❌ Decoded value is not an array', [
+                'type' => gettype($decoded),
+                'value' => $decoded,
+                'content_length' => strlen($content),
+                'content_sample' => substr($content, 0, 1000),
+            ]);
+            throw new \Exception('AI response is not an array. Type: ' . gettype($decoded) . ', Value: ' . json_encode($decoded));
         }
+
+        Log::info('✅ JSON parsed successfully', [
+            'draft_count' => count($decoded),
+        ]);
 
         return $decoded;
     }

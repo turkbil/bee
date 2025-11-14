@@ -110,4 +110,57 @@ class SEOService
 
         return $webPage->toScript();
     }
+
+    /**
+     * Universal: Tüm modeller için schema'ları topla
+     *
+     * Model'de HasUniversalSchemas trait'i varsa:
+     * - FAQPage Schema
+     * - HowTo Schema
+     * - BreadcrumbList Schema
+     * otomatik render eder
+     *
+     * @param mixed $model
+     * @return string
+     */
+    public static function getAllSchemas($model): string
+    {
+        if (!$model) {
+            return '';
+        }
+
+        $html = '';
+
+        // Universal schemas (FAQ, HowTo, Breadcrumb)
+        if (method_exists($model, 'renderUniversalSchemas')) {
+            $html .= $model->renderUniversalSchemas();
+        }
+
+        // Model'e özgü schema (Product, Article, WebPage vb.)
+        if (method_exists($model, 'getSchemaMarkup')) {
+            $schema = $model->getSchemaMarkup();
+            if ($schema && is_array($schema)) {
+                $html .= '<script type="application/ld+json">' . PHP_EOL;
+                $html .= json_encode($schema, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $html .= PHP_EOL . '</script>' . PHP_EOL;
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * Sadece universal schema'ları render et
+     *
+     * @param mixed $model
+     * @return string
+     */
+    public static function renderUniversalSchemas($model): string
+    {
+        if (!$model || !method_exists($model, 'renderUniversalSchemas')) {
+            return '';
+        }
+
+        return $model->renderUniversalSchemas();
+    }
 }

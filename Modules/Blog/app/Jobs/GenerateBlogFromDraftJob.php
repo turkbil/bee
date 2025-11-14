@@ -26,6 +26,8 @@ class GenerateBlogFromDraftJob implements ShouldQueue
     public $timeout = 300; // 5 dakika
     public $backoff = 60; // 60 saniye retry beklemesi
 
+    public ?int $tenantId = null; // Tenant context (default null for backwards compatibility)
+
     /**
      * Create a new job instance.
      */
@@ -33,6 +35,9 @@ class GenerateBlogFromDraftJob implements ShouldQueue
         public BlogAIDraft $draft,
         public ?string $batchId = null
     ) {
+        // Tenant context'i kaydet (dispatch anında)
+        $this->tenantId = tenant('id');
+
         // Default queue kullan (worker tarafından dinleniyor)
     }
 
@@ -41,11 +46,16 @@ class GenerateBlogFromDraftJob implements ShouldQueue
      */
     public function handle(BlogAIContentWriter $writer, BlogAIBatchProcessor $batchProcessor): void
     {
+        // Tenant context'i restore et
+        if ($this->tenantId) {
+            tenancy()->initialize($this->tenantId);
+        }
+
         try {
             Log::info('Blog AI Content Generation Started', [
                 'draft_id' => $this->draft->id,
                 'batch_id' => $this->batchId,
-                'tenant_id' => tenant('id'),
+                'tenant_id' => $this->tenantId,
             ]);
 
             // Blog oluştur
@@ -60,7 +70,7 @@ class GenerateBlogFromDraftJob implements ShouldQueue
                 'draft_id' => $this->draft->id,
                 'blog_id' => $blog->blog_id,
                 'batch_id' => $this->batchId,
-                'tenant_id' => tenant('id'),
+                'tenant_id' => $this->tenantId,
             ]);
 
         } catch (\Exception $e) {
@@ -73,7 +83,7 @@ class GenerateBlogFromDraftJob implements ShouldQueue
                 'draft_id' => $this->draft->id,
                 'batch_id' => $this->batchId,
                 'error' => $e->getMessage(),
-                'tenant_id' => tenant('id'),
+                'tenant_id' => $this->tenantId,
             ]);
 
             // Job başarısız olursa retry edilecek (max tries: 3)

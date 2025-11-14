@@ -39,17 +39,44 @@ class BlogAiDraftComponent extends Component
     ];
 
     /**
+     * Component mount - seçili taslakları yükle
+     */
+    public function mount()
+    {
+        // Database'deki seçili taslakları component'e yükle
+        $this->selectedDrafts = BlogAIDraft::where('is_selected', true)
+            ->pluck('id')
+            ->toArray();
+
+        Log::info('📋 Component mounted', [
+            'selected_count' => count($this->selectedDrafts),
+            'selected_ids' => $this->selectedDrafts,
+        ]);
+    }
+
+    /**
      * Taslak üretimi başlat (queue)
      */
     public function generateDrafts()
     {
+        Log::info('🔥 GENERATE DRAFTS CLICKED!', [
+            'draftCount' => $this->draftCount,
+            'tenant_id' => tenant('id'),
+            'timestamp' => now()->toDateTimeString(),
+        ]);
+
         $this->validate();
+
+        Log::info('✅ Validation passed', ['draftCount' => $this->draftCount]);
 
         // Credit kontrolü (UI'da gösterilmesi için)
         if (!ai_can_use_credits(1.0)) {
+            Log::warning('❌ Insufficient credits');
             $this->addError('credits', 'Yetersiz AI kredisi! Lütfen kredi satın alın.');
             return;
         }
+
+        Log::info('✅ Credit check passed');
 
         try {
             // Job dispatch
@@ -59,12 +86,21 @@ class BlogAiDraftComponent extends Component
 
             session()->flash('success', "{$this->draftCount} taslak üretimi başlatıldı. Lütfen bekleyin...");
 
+            // Modal'ı kapat (başarılı olduğu için)
+            $this->dispatch('close-modal', 'generateDraftsModal');
+
             Log::info('Blog AI Draft Generation Requested', [
                 'count' => $this->draftCount,
                 'tenant_id' => tenant('id'),
             ]);
 
         } catch (\Exception $e) {
+            Log::error('❌ EXCEPTION IN GENERATE DRAFTS', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'tenant_id' => tenant('id'),
+            ]);
+
             $this->addError('generation', 'Taslak üretimi başlatılamadı: ' . $e->getMessage());
 
             Log::error('Blog AI Draft Generation Request Failed', [
@@ -72,6 +108,8 @@ class BlogAiDraftComponent extends Component
                 'tenant_id' => tenant('id'),
             ]);
         }
+
+        Log::info('🏁 GENERATE DRAFTS METHOD FINISHED');
     }
 
     /**
@@ -120,7 +158,14 @@ class BlogAiDraftComponent extends Component
      */
     public function generateBlogs()
     {
+        Log::info('🚀 GENERATE BLOGS CLICKED!', [
+            'selected_count' => count($this->selectedDrafts),
+            'selected_ids' => $this->selectedDrafts,
+            'tenant_id' => tenant('id'),
+        ]);
+
         if (empty($this->selectedDrafts)) {
+            Log::warning('❌ No drafts selected');
             $this->addError('selection', 'Lütfen en az bir taslak seçin.');
             return;
         }
@@ -162,6 +207,25 @@ class BlogAiDraftComponent extends Component
                 'error' => $e->getMessage(),
                 'tenant_id' => tenant('id'),
             ]);
+        }
+    }
+
+    /**
+     * Draft generation progress kontrol et (polling için)
+     */
+    public function checkDraftProgress()
+    {
+        if (!$this->isGenerating) {
+            return;
+        }
+
+        // Yeni taslak var mı kontrol et
+        $recentDrafts = BlogAIDraft::where('created_at', '>=', now()->subMinutes(5))->count();
+
+        if ($recentDrafts > 0) {
+            // Taslaklar oluşmuş, flag'i kapat
+            $this->isGenerating = false;
+            session()->flash('success', "{$recentDrafts} taslak başarıyla oluşturuldu!");
         }
     }
 
@@ -210,6 +274,11 @@ class BlogAiDraftComponent extends Component
      */
     public function render()
     {
+        // Otomatik progress kontrolü
+        if ($this->isGenerating) {
+            $this->checkDraftProgress();
+        }
+
         $drafts = BlogAIDraft::query()
             ->latest()
             ->paginate(20);

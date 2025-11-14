@@ -1,19 +1,32 @@
-<div>
-    <div class="container-xl">
+<div
+    x-data="{
+        isGenerating: @entangle('isGenerating').live,
+        startPolling() {
+            if (this.isGenerating) {
+                setTimeout(() => {
+                    $wire.call('checkDraftProgress');
+                    this.startPolling();
+                }, 3000); // Her 3 saniyede bir kontrol
+            }
+        }
+    }"
+    x-init="$watch('isGenerating', value => { if(value) startPolling(); })"
+>
+    @include('blog::admin.helper')
+
     {{-- Header --}}
     <div class="page-header d-print-none">
         <div class="row align-items-center">
-            <div class="col">
-                <div class="page-pretitle">Blog Modülü</div>
-                <h2 class="page-title">
-                    <i class="ti ti-robot me-2"></i>
-                    AI Blog Taslak Üretici
-                </h2>
-            </div>
             <div class="col-auto ms-auto d-print-none">
+                {{-- DEBUG: Test Livewire Button (Modal Dışında) --}}
+                <button type="button" class="btn btn-warning me-2" wire:click="generateDrafts">
+                    <i class="fas fa-bug"></i>
+                    TEST (Modal Dışı)
+                </button>
+
                 {{-- Taslak Üret Butonu --}}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateDraftsModal" @if($isGenerating) disabled @endif>
-                    <i class="ti ti-plus"></i>
+                    <i class="fas fa-plus"></i>
                     Taslak Üret
                 </button>
             </div>
@@ -23,7 +36,7 @@
     {{-- Flash Messages --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            <i class="ti ti-check me-2"></i>
+            <i class="fas fa-check me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -31,7 +44,7 @@
 
     @error('credits')
         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            <i class="ti ti-alert-circle me-2"></i>
+            <i class="fas fa-exclamation-circle me-2"></i>
             {{ $message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -57,7 +70,7 @@
         <div class="card mt-3" wire:poll.3s="checkBatchProgress">
             <div class="card-body">
                 <h4 class="mb-3">
-                    <i class="ti ti-writing"></i>
+                    <i class="fas fa-pencil-alt"></i>
                     Bloglar Yazılıyor...
                 </h4>
 
@@ -101,14 +114,20 @@
             <div class="card-actions">
                 {{-- Toplu İşlem Butonları --}}
                 @if(count($selectedDrafts) > 0)
-                    <button type="button" class="btn btn-success me-2" wire:click="generateBlogs" @if($isWriting) disabled @endif>
-                        <i class="ti ti-check"></i>
+                    <button
+                        type="button"
+                        class="btn btn-success me-2"
+                        wire:click="generateBlogs"
+                        @click="console.log('✅ YEŞİL BUTON CLICKED - Calling generateBlogs...')"
+                        @if($isWriting) disabled @endif
+                    >
+                        <i class="fas fa-check"></i>
                         Seçilenleri Yaz ({{ count($selectedDrafts) }} × 1 kredi = {{ count($selectedDrafts) }} kredi)
                     </button>
                 @endif
 
                 <button type="button" class="btn btn-outline-secondary" wire:click="toggleAll">
-                    <i class="ti ti-checkbox"></i>
+                    <i class="far fa-check-square"></i>
                     Tümünü Seç/Kaldır
                 </button>
             </div>
@@ -116,7 +135,7 @@
 
         @if($drafts->isEmpty())
             <div class="card-body text-center py-5">
-                <i class="ti ti-inbox text-muted" style="font-size: 3rem;"></i>
+                <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
                 <h3 class="mt-3 text-muted">Henüz taslak yok</h3>
                 <p class="text-muted">Başlamak için yukarıdaki "Taslak Üret" butonunu kullanın.</p>
             </div>
@@ -174,20 +193,20 @@
                                 <td>
                                     @if($draft->is_generated)
                                         <span class="badge bg-success">
-                                            <i class="ti ti-check"></i> Blog Yazıldı
+                                            <i class="fas fa-check"></i> Blog Yazıldı
                                         </span>
                                         @if($draft->generated_blog_id)
-                                            <a href="{{ route('admin.blog.edit', $draft->generated_blog_id) }}" target="_blank" class="badge bg-primary">
-                                                <i class="ti ti-external-link"></i> Görüntüle
+                                            <a href="{{ route('admin.blog.manage', $draft->generated_blog_id) }}" target="_blank" class="badge bg-primary">
+                                                <i class="fas fa-external-link-alt"></i> Görüntüle
                                             </a>
                                         @endif
                                     @elseif($draft->is_selected)
                                         <span class="badge bg-warning">
-                                            <i class="ti ti-clock"></i> Seçildi
+                                            <i class="fas fa-clock"></i> Seçildi
                                         </span>
                                     @else
                                         <span class="badge bg-secondary">
-                                            <i class="ti ti-file"></i> Taslak
+                                            <i class="fas fa-file"></i> Taslak
                                         </span>
                                     @endif
                                 </td>
@@ -198,7 +217,7 @@
                                         wire:click="deleteDraft({{ $draft->id }})"
                                         onclick="return confirm('Bu taslağı silmek istediğinize emin misiniz?')"
                                     >
-                                        <i class="ti ti-trash"></i>
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -213,61 +232,66 @@
             </div>
         @endif
     </div>
-</div>
 
-{{-- Modal: Taslak Üret --}}
-<div class="modal fade" id="generateDraftsModal" tabindex="-1" wire:ignore.self>
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="ti ti-robot me-2"></i>
-                    AI Taslak Üretimi
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-muted">
-                    AI ile otomatik blog taslakları oluşturun. Her taslak bir anahtar kelime, kategori önerileri, SEO keywords ve blog yapısı içerir.
-                </p>
-
-                <div class="mb-3">
-                    <label class="form-label">Taslak Sayısı</label>
-                    <input
-                        type="number"
-                        class="form-control @error('draftCount') is-invalid @enderror"
-                        wire:model="draftCount"
-                        min="1"
-                        max="200"
-                    >
-                    @error('draftCount')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    <div class="form-hint">
-                        Toplam maliyet: <strong>1.0 kredi</strong> (taslak sayısından bağımsız)
+    {{-- Modal: Taslak Üret --}}
+    <div
+        class="modal fade"
+        id="generateDraftsModal"
+        tabindex="-1"
+        wire:ignore.self
+        x-data="{}"
+        @close-modal.window="if ($event.detail === 'generateDraftsModal') { bootstrap.Modal.getInstance($el).hide(); }"
+    >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-robot me-2"></i>
+                            AI Taslak Üretimi
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                    <p class="text-muted">
+                        AI ile otomatik blog taslakları oluşturun. Her taslak bir anahtar kelime, kategori önerileri, SEO keywords ve blog yapısı içerir.
+                    </p>
+    
+                    <div class="mb-3">
+                        <label class="form-label">Taslak Sayısı</label>
+                        <input
+                            type="number"
+                            class="form-control @error('draftCount') is-invalid @enderror"
+                            wire:model="draftCount"
+                            min="1"
+                            max="200"
+                        >
+                        @error('draftCount')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-hint">
+                            Toplam maliyet: <strong>1.0 kredi</strong> (taslak sayısından bağımsız)
+                        </div>
+                    </div>
+    
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Bilgi:</strong> Taslak üretimi birkaç dakika sürebilir. İşlem arka planda çalışacaktır.
                     </div>
                 </div>
-
-                <div class="alert alert-info mb-0">
-                    <i class="ti ti-info-circle me-2"></i>
-                    <strong>Bilgi:</strong> Taslak üretimi birkaç dakika sürebilir. İşlem arka planda çalışacaktır.
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        wire:click="generateDrafts"
+                        @click="console.log('🔥 BUTTON CLICKED - Calling generateDrafts...')"
+                        @if($isGenerating) disabled @endif
+                    >
+                        <i class="fas fa-magic"></i>
+                        Taslak Üret (1 kredi)
+                    </button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    wire:click="generateDrafts"
-                    data-bs-dismiss="modal"
-                    @if($isGenerating) disabled @endif
-                >
-                    <i class="ti ti-sparkles"></i>
-                    Taslak Üret (1 kredi)
-                </button>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>

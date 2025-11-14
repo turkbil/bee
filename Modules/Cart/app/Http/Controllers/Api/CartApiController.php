@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Cart\App\Services\CartService;
 use Modules\Shop\App\Models\ShopProduct;
+use Modules\Shop\App\Services\ShopCartBridge;
 
 class CartApiController extends Controller
 {
     public function __construct(
-        protected CartService $cartService
+        protected CartService $cartService,
+        protected ShopCartBridge $shopCartBridge
     ) {}
 
     /**
@@ -33,6 +35,15 @@ class CartApiController extends Controller
         try {
             $product = ShopProduct::findOrFail($request->product_id);
             $quantity = $request->quantity ?? 1;
+
+            // 🔍 STOK KONTROLÜ - ShopCartBridge kullan
+            if (!$this->shopCartBridge->canAddToCart($product, $quantity)) {
+                $errors = $this->shopCartBridge->getCartItemErrors($product, $quantity);
+                return response()->json([
+                    'success' => false,
+                    'message' => implode(' ', $errors),
+                ], 400);
+            }
 
             // Önce cart_id parametresine bak (localStorage'dan geliyorsa)
             $cart = null;
@@ -63,8 +74,10 @@ class CartApiController extends Controller
                 'cart_id' => $cart->cart_id,
             ]);
 
-            // Polymorphic olarak ürünü ekle
-            $options = [];
+            // 🎯 ShopCartBridge ile display bilgileri ve currency hazırla
+            $options = $this->shopCartBridge->prepareProductForCart($product, $quantity);
+
+            // Variant ID varsa ekle
             if ($request->variant_id) {
                 $options['customization_options'] = ['variant_id' => $request->variant_id];
             }

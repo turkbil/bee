@@ -23,7 +23,7 @@ class BlogAIDraftComponent extends Component
      * Default: blog-a-i-draft-component
      * Override: blog-ai-draft-component
      */
-    public static function getName(): string
+    public function getName(): string
     {
         return 'modules.blog.app.http.livewire.admin.blog-ai-draft-component';
     }

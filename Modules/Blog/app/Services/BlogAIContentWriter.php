@@ -5,7 +5,7 @@ namespace Modules\Blog\App\Services;
 use Modules\Blog\App\Models\Blog;
 use Modules\Blog\App\Models\BlogAIDraft;
 use Modules\Blog\App\Services\TenantPrompts\TenantPromptLoader;
-use OpenAI;
+use Modules\AI\App\Services\OpenAIService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -18,12 +18,13 @@ use Illuminate\Support\Facades\DB;
 class BlogAIContentWriter
 {
     protected TenantPromptLoader $promptLoader;
-    protected $openai;
+    protected OpenAIService $openaiService;
 
     public function __construct(TenantPromptLoader $promptLoader)
     {
         $this->promptLoader = $promptLoader;
-        $this->openai = OpenAI::client(config('services.openai.api_key'));
+        // Mevcut AI sistemi - AIProvider modelinden API key çeker
+        $this->openaiService = new OpenAIService();
     }
 
     /**
@@ -129,17 +130,14 @@ class BlogAIContentWriter
         $systemMessage = $prompt . "\n\n**TASLAK BİLGİLERİ:**\n" . json_encode($draftContext, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         try {
-            $response = $this->openai->chat()->create([
-                'model' => config('modules.blog.openai.model', 'gpt-4-turbo-preview'),
-                'messages' => [
-                    ['role' => 'system', 'content' => $systemMessage],
-                    ['role' => 'user', 'content' => "Lütfen bu taslak için tam blog yazısı oluştur. JSON formatında döndür: {title, content, excerpt}"],
-                ],
-                'temperature' => config('modules.blog.openai.blog_temperature', 0.8),
-                'max_tokens' => config('modules.blog.openai.blog_max_tokens', 8000),
+            $response = $this->openaiService->generateCompletion([
+                'prompt' => "Lütfen bu taslak için tam blog yazısı oluştur. JSON formatında döndür: {title, content, excerpt}",
+                'system_message' => $systemMessage,
+                'temperature' => 0.8,
+                'max_tokens' => 8000,
             ]);
 
-            $content = $response->choices[0]->message->content;
+            $content = $response['content'] ?? '';
 
             // JSON parse
             $blogData = $this->parseAIResponse($content);

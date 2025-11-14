@@ -2,7 +2,19 @@
 
 return [
     'name' => 'AI',
-    
+
+    // OpenAI Configuration (DALL-E 3)
+    'openai_api_key' => env('OPENAI_API_KEY', ''),
+
+    // Image Generation Settings
+    'image_generation' => [
+        'enabled' => env('AI_IMAGE_GENERATION_ENABLED', true),
+        'credit_cost' => 1, // 1 HD image = 1 credit
+        'default_size' => '1024x1024',
+        'default_quality' => 'hd',
+        'provider' => 'dall-e-3',
+    ],
+
     'deepseek' => [
         // API Anahtarı - .env dosyasından alınır
         'api_key' => env('DEEPSEEK_API_KEY', ''),

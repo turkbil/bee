@@ -6,6 +6,7 @@ use Modules\Blog\App\Models\Blog;
 use Modules\Blog\App\Models\BlogAIDraft;
 use Modules\Blog\App\Services\TenantPrompts\TenantPromptLoader;
 use Modules\AI\App\Services\OpenAIService;
+use Modules\AI\App\Services\AIImageGenerationService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -79,6 +80,31 @@ class BlogAIContentWriter
                 'keywords' => $draft->seo_keywords ?? [],
                 'status' => 'active',
             ]);
+
+            // 🎨 AI Image Generation: Featured image oluştur
+            try {
+                $imageService = app(AIImageGenerationService::class);
+                $featuredImage = $imageService->generateForBlog(
+                    $blogData['title'],
+                    $blogData['content']
+                );
+
+                // Medyayı blog'a attach et (featured image olarak)
+                $blog->addMedia($featuredImage->getFirstMedia('library')->getPath())
+                    ->preservingOriginal()
+                    ->toMediaCollection('featured');
+
+                Log::info('Blog AI Featured Image Generated', [
+                    'blog_id' => $blog->blog_id,
+                    'media_id' => $featuredImage->id,
+                ]);
+            } catch (\Exception $e) {
+                // Image generation hatası blog oluşumunu engellemesin
+                Log::warning('Blog AI Featured Image Generation Failed', [
+                    'blog_id' => $blog->blog_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             // Draft'ı güncelle
             $draft->update([
@@ -244,18 +270,38 @@ USER_PROMPT;
      */
     protected function parseAIResponse(string $content): array
     {
+        // 🔍 ULTRA DEBUG: Raw content'i dosyaya yaz
+        $debugFile = '/tmp/ai-response-debug-' . time() . '.txt';
+        file_put_contents($debugFile, "=== ORIGINAL RESPONSE ===\n" . $content . "\n\n");
+
         // JSON extract (markdown code block içinde olabilir)
+        $originalContent = $content;
         if (preg_match('/```json\s*(.*?)\s*```/s', $content, $matches)) {
             $content = $matches[1];
+            file_put_contents($debugFile, "=== EXTRACTED (json block) ===\n" . $content . "\n\n", FILE_APPEND);
         } elseif (preg_match('/```\s*(.*?)\s*```/s', $content, $matches)) {
             $content = $matches[1];
+            file_put_contents($debugFile, "=== EXTRACTED (code block) ===\n" . $content . "\n\n", FILE_APPEND);
+        } else {
+            file_put_contents($debugFile, "=== NO CODE BLOCK FOUND ===\n", FILE_APPEND);
         }
 
         $decoded = json_decode(trim($content), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception('AI response JSON parse error: ' . json_last_error_msg());
+            // Debug: Log the raw content
+            file_put_contents($debugFile, "=== JSON ERROR ===\n" . json_last_error_msg() . "\n\n", FILE_APPEND);
+            Log::error('AI Response JSON Parse Error', [
+                'error' => json_last_error_msg(),
+                'raw_content_length' => strlen($content),
+                'raw_content_preview' => substr($content, 0, 500),
+                'debug_file' => $debugFile,
+            ]);
+            throw new \Exception('AI response JSON parse error: ' . json_last_error_msg() . ' (Check: ' . $debugFile . ')');
         }
+
+        file_put_contents($debugFile, "=== DECODED SUCCESS ===\n" . print_r($decoded, true) . "\n", FILE_APPEND);
+        echo "✅ Debug file: $debugFile\n";
 
         // Varsayılan değerler
         return [

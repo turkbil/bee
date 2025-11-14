@@ -26,6 +26,11 @@ Route::middleware(['auth', 'tenant'])->prefix('admin')->name('admin.')->group(fu
     })->middleware('permission:mediamanagement.view')
       ->name('mediamanagement.thumbmaker-guide');
 
+    // AI Image Generator
+    Route::get('/mediamanagement/ai-generator', \Modules\MediaManagement\App\Http\Livewire\Admin\AIImageGeneratorComponent::class)
+        ->middleware('permission:mediamanagement.view')
+        ->name('mediamanagement.ai-generator');
+
     Route::post('/mediamanagement/library/upload', \Modules\MediaManagement\App\Http\Controllers\Admin\MediaLibraryUploadController::class)
         ->middleware('permission:mediamanagement.create')
         ->name('mediamanagement.library.upload');

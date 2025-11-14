@@ -1,12 +1,12 @@
-{{-- Modules/MediaManagement/resources/views/admin/helper.blade.php --}}
+{{-- Modules/AI/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @section('pretitle')
-    Media
+    {{ __('admin.artificial_intelligence') }}
 @endsection
 
 {{-- Başlık --}}
 @section('title')
-    Media
+    AI
 @endsection
 
 {{-- Modül Menüsü --}}
@@ -17,12 +17,9 @@
             data-bs-toggle="dropdown">{{ __('admin.menu') }}</a>
         <div class="dropdown-menu dropdown-module-menu">
             <div class="module-menu-revert">
-                @hasmoduleaccess('mediamanagement', 'view')
-                    <a href="{{ route('admin.mediamanagement.index') }}" class="dropdown-module-item btn btn-primary">
-                        {{ __('mediamanagement::admin.about_module') }}
-                    </a>
-                    <a href="{{ route('admin.mediamanagement.ai-generator') }}" class="dropdown-module-item btn">
-                        <i class="fa fa-image me-2"></i> AI Görsel Oluşturucu
+                @hasmoduleaccess('ai', 'view')
+                    <a href="{{ route('admin.ai.index') }}" class="dropdown-module-item btn btn-primary">
+                        <i class="fa fa-comment me-2"></i> {{ __('ai::admin.conversations') }}
                     </a>
                 @endhasmoduleaccess
             </div>

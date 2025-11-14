@@ -395,4 +395,69 @@ readonly class ShopProductService extends BaseService
 
         return $prepared;
     }
+
+    /**
+     * 🎨 AI Image Generation: Ürün için AI görsel oluştur
+     *
+     * @param int $productId Ürün ID
+     * @return ShopOperationResult
+     */
+    public function generateAIImage(int $productId): ShopOperationResult
+    {
+        try {
+            $product = $this->productRepository->findById($productId)
+                ?? throw ShopNotFoundException::withId($productId);
+
+            // AI Image Generation Service
+            $imageService = app(\Modules\AI\App\Services\AIImageGenerationService::class);
+
+            // Ürün başlığını ve kategorisini al
+            $productName = $product->getTranslated('title', app()->getLocale());
+            $categoryName = $product->category
+                ? $product->category->getTranslated('title', app()->getLocale())
+                : null;
+
+            // AI ile görsel oluştur
+            $mediaItem = $imageService->generateForProduct($productName, $categoryName);
+
+            // Görseli ürüne ekle
+            $product->addMedia($mediaItem->getFirstMedia('library')->getPath())
+                ->preservingOriginal()
+                ->toMediaCollection('images');
+
+            Log::info('Shop product AI image generated', [
+                'product_id' => $productId,
+                'media_id' => $mediaItem->id,
+                'user_id' => auth()->id()
+            ]);
+
+            return ShopOperationResult::success(
+                message: __('AI image generated successfully'),
+                data: $mediaItem
+            );
+
+        } catch (\Modules\AI\App\Exceptions\AICreditException $e) {
+            Log::warning('Shop product AI image generation failed: insufficient credits', [
+                'product_id' => $productId,
+                'user_id' => auth()->id()
+            ]);
+
+            return ShopOperationResult::failure(
+                message: __('Insufficient AI credits'),
+                type: 'warning'
+            );
+
+        } catch (Throwable $e) {
+            Log::error('Shop product AI image generation failed', [
+                'product_id' => $productId,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+
+            return ShopOperationResult::failure(
+                message: __('AI image generation failed: ' . $e->getMessage()),
+                type: 'error'
+            );
+        }
+    }
 }

@@ -124,10 +124,10 @@ Create a UNIQUE JSON for each prompt with this structure:
   "mood": "Candid documentary style, unposed, authentic moment, natural appearance"
 }
 
-CRITICAL PHOTOREALISTIC RULES:
-- NEVER use: "3D render", "digital art", "illustration", "concept art", "painting", "unreal engine", "CGI", "stylized", "RAW", "photo"
-- ALWAYS use: "captured with DSLR", "natural lighting", "subtle imperfections", "realistic textures", "natural appearance"
-- Add negatives: "not stylized, not 3D render, not digital art, appears as seen in real life"
+CRITICAL PHOTOREALISTIC RULES - REAL PHOTOGRAPH ONLY:
+- NEVER use: "3D render", "digital art", "illustration", "concept art", "painting", "unreal engine", "CGI", "stylized", "RAW", "photo", "drawing", "sketch", "diagram", "blueprint", "technical drawing", "schematic", "vector art", "graphic design", "cartoon", "anime"
+- ALWAYS use: "real photograph", "captured with DSLR camera", "shot on location", "natural lighting", "subtle imperfections", "realistic textures", "natural appearance", "documentary photography", "actual scene"
+- MANDATORY negatives: "NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT drawing, NOT blueprint, NOT diagram, NOT technical drawing, NOT vector art, NOT graphic, appears as REAL PHOTOGRAPH taken with camera, actual physical scene, real-world photography"
 - Camera: VARY camera model each time (Canon EOS R5, Sony A1, Nikon Z9, Fujifilm GFX, Leica M11)
 - Lenses: VARY lens each time (24mm, 35mm, 50mm, 85mm, 100mm - different focal lengths)
 - Lighting: VARY lighting (morning light, afternoon sun, overcast, golden hour, window light, ambient)
@@ -149,13 +149,22 @@ SYSTEM;
     protected function buildUserPrompt(string $simplePrompt, string $style): string
     {
         return <<<USER
-Create a COMPLETELY UNIQUE ultra-realistic JSON scene description for:
+Create a COMPLETELY UNIQUE ultra-realistic JSON scene description for a REAL PHOTOGRAPH of:
 
 "{$simplePrompt}"
 
 Style: {$style}
 
-IMPORTANT: This must be DIFFERENT from any previous generation. Vary:
+CRITICAL: This must be a REAL PHOTOGRAPH, NOT illustration/drawing/3D render/blueprint/diagram!
+
+Requirements:
+1. REAL PHOTOGRAPH taken with DSLR camera
+2. ACTUAL physical scene, not digital art
+3. Natural imperfections (dust, scratches, wear)
+4. Real-world lighting and materials
+5. Documentary photography style
+
+VARIATION: This must be DIFFERENT from any previous generation. Vary:
 - Camera model and lens combination
 - Lighting angle and time of day
 - Perspective and shooting angle
@@ -163,7 +172,7 @@ IMPORTANT: This must be DIFFERENT from any previous generation. Vary:
 - Environmental context and background elements
 
 Output valid JSON with camera, scene, environment, lighting, materials, mood.
-Make it photorealistic but CREATIVELY DIFFERENT each time.
+Make it REAL PHOTOGRAPH but CREATIVELY DIFFERENT each time.
 USER;
     }
 
@@ -216,9 +225,9 @@ USER;
                 $prompt .= $data['mood'] . ". ";
             }
 
-            // Technical photorealistic specs + negatives
-            $prompt .= "Ultra photorealistic, indistinguishable from real-world scene, natural appearance, as seen in real life. ";
-            $prompt .= "NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT painting, appears completely real and authentic, no artificial elements, no UI overlays, no text";
+            // CRITICAL: Real photograph emphasis + comprehensive negatives
+            $prompt .= "REAL PHOTOGRAPH taken with professional DSLR camera, actual physical scene, documentary photography, indistinguishable from real-world photograph, natural appearance, as seen in real life. ";
+            $prompt .= "NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT painting, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT vector art, NOT graphic design, NOT cartoon, NOT anime, appears as REAL PHOTOGRAPH, actual scene captured with camera, real-world photography, no artificial elements, no UI overlays, no text, no graphics";
 
             return trim($prompt);
 
@@ -243,10 +252,10 @@ USER;
     protected function basicEnhancement(string $prompt, string $style): string
     {
         $enhancements = [
-            'ultra_photorealistic' => 'Captured with Canon EOS R5, 35mm f/1.8 lens, natural daylight, visible textures and subtle imperfections, realistic materials, authentic scene, appears as seen in real life, not stylized, not 3D render, not digital art, completely realistic',
-            'studio_photography' => 'Captured with Phase One IQ4, natural window light, clean background, realistic commercial quality, authentic product appearance, no artificial effects',
-            'natural_light' => 'Captured with Fujifilm GFX 100S, golden hour natural light, shallow depth of field, authentic atmosphere, visible environmental details, unposed candid moment, completely natural',
-            'cinematic_photography' => 'Captured with film camera, 35mm film grain aesthetic, natural lighting, authentic moment, documentary style, appears real and authentic',
+            'ultra_photorealistic' => 'REAL PHOTOGRAPH captured with Canon EOS R5, 35mm f/1.8 lens, natural daylight, visible textures and subtle imperfections, realistic materials, authentic scene, documentary photography, appears as seen in real life, NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT drawing, NOT blueprint, NOT diagram, completely realistic photograph taken with DSLR camera',
+            'studio_photography' => 'REAL PHOTOGRAPH captured with Phase One IQ4, natural window light, clean background, realistic commercial photography quality, authentic product appearance, actual physical scene, NOT 3D render, NOT digital art, NOT illustration',
+            'natural_light' => 'REAL PHOTOGRAPH captured with Fujifilm GFX 100S, golden hour natural light, shallow depth of field, authentic atmosphere, visible environmental details, unposed candid moment, documentary photography, actual scene, NOT illustration, NOT drawing, NOT digital art',
+            'cinematic_photography' => 'REAL PHOTOGRAPH captured with film camera, 35mm film grain aesthetic, natural lighting, authentic moment, documentary style, actual scene photographed on location, NOT 3D render, NOT illustration, NOT digital art',
         ];
 
         $enhancement = $enhancements[$style] ?? $enhancements['ultra_photorealistic'];

@@ -48,13 +48,13 @@ class BlogAIContentWriter
         DB::beginTransaction();
 
         try {
-            // Slug oluştur (başlıktan)
+            // Slug oluştur (başlıktan) - JSON array formatında
             $slug = \Illuminate\Support\Str::slug($blogData['title']);
 
             // Blog oluştur
             $blog = Blog::create([
                 'title' => ['tr' => $blogData['title']],
-                'slug' => $slug,
+                'slug' => ['tr' => $slug], // FIX: Slug array olmalı (JSON column)
                 'body' => ['tr' => $blogData['content']],
                 'excerpt' => ['tr' => $blogData['excerpt']],
                 'faq_data' => $blogData['faq_data'], // Universal Schema: FAQ

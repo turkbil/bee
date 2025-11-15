@@ -80,40 +80,30 @@ class BlogAIContentWriter
 
             // SEO ayarları ekle (HasSeo trait)
             $blog->seoSetting()->create([
-                'title' => ['tr' => $blogData['title']],
-                'description' => ['tr' => $draft->meta_description ?? $blogData['excerpt']],
-                'keywords' => $draft->seo_keywords ?? [],
+                'titles' => ['tr' => $blogData['title']],
+                'descriptions' => ['tr' => $draft->meta_description ?? $blogData['excerpt']],
                 'status' => 'active',
             ]);
 
-            // 🎨 AI Image Generation: Featured image oluştur (SEO optimized)
-            // Mevcut AI Image Generator sistemini kullan
+            // 🎨 AI Image Generation: DISABLED (MediaLibrary tenant context issue)
+            // TODO: Fix MediaLibrary PerformConversionsJob tenant context
+            /*
             try {
                 $imageService = app(AIImageGenerationService::class);
-
-                // Blog başlığından otomatik görsel oluştur
                 $mediaItem = $imageService->generateForBlog(
                     $blogData['title'],
                     $blogData['content']
                 );
-
-                // MediaLibraryItem'dan media'yı al
                 $media = $mediaItem->getFirstMedia('library');
-
                 if ($media) {
-                    // SEO Meta Data ekle (Featured image için)
                     $blogTitle = $blogData['title'];
                     $media->setCustomProperty('alt_text', ['tr' => $blogTitle]);
                     $media->setCustomProperty('title', ['tr' => $blogTitle . ' - Ana Görsel']);
                     $media->setCustomProperty('description', ['tr' => $blogData['excerpt']]);
                     $media->setCustomProperty('width', 1200);
-                    $media->setCustomProperty('height', 630); // Open Graph optimal ratio
+                    $media->setCustomProperty('height', 630);
                     $media->setCustomProperty('seo_optimized', true);
                     $media->save();
-
-                    // Blog'a featured image olarak attach et (SEO properties ile)
-                    // IMPORTANT: MediaLibraryItem zaten media olarak kaydedilmiş
-                    // Sadece blog ile ilişkilendir
                     $blog->addMedia($media->getPath())
                         ->preservingOriginal()
                         ->withCustomProperties([
@@ -123,10 +113,9 @@ class BlogAIContentWriter
                             'width' => 1200,
                             'height' => 630,
                             'seo_optimized' => true,
-                            'og_image' => true, // Open Graph image
+                            'og_image' => true,
                         ])
                         ->toMediaCollection('featured');
-
                     Log::info('Blog AI Featured Image Generated (SEO Optimized)', [
                         'blog_id' => $blog->blog_id,
                         'media_library_id' => $mediaItem->id,
@@ -137,14 +126,16 @@ class BlogAIContentWriter
                     ]);
                 }
             } catch (\Exception $e) {
-                // Image generation hatası blog oluşumunu engellemesin
                 Log::warning('Blog AI Featured Image Generation Failed', [
                     'blog_id' => $blog->blog_id,
                     'error' => $e->getMessage(),
                 ]);
             }
+            */
 
-            // 🖼️ Content İçi Görseller: H2 başlıklarından sonra yatay görseller ekle
+            // 🖼️ Content İçi Görseller: DISABLED (MediaLibrary tenant context issue)
+            // TODO: Fix MediaLibrary PerformConversionsJob tenant context
+            /*
             try {
                 $updatedContent = $this->generateInlineImages($blog, $blogData['content']);
                 if ($updatedContent !== $blogData['content']) {
@@ -154,12 +145,12 @@ class BlogAIContentWriter
                     ]);
                 }
             } catch (\Exception $e) {
-                // Inline image hatası blog oluşumunu engellemesin
                 Log::warning('Blog AI Inline Images Failed', [
                     'blog_id' => $blog->blog_id,
                     'error' => $e->getMessage(),
                 ]);
             }
+            */
 
             // Credit düş - 1 blog = 1.0 kredi
             ai_use_credits(1.0, null, [

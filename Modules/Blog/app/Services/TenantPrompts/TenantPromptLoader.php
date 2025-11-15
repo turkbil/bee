@@ -76,4 +76,26 @@ class TenantPromptLoader
     {
         return get_class($this->promptProvider);
     }
+
+    /**
+     * Fallback outline al (OpenAI outline üretemediğinde)
+     * Eğer tenant-specific method varsa kullan, yoksa generic outline
+     */
+    public function getFallbackOutline(string $topicKeyword): array
+    {
+        // Tenant-specific provider'da method var mı kontrol et
+        if (method_exists($this->promptProvider, 'getFallbackOutline')) {
+            return $this->promptProvider->getFallbackOutline($topicKeyword);
+        }
+
+        // Generic fallback outline
+        return [
+            $topicKeyword . ' Nedir?',
+            'Özellikler ve Avantajlar',
+            'Kullanım Alanları',
+            'Seçim Kriterleri',
+            'Bakım ve Güvenlik',
+            'Sonuç ve Öneriler',
+        ];
+    }
 }

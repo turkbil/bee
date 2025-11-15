@@ -230,7 +230,7 @@
                             </header>
                             <div class="space-y-4">
                                 @foreach($faqData as $index => $faq)
-                                    @if(!empty($faq['question']) && !empty($faq['answer']))
+                                    @if(!empty($faq['question']) && !empty($faq['answer']) && is_string($faq['question']) && is_string($faq['answer']))
                                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg"
                                              itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                                             <details class="group">
@@ -267,10 +267,10 @@
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
                                     <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
-                                    {{ $howtoData['name'] ?? 'Nasıl Yapılır?' }}
+                                    {{ is_string($howtoData['name'] ?? '') ? $howtoData['name'] : 'Nasıl Yapılır?' }}
                                 </h2>
                                 <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
-                                @if(!empty($howtoData['description']))
+                                @if(!empty($howtoData['description']) && is_string($howtoData['description']))
                                     <p class="mt-4 text-gray-600 dark:text-gray-400" itemprop="description">
                                         {{ $howtoData['description'] }}
                                     </p>
@@ -278,7 +278,7 @@
                             </header>
                             <div class="space-y-6">
                                 @foreach($howtoData['steps'] as $index => $step)
-                                    @if(!empty($step['name']))
+                                    @if(!empty($step['name']) && is_string($step['name']) && (!empty($step['text']) ? is_string($step['text']) : true))
                                         <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300"
                                              itemscope itemprop="step" itemtype="https://schema.org/HowToStep">
                                             <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-400 rounded-full flex items-center justify-center">
@@ -288,9 +288,11 @@
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2" itemprop="name">
                                                     {{ $step['name'] }}
                                                 </h3>
-                                                <div class="text-gray-700 dark:text-gray-300 prose prose-sm md:prose-base dark:prose-invert max-w-none" itemprop="text">
-                                                    {!! nl2br(e($step['text'])) !!}
-                                                </div>
+                                                @if(!empty($step['text']))
+                                                    <div class="text-gray-700 dark:text-gray-300 prose prose-sm md:prose-base dark:prose-invert max-w-none" itemprop="text">
+                                                        {!! nl2br(e($step['text'])) !!}
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     @endif

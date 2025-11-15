@@ -55,8 +55,8 @@
                                 {{ $isGenerating ? 'disabled' : '' }}
                             ></textarea>
                             @error('prompt') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <small class="form-hint text-muted">
-                                Görselde yazı/text olmamalı. Yazı gerekirse Türkçe olmalı. Marka ismi kullanmayın.
+                            <small class="form-hint text-danger fw-bold">
+                                🚨 Görselde ASLA yazı/text olmayacak! Marka adı YOK, site ismi YOK, hiçbir text OLMAYACAK!
                             </small>
                         </div>
 
@@ -69,15 +69,6 @@
                                 Basit promptunuzu ultra detaylı profesyonel fotoğraf talimatına çevirir (kamera, ışık, materyal detayları)
                             </small>
                         </div>
-
-                        @if($companyName)
-                            <div class="mb-3">
-                                <label class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" wire:model="includeCompanyName" {{ $isGenerating ? 'disabled' : '' }}>
-                                    <span class="form-check-label">Site ismini ekle ({{ $companyName }})</span>
-                                </label>
-                            </div>
-                        @endif
 
                         <div class="row">
                             <div class="col-md-4">

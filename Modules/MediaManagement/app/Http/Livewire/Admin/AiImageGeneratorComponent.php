@@ -16,8 +16,6 @@ class AiImageGeneratorComponent extends Component
     public string $quality = 'hd';
     public string $style = 'ultra_photorealistic';
     public bool $enhanceWithAI = true;
-    public string $companyName = '';
-    public bool $includeCompanyName = false;
     public ?string $generatedImageUrl = null;
     public ?int $generatedMediaId = null;
     public bool $isGenerating = false;
@@ -36,9 +34,6 @@ class AiImageGeneratorComponent extends Component
     {
         $this->loadCredits();
         $this->loadHistory();
-
-        // Header'daki gibi site title'ı al
-        $this->companyName = settings('site_title', config('app.name'));
     }
 
     public function loadCredits()
@@ -63,19 +58,13 @@ class AiImageGeneratorComponent extends Component
         try {
             $service = app(AIImageGenerationService::class);
 
-            // Site adını checkbox işaretliyse ekle
-            $basePrompt = $this->prompt;
-            if ($this->includeCompanyName && !empty($this->companyName)) {
-                $basePrompt = $this->companyName . ' - ' . $this->prompt;
-            }
-
             // AI ile prompt geliştirme (eğer checkbox işaretliyse)
             if ($this->enhanceWithAI) {
                 $enhancer = app(AIPromptEnhancer::class);
-                $finalPrompt = $enhancer->enhancePrompt($basePrompt, $this->style, $this->size);
+                $finalPrompt = $enhancer->enhancePrompt($this->prompt, $this->style, $this->size);
             } else {
                 // AI kapalıysa, manuel style enhancement kullan
-                $finalPrompt = $this->enhancePromptWithStyle($basePrompt, $this->style);
+                $finalPrompt = $this->enhancePromptWithStyle($this->prompt, $this->style);
             }
 
             $mediaItem = $service->generate($finalPrompt, [

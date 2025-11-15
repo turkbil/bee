@@ -7,6 +7,7 @@ use App\Models\Tag;
 use App\Traits\HasTranslations;
 use App\Traits\HasSeo;
 use App\Traits\HasUniversalSchemas;
+use App\Traits\ClearsCache;
 use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +18,7 @@ use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
 class Blog extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, ClearsCache;
 
     protected $primaryKey = 'blog_id';
 

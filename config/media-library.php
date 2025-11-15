@@ -29,8 +29,9 @@ return [
 
     /*
      * By default all conversions will be performed on a queue.
+     * ⚠️ DISABLED: Tenant context problem - conversions run sync to preserve tenant connection
      */
-    'queue_conversions_by_default' => env('QUEUE_CONVERSIONS_BY_DEFAULT', true),
+    'queue_conversions_by_default' => env('QUEUE_CONVERSIONS_BY_DEFAULT', false),
 
     /*
      * Should database transactions be run after database commits?

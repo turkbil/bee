@@ -85,14 +85,18 @@ class BlogAIContentWriter
                 'status' => 'active',
             ]);
 
-            // 🎨 AI Image Generation: DISABLED (MediaLibrary tenant context issue)
-            // TODO: Fix MediaLibrary PerformConversionsJob tenant context
-            /*
+            // 🎨 AI Image Generation (Ultra Realistic + Horizontal + NO TEXT)
             try {
                 $imageService = app(AIImageGenerationService::class);
-                $mediaItem = $imageService->generateForBlog(
-                    $blogData['title'],
-                    $blogData['content']
+
+                // Ultra realistic horizontal prompt (NO TEXT!)
+                $imagePrompt = "Ultra realistic professional photograph, horizontal landscape orientation 16:9, " .
+                    $blogData['title'] .
+                    ", high quality commercial photography, natural lighting, sharp focus, detailed, NO TEXT, NO WORDS, NO LETTERS in image or background";
+
+                $mediaItem = $imageService->generate(
+                    $imagePrompt,
+                    'realistic' // Ultra realistic mode
                 );
                 $media = $mediaItem->getFirstMedia('library');
                 if ($media) {
@@ -131,10 +135,8 @@ class BlogAIContentWriter
                     'error' => $e->getMessage(),
                 ]);
             }
-            */
 
-            // 🖼️ Content İçi Görseller: DISABLED (MediaLibrary tenant context issue)
-            // TODO: Fix MediaLibrary PerformConversionsJob tenant context
+            // 🖼️ Content İçi Görseller: DISABLED (User requested only 1 featured image)
             /*
             try {
                 $updatedContent = $this->generateInlineImages($blog, $blogData['content']);
@@ -547,13 +549,36 @@ Her adım 80-100 kelime olsun. JSON döndür:
         echo "✅ Debug file: $debugFile\n";
 
         // Varsayılan değerler
+        $content = $decoded['content'] ?? '';
+
+        // 🧹 Content temizliği: \n ve ```html ``` taglarını temizle
+        $content = $this->cleanBlogContent($content);
+
         return [
             'title' => $decoded['title'] ?? 'Başlıksız Blog',
-            'content' => $decoded['content'] ?? '',
-            'excerpt' => $decoded['excerpt'] ?? substr(strip_tags($decoded['content'] ?? ''), 0, 200),
+            'content' => $content,
+            'excerpt' => $decoded['excerpt'] ?? substr(strip_tags($content), 0, 200),
             'faq_data' => $decoded['faq_data'] ?? null,
             'howto_data' => $decoded['howto_data'] ?? null,
         ];
+    }
+
+    /**
+     * Blog content temizliği: \n, ```html ``` ve diğer sorunları düzelt
+     */
+    protected function cleanBlogContent(string $content): string
+    {
+        // 1. ```html ... ``` code block'larını kaldır (sadece içeriği bırak)
+        $content = preg_replace('/```html\s*(.*?)\s*```/s', '$1', $content);
+        $content = preg_replace('/```\s*(.*?)\s*```/s', '$1', $content);
+
+        // 2. Literal \n karakterlerini gerçek newline'a çevir
+        $content = str_replace('\\n', "\n", $content);
+
+        // 3. Fazla boşlukları temizle
+        $content = preg_replace('/\n{3,}/', "\n\n", $content);
+
+        return trim($content);
     }
 
     /**

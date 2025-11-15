@@ -240,9 +240,14 @@
                                     <td>
                                         <div class="d-flex flex-column gap-1">
                                             {{-- Kategoriler --}}
-                                            @if(!empty($draft->category_suggestions))
+                                            @php
+                                                $categorySuggestions = is_array($draft->category_suggestions)
+                                                    ? $draft->category_suggestions
+                                                    : (is_string($draft->category_suggestions) ? json_decode($draft->category_suggestions, true) ?? [] : []);
+                                            @endphp
+                                            @if(!empty($categorySuggestions))
                                                 <div>
-                                                    @foreach(array_slice($draft->category_suggestions, 0, 2) as $catId)
+                                                    @foreach(array_slice($categorySuggestions, 0, 2) as $catId)
                                                         @if(isset($categories[$catId]))
                                                             <span class="badge bg-blue-lt me-1">{{ $categories[$catId]->title['tr'] ?? 'N/A' }}</span>
                                                         @endif
@@ -251,11 +256,16 @@
                                             @endif
 
                                             {{-- Keywords --}}
-                                            @if(!empty($draft->seo_keywords))
+                                            @php
+                                                $seoKeywords = is_array($draft->seo_keywords)
+                                                    ? $draft->seo_keywords
+                                                    : (is_string($draft->seo_keywords) ? json_decode($draft->seo_keywords, true) ?? [] : []);
+                                            @endphp
+                                            @if(!empty($seoKeywords))
                                                 <div class="small">
-                                                    {{ implode(', ', array_slice($draft->seo_keywords ?? [], 0, 3)) }}
-                                                    @if(count($draft->seo_keywords ?? []) > 3)
-                                                        <span>+{{ count($draft->seo_keywords) - 3 }}</span>
+                                                    {{ implode(', ', array_slice($seoKeywords, 0, 3)) }}
+                                                    @if(count($seoKeywords) > 3)
+                                                        <span>+{{ count($seoKeywords) - 3 }}</span>
                                                     @endif
                                                 </div>
                                             @endif

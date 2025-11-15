@@ -2,6 +2,7 @@
 
 return [
     'general' => [
+        'home' => 'Ana Sayfa',
         'blogs' => 'Bloglar',
         'all_blogs' => 'Tüm Bloglar',
         'read_more' => 'Devamını Oku',

@@ -7096,6 +7096,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\AI\\App\\Services\\AICreditService' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AICreditService.php',
         'Modules\\AI\\App\\Services\\AIImageGenerationService' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AIImageGenerationService.php',
         'Modules\\AI\\App\\Services\\AIPriorityEngine' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AIPriorityEngine.php',
+        'Modules\\AI\\App\\Services\\AIPromptEnhancer' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AIPromptEnhancer.php',
         'Modules\\AI\\App\\Services\\AIProviderManager' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AIProviderManager.php',
         'Modules\\AI\\App\\Services\\AIResponseRepository' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AIResponseRepository.php',
         'Modules\\AI\\App\\Services\\AIResponseValidator' => __DIR__ . '/../..' . '/Modules/AI/app/Services/AIResponseValidator.php',

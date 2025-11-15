@@ -159,110 +159,183 @@ class BlogAIContentWriter
             'meta_description' => $draft->meta_description,
         ];
 
-        // Firma & İletişim Bilgileri
-        $companyContext = '';
-        if (!empty($context['company_info'])) {
-            $companyContext .= "\n\n**FİRMA BİLGİLERİ (Blog yazısında ZORUNLU kullanılacak - EN AZ 3 KEZ!):**\n";
-            $companyContext .= "- Firma Adı: **" . ($context['company_info']['name'] ?? 'N/A') . "** (Bu adı MUTLAKA kullan!)\n";
-            $companyContext .= "- Site Başlığı: " . ($context['company_info']['title'] ?? 'N/A') . "\n";
-            $companyContext .= "- Website: " . ($context['company_info']['website'] ?? 'N/A') . "\n";
+        // Firma & İletişim Bilgileri - ULTRA VURGULU
+        $companyName = $context['company_info']['name'] ?? 'FİRMA ADI';
+        $companyEmail = $context['contact_info']['email'] ?? 'EMAIL';
+        $companyPhone = $context['contact_info']['phone'] ?? 'TELEFON';
+
+        // 🔍 DEBUG: Context'i logla
+        Log::info('🔍 Blog AI Company Context Debug', [
+            'draft_id' => $draft->id,
+            'company_name' => $companyName,
+            'full_context' => $context,
+        ]);
+
+        // 🚨 SORUN ÇÖZÜMÜ: AI'ın context içindeki uzun adı kullanmasını engelle
+        // Context'teki TÜM firma adı referanslarını kısa ad ile override et
+        $shortName = $context['company_info']['title'] ?? $companyName;
+
+        // Uzun ad varsa onu da kaydet (validation için)
+        $longName = $context['company_info']['company_name'] ?? null;
+
+        $companyContext = "\n\n" . str_repeat('=', 60) . "\n";
+        $companyContext .= "🔴 KRİTİK: FİRMA BİLGİLERİ - MUTLAKA KULLAN!\n";
+        $companyContext .= str_repeat('=', 60) . "\n\n";
+        $companyContext .= "FİRMA ADI: {$shortName}\n";
+        $companyContext .= "⚠️ SADECE bu kısa adı kullan: '{$shortName}'\n";
+        if ($longName) {
+            $companyContext .= "❌ UZUN ADI KULLANMA: '{$longName}'\n";
         }
-        if (!empty($context['contact_info'])) {
-            $companyContext .= "\n**İLETİŞİM BİLGİLERİ (CTA'da ZORUNLU kullanılacak):**\n";
-            $companyContext .= "- Email: **" . ($context['contact_info']['email'] ?? 'N/A') . "** (CTA'da ekle!)\n";
-            $companyContext .= "- Telefon: **" . ($context['contact_info']['phone'] ?? 'N/A') . "** (CTA'da ekle!)\n";
-            $companyContext .= "- Adres: " . ($context['contact_info']['address'] ?? 'N/A') . "\n";
-        }
+        $companyContext .= ">>> Bu KISA adı blog içinde EN AZ 3 KEZ kullanacaksın!\n";
+        $companyContext .= ">>> Örnek: \"{$shortName} olarak...\"\n";
+        $companyContext .= ">>> Örnek: \"{$shortName} ekibi...\"\n\n";
+        $companyContext .= "İLETİŞİM:\n";
+        $companyContext .= "Email: {$companyEmail}\n";
+        $companyContext .= "Telefon: {$companyPhone}\n";
+        $companyContext .= ">>> CTA bölümünde bu bilgileri HTML liste olarak ekle!\n";
+        $companyContext .= str_repeat('=', 60) . "\n";
 
-        $systemMessage = $prompt . $companyContext . "\n\n**TASLAK BİLGİLERİ:**\n" . json_encode($draftContext, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        // System message'ı basitleştir - KISA firma adı vurgulu!
+        $systemMessage = "Sen bir blog yazarısın. Yazarken SADECE ve SADECE FİRMA ADI '{$shortName}' kullanacaksın!\n\n" .
+                        $companyContext .
+                        "\n\n**TASLAK:**\n" .
+                        json_encode($draftContext, JSON_UNESCAPED_UNICODE);
 
-        try {
-            $userPrompt = <<<'USER_PROMPT'
-Lütfen bu taslak için tam blog yazısı oluştur.
+        // 🔁 RETRY MEKANIZMASI: Boş veya kısa response için 3 deneme
+        $maxRetries = 3;
+        $attempt = 0;
+        $blogData = null;
 
-🔴 ZORUNLU GEREKSINIMLER:
+        while ($attempt < $maxRetries && !$blogData) {
+            $attempt++;
 
-1. **KELIME SAYISI:** Minimum 1800-2000 kelime (Daha az KABUL EDİLMEZ!)
+            if ($attempt > 1) {
+                Log::warning("Blog AI Content Generation Retry", [
+                    'draft_id' => $draft->id,
+                    'attempt' => $attempt,
+                ]);
+                sleep(2); // 2 saniye bekle
+            }
 
-2. **FIRMA ADI KULLANIMI (ZORUNLU!):**
-   - Firma adını ({company_info.name}) EN AZ 3 KEZ kullan!
-   - İlk 200 kelimede 1 kez
-   - Orta bölümde 1 kez
-   - Sonuç/CTA'da 1 kez
+            try {
+                // Basit ve direkt prompt - KISA firma adını direkt ekle
+                $userPrompt = "Detaylı blog yazısı oluştur (1500+ kelime, Türkçe).
 
-   Örnek: "{company_info.name} olarak, endüstriyel ekipman sektöründe..."
+🔴 ZORUNLU: SADECE '{$shortName}' firma adını kullan - EN AZ 3 KEZ!
+❌ '{$longName}' gibi uzun firma adı KULLANMA!
 
-3. **CTA BÖLÜMÜNde İLETİŞİM (ZORUNLU!):**
-   - Sonuç bölümünde iletişim bilgilerini HTML listesi olarak ekle:
-   ```html
-   <h2>İletişim ve Destek</h2>
-   <p>{company_info.name} olarak, profesyonel destek sağlıyoruz. Bizimle iletişime geçin:</p>
-   <ul>
-     <li><strong>Telefon:</strong> {contact_info.phone}</li>
-     <li><strong>Email:</strong> {contact_info.email}</li>
-   </ul>
-   ```
+ÖRNEK KULLANIM (SADECE KISA AD):
+- '{$shortName} olarak, endüstriyel ekipman sektöründe deneyimimizle...'
+- '{$shortName} uzman ekibi size destek sağlar.'
+- 'Detaylı bilgi için {$shortName} ile iletişime geçin.'
 
-4. **FAQ (ZORUNLU!):**
-   - EN AZ 7-10 adet soru-cevap
-   - Her cevap 80-120 kelime
-   - Konuyla ilgili, gerçek kullanıcı soruları
+İLETİŞİM BÖLÜMÜ önyazı (HTML):
+<h2>İletişim</h2>
+<p>{$shortName} olarak profesyonel destek:</p>
+<ul><li><strong>Tel:</strong> {$companyPhone}</li><li><strong>Email:</strong> {$companyEmail}</li></ul>
 
-5. **HOWTO (ZORUNLU!):**
-   - Adım adım kılavuz (minimum 5 adım)
-   - Her adım net ve uygulanabilir
-
-6. **CÜMLE UZUNLUĞU:**
-   - Maximum 20 kelime/cümle
-   - Kısa ve net paragraflar
-
-📋 JSON ÇIKTI FORMATI:
-{
-  "title": "...",
-  "content": "HTML içerik (H2, H3, p, ul, li, strong kullan)",
-  "excerpt": "150-180 karakter özet",
-  "faq_data": [
-    {"question": {"tr": "..."}, "answer": {"tr": "80-120 kelime cevap"}}
-  ],
-  "howto_data": {
-    "name": {"tr": "..."},
-    "description": {"tr": "..."},
-    "steps": [
-      {"name": {"tr": "..."}, "text": {"tr": "..."}}
-    ]
-  }
-}
-
-⚠️ DİKKAT: Firma adı kullanmadan, iletişim bilgisi eklemeden, FAQ/HowTo olmadan içerik REDDEDILIR!
-USER_PROMPT;
+JSON ÇIKTI:
+{\"title\": \"başlık\", \"content\": \"<h2>...</h2><p>...{$shortName}...</p>\", \"excerpt\": \"özet\", \"faq_data\": [{\"question\": {\"tr\": \"?\"}, \"answer\": {\"tr\": \"cevap\"}}], \"howto_data\": {\"name\": {\"tr\": \"nasıl\"}, \"description\": {\"tr\": \"açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"adım\"}, \"text\": {\"tr\": \"detay\"}}]}}";
 
             $response = $this->openaiService->ask($userPrompt, false, [
                 'custom_prompt' => $systemMessage,
-                'temperature' => 0.7,
-                'max_tokens' => 12000,
+                'temperature' => 0.4, // Tutarlı output için düşük temperature
+                'max_tokens' => 16000,
             ]);
 
             // ask() metodu direkt string döndürür
             $content = $response;
 
-            // JSON parse
-            $blogData = $this->parseAIResponse($content);
+                // JSON parse
+                $parsedData = $this->parseAIResponse($content);
 
-            // Validation
-            if (empty($blogData['title']) || empty($blogData['content'])) {
-                throw new \Exception('AI response missing required fields (title or content)');
+                // Validation: Boş veya çok kısa içerik kontrolü
+                if (empty($parsedData['title']) || empty($parsedData['content'])) {
+                    Log::warning("AI response missing fields (attempt {$attempt})", [
+                        'draft_id' => $draft->id,
+                    ]);
+                    continue; // Retry
+                }
+
+                // Kelime sayısı kontrolü (minimum 500 kelime - gerçekçi hedef)
+                $wordCount = str_word_count(strip_tags($parsedData['content']));
+                if ($wordCount < 500) {
+                    Log::warning("AI response too short: {$wordCount} words (attempt {$attempt})", [
+                        'draft_id' => $draft->id,
+                    ]);
+                    continue; // Retry
+                }
+
+                // 🏢 KRİTİK: Firma adı kontrolü - hem kısa hem uzun adı kontrol et
+                $shortMentions = substr_count($parsedData['content'], $shortName);
+                $longMentions = $longName ? substr_count($parsedData['content'], $longName) : 0;
+                $totalMentions = $shortMentions + $longMentions;
+
+                Log::info("🔍 Company Name Validation", [
+                    'draft_id' => $draft->id,
+                    'attempt' => $attempt,
+                    'short_name' => $shortName,
+                    'short_mentions' => $shortMentions,
+                    'long_name' => $longName,
+                    'long_mentions' => $longMentions,
+                    'total_mentions' => $totalMentions,
+                    'content_preview' => substr($parsedData['content'], 0, 300),
+                ]);
+
+                // ⚠️ İdeal: Sadece kısa ad kullanılmalı (min 3 kez)
+                // ✅ Kabul: Uzun ad da kullanılmış olabilir (min 1 toplam)
+                if ($totalMentions < 1) {
+                    Log::warning("AI response missing company name (attempt {$attempt})", [
+                        'draft_id' => $draft->id,
+                        'short_name' => $shortName,
+                        'long_name' => $longName,
+                        'total_mentions' => $totalMentions,
+                    ]);
+                    continue; // Retry
+                }
+
+                // 🎯 İdeal durum: Kısa ad 3+ kez kullanılmış
+                if ($shortMentions >= 3) {
+                    Log::info("✅ Perfect! Short company name used {$shortMentions} times", [
+                        'draft_id' => $draft->id,
+                        'short_name' => $shortName,
+                    ]);
+                } elseif ($longMentions > 0) {
+                    Log::warning("⚠️ AI used long company name ({$longMentions}x) instead of short ({$shortMentions}x)", [
+                        'draft_id' => $draft->id,
+                        'short_name' => $shortName,
+                        'long_name' => $longName,
+                    ]);
+                }
+
+                // ✅ Başarılı! Placeholder replace yap ve döndür
+                $blogData = $this->replacePlaceholders($parsedData, $context);
+
+                Log::info("Blog AI Content Generated Successfully", [
+                    'draft_id' => $draft->id,
+                    'word_count' => $wordCount,
+                    'attempts' => $attempt,
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error("Blog AI Content API Failed (attempt {$attempt})", [
+                    'draft_id' => $draft->id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                if ($attempt >= $maxRetries) {
+                    throw $e; // Son deneme de başarısız oldu
+                }
+                // Retry devam eder
             }
-
-            return $blogData;
-
-        } catch (\Exception $e) {
-            Log::error('Blog AI Content API Failed', [
-                'draft_id' => $draft->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            throw $e;
         }
+
+        // Retry loop bitti ama başarılı sonuç yok
+        if (!$blogData) {
+            throw new \Exception("AI blog generation failed after {$maxRetries} attempts");
+        }
+
+        return $blogData;
     }
 
     /**
@@ -311,5 +384,46 @@ USER_PROMPT;
             'faq_data' => $decoded['faq_data'] ?? null,
             'howto_data' => $decoded['howto_data'] ?? null,
         ];
+    }
+
+    /**
+     * Replace placeholders with real company/contact info
+     */
+    protected function replacePlaceholders(array $blogData, array $context): array
+    {
+        // Placeholder → Real value mapping
+        $replacements = [
+            '{company_info.name}' => $context['company_info']['name'] ?? 'Our Company',
+            '{company_info.title}' => $context['company_info']['title'] ?? '',
+            '{company_info.website}' => $context['company_info']['website'] ?? '',
+            '{contact_info.email}' => $context['contact_info']['email'] ?? 'info@example.com',
+            '{contact_info.phone}' => $context['contact_info']['phone'] ?? '+90 XXX XXX XX XX',
+            '{contact_info.address}' => $context['contact_info']['address'] ?? '',
+        ];
+
+        // Replace in content
+        if (!empty($blogData['content'])) {
+            $blogData['content'] = str_replace(
+                array_keys($replacements),
+                array_values($replacements),
+                $blogData['content']
+            );
+        }
+
+        // Replace in excerpt
+        if (!empty($blogData['excerpt'])) {
+            $blogData['excerpt'] = str_replace(
+                array_keys($replacements),
+                array_values($replacements),
+                $blogData['excerpt']
+            );
+        }
+
+        Log::info('🔧 Placeholders replaced', [
+            'replacements_count' => count($replacements),
+            'company_name' => $replacements['{company_info.name}'],
+        ]);
+
+        return $blogData;
     }
 }

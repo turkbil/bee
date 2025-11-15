@@ -55,17 +55,32 @@
                                 {{ $isGenerating ? 'disabled' : '' }}
                             ></textarea>
                             @error('prompt') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <small class="form-hint">
-                                <strong>Önemli:</strong> Görselde yazı/text olmamalı. Eğer yazı gerekiyorsa Türkçe olmalı.
-                                Marka ismi, logo kullanmayın - genel isimler kullanın.
-                                @if($companyName)
-                                    <br><strong>Not:</strong> Prompt başına otomatik olarak "{{ $companyName }} - " eklenecek.
-                                @endif
+                            <small class="form-hint text-muted">
+                                Görselde yazı/text olmamalı. Yazı gerekirse Türkçe olmalı. Marka ismi kullanmayın.
                             </small>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" wire:model="enhanceWithAI" {{ $isGenerating ? 'disabled' : '' }} checked>
+                                <span class="form-check-label">AI ile Prompt Geliştir</span>
+                            </label>
+                            <small class="form-hint text-muted">
+                                Basit promptunuzu ultra detaylı profesyonel fotoğraf talimatına çevirir (kamera, ışık, materyal detayları)
+                            </small>
+                        </div>
+
+                        @if($companyName)
+                            <div class="mb-3">
+                                <label class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" wire:model="includeCompanyName" {{ $isGenerating ? 'disabled' : '' }}>
+                                    <span class="form-check-label">Site ismini ekle ({{ $companyName }})</span>
+                                </label>
+                            </div>
+                        @endif
+
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Boyut</label>
                                     <select wire:model="size" class="form-select" {{ $isGenerating ? 'disabled' : '' }}>
@@ -75,7 +90,30 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Fotoğraf Stili</label>
+                                    <select wire:model="style" class="form-select" {{ $isGenerating ? 'disabled' : '' }}>
+                                        <optgroup label="Gerçekçi Fotoğraf Stilleri">
+                                            <option value="ultra_photorealistic">Ultra Gerçekçi</option>
+                                            <option value="studio_photography">Stüdyo Fotoğrafı</option>
+                                            <option value="natural_light">Doğal Işık</option>
+                                            <option value="cinematic_photography">Sinematik</option>
+                                            <option value="documentary_style">Belgesel Tarzı</option>
+                                            <option value="commercial_photography">Ticari Fotoğraf</option>
+                                            <option value="portrait_photography">Portre Fotoğrafı</option>
+                                            <option value="macro_photography">Makro Fotoğraf</option>
+                                        </optgroup>
+                                        <optgroup label="Artistik & Dijital Stiller">
+                                            <option value="digital_art">Dijital Sanat</option>
+                                            <option value="illustration">İllüstrasyon</option>
+                                            <option value="3d_render">3D Render</option>
+                                            <option value="minimalist">Minimalist</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Kalite</label>
                                     <select wire:model="quality" class="form-select" {{ $isGenerating ? 'disabled' : '' }}>

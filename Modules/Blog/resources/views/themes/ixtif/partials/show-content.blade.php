@@ -27,7 +27,7 @@
     $publishedDate = $item->published_at
         ? $item->published_at->translatedFormat('d F Y')
         : $item->created_at->translatedFormat('d F Y');
-    $categoryName = $item->category ? $item->category->getTranslated('name', $currentLocale) : null;
+    $categoryName = $item->category ? $item->category->getTranslated('title', $currentLocale) : null;
 
     $tags = $item->relationLoaded('tags') ? $item->tags : $item->tags()->get();
 
@@ -63,8 +63,8 @@
 {{-- Glass Subheader Component --}}
 @php
     $breadcrumbsArray = [
-        ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
-        ['label' => 'Blog', 'url' => url($blogIndexUrl)]
+        ['label' => __('blog::front.general.home'), 'url' => url('/'), 'icon' => 'fa-home'],
+        ['label' => __('blog::front.general.blogs'), 'url' => url($blogIndexUrl)]
     ];
     if($categoryName) {
         $breadcrumbsArray[] = ['label' => $categoryName];

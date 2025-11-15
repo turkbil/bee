@@ -2,6 +2,7 @@
 
 return [
     'general' => [
+        'home' => 'Home',
         'blogs' => 'Blogs',
         'all_blogs' => 'All Blogs',
         'read_more' => 'Read More',

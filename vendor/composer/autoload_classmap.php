@@ -5637,6 +5637,7 @@ return array(
     'Modules\\AI\\App\\Services\\AICreditService' => $baseDir . '/Modules/AI/app/Services/AICreditService.php',
     'Modules\\AI\\App\\Services\\AIImageGenerationService' => $baseDir . '/Modules/AI/app/Services/AIImageGenerationService.php',
     'Modules\\AI\\App\\Services\\AIPriorityEngine' => $baseDir . '/Modules/AI/app/Services/AIPriorityEngine.php',
+    'Modules\\AI\\App\\Services\\AIPromptEnhancer' => $baseDir . '/Modules/AI/app/Services/AIPromptEnhancer.php',
     'Modules\\AI\\App\\Services\\AIProviderManager' => $baseDir . '/Modules/AI/app/Services/AIProviderManager.php',
     'Modules\\AI\\App\\Services\\AIResponseRepository' => $baseDir . '/Modules/AI/app/Services/AIResponseRepository.php',
     'Modules\\AI\\App\\Services\\AIResponseValidator' => $baseDir . '/Modules/AI/app/Services/AIResponseValidator.php',

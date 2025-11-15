@@ -23,8 +23,8 @@
 
         // Breadcrumbs
         $breadcrumbsArray = [
-            ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
-            ['label' => 'Portföy', 'url' => url($portfolioIndexUrl)],
+            ['label' => __('portfolio::front.general.home'), 'url' => url('/'), 'icon' => 'fa-home'],
+            ['label' => __('portfolio::front.general.portfolios'), 'url' => url($portfolioIndexUrl)],
             ['label' => $title]
         ];
     @endphp

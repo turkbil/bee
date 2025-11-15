@@ -23,8 +23,8 @@
 
         // Breadcrumbs
         $breadcrumbsArray = [
-            ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
-            ['label' => 'Duyurular', 'url' => url($announcementIndexUrl)],
+            ['label' => __('announcement::front.general.home'), 'url' => url('/'), 'icon' => 'fa-home'],
+            ['label' => __('announcement::front.general.announcements'), 'url' => url($announcementIndexUrl)],
             ['label' => $title]
         ];
     @endphp

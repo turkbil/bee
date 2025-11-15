@@ -47,18 +47,15 @@ class AIImageGenerationService
             // Create MediaLibraryItem
             $mediaItem = $this->createMediaItem($imageData, $prompt, $options);
 
-            // Deduct credits
-            $this->creditService->useCredits(
-                $this->creditCost,
-                'image_generation',
-                'openai',
-                'dall-e-3',
-                [
-                    'prompt' => $prompt,
-                    'usage_type' => 'manual',
-                    'media_id' => $mediaItem->id,
-                ]
-            );
+            // Deduct credits using global helper
+            ai_use_credits($this->creditCost, null, [
+                'usage_type' => 'image_generation',
+                'provider_name' => 'openai',
+                'model' => 'dall-e-3',
+                'prompt' => $prompt,
+                'operation_type' => 'manual',
+                'media_id' => $mediaItem->id,
+            ]);
 
             return $mediaItem;
 
@@ -146,18 +143,15 @@ class AIImageGenerationService
                 'quality' => 'hd',
             ]);
 
-            // Deduct credits
-            $this->creditService->useCredits(
-                $this->creditCost,
-                'image_generation',
-                'openai',
-                'dall-e-3',
-                array_merge($metadata, [
-                    'prompt' => $prompt,
-                    'usage_type' => $usageType,
-                    'media_id' => $mediaItem->id,
-                ])
-            );
+            // Deduct credits using global helper
+            ai_use_credits($this->creditCost, null, array_merge($metadata, [
+                'usage_type' => 'image_generation',
+                'provider_name' => 'openai',
+                'model' => 'dall-e-3',
+                'prompt' => $prompt,
+                'operation_type' => $usageType,
+                'media_id' => $mediaItem->id,
+            ]));
 
             return $mediaItem;
 

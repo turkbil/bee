@@ -48,6 +48,7 @@ class DallE3Provider
                 'n' => 1,
                 'size' => $size,
                 'quality' => $quality,
+                'style' => 'natural', // KRİTİK: Plastik/yapay görünümü azaltır, gerçekçi fotoğraf stili
             ]);
 
             if (!$response->successful()) {

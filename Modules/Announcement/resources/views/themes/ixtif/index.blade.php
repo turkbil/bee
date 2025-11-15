@@ -11,7 +11,7 @@
         {{-- Glass Subheader Component --}}
         @php
             $breadcrumbs = [
-                ['label' => 'Ana Sayfa', 'url' => url('/'), 'icon' => 'fa-home'],
+                ['label' => __('announcement::front.general.home'), 'url' => url('/'), 'icon' => 'fa-home'],
                 ['label' => $moduleTitle ?? __('announcement::front.general.announcements')]
             ];
         @endphp
@@ -35,18 +35,17 @@
                                 if (is_string($slugData)) {
                                     $slugData = json_decode($slugData, true) ?: [];
                                 }
+
                                 // Slug için öncelikle mevcut dili kontrol et, yoksa fallback ama URL'de mevcut dili koru
-if (
-    is_array($slugData) &&
-    isset($slugData[$currentLocale]) &&
-    !empty($slugData[$currentLocale])
-) {
-    $slug = $slugData[$currentLocale];
-} else {
-    // Mevcut dilde slug yoksa fallback kullan ama URL'de mevcut dili koru
-                                    $slug = is_array($slugData) ? $slugData['tr'] ?? reset($slugData) : $slugData;
+                                if (is_array($slugData) && isset($slugData[$currentLocale]) && !empty($slugData[$currentLocale])) {
+                                    $slug = $slugData[$currentLocale];
+                                } elseif (is_array($slugData) && !empty($slugData)) {
+                                    $slug = reset($slugData);
+                                } elseif (is_string($slugData) && !empty($slugData)) {
+                                    $slug = $slugData;
+                                } else {
+                                    $slug = 'announcement-' . $item->announcement_id;
                                 }
-                                $slug = $slug ?: $item->announcement_id;
 
                                 $title =
                                     $item->getTranslated('title') ??

@@ -246,6 +246,24 @@ RULES;
     }
 
     /**
+     * Tenant context override - iXtif için özel company name
+     *
+     * DOĞRU METOD ADI: getContext() (getTenantContext() değil!)
+     */
+    public function getContext(): array
+    {
+        $context = parent::getContext();
+
+        // 🔧 FIX: company_info.name'i kısa title ile override et
+        // Çünkü uzun "İxtif İç ve Dış Ticaret A.Ş." yerine "iXtif" kullanılmalı
+        if (!empty($context['company_info']['title'])) {
+            $context['company_info']['name'] = $context['company_info']['title'];
+        }
+
+        return $context;
+    }
+
+    /**
      * Fallback draft prompt
      */
     protected function getDefaultDraftPrompt(): string

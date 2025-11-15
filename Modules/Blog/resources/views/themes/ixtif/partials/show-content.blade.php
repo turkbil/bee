@@ -113,6 +113,9 @@
                                data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
                                 <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
                                      alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                                     width="{{ $featuredImage->getCustomProperty('width') ?? 800 }}"
+                                     height="{{ $featuredImage->getCustomProperty('height') ?? 600 }}"
+                                     loading="eager"
                                      class="w-full max-h-80 object-cover cursor-pointer transition-all duration-300">
                             </a>
                             @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
@@ -186,6 +189,9 @@
                                        data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
                                         <img src="{{ $image->getUrl('thumb') }}"
                                              alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
+                                             width="{{ $image->getCustomProperty('width') ?? 400 }}"
+                                             height="{{ $image->getCustomProperty('height') ?? 300 }}"
+                                             loading="lazy"
                                              class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110">
                                     </a>
                                     @if($image->getCustomProperty('title')[$currentLocale] ?? false)
@@ -208,6 +214,92 @@
                     </section>
                 @endif
 
+                {{-- FAQ Section (Sık Sorulan Sorular) --}}
+                @if(!empty($item->faq_data))
+                    @php
+                        $faqData = is_string($item->faq_data) ? json_decode($item->faq_data, true) : $item->faq_data;
+                    @endphp
+                    @if(!empty($faqData) && is_array($faqData))
+                        <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/FAQPage">
+                            <header class="mb-8">
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+                                    <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    Sık Sorulan Sorular
+                                </h2>
+                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                            </header>
+                            <div class="space-y-4">
+                                @foreach($faqData as $index => $faq)
+                                    @if(!empty($faq['question']) && !empty($faq['answer']))
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg"
+                                             itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                                            <details class="group">
+                                                <summary class="flex items-center justify-between w-full p-6 cursor-pointer list-none select-none hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white pr-4" itemprop="name">
+                                                        {{ $faq['question'] }}
+                                                    </h3>
+                                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </summary>
+                                                <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300 prose prose-sm md:prose-base dark:prose-invert max-w-none"
+                                                     itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                                    <div itemprop="text">
+                                                        {!! nl2br(e($faq['answer'])) !!}
+                                                    </div>
+                                                </div>
+                                            </details>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+                @endif
+
+                {{-- HowTo Section (Nasıl Yapılır) --}}
+                @if(!empty($item->howto_data))
+                    @php
+                        $howtoData = is_string($item->howto_data) ? json_decode($item->howto_data, true) : $item->howto_data;
+                    @endphp
+                    @if(!empty($howtoData) && is_array($howtoData) && !empty($howtoData['steps']))
+                        <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/HowTo">
+                            <header class="mb-8">
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
+                                    <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    {{ $howtoData['name'] ?? 'Nasıl Yapılır?' }}
+                                </h2>
+                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                                @if(!empty($howtoData['description']))
+                                    <p class="mt-4 text-gray-600 dark:text-gray-400" itemprop="description">
+                                        {{ $howtoData['description'] }}
+                                    </p>
+                                @endif
+                            </header>
+                            <div class="space-y-6">
+                                @foreach($howtoData['steps'] as $index => $step)
+                                    @if(!empty($step['name']))
+                                        <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300"
+                                             itemscope itemprop="step" itemtype="https://schema.org/HowToStep">
+                                            <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-400 rounded-full flex items-center justify-center">
+                                                <span class="text-white font-bold text-lg">{{ $index + 1 }}</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2" itemprop="name">
+                                                    {{ $step['name'] }}
+                                                </h3>
+                                                <div class="text-gray-700 dark:text-gray-300 prose prose-sm md:prose-base dark:prose-invert max-w-none" itemprop="text">
+                                                    {!! nl2br(e($step['text'])) !!}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+                @endif
+
                 {{-- İlgili Yazılar --}}
                 @if($relatedBlogs->isNotEmpty())
                     <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700">
@@ -222,8 +314,14 @@
                                 <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
                                     <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
                                         @if($relatedBlog->getFirstMedia('featured_image'))
-                                            <img src="{{ $relatedBlog->getFirstMedia('featured_image')->getUrl('thumb') }}"
+                                            @php
+                                                $relatedImage = $relatedBlog->getFirstMedia('featured_image');
+                                            @endphp
+                                            <img src="{{ $relatedImage->getUrl('thumb') }}"
                                                  alt="{{ $relatedBlog->getTranslated('title', $currentLocale) }}"
+                                                 width="{{ $relatedImage->getCustomProperty('width') ?? 400 }}"
+                                                 height="{{ $relatedImage->getCustomProperty('height') ?? 300 }}"
+                                                 loading="lazy"
                                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         @endif
                                         <div class="p-6">

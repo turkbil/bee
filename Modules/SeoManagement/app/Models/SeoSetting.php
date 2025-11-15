@@ -19,7 +19,7 @@ class SeoSetting extends Model
     protected $fillable = [
         'seoable_type', 'seoable_id', // Polymorphic relationship fields
         'titles', 'descriptions', 'canonical_url',
-        'author', 'author_url', // Author fields (VARCHAR - single value)
+        'author', 'author_url', 'author_title', 'author_bio', 'author_image', // Author fields (VARCHAR - single value)
         'og_titles', 'og_descriptions', 'og_image', 'og_images', 'og_type',
         // Twitter Cards - OG verilerinden otomatik üretiliyor
         'robots_meta',

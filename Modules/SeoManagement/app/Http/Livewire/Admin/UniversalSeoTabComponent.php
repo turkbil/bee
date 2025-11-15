@@ -129,6 +129,9 @@ class UniversalSeoTabComponent extends Component
                 // Author & Author URL - SINGLE VALUE (NOT JSON)
                 $author = $seoSetting->author; // VARCHAR - tek değer
                 $authorUrl = $seoSetting->author_url; // VARCHAR - tek değer
+                $authorTitle = $seoSetting->author_title; // VARCHAR - tek değer
+                $authorBio = $seoSetting->author_bio; // TEXT - tek değer
+                $authorImage = $seoSetting->author_image; // VARCHAR - tek değer
 
                 $aiSuggestions = is_string($seoSetting->ai_suggestions) ? json_decode($seoSetting->ai_suggestions, true) : $seoSetting->ai_suggestions;
 
@@ -156,6 +159,9 @@ class UniversalSeoTabComponent extends Component
                         // Author - SINGLE VALUE (tüm dillerde aynı)
                         'author_name' => $author ?? '',
                         'author_url' => $authorUrl ?? '',
+                        'author_title' => $authorTitle ?? '',
+                        'author_bio' => $authorBio ?? '',
+                        'author_image' => $authorImage ?? '',
                         // Robots Meta - Fallback her zaman TRUE
                         'robots_meta' => [
                             'index' => $robotsMeta['index'] ?? true,
@@ -269,6 +275,9 @@ class UniversalSeoTabComponent extends Component
             // Author - SINGLE VALUE (not per language)
             'author_name' => '',
             'author_url' => '',
+            'author_title' => '',
+            'author_bio' => '',
+            'author_image' => '',
             // Robots Meta - Fallback her zaman TRUE
             'robots_meta' => [
                 'index' => true,
@@ -441,6 +450,9 @@ class UniversalSeoTabComponent extends Component
             $defaultData = $this->seoDataCache[$defaultLocale] ?? $this->getEmptySeoData();
             $author = $defaultData['author_name'] ?? '';
             $authorUrl = $defaultData['author_url'] ?? '';
+            $authorTitle = $defaultData['author_title'] ?? '';
+            $authorBio = $defaultData['author_bio'] ?? '';
+            $authorImage = $defaultData['author_image'] ?? '';
 
             // AI Analysis verilerini hazırla
             $strengths = null;
@@ -485,6 +497,9 @@ class UniversalSeoTabComponent extends Component
                     'og_images' => $ogImageUrl,
                     'author' => $author,
                     'author_url' => $authorUrl,
+                    'author_title' => $authorTitle,
+                    'author_bio' => $authorBio,
+                    'author_image' => $authorImage,
                     'ai_suggestions' => $this->staticAiRecommendations ?: null,
                     // AI Analysis Results
                     'analysis_results' => !empty($this->staticAiAnalysis) ? $this->staticAiAnalysis : null,

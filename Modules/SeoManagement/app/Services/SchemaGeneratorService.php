@@ -136,10 +136,18 @@ class SchemaGeneratorService
         $schema['dateCreated'] = $model->created_at?->toISOString();
         $schema['dateModified'] = $model->updated_at?->toISOString();
         
-        if (in_array($schemaType, ['Article', 'NewsArticle'])) {
+        if (in_array($schemaType, ['Article', 'NewsArticle', 'BlogPosting'])) {
             $schema['datePublished'] = $model->created_at?->toISOString();
             $schema['author'] = $this->getAuthorData($model);
             $schema['publisher'] = $this->getPublisherData($model);
+
+            // Word count tracking (Blog model için)
+            if (method_exists($model, 'getWordCount')) {
+                $wordCount = $model->getWordCount($language);
+                if ($wordCount > 0) {
+                    $schema['wordCount'] = $wordCount;
+                }
+            }
         }
 
         // E-ticaret alanları
@@ -565,6 +573,8 @@ class SchemaGeneratorService
 
     /**
      * Author bilgisini al - SEO settings'den veya fallback
+     * E-E-A-T için Person type (Organization değil!)
+     * ✅ VARSAYILAN ALANLAR: jobTitle, description, image (boş olsa bile schema'ya eklenir)
      */
     private function getAuthorData(Model $model): array
     {
@@ -573,20 +583,54 @@ class SchemaGeneratorService
             $seoSetting = $model->seoSetting;
 
             if (!empty($seoSetting->author)) {
-                return [
-                    '@type' => 'Organization',
+                $authorData = [
+                    '@type' => 'Person',
                     'name' => $seoSetting->author,
-                    'url' => $seoSetting->author_url ?: url('/')
+                    'url' => $seoSetting->author_url ?: url('/'),
                 ];
+
+                // Google E-E-A-T: jobTitle (varsayılan ekle, boş olsa bile)
+                $authorData['jobTitle'] = $seoSetting->author_title ?: setting('seo_default_author_title') ?: '';
+
+                // Google E-E-A-T: description (varsayılan ekle, boş olsa bile)
+                $authorData['description'] = $seoSetting->author_bio ?: setting('seo_default_author_bio') ?: '';
+
+                // Google E-E-A-T: image (varsayılan ekle, boş olsa bile)
+                $authorImage = $seoSetting->author_image ?: setting('seo_default_author_image') ?: '';
+                if ($authorImage) {
+                    $authorData['image'] = [
+                        '@type' => 'ImageObject',
+                        'url' => $authorImage
+                    ];
+                }
+
+                return $authorData;
             }
         }
 
-        // Fallback: site settings
-        return [
-            '@type' => 'Organization',
-            'name' => setting('site_title', 'Website'),
-            'url' => url('/')
+        // Fallback: Settings tablosundan varsayılan author bilgileri
+        $defaultAuthorName = setting('seo_default_author') ?? setting('site_title', 'Website');
+        $defaultAuthorTitle = setting('seo_default_author_title') ?? '';
+        $defaultAuthorBio = setting('seo_default_author_bio') ?? '';
+        $defaultAuthorImage = setting('seo_default_author_image') ?? '';
+
+        $authorData = [
+            '@type' => 'Person',
+            'name' => $defaultAuthorName,
+            'url' => url('/'),
+            'jobTitle' => $defaultAuthorTitle,      // Boş olsa bile ekle
+            'description' => $defaultAuthorBio,     // Boş olsa bile ekle
         ];
+
+        // Image varsa ekle
+        if ($defaultAuthorImage) {
+            $authorData['image'] = [
+                '@type' => 'ImageObject',
+                'url' => $defaultAuthorImage
+            ];
+        }
+
+        return $authorData;
     }
 
     /**

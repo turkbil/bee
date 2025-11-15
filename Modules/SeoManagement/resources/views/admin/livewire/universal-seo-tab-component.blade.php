@@ -559,12 +559,20 @@
                 <div class="card-header bg-success text-white">
                     <h6 class="mb-0">
                         <i class="fas fa-user-edit me-2"></i>
-                        Publisher Bilgileri
+                        Author Bilgileri (E-E-A-T)
                         <small class="ms-2">Tek yazar - tüm diller için aynı</small>
                     </h6>
                 </div>
                 <div class="card-body">
-                    <div class="row mb-4">
+                        @php
+                        // Settings'ten varsayılan değerleri al
+                        $defaultAuthorUrl = setting('seo_default_author_url') ?? '';
+                        $defaultAuthorTitle = setting('seo_default_author_title') ?? '';
+                        $defaultAuthorBio = setting('seo_default_author_bio') ?? '';
+                        $defaultAuthorImage = setting('seo_default_author_image') ?? '';
+                    @endphp
+
+                    <div class="row mb-3">
                         {{-- Author Name --}}
                         <div class="col-12 col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
@@ -581,10 +589,77 @@
                         <div class="col-12 col-md-6">
                             <div class="form-floating">
                                 <input type="url" wire:model="seoDataCache.{{ $lang }}.author_url"
-                                    class="form-control" placeholder="https://example.com">
+                                    class="form-control"
+                                    placeholder="{{ $defaultAuthorUrl ?: 'https://example.com/author' }}">
                                 <label>Yazar Web Sitesi</label>
                                 <div class="form-text">
-                                    <small>Yazarın kişisel web sitesi veya profil sayfası</small>
+                                    <small>
+                                        @if($defaultAuthorUrl)
+                                            <i class="fas fa-magic text-success me-1"></i>Varsayılan: "{{ $defaultAuthorUrl }}"
+                                        @else
+                                            <i class="fas fa-info-circle text-muted me-1"></i>https:// ile başlamalı (Örn: https://linkedin.com/in/username)
+                                        @endif
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        {{-- Author Title/Job --}}
+                        <div class="col-12 col-md-6">
+                            <div class="form-floating mb-3 mb-md-0">
+                                <input type="text" wire:model="seoDataCache.{{ $lang }}.author_title"
+                                    class="form-control"
+                                    placeholder="{{ $defaultAuthorTitle ?: 'Örn: CEO, Endüstriyel Ekipman Uzmanı' }}">
+                                <label>Yazar Ünvanı / Mesleği</label>
+                                <div class="form-text">
+                                    <small>
+                                        @if($defaultAuthorTitle)
+                                            <i class="fas fa-magic text-success me-1"></i>Varsayılan: "{{ \Illuminate\Support\Str::limit($defaultAuthorTitle, 40) }}"
+                                        @else
+                                            Google E-E-A-T için ünvan/meslek (jobTitle)
+                                        @endif
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Author Image --}}
+                        <div class="col-12 col-md-6">
+                            <label class="form-label">Yazar Profil Görseli</label>
+                            <input type="text" wire:model="seoDataCache.{{ $lang }}.author_image"
+                                class="form-control"
+                                placeholder="{{ $defaultAuthorImage ?: 'https://example.com/author.jpg' }}">
+                            <div class="form-text">
+                                <small>
+                                    @if($defaultAuthorImage)
+                                        <i class="fas fa-magic text-success me-1"></i>Varsayılan görseli kullan
+                                    @else
+                                        Yazar profil fotoğrafı URL'si (Google E-E-A-T için)
+                                    @endif
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        {{-- Author Bio --}}
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea wire:model="seoDataCache.{{ $lang }}.author_bio"
+                                    class="form-control"
+                                    placeholder="{{ $defaultAuthorBio ?: 'Örn: 15 yıldır forklift sektöründe uzman...' }}"
+                                    style="height: 100px; resize: vertical;"></textarea>
+                                <label>Yazar Biyografisi</label>
+                                <div class="form-text">
+                                    <small>
+                                        @if($defaultAuthorBio)
+                                            <i class="fas fa-magic text-success me-1"></i>Varsayılan: "{{ \Illuminate\Support\Str::limit($defaultAuthorBio, 40) }}"
+                                        @else
+                                            Google E-E-A-T için kısa özgeçmiş (description)
+                                        @endif
+                                    </small>
                                 </div>
                             </div>
                         </div>

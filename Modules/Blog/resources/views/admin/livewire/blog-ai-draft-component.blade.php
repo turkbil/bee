@@ -18,10 +18,20 @@
     <div class="page-header d-print-none">
         <div class="row align-items-center">
             <div class="col-auto ms-auto d-print-none">
-                {{-- Taslak Üret Butonu --}}
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateDraftsModal" @if($isGenerating) disabled @endif>
-                    <i class="fas fa-plus"></i>
-                    Taslak Üret
+                {{-- Taslak Üret Butonu (Modal Yok - Direkt Livewire) --}}
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    wire:click="generateDrafts"
+                    wire:loading.attr="disabled"
+                    @if($isGenerating) disabled @endif
+                >
+                    <i class="fa-solid fa-plus"></i>
+                    <span wire:loading.remove wire:target="generateDrafts">Taslak Üret (1 kredi - {{ $draftCount }} adet)</span>
+                    <span wire:loading wire:target="generateDrafts">
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                        Oluşturuluyor...
+                    </span>
                 </button>
             </div>
         </div>
@@ -30,7 +40,7 @@
     {{-- Flash Messages --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            <i class="fas fa-check me-2"></i>
+            <i class="fa-solid fa-check me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -38,7 +48,7 @@
 
     @error('credits')
         <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
+            <i class="fa-solid fa-exclamation-circle me-2"></i>
             {{ $message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -64,7 +74,7 @@
         <div class="card mt-3" wire:poll.3s="checkBatchProgress">
             <div class="card-body">
                 <h4 class="mb-3">
-                    <i class="fas fa-pencil-alt"></i>
+                    <i class="fa-solid fa-pencil"></i>
                     Bloglar Yazılıyor...
                 </h4>
 
@@ -101,190 +111,212 @@
 
     {{-- Drafts Table --}}
     <div class="card mt-3">
-        <div class="card-header">
-            <h3 class="card-title">
-                Taslak Listesi ({{ $drafts->total() }})
-            </h3>
-            <div class="card-actions">
-                {{-- Toplu İşlem Butonları --}}
-                @if(count($selectedDrafts) > 0)
-                    <button
-                        type="button"
-                        class="btn btn-success me-2"
-                        wire:click.prevent="generateBlogs"
-                        @if($isWriting) disabled @endif
-                    >
-                        <i class="fas fa-check"></i>
-                        Seçilenleri Yaz ({{ count($selectedDrafts) }} × 1 kredi = {{ count($selectedDrafts) }} kredi)
-                    </button>
-                @endif
-
-                <button type="button" class="btn btn-outline-secondary" wire:click="toggleAll">
-                    <i class="far fa-check-square"></i>
-                    Tümünü Seç/Kaldır
-                </button>
-            </div>
-        </div>
-
         @if($drafts->isEmpty())
             <div class="card-body text-center py-5">
-                <i class="fas fa-inbox text-muted" style="font-size: 3rem;"></i>
-                <h3 class="mt-3 text-muted">Henüz taslak yok</h3>
-                <p class="text-muted">Başlamak için yukarıdaki "Taslak Üret" butonunu kullanın.</p>
+                <i class="fa-solid fa-inbox" style="font-size: 3rem; opacity: 0.5;"></i>
+                <h3 class="mt-3" style="opacity: 0.7;">Henüz taslak yok</h3>
+                <p style="opacity: 0.6;">Başlamak için yukarıdaki "Taslak Üret" butonunu kullanın.</p>
             </div>
         @else
-            <div class="table-responsive">
-                <table class="table table-hover table-vcenter card-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">
-                                <input type="checkbox" class="form-check-input" wire:click="toggleAll">
-                            </th>
-                            <th>Anahtar Kelime</th>
-                            <th>Kategoriler</th>
-                            <th>SEO Keywords</th>
-                            <th>Durum</th>
-                            <th style="width: 120px;">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($drafts as $draft)
-                            <tr @if($draft->is_generated) class="opacity-50 bg-light" style="pointer-events: none;" @endif>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        class="form-check-input"
-                                        wire:click="toggleDraftSelection({{ $draft->id }})"
-                                        @if(in_array($draft->id, $selectedDrafts)) checked @endif
-                                        @if($draft->is_generated) disabled title="Bu taslak zaten kullanılmış" @endif
-                                    >
-                                </td>
-                                <td>
-                                    <strong>{{ $draft->topic_keyword }}</strong>
-                                    <div class="text-muted small">{{ Str::limit($draft->meta_description, 80) }}</div>
-                                    @if($draft->is_generated)
-                                        <div class="text-danger small"><i class="fas fa-ban"></i> Zaten kullanılmış</div>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if(!empty($draft->category_suggestions))
-                                        @foreach(array_slice($draft->category_suggestions, 0, 2) as $catId)
-                                            @if(isset($categories[$catId]))
-                                                <span class="badge bg-blue-lt">{{ $categories[$catId]->title['tr'] ?? 'N/A' }}</span>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="text-muted small">
-                                        {{ implode(', ', array_slice($draft->seo_keywords ?? [], 0, 3)) }}
-                                        @if(count($draft->seo_keywords ?? []) > 3)
-                                            <span class="text-muted">+{{ count($draft->seo_keywords) - 3 }}</span>
-                                        @endif
+            <div class="card-body p-0">
+                <!-- Header Bölümü -->
+                <div class="row mx-2 my-3">
+                    <!-- Sol Taraf - Toplam Sayı -->
+                    <div class="col-auto">
+                        <h3 class="card-title mb-0">
+                            Taslak Listesi ({{ $drafts->total() }})
+                        </h3>
+                    </div>
+                    <!-- Ortadaki Loading -->
+                    <div class="col position-relative">
+                        <div wire:loading
+                            wire:target="toggleAll, toggleDraftSelection, deleteDraft, generateBlogs"
+                            class="position-absolute top-50 start-50 translate-middle text-center"
+                            style="width: 100%; max-width: 250px;">
+                            <div class="small mb-2" style="opacity: 0.7;">{{ __('admin.updating') }}</div>
+                            <div class="progress mb-1">
+                                <div class="progress-bar progress-bar-indeterminate"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sağ Taraf - Aksiyon Butonları -->
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center justify-content-end gap-2">
+                            @if(count($selectedDrafts) > 0)
+                                <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    wire:click.prevent="generateBlogs"
+                                    @if($isWriting) disabled @endif
+                                    data-bs-toggle="tooltip"
+                                    title="Seçilenleri Blog Olarak Yaz"
+                                >
+                                    <i class="fa-solid fa-check"></i>
+                                    ({{ count($selectedDrafts) }} kredi)
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    wire:click.prevent="bulkDelete"
+                                    onclick="return confirm('Seçili {{ count($selectedDrafts) }} taslağı silmek istediğinize emin misiniz?')"
+                                    data-bs-toggle="tooltip"
+                                    title="Seçilenleri Sil"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            @endif
+
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary"
+                                wire:click="toggleAll"
+                                data-bs-toggle="tooltip"
+                                title="Tümünü Seç/Kaldır"
+                            >
+                                <i class="fa-regular fa-square-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tablo Bölümü -->
+                <div id="table-default" class="table-responsive">
+                    <table class="table table-vcenter card-table table-hover text-nowrap datatable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="checkbox"
+                                            class="form-check-input"
+                                            wire:click="toggleAll"
+                                            id="selectAllCheckbox"
+                                            x-data="{
+                                                totalDrafts: {{ $drafts->where('is_generated', false)->count() }},
+                                                selectedCount: {{ count($selectedDrafts) }}
+                                            }"
+                                            x-init="
+                                                $el.indeterminate = (selectedCount > 0 && selectedCount < totalDrafts);
+                                                $el.checked = (selectedCount === totalDrafts && totalDrafts > 0);
+                                            "
+                                            x-effect="
+                                                $el.indeterminate = ({{ count($selectedDrafts) }} > 0 && {{ count($selectedDrafts) }} < totalDrafts);
+                                                $el.checked = ({{ count($selectedDrafts) }} === totalDrafts && totalDrafts > 0);
+                                            ">
                                     </div>
-                                </td>
-                                <td>
-                                    @if($draft->is_generated)
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-check"></i> Blog Yazıldı
-                                        </span>
-                                        @if($draft->generated_blog_id)
-                                            <a href="{{ route('admin.blog.manage', $draft->generated_blog_id) }}" target="_blank" class="badge bg-primary">
-                                                <i class="fas fa-external-link-alt"></i> Görüntüle
-                                            </a>
-                                        @endif
-                                    @elseif($draft->is_selected)
-                                        <span class="badge bg-warning">
-                                            <i class="fas fa-clock"></i> Seçildi
-                                        </span>
-                                    @else
-                                        <span class="badge bg-secondary">
-                                            <i class="fas fa-file"></i> Taslak
-                                        </span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <button
-                                        type="button"
-                                        class="btn btn-sm btn-outline-danger"
-                                        wire:click="deleteDraft({{ $draft->id }})"
-                                        onclick="return confirm('Bu taslağı silmek istediğinize emin misiniz?')"
-                                    >
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+                                </th>
+                                <th>Anahtar Kelime</th>
+                                <th>Kategoriler & Keywords</th>
+                                <th class="text-center" style="width: 140px">Durum</th>
+                                <th class="text-center" style="width: 100px">İşlemler</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="table-tbody">
+                            @foreach($drafts as $draft)
+                                <tr class="hover-trigger" @if($draft->is_generated) style="opacity: 0.6;" @endif>
+                                    <td class="sort-id small">
+                                        <div class="hover-toggle">
+                                            <span class="hover-hide">{{ $draft->id }}</span>
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input hover-show"
+                                                wire:click="toggleDraftSelection({{ $draft->id }})"
+                                                @if(in_array($draft->id, $selectedDrafts)) checked @endif
+                                                @if($draft->is_generated) disabled title="Bu taslak zaten kullanılmış" @endif
+                                            >
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <strong>{{ $draft->topic_keyword }}</strong>
+                                            <div class="small">{{ Str::limit($draft->meta_description, 80) }}</div>
+                                            @if($draft->is_generated)
+                                                <div class="text-danger small mt-1">
+                                                    <i class="fa-solid fa-ban"></i> Zaten kullanılmış
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column gap-1">
+                                            {{-- Kategoriler --}}
+                                            @if(!empty($draft->category_suggestions))
+                                                <div>
+                                                    @foreach(array_slice($draft->category_suggestions, 0, 2) as $catId)
+                                                        @if(isset($categories[$catId]))
+                                                            <span class="badge bg-blue-lt me-1">{{ $categories[$catId]->title['tr'] ?? 'N/A' }}</span>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                            {{-- Keywords --}}
+                                            @if(!empty($draft->seo_keywords))
+                                                <div class="small">
+                                                    {{ implode(', ', array_slice($draft->seo_keywords ?? [], 0, 3)) }}
+                                                    @if(count($draft->seo_keywords ?? []) > 3)
+                                                        <span>+{{ count($draft->seo_keywords) - 3 }}</span>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        @if($draft->is_generated)
+                                            <div class="d-flex flex-column gap-1 align-items-center">
+                                                <span class="badge bg-success">
+                                                    <i class="fa-solid fa-check"></i> Blog Yazıldı
+                                                </span>
+                                                @if($draft->generated_blog_id)
+                                                    <a href="{{ route('admin.blog.manage', $draft->generated_blog_id) }}" target="_blank" class="badge bg-primary">
+                                                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Görüntüle
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        @elseif($draft->is_selected)
+                                            <span class="badge bg-warning">
+                                                <i class="fa-solid fa-clock"></i> Seçildi
+                                            </span>
+                                        @else
+                                            <span class="badge bg-secondary">
+                                                <i class="fa-solid fa-file"></i> Taslak
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <div class="d-flex align-items-center gap-3 justify-content-center">
+                                            <a href="javascript:void(0);"
+                                                wire:click="deleteDraft({{ $draft->id }})"
+                                                onclick="return confirm('Bu taslağı silmek istediğinize emin misiniz?')"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="Sil"
+                                                style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                                <i class="fa-solid fa-trash link-danger fa-lg"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {{-- Pagination --}}
             <div class="card-footer">
-                {{ $drafts->links() }}
+                @if ($drafts->hasPages())
+                    {{ $drafts->links() }}
+                @else
+                    <div class="d-flex justify-content-between align-items-center mb-0">
+                        <p class="small mb-0" style="opacity: 0.7;">
+                            Toplam <span class="fw-semibold">{{ $drafts->total() }}</span> sonuç
+                        </p>
+                    </div>
+                @endif
             </div>
         @endif
     </div>
 
-    {{-- Modal: Taslak Üret --}}
-    <div
-        class="modal fade"
-        id="generateDraftsModal"
-        tabindex="-1"
-        wire:ignore.self
-        x-data="{}"
-        @close-modal.window="if ($event.detail === 'generateDraftsModal') { bootstrap.Modal.getInstance($el).hide(); }"
-    >
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="fas fa-robot me-2"></i>
-                            AI Taslak Üretimi
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                    <p class="text-muted">
-                        AI ile otomatik blog taslakları oluşturun. Her taslak bir anahtar kelime, kategori önerileri, SEO keywords ve blog yapısı içerir.
-                    </p>
-    
-                    <div class="mb-3">
-                        <label class="form-label">Taslak Sayısı</label>
-                        <input
-                            type="number"
-                            class="form-control @error('draftCount') is-invalid @enderror"
-                            wire:model="draftCount"
-                            min="1"
-                            max="200"
-                        >
-                        @error('draftCount')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <div class="form-hint">
-                            Toplam maliyet: <strong>1.0 kredi</strong> (taslak sayısından bağımsız)
-                        </div>
-                    </div>
-    
-                    <div class="alert alert-info mb-0">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Bilgi:</strong> Taslak üretimi birkaç dakika sürebilir. İşlem arka planda çalışacaktır.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        wire:click="generateDrafts"
-                        @click="console.log('🔥 BUTTON CLICKED - Calling generateDrafts...')"
-                        @if($isGenerating) disabled @endif
-                    >
-                        <i class="fas fa-magic"></i>
-                        Taslak Üret (1 kredi)
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{-- Modal Removed: Direkt Livewire button kullanılıyor --}}
 </div>

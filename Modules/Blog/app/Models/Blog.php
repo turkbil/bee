@@ -372,6 +372,66 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
      */
 
     /**
+     * Toplam kelime sayısını hesapla (Body + FAQ + HowTo)
+     * SEO ve Schema için kullanılır
+     */
+    public function getWordCount(?string $locale = null): int
+    {
+        $locale = $locale ?? app()->getLocale();
+        $totalWords = 0;
+
+        // 1. Body content
+        $body = $this->getTranslated('body', $locale);
+        if (!empty($body)) {
+            $plainBody = strip_tags($body);
+            $totalWords += str_word_count($plainBody);
+        }
+
+        // 2. FAQ data
+        if (!empty($this->faq_data)) {
+            $faqData = is_string($this->faq_data) ? json_decode($this->faq_data, true) : $this->faq_data;
+            if (is_array($faqData)) {
+                foreach ($faqData as $faq) {
+                    if (!empty($faq['question'])) {
+                        $totalWords += str_word_count($faq['question']);
+                    }
+                    if (!empty($faq['answer'])) {
+                        $totalWords += str_word_count($faq['answer']);
+                    }
+                }
+            }
+        }
+
+        // 3. HowTo data
+        if (!empty($this->howto_data)) {
+            $howtoData = is_string($this->howto_data) ? json_decode($this->howto_data, true) : $this->howto_data;
+            if (is_array($howtoData)) {
+                // Name
+                if (!empty($howtoData['name'])) {
+                    $totalWords += str_word_count($howtoData['name']);
+                }
+                // Description
+                if (!empty($howtoData['description'])) {
+                    $totalWords += str_word_count($howtoData['description']);
+                }
+                // Steps
+                if (!empty($howtoData['steps']) && is_array($howtoData['steps'])) {
+                    foreach ($howtoData['steps'] as $step) {
+                        if (!empty($step['name'])) {
+                            $totalWords += str_word_count($step['name']);
+                        }
+                        if (!empty($step['text'])) {
+                            $totalWords += str_word_count($step['text']);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $totalWords;
+    }
+
+    /**
      * Reading time hesapla (dakika)
      * Ortalama okuma hızı: 200 kelime/dakika
      */

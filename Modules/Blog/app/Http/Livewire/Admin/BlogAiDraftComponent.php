@@ -22,7 +22,7 @@ class BlogAiDraftComponent extends Component
 {
     use WithPagination;
 
-    public int $draftCount = 100;
+    public int $draftCount = 5; // Test için düşürüldü
     public array $selectedDrafts = [];
     public bool $isGenerating = false;
     public bool $isWriting = false;
@@ -64,24 +64,21 @@ class BlogAiDraftComponent extends Component
      */
     public function generateDrafts()
     {
-        Log::info('🔥 GENERATE DRAFTS CLICKED!', [
-            'draftCount' => $this->draftCount,
-            'tenant_id' => tenant('id'),
-            'timestamp' => now()->toDateTimeString(),
-        ]);
-
         $this->validate();
 
-        Log::info('✅ Validation passed', ['draftCount' => $this->draftCount]);
+        Log::channel('daily')->info('✅ Validation passed', ['draftCount' => $this->draftCount]);
+        file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - VALIDATION PASSED\n", FILE_APPEND);
 
         // Credit kontrolü (UI'da gösterilmesi için)
         if (!ai_can_use_credits(1.0)) {
-            Log::warning('❌ Insufficient credits');
+            Log::channel('daily')->warning('❌ Insufficient credits');
+            file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - INSUFFICIENT CREDITS\n", FILE_APPEND);
             $this->addError('credits', 'Yetersiz AI kredisi! Lütfen kredi satın alın.');
             return;
         }
 
-        Log::info('✅ Credit check passed');
+        Log::channel('daily')->info('✅ Credit check passed');
+        file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - CREDIT CHECK PASSED\n", FILE_APPEND);
 
         try {
             // Unique batch ID oluştur (draft generation tracking için)
@@ -89,8 +86,12 @@ class BlogAiDraftComponent extends Component
             $this->currentDraftBatchId = 'tenant_' . $tenantId . '_draft_gen_' . time() . '_' . uniqid();
             $this->expectedDraftCount = $this->draftCount;
 
+            file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - DISPATCHING JOB: {$this->draftCount} drafts\n", FILE_APPEND);
+
             // Job dispatch
             GenerateDraftsJob::dispatch($this->draftCount);
+
+            file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - JOB DISPATCHED SUCCESSFULLY\n", FILE_APPEND);
 
             $this->isGenerating = true;
 
@@ -99,28 +100,26 @@ class BlogAiDraftComponent extends Component
             // Modal'ı kapat (başarılı olduğu için)
             $this->dispatch('close-modal', 'generateDraftsModal');
 
-            Log::info('Blog AI Draft Generation Requested', [
+            Log::channel('daily')->info('✅ Blog AI Draft Generation Job Dispatched', [
                 'count' => $this->draftCount,
                 'batch_id' => $this->currentDraftBatchId,
                 'tenant_id' => tenant('id'),
             ]);
 
         } catch (\Exception $e) {
-            Log::error('❌ EXCEPTION IN GENERATE DRAFTS', [
+            Log::channel('daily')->error('❌ EXCEPTION IN GENERATE DRAFTS', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'tenant_id' => tenant('id'),
             ]);
 
-            $this->addError('generation', 'Taslak üretimi başlatılamadı: ' . $e->getMessage());
+            file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - ERROR: {$e->getMessage()}\n", FILE_APPEND);
 
-            Log::error('Blog AI Draft Generation Request Failed', [
-                'error' => $e->getMessage(),
-                'tenant_id' => tenant('id'),
-            ]);
+            $this->addError('generation', 'Taslak üretimi başlatılamadı: ' . $e->getMessage());
         }
 
-        Log::info('🏁 GENERATE DRAFTS METHOD FINISHED');
+        Log::channel('daily')->info('🏁 GENERATE DRAFTS METHOD FINISHED');
+        file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - METHOD FINISHED\n", FILE_APPEND);
     }
 
     /**
@@ -310,6 +309,39 @@ class BlogAiDraftComponent extends Component
     }
 
     /**
+     * Toplu taslak silme
+     */
+    public function bulkDelete()
+    {
+        if (empty($this->selectedDrafts)) {
+            $this->addError('selection', 'Lütfen en az bir taslak seçin.');
+            return;
+        }
+
+        try {
+            $deletedCount = BlogAIDraft::whereIn('id', $this->selectedDrafts)->delete();
+
+            // Seçili listeyi temizle
+            $this->selectedDrafts = [];
+
+            session()->flash('success', "{$deletedCount} taslak başarıyla silindi.");
+
+            Log::info('Bulk Draft Delete', [
+                'count' => $deletedCount,
+                'tenant_id' => tenant('id'),
+            ]);
+
+        } catch (\Exception $e) {
+            $this->addError('delete', 'Toplu silme başarısız: ' . $e->getMessage());
+
+            Log::error('Bulk Draft Delete Failed', [
+                'error' => $e->getMessage(),
+                'tenant_id' => tenant('id'),
+            ]);
+        }
+    }
+
+    /**
      * Render component
      */
     public function render()
@@ -321,7 +353,7 @@ class BlogAiDraftComponent extends Component
 
         $drafts = BlogAIDraft::query()
             ->with('generatedBlog') // Eager load generated blog relation
-            ->latest()
+            ->orderBy('created_at', 'desc') // En yeni üstte
             ->paginate(20);
 
         // N+1 query prevention: Tüm kategorileri önceden yükle

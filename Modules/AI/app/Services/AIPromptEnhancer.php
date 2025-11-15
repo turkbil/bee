@@ -94,13 +94,13 @@ class AIPromptEnhancer
     {
         $styleDescriptions = [
             'ultra_photorealistic' => 'RAW photo shot on professional DSLR camera, natural unprocessed look, documentary photography style',
-            'studio_photography' => 'studio photo with professional lighting setup, controlled environment, commercial photography',
+            'studio_photography' => 'studio photo with professional lighting setup, controlled environment, commercial photography, studio lighting with 4K HD DSLR',
             'natural_light' => 'outdoor photo with natural daylight, golden hour or soft morning light, environmental photography',
             'cinematic_photography' => 'film camera aesthetic with cinematic composition, dramatic lighting, movie still quality',
             'documentary_style' => 'documentary photo, photojournalism style, candid authentic moment captured in real-time',
-            'commercial_photography' => 'high-end commercial photo, advertising quality, professional product or editorial photography',
+            'commercial_photography' => 'high-end commercial photo, advertising quality, professional product photography, industrial equipment catalog quality',
             'portrait_photography' => 'portrait photo with environmental context, professional headshot or editorial portrait quality',
-            'macro_photography' => 'macro photo with extreme close-up, ultra-sharp detail, professional macro lens photography',
+            'macro_photography' => 'macro photo with extreme close-up, ultra-sharp detail, professional macro lens photography, visible material texture and finish',
         ];
 
         $styleDesc = $styleDescriptions[$style] ?? $styleDescriptions['ultra_photorealistic'];

@@ -392,10 +392,10 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
             $faqData = is_string($this->faq_data) ? json_decode($this->faq_data, true) : $this->faq_data;
             if (is_array($faqData)) {
                 foreach ($faqData as $faq) {
-                    if (!empty($faq['question'])) {
+                    if (!empty($faq['question']) && is_string($faq['question'])) {
                         $totalWords += str_word_count($faq['question']);
                     }
-                    if (!empty($faq['answer'])) {
+                    if (!empty($faq['answer']) && is_string($faq['answer'])) {
                         $totalWords += str_word_count($faq['answer']);
                     }
                 }
@@ -407,20 +407,20 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
             $howtoData = is_string($this->howto_data) ? json_decode($this->howto_data, true) : $this->howto_data;
             if (is_array($howtoData)) {
                 // Name
-                if (!empty($howtoData['name'])) {
+                if (!empty($howtoData['name']) && is_string($howtoData['name'])) {
                     $totalWords += str_word_count($howtoData['name']);
                 }
                 // Description
-                if (!empty($howtoData['description'])) {
+                if (!empty($howtoData['description']) && is_string($howtoData['description'])) {
                     $totalWords += str_word_count($howtoData['description']);
                 }
                 // Steps
                 if (!empty($howtoData['steps']) && is_array($howtoData['steps'])) {
                     foreach ($howtoData['steps'] as $step) {
-                        if (!empty($step['name'])) {
+                        if (!empty($step['name']) && is_string($step['name'])) {
                             $totalWords += str_word_count($step['name']);
                         }
-                        if (!empty($step['text'])) {
+                        if (!empty($step['text']) && is_string($step['text'])) {
                             $totalWords += str_word_count($step['text']);
                         }
                     }

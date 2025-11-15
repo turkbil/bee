@@ -224,7 +224,7 @@
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                     <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
-                                    Sık Sorulan Sorular
+                                    {{ __('blog::front.general.faq_title') }}
                                 </h2>
                                 <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
                             </header>
@@ -267,7 +267,7 @@
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
                                     <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
-                                    {{ is_string($howtoData['name'] ?? '') ? $howtoData['name'] : 'Nasıl Yapılır?' }}
+                                    {{ is_string($howtoData['name'] ?? '') ? $howtoData['name'] : __('blog::front.general.howto_title') }}
                                 </h2>
                                 <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
                                 @if(!empty($howtoData['description']) && is_string($howtoData['description']))

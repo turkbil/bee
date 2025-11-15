@@ -672,9 +672,92 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 
 ## 🎨 TASARIM STANDARTLARI
 
+### 🎯 GENEL STANDARTLAR
 - **Admin**: Tabler.io + Bootstrap + Livewire
 - **Frontend**: Alpine.js + Tailwind CSS
 - **Framework renkleri kullan** (custom renk yok)
+
+### 🎨 ICON SİSTEMİ
+
+**🚨 KRİTİK: SADECE FONTAWESOME!**
+
+Tüm sistemde (admin panel dahil) **SADECE FontAwesome** ikonları kullanılır!
+
+#### ❌ ASLA KULLANMA:
+- Tabler Icons (`ti ti-*`)
+- Bootstrap Icons
+- Material Icons
+- SVG ikonlar (FontAwesome'da yoksa bile!)
+- Custom icon font'lar
+
+#### ✅ SADECE FONTAWESOME:
+```html
+<!-- ✅ DOĞRU -->
+<i class="fas fa-home"></i>
+<i class="far fa-user"></i>
+<i class="fab fa-github"></i>
+
+<!-- ❌ YANLIŞ -->
+<i class="ti ti-home"></i>
+<i class="bi bi-house"></i>
+```
+
+#### 📋 FontAwesome Kategorileri:
+- `fas` - Solid (dolu ikonlar)
+- `far` - Regular (çizgili ikonlar)
+- `fab` - Brands (marka logoları)
+
+**UNUTMA:** Eğer bir icon lazımsa → **Sadece FontAwesome'da ara!**
+
+### 🏗️ ADMIN PANEL PATTERN SİSTEMİ
+
+**🚨 KRİTİK: LAYOUT SİSTEMİ STANDARDI**
+
+Admin panelde her modülde **layout pattern** sistemi var!
+
+#### ❌ ESKİ PATTERN (ARTIK KULLANMA):
+```
+- create.blade.php (❌ Yok artık!)
+- edit.blade.php   (❌ Yok artık!)
+```
+
+#### ✅ YENİ PATTERN (ZORUNLU):
+```
+- index.blade.php   (✅ Liste sayfası - ZORUNLU!)
+- manage.blade.php  (✅ Create/Edit tek sayfada - ZORUNLU!)
+```
+
+#### 📋 Route Yapısı:
+```php
+// ✅ DOĞRU Route Pattern
+Route::get('/', [Controller::class, 'index'])->name('index');           // Liste
+Route::get('/manage/{id?}', [Controller::class, 'manage'])->name('manage'); // Create/Edit
+```
+
+#### 🎯 Manage Route Mantığı:
+```php
+// manage route hem create hem edit için kullanılır
+// ID varsa → Edit mode
+// ID yoksa → Create mode
+
+public function manage($id = null)
+{
+    if ($id) {
+        // Edit mode
+        $item = Model::findOrFail($id);
+    } else {
+        // Create mode
+        $item = new Model();
+    }
+
+    return view('admin.manage', compact('item'));
+}
+```
+
+#### ⚠️ KRİTİK:
+- **index route**: Her modül için **ZORUNLU!**
+- **manage route**: Create/Edit için **TEK SAYFA!**
+- **create/edit ayrımı YOK!**: Eskiden vardı, artık manage tek route!
 
 ---
 
@@ -759,6 +842,80 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 - **Page Pattern = Master**: Yeni modüller Page pattern'i alır
 - **JSON çoklu dil + SEO + Modern PHP**
 
+### ⚙️ SETTINGS SİSTEMİ (SettingManagement Modülü)
+
+**🚨 KRİTİK: Site bilgileri Settings'ten çekilir!**
+
+Site adı, iletişim bilgileri, sosyal medya linkleri gibi tüm site ayarları **SettingManagement** modülünden çekilir.
+
+#### 📊 Sistem Yapısı:
+
+**1. Setting Groups (Central Database):**
+- `setting_groups` tablosu **central database**'de
+- Soru yapısını tanımlar (hangi ayarlar var?)
+- Tüm tenant'lar için ortak şablon
+
+**2. Setting Values (Tenant Database):**
+- `setting_values` tablosu **tenant database**'de
+- Cevapları tenant'a özgü saklar
+- Her tenant kendi değerlerini belirler
+
+#### 🎯 Nasıl Çalışır?
+
+```
+┌─────────────────────────────────────────┐
+│ CENTRAL DATABASE (tuufi_db)            │
+├─────────────────────────────────────────┤
+│ setting_groups:                         │
+│  - site_name (soru)                     │
+│  - site_phone (soru)                    │
+│  - site_email (soru)                    │
+│  - site_address (soru)                  │
+└─────────────────────────────────────────┘
+            ↓
+┌─────────────────────────────────────────┐
+│ TENANT 2 DATABASE (tenant_2_db)        │
+├─────────────────────────────────────────┤
+│ setting_values:                         │
+│  - site_name = "İxtif"                  │
+│  - site_phone = "+90 212 123 45 67"     │
+│  - site_email = "info@ixtif.com"        │
+│  - site_address = "İstanbul, Türkiye"   │
+└─────────────────────────────────────────┘
+```
+
+#### 📋 Kod Kullanımı:
+
+```php
+// Setting value çekme
+$siteName = setting('site_name'); // "İxtif"
+$sitePhone = setting('site_phone'); // "+90 212 123 45 67"
+
+// Blade'de kullanım
+{{ setting('site_name') }}
+{{ setting('site_email') }}
+```
+
+#### ⚠️ Yeni Setting Group Oluşturma:
+
+**🚨 MUTLAKA KULLANICI ONAYI AL!**
+
+Yeni setting group oluşturmadan ÖNCE:
+1. ✅ Kullanıcıya danış: "Yeni setting group oluşturayım mı?"
+2. ✅ İçeriğini göster: "Şu ayarları ekleyeceğim..."
+3. ✅ Onay aldıktan sonra oluştur
+4. ✅ Central database'e setting group ekle
+5. ✅ Tenant database'e default value'lar ekle
+
+#### 📝 Setting Group Kategorileri:
+- **site_info**: Site adı, slogan, açıklama
+- **contact_info**: Telefon, email, adres
+- **social_media**: Facebook, Twitter, Instagram linkleri
+- **seo_settings**: Meta description, keywords
+- **email_settings**: SMTP, email yapılandırması
+
+**UNUTMA:** Eğer site bilgisi lazımsa → **Settings modülünden çek!**
+
 ### THUMBMAKER SİSTEMİ
 **⚡ Kod yazarken görsel oluştururken MUTLAKA Thumbmaker kullan!**
 
@@ -804,9 +961,16 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 **⚠️ BU BİR MULTI-TENANT SİSTEMDİR!**
 
 #### 📊 Sistem Yapısı:
-- **Merkezi Sistem**: `tuufi.com` (Central domain - tenant değil, sadece yönetim merkezi)
+- **Merkezi Sistem**: `tuufi.com` (Central domain - **Tenant ID: 1**)
+  - ⚠️ **UYARI:** Central domain DE bir tenant! (ID: 1)
+  - Central database'de hem central hem tenant_1 database var
 - **Tenant Sayısı**: Yüzlerce farklı tenant (sürekli artacak)
 - **Her Tenant**: Farklı sektör, farklı konu, tamamen bağımsız site
+- **Database Yapısı**: Her tenant **tamamen bağımsız database'e** sahip
+  - Central: `tuufi_db` (merkezi veriler)
+  - Tenant 1: `tenant_1_db` (tuufi.com)
+  - Tenant 2: `tenant_2_db` (ixtif.com)
+  - Tenant 3: `tenant_3_db` (ixtif.com.tr)
 
 #### 🎯 VARSAYILAN ÇALIŞMA TENANT'I (Özellikle belirtilmezse):
 - **Domain**: `ixtif.com`
@@ -929,7 +1093,7 @@ plesk db "UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = 'domain.c
 ```
 
 #### Mevcut Tenant'lar:
-- **tuufi.com**: Central domain (tenant değil)
+- **tuufi.com**: Tenant ID: 1 (Central domain)
 - **ixtif.com**: Tenant ID: 2
 - **ixtif.com.tr**: Tenant ID: 3
 

@@ -12,6 +12,8 @@ return [
         'no_blogs_found' => 'Henüz blog eklenmemiş.',
         'no_blogs_description' => 'Henüz hiç blog yayınlanmamış.',
         'updated' => 'Güncellendi',
+        'faq_title' => 'Sık Sorulan Sorular',
+        'howto_title' => 'Nasıl Yapılır?',
     ],
     'messages' => [
         'no_blogs_found' => 'Henüz blog eklenmemiş.',

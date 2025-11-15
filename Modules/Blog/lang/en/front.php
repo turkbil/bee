@@ -12,6 +12,8 @@ return [
         'no_blogs_found' => 'No blogs found yet.',
         'no_blogs_description' => 'No blogs have been published yet.',
         'updated' => 'Updated',
+        'faq_title' => 'Frequently Asked Questions',
+        'howto_title' => 'How To',
     ],
     'messages' => [
         'no_blogs_found' => 'No blogs found yet.',

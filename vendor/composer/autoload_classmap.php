@@ -237,6 +237,8 @@ return array(
     'App\\Services\\AI\\SeoAnalysisService' => $baseDir . '/app/Services/AI/SeoAnalysisService.php',
     'App\\Services\\AI\\SimpleDirectiveService' => $baseDir . '/app/Services/AI/SimpleDirectiveService.php',
     'App\\Services\\AI\\SimpleFlowCopyService' => $baseDir . '/app/Services/AI/SimpleFlowCopyService.php',
+    'App\\Services\\AI\\TenantBlogPromptEnhancer' => $baseDir . '/app/Services/AI/TenantBlogPromptEnhancer.php',
+    'App\\Services\\AI\\Tenants\\Tenant2BlogEnhancement' => $baseDir . '/app/Services/AI/Tenants/Tenant2BlogEnhancement.php',
     'App\\Services\\AI\\Token\\GlobalTokenManager' => $baseDir . '/app/Services/AI/Token/GlobalTokenManager.php',
     'App\\Services\\AI\\VectorSearchService' => $baseDir . '/app/Services/AI/VectorSearchService.php',
     'App\\Services\\BaseService' => $baseDir . '/app/Services/BaseService.php',

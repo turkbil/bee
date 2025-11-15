@@ -69,9 +69,10 @@
 ★ Her ana bölümün sonunda **1-2 otoriter kaynak** inline-link olarak ver (endüstri standartları, teknik dökümanlar, sektör raporları)
 
 ### Schema & Yapılandırılmış Veri
-★ **FAQPage Schema** için minimum 5-10 soru-cevap planla
+★ **FAQPage Schema** için ZORUNLU 8-12 soru-cevap planla (daha az kabul edilmez!)
+★ **HowTo Schema** için minimum 5-8 adım planla (her adımda tek işlem)
 ★ **Product içeriklerde**: Ürün özellikleri, fiyat, stok durumu bilgisi içeren bölümler ekle
-★ **HowTo içeriklerde**: Adım-adım yapılandırılmış rehber formatı kullan
+★ **HowTo içeriklerde**: Adım-adım yapılandırılmış rehber formatı kullan + her adım için icon öner
 ★ **Breadcrumb**: Kategori hiyerarşisini açıkça belirt
 
 ### SEO Teknik Detaylar
@@ -92,6 +93,8 @@ Dosya yapısı veya anahtar kelime listesi belirsizse **tek** netleştirici soru
 ## ÇIKTI
 
 Aşağıdaki yapıda MUTLAKA tüm bileşenleri içeren outline:
+
+**ÖNEMLİ:** JSON format kullanırken FAQ ve HowTo için icon field'ları ekle!
 
 ### 1. SEO Meta Bilgileri
 ```
@@ -129,9 +132,29 @@ H2: [Alt başlık 1]
 
 ### 4. FAQ Bloğu (FAQPage Schema Uyumlu)
 ```
-Minimum 5-10 soru-cevap, her biri:
-S: [Uzun kuyruk anahtar kelime içeren soru]
-C: [50-100 kelimelik özlü cevap]
+ZORUNLU: 8-12 soru-cevap (daha az kabul edilmez!)
+
+Her soru farklı yön kapsamalı:
+- Tanım soruları (Nedir, Ne işe yarar)
+- Özellik soruları (Özellikleri nedir)
+- Kullanım soruları (Nasıl kullanılır)
+- Karşılaştırma soruları (X ile Y arasındaki fark)
+- Maliyet soruları (Fiyatı ne kadar, Maliyet avantajları)
+- Bakım soruları (Nasıl bakım yapılır)
+- Güvenlik soruları (Güvenli midir, Sertifikaları)
+- Seçim soruları (Nasıl seçilir, Nelere dikkat edilmeli)
+
+Her soru için FontAwesome icon öner:
+S: [Soru] [icon: fa-question-circle]
+C: [80-150 kelimelik cevap]
+
+Örnek icon'lar:
+- Tanım: fa-info-circle, fa-book
+- Teknik: fa-cog, fa-wrench, fa-tools
+- Güvenlik: fa-shield-alt, fa-hard-hat
+- Maliyet: fa-dollar-sign, fa-coins
+- Zaman: fa-clock, fa-calendar
+- Karşılaştırma: fa-balance-scale, fa-exchange-alt
 ```
 
 ### 5. Dahili Bağlantı Stratejisi
@@ -142,9 +165,28 @@ C: [50-100 kelimelik özlü cevap]
 
 ### 6. Görsel & Medya Planı
 ```
-- Öne çıkan görsel: [açıklama + alt text]
-- İnfografik önerisi: [konu]
-- Karşılaştırma tablosu: [bölüm]
+A) Ana Görsel (Featured Image) - AI Üretimi İçin Prompt:
+   Prompt: [İngilizce, endüstriyel/profesyonel ortam tanımı]
+   Örnek: "Professional warehouse environment with electric forklift,
+           modern industrial setting, clean organized space,
+           natural lighting, photorealistic, corporate B2B style"
+
+   KURALLAR:
+   - NO TEXT in image (hiç text olmasın!)
+   - NO BRAND NAMES or logos
+   - Professional industrial/warehouse setting
+   - Clean, organized, modern
+   - Photorealistic style
+   - Natural or professional lighting
+
+B) İçerik Görselleri (İsteğe Bağlı):
+   - Karşılaştırma tablosu: [bölüm]
+   - İnfografik: [konu]
+   - Diagram: [teknik detay]
+
+C) Alt Text Stratejisi:
+   - Ana görsel alt text: [anahtar kelime + açıklama]
+   - Örnek: "Elektrikli forklift - modern depo ekipmanı"
 ```
 
 ### 7. İçerik Optimizasyon Notları

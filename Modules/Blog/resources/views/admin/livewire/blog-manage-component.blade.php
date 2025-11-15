@@ -221,6 +221,136 @@
 
                         {{-- SEO Character Counter - manage.js'te tanımlı --}}
 
+                        {{-- DIVIDER --}}
+                        <hr class="my-5">
+
+                        {{-- FAQ & HOWTO VISUAL EDITORS --}}
+                        <div class="row mb-4">
+                            {{-- FAQ VISUAL EDITOR --}}
+                            <div class="col-12 col-xl-6" x-data="faqEditor(@entangle('inputs.faq_data').defer)">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <label class="form-label mb-0">{{ __('blog::admin.faq') }}</label>
+                                    <button type="button" @click="addFaq()" class="btn btn-primary">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                {{-- FAQ Sorular Container --}}
+                                <div class="faq-container">
+                                    <template x-for="(faq, index) in faqs" :key="index">
+                                        <div class="faq-item card mb-3">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <span class="handle text-muted me-2" style="cursor: move;" title="Sürükle">
+                                                        <i class="fa-solid fa-grip-vertical"></i>
+                                                    </span>
+                                                    <select x-model="faq.icon" class="form-select form-select-sm me-2" style="width: 70px;">
+                                                        <option value="fa-question-circle">❓</option>
+                                                        <option value="fa-info-circle">ℹ️</option>
+                                                        <option value="fa-check-circle">✅</option>
+                                                        <option value="fa-wrench">🔧</option>
+                                                        <option value="fa-shield-alt">🛡️</option>
+                                                        <option value="fa-dollar-sign">💰</option>
+                                                        <option value="fa-truck">🚚</option>
+                                                        <option value="fa-cog">⚙️</option>
+                                                    </select>
+                                                    <button type="button" @click="removeFaq(index)"
+                                                            class="btn btn-sm btn-link text-danger ms-auto p-0"
+                                                            title="Sil">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" x-model="faq.question"
+                                                           class="form-control"
+                                                           :id="'faq_question_' + index"
+                                                           placeholder="Soru" />
+                                                    <label :for="'faq_question_' + index">{{ __('blog::admin.question') }}</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <textarea x-model="faq.answer"
+                                                              class="form-control"
+                                                              :id="'faq_answer_' + index"
+                                                              style="height: 100px"
+                                                              placeholder="Cevap"></textarea>
+                                                    <label :for="'faq_answer_' + index">{{ __('blog::admin.answer') }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <div x-show="faqs.length === 0" class="alert alert-info">
+                                        <i class="fa-solid fa-info-circle me-2"></i>
+                                        {{ __('blog::admin.no_faq_yet') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- HOWTO VISUAL EDITOR --}}
+                            <div class="col-12 col-xl-6" x-data="howtoEditor(@entangle('inputs.howto_data').defer)">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <label class="form-label mb-0">{{ __('blog::admin.howto') }}</label>
+                                    <button type="button" @click="addStep()" class="btn btn-primary">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                {{-- HowTo Steps Container --}}
+                                <div class="howto-steps-container">
+                                    <template x-for="(step, index) in howto.steps" :key="index">
+                                        <div class="howto-item card mb-3">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <span class="handle text-muted me-2" style="cursor: move;" title="Sürükle">
+                                                        <i class="fa-solid fa-grip-vertical"></i>
+                                                    </span>
+                                                    <span class="badge bg-secondary me-2" x-text="'Adım ' + (index + 1)"></span>
+                                                    <select x-model="step.icon" class="form-select form-select-sm me-2" style="width: 70px;">
+                                                        <option value="fa-cog">⚙️</option>
+                                                        <option value="fa-check">✅</option>
+                                                        <option value="fa-wrench">🔧</option>
+                                                        <option value="fa-power-off">🔌</option>
+                                                        <option value="fa-play">▶️</option>
+                                                        <option value="fa-stop">⏹️</option>
+                                                        <option value="fa-arrow-right">➡️</option>
+                                                        <option value="fa-warning">⚠️</option>
+                                                    </select>
+                                                    <button type="button" @click="removeStep(index)"
+                                                            class="btn btn-sm btn-link text-danger ms-auto p-0"
+                                                            title="Sil">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" x-model="step.name"
+                                                           class="form-control"
+                                                           :id="'step_name_' + index"
+                                                           placeholder="Başlık" />
+                                                    <label :for="'step_name_' + index">{{ __('blog::admin.step_title') }}</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <textarea x-model="step.text"
+                                                              class="form-control"
+                                                              :id="'step_text_' + index"
+                                                              style="height: 80px"
+                                                              placeholder="Detay"></textarea>
+                                                    <label :for="'step_text_' + index">{{ __('blog::admin.step_text') }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <div x-show="howto.steps.length === 0" class="alert alert-info">
+                                        <i class="fa-solid fa-info-circle me-2"></i>
+                                        {{ __('blog::admin.no_steps_yet') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- DIVIDER --}}
+                        <hr class="my-5">
+
                         <!-- Aktif/Pasif - sadece bir kere -->
                         <div class="mb-3 mt-4">
                             <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
@@ -302,5 +432,169 @@
         ])
 
         @include('ai::admin.components.universal-ai-content-scripts')
+
+        {{-- Sortable.js CDN --}}
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+        {{-- FAQ & HowTo Visual Editors --}}
+        <script>
+            // FAQ Visual Editor Component
+            function faqEditor(wireModel) {
+                return {
+                    faqs: [],
+                    sortable: null,
+
+                    init() {
+                        // Livewire'dan veriyi al (JSON string veya array)
+                        this.$watch('$wire.inputs.faq_data', (value) => {
+                            if (typeof value === 'string' && value) {
+                                try {
+                                    this.faqs = JSON.parse(value);
+                                } catch (e) {
+                                    this.faqs = [];
+                                }
+                            } else if (Array.isArray(value)) {
+                                this.faqs = value;
+                            } else {
+                                this.faqs = [];
+                            }
+                        });
+
+                        // İlk yükleme
+                        const initialValue = this.$wire.inputs.faq_data;
+                        if (typeof initialValue === 'string' && initialValue) {
+                            try {
+                                this.faqs = JSON.parse(initialValue);
+                            } catch (e) {
+                                this.faqs = [];
+                            }
+                        } else if (Array.isArray(initialValue)) {
+                            this.faqs = initialValue;
+                        }
+
+                        // Sortable.js init
+                        this.$nextTick(() => {
+                            const container = this.$el.querySelector('.faq-container');
+                            if (container) {
+                                this.sortable = Sortable.create(container, {
+                                    handle: '.handle',
+                                    animation: 150,
+                                    onEnd: (evt) => {
+                                        // Array'i yeniden düzenle (sıralama için)
+                                        const movedItem = this.faqs.splice(evt.oldIndex, 1)[0];
+                                        this.faqs.splice(evt.newIndex, 0, movedItem);
+                                        this.updateWire();
+                                    }
+                                });
+                            }
+                        });
+
+                        // Değişiklikleri Livewire'a gönder
+                        this.$watch('faqs', () => {
+                            this.updateWire();
+                        }, { deep: true });
+                    },
+
+                    addFaq() {
+                        this.faqs.push({
+                            question: '',
+                            answer: '',
+                            icon: 'fa-question-circle'
+                        });
+                    },
+
+                    removeFaq(index) {
+                        this.faqs.splice(index, 1);
+                    },
+
+                    updateWire() {
+                        // JSON string olarak Livewire'a gönder
+                        this.$wire.set('inputs.faq_data', JSON.stringify(this.faqs));
+                    }
+                }
+            }
+
+            // HowTo Visual Editor Component
+            function howtoEditor(wireModel) {
+                return {
+                    howto: {
+                        name: '',
+                        description: '',
+                        steps: []
+                    },
+                    sortable: null,
+
+                    init() {
+                        // Livewire'dan veriyi al
+                        this.$watch('$wire.inputs.howto_data', (value) => {
+                            if (typeof value === 'string' && value) {
+                                try {
+                                    this.howto = JSON.parse(value);
+                                    if (!this.howto.steps) this.howto.steps = [];
+                                } catch (e) {
+                                    this.howto = { name: '', description: '', steps: [] };
+                                }
+                            } else if (typeof value === 'object' && value !== null) {
+                                this.howto = value;
+                                if (!this.howto.steps) this.howto.steps = [];
+                            }
+                        });
+
+                        // İlk yükleme
+                        const initialValue = this.$wire.inputs.howto_data;
+                        if (typeof initialValue === 'string' && initialValue) {
+                            try {
+                                this.howto = JSON.parse(initialValue);
+                                if (!this.howto.steps) this.howto.steps = [];
+                            } catch (e) {
+                                this.howto = { name: '', description: '', steps: [] };
+                            }
+                        } else if (typeof initialValue === 'object' && initialValue !== null) {
+                            this.howto = initialValue;
+                            if (!this.howto.steps) this.howto.steps = [];
+                        }
+
+                        // Sortable.js init
+                        this.$nextTick(() => {
+                            const container = this.$el.querySelector('.howto-steps-container');
+                            if (container) {
+                                this.sortable = Sortable.create(container, {
+                                    handle: '.handle',
+                                    animation: 150,
+                                    onEnd: (evt) => {
+                                        // Array'i yeniden düzenle (badge numaraları için)
+                                        const movedItem = this.howto.steps.splice(evt.oldIndex, 1)[0];
+                                        this.howto.steps.splice(evt.newIndex, 0, movedItem);
+                                        this.updateWire();
+                                    }
+                                });
+                            }
+                        });
+
+                        // Değişiklikleri Livewire'a gönder
+                        this.$watch('howto', () => {
+                            this.updateWire();
+                        }, { deep: true });
+                    },
+
+                    addStep() {
+                        this.howto.steps.push({
+                            name: '',
+                            text: '',
+                            icon: 'fa-cog'
+                        });
+                    },
+
+                    removeStep(index) {
+                        this.howto.steps.splice(index, 1);
+                    },
+
+                    updateWire() {
+                        // JSON string olarak Livewire'a gönder
+                        this.$wire.set('inputs.howto_data', JSON.stringify(this.howto));
+                    }
+                }
+            }
+        </script>
     @endpush
 </div>

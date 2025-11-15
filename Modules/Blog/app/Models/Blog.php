@@ -28,7 +28,6 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
         'excerpt',
         'published_at',
         'is_featured',
-        'status',
         'is_active',
         'blog_category_id',
         'faq_data',

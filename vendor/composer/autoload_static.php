@@ -1696,6 +1696,8 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Services\\AI\\SeoAnalysisService' => __DIR__ . '/../..' . '/app/Services/AI/SeoAnalysisService.php',
         'App\\Services\\AI\\SimpleDirectiveService' => __DIR__ . '/../..' . '/app/Services/AI/SimpleDirectiveService.php',
         'App\\Services\\AI\\SimpleFlowCopyService' => __DIR__ . '/../..' . '/app/Services/AI/SimpleFlowCopyService.php',
+        'App\\Services\\AI\\TenantBlogPromptEnhancer' => __DIR__ . '/../..' . '/app/Services/AI/TenantBlogPromptEnhancer.php',
+        'App\\Services\\AI\\Tenants\\Tenant2BlogEnhancement' => __DIR__ . '/../..' . '/app/Services/AI/Tenants/Tenant2BlogEnhancement.php',
         'App\\Services\\AI\\Token\\GlobalTokenManager' => __DIR__ . '/../..' . '/app/Services/AI/Token/GlobalTokenManager.php',
         'App\\Services\\AI\\VectorSearchService' => __DIR__ . '/../..' . '/app/Services/AI/VectorSearchService.php',
         'App\\Services\\BaseService' => __DIR__ . '/../..' . '/app/Services/BaseService.php',

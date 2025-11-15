@@ -40,7 +40,8 @@ class Tenant2Prompts extends DefaultPrompts
      */
     public function getBlogContentPrompt(): string
     {
-        $promptFile = $this->promptPath . '/2-blog-yazdirma.md';
+        // 🎯 Kısa prompt kullan (GPT token limit için)
+        $promptFile = $this->promptPath . '/2-blog-yazdirma-SHORT.md';
 
         if (File::exists($promptFile)) {
             $basePrompt = File::get($promptFile);
@@ -51,7 +52,13 @@ class Tenant2Prompts extends DefaultPrompts
             return $basePrompt . "\n\n" . $companyRules;
         }
 
-        // Fallback prompt
+        // Fallback: Tam prompt dene
+        $fullPromptFile = $this->promptPath . '/2-blog-yazdirma.md';
+        if (File::exists($fullPromptFile)) {
+            return File::get($fullPromptFile);
+        }
+
+        // Son fallback
         return $this->getDefaultContentPrompt();
     }
 
@@ -276,5 +283,21 @@ PROMPT;
     protected function getDefaultContentPrompt(): string
     {
         return 'Sen profesyonel bir endüstriyel ekipman içerik yazarısın. 2000 kelimelik teknik blog yazıları yazıyorsun.';
+    }
+
+    /**
+     * Tenant 2 (iXtif) için endüstriyel ekipman fallback outline
+     * OpenAI outline üretemezse bu kullanılır
+     */
+    public function getFallbackOutline(string $topicKeyword): array
+    {
+        return [
+            $topicKeyword . ' Nedir?',
+            'Özellikler ve Avantajlar',
+            'Kullanım Alanları',
+            'Seçim Kriterleri',
+            'Bakım ve Güvenlik',
+            'İletişim ve Destek',
+        ];
     }
 }

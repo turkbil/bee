@@ -23,7 +23,7 @@ class BlogObserver
     public function saved(Blog $blog): void
     {
         // Blog kaydedildikten sonra cache'i temizle
-        if ($blog->wasChanged(['title', 'body', 'status', 'published_at'])) {
+        if ($blog->wasChanged(['title', 'body', 'is_active', 'published_at'])) {
             $this->clearRelatedCaches($blog);
         }
     }

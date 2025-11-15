@@ -126,6 +126,19 @@ return [
     'active_category' => 'Active Category',
     'search_categories' => 'Search categories...',
 
+    // FAQ & HowTo (Schema.org)
+    'faq' => 'FAQ (Frequently Asked Questions)',
+    'add_faq' => 'Add Question',
+    'question' => 'Question',
+    'answer' => 'Answer',
+    'howto' => 'How To',
+    'add_step' => 'Add Step',
+    'howto_title' => 'Title',
+    'step_title' => 'Step Title',
+    'step_text' => 'Step Detail',
+    'no_faq_yet' => 'No questions added yet. Click the + button above to add.',
+    'no_steps_yet' => 'No steps added yet. Click the + button above to add.',
+
     // Media Library
     'media' => [
         'featured_image' => 'Featured Image',

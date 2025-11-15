@@ -81,10 +81,15 @@
 ★ Kaynakları inline format ile ver: `[Kaynak adı](URL)`
 
 ### Schema & Yapılandırılmış İçerik
-★ **FAQ bölümü**: Her soru-cevap FAQPage Schema uyumlu
-★ **HowTo bölümü**: Numaralı adımlar, her adımda tek işlem
+★ **FAQ bölümü**: ZORUNLU 8-12 soru-cevap, her soru için FontAwesome icon seç
+★ **HowTo bölümü**: Minimum 5-8 adım, her adımda tek işlem, her adım için icon seç
 ★ **Product bilgisi**: Teknik özellikler, standartlar, sertifikalar belirtilmeli
 ★ **Tablo formatı**: Karşılaştırma, özellik listesi için tablo kullan
+★ **Icon Seçimi**: Semantik ve konuya uygun FontAwesome icon'lar kullan
+  - Teknik: fa-cog, fa-wrench, fa-tools
+  - Güvenlik: fa-shield-alt, fa-hard-hat
+  - Maliyet: fa-dollar-sign, fa-coins
+  - Zaman: fa-clock, fa-calendar
 
 ### Featured Snippet Optimizasyonu
 ★ **Tanım paragrafı**: İlk 50-60 kelimede net tanım (için "X nedir?" soruları)
@@ -96,6 +101,12 @@
 ★ Her bölüm için **görsel önerisi** + **alt text** belirt
 ★ Alt text formatı: `[Anahtar kelime] + [açıklayıcı kelime]`
 ★ Örnek: `"Manuel transpalet kullanımı - depo içi paletli yük taşıma"`
+★ **AI Görsel Prompt (Featured Image için)**:
+  - İngilizce prompt yaz
+  - Endüstriyel/profesyonel ortam tanımla
+  - NO TEXT, NO BRAND NAMES kuralına uy
+  - Photorealistic, clean, modern, professional
+  - Örnek: "Modern warehouse with electric pallet jack, professional industrial setting, natural lighting, no text, no logos"
 
 ---
 

@@ -117,6 +117,19 @@ return [
 // Studio Editor
 'studio.editor' => 'Studio ile Düzenle',
 
+// FAQ & HowTo (Schema.org)
+'faq' => 'FAQ (Sık Sorulan Sorular)',
+'add_faq' => 'Soru Ekle',
+'question' => 'Soru',
+'answer' => 'Cevap',
+'howto' => 'Nasıl Yapılır',
+'add_step' => 'Adım Ekle',
+'howto_title' => 'Başlık',
+'step_title' => 'Adım Başlığı',
+'step_text' => 'Adım Detayı',
+'no_faq_yet' => 'Henüz soru eklenmemiş. Eklemek için yukarıdaki + butonuna tıklayın.',
+'no_steps_yet' => 'Henüz adım eklenmemiş. Eklemek için yukarıdaki + butonuna tıklayın.',
+
 // Kategori
 'categories' => 'Kategoriler',
 'category' => 'Kategori',

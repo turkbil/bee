@@ -29,6 +29,8 @@ class BlogManageComponent extends Component implements AIContentGeneratable
         'published_at' => null,
         'is_featured' => false,
         'tags' => [],
+        'faq_data' => null,
+        'howto_data' => null,
     ];
 
     public $studioEnabled = false;
@@ -232,8 +234,22 @@ class BlogManageComponent extends Component implements AIContentGeneratable
                 'blog_category_id',
                 'published_at',
                 'is_featured',
-                'status'
+                'faq_data',
+                'howto_data'
             ]);
+
+            // FAQ ve HowTo data'yı JSON string'e çevir (textarea için)
+            if (!empty($this->inputs['faq_data'])) {
+                $this->inputs['faq_data'] = is_string($this->inputs['faq_data'])
+                    ? $this->inputs['faq_data']
+                    : json_encode($this->inputs['faq_data'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            }
+
+            if (!empty($this->inputs['howto_data'])) {
+                $this->inputs['howto_data'] = is_string($this->inputs['howto_data'])
+                    ? $this->inputs['howto_data']
+                    : json_encode($this->inputs['howto_data'], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            }
 
             $this->inputs['tags'] = $blog->tag_list;
 
@@ -468,6 +484,17 @@ class BlogManageComponent extends Component implements AIContentGeneratable
         $safeInputs = $this->inputs;
         $tagNames = $this->normalizeTagInputs();
         unset($safeInputs['tags']);
+
+        // FAQ ve HowTo JSON string'lerini decode et
+        if (!empty($safeInputs['faq_data']) && is_string($safeInputs['faq_data'])) {
+            $decoded = json_decode($safeInputs['faq_data'], true);
+            $safeInputs['faq_data'] = $decoded ?: null;
+        }
+
+        if (!empty($safeInputs['howto_data']) && is_string($safeInputs['howto_data'])) {
+            $decoded = json_decode($safeInputs['howto_data'], true);
+            $safeInputs['howto_data'] = $decoded ?: null;
+        }
 
         // Published_at'i datetime formatına çevir
         if (!empty($safeInputs['published_at'])) {

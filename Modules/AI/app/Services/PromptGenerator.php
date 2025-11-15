@@ -24,6 +24,12 @@ class PromptGenerator
         // Base prompt template
         $prompt = "Professional blog featured image for: {$title}.";
 
+        // Tenant-specific image style enhancement (DATABASE)
+        $tenantEnhancement = $this->getTenantImageEnhancement();
+        if ($tenantEnhancement) {
+            $prompt .= " {$tenantEnhancement}.";
+        }
+
         // Add style based on content length
         if ($content && strlen($content) > 500) {
             $prompt .= " Detailed, informative, modern digital art style.";
@@ -43,6 +49,23 @@ class PromptGenerator
         $prompt .= " No text or minimal text in image. If text is required, use Turkish language only. Generic names, no brand names or trademarks.";
 
         return $prompt;
+    }
+
+    /**
+     * Get tenant-specific image enhancement from database
+     *
+     * @return string|null
+     */
+    protected function getTenantImageEnhancement(): ?string
+    {
+        try {
+            // Tenant database'den ayarı oku (setting() helper kullan)
+            $enhancement = setting('ai_image_prompt_enhancement');
+            return $enhancement ?: null;
+        } catch (\Exception $e) {
+            // Hata olursa null döndür (generic prompt kullanılır)
+            return null;
+        }
     }
 
     /**

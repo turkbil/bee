@@ -134,10 +134,12 @@ class OpenAIService
             ]);
             
             // GERÇEK STREAMING REQUEST PAYLOAD
-            $isGPT5 = $this->isGPT5Model($this->model);
+            // 🎯 Model override: options['model'] varsa onu kullan
+            $model = $options['model'] ?? $this->model;
+            $isGPT5 = $this->isGPT5Model($model);
 
             $payload = [
-                'model' => $this->model,
+                'model' => $model,
                 'messages' => $messages,
                 'stream' => !$isGPT5, // GPT-5 doesn't support streaming without verified org
             ];

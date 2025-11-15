@@ -7,6 +7,7 @@ use Modules\Blog\App\Models\BlogAIDraft;
 use Modules\Blog\App\Services\TenantPrompts\TenantPromptLoader;
 use Modules\AI\App\Services\OpenAIService;
 use Modules\AI\App\Services\AIImageGenerationService;
+use App\Services\AI\TenantBlogPromptEnhancer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
@@ -20,10 +21,14 @@ class BlogAIContentWriter
 {
     protected TenantPromptLoader $promptLoader;
     protected OpenAIService $openaiService;
+    protected TenantBlogPromptEnhancer $tenantEnhancer;
 
-    public function __construct(TenantPromptLoader $promptLoader)
-    {
+    public function __construct(
+        TenantPromptLoader $promptLoader,
+        TenantBlogPromptEnhancer $tenantEnhancer
+    ) {
         $this->promptLoader = $promptLoader;
+        $this->tenantEnhancer = $tenantEnhancer;
         // Mevcut AI sistemi - AIProvider modelinden API key çeker
         $this->openaiService = new OpenAIService();
     }
@@ -59,10 +64,9 @@ class BlogAIContentWriter
                 'excerpt' => ['tr' => $blogData['excerpt']],
                 'faq_data' => $blogData['faq_data'], // Universal Schema: FAQ
                 'howto_data' => $blogData['howto_data'], // Universal Schema: HowTo
-                'status' => 'published', // Otomatik yayınla (draft yerine)
-                'is_active' => true, // Aktif hale getir
+                'is_active' => true, // Yayınla (aktif hale getir)
                 'is_featured' => false,
-                'published_at' => now(), // Yayınlanma tarihini kaydet
+                'published_at' => now(), // Yayınlanma tarihi (null ise hemen yayında)
             ]);
 
             // Kategorileri attach et
@@ -82,7 +86,7 @@ class BlogAIContentWriter
                 'status' => 'active',
             ]);
 
-            // 🎨 AI Image Generation: Featured image oluştur
+            // 🎨 AI Image Generation: Featured image oluştur (SEO optimized)
             // Mevcut AI Image Generator sistemini kullan
             try {
                 $imageService = app(AIImageGenerationService::class);
@@ -97,18 +101,39 @@ class BlogAIContentWriter
                 $media = $mediaItem->getFirstMedia('library');
 
                 if ($media) {
-                    // Blog'a featured image olarak attach et
+                    // SEO Meta Data ekle (Featured image için)
+                    $blogTitle = $blogData['title'];
+                    $media->setCustomProperty('alt_text', ['tr' => $blogTitle]);
+                    $media->setCustomProperty('title', ['tr' => $blogTitle . ' - Ana Görsel']);
+                    $media->setCustomProperty('description', ['tr' => $blogData['excerpt']]);
+                    $media->setCustomProperty('width', 1200);
+                    $media->setCustomProperty('height', 630); // Open Graph optimal ratio
+                    $media->setCustomProperty('seo_optimized', true);
+                    $media->save();
+
+                    // Blog'a featured image olarak attach et (SEO properties ile)
                     // IMPORTANT: MediaLibraryItem zaten media olarak kaydedilmiş
                     // Sadece blog ile ilişkilendir
                     $blog->addMedia($media->getPath())
                         ->preservingOriginal()
+                        ->withCustomProperties([
+                            'alt_text' => ['tr' => $blogTitle],
+                            'title' => ['tr' => $blogTitle . ' - Blog Görseli'],
+                            'description' => ['tr' => $blogData['excerpt']],
+                            'width' => 1200,
+                            'height' => 630,
+                            'seo_optimized' => true,
+                            'og_image' => true, // Open Graph image
+                        ])
                         ->toMediaCollection('featured');
 
-                    Log::info('Blog AI Featured Image Generated', [
+                    Log::info('Blog AI Featured Image Generated (SEO Optimized)', [
                         'blog_id' => $blog->blog_id,
                         'media_library_id' => $mediaItem->id,
                         'media_id' => $media->id,
                         'prompt' => $mediaItem->generation_prompt,
+                        'seo_alt' => $blogTitle,
+                        'seo_title' => $blogTitle . ' - Ana Görsel',
                     ]);
                 }
             } catch (\Exception $e) {
@@ -119,11 +144,22 @@ class BlogAIContentWriter
                 ]);
             }
 
-            // Draft'ı güncelle
-            $draft->update([
-                'is_generated' => true,
-                'generated_blog_id' => $blog->blog_id,
-            ]);
+            // 🖼️ Content İçi Görseller: H2 başlıklarından sonra yatay görseller ekle
+            try {
+                $updatedContent = $this->generateInlineImages($blog, $blogData['content']);
+                if ($updatedContent !== $blogData['content']) {
+                    $blog->update(['body' => ['tr' => $updatedContent]]);
+                    Log::info('Blog AI Inline Images Added', [
+                        'blog_id' => $blog->blog_id,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Inline image hatası blog oluşumunu engellemesin
+                Log::warning('Blog AI Inline Images Failed', [
+                    'blog_id' => $blog->blog_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             // Credit düş - 1 blog = 1.0 kredi
             ai_use_credits(1.0, null, [
@@ -134,6 +170,12 @@ class BlogAIContentWriter
             ]);
 
             DB::commit();
+
+            // Draft'ı güncelle (transaction dışında - foreign key koruması için)
+            $draft->update([
+                'is_generated' => true,
+                'generated_blog_id' => $blog->blog_id,
+            ]);
 
             Log::info('Blog AI Content Generated', [
                 'blog_id' => $blog->blog_id,
@@ -202,9 +244,22 @@ class BlogAIContentWriter
         $companyContext .= ">>> Örnek: \"Detaylı bilgi için {$shortName} ile iletişime geçin.\"\n";
         $companyContext .= str_repeat('=', 60) . "\n";
 
-        // System message'ı basitleştir - KISA firma adı vurgulu!
-        $systemMessage = "Sen bir blog yazarısın. Yazarken SADECE ve SADECE FİRMA ADI '{$shortName}' kullanacaksın!\n\n" .
+        // Tenant-specific enhancement al (varsa)
+        $tenantEnhancement = $this->tenantEnhancer->getEnhancement();
+        $tenantContext = '';
+        if (!empty($tenantEnhancement)) {
+            // Tenant-specific context'i format'la ve ekle
+            $tenantContext = $this->tenantEnhancer->buildPromptContext($tenantEnhancement);
+        }
+
+        // 📝 Detaylı blog yazma talimatları al (2000+ kelime, FAQ, HowTo kuralları)
+        $blogContentPrompt = $this->promptLoader->getBlogContentPrompt();
+
+        // System message - Detaylı talimatlar + Context
+        $systemMessage = $blogContentPrompt . "\n\n" .
+                        "---\n\n" .
                         $companyContext .
+                        $tenantContext .
                         "\n\n**TASLAK:**\n" .
                         json_encode($draftContext, JSON_UNESCAPED_UNICODE);
 
@@ -212,8 +267,9 @@ class BlogAIContentWriter
         $maxRetries = 3;
         $attempt = 0;
         $blogData = null;
+        $validData = false;  // ✅ Validation flag
 
-        while ($attempt < $maxRetries && !$blogData) {
+        while ($attempt < $maxRetries && !$validData) {
             $attempt++;
 
             if ($attempt > 1) {
@@ -225,32 +281,150 @@ class BlogAIContentWriter
             }
 
             try {
-                // Basit ve direkt prompt - KISA firma adını direkt ekle
-                $userPrompt = "Detaylı blog yazısı oluştur (1500+ kelime, Türkçe).
+                // 🔄 ITERATIVE APPROACH: Her bölümü ayrı ayrı genişlet (2500+ kelime için)
+                Log::info('🔄 Iterative blog generation başlıyor', ['draft_id' => $draft->id]);
 
-🔴 ZORUNLU: SADECE '{$shortName}' marka adını kullan - EN AZ 3 KEZ!
-❌ '{$longName}' gibi uzun firma adı KULLANMA!
+                // 1. Outline oluştur (H2 başlıklar)
+                $outlinePrompt = "'{$draftContext['topic_keyword']}' konusu için blog outline'ı oluştur.
 
-ÖRNEK KULLANIM (MARKA ADI):
-- '{$shortName} olarak, endüstriyel ekipman sektöründe deneyimimizle...'
-- '{$shortName} uzman ekibi, size profesyonel destek sağlar.'
-- 'Detaylı bilgi için {$shortName} ile iletişime geçin.'
-- '{$shortName}, yüksek kaliteli ürünler sunar.'
+6-8 H2 başlık belirle. JSON array döndür:
+[\"Başlık 1\", \"Başlık 2\", \"Başlık 3\", ...]
 
-JSON ÇIKTI (FAQ ve HowTo schema ZORUNLU):
-{\"title\": \"başlık\", \"content\": \"<h2>...</h2><p>...{$shortName}...</p>\", \"excerpt\": \"özet\", \"faq_data\": [{\"question\": {\"tr\": \"soru?\"}, \"answer\": {\"tr\": \"cevap\"}}], \"howto_data\": {\"name\": {\"tr\": \"nasıl yapılır\"}, \"description\": {\"tr\": \"açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"adım başlık\"}, \"text\": {\"tr\": \"adım detayı\"}}]}}";
+Sadece JSON array döndür, başka bir şey yazma.";
 
-            $response = $this->openaiService->ask($userPrompt, false, [
-                'custom_prompt' => $systemMessage,
-                'temperature' => 0.4, // Tutarlı output için düşük temperature
-                'max_tokens' => 16000,
-            ]);
+                $outlineResponse = $this->openaiService->ask($outlinePrompt, false, [
+                    'custom_prompt' => "Sen bir blog içerik planlamacısısın. Verilen konu için SEO-uyumlu H2 başlıkları belirle.",
+                    'temperature' => 0.7,
+                    'max_tokens' => 1000,
+                    'model' => 'gpt-4o',
+                ]);
 
-            // ask() metodu direkt string döndürür
-            $content = $response;
+                // Outline parse et
+                $outline = json_decode(trim($outlineResponse), true);
+                if (!is_array($outline) || empty($outline)) {
+                    // Fallback: Tenant-aware outline
+                    $outline = $this->promptLoader->getFallbackOutline($draftContext['topic_keyword']);
+                    Log::info('📋 Fallback outline kullanılıyor (tenant-aware)', [
+                        'h2_count' => count($outline),
+                    ]);
+                }
 
-                // JSON parse
-                $parsedData = $this->parseAIResponse($content);
+                Log::info('📝 Outline oluşturuldu', ['h2_count' => count($outline)]);
+
+                // 2. Her H2 bölümünü genişlet
+                $fullContent = '';
+                foreach ($outline as $index => $h2Title) {
+                    $sectionPrompt = "'{$h2Title}' konusunda detaylı bölüm yaz.
+
+- 3-4 paragraf (her biri 100-150 kelime)
+- 2-3 H3 alt başlık ekle
+- Örnekler, sayısal veriler, karşılaştırma kullan
+- Firma adı: '{$shortName}' (ilk/son bölümde kullan)
+
+HTML çıktı döndür:
+<h2>{$h2Title}</h2>
+<p>...</p>
+<h3>Alt başlık</h3>
+<p>...</p>";
+
+                    $sectionResponse = $this->openaiService->ask($sectionPrompt, false, [
+                        'custom_prompt' => $systemMessage,
+                        'temperature' => 0.8,
+                        'max_tokens' => 4000,  // ⬆️ Increased from 2000 to prevent truncation
+                        'model' => 'gpt-4o',
+                    ]);
+
+                    $fullContent .= "\n\n" . trim($sectionResponse);
+
+                    $currentSection = $index + 1;
+                    $totalSections = count($outline);
+                    Log::info("✅ Bölüm {$currentSection}/{$totalSections} oluşturuldu", [
+                        'h2' => $h2Title,
+                        'length' => strlen($sectionResponse),
+                    ]);
+
+                    sleep(1); // Rate limit için
+                }
+
+                // 3. FAQ üret
+                $faqPrompt = "'{$draftContext['topic_keyword']}' konusunda 10 sık sorulan soru ve cevapları oluştur.
+
+Her cevap 50-80 kelime olsun. JSON array döndür:
+[{\"question\": {\"tr\": \"Soru?\"}, \"answer\": {\"tr\": \"Cevap...\"}}]";
+
+                $faqResponse = $this->openaiService->ask($faqPrompt, false, [
+                    'temperature' => 0.7,
+                    'max_tokens' => 3000,  // ⬆️ Increased for 10 FAQ items
+                    'model' => 'gpt-4o',
+                ]);
+
+                // Extract JSON from code block if wrapped
+                $faqResponseClean = trim($faqResponse);
+                if (preg_match('/```json\s*(.*?)\s*```/s', $faqResponseClean, $matches)) {
+                    $faqResponseClean = $matches[1];
+                } elseif (preg_match('/```\s*(.*?)\s*```/s', $faqResponseClean, $matches)) {
+                    $faqResponseClean = $matches[1];
+                }
+
+                $faqData = json_decode(trim($faqResponseClean), true);
+                if (!is_array($faqData)) {
+                    Log::warning('FAQ generation failed to parse', [
+                        'draft_id' => $draft->id,
+                        'response_preview' => substr($faqResponse, 0, 500),
+                        'json_error' => json_last_error_msg(),
+                    ]);
+                    $faqData = [];
+                }
+
+                // 4. HowTo üret
+                $howtoPrompt = "'{$draftContext['topic_keyword']}' için 7 adımlı 'Nasıl Yapılır' rehberi oluştur.
+
+Her adım 80-100 kelime olsun. JSON döndür:
+{\"name\": {\"tr\": \"Başlık\"}, \"description\": {\"tr\": \"Açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"Adım\"}, \"text\": {\"tr\": \"Detay\"}}]}";
+
+                $howtoResponse = $this->openaiService->ask($howtoPrompt, false, [
+                    'temperature' => 0.7,
+                    'max_tokens' => 3000,  // ⬆️ Increased for 7 HowTo steps
+                    'model' => 'gpt-4o',
+                ]);
+
+                // Extract JSON from code block if wrapped
+                $howtoResponseClean = trim($howtoResponse);
+                if (preg_match('/```json\s*(.*?)\s*```/s', $howtoResponseClean, $matches)) {
+                    $howtoResponseClean = $matches[1];
+                } elseif (preg_match('/```\s*(.*?)\s*```/s', $howtoResponseClean, $matches)) {
+                    $howtoResponseClean = $matches[1];
+                }
+
+                $howtoData = json_decode(trim($howtoResponseClean), true);
+                if (!is_array($howtoData)) {
+                    Log::warning('HowTo generation failed to parse', [
+                        'draft_id' => $draft->id,
+                        'response_preview' => substr($howtoResponse, 0, 500),
+                        'json_error' => json_last_error_msg(),
+                    ]);
+                    $howtoData = [];
+                }
+
+                // 5. Birleştir
+                $blogData = [
+                    'title' => $draftContext['topic_keyword'],
+                    'content' => $fullContent,
+                    'excerpt' => $draftContext['meta_description'] ?? substr(strip_tags($fullContent), 0, 200),
+                    'faq_data' => $faqData,
+                    'howto_data' => $howtoData,
+                ];
+
+                $wordCount = str_word_count(strip_tags($fullContent));
+                Log::info('🎉 Iterative generation tamamlandı', [
+                    'word_count' => $wordCount,
+                    'h2_count' => count($outline),
+                    'faq_count' => count($faqData),
+                    'howto_steps' => count($howtoData['steps'] ?? []),
+                ]);
+
+                // ✅ Iterative generation - data zaten hazır, parse'a gerek yok!
+                $parsedData = $blogData;
 
                 // Validation: Boş veya çok kısa içerik kontrolü
                 if (empty($parsedData['title']) || empty($parsedData['content'])) {
@@ -260,9 +434,9 @@ JSON ÇIKTI (FAQ ve HowTo schema ZORUNLU):
                     continue; // Retry
                 }
 
-                // Kelime sayısı kontrolü (minimum 500 kelime - gerçekçi hedef)
+                // Kelime sayısı kontrolü (minimum 1500 kelime - prompt kurallarına uygun)
                 $wordCount = str_word_count(strip_tags($parsedData['content']));
-                if ($wordCount < 500) {
+                if ($wordCount < 1500) {
                     Log::warning("AI response too short: {$wordCount} words (attempt {$attempt})", [
                         'draft_id' => $draft->id,
                     ]);
@@ -319,6 +493,8 @@ JSON ÇIKTI (FAQ ve HowTo schema ZORUNLU):
                     'word_count' => $wordCount,
                     'attempts' => $attempt,
                 ]);
+
+                $validData = true;  // ✅ Validation passed, exit retry loop
 
             } catch (\Exception $e) {
                 Log::error("Blog AI Content API Failed (attempt {$attempt})", [
@@ -428,5 +604,168 @@ JSON ÇIKTI (FAQ ve HowTo schema ZORUNLU):
         ]);
 
         return $blogData;
+    }
+
+    /**
+     * Content içine H2 başlıklarından sonra AI görselleri ekle
+     *
+     * @param Blog $blog
+     * @param string $content HTML içeriği
+     * @return string Görsellerle güncellenmiş HTML
+     */
+    protected function generateInlineImages(Blog $blog, string $content): string
+    {
+        // DOMDocument ile HTML parse et
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+
+        // HTML5 ve UTF-8 sorunlarını önle
+        libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        // H2 başlıklarını bul
+        $h2Tags = $dom->getElementsByTagName('h2');
+
+        if ($h2Tags->length === 0) {
+            Log::info('No H2 tags found for inline images', ['blog_id' => $blog->blog_id]);
+            return $content;
+        }
+
+        $imageService = app(AIImageGenerationService::class);
+        $imagesAdded = 0;
+
+        // H2'leri array'e al (DOMNodeList değişken boyutlu olduğu için)
+        $h2Array = [];
+        foreach ($h2Tags as $h2) {
+            $h2Array[] = $h2;
+        }
+
+        // ⚠️ KRİTİK: Sadece ilk 2 H2'ye görsel ekle (toplam 3 görsel: 1 featured + 2 inline)
+        $maxImages = 2;
+        $h2Array = array_slice($h2Array, 0, $maxImages);
+
+        Log::info('Inline images will be generated', [
+            'blog_id' => $blog->blog_id,
+            'total_h2_count' => $h2Tags->length,
+            'selected_h2_count' => count($h2Array),
+            'max_images' => $maxImages,
+        ]);
+
+        // İlk 3 H2 için görsel üret ve ekle
+        foreach ($h2Array as $index => $h2) {
+            // H2 başlık metnini al
+            $h2Text = trim($h2->textContent);
+
+            if (empty($h2Text)) {
+                continue;
+            }
+
+            try {
+                // AI görsel prompt oluştur (H2 başlığından)
+                $imagePrompt = "Professional illustration for blog section: {$h2Text}. " .
+                              "Modern, clean style, landscape orientation (16:9), " .
+                              "high quality, suitable for blog article. " .
+                              "Related to industrial equipment and machinery.";
+
+                // Görsel üret (yatay 16:9)
+                $mediaItem = $imageService->generate($imagePrompt, [
+                    'width' => 1200,
+                    'height' => 675, // 16:9 ratio
+                    'model' => 'dall-e-3', // veya stable-diffusion
+                ]);
+
+                if ($mediaItem) {
+                    $media = $mediaItem->getFirstMedia('library');
+
+                    if ($media) {
+                        // SEO Meta Data ekle (Media model'e)
+                        $media->setCustomProperty('alt_text', ['tr' => $h2Text]);
+                        $media->setCustomProperty('title', ['tr' => $h2Text]);
+                        $media->setCustomProperty('description', ['tr' => "Blog görseli: {$h2Text} - {$blog->getTranslated('title', 'tr')}"]);
+                        $media->setCustomProperty('width', 1200);
+                        $media->setCustomProperty('height', 675);
+                        $media->save();
+
+                        // Blog'a gallery olarak attach et
+                        $blog->addMedia($media->getPath())
+                            ->preservingOriginal()
+                            ->withCustomProperties([
+                                'alt_text' => ['tr' => $h2Text],
+                                'title' => ['tr' => $h2Text],
+                                'description' => ['tr' => "Blog içi görsel: {$h2Text}"],
+                                'width' => 1200,
+                                'height' => 675,
+                                'seo_optimized' => true,
+                            ])
+                            ->toMediaCollection('gallery');
+
+                        // Görsel URL'ini al
+                        $imageUrl = $media->getUrl();
+
+                        // Figure elementi oluştur (responsive + SEO friendly)
+                        $figure = $dom->createElement('figure');
+                        $figure->setAttribute('class', 'blog-inline-image my-8');
+                        $figure->setAttribute('style', 'margin: 2rem 0;');
+
+                        $img = $dom->createElement('img');
+                        $img->setAttribute('src', $imageUrl);
+                        $img->setAttribute('alt', $h2Text); // SEO: Alt text
+                        $img->setAttribute('title', $h2Text); // SEO: Title
+                        $img->setAttribute('loading', 'lazy'); // Performance: Lazy loading
+                        $img->setAttribute('width', '1200'); // SEO: Explicit dimensions
+                        $img->setAttribute('height', '675'); // SEO: Explicit dimensions
+                        $img->setAttribute('decoding', 'async'); // Performance: Async decode
+                        $img->setAttribute('fetchpriority', 'low'); // Performance: Low priority (inline images)
+                        $img->setAttribute('itemprop', 'image'); // Schema.org: Image property
+                        $img->setAttribute('style', 'width: 100%; height: auto; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);');
+
+                        $figure->appendChild($img);
+
+                        // Figcaption ekle (başlık metni)
+                        $figcaption = $dom->createElement('figcaption', $h2Text);
+                        $figcaption->setAttribute('style', 'margin-top: 0.75rem; text-align: center; font-size: 0.875rem; color: #6b7280; font-style: italic;');
+                        $figure->appendChild($figcaption);
+
+                        // H2'den sonra ekle
+                        $h2->parentNode->insertBefore($figure, $h2->nextSibling);
+
+                        $imagesAdded++;
+
+                        Log::info('Inline image added after H2', [
+                            'blog_id' => $blog->blog_id,
+                            'h2_text' => $h2Text,
+                            'image_url' => $imageUrl,
+                        ]);
+                    }
+                }
+
+            } catch (\Exception $e) {
+                Log::warning('Inline image generation failed for H2', [
+                    'blog_id' => $blog->blog_id,
+                    'h2_text' => $h2Text,
+                    'error' => $e->getMessage(),
+                ]);
+                // Hata olsa bile diğer H2'lere devam et
+                continue;
+            }
+        }
+
+        if ($imagesAdded === 0) {
+            return $content; // Hiç görsel eklenemediyse orijinali döndür
+        }
+
+        // Güncellenmiş HTML'i döndür
+        $updatedContent = $dom->saveHTML();
+
+        // XML encoding prefix'ini kaldır
+        $updatedContent = str_replace('<?xml encoding="UTF-8">', '', $updatedContent);
+
+        Log::info('Inline images generation completed', [
+            'blog_id' => $blog->blog_id,
+            'images_added' => $imagesAdded,
+            'h2_count' => count($h2Array),
+        ]);
+
+        return $updatedContent;
     }
 }

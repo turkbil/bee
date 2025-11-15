@@ -113,4 +113,20 @@ PROMPT;
             'focus' => 'general',
         ];
     }
+
+    /**
+     * Fallback outline (OpenAI başarısız olursa)
+     * Her tenant kendi sektörüne göre override edebilir
+     */
+    public function getFallbackOutline(string $topicKeyword): array
+    {
+        return [
+            $topicKeyword . ' Nedir?',
+            'Genel Bilgiler',
+            'Önemli Noktalar',
+            'Uygulama Alanları',
+            'Avantajlar ve Dezavantajlar',
+            'Sonuç ve Öneriler',
+        ];
+    }
 }

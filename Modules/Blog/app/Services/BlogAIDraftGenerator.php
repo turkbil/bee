@@ -7,6 +7,7 @@ use Modules\Blog\App\Models\BlogAIDraft;
 use Modules\Blog\App\Models\BlogCategory;
 use Modules\Blog\App\Services\TenantPrompts\TenantPromptLoader;
 use Modules\AI\App\Services\OpenAIService;
+use App\Services\AI\TenantBlogPromptEnhancer;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -19,10 +20,14 @@ class BlogAIDraftGenerator
 {
     protected TenantPromptLoader $promptLoader;
     protected OpenAIService $openaiService;
+    protected TenantBlogPromptEnhancer $tenantEnhancer;
 
-    public function __construct(TenantPromptLoader $promptLoader)
-    {
+    public function __construct(
+        TenantPromptLoader $promptLoader,
+        TenantBlogPromptEnhancer $tenantEnhancer
+    ) {
         $this->promptLoader = $promptLoader;
+        $this->tenantEnhancer = $tenantEnhancer;
         // Mevcut AI sistemi - AIProvider modelinden API key çeker
         $this->openaiService = new OpenAIService();
     }
@@ -50,11 +55,20 @@ class BlogAIDraftGenerator
         // Tenant context
         $context = $this->promptLoader->getTenantContext();
 
+        // Tenant-specific enhancement al (varsa)
+        $tenantEnhancement = $this->tenantEnhancer->getEnhancement();
+
         // AI Prompt
         $prompt = $this->promptLoader->getDraftPrompt();
 
+        // Tenant-specific context ekle
+        $tenantContext = '';
+        if (!empty($tenantEnhancement)) {
+            $tenantContext = $this->tenantEnhancer->buildPromptContext($tenantEnhancement);
+        }
+
         // System message
-        $systemMessage = $prompt . "\n\n" . $this->buildContextString($context, $categories, $existingTitles, $existingDrafts, $count);
+        $systemMessage = $prompt . "\n\n" . $tenantContext . "\n\n" . $this->buildContextString($context, $categories, $existingTitles, $existingDrafts, $count);
 
         try {
             // OpenAI API call (mevcut AI sistemini kullan)

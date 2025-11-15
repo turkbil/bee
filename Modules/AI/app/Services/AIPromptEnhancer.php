@@ -62,12 +62,27 @@ class AIPromptEnhancer
                 $enhancedPrompt = $data['content'][0]['text'] ?? '';
 
                 if (!empty($enhancedPrompt)) {
+                    // DEBUG: Claude'un RAW JSON'unu logla
+                    Log::info('AIPromptEnhancer: Claude RAW output', [
+                        'raw_json' => $enhancedPrompt
+                    ]);
+
                     // JSON parse et ve DALL-E için optimize prompt'a çevir
                     if ($this->isJson($enhancedPrompt)) {
-                        return $this->convertJsonToPrompt($enhancedPrompt);
+                        $finalPrompt = $this->convertJsonToPrompt($enhancedPrompt);
+
+                        // DEBUG: Final DALL-E prompt'u logla
+                        Log::info('AIPromptEnhancer: Final DALL-E prompt', [
+                            'final_prompt' => $finalPrompt
+                        ]);
+
+                        return $finalPrompt;
                     }
 
                     // JSON değilse direkt kullan
+                    Log::info('AIPromptEnhancer: Using non-JSON prompt', [
+                        'prompt' => $enhancedPrompt
+                    ]);
                     return $enhancedPrompt;
                 }
             }
@@ -213,6 +228,12 @@ MAXIMUM VARIATION - This must be DIFFERENT from any previous generation:
 Output valid JSON with: subject, view_framing, background, lighting, camera (model, lens, settings), imperfections, materials, mood.
 
 Make it authentic RAW PHOTOGRAPH but CREATIVELY DIFFERENT each time.
+
+🚨 CRITICAL: ABSOLUTELY NO TEXT/LABELS IN THE PHOTOGRAPH:
+- This is a PURE PHOTOGRAPH, NOT an infographic/diagram/presentation
+- NO text overlays, NO blue boxes with labels, NO captions, NO UI elements
+- NO numbered labels, NO explanatory text, NO annotations
+- Pure visual photograph only - like a professional would shoot for a catalog
 USER;
     }
 
@@ -277,8 +298,9 @@ USER;
             }
 
             // CRITICAL: Comprehensive negatives - NO "photorealistic" word!
-            $prompt .= "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, NOT filters, NOT cinematic color grading. ";
-            $prompt .= "Appears as authentic RAW photograph taken with professional DSLR camera, actual physical scene, documentary photography, natural appearance, real-world photography, no artificial elements, no UI overlays, no text";
+            $prompt .= "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT infographic, NOT labeled diagram, NOT presentation slide, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, NOT filters, NOT cinematic color grading. ";
+            $prompt .= "Appears as authentic RAW photograph taken with professional DSLR camera, actual physical scene, documentary photography, natural appearance, real-world photography, no artificial elements. ";
+            $prompt .= "ABSOLUTELY NO text, NO labels, NO captions, NO annotations, NO blue boxes, NO text overlays, NO UI elements, NO numbered labels, NO arrows with text, pure photograph only like professional catalog photography";
 
             return trim($prompt);
 
@@ -322,6 +344,6 @@ USER;
 
         $enhancement = $enhancements[$style] ?? $enhancements['ultra_photorealistic'];
 
-        return "RAW photo of {$prompt}. {$enhancement}";
+        return "RAW photo of {$prompt}. {$enhancement}. ABSOLUTELY NO text, NO labels, NO captions, NO blue boxes, NO UI elements, pure photograph only";
     }
 }

@@ -40,6 +40,9 @@ class GenerateBlogFromDraftJob implements ShouldQueue
     ) {
         // Tenant context'i kaydet (dispatch anında)
         $this->tenantId = tenant('id');
+
+        // Explicit queue belirt - tenant_2_default yerine blog-ai kullan
+        $this->onQueue('blog-ai');
     }
 
     /**

@@ -35,7 +35,8 @@ class GenerateDraftsJob implements ShouldQueue
         // Tenant context'i kaydet (dispatch anında)
         $this->tenantId = tenant('id');
 
-        // Default queue kullan (worker tarafından dinleniyor)
+        // Explicit queue belirt - tenant_2_default yerine blog-ai kullan
+        $this->onQueue('blog-ai');
     }
 
     /**

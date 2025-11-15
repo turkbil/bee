@@ -253,6 +253,7 @@
 
     .overlay > div {
         margin: auto;
+        padding-top: 120px;
     }
     </style>
 </div>

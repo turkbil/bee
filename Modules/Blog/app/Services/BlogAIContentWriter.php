@@ -96,7 +96,10 @@ class BlogAIContentWriter
 
                 $mediaItem = $imageService->generate(
                     $imagePrompt,
-                    'realistic' // Ultra realistic mode
+                    [
+                        'size' => '1792x1024',  // Horizontal landscape 16:9 ratio
+                        'quality' => 'hd'       // HD quality
+                    ]
                 );
                 $media = $mediaItem->getFirstMedia('library');
                 if ($media) {
@@ -104,8 +107,8 @@ class BlogAIContentWriter
                     $media->setCustomProperty('alt_text', ['tr' => $blogTitle]);
                     $media->setCustomProperty('title', ['tr' => $blogTitle . ' - Ana Görsel']);
                     $media->setCustomProperty('description', ['tr' => $blogData['excerpt']]);
-                    $media->setCustomProperty('width', 1200);
-                    $media->setCustomProperty('height', 630);
+                    $media->setCustomProperty('width', 1792);
+                    $media->setCustomProperty('height', 1024);
                     $media->setCustomProperty('seo_optimized', true);
                     $media->save();
                     $blog->addMedia($media->getPath())
@@ -114,8 +117,8 @@ class BlogAIContentWriter
                             'alt_text' => ['tr' => $blogTitle],
                             'title' => ['tr' => $blogTitle . ' - Blog Görseli'],
                             'description' => ['tr' => $blogData['excerpt']],
-                            'width' => 1200,
-                            'height' => 630,
+                            'width' => 1792,
+                            'height' => 1024,
                             'seo_optimized' => true,
                             'og_image' => true,
                         ])

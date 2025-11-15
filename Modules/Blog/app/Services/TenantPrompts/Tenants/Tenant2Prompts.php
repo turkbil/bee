@@ -235,7 +235,39 @@ RULES;
      */
     protected function getDefaultDraftPrompt(): string
     {
-        return 'Sen profesyonel bir SEO ve içerik stratejistisin. Endüstriyel ekipman konularında blog taslakları oluştur.';
+        return <<<'PROMPT'
+Sen profesyonel bir SEO ve içerik stratejistisin. Endüstriyel ekipman (forklift, transpalet, istif makinesi) konularında blog taslakları oluşturacaksın.
+
+**ÖNEMLİ:** Sadece JSON array döndür, başka hiçbir açıklama yazma!
+
+**JSON FORMAT (ZORUNLU):**
+```json
+[
+  {
+    "topic_keyword": "Konu başlığı (örn: Forklift Bakım İpuçları)",
+    "meta_description": "120-160 karakter SEO meta açıklaması",
+    "seo_keywords": ["anahtar1", "anahtar2", "anahtar3", "anahtar4"],
+    "category_suggestions": [1, 2, 3],
+    "outline": {
+      "h1": "Ana başlık",
+      "sections": [
+        {"h2": "Bölüm 1", "word_count": 300},
+        {"h2": "Bölüm 2", "word_count": 400}
+      ]
+    }
+  }
+]
+```
+
+**KURALLAR:**
+1. topic_keyword: Çekici, SEO uyumlu başlık
+2. meta_description: 120-160 karakter arası
+3. seo_keywords: 4-7 adet anahtar kelime
+4. category_suggestions: Kategori ID'leri (context'ten)
+5. outline: Blog yapısı (H1, H2'ler, kelime sayıları)
+6. SADECE JSON döndür, markdown code block kullanma!
+
+PROMPT;
     }
 
     /**

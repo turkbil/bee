@@ -68,6 +68,13 @@ class BlogAIDraftGenerator
             // ask() metodu direkt string döndürür
             $content = $response;
 
+            // DEBUG: OpenAI response'u dosyaya yaz
+            file_put_contents('/tmp/openai-response.txt', $content);
+            Log::info('🤖 OpenAI Response saved to /tmp/openai-response.txt', [
+                'length' => strlen($content),
+                'sample' => substr($content, 0, 500),
+            ]);
+
             // JSON parse
             $drafts = $this->parseAIResponse($content);
 
@@ -243,7 +250,86 @@ class BlogAIDraftGenerator
             'draft_count' => count($decoded),
         ]);
 
-        return $decoded;
+        // Format converter: OpenAI farklı format döndürebilir
+        $normalized = $this->normalizeAIResponse($decoded);
+
+        return $normalized;
+    }
+
+    /**
+     * AI response formatını normalize et
+     *
+     * OpenAI bazen farklı formatlar döndürebilir:
+     * Format 1: [{"topic_keyword": "...", "meta_description": "...", ...}]
+     * Format 2: [{"SEO Meta Bilgileri": {...}, "Blog Anahattı": {...}}]
+     *
+     * Her ikisini de bizim formatımıza çevir
+     */
+    protected function normalizeAIResponse(array $decoded): array
+    {
+        $normalized = [];
+
+        foreach ($decoded as $item) {
+            // Format 1: Direkt bizim formatımız (topic_keyword var)
+            if (isset($item['topic_keyword'])) {
+                $normalized[] = $item;
+                continue;
+            }
+
+            // Format 2: Nested format (SEO Meta Bilgileri, Blog Anahattı vb.)
+            // OpenAI bazen "1. SEO Meta Bilgileri" gibi numaralandırabilir
+            $seoKey = $this->findKeyContaining($item, 'SEO Meta');
+            $outlineKey = $this->findKeyContaining($item, 'Blog Anahat');
+
+            if ($seoKey || $outlineKey) {
+                $seoMeta = $seoKey ? ($item[$seoKey] ?? []) : [];
+                $blogOutline = $outlineKey ? ($item[$outlineKey] ?? []) : [];
+
+                $normalized[] = [
+                    'topic_keyword' => $seoMeta['Title Tag'] ?? $blogOutline['H1'] ?? '',
+                    'meta_description' => $seoMeta['Meta Description'] ?? '',
+                    'seo_keywords' => array_merge(
+                        isset($seoMeta['Focus Keyword']) ? [$seoMeta['Focus Keyword']] : [],
+                        $seoMeta['Secondary Keywords'] ?? []
+                    ),
+                    'category_suggestions' => [], // Context'ten çıkarsayacağız
+                    'outline' => $blogOutline,
+                ];
+
+                Log::info('✅ Converted nested format to standard format', [
+                    'topic_keyword' => $normalized[count($normalized) - 1]['topic_keyword'],
+                ]);
+
+                continue;
+            }
+
+            // Format 3: Bilinmeyen format - log ve skip
+            Log::warning('⚠️ Unknown AI response format, skipping item', [
+                'item' => $item,
+            ]);
+        }
+
+        Log::info('✅ Normalized AI response', [
+            'original_count' => count($decoded),
+            'normalized_count' => count($normalized),
+        ]);
+
+        return $normalized;
+    }
+
+    /**
+     * Array içinde belirli string içeren key bul
+     *
+     * Örn: "SEO Meta" arar ve "1. SEO Meta Bilgileri" bulur
+     */
+    protected function findKeyContaining(array $array, string $needle): ?string
+    {
+        foreach (array_keys($array) as $key) {
+            if (stripos($key, $needle) !== false) {
+                return $key;
+            }
+        }
+        return null;
     }
 
     /**

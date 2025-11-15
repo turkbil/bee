@@ -128,7 +128,7 @@ TARGET STYLE: {$styleDesc}
 Create a UNIQUE JSON for each prompt with this structure:
 {
   "subject": "Main subject with specific details",
-  "view_framing": "Close-up / full body / environmental portrait / wide shot",
+  "view_framing": "CRITICAL: For equipment/objects: FULL complete view (entire object visible, NOT cropped). For people: full body / environmental portrait. Wide shot / medium shot",
   "background": "Specific background description with depth and context",
   "lighting": "Exact lighting setup with direction and quality",
   "camera": {
@@ -207,22 +207,24 @@ CRITICAL REQUIREMENTS - RAW PHOTO ONLY:
 1. This must be a RAW PHOTO, NOT photorealistic painting/illustration/drawing/3D render/blueprint/diagram
 2. Photo of [subject], shot on professional DSLR camera
 3. Actual physical scene captured with camera, not digital art or CGI
-4. Natural imperfections (visible pores, fine vellus hair, uneven skin tone, weathered surfaces)
-5. Real-world lighting with specific direction and quality
-6. Documentary photography style - authentic candid moment
+4. 🚨 SUBJECT MUST BE COMPLETE AND FULLY VISIBLE - For equipment/objects/vehicles: ENTIRE object in frame, NOT cropped, NOT cut off at edges. Show COMPLETE subject from all sides
+5. Natural imperfections (visible pores, fine vellus hair, uneven skin tone, weathered surfaces)
+6. Real-world lighting with specific direction and quality
+7. Documentary photography style - authentic candid moment
 
 STRUCTURED PROMPT FORMULA:
 Subject + View/Framing + Background + Lighting + Camera Brand + Lens Setup
 
 Example structure:
-"RAW photo of [subject], [close-up/full body/environmental portrait], [specific background], [golden hour lighting/Rembrandt lighting/etc], shot on [Canon EOS R5], [85mm f/1.8 lens], [f/2.8, 1/125s, ISO 400]"
+"RAW photo of [subject], [FULL EQUIPMENT VIEW showing complete object / full body / wide shot], [specific background], [golden hour lighting/Rembrandt lighting/etc], shot on [Canon EOS R5], [85mm f/1.8 lens], [f/2.8, 1/125s, ISO 400]"
 
 MAXIMUM VARIATION - This must be DIFFERENT from any previous generation:
 - Camera model: Canon EOS R5, Sony A7 III, Nikon D810, Fujifilm GFX 100S, or Leica M10
 - Lens focal length: 24mm (wide), 35mm (normal), 50mm (normal), 85mm (portrait), or 100mm (telephoto)
 - Aperture: f/1.8 (shallow DOF) to f/11 (deep focus)
 - Lighting: golden hour, blue hour, window light from left, harsh midday sun, Rembrandt, butterfly, loop, or dramatic backlighting
-- Perspective: eye-level, slight high angle, low angle, 3/4 view, side view
+- Perspective: eye-level, slight high angle, low angle, 3/4 view, side view (BUT ALWAYS keep complete subject in frame, NOT cropped)
+- Framing: FULL view for equipment/objects (entire subject visible), wide shot, medium shot (NEVER tight crop that cuts off parts)
 - Specific imperfections: visible pores, fine vellus hair, weathered surface, natural aging, wear patterns
 
 Output valid JSON with: subject, view_framing, background, lighting, camera (model, lens, settings), imperfections, materials, mood.
@@ -298,8 +300,9 @@ USER;
             }
 
             // CRITICAL: Comprehensive negatives - NO "photorealistic" word!
-            $prompt .= "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT infographic, NOT labeled diagram, NOT presentation slide, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, NOT filters, NOT cinematic color grading. ";
+            $prompt .= "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT infographic, NOT labeled diagram, NOT presentation slide, NOT cropped, NOT cut off, NOT partial view, NOT tight crop, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, NOT filters, NOT cinematic color grading. ";
             $prompt .= "Appears as authentic RAW photograph taken with professional DSLR camera, actual physical scene, documentary photography, natural appearance, real-world photography, no artificial elements. ";
+            $prompt .= "Complete subject visible in frame, entire object shown from edge to edge, FULL view of equipment/vehicle/object. ";
             $prompt .= "ABSOLUTELY NO text, NO labels, NO captions, NO annotations, NO blue boxes, NO text overlays, NO UI elements, NO numbered labels, NO arrows with text, pure photograph only like professional catalog photography";
 
             return trim($prompt);

@@ -35,10 +35,10 @@ class BlogAIDraftGenerator
     /**
      * Blog taslakları oluştur
      *
-     * @param int $count Kaç taslak oluşturulacak (varsayılan: 10)
+     * @param int $count Kaç taslak oluşturulacak (varsayılan: 25)
      * @return array Oluşturulan taslaklar
      */
-    public function generateDrafts(int $count = 10): array
+    public function generateDrafts(int $count = 25): array
     {
         // Credit kontrolü - araştırma toplam 1.0 kredi
         if (!ai_can_use_credits(1.0)) {

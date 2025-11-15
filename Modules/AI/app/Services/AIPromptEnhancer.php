@@ -27,9 +27,10 @@ class AIPromptEnhancer
      *
      * @param string $simplePrompt Kullanıcının basit promptu
      * @param string $style Fotoğraf stili (ultra_photorealistic, studio_photography, etc.)
+     * @param string $size Image size/aspect ratio (1024x1024, 1792x1024, 1024x1792)
      * @return string Ultra detaylı, optimize edilmiş prompt
      */
-    public function enhancePrompt(string $simplePrompt, string $style = 'ultra_photorealistic'): string
+    public function enhancePrompt(string $simplePrompt, string $style = 'ultra_photorealistic', string $size = '1024x1024'): string
     {
         if (empty($this->apiKey)) {
             Log::warning('AIPromptEnhancer: Anthropic API key not configured, using basic enhancement');
@@ -37,8 +38,8 @@ class AIPromptEnhancer
         }
 
         try {
-            $systemPrompt = $this->buildSystemPrompt($style);
-            $userPrompt = $this->buildUserPrompt($simplePrompt, $style);
+            $systemPrompt = $this->buildSystemPrompt($style, $size);
+            $userPrompt = $this->buildUserPrompt($simplePrompt, $style, $size);
 
             $response = Http::withHeaders([
                 'x-api-key' => $this->apiKey,
@@ -105,8 +106,20 @@ class AIPromptEnhancer
     /**
      * System prompt oluştur - AI'ya photography director rolü ver
      */
-    protected function buildSystemPrompt(string $style): string
+    protected function buildSystemPrompt(string $style, string $size): string
     {
+        // Aspect ratio analizi
+        [$width, $height] = explode('x', $size);
+        $aspectRatio = $width / $height;
+
+        if ($aspectRatio > 1.5) {
+            $aspectGuidance = "HORIZONTAL FORMAT (1792x1024): Use WIDE-ANGLE lens (24mm or 35mm) to capture complete subject in horizontal frame. Frame composition must fit entire object width-wise without cropping top or bottom.";
+        } elseif ($aspectRatio < 0.7) {
+            $aspectGuidance = "VERTICAL FORMAT (1024x1792): Use standard to portrait lens (50mm to 85mm) for vertical composition. Ensure complete subject fits height-wise without cropping sides.";
+        } else {
+            $aspectGuidance = "SQUARE FORMAT (1024x1024): Use standard lens (35mm to 50mm) for balanced square composition. Frame subject completely within square format.";
+        }
+
         $styleDescriptions = [
             'ultra_photorealistic' => 'RAW photo shot on professional DSLR camera, natural unprocessed look, documentary photography style',
             'studio_photography' => 'studio photo with professional lighting setup, controlled environment, commercial photography, studio lighting with 4K HD DSLR',
@@ -124,6 +137,8 @@ class AIPromptEnhancer
 You are a professional photography director. Transform prompts into detailed JSON scene descriptions for DALL-E 3 that produce authentic RAW photographs.
 
 TARGET STYLE: {$styleDesc}
+
+🎯 ASPECT RATIO & LENS GUIDANCE: {$aspectGuidance}
 
 Create a UNIQUE JSON for each prompt with this structure:
 {
@@ -194,14 +209,28 @@ SYSTEM;
     /**
      * User prompt oluştur
      */
-    protected function buildUserPrompt(string $simplePrompt, string $style): string
+    protected function buildUserPrompt(string $simplePrompt, string $style, string $size): string
     {
+        // Aspect ratio analizi
+        [$width, $height] = explode('x', $size);
+        $aspectRatio = $width / $height;
+
+        if ($aspectRatio > 1.5) {
+            $lensGuidance = "CRITICAL FOR HORIZONTAL FORMAT: Use 24mm or 35mm WIDE-ANGLE lens to fit complete subject in wide horizontal frame. Do NOT crop top or bottom of subject.";
+        } elseif ($aspectRatio < 0.7) {
+            $lensGuidance = "CRITICAL FOR VERTICAL FORMAT: Use 50mm to 85mm lens for vertical composition. Fit complete subject in tall frame without cropping sides.";
+        } else {
+            $lensGuidance = "For square format: Use 35mm to 50mm standard lens for balanced composition.";
+        }
+
         return <<<USER
 Create a COMPLETELY UNIQUE detailed JSON scene description for an authentic RAW photograph of:
 
 "{$simplePrompt}"
 
 Style: {$style}
+Target Size: {$size}
+{$lensGuidance}
 
 CRITICAL REQUIREMENTS - RAW PHOTO ONLY:
 1. This must be a RAW PHOTO, NOT photorealistic painting/illustration/drawing/3D render/blueprint/diagram

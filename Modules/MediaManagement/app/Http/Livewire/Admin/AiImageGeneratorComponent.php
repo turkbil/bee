@@ -72,7 +72,7 @@ class AiImageGeneratorComponent extends Component
             // AI ile prompt geliştirme (eğer checkbox işaretliyse)
             if ($this->enhanceWithAI) {
                 $enhancer = app(AIPromptEnhancer::class);
-                $finalPrompt = $enhancer->enhancePrompt($basePrompt, $this->style);
+                $finalPrompt = $enhancer->enhancePrompt($basePrompt, $this->style, $this->size);
             } else {
                 // AI kapalıysa, manuel style enhancement kullan
                 $finalPrompt = $this->enhancePromptWithStyle($basePrompt, $this->style);

@@ -218,8 +218,21 @@
                 @if(!empty($item->faq_data))
                     @php
                         $faqData = is_string($item->faq_data) ? json_decode($item->faq_data, true) : $item->faq_data;
+                        // En az 1 geçerli FAQ var mı kontrol et
+                        $hasValidFaq = false;
+                        if (!empty($faqData) && is_array($faqData)) {
+                            foreach ($faqData as $faq) {
+                                // Question/answer string mi yoksa array mi?
+                                $question = is_array($faq['question'] ?? null) ? ($faq['question'][$currentLocale] ?? '') : ($faq['question'] ?? '');
+                                $answer = is_array($faq['answer'] ?? null) ? ($faq['answer'][$currentLocale] ?? '') : ($faq['answer'] ?? '');
+                                if (!empty($question) && !empty($answer)) {
+                                    $hasValidFaq = true;
+                                    break;
+                                }
+                            }
+                        }
                     @endphp
-                    @if(!empty($faqData) && is_array($faqData))
+                    @if($hasValidFaq)
                         <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/FAQPage">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
@@ -230,13 +243,18 @@
                             </header>
                             <div class="space-y-4">
                                 @foreach($faqData as $index => $faq)
-                                    @if(!empty($faq['question']) && !empty($faq['answer']) && is_string($faq['question']) && is_string($faq['answer']))
+                                    @php
+                                        // Çoklu dil desteği
+                                        $question = is_array($faq['question'] ?? null) ? ($faq['question'][$currentLocale] ?? '') : ($faq['question'] ?? '');
+                                        $answer = is_array($faq['answer'] ?? null) ? ($faq['answer'][$currentLocale] ?? '') : ($faq['answer'] ?? '');
+                                    @endphp
+                                    @if(!empty($question) && !empty($answer))
                                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg"
                                              itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                                             <details class="group">
                                                 <summary class="flex items-center justify-between w-full p-6 cursor-pointer list-none select-none hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white pr-4" itemprop="name">
-                                                        {{ $faq['question'] }}
+                                                        {{ $question }}
                                                     </h3>
                                                     <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -245,7 +263,7 @@
                                                 <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300 prose prose-sm md:prose-base dark:prose-invert max-w-none"
                                                      itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                                     <div itemprop="text">
-                                                        {!! nl2br(e($faq['answer'])) !!}
+                                                        {!! nl2br(e($answer)) !!}
                                                     </div>
                                                 </div>
                                             </details>
@@ -257,28 +275,36 @@
                     @endif
                 @endif
 
-                {{-- HowTo Section (Nasıl Yapılır) --}}
+                {{-- HowTo Section --}}
                 @if(!empty($item->howto_data))
                     @php
                         $howtoData = is_string($item->howto_data) ? json_decode($item->howto_data, true) : $item->howto_data;
+                        // Çoklu dil desteği
+                        $howtoName = is_array($howtoData['name'] ?? null) ? ($howtoData['name'][$currentLocale] ?? '') : ($howtoData['name'] ?? '');
+                        $howtoDesc = is_array($howtoData['description'] ?? null) ? ($howtoData['description'][$currentLocale] ?? '') : ($howtoData['description'] ?? '');
                     @endphp
-                    @if(!empty($howtoData) && is_array($howtoData) && !empty($howtoData['steps']))
+                    @if(!empty($howtoData) && is_array($howtoData) && !empty($howtoData['steps']) && !empty($howtoName))
                         <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/HowTo">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
                                     <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
-                                    {{ is_string($howtoData['name'] ?? '') ? $howtoData['name'] : __('blog::front.general.howto_title') }}
+                                    {{ $howtoName }}
                                 </h2>
                                 <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
-                                @if(!empty($howtoData['description']) && is_string($howtoData['description']))
+                                @if(!empty($howtoDesc))
                                     <p class="mt-4 text-gray-600 dark:text-gray-400" itemprop="description">
-                                        {{ $howtoData['description'] }}
+                                        {{ $howtoDesc }}
                                     </p>
                                 @endif
                             </header>
                             <div class="space-y-6">
                                 @foreach($howtoData['steps'] as $index => $step)
-                                    @if(!empty($step['name']) && is_string($step['name']) && (!empty($step['text']) ? is_string($step['text']) : true))
+                                    @php
+                                        // Step için çoklu dil desteği
+                                        $stepName = is_array($step['name'] ?? null) ? ($step['name'][$currentLocale] ?? '') : ($step['name'] ?? '');
+                                        $stepText = is_array($step['text'] ?? null) ? ($step['text'][$currentLocale] ?? '') : ($step['text'] ?? '');
+                                    @endphp
+                                    @if(!empty($stepName))
                                         <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300"
                                              itemscope itemprop="step" itemtype="https://schema.org/HowToStep">
                                             <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-400 rounded-full flex items-center justify-center">
@@ -286,11 +312,11 @@
                                             </div>
                                             <div class="flex-1">
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2" itemprop="name">
-                                                    {{ $step['name'] }}
+                                                    {{ $stepName }}
                                                 </h3>
-                                                @if(!empty($step['text']))
+                                                @if(!empty($stepText))
                                                     <div class="text-gray-700 dark:text-gray-300 prose prose-sm md:prose-base dark:prose-invert max-w-none" itemprop="text">
-                                                        {!! nl2br(e($step['text'])) !!}
+                                                        {!! nl2br(e($stepText)) !!}
                                                     </div>
                                                 @endif
                                             </div>

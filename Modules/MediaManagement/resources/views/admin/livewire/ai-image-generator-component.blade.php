@@ -55,8 +55,8 @@
                                 {{ $isGenerating ? 'disabled' : '' }}
                             ></textarea>
                             @error('prompt') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            <small class="form-hint text-danger fw-bold">
-                                🚨 Görselde ASLA yazı/text olmayacak! Marka adı YOK, site ismi YOK, hiçbir text OLMAYACAK!
+                            <small class="form-hint text-muted">
+                                Not: DALL-E 3 görsele text yazamaz, sadece görsel üretir.
                             </small>
                         </div>
 

@@ -83,22 +83,34 @@ class BlogAIContentWriter
             ]);
 
             // 🎨 AI Image Generation: Featured image oluştur
+            // Mevcut AI Image Generator sistemini kullan
             try {
                 $imageService = app(AIImageGenerationService::class);
-                $featuredImage = $imageService->generateForBlog(
+
+                // Blog başlığından otomatik görsel oluştur
+                $mediaItem = $imageService->generateForBlog(
                     $blogData['title'],
                     $blogData['content']
                 );
 
-                // Medyayı blog'a attach et (featured image olarak)
-                $blog->addMedia($featuredImage->getFirstMedia('library')->getPath())
-                    ->preservingOriginal()
-                    ->toMediaCollection('featured');
+                // MediaLibraryItem'dan media'yı al
+                $media = $mediaItem->getFirstMedia('library');
 
-                Log::info('Blog AI Featured Image Generated', [
-                    'blog_id' => $blog->blog_id,
-                    'media_id' => $featuredImage->id,
-                ]);
+                if ($media) {
+                    // Blog'a featured image olarak attach et
+                    // IMPORTANT: MediaLibraryItem zaten media olarak kaydedilmiş
+                    // Sadece blog ile ilişkilendir
+                    $blog->addMedia($media->getPath())
+                        ->preservingOriginal()
+                        ->toMediaCollection('featured');
+
+                    Log::info('Blog AI Featured Image Generated', [
+                        'blog_id' => $blog->blog_id,
+                        'media_library_id' => $mediaItem->id,
+                        'media_id' => $media->id,
+                        'prompt' => $mediaItem->generation_prompt,
+                    ]);
+                }
             } catch (\Exception $e) {
                 // Image generation hatası blog oluşumunu engellemesin
                 Log::warning('Blog AI Featured Image Generation Failed', [

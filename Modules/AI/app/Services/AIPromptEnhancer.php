@@ -163,9 +163,14 @@ MAXIMUM CREATIVITY RULES:
 - VARY lighting time and direction for each generation
 - Adapt to subject AND add unexpected authentic details
 
-NO TEXT/BRANDING:
-- NO text in images, NO brands, NO trademarks, NO UI elements, NO camera settings overlay
-- If text absolutely needed: Turkish only, generic names
+🚨 ABSOLUTELY NO TEXT/LABELS/UI - CRITICAL RULE:
+- PURE PHOTOGRAPH ONLY - NO text, NO labels, NO captions, NO annotations, NO infographics
+- NO blue boxes, NO text overlays, NO UI elements, NO diagrams, NO charts
+- NO brands, NO trademarks, NO logos, NO camera settings overlay
+- NO numbered labels, NO arrows with text, NO explanatory text
+- If subject requires identification: Use ONLY visual elements, NO written words
+- Exception ONLY if user explicitly requests text: Turkish only, generic names
+- This is a PHOTOGRAPH not an infographic/presentation/diagram
 
 OUTPUT: Valid JSON only
 SYSTEM;

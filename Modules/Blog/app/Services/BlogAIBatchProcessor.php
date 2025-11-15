@@ -26,8 +26,8 @@ class BlogAIBatchProcessor
             return;
         }
 
-        // Batch ID oluştur (tracking için)
-        $batchId = 'blog_ai_batch_' . time() . '_' . tenant('id');
+        // Batch ID oluştur (tracking için) - TENANT ISOLATED
+        $batchId = $this->generateBatchId();
 
         // Batch bilgilerini cache'e kaydet
         $this->initializeBatchStatus($batchId, count($draftIds));
@@ -45,15 +45,36 @@ class BlogAIBatchProcessor
     }
 
     /**
+     * Tenant-isolated batch ID oluştur
+     */
+    protected function generateBatchId(): string
+    {
+        $tenantId = tenant('id') ?? 'central';
+        return 'tenant_' . $tenantId . '_blog_ai_batch_' . time() . '_' . uniqid();
+    }
+
+    /**
+     * Tenant-isolated cache key oluştur
+     */
+    protected function getCacheKey(string $batchId): string
+    {
+        $tenantId = tenant('id') ?? 'central';
+        return 'tenant_' . $tenantId . '_' . $batchId;
+    }
+
+    /**
      * Batch status initialize
      */
     protected function initializeBatchStatus(string $batchId, int $total): void
     {
-        Cache::put($batchId, [
+        $cacheKey = $this->getCacheKey($batchId);
+
+        Cache::put($cacheKey, [
             'total' => $total,
             'completed' => 0,
             'failed' => 0,
             'started_at' => now(),
+            'tenant_id' => tenant('id'),
         ], now()->addHours(24)); // 24 saat cache
     }
 
@@ -62,14 +83,16 @@ class BlogAIBatchProcessor
      */
     public function markCompleted(string $batchId): void
     {
-        $status = Cache::get($batchId, [
+        $cacheKey = $this->getCacheKey($batchId);
+
+        $status = Cache::get($cacheKey, [
             'total' => 0,
             'completed' => 0,
             'failed' => 0,
         ]);
 
         $status['completed']++;
-        Cache::put($batchId, $status, now()->addHours(24));
+        Cache::put($cacheKey, $status, now()->addHours(24));
     }
 
     /**
@@ -77,14 +100,16 @@ class BlogAIBatchProcessor
      */
     public function markFailed(string $batchId): void
     {
-        $status = Cache::get($batchId, [
+        $cacheKey = $this->getCacheKey($batchId);
+
+        $status = Cache::get($cacheKey, [
             'total' => 0,
             'completed' => 0,
             'failed' => 0,
         ]);
 
         $status['failed']++;
-        Cache::put($batchId, $status, now()->addHours(24));
+        Cache::put($cacheKey, $status, now()->addHours(24));
     }
 
     /**
@@ -92,7 +117,9 @@ class BlogAIBatchProcessor
      */
     public function getBatchStatus(string $batchId): array
     {
-        return Cache::get($batchId, [
+        $cacheKey = $this->getCacheKey($batchId);
+
+        return Cache::get($cacheKey, [
             'total' => 0,
             'completed' => 0,
             'failed' => 0,

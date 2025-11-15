@@ -18,12 +18,6 @@
     <div class="page-header d-print-none">
         <div class="row align-items-center">
             <div class="col-auto ms-auto d-print-none">
-                {{-- DEBUG: Test Livewire Button (Modal Dışında) --}}
-                <button type="button" class="btn btn-warning me-2" wire:click="generateDrafts">
-                    <i class="fas fa-bug"></i>
-                    TEST (Modal Dışı)
-                </button>
-
                 {{-- Taslak Üret Butonu --}}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateDraftsModal" @if($isGenerating) disabled @endif>
                     <i class="fas fa-plus"></i>
@@ -175,11 +169,8 @@
                                 <td>
                                     @if(!empty($draft->category_suggestions))
                                         @foreach(array_slice($draft->category_suggestions, 0, 2) as $catId)
-                                            @php
-                                                $category = \Modules\Blog\App\Models\BlogCategory::find($catId);
-                                            @endphp
-                                            @if($category)
-                                                <span class="badge bg-blue-lt">{{ $category->title['tr'] ?? 'N/A' }}</span>
+                                            @if(isset($categories[$catId]))
+                                                <span class="badge bg-blue-lt">{{ $categories[$catId]->title['tr'] ?? 'N/A' }}</span>
                                             @endif
                                         @endforeach
                                     @endif

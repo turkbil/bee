@@ -6,6 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Modules\Blog\App\Models\BlogAIDraft;
+use Modules\Blog\App\Models\BlogCategory;
 use Modules\Blog\App\Jobs\GenerateDraftsJob;
 use Modules\Blog\App\Services\BlogAIBatchProcessor;
 use Illuminate\Support\Facades\Log;
@@ -26,6 +27,8 @@ class BlogAiDraftComponent extends Component
     public bool $isGenerating = false;
     public bool $isWriting = false;
     public ?string $currentBatchId = null;
+    public ?string $currentDraftBatchId = null; // Draft generation tracking
+    public int $expectedDraftCount = 0; // Expected draft count
     public array $batchProgress = [
         'total' => 0,
         'completed' => 0,
@@ -81,6 +84,11 @@ class BlogAiDraftComponent extends Component
         Log::info('✅ Credit check passed');
 
         try {
+            // Unique batch ID oluştur (draft generation tracking için)
+            $tenantId = tenant('id') ?? 'central';
+            $this->currentDraftBatchId = 'tenant_' . $tenantId . '_draft_gen_' . time() . '_' . uniqid();
+            $this->expectedDraftCount = $this->draftCount;
+
             // Job dispatch
             GenerateDraftsJob::dispatch($this->draftCount);
 
@@ -93,6 +101,7 @@ class BlogAiDraftComponent extends Component
 
             Log::info('Blog AI Draft Generation Requested', [
                 'count' => $this->draftCount,
+                'batch_id' => $this->currentDraftBatchId,
                 'tenant_id' => tenant('id'),
             ]);
 
@@ -225,17 +234,38 @@ class BlogAiDraftComponent extends Component
      */
     public function checkDraftProgress()
     {
-        if (!$this->isGenerating) {
+        if (!$this->isGenerating || !$this->currentDraftBatchId) {
             return;
         }
 
-        // Yeni taslak var mı kontrol et
-        $recentDrafts = BlogAIDraft::where('created_at', '>=', now()->subMinutes(5))->count();
+        // Son N saniyede oluşan taslakları kontrol et (tenant-specific)
+        // IMPORTANT: Sadece generation başladıktan sonraki taslakları say
+        $generationStartTime = now()->subMinutes(10); // Max 10 dakika bekle
 
-        if ($recentDrafts > 0) {
+        $recentDrafts = BlogAIDraft::where('created_at', '>=', $generationStartTime)
+            ->count();
+
+        Log::info('Draft Progress Check', [
+            'batch_id' => $this->currentDraftBatchId,
+            'expected' => $this->expectedDraftCount,
+            'found' => $recentDrafts,
+            'tenant_id' => tenant('id'),
+        ]);
+
+        // Beklenen sayıya ulaşıldı mı?
+        if ($recentDrafts >= $this->expectedDraftCount) {
             // Taslaklar oluşmuş, flag'i kapat
             $this->isGenerating = false;
+            $this->currentDraftBatchId = null;
+            $this->expectedDraftCount = 0;
+
             session()->flash('success', "{$recentDrafts} taslak başarıyla oluşturuldu!");
+
+            Log::info('Draft Generation Completed', [
+                'batch_id' => $this->currentDraftBatchId,
+                'count' => $recentDrafts,
+                'tenant_id' => tenant('id'),
+            ]);
         }
     }
 
@@ -290,11 +320,25 @@ class BlogAiDraftComponent extends Component
         }
 
         $drafts = BlogAIDraft::query()
+            ->with('generatedBlog') // Eager load generated blog relation
             ->latest()
             ->paginate(20);
 
+        // N+1 query prevention: Tüm kategorileri önceden yükle
+        $allCategoryIds = $drafts->pluck('category_suggestions')
+            ->flatten()
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $categories = BlogCategory::whereIn('id', $allCategoryIds)
+            ->get()
+            ->keyBy('id');
+
         return view('blog::admin.livewire.blog-ai-draft-component', [
             'drafts' => $drafts,
+            'categories' => $categories,
         ]);
     }
 }

@@ -332,9 +332,9 @@ class BlogAiDraftComponent extends Component
             ->values()
             ->toArray();
 
-        $categories = BlogCategory::whereIn('id', $allCategoryIds)
+        $categories = BlogCategory::whereIn('category_id', $allCategoryIds)
             ->get()
-            ->keyBy('id');
+            ->keyBy('category_id');
 
         return view('blog::admin.livewire.blog-ai-draft-component', [
             'drafts' => $drafts,

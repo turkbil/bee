@@ -208,47 +208,9 @@ RULES;
     }
 
     /**
-     * Tenant için genel context (ayarlar, kategoriler vb)
-     */
-    public function getContext(): array
-    {
-        // Site bilgileri (Group 6)
-        $siteTitle = setting('site_title') ?? setting('site_name') ?? 'iXtif';
-        $siteSlogan = setting('site_slogan') ?? 'Endüstriyel Ekipman Uzmanı';
-        $companyName = setting('company_name') ?? $siteTitle;
-
-        // İletişim bilgileri (Group 10)
-        $companyEmail = setting('company_email') ?? 'info@ixtif.com';
-        $companyPhone = setting('company_phone') ?? '';
-        $companyAddress = setting('company_address') ?? '';
-        $companyWebsite = url('/');
-
-        // About/Hakkımızda
-        $aboutText = setting('about_text') ?? '';
-
-        return [
-            'company_info' => [
-                'name' => $companyName,
-                'title' => $siteTitle,
-                'slogan' => $siteSlogan,
-                'website' => $companyWebsite,
-            ],
-            'contact_info' => [
-                'email' => $companyEmail,
-                'phone' => $companyPhone,
-                'address' => $companyAddress,
-            ],
-            'about' => $aboutText,
-            'focus' => 'industrial_equipment',
-            'industry' => 'B2B Endüstriyel Ekipman',
-            'target_audience' => 'Satın alma müdürleri, depo yöneticileri, lojistik sorumlular',
-        ];
-    }
-
-    /**
      * Tenant context override - iXtif için özel company name
      *
-     * DOĞRU METOD ADI: getContext() (getTenantContext() değil!)
+     * Parent DefaultPrompts::getContext()'i override eder
      */
     public function getContext(): array
     {
@@ -259,6 +221,11 @@ RULES;
         if (!empty($context['company_info']['title'])) {
             $context['company_info']['name'] = $context['company_info']['title'];
         }
+
+        // Tenant 2 özel ek bilgiler
+        $context['focus'] = 'industrial_equipment';
+        $context['industry'] = 'B2B Endüstriyel Ekipman';
+        $context['target_audience'] = 'Satın alma müdürleri, depo yöneticileri, lojistik sorumlular';
 
         return $context;
     }

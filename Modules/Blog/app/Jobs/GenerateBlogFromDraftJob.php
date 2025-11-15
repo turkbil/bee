@@ -6,7 +6,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Modules\Blog\App\Models\BlogAIDraft;
 use Modules\Blog\App\Services\BlogAIContentWriter;
 use Modules\Blog\App\Services\BlogAIBatchProcessor;
@@ -17,28 +16,30 @@ use Illuminate\Support\Facades\Log;
  *
  * Queue: blog-ai
  * Seçili bir draft'tan tam blog yazısı oluşturur
+ *
+ * 🔧 FIX: SerializesModels trait kaldırıldı
+ * Çünkü tenant model'ler serialize edilirken tenant context kayboluyor
+ * Çözüm: Model yerine ID geçir, tenant context restore ettikten sonra model'i fetch et
  */
 class GenerateBlogFromDraftJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable;
 
     public $tries = 3;
     public $timeout = 300; // 5 dakika
     public $backoff = 60; // 60 saniye retry beklemesi
 
-    public ?int $tenantId = null; // Tenant context (default null for backwards compatibility)
+    public ?int $tenantId = null; // Tenant context
 
     /**
      * Create a new job instance.
      */
     public function __construct(
-        public BlogAIDraft $draft,
+        public int $draftId, // Model yerine ID geçir
         public ?string $batchId = null
     ) {
         // Tenant context'i kaydet (dispatch anında)
         $this->tenantId = tenant('id');
-
-        // Default queue kullan (worker tarafından dinleniyor)
     }
 
     /**
@@ -51,15 +52,18 @@ class GenerateBlogFromDraftJob implements ShouldQueue
             tenancy()->initialize($this->tenantId);
         }
 
+        // Tenant context restore edildikten SONRA model'i fetch et
+        $draft = BlogAIDraft::findOrFail($this->draftId);
+
         try {
             Log::info('Blog AI Content Generation Started', [
-                'draft_id' => $this->draft->id,
+                'draft_id' => $draft->id,
                 'batch_id' => $this->batchId,
                 'tenant_id' => $this->tenantId,
             ]);
 
             // Blog oluştur
-            $blog = $writer->generateBlogFromDraft($this->draft);
+            $blog = $writer->generateBlogFromDraft($draft);
 
             // Batch progress güncelle (eğer batch varsa)
             if ($this->batchId) {
@@ -67,7 +71,7 @@ class GenerateBlogFromDraftJob implements ShouldQueue
             }
 
             Log::info('Blog AI Content Generation Completed', [
-                'draft_id' => $this->draft->id,
+                'draft_id' => $draft->id,
                 'blog_id' => $blog->blog_id,
                 'batch_id' => $this->batchId,
                 'tenant_id' => $this->tenantId,
@@ -80,7 +84,7 @@ class GenerateBlogFromDraftJob implements ShouldQueue
             }
 
             Log::error('Blog AI Content Generation Job Failed', [
-                'draft_id' => $this->draft->id,
+                'draft_id' => $draft->id,
                 'batch_id' => $this->batchId,
                 'error' => $e->getMessage(),
                 'tenant_id' => $this->tenantId,

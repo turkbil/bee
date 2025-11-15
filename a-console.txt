@@ -1,28 +1,34 @@
-ai-content-system.js?v=1763158377:1672 📦 AI Content Generation System yüklendi
-ai-seo-integration.js?v=1763158377:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
-ai-seo-integration.js?v=1763158377:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
-ai-seo-integration.js?v=1763158377:12 📍 File Path: assets/js/ai-seo-integration.js
-ai-seo-integration.js?v=1763158377:13 ⏰ Load Time: 2025-11-14T22:12:58.984Z
-ai-seo-integration.js?v=1763158377:23 🎯 Global debug function window.aiSeoDebug() ready!
-ai-seo-integration.js?v=1763158377:3082 🚀 AI SEO Integration system başlatılıyor...
-ai-seo-integration.js?v=1763158377:3083 🔍 DOM ready state: loading
-ai-seo-integration.js?v=1763158377:562 🔗 attachButtonListeners ÇAĞRILDI
-ai-seo-integration.js?v=1763158377:564 🔍 Bulunan buton sayısı: 0
-ai-seo-integration.js?v=1763158377:609 ✅ Button listeners attached successfully
-ai-seo-integration.js?v=1763158377:3212 ✅ AI SEO Integration system hazır!
-ai-seo-integration.js?v=1763158377:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
-ai-seo-integration.js?v=1763158377:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
-ai-drafts:3314 ✅ Alpine.js Global Store initialized (Livewire bundled)
-ai-content-system.js?v=1763158377:1663 🚀 AI Content Generation System DOM hazır
-ai-content-system.js?v=1763158377:49 🚀 AI Content Generation System başlatılıyor...
-ai-content-system.js?v=1763158377:149 📡 Event listeners kuruldu
-ai-content-system.js?v=1763158377:60 ✅ AI Content Generation System hazır!
-ai-content-system.js?v=1763158377:1668 ✅ Global AI Content System instance oluşturuldu
-ai-seo-integration.js?v=1763158377:558 🔒 attachButtonListeners SKIP - already attached
-ai-drafts:3377 🚀 Enterprise Streaming Translation System Ready!
-ai-drafts:3390 📝 Streaming translation not available - Using standard translation mode
-ai-seo-integration.js?v=1763158377:558 🔒 attachButtonListeners SKIP - already attached
-ai-seo-integration.js?v=1763158377:558 🔒 attachButtonListeners SKIP - already attached
-  window.Livewire.all()[4].$wire.generateBlogs()
-Promise {<pending>}
-ai-drafts:3351 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+sw.js:131 [Service Worker] Loaded successfully
+sw.js:27 [Service Worker] Installing...
+sw.js:32 [Service Worker] Caching critical assets
+sw.js:43 [Service Worker] Activating...
+ai-content-system.js?v=1763172449:1672 📦 AI Content Generation System yüklendi
+ai-seo-integration.js?v=1763172449:10 🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!
+ai-seo-integration.js?v=1763172449:11 🚀 AI SEO INTEGRATION SYSTEM LOADING...
+ai-seo-integration.js?v=1763172449:12 📍 File Path: assets/js/ai-seo-integration.js
+ai-seo-integration.js?v=1763172449:13 ⏰ Load Time: 2025-11-15T02:07:29.715Z
+ai-seo-integration.js?v=1763172449:23 🎯 Global debug function window.aiSeoDebug() ready!
+ai-seo-integration.js?v=1763172449:3082 🚀 AI SEO Integration system başlatılıyor...
+ai-seo-integration.js?v=1763172449:3083 🔍 DOM ready state: loading
+ai-seo-integration.js?v=1763172449:562 🔗 attachButtonListeners ÇAĞRILDI
+ai-seo-integration.js?v=1763172449:564 🔍 Bulunan buton sayısı: 0
+ai-seo-integration.js?v=1763172449:609 ✅ Button listeners attached successfully
+ai-seo-integration.js?v=1763172449:3212 ✅ AI SEO Integration system hazır!
+ai-seo-integration.js?v=1763172449:3225 🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!
+ai-seo-integration.js?v=1763172449:3254 🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!
+ai-drafts:3425 ✅ Alpine.js Global Store initialized (Livewire bundled)
+ai-content-system.js?v=1763172449:1663 🚀 AI Content Generation System DOM hazır
+ai-content-system.js?v=1763172449:49 🚀 AI Content Generation System başlatılıyor...
+ai-content-system.js?v=1763172449:149 📡 Event listeners kuruldu
+ai-content-system.js?v=1763172449:60 ✅ AI Content Generation System hazır!
+ai-content-system.js?v=1763172449:1668 ✅ Global AI Content System instance oluşturuldu
+ai-seo-integration.js?v=1763172449:558 🔒 attachButtonListeners SKIP - already attached
+ai-drafts:3488 🚀 Enterprise Streaming Translation System Ready!
+ai-drafts:3501 📝 Streaming translation not available - Using standard translation mode
+ai-seo-integration.js?v=1763172449:558 🔒 attachButtonListeners SKIP - already attached
+b.clarity.ms/collect:1  Failed to load resource: net::ERR_SSL_BAD_RECORD_MAC_ALERT
+ai-seo-integration.js?v=1763172449:558 🔒 attachButtonListeners SKIP - already attached
+b.clarity.ms/collect:1  Failed to load resource: net::ERR_SSL_BAD_RECORD_MAC_ALERT
+ai-drafts:3462 ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal
+b.clarity.ms/collect:1  Failed to load resource: net::ERR_SSL_BAD_RECORD_MAC_ALERT
+VM750:3 🔥 BUTTON CLICKED - Calling generateDrafts...

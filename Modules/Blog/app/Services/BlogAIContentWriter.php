@@ -59,9 +59,10 @@ class BlogAIContentWriter
                 'excerpt' => ['tr' => $blogData['excerpt']],
                 'faq_data' => $blogData['faq_data'], // Universal Schema: FAQ
                 'howto_data' => $blogData['howto_data'], // Universal Schema: HowTo
-                'status' => 'draft', // Admin onayına sunulacak
-                'is_active' => false,
+                'status' => 'published', // Otomatik yayınla (draft yerine)
+                'is_active' => true, // Aktif hale getir
                 'is_featured' => false,
+                'published_at' => now(), // Yayınlanma tarihini kaydet
             ]);
 
             // Kategorileri attach et
@@ -159,16 +160,13 @@ class BlogAIContentWriter
             'meta_description' => $draft->meta_description,
         ];
 
-        // Firma & İletişim Bilgileri - ULTRA VURGULU
+        // Firma Adı - SADECE MARKA ADI
         $companyName = $context['company_info']['name'] ?? 'FİRMA ADI';
-        $companyEmail = $context['contact_info']['email'] ?? 'EMAIL';
-        $companyPhone = $context['contact_info']['phone'] ?? 'TELEFON';
 
         // 🔍 DEBUG: Context'i logla
         Log::info('🔍 Blog AI Company Context Debug', [
             'draft_id' => $draft->id,
             'company_name' => $companyName,
-            'full_context' => $context,
         ]);
 
         // 🚨 SORUN ÇÖZÜMÜ: AI'ın context içindeki uzun adı kullanmasını engelle
@@ -179,20 +177,17 @@ class BlogAIContentWriter
         $longName = $context['company_info']['company_name'] ?? null;
 
         $companyContext = "\n\n" . str_repeat('=', 60) . "\n";
-        $companyContext .= "🔴 KRİTİK: FİRMA BİLGİLERİ - MUTLAKA KULLAN!\n";
+        $companyContext .= "🔴 KRİTİK: FİRMA ADI - MUTLAKA KULLAN!\n";
         $companyContext .= str_repeat('=', 60) . "\n\n";
-        $companyContext .= "FİRMA ADI: {$shortName}\n";
+        $companyContext .= "MARKA ADI: {$shortName}\n";
         $companyContext .= "⚠️ SADECE bu kısa adı kullan: '{$shortName}'\n";
         if ($longName) {
             $companyContext .= "❌ UZUN ADI KULLANMA: '{$longName}'\n";
         }
-        $companyContext .= ">>> Bu KISA adı blog içinde EN AZ 3 KEZ kullanacaksın!\n";
+        $companyContext .= ">>> Bu MARKA adını blog içinde EN AZ 3 KEZ kullanacaksın!\n";
         $companyContext .= ">>> Örnek: \"{$shortName} olarak...\"\n";
-        $companyContext .= ">>> Örnek: \"{$shortName} ekibi...\"\n\n";
-        $companyContext .= "İLETİŞİM:\n";
-        $companyContext .= "Email: {$companyEmail}\n";
-        $companyContext .= "Telefon: {$companyPhone}\n";
-        $companyContext .= ">>> CTA bölümünde bu bilgileri HTML liste olarak ekle!\n";
+        $companyContext .= ">>> Örnek: \"{$shortName} ekibi...\"\n";
+        $companyContext .= ">>> Örnek: \"Detaylı bilgi için {$shortName} ile iletişime geçin.\"\n";
         $companyContext .= str_repeat('=', 60) . "\n";
 
         // System message'ı basitleştir - KISA firma adı vurgulu!
@@ -221,21 +216,17 @@ class BlogAIContentWriter
                 // Basit ve direkt prompt - KISA firma adını direkt ekle
                 $userPrompt = "Detaylı blog yazısı oluştur (1500+ kelime, Türkçe).
 
-🔴 ZORUNLU: SADECE '{$shortName}' firma adını kullan - EN AZ 3 KEZ!
+🔴 ZORUNLU: SADECE '{$shortName}' marka adını kullan - EN AZ 3 KEZ!
 ❌ '{$longName}' gibi uzun firma adı KULLANMA!
 
-ÖRNEK KULLANIM (SADECE KISA AD):
+ÖRNEK KULLANIM (MARKA ADI):
 - '{$shortName} olarak, endüstriyel ekipman sektöründe deneyimimizle...'
-- '{$shortName} uzman ekibi size destek sağlar.'
+- '{$shortName} uzman ekibi, size profesyonel destek sağlar.'
 - 'Detaylı bilgi için {$shortName} ile iletişime geçin.'
+- '{$shortName}, yüksek kaliteli ürünler sunar.'
 
-İLETİŞİM BÖLÜMÜ önyazı (HTML):
-<h2>İletişim</h2>
-<p>{$shortName} olarak profesyonel destek:</p>
-<ul><li><strong>Tel:</strong> {$companyPhone}</li><li><strong>Email:</strong> {$companyEmail}</li></ul>
-
-JSON ÇIKTI:
-{\"title\": \"başlık\", \"content\": \"<h2>...</h2><p>...{$shortName}...</p>\", \"excerpt\": \"özet\", \"faq_data\": [{\"question\": {\"tr\": \"?\"}, \"answer\": {\"tr\": \"cevap\"}}], \"howto_data\": {\"name\": {\"tr\": \"nasıl\"}, \"description\": {\"tr\": \"açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"adım\"}, \"text\": {\"tr\": \"detay\"}}]}}";
+JSON ÇIKTI (FAQ ve HowTo schema ZORUNLU):
+{\"title\": \"başlık\", \"content\": \"<h2>...</h2><p>...{$shortName}...</p>\", \"excerpt\": \"özet\", \"faq_data\": [{\"question\": {\"tr\": \"soru?\"}, \"answer\": {\"tr\": \"cevap\"}}], \"howto_data\": {\"name\": {\"tr\": \"nasıl yapılır\"}, \"description\": {\"tr\": \"açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"adım başlık\"}, \"text\": {\"tr\": \"adım detayı\"}}]}}";
 
             $response = $this->openaiService->ask($userPrompt, false, [
                 'custom_prompt' => $systemMessage,

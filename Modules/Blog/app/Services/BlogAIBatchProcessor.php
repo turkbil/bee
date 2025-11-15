@@ -37,8 +37,8 @@ class BlogAIBatchProcessor
             $draft = BlogAIDraft::find($draftId);
 
             if ($draft && !$draft->is_generated) {
-                // Job dispatch
-                GenerateBlogFromDraftJob::dispatch($draft, $batchId)
+                // Job dispatch (model yerine ID geçir - tenant context için)
+                GenerateBlogFromDraftJob::dispatch($draftId, $batchId)
                     ->onQueue('blog-ai');
             }
         }

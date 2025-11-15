@@ -30,10 +30,10 @@ class BlogAIDraftGenerator
     /**
      * Blog taslakları oluştur
      *
-     * @param int $count Kaç taslak oluşturulacak (varsayılan: 100)
+     * @param int $count Kaç taslak oluşturulacak (varsayılan: 10)
      * @return array Oluşturulan taslaklar
      */
-    public function generateDrafts(int $count = 100): array
+    public function generateDrafts(int $count = 10): array
     {
         // Credit kontrolü - araştırma toplam 1.0 kredi
         if (!ai_can_use_credits(1.0)) {
@@ -58,11 +58,15 @@ class BlogAIDraftGenerator
 
         try {
             // OpenAI API call (mevcut AI sistemini kullan)
+            // max_tokens dinamik ayarla: Her taslak ~200 token → count * 250
+            // Minimum 1000, Maximum 16000 (GPT-4 output limit)
+            $maxTokens = min(16000, max(1000, $count * 250));
+
             $userPrompt = "Lütfen {$count} adet blog taslağı üret. JSON array formatında döndür.";
             $response = $this->openaiService->ask($userPrompt, false, [
                 'custom_prompt' => $systemMessage,
                 'temperature' => 0.7,
-                'max_tokens' => 3000,
+                'max_tokens' => $maxTokens,
             ]);
 
             // ask() metodu direkt string döndürür

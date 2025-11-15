@@ -30,7 +30,7 @@ class GenerateDraftsJob implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public int $count = 100
+        public int $count = 5
     ) {
         // Tenant context'i kaydet (dispatch anında)
         $this->tenantId = tenant('id');

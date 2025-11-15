@@ -93,51 +93,79 @@ class AIPromptEnhancer
     protected function buildSystemPrompt(string $style): string
     {
         $styleDescriptions = [
-            'ultra_photorealistic' => 'ultra-realistic, indistinguishable from real photographs, shot on professional DSLR camera',
-            'studio_photography' => 'professional studio photography with controlled lighting and clean backgrounds',
-            'natural_light' => 'natural outdoor photography with golden hour lighting and authentic atmosphere',
-            'cinematic_photography' => 'cinematic film photography with dramatic lighting and movie-quality aesthetics',
-            'documentary_style' => 'documentary photojournalism style with authentic real-world moments',
-            'commercial_photography' => 'high-end commercial advertising photography with premium quality',
-            'portrait_photography' => 'professional portrait photography with perfect subject focus',
-            'macro_photography' => 'macro photography with extreme close-up details and sharp focus',
+            'ultra_photorealistic' => 'RAW photo shot on professional DSLR camera, natural unprocessed look, documentary photography style',
+            'studio_photography' => 'studio photo with professional lighting setup, controlled environment, commercial photography',
+            'natural_light' => 'outdoor photo with natural daylight, golden hour or soft morning light, environmental photography',
+            'cinematic_photography' => 'film camera aesthetic with cinematic composition, dramatic lighting, movie still quality',
+            'documentary_style' => 'documentary photo, photojournalism style, candid authentic moment captured in real-time',
+            'commercial_photography' => 'high-end commercial photo, advertising quality, professional product or editorial photography',
+            'portrait_photography' => 'portrait photo with environmental context, professional headshot or editorial portrait quality',
+            'macro_photography' => 'macro photo with extreme close-up, ultra-sharp detail, professional macro lens photography',
         ];
 
         $styleDesc = $styleDescriptions[$style] ?? $styleDescriptions['ultra_photorealistic'];
 
         return <<<SYSTEM
-You are a professional photography director. Transform prompts into ultra-realistic JSON scene descriptions for DALL-E 3.
+You are a professional photography director. Transform prompts into detailed JSON scene descriptions for DALL-E 3 that produce authentic RAW photographs.
 
 TARGET STYLE: {$styleDesc}
 
 Create a UNIQUE JSON for each prompt with this structure:
 {
+  "subject": "Main subject with specific details",
+  "view_framing": "Close-up / full body / environmental portrait / wide shot",
+  "background": "Specific background description with depth and context",
+  "lighting": "Exact lighting setup with direction and quality",
   "camera": {
     "model": "Canon EOS R5",
-    "lens": "35mm f/1.8",
-    "settings": "captured with professional DSLR, natural look, f/1.8, 1/200s, ISO 400"
+    "lens": "85mm f/1.8",
+    "settings": "f/11, 1/60th shutter, ISO 800, auto white balance"
   },
-  "scene": "Main subject with realistic imperfections, visible textures, natural positioning",
-  "environment": "Real-world setting, lived-in space, authentic details",
-  "lighting": "Natural daylight / soft window light / ambient lighting - NO studio lights",
-  "materials": ["visible surface details", "fabric texture", "worn surfaces", "realistic materials"],
-  "mood": "Candid documentary style, unposed, authentic moment, natural appearance"
+  "imperfections": ["natural skin texture with visible pores", "fine vellus hair", "uneven skin tone"],
+  "materials": ["visible surface details", "fabric weave texture", "subtle specular highlights"],
+  "mood": "Candid moment, authentic expression, documentary style"
 }
 
-CRITICAL PHOTOREALISTIC RULES - REAL PHOTOGRAPH ONLY:
-- NEVER use: "3D render", "digital art", "illustration", "concept art", "painting", "unreal engine", "CGI", "stylized", "RAW", "photo", "drawing", "sketch", "diagram", "blueprint", "technical drawing", "schematic", "vector art", "graphic design", "cartoon", "anime"
-- ALWAYS use: "real photograph", "captured with DSLR camera", "shot on location", "natural lighting", "subtle imperfections", "realistic textures", "natural appearance", "documentary photography", "actual scene"
-- MANDATORY negatives: "NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT drawing, NOT blueprint, NOT diagram, NOT technical drawing, NOT vector art, NOT graphic, appears as REAL PHOTOGRAPH taken with camera, actual physical scene, real-world photography"
-- Camera: VARY camera model each time (Canon EOS R5, Sony A1, Nikon Z9, Fujifilm GFX, Leica M11)
-- Lenses: VARY lens each time (24mm, 35mm, 50mm, 85mm, 100mm - different focal lengths)
-- Lighting: VARY lighting (morning light, afternoon sun, overcast, golden hour, window light, ambient)
-- Angles: VARY perspective (eye-level, slight high angle, low angle, 3/4 view, side view)
-- Imperfections: VARY details (dust, scratches, wear patterns, natural aging, weathering)
-- MAXIMUM CREATIVITY: Every JSON must be COMPLETELY DIFFERENT from previous ones
+CRITICAL PHOTOGRAPHY RULES - RAW PHOTO ONLY:
+- NEVER use these words: "photorealistic", "realistic", "photo-realistic", "3D render", "digital art", "illustration", "concept art", "painting", "unreal engine", "CGI", "stylized", "drawing", "sketch", "diagram", "blueprint", "technical drawing", "schematic", "vector art", "graphic design", "cartoon", "anime"
+- ALWAYS use: "RAW photo", "photo of", "photograph of", "shot on [camera]", "captured with DSLR", "natural lighting", "documentary photography"
+- MANDATORY negatives in final prompt: "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, appears as authentic RAW photograph taken with professional camera"
+
+LIGHTING VARIATIONS (choose ONE and be VERY specific):
+- "golden hour lighting" (warm sunset/sunrise glow, long shadows)
+- "blue hour" (cool twilight tones, soft ambient light)
+- "soft natural window lighting from left" (diffused, gentle shadows)
+- "harsh midday sun" (strong shadows, high contrast)
+- "overcast soft daylight" (even illumination, minimal shadows)
+- "Rembrandt lighting" (key light at 45° creating triangle on shadow cheek)
+- "butterfly lighting" (centered key above creating butterfly shadow under nose)
+- "loop lighting" (slightly to side and above, small nose shadow)
+- "dramatic backlighting" (subject backlit, rim light effect)
+- "soft diffused morning light" (gentle, warm, low-angle sun)
+
+CAMERA VARIATIONS (choose ONE and specify ALL settings):
+- Canon EOS R5 + 85mm f/1.8 lens, f/2.8, 1/125s, ISO 400
+- Sony A7 III + 50mm f/1.4 lens, f/4, 1/200s, ISO 800
+- Nikon D810 + 24mm wide-angle lens, f/11, 1/60s, ISO 400
+- Fujifilm GFX 100S + 35mm f/2 lens, f/5.6, 1/250s, ISO 640
+- Leica M10 + 35mm f/2 lens, f/2.8, 1/500s, ISO 800
+
+IMPERFECTIONS (ALWAYS include for realism):
+- For portraits: "natural skin texture with visible pores", "fine vellus hair", "uneven skin tone", "gentle specular highlights", "subtle wrinkles" (for older subjects)
+- For objects: "subtle wear patterns", "natural aging", "weathered surface", "realistic material imperfections"
+- For scenes: "natural variation", "authentic details", "lived-in space", "realistic imperfections"
+
+MAXIMUM CREATIVITY RULES:
+- Every JSON must be COMPLETELY DIFFERENT from previous ones
 - NEVER repeat same camera + lens + lighting combination
-- Adapt to subject AND add unexpected realistic details
+- VARY focal length: wide (24mm), normal (35mm, 50mm), portrait (85mm, 100mm)
+- VARY aperture: shallow DOF (f/1.8, f/2.8) vs deep focus (f/8, f/11)
+- VARY lighting time and direction for each generation
+- Adapt to subject AND add unexpected authentic details
+
+NO TEXT/BRANDING:
 - NO text in images, NO brands, NO trademarks, NO UI elements, NO camera settings overlay
-- If text needed: Turkish only, generic names
+- If text absolutely needed: Turkish only, generic names
 
 OUTPUT: Valid JSON only
 SYSTEM;
@@ -149,30 +177,37 @@ SYSTEM;
     protected function buildUserPrompt(string $simplePrompt, string $style): string
     {
         return <<<USER
-Create a COMPLETELY UNIQUE ultra-realistic JSON scene description for a REAL PHOTOGRAPH of:
+Create a COMPLETELY UNIQUE detailed JSON scene description for an authentic RAW photograph of:
 
 "{$simplePrompt}"
 
 Style: {$style}
 
-CRITICAL: This must be a REAL PHOTOGRAPH, NOT illustration/drawing/3D render/blueprint/diagram!
+CRITICAL REQUIREMENTS - RAW PHOTO ONLY:
+1. This must be a RAW PHOTO, NOT photorealistic painting/illustration/drawing/3D render/blueprint/diagram
+2. Photo of [subject], shot on professional DSLR camera
+3. Actual physical scene captured with camera, not digital art or CGI
+4. Natural imperfections (visible pores, fine vellus hair, uneven skin tone, weathered surfaces)
+5. Real-world lighting with specific direction and quality
+6. Documentary photography style - authentic candid moment
 
-Requirements:
-1. REAL PHOTOGRAPH taken with DSLR camera
-2. ACTUAL physical scene, not digital art
-3. Natural imperfections (dust, scratches, wear)
-4. Real-world lighting and materials
-5. Documentary photography style
+STRUCTURED PROMPT FORMULA:
+Subject + View/Framing + Background + Lighting + Camera Brand + Lens Setup
 
-VARIATION: This must be DIFFERENT from any previous generation. Vary:
-- Camera model and lens combination
-- Lighting angle and time of day
-- Perspective and shooting angle
-- Specific realistic imperfections and details
-- Environmental context and background elements
+Example structure:
+"RAW photo of [subject], [close-up/full body/environmental portrait], [specific background], [golden hour lighting/Rembrandt lighting/etc], shot on [Canon EOS R5], [85mm f/1.8 lens], [f/2.8, 1/125s, ISO 400]"
 
-Output valid JSON with camera, scene, environment, lighting, materials, mood.
-Make it REAL PHOTOGRAPH but CREATIVELY DIFFERENT each time.
+MAXIMUM VARIATION - This must be DIFFERENT from any previous generation:
+- Camera model: Canon EOS R5, Sony A7 III, Nikon D810, Fujifilm GFX 100S, or Leica M10
+- Lens focal length: 24mm (wide), 35mm (normal), 50mm (normal), 85mm (portrait), or 100mm (telephoto)
+- Aperture: f/1.8 (shallow DOF) to f/11 (deep focus)
+- Lighting: golden hour, blue hour, window light from left, harsh midday sun, Rembrandt, butterfly, loop, or dramatic backlighting
+- Perspective: eye-level, slight high angle, low angle, 3/4 view, side view
+- Specific imperfections: visible pores, fine vellus hair, weathered surface, natural aging, wear patterns
+
+Output valid JSON with: subject, view_framing, background, lighting, camera (model, lens, settings), imperfections, materials, mood.
+
+Make it authentic RAW PHOTOGRAPH but CREATIVELY DIFFERENT each time.
 USER;
     }
 
@@ -190,34 +225,45 @@ USER;
 
             $prompt = '';
 
-            // Camera details
+            // Start with "RAW photo of" structure
+            if (isset($data['subject'])) {
+                $prompt .= "RAW photo of {$data['subject']}";
+            }
+
+            // View/Framing
+            if (isset($data['view_framing'])) {
+                $prompt .= ", {$data['view_framing']}";
+            }
+
+            // Background
+            if (isset($data['background'])) {
+                $prompt .= ", {$data['background']}";
+            }
+
+            // Lighting (very specific)
+            if (isset($data['lighting'])) {
+                $prompt .= ", {$data['lighting']}";
+            }
+
+            // Camera details (full specifications)
             if (isset($data['camera'])) {
                 $cam = $data['camera'];
-                $prompt .= "Professional photography";
-                if (isset($cam['model'])) $prompt .= " shot on {$cam['model']}";
+                $prompt .= ", shot on";
+                if (isset($cam['model'])) $prompt .= " {$cam['model']}";
                 if (isset($cam['lens'])) $prompt .= " with {$cam['lens']} lens";
                 if (isset($cam['settings'])) $prompt .= ", {$cam['settings']}";
-                $prompt .= ". ";
             }
 
-            // Scene
-            if (isset($data['scene'])) {
-                $prompt .= $data['scene'] . ". ";
-            }
+            $prompt .= ". ";
 
-            // Environment
-            if (isset($data['environment'])) {
-                $prompt .= $data['environment'] . ". ";
-            }
-
-            // Lighting
-            if (isset($data['lighting'])) {
-                $prompt .= "Lighting: {$data['lighting']}. ";
+            // Imperfections (critical for realism)
+            if (isset($data['imperfections']) && is_array($data['imperfections'])) {
+                $prompt .= implode(', ', $data['imperfections']) . ". ";
             }
 
             // Materials
             if (isset($data['materials']) && is_array($data['materials'])) {
-                $prompt .= "Materials: " . implode(', ', $data['materials']) . ". ";
+                $prompt .= implode(', ', $data['materials']) . ". ";
             }
 
             // Mood
@@ -225,9 +271,9 @@ USER;
                 $prompt .= $data['mood'] . ". ";
             }
 
-            // CRITICAL: Real photograph emphasis + comprehensive negatives
-            $prompt .= "REAL PHOTOGRAPH taken with professional DSLR camera, actual physical scene, documentary photography, indistinguishable from real-world photograph, natural appearance, as seen in real life. ";
-            $prompt .= "NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT painting, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT vector art, NOT graphic design, NOT cartoon, NOT anime, appears as REAL PHOTOGRAPH, actual scene captured with camera, real-world photography, no artificial elements, no UI overlays, no text, no graphics";
+            // CRITICAL: Comprehensive negatives - NO "photorealistic" word!
+            $prompt .= "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, NOT filters, NOT cinematic color grading. ";
+            $prompt .= "Appears as authentic RAW photograph taken with professional DSLR camera, actual physical scene, documentary photography, natural appearance, real-world photography, no artificial elements, no UI overlays, no text";
 
             return trim($prompt);
 
@@ -252,14 +298,25 @@ USER;
     protected function basicEnhancement(string $prompt, string $style): string
     {
         $enhancements = [
-            'ultra_photorealistic' => 'REAL PHOTOGRAPH captured with Canon EOS R5, 35mm f/1.8 lens, natural daylight, visible textures and subtle imperfections, realistic materials, authentic scene, documentary photography, appears as seen in real life, NOT stylized, NOT 3D render, NOT digital art, NOT illustration, NOT drawing, NOT blueprint, NOT diagram, completely realistic photograph taken with DSLR camera',
-            'studio_photography' => 'REAL PHOTOGRAPH captured with Phase One IQ4, natural window light, clean background, realistic commercial photography quality, authentic product appearance, actual physical scene, NOT 3D render, NOT digital art, NOT illustration',
-            'natural_light' => 'REAL PHOTOGRAPH captured with Fujifilm GFX 100S, golden hour natural light, shallow depth of field, authentic atmosphere, visible environmental details, unposed candid moment, documentary photography, actual scene, NOT illustration, NOT drawing, NOT digital art',
-            'cinematic_photography' => 'REAL PHOTOGRAPH captured with film camera, 35mm film grain aesthetic, natural lighting, authentic moment, documentary style, actual scene photographed on location, NOT 3D render, NOT illustration, NOT digital art',
+            'ultra_photorealistic' => 'RAW photo shot on Canon EOS R5, 85mm f/1.8 lens, f/2.8, 1/125s, ISO 400, natural daylight, natural skin texture with visible pores, fine vellus hair, uneven skin tone, subtle imperfections, authentic scene, documentary photography style. NOT photorealistic painting, NOT 3D render, NOT digital art, NOT illustration, NOT drawing, NOT blueprint, NOT glossy plastic skin, appears as authentic RAW photograph taken with DSLR camera',
+
+            'studio_photography' => 'Studio photo shot on Phase One IQ4, 85mm macro lens, f/4, professional softbox lighting, clean white background, realistic commercial photography, visible material textures, subtle specular highlights, authentic product appearance. NOT 3D render, NOT digital art, NOT illustration, NOT over-saturated',
+
+            'natural_light' => 'RAW photo shot on Fujifilm GFX 100S, 35mm f/2 lens, f/5.6, 1/250s, ISO 640, golden hour natural light, shallow depth of field, authentic atmosphere, visible environmental details, natural variation, unposed candid moment, documentary photography. NOT illustration, NOT drawing, NOT digital art, NOT filters',
+
+            'cinematic_photography' => 'Film photo shot on 35mm film camera, natural lighting, cinematic composition, film grain aesthetic, authentic moment, documentary style, real location photography, natural imperfections. NOT 3D render, NOT illustration, NOT digital art, NOT over-processed',
+
+            'documentary_style' => 'RAW photo shot on Leica M10, 35mm f/2 lens, f/2.8, 1/500s, ISO 800, natural lighting, photojournalism style, candid authentic moment, documentary photography, visible imperfections, real-world scene. NOT staged, NOT illustration, NOT 3D render',
+
+            'commercial_photography' => 'Commercial photo shot on Sony A7 III, 50mm f/1.4 lens, f/4, professional lighting, high-end advertising quality, realistic material textures, visible details, authentic product photography. NOT 3D render, NOT over-processed, NOT glossy plastic',
+
+            'portrait_photography' => 'Portrait photo shot on Canon EOS R5, 85mm f/1.8 lens, f/2.8, Rembrandt lighting, natural skin texture with visible pores, uneven skin tone, gentle specular highlights, authentic expression, professional portrait quality. NOT illustration, NOT 3D render, NOT over-smoothed',
+
+            'macro_photography' => 'Macro photo shot on Nikon D810, 100mm macro lens, f/8, ultra-sharp detail, extreme close-up, visible surface textures, realistic material imperfections, professional macro photography. NOT 3D render, NOT illustration, NOT digital art',
         ];
 
         $enhancement = $enhancements[$style] ?? $enhancements['ultra_photorealistic'];
 
-        return "{$prompt}. {$enhancement}";
+        return "RAW photo of {$prompt}. {$enhancement}";
     }
 }

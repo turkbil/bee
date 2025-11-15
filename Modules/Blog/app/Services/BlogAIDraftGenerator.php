@@ -218,12 +218,24 @@ class BlogAIDraftGenerator
         ]);
 
         // JSON extract (bazen markdown code block içinde geliyor)
+        // Pattern: ```json ... ``` veya ``` ... ```
+        // Greedy match yerine lazy match (.*?) kullan
         if (preg_match('/```json\s*(.*?)\s*```/s', $content, $matches)) {
             $content = $matches[1];
-            Log::info('✅ JSON code block found and extracted');
+            Log::info('✅ JSON code block found and extracted (```json)');
         } elseif (preg_match('/```\s*(.*?)\s*```/s', $content, $matches)) {
             $content = $matches[1];
-            Log::info('✅ Code block found and extracted');
+            Log::info('✅ Code block found and extracted (```)');
+        }
+
+        // Ekstra temizlik: JSON başlangıcından önceki text'i kaldır
+        // OpenAI bazen "İşte 100 taslak:\n\n```json..." şeklinde döndürür
+        if (preg_match('/^\s*\[/s', $content) === 0) {
+            // JSON "[" ile başlamıyorsa, "[" karakterine kadar olan kısmı at
+            if (preg_match('/(\[.*\])\s*$/s', $content, $matches)) {
+                $content = $matches[1];
+                Log::info('✅ Removed text before JSON array');
+            }
         }
 
         $decoded = json_decode(trim($content), true);

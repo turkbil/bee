@@ -22,7 +22,7 @@ class BlogAiDraftComponent extends Component
 {
     use WithPagination;
 
-    public int $draftCount = 5; // Test için düşürüldü
+    public int $draftCount = 25; // Kullanıcı talebi: 25 konu
     public array $selectedDrafts = [];
     public bool $isGenerating = false;
     public bool $isWriting = false;

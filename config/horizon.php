@@ -183,7 +183,7 @@ return [
         // AI Translation & Processing Queue
         'ai-supervisor' => [
             'connection' => 'redis',
-            'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'critical'],
+            'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'blog-ai', 'critical'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 5, // 🚀 Development için artırıldı

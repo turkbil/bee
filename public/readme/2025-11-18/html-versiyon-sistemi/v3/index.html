@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD vs HTML: Ne Zaman Hangisi? - Netleştirilmiş Kurallar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #93c5fd;
+        }
+
+        .rule-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .rule-box.html {
+            border-left-color: #10b981;
+        }
+
+        .rule-box.md {
+            border-left-color: #f59e0b;
+        }
+
+        .rule-box h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .comparison-item.html {
+            border-left: 4px solid #10b981;
+        }
+
+        .comparison-item.md {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .comparison-item h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .keyword-list {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .keyword-list code {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #93c5fd;
+        }
+
+        .example-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .example-box h4 {
+            color: #6ee7b7;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid #dc2626;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .decision-tree {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            line-height: 2;
+            margin: 20px 0;
+            border: 2px solid #334155;
+        }
+
+        .trigger-yes {
+            color: #6ee7b7;
+            font-weight: bold;
+        }
+
+        .trigger-no {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #334155;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 MD vs HTML: Ne Zaman Hangisi?</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-18 |
+                🎯 Amaç: Markdown ve HTML kullanım kurallarını netleştirme |
+                📌 Versiyon: v3 (MD = TODO kuralı)
+            </div>
+        </header>
+
+        <section>
+            <h2>🎯 Temel Kural (Basit)</h2>
+
+            <div class="comparison">
+                <div class="comparison-item html">
+                    <h4 style="color: #6ee7b7;">✅ HTML = RAPOR, ANALİZ, PLAN</h4>
+                    <p style="color: #cbd5e1;">Kullanıcı bir şeyi <strong>anlamak, görmek, incelemek</strong> istiyorsa → HTML oluştur!</p>
+                    <div class="keyword-list">
+                        <strong>Tetikleyiciler:</strong><br>
+                        <code>analiz</code> <code>incele</code> <code>rapor</code> <code>plan</code> <code>sunum</code> <code>gözat</code> <code>listele</code>
+                    </div>
+                </div>
+
+                <div class="comparison-item md">
+                    <h4 style="color: #fbbf24;">✅ MD = TODO LİSTESİ</h4>
+                    <p style="color: #cbd5e1;">Kullanıcı <strong>yapılacaklar listesi</strong> istiyorsa → MD oluştur!</p>
+                    <div class="keyword-list">
+                        <strong>Tetikleyiciler:</strong><br>
+                        <code>todo</code> <code>todo oluştur</code> <code>todo listesi</code> <code>yapılacaklar</code> <code>checklist</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 MD (Markdown) Kullanım Kuralları</h2>
+
+            <div class="rule-box md">
+                <h3>🎯 MD = Sadece TODO!</h3>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    Markdown dosyası <strong>SADECE ve SADECE</strong> kullanıcı TODO listesi istediğinde oluşturulur.
+                </p>
+
+                <h4 style="color: #fbbf24; margin-bottom: 10px;">✅ MD Oluşturulacak Durumlar:</h4>
+                <ul style="margin-left: 25px; color: #cbd5e1; line-height: 1.9;">
+                    <li>Kullanıcı <code style="background: rgba(245, 158, 11, 0.2); padding: 2px 6px; border-radius: 4px;">"todo oluştur"</code> derse</li>
+                    <li>Kullanıcı <code style="background: rgba(245, 158, 11, 0.2); padding: 2px 6px; border-radius: 4px;">"todo listesi hazırla"</code> derse</li>
+                    <li>Kullanıcı <code style="background: rgba(245, 158, 11, 0.2); padding: 2px 6px; border-radius: 4px;">"yapılacaklar listesi"</code> derse</li>
+                    <li>Kullanıcı <code style="background: rgba(245, 158, 11, 0.2); padding: 2px 6px; border-radius: 4px;">"checklist oluştur"</code> derse</li>
+                    <li>Kullanıcı <code style="background: rgba(245, 158, 11, 0.2); padding: 2px 6px; border-radius: 4px;">"md dosyası oluştur"</code> derse</li>
+                </ul>
+
+                <h4 style="color: #fbbf24; margin: 20px 0 10px 0;">❌ MD Oluşturulmaması Gereken Durumlar:</h4>
+                <ul style="margin-left: 25px; color: #cbd5e1; line-height: 1.9;">
+                    <li><strong>Analiz talebi</strong> → HTML oluştur (MD değil!)</li>
+                    <li><strong>Rapor talebi</strong> → HTML oluştur (MD değil!)</li>
+                    <li><strong>Plan talebi</strong> → HTML oluştur (MD değil!)</li>
+                    <li><strong>İnceleme talebi</strong> → HTML oluştur (MD değil!)</li>
+                    <li><strong>Sunum talebi</strong> → HTML oluştur (MD değil!)</li>
+                </ul>
+            </div>
+
+            <div class="rule-box md">
+                <h3>📂 MD Dosya Konumu</h3>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; font-family: monospace; margin: 15px 0;">
+readme/claude-docs/todo-YYYY-MM-DD-HH-MM-[konu].md
+
+<strong style="color: #fbbf24;">Örnek:</strong>
+readme/claude-docs/todo-2025-11-18-14-30-blog-ai-fix.md
+readme/claude-docs/todo-2025-11-18-15-00-payment-integration.md
+                </div>
+            </div>
+
+            <div class="rule-box md">
+                <h3>📋 MD İçeriği (Sadece TODO)</h3>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; font-family: monospace; margin: 15px 0; font-size: 0.9rem;">
+# Blog AI Fix - TODO
+
+## Backend
+- [ ] `Modules/Blog/app/Services/BlogAIService.php` - Prompt düzeltme
+- [ ] `Modules/Blog/app/Jobs/GenerateBlogJob.php` - Queue timeout artır
+- [ ] Migration: `php artisan make:migration add_ai_status_to_blogs`
+
+## Frontend
+- [ ] `resources/views/admin/blog/ai-panel.blade.php` - Progress bar ekle
+- [ ] Livewire component: AI status gösterme
+
+## Test
+- [ ] Cache temizle: `php artisan view:clear`
+- [ ] Test: `curl https://ixtif.com/admin/blog/ai-panel`
+- [ ] Production deploy
+
+## Notlar
+- OpenAI API timeout: 180 saniye
+- Queue worker restart gerekebilir
+                </div>
+                <p style="color: #cbd5e1; margin-top: 15px;">
+                    <strong>İçerik:</strong> Checkbox'lar, dosya path'leri, komutlar, teknik notlar
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 HTML vs MD Karşılaştırması</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı Talebi</th>
+                        <th>Ne Oluşturulur?</th>
+                        <th>Neden?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"Blog modülünü analiz et"</td>
+                        <td class="trigger-yes">HTML</td>
+                        <td>Analiz raporu → görsel sunum gerekiyor</td>
+                    </tr>
+                    <tr>
+                        <td>"SEO planı hazırla"</td>
+                        <td class="trigger-yes">HTML</td>
+                        <td>Plan ve strateji → görsel rapor gerekiyor</td>
+                    </tr>
+                    <tr>
+                        <td>"Modül yapısını incele"</td>
+                        <td class="trigger-yes">HTML</td>
+                        <td>İnceleme raporu → görsel sunum gerekiyor</td>
+                    </tr>
+                    <tr>
+                        <td>"Tüm sayfaları listele"</td>
+                        <td class="trigger-yes">HTML</td>
+                        <td>Liste raporu → görsel tablo gerekiyor</td>
+                    </tr>
+                    <tr>
+                        <td>"Detaylı sunum hazırla"</td>
+                        <td class="trigger-yes">HTML</td>
+                        <td>Sunum → görsel rapor gerekiyor</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; color: #fbbf24;">"TODO oluştur"</td>
+                        <td class="trigger-no">MD</td>
+                        <td>Yapılacaklar listesi → checkbox markdown yeterli</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; color: #fbbf24;">"Yapılacaklar listesi hazırla"</td>
+                        <td class="trigger-no">MD</td>
+                        <td>TODO listesi → checkbox markdown yeterli</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; color: #fbbf24;">"Checklist oluştur"</td>
+                        <td class="trigger-no">MD</td>
+                        <td>Checklist → checkbox markdown yeterli</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>🤔 Karar Ağacı</h2>
+
+            <div class="decision-tree">
+Kullanıcı mesajı geldi
+    │
+    ├─ "todo" kelimesi VAR mı?
+    │   │
+    │   ├─ <strong style="color: #fbbf24;">EVET</strong> → <strong style="color: #fbbf24;">MD OLUŞTUR</strong>
+    │   │   └─ readme/claude-docs/todo-YYYY-MM-DD-HH-MM-[konu].md
+    │   │
+    │   └─ <strong>HAYIR</strong> → Tetikleyici kelime kontrolü
+    │       │
+    │       ├─ Analiz/Rapor/Plan/Sunum kelimesi VAR mı?
+    │       │   │
+    │       │   ├─ <strong style="color: #6ee7b7;">EVET</strong> → <strong style="color: #6ee7b7;">HTML OLUŞTUR</strong>
+    │       │   │   └─ public/readme/YYYY-MM-DD/[konu]/v1/index.html
+    │       │   │
+    │       │   └─ <strong>HAYIR</strong> → Direkt işlem yap (kod yaz/düzelt)
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Doğru Kullanım Örnekleri</h2>
+
+            <div class="example-box">
+                <h4>Örnek 1: Analiz Talebi</h4>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin-top: 10px;">
+<strong style="color: #94a3b8;">Kullanıcı:</strong> "Blog modülünü analiz et, hangi iyileştirmeler yapılabilir?"
+
+<strong style="color: #6ee7b7;">Claude Aksiyon:</strong>
+1. "analiz" kelimesi algılandı → HTML tetikleyici ✅
+2. HTML rapor oluşturulur:
+   public/readme/2025-11-18/blog-analiz/v1/index.html
+3. İçerik: Analiz raporu, iyileştirme önerileri, karşılaştırma tabloları
+4. Kullanıcıya link: https://ixtif.com/readme/2025-11-18/blog-analiz/
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Örnek 2: TODO Talebi</h4>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin-top: 10px;">
+<strong style="color: #94a3b8;">Kullanıcı:</strong> "Payment modülü için todo listesi oluştur"
+
+<strong style="color: #fbbf24;">Claude Aksiyon:</strong>
+1. "todo listesi" kelimesi algılandı → MD tetikleyici ✅
+2. MD dosyası oluşturulur:
+   readme/claude-docs/todo-2025-11-18-14-30-payment-module.md
+3. İçerik: Checkbox'lar, dosya path'leri, komutlar
+4. Kullanıcıya path: readme/claude-docs/todo-2025-11-18-14-30-payment-module.md
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Örnek 3: Plan Talebi (HTML, MD değil!)</h4>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin-top: 10px;">
+<strong style="color: #94a3b8;">Kullanıcı:</strong> "SEO iyileştirme planı hazırla"
+
+<strong style="color: #6ee7b7;">Claude Aksiyon:</strong>
+1. "plan hazırla" kelimesi algılandı → HTML tetikleyici ✅
+2. ❌ MD OLUŞTURMA! (TODO değil, plan raporu!)
+3. ✅ HTML rapor oluştur:
+   public/readme/2025-11-18/seo-plani/v1/index.html
+4. İçerik: Plan, stratejiler, adımlar, beklenen sonuçlar
+5. Kullanıcıya link: https://ixtif.com/readme/2025-11-18/seo-plani/
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>❌ Yanlış Kullanım Örnekleri</h2>
+
+            <div class="warning-box">
+                <h4>Hata 1: Plan için MD oluşturmak</h4>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin-top: 10px;">
+<strong style="color: #94a3b8;">Kullanıcı:</strong> "Migration planı hazırla"
+
+<strong style="color: #fca5a5;">❌ YANLIŞ:</strong> MD dosyası oluşturmak
+<strong style="color: #6ee7b7;">✅ DOĞRU:</strong> HTML rapor oluşturmak
+
+<strong>Neden?</strong>
+- "plan" kelimesi → HTML tetikleyici
+- Kullanıcı TODO istemiyor, PLAN istiyor
+- Plan = strateji, analiz, görsel sunum gerektirir
+- MD sadece checkbox listesi için kullanılır
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>Hata 2: Analiz için MD oluşturmak</h4>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin-top: 10px;">
+<strong style="color: #94a3b8;">Kullanıcı:</strong> "Mevcut modülleri analiz et"
+
+<strong style="color: #fca5a5;">❌ YANLIŞ:</strong> MD dosyası oluşturmak
+<strong style="color: #6ee7b7;">✅ DOĞRU:</strong> HTML rapor oluşturmak
+
+<strong>Neden?</strong>
+- "analiz" kelimesi → HTML tetikleyici
+- Kullanıcı TODO istemiyor, ANALİZ istiyor
+- Analiz = rapor, görsel tablo, detaylı inceleme gerektirir
+- MD sadece checkbox listesi için kullanılır
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Özet Kural Tablosu</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>HTML</th>
+                        <th>MD (Markdown)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ne zaman?</strong></td>
+                        <td>Analiz, rapor, plan, sunum, inceleme</td>
+                        <td>Sadece TODO listesi</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tetikleyici kelimeler</strong></td>
+                        <td>analiz, incele, rapor, plan, sunum, gözat, listele...</td>
+                        <td>todo, yapılacaklar, checklist</td>
+                    </tr>
+                    <tr>
+                        <td><strong>İçerik tipi</strong></td>
+                        <td>Görsel rapor, tablo, analiz, strateji</td>
+                        <td>Checkbox listesi, teknik adımlar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Konum</strong></td>
+                        <td>public/readme/YYYY-MM-DD/[konu]/vX/</td>
+                        <td>readme/claude-docs/todo-YYYY-MM-DD-HH-MM-[konu].md</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Link tipi</strong></td>
+                        <td>Web URL: https://ixtif.com/readme/...</td>
+                        <td>File path: readme/claude-docs/...</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Versiyonlama</strong></td>
+                        <td>✅ Evet (v1, v2, v3...)</td>
+                        <td>❌ Hayır (timestamp'li dosya)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kullanım sıklığı</strong></td>
+                        <td>Çok sık (analiz/rapor/plan)</td>
+                        <td>Az (sadece TODO)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>📝 CLAUDE.md'ye Eklenecek Bölüm</h2>
+
+            <div style="background: #1e293b; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; line-height: 1.8;">
+### 🚨 4. MARKDOWN (MD) KULLANIMI
+
+<strong style="color: #fbbf24;">**📝 MD = Sadece TODO!**</strong>
+
+#### 🎯 TETİKLEYİCİ KELİMELER (MD için):
+
+Sadece bu kelimeler kullanıcı mesajında geçerse → MD oluştur:
+- `todo`
+- `todo oluştur`
+- `todo listesi`
+- `yapılacaklar`
+- `yapılacaklar listesi`
+- `checklist`
+- `checklist oluştur`
+- `md dosyası oluştur`
+
+<strong style="color: #dc2626;">**❌ DİĞER TÜM DURUMLAR → HTML OLUŞTUR (MD değil!)**</strong>
+
+- "Plan hazırla" → HTML oluştur (MD değil!)
+- "Analiz et" → HTML oluştur (MD değil!)
+- "Rapor hazırla" → HTML oluştur (MD değil!)
+- "İncele" → HTML oluştur (MD değil!)
+
+#### 📂 MD Dosya Konumu:
+```
+readme/claude-docs/todo-YYYY-MM-DD-HH-MM-[konu].md
+```
+
+#### 📋 MD İçerik (Sadece TODO formatı):
+- ✅ Teknik todo listesi
+- ✅ Checkbox'lar (- [ ] format)
+- ✅ Dosya path'leri
+- ✅ Komutlar
+- ✅ Kod referansları
+- ✅ Teknik notlar
+
+**UNUTMA:** MD = Sadece TODO! Plan/Analiz/Rapor → HTML!
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - 2025-11-18
+            <br>
+            📌 Versiyon 3: MD = TODO kuralı netleştirildi
+        </footer>
+    </div>
+</body>
+</html>

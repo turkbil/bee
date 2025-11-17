@@ -78,28 +78,111 @@
     'breadcrumbs' => $breadcrumbsArray
 ])
 
-<div class="min-h-screen bg-white dark:bg-gray-900">
+{{-- Sticky Social Share (Desktop) --}}
+<x-blog.social-share :url="$shareUrl" :title="$title" position="sticky" />
+
+<div class="min-h-screen bg-white dark:bg-gray-900 pb-20 lg:pb-8">
     <div class="container mx-auto py-8 md:py-12">
 
-        {{-- Meta Info Only (Başlık glass-subheader'da) --}}
+        {{-- Hero Section: Başlık + Kategori + Featured Image + Etiketler --}}
         <header class="mb-8 md:mb-12">
+            {{-- Kategori Badge + Etiketler (üstte) --}}
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+                @if($categoryName)
+                    <x-blog.category-badge :category="$categoryName" size="md" />
+                @endif
 
+                @if($tags->isNotEmpty())
+                    <div class="flex flex-wrap items-center gap-2">
+                        @foreach($tags->take(3) as $tag)
+                            @php
+                                $tagName = $tag->name;
+                                $seoFriendlyTag = $tag->slug ?: \Illuminate\Support\Str::slug($tagName);
+                                $routeParameters = $currentLocale === $defaultLocale
+                                    ? ['tag' => $seoFriendlyTag]
+                                    : ['locale' => $currentLocale, 'tag' => $seoFriendlyTag];
+
+                                if (\Illuminate\Support\Facades\Route::has($tagRouteName)) {
+                                    $tagUrl = route($tagRouteName, $routeParameters);
+                                } else {
+                                    $fallbackPath = trim(($localePrefix ?: '') . '/blog/tag/' . $seoFriendlyTag, '/');
+                                    $tagUrl = url($fallbackPath);
+                                }
+                            @endphp
+                            <a href="{{ $tagUrl }}"
+                               class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 transition-all duration-300 shadow-sm hover:shadow-md"
+                               rel="tag"
+                               title="{{ $tagName }} etiketli yazılar">
+                                <i class="fas fa-hashtag text-blue-500"></i>{{ $tagName }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            {{-- Başlık (Tekrar - Magazine Style) --}}
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
+                {{ $title }}
+            </h1>
+
+            {{-- Meta Card: Yazar + Tarih + Stats --}}
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-md border border-gray-200 dark:border-gray-700 mb-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    {{-- Yazar Mini Info --}}
+                    <x-blog.author-card variant="mini" />
+
+                    {{-- Tarih --}}
+                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                        <i class="fas fa-calendar text-blue-500"></i>
+                        <span class="text-sm font-medium">{{ $publishedDate }}</span>
+                    </div>
+
+                    {{-- Stats Bar --}}
+                    <div class="md:ml-auto">
+                        <x-blog.stats-bar :blog="$item" />
+                    </div>
+                </div>
+            </div>
+
+            {{-- Excerpt (Büyük, Dikkat Çekici) --}}
             @if($excerpt)
-                <p class="text-xl leading-relaxed text-gray-600 dark:text-gray-400 mb-8">
+                <p class="text-xl md:text-2xl leading-relaxed text-gray-700 dark:text-gray-300 font-light italic mb-8 pl-4 border-l-4 border-blue-500">
                     {{ $excerpt }}
                 </p>
             @endif
 
-            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-500">
-                <span><i class="fas fa-calendar mr-1"></i>{{ $publishedDate }}</span>
-                @if($readingTime)
-                    <span class="reading-time-text" data-reading-base="{{ $readingTime }}"><i class="fas fa-clock mr-1"></i>{{ $readingTime }} dk okuma</span>
-                @endif
-                <span><i class="fas fa-user mr-1"></i>{{ setting('site_title') ?? config('app.name') }}</span>
-            </div>
+            {{-- Featured Image (Compact - 4:3 Ratio) --}}
+            @if($featuredImage)
+                <figure class="overflow-hidden rounded-xl shadow-lg mb-8">
+                    <a href="{{ $featuredImage->getUrl() }}"
+                       class="glightbox block"
+                       data-gallery="blog-featured"
+                       data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
+                       data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                        <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
+                             alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                             width="{{ $featuredImage->getCustomProperty('width') ?? 800 }}"
+                             height="{{ $featuredImage->getCustomProperty('height') ?? 600 }}"
+                             loading="eager"
+                             class="w-full h-auto max-h-[500px] object-cover cursor-pointer transition-all duration-300 hover:scale-105">
+                    </a>
+                    @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
+                        <figcaption class="bg-gray-100 dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
+                            <strong class="block font-semibold text-gray-900 dark:text-white mb-1 text-base">
+                                {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
+                            </strong>
+                            @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
+                                <span class="block text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
+                                </span>
+                            @endif
+                        </figcaption>
+                    @endif
+                </figure>
+            @endif
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-8 lg:gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-6">
             {{-- Sol Sidebar (Sadece TOC - Mobilde Gizli) --}}
             <aside class="hidden lg:block order-2 lg:order-1">
                 @if(!empty($toc))
@@ -111,35 +194,7 @@
 
             {{-- Ana İçerik --}}
             <article class="order-1 lg:order-2 {{ !empty($toc) ? 'lg:col-span-2' : 'lg:col-span-3' }} space-y-10">
-                {{-- Featured Image --}}
-                @if($featuredImage)
-                    <figure class="overflow-hidden rounded-xl shadow-lg">
-                        <a href="{{ $featuredImage->getUrl() }}"
-                           class="glightbox block"
-                           data-gallery="blog-featured"
-                           data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                           data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                            <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
-                                 alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                 width="{{ $featuredImage->getCustomProperty('width') ?? 800 }}"
-                                 height="{{ $featuredImage->getCustomProperty('height') ?? 600 }}"
-                                 loading="eager"
-                                 class="w-full h-auto object-cover cursor-pointer transition-all duration-300">
-                        </a>
-                        @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
-                            <figcaption class="bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
-                                <strong class="block font-semibold text-gray-900 dark:text-white mb-1">
-                                    {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
-                                </strong>
-                                @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
-                                    <span class="block text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                        {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
-                                    </span>
-                                @endif
-                            </figcaption>
-                        @endif
-                    </figure>
-                @endif
+                {{-- Body Content --}}
                 <div class="content-body prose prose-lg md:prose-xl max-w-none
                           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-24
                           prose-headings:text-gray-900 dark:prose-headings:text-white
@@ -172,7 +227,12 @@
                     {!! Blade::render($parsedBody, [], true) !!}
                 </div>
 
-                {{-- FAQ Section (Sık Sorulan Sorular) - Container İçinde --}}
+                {{-- Author Card (Detaylı) --}}
+                <section class="mt-12">
+                    <x-blog.author-card variant="full" />
+                </section>
+
+                {{-- FAQ Section --}}
                 @if(!empty($item->faq_data))
                     @php
                         $faqData = is_string($item->faq_data) ? json_decode($item->faq_data, true) : $item->faq_data;
@@ -249,7 +309,7 @@
                             </h2>
                             <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
                         </header>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-8">
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
                             @foreach($galleryImages as $image)
                                 <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
                                     <a href="{{ $image->getUrl() }}"
@@ -284,7 +344,7 @@
                     </section>
                 @endif
 
-                {{-- HowTo Section - Container İçinde --}}
+                {{-- HowTo Section --}}
                 @if(!empty($item->howto_data))
                     @php
                         $howtoData = is_string($item->howto_data) ? json_decode($item->howto_data, true) : $item->howto_data;
@@ -316,22 +376,22 @@
                                     @if(!empty($stepName))
                                         <div class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 md:p-8 hover:shadow-2xl transition-all duration-500"
                                              itemscope itemprop="step" itemtype="https://schema.org/HowToStep">
-                                            {{-- Step Number Badge - Opaque/Subtle --}}
+                                            {{-- Step Number Badge --}}
                                             <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center shadow-sm opacity-60 transition-all duration-300 group-hover:opacity-80 group-hover:scale-110">
                                                 <span class="text-gray-600 dark:text-gray-400 font-semibold text-sm">{{ $index + 1 }}</span>
                                             </div>
 
-                                            {{-- Icon - Prominent with Hover Animation --}}
+                                            {{-- Icon --}}
                                             <div class="flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 mx-auto mb-6 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl">
                                                 <i class="{{ $stepIcon }} text-4xl text-white transition-transform duration-300 group-hover:scale-110"></i>
                                             </div>
 
-                                            {{-- Title - Prominent with Hover Effect --}}
+                                            {{-- Title --}}
                                             <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center leading-tight transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
                                                 {{ $stepName }}
                                             </h3>
 
-                                            {{-- Description - Larger & Animated --}}
+                                            {{-- Description --}}
                                             @if(!empty($stepText))
                                                 <div class="text-base text-gray-600 dark:text-gray-400 leading-relaxed text-center transition-all duration-300 group-hover:text-gray-900 dark:group-hover:text-gray-200" itemprop="text">
                                                     {!! nl2br(e($stepText)) !!}
@@ -393,37 +453,6 @@
                             </a>
                         </div>
                     </section>
-                @endif
-
-                {{-- Etiketler --}}
-                @if($tags->isNotEmpty())
-                    <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
-                        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Etiketler:</h3>
-                        <div class="flex flex-wrap gap-2">
-                            @foreach($tags as $tag)
-                                @php
-                                    $tagName = $tag->name;
-                                    $seoFriendlyTag = $tag->slug ?: \Illuminate\Support\Str::slug($tagName);
-                                    $routeParameters = $currentLocale === $defaultLocale
-                                        ? ['tag' => $seoFriendlyTag]
-                                        : ['locale' => $currentLocale, 'tag' => $seoFriendlyTag];
-
-                                    if (\Illuminate\Support\Facades\Route::has($tagRouteName)) {
-                                        $tagUrl = route($tagRouteName, $routeParameters);
-                                    } else {
-                                        $fallbackPath = trim(($localePrefix ?: '') . '/blog/tag/' . $seoFriendlyTag, '/');
-                                        $tagUrl = url($fallbackPath);
-                                    }
-                                @endphp
-                                <a href="{{ $tagUrl }}"
-                                   class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 px-3 py-1.5 text-xs font-semibold text-blue-800 transition-all duration-300 shadow-sm hover:shadow-md dark:bg-gradient-to-r dark:from-blue-500/20 dark:to-blue-600/20 dark:text-blue-200 dark:hover:from-blue-500/30 dark:hover:to-blue-600/30"
-                                   rel="tag"
-                                   title="{{ $tagName }} etiketli yazılar">
-                                    <i class="fas fa-hashtag text-blue-600 dark:text-blue-300"></i>{{ $tagName }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
                 @endif
 
                 {{-- Önceki/Sonraki --}}
@@ -497,7 +526,6 @@
             color: #60a5fa;
         }
 
-        /* Utility classes */
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -510,6 +538,10 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+
+        [x-cloak] {
+            display: none !important;
         }
     </style>
 @endpush

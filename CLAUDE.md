@@ -84,12 +84,13 @@ Bu sistem yüzlerce farklı sektörden tenant barındırır!
 - "Bu hatayı **düzelt**" → Direkt kod yaz ❌
 - "Yeni field **ekle**" → Direkt kod yaz ❌
 
-#### 📂 Dosya Konumu - VERSİYON SİSTEMİ:
+#### 📂 Dosya Konumu - HİYERARŞİK SİSTEM:
 
-**🎯 ANA KURAL:** Konu sabit, versiyonlar alt klasörde!
+**🎯 ANA KURAL:** Yıl → Ay → Gün → Konu → Versiyon
 
+**📊 HTML Raporlar (Analiz, Plan, Sunum):**
 ```
-public/readme/[YYYY-MM-DD]/[ana-konu]/[versiyon]/index.html
+public/readme/[YYYY]/[MM]/[DD]/[ana-konu]/[versiyon]/index.html
 ```
 
 **Versiyon Mantığı:**
@@ -100,20 +101,41 @@ public/readme/[YYYY-MM-DD]/[ana-konu]/[versiyon]/index.html
 
 **Örnek Yapı:**
 ```
-public/readme/2025-11-18/blog-detay/
+public/readme/2025/11/18/blog-detay/
 ├── v1/index.html          ← İlk tasarım analizi
 ├── v2/index.html          ← TOC ekleme planı
 ├── v3/index.html          ← Responsive düzenleme
 └── index.html             ← Sembolik link (v3'e işaret eder)
 
-URL: https://ixtif.com/readme/2025-11-18/blog-detay/
+URL: https://ixtif.com/readme/2025/11/18/blog-detay/
      (Her zaman en güncel versiyon gösterilir)
 ```
 
+**📝 MD Dosyalar (Sadece TODO):**
+```
+readme/claude-docs/todo/[YYYY]/[MM]/[DD]/todo-[HH-MM]-[konu].md
+```
+
+**Örnek:**
+```
+readme/claude-docs/todo/2025/11/18/todo-14-30-payment-fix.md
+readme/claude-docs/todo/2025/11/18/todo-15-00-blog-ai.md
+```
+
+**❌ KRİTİK:**
+- TODO dosyaları ASLA `public/` altında değil!
+- TODO dosyaları ASLA HTML klasörü içinde değil!
+- MD ve HTML tamamen ayrı konumlarda!
+
 **🔍 Versiyon Kontrolü (Otomatik Yap):**
 ```bash
+# Tarih ayır
+YYYY=$(date +%Y)
+MM=$(date +%m)
+DD=$(date +%d)
+
 # Klasör var mı kontrol et
-if [ -d "public/readme/2025-11-18/blog-detay" ]; then
+if [ -d "public/readme/$YYYY/$MM/$DD/blog-detay" ]; then
     # Varsa: Son versiyon numarasını bul, +1 ekle
     # v1, v2 varsa → v3 oluştur
 else
@@ -321,16 +343,16 @@ fi
 
 **❌ ASLA PATH VERME:**
 ```
-public/readme/2025-11-17/analiz/v1/index.html  # YANLIŞ!
+public/readme/2025/11/18/analiz/v1/index.html  # YANLIŞ!
 ```
 
 **✅ MUTLAKA WEB LİNKİ VER (Versiyonlu):**
 ```
 ✅ Blog Detay Analizi (v2) hazır!
-📊 Raporu görüntüle: https://ixtif.com/readme/2025-11-18/blog-detay/
+📊 Raporu görüntüle: https://ixtif.com/readme/2025/11/18/blog-detay/
 
 📌 Önceki versiyon:
-   v1 (İlk tasarım): https://ixtif.com/readme/2025-11-18/blog-detay/v1/
+   v1 (İlk tasarım): https://ixtif.com/readme/2025/11/18/blog-detay/v1/
 ```
 
 **💡 İPUCU:**
@@ -343,26 +365,27 @@ public/readme/2025-11-17/analiz/v1/index.html  # YANLIŞ!
 
 1️⃣ **Klasör kontrolü yap:**
 ```bash
-ls public/readme/2025-11-18/blog-detay/
+ls public/readme/2025/11/18/blog-detay/
 # v1, v2 varsa → v3 oluştur
 ```
 
 2️⃣ **Yeni versiyon oluştur:**
 ```bash
-mkdir -p public/readme/2025-11-18/blog-detay/v3/
+mkdir -p public/readme/2025/11/18/blog-detay/v3/
 # v3/index.html oluştur (güncellenen içerikle)
 ```
 
 3️⃣ **Sembolik linki güncelle:**
 ```bash
-ln -sf v3/index.html public/readme/2025-11-18/blog-detay/index.html
+cd public/readme/2025/11/18/blog-detay/
+ln -sf v3/index.html index.html
 ```
 
 4️⃣ **Kullanıcıya bildir:**
 ```
 ✅ Blog Detay Analizi güncellendi! (v2 → v3)
-📊 Güncel rapor: https://ixtif.com/readme/2025-11-18/blog-detay/
-📌 v2: https://ixtif.com/readme/2025-11-18/blog-detay/v2/
+📊 Güncel rapor: https://ixtif.com/readme/2025/11/18/blog-detay/
+📌 v2: https://ixtif.com/readme/2025/11/18/blog-detay/v2/
 ```
 
 **❌ YAPMA:**
@@ -376,36 +399,73 @@ ln -sf v3/index.html public/readme/2025-11-18/blog-detay/index.html
 
 ### 🚨 4. MARKDOWN (MD) KULLANIMI
 
-**📝 MD Sadece TODO İçin!**
+**📝 MD = Sadece TODO!**
 
-#### ✅ Ne Zaman MD Oluştur:
-- Kullanıcı açıkça "todo oluştur" dediğinde
-- Kullanıcı "md dosyası oluştur" dediğinde
-- Teknik checklist gerektiğinde
+#### 🎯 TETİKLEYİCİ KELİMELER (MD için):
 
-#### 📂 MD Dosya Konumu:
+**Sadece bu kelimeler kullanıcı mesajında geçerse → MD oluştur:**
+- `todo`
+- `todo oluştur`
+- `todo listesi`
+- `yapılacaklar`
+- `yapılacaklar listesi`
+- `checklist`
+- `checklist oluştur`
+- `md dosyası oluştur`
+
+**❌ DİĞER TÜM DURUMLAR → HTML OLUŞTUR (MD değil!)**
+- "Plan hazırla" → HTML oluştur (MD değil!)
+- "Analiz et" → HTML oluştur (MD değil!)
+- "Rapor hazırla" → HTML oluştur (MD değil!)
+- "İncele" → HTML oluştur (MD değil!)
+
+#### 📂 MD Dosya Konumu (Hiyerarşik):
 ```
-readme/claude-docs/todo-YYYY-MM-DD-HH-MM-[konu].md
+readme/claude-docs/todo/[YYYY]/[MM]/[DD]/todo-[HH-MM]-[konu].md
 ```
 
-#### 📋 MD İçerik:
+**Örnek:**
+```
+readme/claude-docs/todo/2025/11/18/todo-14-30-payment-fix.md
+readme/claude-docs/todo/2025/11/18/todo-15-00-blog-ai.md
+```
+
+**❌ KRİTİK:**
+- TODO dosyaları ASLA `public/` altında değil!
+- TODO dosyaları ASLA HTML klasörü içinde değil!
+- MD ve HTML tamamen ayrı konumlarda!
+
+#### 📋 MD İçerik (Sadece TODO formatı):
 - ✅ Teknik todo listesi
-- ✅ Checkbox'lar
+- ✅ Checkbox'lar (- [ ] format)
 - ✅ Dosya path'leri
 - ✅ Komutlar
 - ✅ Kod referansları
+- ✅ Teknik notlar
 
 **Örnek MD:**
 ```markdown
-# Portfolio Refactor - TODO
+# Payment Fix - TODO
 
-- [ ] `Modules/Portfolio/app/Models/Portfolio.php` - Trait ekle
-- [ ] Migration: `php artisan make:migration add_seo_to_portfolios`
+## Backend
+- [ ] `Modules/Payment/app/Services/PaymentService.php` - Timeout artır
+- [ ] `Modules/Payment/app/Jobs/ProcessPaymentJob.php` - Retry logic ekle
+
+## Migration
+- [ ] `php artisan make:migration add_status_to_payments`
+- [ ] Migration çalıştır: `php artisan migrate`
+
+## Test
 - [ ] Cache temizle: `php artisan view:clear`
-- [ ] Test: `curl https://ixtif.com/portfolio`
+- [ ] Test: `curl https://ixtif.com/admin/payment/process`
+- [ ] Production deploy
+
+## Notlar
+- API timeout: 180 saniye
+- Retry count: 3
 ```
 
-**UNUTMA:** MD = Sadece TODO veya kullanıcı isterse!
+**UNUTMA:** MD = Sadece TODO! Plan/Analiz/Rapor → HTML!
 
 ---
 

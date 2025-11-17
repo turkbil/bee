@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang='tr'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Blog AI - Mevcut Yapı</title>
+    <style>
+        body { font-family: system-ui; padding: 40px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #e74c3c; margin-top: 30px; }
+        .setting { background: #ecf0f1; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #3498db; }
+        .setting-id { color: #7f8c8d; font-size: 12px; }
+        .setting-key { color: #16a085; font-weight: bold; }
+        .setting-label { color: #2c3e50; font-size: 16px; font-weight: 600; }
+        .setting-type { background: #3498db; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; }
+        .setting-help { color: #7f8c8d; font-size: 13px; margin-top: 5px; }
+        .heading { background: #fff3cd; border-left: 4px solid #ffc107; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+    </style>
+</head>
+<body>
+<div class='container'>
+<h1>📋 BLOG AI - MEVCUT YAPI (Database)</h1>
+<p><strong>Setting Group ID:</strong> 18</p>
+<p><strong>Group Name:</strong> Blog - Yapay Zeka</p>
+<hr>
+
+<h2>🎯 TÜM SETTINGS (Sırayla):</h2>
+
+<div class='setting'>
+    <div class='setting-id'>ID: 130 | Sort Order: 1</div>
+    <div class='setting-key'>KEY: <code>blog_ai_enabled</code></div>
+    <div class='setting-label'>Blog AI Sistemi Aktif</div>
+    <div><span class='setting-type'>checkbox</span></div>
+</div>
+
+<div class='setting heading'>
+    <div class='setting-id'>ID: 146 | Sort Order: 1</div>
+    <div class='setting-key'>KEY: <code>blog_ai_heading_main</code></div>
+    <div class='setting-label'>Ana Başlık</div>
+    <div><span class='setting-type'>text</span></div>
+    <div><strong>Default Value:</strong> 🤖 Blog AI - Otomatik Blog Üretim Sistemi</div>
+</div>
+
+<div class='setting'>
+    <div class='setting-id'>ID: 131 | Sort Order: 2</div>
+    <div class='setting-key'>KEY: <code>blog_ai_daily_count</code></div>
+    <div class='setting-label'>Günlük Blog Sayısı</div>
+    <div><span class='setting-type'>number</span></div>
+    <div class='setting-help'><strong>Help:</strong> Her gün kaç blog yazısı üretilsin? SEO için optimal: 4 blog/gün (120/ay). Maksimum güvenli: ...</div>
+    <div><strong>Options:</strong></div>
+    <ul style='margin: 5px 0; padding-left: 20px;'>
+        <li><code>1</code> → 1 blog/gün (30/ay)</li>
+        <li><code>2</code> → 2 blog/gün (60/ay)</li>
+        <li><code>3</code> → 3 blog/gün (90/ay)</li>
+        <li><code>4</code> → 4 blog/gün (120/ay) - B2B Optimal</li>
+        <li><code>5</code> → 5 blog/gün (150/ay)</li>
+        <li><code>6</code> → 6 blog/gün (180/ay)</li>
+        <li><code>8</code> → 8 blog/gün (240/ay) - SEO Maksimum</li>
+    </ul>
+</div>
+
+<div class='setting'>
+    <div class='setting-id'>ID: 132 | Sort Order: 3</div>
+    <div class='setting-key'>KEY: <code>blog_ai_auto_publish</code></div>
+    <div class='setting-label'>Otomatik Yayınlama</div>
+    <div><span class='setting-type'>checkbox</span></div>
+</div>
+
+<div class='setting'>
+    <div class='setting-id'>ID: 133 | Sort Order: 4</div>
+    <div class='setting-key'>KEY: <code>blog_ai_topic_source</code></div>
+    <div class='setting-label'>Konu Kaynağı</div>
+    <div><span class='setting-type'>select</span></div>
+    <div class='setting-help'><strong>Help:</strong> Blog konularını nereden alacağını seçin. Manuel: Sadece aşağıdaki liste, Otomatik: Ürün/k...</div>
+    <div><strong>Options:</strong></div>
+    <ul style='margin: 5px 0; padding-left: 20px;'>
+        <li><code>manual</code> → Manuel (Sadece aşağıdaki listeden)</li>
+        <li><code>auto</code> → Otomatik (Ürün/Kategori analizi)</li>
+        <li><code>mixed</code> → Karma (Önce manuel, sonra otomatik)</li>
+    </ul>
+</div>
+
+<div class='setting'>
+    <div class='setting-id'>ID: 135 | Sort Order: 5</div>
+    <div class='setting-key'>KEY: <code>blog_ai_professional_only</code></div>
+    <div class='setting-label'>Sadece Profesyonel/Uzman Stil (Samimi Yok)</div>
+    <div><span class='setting-type'>checkbox</span></div>
+    <div class='setting-help'><strong>Help:</strong> KAPALI: Profesyonel + Samimi + Uzman (çeşitli tonlar, B2C için ideal). AÇIK: Sadece Profesyonel ...</div>
+</div>
+
+<div class='setting'>
+    <div class='setting-id'>ID: 134 | Sort Order: 6</div>
+    <div class='setting-key'>KEY: <code>blog_ai_manual_topics</code></div>
+    <div class='setting-label'>Ana Konular (Manuel Liste)</div>
+    <div><span class='setting-type'>textarea</span></div>
+    <div class='setting-help'><strong>Help:</strong> Her satıra bir ana konu yazın. TEK KELİME yazarsanız sistem otomatik 12+ başlığa genişletir ...</div>
+    <div><strong>Options:</strong></div>
+    <ul style='margin: 5px 0; padding-left: 20px;'>
+        <li><code>rows</code> → 15</li>
+    </ul>
+</div>
+
+<div class='setting heading'>
+    <div class='setting-id'>ID: 147 | Sort Order: 10</div>
+    <div class='setting-key'>KEY: <code>blog_ai_heading_control</code></div>
+    <div class='setting-label'>Temel Kontrol Başlığı</div>
+    <div><span class='setting-type'>text</span></div>
+    <div><strong>Default Value:</strong> ⚙️ Temel Kontrol</div>
+</div>
+
+<div class='setting heading'>
+    <div class='setting-id'>ID: 148 | Sort Order: 20</div>
+    <div class='setting-key'>KEY: <code>blog_ai_heading_topics</code></div>
+    <div class='setting-label'>Konu Kaynakları Başlığı</div>
+    <div><span class='setting-type'>text</span></div>
+    <div><strong>Default Value:</strong> 📝 Konu Kaynakları</div>
+</div>
+
+<div class='setting heading'>
+    <div class='setting-id'>ID: 149 | Sort Order: 30</div>
+    <div class='setting-key'>KEY: <code>blog_ai_heading_style</code></div>
+    <div class='setting-label'>Yazım Stili Başlığı</div>
+    <div><span class='setting-type'>text</span></div>
+    <div><strong>Default Value:</strong> ✍️ Yazım Stili</div>
+</div>
+
+<hr>
+
+<h2>🏗️ LAYOUT YAPISINI NASIL OLUŞTURMALIYIM:</h2>
+
+<div style='background: #d4edda; padding: 20px; border-radius: 5px; border-left: 4px solid #28a745;'>
+<h3>SIRA:</h3>
+<ol style='line-height: 2;'>
+<li><strong>ELEMENT #1</strong>: Blog AI Sistemi Aktif <code>Setting ID: 130</code> <span style='background: #007bff; color: white; padding: 2px 6px; border-radius: 3px;'>checkbox</span></li>
+<li><strong style='color: #ffc107;'>HEADING #2</strong>: Ana Başlık <code>Setting ID: 146</code></li>
+<li><strong>ELEMENT #3</strong>: Günlük Blog Sayısı <code>Setting ID: 131</code> <span style='background: #007bff; color: white; padding: 2px 6px; border-radius: 3px;'>number</span></li>
+<li><strong>ELEMENT #4</strong>: Otomatik Yayınlama <code>Setting ID: 132</code> <span style='background: #007bff; color: white; padding: 2px 6px; border-radius: 3px;'>checkbox</span></li>
+<li><strong>ELEMENT #5</strong>: Konu Kaynağı <code>Setting ID: 133</code> <span style='background: #007bff; color: white; padding: 2px 6px; border-radius: 3px;'>select</span></li>
+<li><strong>ELEMENT #6</strong>: Sadece Profesyonel/Uzman Stil (Samimi Yok) <code>Setting ID: 135</code> <span style='background: #007bff; color: white; padding: 2px 6px; border-radius: 3px;'>checkbox</span></li>
+<li><strong>ELEMENT #7</strong>: Ana Konular (Manuel Liste) <code>Setting ID: 134</code> <span style='background: #007bff; color: white; padding: 2px 6px; border-radius: 3px;'>textarea</span></li>
+<li><strong style='color: #ffc107;'>HEADING #8</strong>: Temel Kontrol Başlığı <code>Setting ID: 147</code></li>
+<li><strong style='color: #ffc107;'>HEADING #9</strong>: Konu Kaynakları Başlığı <code>Setting ID: 148</code></li>
+<li><strong style='color: #ffc107;'>HEADING #10</strong>: Yazım Stili Başlığı <code>Setting ID: 149</code></li>
+</ol>
+</div>
+
+</div>
+</body>
+</html>

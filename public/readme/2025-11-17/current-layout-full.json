@@ -1,0 +1,207 @@
+{
+    "title": "Form Builder",
+    "elements": [
+        {
+            "type": "row",
+            "properties": {
+                "columns": [
+                    {
+                        "index": 1,
+                        "width": 6
+                    },
+                    {
+                        "index": 2,
+                        "width": 6
+                    }
+                ],
+                "required": false,
+                "is_active": true,
+                "is_system": false,
+                "column-count": "2"
+            },
+            "columns": [
+                {
+                    "width": 6,
+                    "elements": [
+                        {
+                            "type": "switch",
+                            "properties": {
+                                "label": "Blog AI Sistemi",
+                                "name": "blog_ai_enabled",
+                                "help_text": null,
+                                "active_label": "Aktif",
+                                "inactive_label": "Aktif Değil",
+                                "default_value": false,
+                                "width": 12,
+                                "required": false,
+                                "is_active": true,
+                                "is_system": true
+                            }
+                        },
+                        {
+                            "type": "select",
+                            "properties": {
+                                "label": "Günlük Blog Sayısı",
+                                "name": "blog_gunluk_blog_sayisi",
+                                "placeholder": "Günlük Blog Sayısı",
+                                "help_text": "Her gün kaç blog yazısı üretilsin? SEO için optimal: 4 blog\/gün (120\/ay). Maksimum güvenli: 8 blog\/gün (240\/ay).",
+                                "width": 12,
+                                "required": false,
+                                "is_active": true,
+                                "is_system": false,
+                                "options": [
+                                    {
+                                        "value": "option1",
+                                        "label": "1 blog\/gün (30\/ay)",
+                                        "is_default": true
+                                    },
+                                    {
+                                        "value": "option2",
+                                        "label": "2 blog\/gün (60\/ay)",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "option3",
+                                        "label": "3 blog\/gün (90\/ay)",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "option4",
+                                        "label": "4 blog\/gün (120\/ay) - B2B Optimal",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "option5",
+                                        "label": "5 blog\/gün (150\/ay)",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "option6",
+                                        "label": "6 blog\/gün (180\/ay)",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "option7",
+                                        "label": "8 blog\/gün (240\/ay) - SEO Maksimum",
+                                        "is_default": false
+                                    }
+                                ],
+                                "default_value": "option1"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "width": 6,
+                    "elements": [
+                        {
+                            "type": "switch",
+                            "properties": {
+                                "label": "Otomatik Yayınlama",
+                                "name": "blog_ai_auto_publish",
+                                "help_text": null,
+                                "active_label": "Evet, otomatik yayınlansın",
+                                "inactive_label": "Hayır, önce kontrol edilecek",
+                                "default_value": false,
+                                "width": 12,
+                                "required": false,
+                                "is_active": true,
+                                "is_system": false
+                            }
+                        },
+                        {
+                            "type": "switch",
+                            "properties": {
+                                "label": "Sadece Profesyonel\/Uzman Stil",
+                                "name": "blog_ai_professional_only",
+                                "help_text": null,
+                                "active_label": "Sadece Profesyonel + Uzman (samimi hariç, B2B için önerilir).",
+                                "inactive_label": "Profesyonel + Samimi + Uzman (çeşitli tonlar, B2C için ideal).",
+                                "default_value": "true",
+                                "width": 12,
+                                "required": false,
+                                "is_active": true,
+                                "is_system": false
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "row",
+            "properties": {
+                "columns": [
+                    {
+                        "index": 1,
+                        "width": 6
+                    },
+                    {
+                        "index": 2,
+                        "width": 6
+                    }
+                ],
+                "required": false,
+                "is_active": true,
+                "is_system": false
+            },
+            "columns": [
+                {
+                    "width": 6,
+                    "elements": [
+                        {
+                            "type": "select",
+                            "properties": {
+                                "label": "Konu Kaynağı",
+                                "name": "blog_konu_kaynagi",
+                                "placeholder": "Seçiniz",
+                                "help_text": "Blog konularını nereden alacağını seçin. Manuel: Sadece aşağıdaki liste, Otomatik: Ürün\/kategori analizi, Karma: Önce manuel sonra otomatik.",
+                                "width": 12,
+                                "required": false,
+                                "is_active": true,
+                                "is_system": false,
+                                "options": [
+                                    {
+                                        "value": "manual",
+                                        "label": "Manuel (Sadece aşağıdaki listeden)",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "auto",
+                                        "label": "Otomatik (Ürün\/Kategori analizi)",
+                                        "is_default": false
+                                    },
+                                    {
+                                        "value": "mixed",
+                                        "label": "Karma (Önce manuel, sonra otomatik)",
+                                        "is_default": true
+                                    }
+                                ],
+                                "default_value": "mixed"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "width": 6,
+                    "elements": [
+                        {
+                            "type": "textarea",
+                            "properties": {
+                                "label": "Ana Konular (Manuel Liste)",
+                                "name": "blog_ai_manual_topics",
+                                "placeholder": "Her satıra bir ana konu yazın.",
+                                "help_text": "Her satıra bir ana konu yazın. TEK KELİME yazarsanız sistem otomatik 12+ başlığa genişletir (örn: \"transpalet\" → \"En İyi Transpalet Modelleri 2025\", \"Elektrikli Transpalet Nasıl Seçilir?\" vb.). UZUN BAŞLIK yazarsanız birebir kullanılır (örn: \"Elektrikli mi Manuel mi?\" → direkt başlık olarak kullanılır).",
+                                "width": 12,
+                                "required": false,
+                                "is_active": true,
+                                "is_system": false,
+                                "default_value": null
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

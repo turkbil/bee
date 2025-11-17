@@ -24,12 +24,13 @@ class BlogAIDraftGenerator
 
     public function __construct(
         TenantPromptLoader $promptLoader,
-        TenantBlogPromptEnhancer $tenantEnhancer
+        TenantBlogPromptEnhancer $tenantEnhancer,
+        OpenAIService $openaiService
     ) {
         $this->promptLoader = $promptLoader;
         $this->tenantEnhancer = $tenantEnhancer;
-        // Mevcut AI sistemi - AIProvider modelinden API key çeker
-        $this->openaiService = new OpenAIService();
+        // 🔧 FIX: Constructor injection kullan - Laravel DI container otomatik resolve eder
+        $this->openaiService = $openaiService;
     }
 
     /**
@@ -76,21 +77,62 @@ class BlogAIDraftGenerator
             // Minimum 1000, Maximum 16000 (GPT-4 output limit)
             $maxTokens = min(16000, max(1000, $count * 250));
 
+            Log::info('🔵 BEFORE OpenAI call', [
+                'count' => $count,
+                'max_tokens' => $maxTokens,
+                'tenant_id' => tenant('id'),
+            ]);
+
             $userPrompt = "Lütfen {$count} adet blog taslağı üret. JSON array formatında döndür.";
-            $response = $this->openaiService->ask($userPrompt, false, [
-                'custom_prompt' => $systemMessage,
+
+            file_put_contents('/tmp/debug-before-openai.txt', "About to call OpenAI...\ncount: {$count}\nmax_tokens: {$maxTokens}\n");
+
+            // 🔧 BYPASS: OpenAIService değil, direkt HTTP call yap
+            $provider = \Modules\AI\App\Models\AIProvider::where('is_default', true)->where('is_active', true)->first();
+
+            if (!$provider) {
+                throw new \Exception('No default AI provider found');
+            }
+
+            // Base URL zaten /v1 içeriyor mu kontrol et
+            $apiUrl = rtrim($provider->base_url, '/');
+            if (!str_contains($apiUrl, '/v1')) {
+                $apiUrl .= '/v1';
+            }
+            $apiUrl .= '/chat/completions';
+
+            $httpResponse = \Illuminate\Support\Facades\Http::withHeaders([
+                'Authorization' => 'Bearer ' . $provider->api_key,
+                'Content-Type' => 'application/json',
+            ])->timeout(180)->post($apiUrl, [
+                'model' => $provider->default_model,
+                'messages' => [
+                    ['role' => 'system', 'content' => $systemMessage],
+                    ['role' => 'user', 'content' => $userPrompt],
+                ],
                 'temperature' => 0.7,
                 'max_tokens' => $maxTokens,
             ]);
 
+            if ($httpResponse->successful()) {
+                $data = $httpResponse->json();
+                $response = $data['choices'][0]['message']['content'] ?? '';
+            } else {
+                throw new \Exception('OpenAI API error: ' . $httpResponse->status() . ' - ' . $httpResponse->body());
+            }
+
+            file_put_contents('/tmp/debug-after-openai.txt', "OpenAI returned!\nResponse type: " . gettype($response) . "\nResponse length: " . strlen($response) . "\n");
+
             // ask() metodu direkt string döndürür
             $content = $response;
 
-            // DEBUG: OpenAI response'u dosyaya yaz
-            file_put_contents('/tmp/openai-response.txt', $content);
-            Log::info('🤖 OpenAI Response saved to /tmp/openai-response.txt', [
-                'length' => strlen($content),
-                'sample' => substr($content, 0, 500),
+            // 🔍 DEBUG: OpenAI response'u dosyaya kaydet
+            file_put_contents('/tmp/debug-openai-response.txt', "=== RESPONSE TYPE: " . gettype($content) . " ===\n\n" . print_r($content, true));
+            Log::info('🔍 DEBUG: OpenAI Response Type', [
+                'type' => gettype($content),
+                'is_string' => is_string($content),
+                'length' => is_string($content) ? strlen($content) : 'N/A',
+                'first_100' => is_string($content) ? substr($content, 0, 100) : 'N/A',
             ]);
 
             // JSON parse

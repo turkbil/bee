@@ -15,9 +15,10 @@ class AiImageGeneratorComponent extends Component
     public string $size = '1792x1024';
     public string $quality = 'hd';
     public string $style = 'ultra_photorealistic';
-    public bool $enhanceWithAI = true;
+    public bool $enhanceWithAI = true; // OpenAI GPT-4 yaratıcı enhancement
     public ?string $generatedImageUrl = null;
     public ?int $generatedMediaId = null;
+    public ?string $revisedPrompt = null; // DALL-E GPT-4'ün geliştirdiği prompt
     public bool $isGenerating = false;
     public ?string $errorMessage = null;
     public int $availableCredits = 0;
@@ -38,7 +39,7 @@ class AiImageGeneratorComponent extends Component
 
     public function loadCredits()
     {
-        $this->availableCredits = ai_get_token_balance();
+        $this->availableCredits = ai_get_credit_balance();
     }
 
     public function loadHistory()
@@ -54,28 +55,34 @@ class AiImageGeneratorComponent extends Component
         $this->isGenerating = true;
         $this->errorMessage = null;
         $this->generatedImageUrl = null;
+        $this->revisedPrompt = null;
 
         try {
             $service = app(AIImageGenerationService::class);
 
-            // AI ile prompt geliştirme (eğer checkbox işaretliyse)
+            // İKİ MOD:
+            // 1. Yaratıcı Mod (enhanceWithAI = true): OpenAI GPT-4 ile ultra detaylı, yaratıcı promptlar
+            // 2. Basit Mod (enhanceWithAI = false): AA.pdf kurallarına göre basit builder
             if ($this->enhanceWithAI) {
+                // YARATICI MOD: OpenAI GPT-4 ile ultra detaylı enhancement
                 $enhancer = app(AIPromptEnhancer::class);
                 $finalPrompt = $enhancer->enhancePrompt($this->prompt, $this->style, $this->size);
             } else {
-                // AI kapalıysa, manuel style enhancement kullan
-                $finalPrompt = $this->enhancePromptWithStyle($this->prompt, $this->style);
+                // BASİT MOD: AA.pdf kurallarına göre basit builder
+                $finalPrompt = $this->buildPromptFromAAPDF($this->prompt, $this->style);
             }
 
-            $mediaItem = $service->generate($finalPrompt, [
+            $imageData = $service->generateWithRevision($finalPrompt, [
                 'size' => $this->size,
                 'quality' => $this->quality,
             ]);
 
-            // Get generated image URL
+            // Get generated image URL and revised prompt
+            $mediaItem = $imageData['mediaItem'];
             $media = $mediaItem->getFirstMedia('library');
             $this->generatedImageUrl = $media ? $media->getUrl() : null;
             $this->generatedMediaId = $mediaItem->id;
+            $this->revisedPrompt = $imageData['revised_prompt'] ?? null; // DALL-E GPT-4'ün geliştirdiği
 
             // Reload credits and history
             $this->loadCredits();
@@ -95,6 +102,7 @@ class AiImageGeneratorComponent extends Component
         $this->prompt = '';
         $this->generatedImageUrl = null;
         $this->generatedMediaId = null;
+        $this->revisedPrompt = null;
         $this->errorMessage = null;
     }
 
@@ -107,39 +115,89 @@ class AiImageGeneratorComponent extends Component
         return redirect($this->generatedImageUrl);
     }
 
-    protected function enhancePromptWithStyle(string $prompt, string $style): string
+    /**
+     * AA.pdf kurallarına göre basit prompt builder
+     * DALL-E 3 zaten GPT-4 ile otomatik enhance ediyor, biz sadece doğru yapıyı kuruyoruz
+     */
+    protected function buildPromptFromAAPDF(string $userPrompt, string $style): string
     {
-        $styleEnhancements = [
-            // GERÇEKÇI FOTOĞRAF STİLLERİ (En Yüksek Gerçekçilik)
-            'ultra_photorealistic' => 'Ultra photorealistic, professional DSLR photography, extremely detailed, shot on Canon EOS R5 with 85mm f/1.4 lens, natural lighting, real-world quality, indistinguishable from actual photograph, perfect focus, 8K resolution, RAW photo quality, hyper-realistic textures, real materials, authentic scene, photojournalism quality',
+        // AA.pdf formülü: Photo of + Subject + View/Framing + Background + Lighting + Camera + Lens + Natural Texture
 
-            'studio_photography' => 'Professional studio photography, controlled lighting setup, softbox lighting, clean background, commercial photography quality, product photography standards, shot on medium format camera, Phase One IQ4, professional color grading, studio quality, advertising photography',
-
-            'natural_light' => 'Natural light photography, golden hour lighting, outdoor scene, authentic atmosphere, environmental portrait style, natural colors, shot on Fujifilm GFX 100S, shallow depth of field, bokeh background, real-world setting, professional travel photography quality',
-
-            'cinematic_photography' => 'Cinematic photography, film camera aesthetic, anamorphic lens, cinematic color grading, movie still quality, dramatic lighting, shot on ARRI Alexa, film grain texture, widescreen composition, Hollywood production quality, professional cinematography',
-
-            'documentary_style' => 'Documentary photography, photojournalism style, authentic moment, real-world scene, reportage photography, candid shot, National Geographic quality, Leica M11 camera, street photography aesthetic, authentic storytelling, editorial photography',
-
-            'commercial_photography' => 'High-end commercial photography, advertising campaign quality, professional retouching, perfect composition, luxury brand standards, shot on Hasselblad H6D-400c, commercial studio lighting, marketing photography, premium quality',
-
-            'portrait_photography' => 'Professional portrait photography, environmental portrait, subject focus, professional headshot quality, natural expression, shot on Sony A1 with 85mm f/1.2 lens, perfect skin tones, professional portrait lighting, studio portrait standards',
-
-            'macro_photography' => 'Macro photography, extreme close-up, highly detailed textures, shot with macro lens 100mm f/2.8, perfect focus stacking, ultra sharp details, professional macro photography, scientific photography quality, crystal clear details',
-
-            // ARTİSTİK & DİJİTAL STİLLER
-            'digital_art' => 'Modern digital art, contemporary design, clean artistic style, professional digital illustration, high-quality digital painting, trending on ArtStation, award-winning design, vibrant colors, professional graphic design',
-
-            'illustration' => 'Professional illustration, editorial illustration style, clean design, commercial illustration quality, magazine illustration, professional graphic design, vector art quality, contemporary illustration',
-
-            '3d_render' => 'Ultra realistic 3D render, Unreal Engine 5, ray tracing enabled, physically based rendering (PBR), professional 3D visualization, architectural visualization quality, product rendering, photorealistic materials and textures, studio lighting setup',
-
-            'minimalist' => 'Minimalist photography, clean composition, negative space, simple elegant design, minimal elements, professional minimalist aesthetic, high-end minimalism, contemporary minimalist style'
+        // ÇEKİM AÇISI (KRİTİK!) - DALL-E 3 eğitiminde fotoğraf ALT metinlerinden öğrenmiş
+        $viewAngles = [
+            'side view',
+            'front view',
+            '3/4 angle view',
+            'wide shot showing full subject',
+            'medium shot',
+            'full equipment view',
+            'complete view from all sides',
+            'environmental shot',
         ];
 
-        $enhancement = $styleEnhancements[$style] ?? $styleEnhancements['ultra_photorealistic'];
+        // Kamera ve lens çeşitleri (AA.pdf'den)
+        $cameras = [
+            'Canon EOS R5 with 85mm f/1.4 lens',
+            'Sony A7 III with 50mm f/1.8 lens',
+            'Nikon D810 with 24-70mm f/2.8 lens',
+            'Fujifilm GFX 100 with 63mm f/2.8 lens',
+            'Leica M10 with 50mm f/1.4 lens',
+        ];
 
-        return $prompt . '. ' . $enhancement . '. No text or minimal text in image. If text is required, use Turkish language only. Generic names, no brand names or trademarks.';
+        // Işıklandırma teknikleri (AA.pdf'den)
+        $lightings = [
+            'golden hour natural lighting',
+            'soft window light',
+            'professional studio lighting with softbox',
+            'Rembrandt lighting setup',
+            'natural ambient lighting',
+        ];
+
+        // MEKÂN/BACKGROUND
+        $backgrounds = [
+            'clean white background',
+            'industrial warehouse background',
+            'modern studio environment',
+            'neutral gray background',
+            'outdoor natural setting',
+            'professional showroom background',
+        ];
+
+        // Style'a göre ek özellikler
+        $styleAdditions = [
+            'ultra_photorealistic' => 'professional photography, 8K resolution, RAW photo quality, hyper-realistic textures, natural imperfections, visible pores and weathered surfaces',
+            'studio_photography' => 'controlled studio environment, clean background, commercial photography quality, professional color grading',
+            'natural_light' => 'outdoor scene, authentic atmosphere, shallow depth of field, bokeh background',
+            'cinematic_photography' => 'cinematic color grading, movie still quality, dramatic composition, film grain texture',
+            'documentary_style' => 'authentic moment, candid shot, photojournalism style, editorial photography',
+            'commercial_photography' => 'advertising quality, perfect composition, luxury brand standards, premium retouching',
+            'portrait_photography' => 'environmental portrait, subject focus, natural expression, perfect skin tones',
+            'macro_photography' => 'extreme close-up, highly detailed textures, ultra sharp details, focus stacking',
+            'digital_art' => 'modern digital art, contemporary design, professional illustration, vibrant colors',
+            'illustration' => 'editorial illustration style, clean design, professional graphic design',
+            '3d_render' => 'Unreal Engine 5, ray tracing, PBR materials, architectural visualization quality',
+            'minimalist' => 'minimalist composition, negative space, clean design, simple elegant aesthetic',
+        ];
+
+        // Random seçimler (çeşitlilik için)
+        $viewAngle = $viewAngles[array_rand($viewAngles)];
+        $camera = $cameras[array_rand($cameras)];
+        $lighting = $lightings[array_rand($lightings)];
+        $background = $backgrounds[array_rand($backgrounds)];
+        $addition = $styleAdditions[$style] ?? $styleAdditions['ultra_photorealistic'];
+
+        // AA.pdf CRITICAL RULE: "photo of" kullan, "photorealistic" kelimesini ASLA kullanma!
+        $photoPrefix = 'Photo of';
+
+        // DOĞAL DOKU (gerçekçilik için kritik)
+        $naturalTexture = 'natural imperfections, visible surface texture, authentic material finish, realistic wear patterns';
+
+        // 🚨 ABSOLUTE TEXT BAN (AA.pdf kuralı)
+        $textBan = 'ABSOLUTELY NO text, NO labels, NO captions, NO annotations, NO blue boxes, NO text overlays, NO UI elements, NO numbered labels, NO arrows with text, NO infographics, NO presentation elements, NO diagrams, NO charts, NO brand names, NO trademarks, NO written words of any kind. Pure photograph only, clean product catalog style without any text elements whatsoever';
+
+        // 🔥 Final prompt assembly (AA.pdf %100 doğru formül)
+        // Photo of → Subject → View Angle → Background → Lighting → Camera → Lens → Natural Texture + Text Ban
+        return "{$photoPrefix} {$userPrompt}, {$viewAngle}, {$background}, {$addition}, {$lighting}, shot on {$camera}, {$naturalTexture}. {$textBan}";
     }
 
     public function render()

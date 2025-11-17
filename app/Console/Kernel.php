@@ -111,6 +111,21 @@ class Kernel extends ConsoleKernel
 
         // CURRENCY RATES AUTO UPDATE - Artık ShopServiceProvider'da tanımlı
         // Bu satırlar ShopServiceProvider::registerCommandSchedules() metoduna taşındı
+
+        // 📝 BLOG AUTO GENERATION - Tenant-Aware Blog AI Cron (Max 8 blog/day per tenant)
+        // Her saat başı çalışır, tüm tenant'ları tarar, settings'e göre blog üretir
+        // Settings: blog_ai_enabled, blog_ai_daily_count (1-8), calculateActiveHours()
+        $schedule->command('generate:tenant-blogs')
+                 ->hourly() // Her saat başı (00:00, 01:00, 02:00, ...)
+                 ->withoutOverlapping(10) // Maksimum 10 dakika çalışabilir, çakışma önle
+                 ->runInBackground() // Background'da çalıştır
+                 ->appendOutputTo(storage_path('logs/blog-cron.log')) // Log dosyasına ekle
+                 ->onSuccess(function () {
+                     \Log::channel('daily')->info('🎉 Tenant Blog Cron: Successfully completed');
+                 })
+                 ->onFailure(function () {
+                     \Log::channel('daily')->error('❌ Tenant Blog Cron: Failed to complete');
+                 });
     }
 
     /**

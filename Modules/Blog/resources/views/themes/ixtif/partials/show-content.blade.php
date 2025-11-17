@@ -79,7 +79,7 @@
 ])
 
 <div class="min-h-screen bg-white dark:bg-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="container mx-auto py-8 md:py-12">
 
         {{-- Meta Info Only (Başlık glass-subheader'da) --}}
         <header class="mb-8 md:mb-12">
@@ -100,48 +100,46 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-8 lg:gap-10">
-            {{-- Sol Sidebar --}}
+            {{-- Sol Sidebar (Sadece TOC) --}}
             <aside class="order-2 lg:order-1">
-                <div class="space-y-6 lg:sticky lg:top-8">
-                    {{-- Featured Image --}}
-                    @if($featuredImage)
-                        <figure class="overflow-hidden rounded-xl shadow-lg">
-                            <a href="{{ $featuredImage->getUrl() }}"
-                               class="glightbox block"
-                               data-gallery="blog-featured"
-                               data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                               data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
-                                     alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                     width="{{ $featuredImage->getCustomProperty('width') ?? 800 }}"
-                                     height="{{ $featuredImage->getCustomProperty('height') ?? 600 }}"
-                                     loading="eager"
-                                     class="w-full max-h-80 object-cover cursor-pointer transition-all duration-300">
-                            </a>
-                            @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
-                                <figcaption class="bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
-                                    <strong class="block font-semibold text-gray-900 dark:text-white mb-1">
-                                        {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
-                                    </strong>
-                                    @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
-                                        <span class="block text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                            {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
-                                        </span>
-                                    @endif
-                                </figcaption>
-                            @endif
-                        </figure>
-                    @endif
-
-                    {{-- TOC --}}
-                    @if(!empty($toc))
+                @if(!empty($toc))
+                    <div class="lg:sticky lg:top-24">
                         <x-blog.toc :toc="$toc" title="İçindekiler" :count="$totalHeadings" />
-                    @endif
-                </div>
+                    </div>
+                @endif
             </aside>
 
             {{-- Ana İçerik --}}
-            <article class="order-1 lg:order-2 {{ !empty($toc) || $featuredImage ? 'lg:col-span-2' : 'lg:col-span-3' }} space-y-10">
+            <article class="order-1 lg:order-2 {{ !empty($toc) ? 'lg:col-span-2' : 'lg:col-span-3' }} space-y-10">
+                {{-- Featured Image --}}
+                @if($featuredImage)
+                    <figure class="overflow-hidden rounded-xl shadow-lg">
+                        <a href="{{ $featuredImage->getUrl() }}"
+                           class="glightbox block"
+                           data-gallery="blog-featured"
+                           data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
+                           data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                            <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
+                                 alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                                 width="{{ $featuredImage->getCustomProperty('width') ?? 800 }}"
+                                 height="{{ $featuredImage->getCustomProperty('height') ?? 600 }}"
+                                 loading="eager"
+                                 class="w-full h-auto object-cover cursor-pointer transition-all duration-300">
+                        </a>
+                        @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
+                            <figcaption class="bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
+                                <strong class="block font-semibold text-gray-900 dark:text-white mb-1">
+                                    {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
+                                </strong>
+                                @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
+                                    <span class="block text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                        {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
+                                    </span>
+                                @endif
+                            </figcaption>
+                        @endif
+                    </figure>
+                @endif
                 <div class="content-body prose prose-lg md:prose-xl max-w-none
                           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-24
                           prose-headings:text-gray-900 dark:prose-headings:text-white
@@ -153,6 +151,7 @@
                           prose-a:font-medium hover:prose-a:text-blue-700 dark:hover:prose-a:text-blue-300
                           prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-semibold
                           prose-ul:my-6 prose-ol:my-6 prose-li:my-2 prose-li:leading-relaxed
+                          prose-li:text-gray-700 dark:prose-li:text-gray-300
                           prose-blockquote:border-l-4 prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50/50
                           dark:prose-blockquote:bg-blue-900/10 prose-blockquote:py-4 prose-blockquote:px-6
                           prose-blockquote:italic prose-blockquote:my-8
@@ -166,6 +165,9 @@
                     @php
                         // İki aşamalı render: Önce widget parse, sonra Blade render
                         $parsedBody = parse_widget_shortcodes($bodyWithAnchors ?? '');
+
+                        // 🎨 POST-PROCESSING: Görsellere lazy loading + Thumbmaker
+                        $parsedBody = process_blog_images($parsedBody);
                     @endphp
                     {!! Blade::render($parsedBody, [], true) !!}
                 </div>
@@ -247,6 +249,7 @@
                                         // Çoklu dil desteği
                                         $question = is_array($faq['question'] ?? null) ? ($faq['question'][$currentLocale] ?? '') : ($faq['question'] ?? '');
                                         $answer = is_array($faq['answer'] ?? null) ? ($faq['answer'][$currentLocale] ?? '') : ($faq['answer'] ?? '');
+                                        $faqIcon = $faq['icon'] ?? 'fas fa-question-circle'; // AI'dan gelen icon veya default
                                     @endphp
                                     @if(!empty($question) && !empty($answer))
                                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg"
@@ -254,6 +257,7 @@
                                             <details class="group">
                                                 <summary class="flex items-center justify-between w-full p-6 cursor-pointer list-none select-none hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white pr-4" itemprop="name">
+                                                        <i class="{{ $faqIcon }} text-blue-600 dark:text-blue-400 mr-2"></i>
                                                         {{ $question }}
                                                     </h3>
                                                     <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -303,6 +307,7 @@
                                         // Step için çoklu dil desteği
                                         $stepName = is_array($step['name'] ?? null) ? ($step['name'][$currentLocale] ?? '') : ($step['name'] ?? '');
                                         $stepText = is_array($step['text'] ?? null) ? ($step['text'][$currentLocale] ?? '') : ($step['text'] ?? '');
+                                        $stepIcon = $step['icon'] ?? 'fas fa-check-circle'; // AI'dan gelen icon veya default
                                     @endphp
                                     @if(!empty($stepName))
                                         <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300"
@@ -312,6 +317,7 @@
                                             </div>
                                             <div class="flex-1">
                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2" itemprop="name">
+                                                    <i class="{{ $stepIcon }} text-blue-600 dark:text-blue-400 mr-2"></i>
                                                     {{ $stepName }}
                                                 </h3>
                                                 @if(!empty($stepText))

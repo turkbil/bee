@@ -22,21 +22,23 @@
         $listId = 'toc-' . \Illuminate\Support\Str::uuid()->toString();
     @endphp
 
-    <div class="rounded-2xl border border-slate-200 bg-slate-50 shadow-md shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-900">
-        <header class="flex items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-5 py-4 dark:border-slate-700 dark:bg-slate-900">
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-list-ul text-blue-500"></i>
-                <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-600 dark:text-slate-300">
+    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-md">
+        <header class="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
+                    <i class="fa-solid fa-list-ul text-xs text-white"></i>
+                </div>
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white">
                     {{ $title }}
                 </h3>
             </div>
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
-                {{ $totalItems }} başlık
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+                {{ $totalItems }}
             </span>
         </header>
 
-        <nav class="px-5 py-4" aria-label="{{ $title }}">
-            <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300" data-toc-list id="{{ $listId }}">
+        <nav class="px-4 py-4 max-h-[350px] overflow-y-auto toc-scroll" aria-label="{{ $title }}">
+            <ul class="space-y-1" data-toc-list id="{{ $listId }}">
                 @foreach ($toc as $item)
                     @include('components.blog.toc-item', ['item' => $item, 'level' => 0])
                 @endforeach
@@ -47,49 +49,163 @@
     @once
         @push('styles')
             <style>
-                [data-toc-list] li a {
-                    display: inline-flex;
-                    gap: 0.5rem;
+                /* TOC Link */
+                .toc-link {
+                    display: flex;
                     align-items: center;
-                    width: 100%;
-                    padding: 0.45rem 0.6rem;
-                    border-radius: 0.75rem;
-                    font-weight: 500;
+                    gap: 0.75rem;
+                    padding: 0.5rem 0.75rem;
+                    border-radius: 0.5rem;
                     text-decoration: none;
-                    color: inherit;
                     transition: background-color 0.2s ease, color 0.2s ease;
                 }
 
-                [data-toc-list] li a:hover {
-                    background-color: rgba(59, 130, 246, 0.08);
-                    color: rgb(37, 99, 235);
+                /* TOC Dot */
+                .toc-dot {
+                    flex-shrink: 0;
+                    width: 5px;
+                    height: 5px;
+                    border-radius: 50%;
+                    background-color: #94a3b8;
+                    transition: background-color 0.2s ease;
                 }
 
-                html.dark [data-toc-list] li a:hover {
-                    background-color: rgba(37, 99, 235, 0.12);
-                    color: rgb(191, 219, 254);
+                html.dark .toc-dot {
+                    background-color: #64748b;
                 }
 
-                [data-toc-list] li a[data-active="true"] {
-                    background-color: rgba(37, 99, 235, 0.12);
-                    color: rgb(29, 78, 216);
+                /* TOC Text */
+                .toc-text {
+                    flex: 1;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    line-height: 1.5;
+                    color: #64748b;
+                    transition: color 0.2s ease;
                 }
 
-                html.dark [data-toc-list] li a[data-active="true"] {
-                    background-color: rgba(37, 99, 235, 0.18);
-                    color: rgb(191, 219, 254);
+                html.dark .toc-text {
+                    color: #94a3b8;
                 }
 
-                [data-toc-list] .toc-level-1 {
-                    padding-left: 1.25rem;
+                /* Hover */
+                .toc-link:hover {
+                    background-color: #f1f5f9;
                 }
 
-                [data-toc-list] .toc-level-2 {
-                    padding-left: 2rem;
+                .toc-link:hover .toc-dot {
+                    background-color: #3b82f6;
                 }
 
-                [data-toc-list] .toc-level-3 {
-                    padding-left: 2.75rem;
+                .toc-link:hover .toc-text {
+                    color: #3b82f6;
+                }
+
+                html.dark .toc-link:hover {
+                    background-color: #1e293b;
+                }
+
+                html.dark .toc-link:hover .toc-dot {
+                    background-color: #60a5fa;
+                }
+
+                html.dark .toc-link:hover .toc-text {
+                    color: #60a5fa;
+                }
+
+                /* Active */
+                .toc-link[data-active="true"] {
+                    background-color: #eff6ff;
+                }
+
+                .toc-link[data-active="true"] .toc-dot {
+                    background-color: #3b82f6;
+                }
+
+                .toc-link[data-active="true"] .toc-text {
+                    color: #1e40af;
+                    font-weight: 600;
+                }
+
+                html.dark .toc-link[data-active="true"] {
+                    background-color: #1e3a5f;
+                }
+
+                html.dark .toc-link[data-active="true"] .toc-dot {
+                    background-color: #60a5fa;
+                }
+
+                html.dark .toc-link[data-active="true"] .toc-text {
+                    color: #93c5fd;
+                    font-weight: 600;
+                }
+
+                /* Levels */
+                .toc-level-0 .toc-text {
+                    font-weight: 600;
+                }
+
+                .toc-level-1 {
+                    margin-left: 1rem;
+                }
+
+                .toc-level-2 {
+                    margin-left: 2rem;
+                }
+
+                .toc-level-2 .toc-text {
+                    font-size: 0.8125rem;
+                }
+
+                .toc-level-3 {
+                    margin-left: 3rem;
+                }
+
+                .toc-level-3 .toc-text {
+                    font-size: 0.75rem;
+                }
+
+                /* Children */
+                .toc-children {
+                    margin-top: 0.125rem;
+                    margin-bottom: 0.125rem;
+                    padding-left: 0;
+                    list-style: none;
+                }
+
+                /* Custom Scrollbar */
+                .toc-scroll {
+                    scrollbar-width: thin;
+                    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+                }
+
+                .toc-scroll::-webkit-scrollbar {
+                    width: 6px;
+                }
+
+                .toc-scroll::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+
+                .toc-scroll::-webkit-scrollbar-thumb {
+                    background-color: rgba(148, 163, 184, 0.3);
+                    border-radius: 3px;
+                }
+
+                .toc-scroll::-webkit-scrollbar-thumb:hover {
+                    background-color: rgba(148, 163, 184, 0.5);
+                }
+
+                html.dark .toc-scroll {
+                    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+                }
+
+                html.dark .toc-scroll::-webkit-scrollbar-thumb {
+                    background-color: rgba(71, 85, 105, 0.5);
+                }
+
+                html.dark .toc-scroll::-webkit-scrollbar-thumb:hover {
+                    background-color: rgba(71, 85, 105, 0.7);
                 }
             </style>
         @endpush
@@ -107,7 +223,17 @@
 
                         const setActive = (id) => {
                             links.forEach((link) => {
-                                link.dataset.active = link.dataset.target === id ? 'true' : 'false';
+                                const isActive = link.dataset.target === id;
+                                link.dataset.active = isActive ? 'true' : 'false';
+
+                                // Aktif item'ı scroll'a getir
+                                if (isActive && link.closest('.toc-scroll')) {
+                                    link.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'nearest',
+                                        inline: 'nearest'
+                                    });
+                                }
                             });
                         };
 

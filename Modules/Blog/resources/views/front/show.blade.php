@@ -11,7 +11,13 @@
     $metaTitle = $item->getTranslated('title', $metaLocale);
     $metaBody = $item->getTranslated('body', $metaLocale) ?? '';
     $metaExcerpt = $item->getTranslated('excerpt', $metaLocale) ?: \Illuminate\Support\Str::limit(strip_tags($metaBody), 160);
-    $featuredImageUrl = $item->getFirstMediaUrl('featured_image');
+
+    // 🎨 Featured image - Thumbmaker ile optimize et (OG Image standard: 1200x630)
+    $featuredImageRaw = $item->getFirstMediaUrl('featured_image');
+    $featuredImageUrl = $featuredImageRaw
+        ? thumb($featuredImageRaw, 1200, 630, ['quality' => 85, 'format' => 'webp', 'scale' => 1])
+        : null;
+
     $wordCount = str_word_count(strip_tags($metaBody));
     $tagList = $item->tag_list ?? [];
 @endphp

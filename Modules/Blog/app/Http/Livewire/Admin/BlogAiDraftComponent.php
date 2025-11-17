@@ -22,7 +22,7 @@ class BlogAiDraftComponent extends Component
 {
     use WithPagination;
 
-    public int $draftCount = 25; // Kullanıcı talebi: 25 konu
+    public int $draftCount = 10; // Minimum 10 taslak
     public array $selectedDrafts = [];
     public bool $isGenerating = false;
     public bool $isWriting = false;
@@ -38,7 +38,7 @@ class BlogAiDraftComponent extends Component
     protected $listeners = ['refreshComponent' => '$refresh'];
 
     protected $rules = [
-        'draftCount' => 'required|integer|min:1|max:200',
+        'draftCount' => 'required|integer|min:10|max:200',
     ];
 
     /**
@@ -88,10 +88,11 @@ class BlogAiDraftComponent extends Component
 
             file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - DISPATCHING JOB: {$this->draftCount} drafts\n", FILE_APPEND);
 
-            // Job dispatch
-            GenerateDraftsJob::dispatch($this->draftCount);
+            // Job dispatch - EXPLICIT queue belirt!
+            GenerateDraftsJob::dispatch($this->draftCount)
+                ->onQueue('blog-ai');
 
-            file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - JOB DISPATCHED SUCCESSFULLY\n", FILE_APPEND);
+            file_put_contents('/tmp/livewire-generateDrafts.log', date('Y-m-d H:i:s') . " - JOB DISPATCHED SUCCESSFULLY to blog-ai queue\n", FILE_APPEND);
 
             $this->isGenerating = true;
 

@@ -362,6 +362,11 @@ class OpenAIService
      */
     public function ask($messages, $stream = false, $options = [])
     {
+        Log::info('🔵 OpenAIService::ask() called', [
+            'stream' => $stream,
+            'options_keys' => array_keys($options),
+        ]);
+
         // 🧠 CONVERSATION MEMORY: Build full messages array
         $fullMessages = [];
 
@@ -391,13 +396,25 @@ class OpenAIService
             $fullMessages = array_merge($fullMessages, $messages);
         }
 
+        Log::info('🟢 Messages prepared', [
+            'message_count' => count($fullMessages),
+        ]);
+
         // Streaming varsa generateCompletionStream kullan
         if ($stream) {
+            Log::info('🔵 Streaming mode - calling generateCompletionStream');
             return $this->generateCompletionStream($fullMessages, null, $options);
         }
 
         // Normal request - tam response döndür (token bilgileri ile)
+        Log::info('🟢 Non-streaming mode - calling generateCompletionStream');
         $result = $this->generateCompletionStream($fullMessages, null, $options);
+
+        Log::info('🔵 generateCompletionStream returned', [
+            'result_type' => gettype($result),
+            'has_response' => isset($result['response']),
+            'response_length' => isset($result['response']) ? strlen($result['response']) : 'N/A',
+        ]);
 
         // String response dön (compatibility için)
         return $result['response'] ?? '';

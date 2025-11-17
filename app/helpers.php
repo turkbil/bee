@@ -91,3 +91,188 @@ if (!function_exists('thumb_url')) {
         return thumb($src, $width, $height, ['quality' => $quality]);
     }
 }
+
+/**
+ * ======================================================================
+ * Blog Image Processing Helper
+ * ======================================================================
+ */
+
+if (!function_exists('process_blog_images')) {
+    /**
+     * Blog Body İçeriğindeki Görselleri Optimize Et
+     *
+     * 1. Tüm img tag'lerine loading="lazy" ekler
+     * 2. Storage URL'lerini Thumbmaker URL'sine çevirir
+     * 3. WebP formatına optimize eder
+     *
+     * @param  string  $html  Blog body HTML içeriği
+     * @param  int  $defaultWidth  Varsayılan genişlik (800px)
+     * @param  int  $defaultHeight  Varsayılan yükseklik (600px)
+     * @param  int  $quality  Görsel kalitesi (85)
+     * @return string  Optimize edilmiş HTML
+     *
+     * Örnek Kullanım:
+     * $optimizedHtml = process_blog_images($bodyHtml);
+     */
+    function process_blog_images(string $html, int $defaultWidth = 800, int $defaultHeight = 600, int $quality = 85): string
+    {
+        if (empty($html)) {
+            return $html;
+        }
+
+        // DOMDocument ile HTML parse et
+        $dom = new DOMDocument('1.0', 'UTF-8');
+
+        // UTF-8 encoding sorunu çözümü + HTML5 hatalarını bastır
+        libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        // Tüm img tag'lerini bul
+        $images = $dom->getElementsByTagName('img');
+
+        foreach ($images as $img) {
+            // 1️⃣ Lazy loading ekle (eğer yoksa)
+            if (!$img->hasAttribute('loading')) {
+                $img->setAttribute('loading', 'lazy');
+            }
+
+            // 2️⃣ Src attribute al
+            $src = $img->getAttribute('src');
+
+            if (empty($src)) {
+                continue;
+            }
+
+            // Eğer zaten Thumbmaker URL'i ise skip et
+            if (str_contains($src, '/thumbmaker?')) {
+                continue;
+            }
+
+            // Storage URL kontrolü (storage/ içeren URL'ler)
+            if (str_contains($src, '/storage/')) {
+                // Width/height attribute'larını oku (varsa)
+                $width = $img->hasAttribute('width') ? (int) $img->getAttribute('width') : $defaultWidth;
+                $height = $img->hasAttribute('height') ? (int) $img->getAttribute('height') : $defaultHeight;
+
+                // Thumbmaker URL oluştur
+                $thumbUrl = thumb($src, $width, $height, [
+                    'quality' => $quality,
+                    'format' => 'webp',
+                    'scale' => 1, // Fill mode (kare crop)
+                    'alignment' => 'c', // Center
+                ]);
+
+                // Src'yi güncelle
+                $img->setAttribute('src', $thumbUrl);
+
+                // Width/height attribute'larını koru (SEO için önemli)
+                if (!$img->hasAttribute('width')) {
+                    $img->setAttribute('width', (string) $width);
+                }
+                if (!$img->hasAttribute('height')) {
+                    $img->setAttribute('height', (string) $height);
+                }
+            }
+        }
+
+        // HTML'i geri çevir (TÜM <?xml encoding> tag'lerini kaldır)
+        $output = $dom->saveHTML();
+        $output = preg_replace('/<\?xml[^?]*\?>\s*/i', '', $output);
+
+        return $output;
+    }
+}
+
+/**
+ * ======================================================================
+ * Blog AI Cron System Helper Functions
+ * ======================================================================
+ */
+
+if (!function_exists('getTenantSetting')) {
+    /**
+     * Tenant-aware setting value getter
+     *
+     * Gets setting value for current tenant from SettingValue table
+     *
+     * @param  string  $key  Setting key (örn: 'blog_ai_daily_count')
+     * @param  mixed  $default  Default value if not found
+     * @return mixed  Setting value
+     *
+     * Örnek Kullanım:
+     * $dailyCount = getTenantSetting('blog_ai_daily_count', 4);
+     * $autoPublish = getTenantSetting('blog_ai_auto_publish', true);
+     */
+    function getTenantSetting(string $key, $default = null)
+    {
+        try {
+            // Central DB'den Setting'i bul
+            $setting = \Modules\SettingManagement\App\Models\Setting::where('key', $key)->first();
+
+            if (!$setting) {
+                return $default;
+            }
+
+            // Tenant DB'den value'yu çek
+            if (function_exists('tenant') && tenant()) {
+                $settingValue = \Modules\SettingManagement\App\Models\SettingValue::on('tenant')
+                    ->where('setting_id', $setting->id)
+                    ->first();
+
+                if ($settingValue && $settingValue->value !== null) {
+                    return $settingValue->value;
+                }
+            }
+
+            // Default value (setting default veya parameter default)
+            return $setting->default_value ?? $default;
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('⚠️ getTenantSetting failed', [
+                'key' => $key,
+                'error' => $e->getMessage(),
+            ]);
+            return $default;
+        }
+    }
+}
+
+if (!function_exists('calculateActiveHours')) {
+    /**
+     * Calculate active hours for blog AI cron based on daily count
+     *
+     * Returns array of hours (0-23) when blog generation should run
+     *
+     * @param  int  $dailyCount  Number of blogs per day (1-8)
+     * @return array  Active hours (örn: [0, 6, 12, 18])
+     *
+     * Schedule Mapping:
+     * - 1 blog/day: [0] - Gece yarısı
+     * - 2 blog/day: [0, 12] - Her 12 saatte
+     * - 3 blog/day: [0, 8, 16] - Her 8 saatte
+     * - 4 blog/day: [0, 6, 12, 18] - Her 6 saatte (B2B Optimal)
+     * - 5 blog/day: [0, 5, 10, 15, 20] - Her 5 saatte
+     * - 6 blog/day: [0, 4, 8, 12, 16, 20] - Her 4 saatte
+     * - 8 blog/day: [0, 3, 6, 9, 12, 15, 18, 21] - Her 3 saatte (SEO Maximum)
+     *
+     * Örnek Kullanım:
+     * $hours = calculateActiveHours(4); // [0, 6, 12, 18]
+     * in_array(date('H'), $hours); // Check if current hour is active
+     */
+    function calculateActiveHours(int $dailyCount): array
+    {
+        $schedules = [
+            1 => [0],
+            2 => [0, 12],
+            3 => [0, 8, 16],
+            4 => [0, 6, 12, 18], // B2B Optimal
+            5 => [0, 5, 10, 15, 20],
+            6 => [0, 4, 8, 12, 16, 20],
+            8 => [0, 3, 6, 9, 12, 15, 18, 21], // SEO Maximum
+        ];
+
+        return $schedules[$dailyCount] ?? [0]; // Fallback: Günde 1 (gece yarısı)
+    }
+}

@@ -1,8 +1,18 @@
 <div class="col-12">
     @php
         $headingLevel = isset($element['properties']['size']) ? $element['properties']['size'] : 'h3';
-        $content = isset($element['properties']['content']) ? $element['properties']['content'] : 'Başlık';
         $align = isset($element['properties']['align']) ? $element['properties']['align'] : 'left';
+
+        // Auto-load content from Setting model if setting_id exists
+        $content = 'Başlık'; // Default
+        if (isset($element['properties']['setting_id'])) {
+            $setting = \Modules\SettingManagement\App\Models\Setting::find($element['properties']['setting_id']);
+            if ($setting && $setting->default_value) {
+                $content = $setting->default_value;
+            }
+        } elseif (isset($element['properties']['content'])) {
+            $content = $element['properties']['content'];
+        }
     @endphp
     
     @switch($headingLevel)

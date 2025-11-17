@@ -149,22 +149,17 @@ class TocService
 
     /**
      * String'i URL slug'a çevir
+     *
+     * 🔧 FIX: Laravel Str::slug() kullan (Türkçe karakter desteği tam!)
+     * Önceki manuel dönüşüm "manuelstif" gibi hatalar üretiyordu
      */
     private static function createSlug(string $text): string
     {
-        // Türkçe karakterleri dönüştür
-        $turkishChars = ['ç', 'ğ', 'ı', 'ö', 'ş', 'ü', 'Ç', 'Ğ', 'İ', 'Ö', 'Ş', 'Ü'];
-        $englishChars = ['c', 'g', 'i', 'o', 's', 'u', 'c', 'g', 'i', 'o', 's', 'u'];
+        // Laravel'in native slug fonksiyonu - UTF-8 ve Türkçe karakter desteği tam
+        $slug = \Illuminate\Support\Str::slug($text);
 
-        $text = str_replace($turkishChars, $englishChars, $text);
-
-        // Küçük harfe çevir ve özel karakterleri kaldır
-        $text = strtolower($text);
-        $text = preg_replace('/[^a-z0-9\-_\s]/', '', $text);
-        $text = preg_replace('/[\s_]+/', '-', $text);
-        $text = trim($text, '-');
-
-        return $text ?: 'heading';
+        // Eğer slug boşsa (sadece emoji/özel karakter varsa) fallback
+        return $slug ?: 'heading';
     }
 
     /**

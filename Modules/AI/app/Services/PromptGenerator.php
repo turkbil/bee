@@ -42,11 +42,11 @@ class PromptGenerator
             $prompt .= " Keywords: " . implode(', ', array_slice($keywords, 0, 3)) . ".";
         }
 
-        // Ultra quality enhancement
-        $prompt .= " Ultra detailed, 8K resolution, photorealistic, cinematic lighting, masterpiece quality, sharp focus, professional photography.";
+        // Ultra quality enhancement (NO numeric resolutions - AI writes them as text!)
+        $prompt .= " Professional photography, natural lighting, sharp focus, clean composition.";
 
-        // Text-free rules
-        $prompt .= " No text or minimal text in image. If text is required, use Turkish language only. Generic names, no brand names or trademarks.";
+        // Text-free rules (STRICT - NO TEXT AT ALL!)
+        $prompt .= " ABSOLUTELY NO text, NO labels, NO captions, NO annotations, NO numbers, NO letters, NO words of any kind visible in the image. Pure photograph only, completely text-free. If text is required, use Turkish language only. Generic names, no brand names or trademarks.";
 
         return $prompt;
     }
@@ -84,12 +84,12 @@ class PromptGenerator
             $prompt .= " Category: {$category}.";
         }
 
-        // Product photography enhancement
+        // Product photography enhancement (NO numeric resolutions!)
         $prompt .= " Clean white background, studio lighting, commercial photography style.";
-        $prompt .= " Ultra detailed, 8K resolution, photorealistic, sharp focus, professional product photography, e-commerce ready, masterpiece quality.";
+        $prompt .= " Professional product photography, sharp focus, e-commerce ready quality.";
 
-        // Text-free rules
-        $prompt .= " No text or brand names on product. If text is required, use Turkish language only. Generic product design, no trademarks or copyrighted logos.";
+        // Text-free rules (STRICT!)
+        $prompt .= " ABSOLUTELY NO text, NO brand names, NO labels, NO numbers, NO letters visible on product or background. Pure clean product photography, completely text-free. If text is required, use Turkish language only. Generic product design, no trademarks or copyrighted logos.";
 
         return $prompt;
     }
@@ -113,12 +113,12 @@ class PromptGenerator
             }
         }
 
-        // Portfolio quality enhancement
+        // Portfolio quality enhancement (NO numeric resolutions!)
         $prompt .= " Modern, professional, creative design style.";
-        $prompt .= " Ultra detailed, 8K resolution, artistic masterpiece, cinematic composition, visually stunning, portfolio-ready, award-winning quality.";
+        $prompt .= " Cinematic composition, visually stunning, portfolio-ready quality.";
 
-        // Text-free rules
-        $prompt .= " Minimal or no text in image. If text is required, use Turkish language only. Generic design elements, no brand names or copyrighted content.";
+        // Text-free rules (STRICT!)
+        $prompt .= " ABSOLUTELY NO text, NO labels, NO numbers, NO letters visible in image. Pure visual design, completely text-free. If text is required, use Turkish language only. Generic design elements, no brand names or copyrighted content.";
 
         return $prompt;
     }

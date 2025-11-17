@@ -60,10 +60,10 @@
                         <div class="mb-3">
                             <label class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" wire:model="enhanceWithAI" {{ $isGenerating ? 'disabled' : '' }} checked>
-                                <span class="form-check-label">AI ile Prompt Geliştir</span>
+                                <span class="form-check-label">🎨 AI ile Prompt Geliştir</span>
                             </label>
                             <small class="form-hint text-muted">
-                                Basit promptunuzu ultra detaylı profesyonel fotoğraf talimatına çevirir (kamera, ışık, materyal detayları)
+                                Basit promptunuzu ultra detaylı profesyonel fotoğraf talimatına çevirir
                             </small>
                         </div>
 
@@ -105,14 +105,15 @@
                                 <div class="mb-3">
                                     <label class="form-label">Kalite</label>
                                     <select wire:model="quality" class="form-select" {{ $isGenerating ? 'disabled' : '' }}>
-                                        <option value="hd">HD (1 kredi)</option>
+                                        <option value="standard">Standart (0.5 kredi)</option>
+                                        <option value="hd">HD - Yüksek Çözünürlük (1 kredi)</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary" {{ $isGenerating || $availableCredits < 1 ? 'disabled' : '' }}>
+                            <button type="submit" class="btn btn-primary" {{ $isGenerating || $availableCredits < 0.5 ? 'disabled' : '' }}>
                                 @if ($isGenerating)
                                     <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                                     Oluşturuluyor...
@@ -148,6 +149,39 @@
                         <img src="{{ $generatedImageUrl }}" alt="Oluşturulan Görsel" class="img-fluid rounded" style="max-height: 600px;">
                     </div>
                 </div>
+
+                {{-- DALL-E GPT-4 Revised Prompt --}}
+                @if ($revisedPrompt)
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-robot me-2"></i>
+                                DALL-E GPT-4 Tarafından Geliştirilen Prompt
+                            </h3>
+                            <div class="card-actions">
+                                <button type="button" class="btn btn-sm btn-ghost-secondary" onclick="copyRevisedPrompt()">
+                                    <i class="fas fa-copy me-1"></i>
+                                    Kopyala
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info mb-0">
+                                <div class="d-flex">
+                                    <div>
+                                        <i class="fas fa-info-circle me-2"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Otomatik İyileştirme:</strong> DALL-E 3, sizin promptunuzu GPT-4 ile otomatik olarak geliştirdi. İşte görseli oluşturmak için kullanılan nihai prompt:
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 p-3 bg-light rounded">
+                                <p class="mb-0 text-muted" id="revisedPromptText" style="white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 0.875rem;">{{ $revisedPrompt }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             @endif
         </div>
 
@@ -209,7 +243,8 @@
                         <div class="datagrid-item">
                             <div class="datagrid-title">Kredi Maliyeti</div>
                             <div class="datagrid-content">
-                                <span class="badge bg-blue">1 kredi / HD görsel</span>
+                                <span class="badge bg-cyan">0.5 kredi / Standart</span>
+                                <span class="badge bg-blue ms-1">1 kredi / HD</span>
                             </div>
                         </div>
                         <div class="datagrid-item">
@@ -244,4 +279,27 @@
         padding-top: 120px;
     }
     </style>
+
+    <script>
+    function copyRevisedPrompt() {
+        const text = document.getElementById('revisedPromptText').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            // Success toast
+            const btn = event.target.closest('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check me-1"></i> Kopyalandı!';
+            btn.classList.add('btn-success');
+            btn.classList.remove('btn-ghost-secondary');
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-ghost-secondary');
+            }, 2000);
+        }).catch(err => {
+            console.error('Kopyalama hatası:', err);
+            alert('Kopyalama başarısız oldu');
+        });
+    }
+    </script>
 </div>

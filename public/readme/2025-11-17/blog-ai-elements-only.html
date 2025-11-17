@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang='tr'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Blog AI - Sadece Form Elementleri</title>
+    <style>
+        body { font-family: system-ui; padding: 40px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        .element { background: #ecf0f1; padding: 20px; margin: 15px 0; border-radius: 5px; border-left: 4px solid #3498db; }
+        .element-id { color: #7f8c8d; font-size: 12px; }
+        .element-key { color: #16a085; font-weight: bold; font-size: 14px; }
+        .element-label { color: #2c3e50; font-size: 18px; font-weight: 600; margin: 8px 0; }
+        .element-type { background: #3498db; color: white; padding: 4px 12px; border-radius: 3px; font-size: 12px; font-weight: bold; }
+        .element-help { color: #7f8c8d; font-size: 13px; margin-top: 10px; background: #fff; padding: 10px; border-radius: 4px; }
+        .options { margin-top: 10px; }
+        .options li { padding: 5px 0; }
+        code { background: #2c3e50; color: #ecf0f1; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+        .number { background: #28a745; }
+        .select { background: #17a2b8; }
+        .checkbox { background: #ffc107; color: #000; }
+        .textarea { background: #e83e8c; }
+    </style>
+</head>
+<body>
+<div class='container'>
+<h1>📝 BLOG AI - FORM ELEMENTLERİ (Sadece Input/Select/Checkbox/Textarea)</h1>
+<p style='color: #e74c3c; font-weight: bold;'>⚠️ Başlıklar dahil değil, sadece form alanları!</p>
+<hr>
+
+<div class='element'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <div class='element-id'>#1 | Setting ID: 130 | Sort Order: 1</div>
+            <div class='element-key'><code>blog_ai_enabled</code></div>
+        </div>
+        <div><span class='element-type checkbox'>checkbox</span></div>
+    </div>
+    <div class='element-label'>Blog AI Sistemi Aktif</div>
+</div>
+
+<div class='element'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <div class='element-id'>#2 | Setting ID: 131 | Sort Order: 2</div>
+            <div class='element-key'><code>blog_ai_daily_count</code></div>
+        </div>
+        <div><span class='element-type number'>number</span></div>
+    </div>
+    <div class='element-label'>Günlük Blog Sayısı</div>
+    <div class='element-help'><strong>💡 Help Text:</strong><br>Her gün kaç blog yazısı üretilsin? SEO için optimal: 4 blog/gün (120/ay). Maksimum güvenli: 8 blog/gün (240/ay).</div>
+    <div class='options'>
+        <strong>Seçenekler:</strong>
+        <ul style='margin: 5px 0; padding-left: 20px;'>
+            <li><code>1</code> → 1 blog/gün (30/ay)</li>
+            <li><code>2</code> → 2 blog/gün (60/ay)</li>
+            <li><code>3</code> → 3 blog/gün (90/ay)</li>
+            <li><code>4</code> → 4 blog/gün (120/ay) - B2B Optimal</li>
+            <li><code>5</code> → 5 blog/gün (150/ay)</li>
+            <li><code>6</code> → 6 blog/gün (180/ay)</li>
+            <li><code>8</code> → 8 blog/gün (240/ay) - SEO Maksimum</li>
+        </ul>
+    </div>
+</div>
+
+<div class='element'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <div class='element-id'>#3 | Setting ID: 132 | Sort Order: 3</div>
+            <div class='element-key'><code>blog_ai_auto_publish</code></div>
+        </div>
+        <div><span class='element-type checkbox'>checkbox</span></div>
+    </div>
+    <div class='element-label'>Otomatik Yayınlama</div>
+</div>
+
+<div class='element'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <div class='element-id'>#4 | Setting ID: 133 | Sort Order: 4</div>
+            <div class='element-key'><code>blog_ai_topic_source</code></div>
+        </div>
+        <div><span class='element-type select'>select</span></div>
+    </div>
+    <div class='element-label'>Konu Kaynağı</div>
+    <div class='element-help'><strong>💡 Help Text:</strong><br>Blog konularını nereden alacağını seçin. Manuel: Sadece aşağıdaki liste, Otomatik: Ürün/kategori analizi, Karma: Önce manuel sonra otomatik.</div>
+    <div class='options'>
+        <strong>Seçenekler:</strong>
+        <ul style='margin: 5px 0; padding-left: 20px;'>
+            <li><code>manual</code> → Manuel (Sadece aşağıdaki listeden)</li>
+            <li><code>auto</code> → Otomatik (Ürün/Kategori analizi)</li>
+            <li><code>mixed</code> → Karma (Önce manuel, sonra otomatik)</li>
+        </ul>
+    </div>
+</div>
+
+<div class='element'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <div class='element-id'>#5 | Setting ID: 135 | Sort Order: 5</div>
+            <div class='element-key'><code>blog_ai_professional_only</code></div>
+        </div>
+        <div><span class='element-type checkbox'>checkbox</span></div>
+    </div>
+    <div class='element-label'>Sadece Profesyonel/Uzman Stil (Samimi Yok)</div>
+    <div class='element-help'><strong>💡 Help Text:</strong><br>KAPALI: Profesyonel + Samimi + Uzman (çeşitli tonlar, B2C için ideal). AÇIK: Sadece Profesyonel + Uzman (samimi hariç, B2B için önerilir).</div>
+</div>
+
+<div class='element'>
+    <div style='display: flex; justify-content: space-between; align-items: center;'>
+        <div>
+            <div class='element-id'>#6 | Setting ID: 134 | Sort Order: 6</div>
+            <div class='element-key'><code>blog_ai_manual_topics</code></div>
+        </div>
+        <div><span class='element-type textarea'>textarea</span></div>
+    </div>
+    <div class='element-label'>Ana Konular (Manuel Liste)</div>
+    <div class='element-help'><strong>💡 Help Text:</strong><br>Her satıra bir ana konu yazın. TEK KELİME yazarsanız sistem otomatik 12+ başlığa genişletir (örn: "transpalet" → "En İyi Transpalet Modelleri 2025", "Elektrikli Transpalet Nasıl Seçilir?" vb.). UZUN BAŞLIK yazarsanız birebir kullanılır (örn: "Elektrikli mi Manuel mi?" → direkt başlık olarak kullanılır).</div>
+    <div class='options'>
+        <strong>Seçenekler:</strong>
+        <ul style='margin: 5px 0; padding-left: 20px;'>
+            <li><code>rows</code> → 15</li>
+        </ul>
+    </div>
+</div>
+
+<hr>
+
+<div style='background: #d4edda; padding: 20px; border-radius: 5px; border-left: 4px solid #28a745;'>
+<h3>📊 ÖZET:</h3>
+<p><strong>Toplam Element:</strong> 6</p>
+<p><strong>Checkbox:</strong> 3</p>
+<p><strong>Select:</strong> 1</p>
+<p><strong>Number:</strong> 1</p>
+<p><strong>Textarea:</strong> 1</p>
+</div>
+
+</div>
+</body>
+</html>

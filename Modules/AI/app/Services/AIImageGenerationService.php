@@ -35,29 +35,53 @@ class AIImageGenerationService
      */
     public function generate(string $prompt, array $options = []): MediaLibraryItem
     {
+        $result = $this->generateWithRevision($prompt, $options);
+        return $result['mediaItem'];
+    }
+
+    /**
+     * Generate image and return both MediaLibraryItem + revised_prompt from DALL-E GPT-4
+     *
+     * @param string $prompt User-provided prompt
+     * @param array $options ['size' => '1024x1024', 'quality' => 'hd' or 'standard']
+     * @return array ['mediaItem' => MediaLibraryItem, 'revised_prompt' => string]
+     * @throws Exception
+     */
+    public function generateWithRevision(string $prompt, array $options = []): array
+    {
+        // Credit cost: standard = 0.5, hd = 1
+        $quality = $options['quality'] ?? 'hd';
+        $creditCost = $quality === 'standard' ? 0.5 : 1;
+
         // Check credit balance using global helper
-        if (!ai_can_use_credits($this->creditCost)) {
-            throw new Exception('Insufficient credits. Required: ' . $this->creditCost);
+        if (!ai_can_use_credits($creditCost)) {
+            throw new Exception('Insufficient credits. Required: ' . $creditCost);
         }
 
         try {
             // Generate image via DALL-E 3
             $imageData = $this->provider->generate($prompt, $options);
 
-            // Create MediaLibraryItem
+            // Create MediaLibraryItem with revised_prompt
             $mediaItem = $this->createMediaItem($imageData, $prompt, $options);
 
             // Deduct credits using global helper
-            ai_use_credits($this->creditCost, null, [
+            ai_use_credits($creditCost, null, [
                 'usage_type' => 'image_generation',
                 'provider_name' => 'openai',
                 'model' => 'dall-e-3',
                 'prompt' => $prompt,
+                'revised_prompt' => $imageData['revised_prompt'] ?? null,
                 'operation_type' => 'manual',
                 'media_id' => $mediaItem->id,
+                'quality' => $quality,
+                'credit_cost' => $creditCost,
             ]);
 
-            return $mediaItem;
+            return [
+                'mediaItem' => $mediaItem,
+                'revised_prompt' => $imageData['revised_prompt'] ?? null,
+            ];
 
         } catch (Exception $e) {
             Log::error('AI Image Generation failed', [

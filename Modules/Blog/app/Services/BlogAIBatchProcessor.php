@@ -33,15 +33,32 @@ class BlogAIBatchProcessor
         $this->initializeBatchStatus($batchId, count($draftIds));
 
         // Her draft için job dispatch et
+        $dispatchedCount = 0;
         foreach ($draftIds as $draftId) {
             $draft = BlogAIDraft::find($draftId);
 
+            // 🔒 KRİTİK: Sadece henüz generate edilmemiş draft'lar için job dispatch et
             if ($draft && !$draft->is_generated) {
                 // Job dispatch (model yerine ID geçir - tenant context için)
                 GenerateBlogFromDraftJob::dispatch($draftId, $batchId)
                     ->onQueue('blog-ai');
+
+                $dispatchedCount++;
+            } else {
+                \Log::warning('Draft skipped (already generated or not found)', [
+                    'draft_id' => $draftId,
+                    'is_generated' => $draft?->is_generated ?? 'N/A',
+                    'batch_id' => $batchId,
+                ]);
             }
         }
+
+        \Log::info('Blog AI Batch Jobs Dispatched', [
+            'batch_id' => $batchId,
+            'total_requested' => count($draftIds),
+            'dispatched' => $dispatchedCount,
+            'skipped' => count($draftIds) - $dispatchedCount,
+        ]);
     }
 
     /**

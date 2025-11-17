@@ -184,14 +184,17 @@ return [
         'ai-supervisor' => [
             'connection' => 'redis',
             'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'blog-ai', 'critical'],
-            'balance' => 'auto',
-            'autoScalingStrategy' => 'time',
-            'maxProcesses' => 5, // 🚀 Development için artırıldı
+            'balance' => 'simple', // 🔧 FIX: simple balance - her zaman minProcesses kadar worker
+            'processes' => 3, // 🔧 FIX: Sabit 3 worker (auto-scaling değil!)
+            'minProcesses' => 1, // Simple balance için gerekli (kullanılmıyor)
+            'maxProcesses' => 3, // Simple balance için gerekli (kullanılmıyor)
+            'balanceMaxShift' => 1,
+            'balanceCooldown' => 3,
             'maxTime' => 1800,
             'maxJobs' => 50,
             'memory' => 512,
             'tries' => 3,
-            'timeout' => 600, // 10 dakika AI işlemleri için
+            'timeout' => 1200, // 🔧 FIX: 20 dakika - Blog AI generation için artırıldı
             'nice' => 0,
         ],
         

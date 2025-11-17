@@ -1,38 +1,71 @@
 <div
     x-data="{
         isGenerating: @entangle('isGenerating').live,
+        pollCount: 0,
         startPolling() {
             if (this.isGenerating) {
+                // Progressive interval: 0-30sn → 3sn, 30-60sn → 5sn, 60sn+ → 10sn
+                let interval = 3000; // Default 3 saniye
+
+                if (this.pollCount > 20) {
+                    interval = 10000; // 60+ saniye sonra 10 saniye
+                } else if (this.pollCount > 10) {
+                    interval = 5000; // 30-60 saniye arası 5 saniye
+                }
+
                 setTimeout(() => {
                     $wire.call('checkDraftProgress');
+                    this.pollCount++;
                     this.startPolling();
-                }, 3000); // Her 3 saniyede bir kontrol
+                }, interval);
+            } else {
+                // Reset counter when generation stops
+                this.pollCount = 0;
             }
         }
     }"
-    x-init="$watch('isGenerating', value => { if(value) startPolling(); })"
+    x-init="$watch('isGenerating', value => { if(value) { this.pollCount = 0; this.startPolling(); } })"
 >
     @include('blog::admin.helper')
 
     {{-- Header --}}
     <div class="page-header d-print-none">
         <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title">AI Blog Taslakları</h2>
+            </div>
             <div class="col-auto ms-auto d-print-none">
-                {{-- Taslak Üret Butonu (Modal Yok - Direkt Livewire) --}}
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    wire:click="generateDrafts"
-                    wire:loading.attr="disabled"
-                    @if($isGenerating) disabled @endif
-                >
-                    <i class="fa-solid fa-plus"></i>
-                    <span wire:loading.remove wire:target="generateDrafts">Taslak Üret (1 kredi - {{ $draftCount }} adet)</span>
-                    <span wire:loading wire:target="generateDrafts">
-                        <span class="spinner-border spinner-border-sm me-1"></span>
-                        Oluşturuluyor...
-                    </span>
-                </button>
+                <div class="d-flex align-items-center gap-2">
+                    {{-- Draft Count Selector --}}
+                    <select
+                        wire:model.live="draftCount"
+                        class="form-select"
+                        style="width: 140px;"
+                        @if($isGenerating) disabled @endif
+                    >
+                        <option value="10">10 Taslak</option>
+                        <option value="25">25 Taslak</option>
+                        <option value="50">50 Taslak</option>
+                        <option value="100">100 Taslak</option>
+                        <option value="200">200 Taslak</option>
+                    </select>
+
+                    {{-- Taslak Üret Butonu --}}
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        wire:click="generateDrafts"
+                        wire:loading.attr="disabled"
+                        @if($isGenerating) disabled @endif
+                    >
+                        <i class="fa-solid fa-plus"></i>
+                        <span wire:loading.remove wire:target="generateDrafts">Taslak Üret (1 kredi)</span>
+                        <span wire:loading wire:target="generateDrafts">
+                            <span class="spinner-border spinner-border-sm me-1"></span>
+                            Oluşturuluyor...
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

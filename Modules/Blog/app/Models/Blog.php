@@ -710,4 +710,16 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
             'itemListElement' => $breadcrumbs
         ];
     }
+
+    /**
+     * 🔧 FIX: Media conversion'ları SYNC yap (queue'ya atma!)
+     *
+     * Blog AI featured image attach edilirken Spatie Media otomatik conversion job dispatch ediyor
+     * Ama o job tenant context olmadan çalışıyor → Database connection hatası!
+     * Çözüm: Conversion'ları sync modda çalıştır, queue'ya atma
+     */
+    public function shouldPerformConversionsInQueue(): bool
+    {
+        return false; // SYNC mode - tenant context sorununu önler
+    }
 }

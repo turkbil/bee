@@ -1,383 +1,484 @@
-## ⛔ KRİTİK UYARILAR - MUTLAKA OKU!
+## 🔴 EN KRİTİK KURALLAR - MUTLAKA OKU!
 
-### 🚨 VERİTABANI KORUMA KURALLARI
+### 🚨 1. TENANT AWARE SİSTEM
+
+**⚠️⚠️⚠️ BU SİSTEM MULTI-TENANT! HER TENANT FARKLI SEKTÖR! ⚠️⚠️⚠️**
+
+Bu sistem yüzlerce farklı sektörden tenant barındırır!
+
+#### ❌ YAPMAMAN GEREKEN:
+- **Forklift/Transpalet** → SADECE Tenant 2 (ixtif.com)!
+- **Müzik/Muzibu** → SADECE Tenant 1001 (muzibu.com)!
+- **E-ticaret** → SADECE ilgili tenant'lar!
+
+**🔥 KRİTİK: Tenant'a özgü içeriği GLOBAL/UNIVERSAL kodlara ASLA ekleme!**
+
+#### 📊 Tenant Bilgisi:
+- **Tenant 1 (tuufi.com)**: Central sistem
+- **Tenant 2 (ixtif.com)**: Endüstriyel ekipman (forklift, transpalet) - **VARSAYILAN**
+- **Tenant 1001 (muzibu.com)**: Müzik platformu
+- **Tenant 3+**: Diğer sektörler
+
+**Kod yazarken SOR:**
+1. ❓ Bu tenant'a özgü bir özellik mi?
+2. ❓ Tüm tenant'lar için mi yoksa sadece biri için mi?
+3. ❓ Global kod yazıyorsam, tenant-aware mı?
+
+---
+
+### 🚨 2. VERİTABANI KORUMA
 
 **BU GERÇEK CANLI SİSTEMDİR!**
 
 #### ❌ KESİNLİKLE YAPMA:
-1. **`php artisan migrate:fresh`** - ASLA!
-2. **`php artisan migrate:fresh --seed`** - ASLA!
-3. **`php artisan db:wipe`** - ASLA!
-4. **Veritabanı tablosunu truncate** - ASLA!
-5. **Manuel SQL DELETE/DROP komutları** - ASLA!
-6. **Tenant database silme** - ASLA!
-7. **Sunucuda ayarlarıyla bir işlem için defalarca sor, sunucu ayarlarını rastgele değiştirme**
-8. **Sunucuyu apacheyi restart kafana göre yapma. Özellikle onaylar iste. Gerekmedikçe de yapma.**
+1. `php artisan migrate:fresh` - ASLA!
+2. `php artisan db:wipe` - ASLA!
+3. Veritabanı truncate/DELETE/DROP - ASLA!
+4. Sunucu ayarlarını rastgele değiştirme!
+5. Apache/Nginx restart kafana göre yapma!
 
 #### ⚠️ KULLANICI İZNİ GEREKIR:
-- **Veritabanına INSERT/UPDATE**: Önce kullanıcıya sor, onay al
-- **Mevcut kayıtları değiştirme**: Önce kullanıcıya sor, onay al
-- **Migration dosyası oluşturma**: Önce kullanıcıya sor, içeriğini göster
-
-#### ✅ SERBEST İŞLEMLER:
-- Kod okuma, analiz yapma
-- SELECT sorguları (readonly)
-- Log dosyalarını okuma
-- Config dosyalarını okuma
-- Test ortamında çalışma (eğer varsa)
+- Veritabanına INSERT/UPDATE
+- Migration dosyası oluşturma
+- Mevcut kayıtları değiştirme
 
 ---
 
-**UNUTMA:** Eğer bir işlem "veritabanındaki mevcut verileri etkileyecekse" → **ÖNCE KULLANICIYA SOR!**
+### 🚨 3. HTML RAPOR SİSTEMİ (Ana İletişim Aracı)
 
----
+**🎯 KRİTİK: Analiz, rapor, planlama, sunum → DAIMA HTML!**
 
-### 🎨 RENK KONTRAST KURALLARI
+#### 📍 Ne Zaman HTML Oluştur:
+- Kullanıcı "analiz yap" dediğinde
+- Kullanıcı "plan oluştur" dediğinde
+- Kullanıcı "rapor hazırla" dediğinde
+- Karmaşık işlem öncesi planlama
+- Sunum/dokümantasyon talebi
 
-**⚠️ KRİTİK: WCAG AA STANDARDI ZORUNLU**
+#### 📂 Dosya Konumu:
+```
+public/readme/[YYYY-MM-DD]/[işlem-açıklaması]/index.html
+```
 
-Her renk seçiminde **kontrast oranı minimum 4.5:1** olmalı!
+**Örnek:**
+```
+public/readme/2025-11-17/seo-analizi/index.html
+public/readme/2025-11-17/navbar-planlama/index.html
+```
 
-#### ❌ ASLA YAPMA:
-- **Mavi üstüne mavi text** (bg-blue-600 + text-blue-700)
-- **Koyu üstüne koyu** (bg-gray-800 + text-gray-700)
-- **Açık üstüne açık** (bg-white + text-gray-100)
-- **Transparan üstüne aynı renk** (bg-blue-500/50 + text-blue-600)
+#### 🎨 HTML Tasarım Standartları:
 
-#### ✅ DOĞRU KONTRAST ÖRNEKLERİ:
+**✅ ZORUNLU ÖZELLİKLER:**
+- **Modern & Minimal**: Gereksiz kutu içinde kutu YOK
+- **Şık & Profesyonel**: Temiz, okunabilir, göz yormayan
+- **Dark Mode**: Koyu arka plan, rahat okuma
+- **Türkçe**: Tüm içerik Türkçe
+- **Responsive**: Mobil uyumlu
+- **Tek Sayfa**: Scroll ile akıcı okuma
 
-**Light Mode:**
-- `bg-white` → `text-gray-900` (koyu siyah)
-- `bg-gray-50` → `text-gray-900` (koyu siyah)
-- `bg-blue-600` → `text-white` (beyaz)
-- `bg-blue-500` → `text-white` (beyaz)
-- `bg-gray-100` → `text-gray-900` (koyu siyah)
+#### ❌ HTML İÇERİK KURALLARI:
 
-**Dark Mode:**
-- `dark:bg-gray-900` → `dark:text-white` (beyaz)
-- `dark:bg-gray-800` → `dark:text-white` (beyaz)
-- `dark:bg-blue-600` → `dark:text-white` (beyaz)
-- `dark:bg-gray-700` → `dark:text-gray-100` (açık gri)
+**ASLA KOD YAZMA!**
+- ❌ PHP kod blokları YASAK
+- ❌ JavaScript kod blokları YASAK
+- ❌ SQL sorguları YASAK
+- ❌ Teknik implementation detayları YASAK
 
-#### 📋 KONTRAST KONTROL ADIMLARI:
+**SADECE MANTIK & STRATEJİ!**
+- ✅ Nasıl çalışacak? (mantık)
+- ✅ Hangi yaklaşım? (strateji)
+- ✅ Ne yapılacak? (plan)
+- ✅ Neden bu yöntem? (gerekçe)
+- ✅ Beklenen sonuç? (hedef)
+- ✅ Teknik terimler için Türkçe açıklama
 
-**Her UI elementi oluştururken:**
-1. **Arka plan rengini belirle** (bg-* class)
-2. **Kontrast text rengi seç:**
-   - Koyu bg → Açık text (white, gray-100)
-   - Açık bg → Koyu text (gray-900, gray-800)
-3. **Hem light hem dark mode kontrol et**
-4. **Ekran görüntüsü iste veya canlı test yap**
+#### 🎯 HTML Yapısı:
 
-#### 🚨 ÖZEL DURUMLAR:
+**TEK SEKME - SADECE YAPILACAKLAR!**
+- ✅ Yapılacaklar listesi (ana odak)
+- ✅ Adım adım plan
+- ✅ Öncelik sıralaması
+- ✅ Beklenen sonuçlar
 
-**Mavi/Renkli Butonlar/Kartlar:**
+**Yapılanlar ASLA kabak gibi önde olmasın!**
+- ✅ Eğer gerekirse: Sayfanın en altında küçük bir özet
+- ✅ Minimal, dikkat dağıtmayan
+- ✅ Kullanıcı isterse ekle, istemezse ekleme!
+
+#### 📐 Modern HTML Şablonu:
+
 ```html
-<!-- ✅ DOĞRU -->
-<a href="#" class="bg-blue-600 text-white">
-  <h3 class="text-white">Başlık</h3>
-  <p class="text-white/90">Açıklama</p>
-  <i class="text-white"></i>
-</a>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[İşlem Adı] - Analiz & Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<!-- ❌ YANLIŞ -->
-<a href="#" class="bg-blue-600">
-  <h3>Başlık</h3> <!-- text-gray-900 inherit olur, okunmaz! -->
-  <p class="text-blue-100">Açıklama</p> <!-- Kontrast düşük! -->
-</a>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h3 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .plan-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 [İşlem Adı]</h1>
+            <div class="meta">
+                📅 Tarih: [YYYY-MM-DD HH:MM] |
+                🎯 Tenant: [ixtif.com] |
+                👤 Talep: [Kullanıcı talebi özeti]
+            </div>
+        </header>
+
+        <section>
+            <h2>🎯 Yapılacaklar</h2>
+
+            <div class="plan-item">
+                <h3>1. [İşlem Başlığı] <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    <span class="tech-term">SEO</span>
+                    <span class="explanation">(Arama motoru optimizasyonu)</span>
+                    için meta taglerini güncelleyeceğiz. Bu sayede Google'da daha iyi sıralama elde edilecek.
+                </p>
+                <p><strong>Beklenen Sonuç:</strong> Arama motorlarında görünürlük artışı</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. [İşlem Başlığı] <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>Açıklama...</p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>
 ```
 
-**Glassmorphism/Transparan:**
-```html
-<!-- ✅ DOĞRU: Belirgin arka plan -->
-<section class="bg-gray-50/95 dark:bg-gray-800/95">
-  <h1 class="text-gray-900 dark:text-white">Başlık</h1>
-</section>
+#### 📎 Kullanıcıya Link Verme:
 
-<!-- ❌ YANLIŞ: Çok transparan -->
-<section class="bg-white/20 dark:bg-white/5">
-  <h1 class="text-gray-900">Başlık</h1> <!-- Arka plan görünmez! -->
-</section>
+**❌ ASLA PATH VERME:**
+```
+public/readme/2025-11-17/analiz/index.html  # YANLIŞ!
 ```
 
-#### 🔍 TEST ZORUNLULUĞU:
+**✅ MUTLAKA WEB LİNKİ VER:**
+```
+✅ Analiz raporu hazır!
+📊 Raporu görüntüle: https://ixtif.com/readme/2025-11-17/analiz/
+```
 
-**Kod yazdıktan sonra MUTLAKA:**
-1. Light mode screenshot iste → Kontrast kontrol et
-2. Dark mode screenshot iste → Kontrast kontrol et
-3. Okunmuyorsa → Hemen düzelt
-4. Cache clear + Build yap
-5. Tekrar test et
+#### 🔄 Sonraki Güncellemeler:
 
-**UNUTMA:** Eğer kullanıcı "okunmuyor" derse → **SEN HATA YAPTIN!** Özür dile ve hemen düzelt.
+**Kullanıcı yeni talep verirse:**
+- ✅ Aynı HTML'i güncelle (yeni dosya oluşturma!)
+- ✅ Yapılacaklar listesine ekle
+- ✅ Tamamlananları işaretle
+- ✅ Yeni bölüm ekle
+
+**UNUTMA:** HTML = Rapor, Analiz, Plan, Sunum (KOD YOK!)
 
 ---
 
-### 🔐 DOSYA İZİNLERİ (PERMİSSİON) KURALLARI
+### 🚨 4. MARKDOWN (MD) KULLANIMI
 
-**🚨 KRİTİK: ROOT DOSYA OLUŞTURMA = WEB SUNUCUSU ERİŞEMEZ!**
+**📝 MD Sadece TODO İçin!**
 
-**Sorun:** Root olarak dosya oluşturursam, nginx/PHP-FPM okuyamaz → 500 Error!
+#### ✅ Ne Zaman MD Oluştur:
+- Kullanıcı açıkça "todo oluştur" dediğinde
+- Kullanıcı "md dosyası oluştur" dediğinde
+- Teknik checklist gerektiğinde
 
-#### ❌ YANLIŞ:
-```bash
-# Root kullanıcısı ile dosya oluşturma
-Write/Edit tool kullan → Dosya root:root olarak oluşur
-# Klasör: 700 (drwx------) → nginx giremez!
-# Dosya: 644 ama root:root → PHP-FPM okuyamaz!
-# Sonuç: HTTP 500 Error
+#### 📂 MD Dosya Konumu:
+```
+readme/claude-docs/todo-YYYY-MM-DD-HH-MM-[konu].md
 ```
 
-#### ✅ DOĞRU WORKFLOW:
+#### 📋 MD İçerik:
+- ✅ Teknik todo listesi
+- ✅ Checkbox'lar
+- ✅ Dosya path'leri
+- ✅ Komutlar
+- ✅ Kod referansları
 
-**1. Dosya/Klasör Oluşturma:**
+**Örnek MD:**
+```markdown
+# Portfolio Refactor - TODO
+
+- [ ] `Modules/Portfolio/app/Models/Portfolio.php` - Trait ekle
+- [ ] Migration: `php artisan make:migration add_seo_to_portfolios`
+- [ ] Cache temizle: `php artisan view:clear`
+- [ ] Test: `curl https://ixtif.com/portfolio`
+```
+
+**UNUTMA:** MD = Sadece TODO veya kullanıcı isterse!
+
+---
+
+### 🚨 5. GIT CHECKPOINT KURALLARI
+
+**🔐 Önemli İşlem Öncesi Git Checkpoint**
+
+#### ✅ Ne Zaman Checkpoint Yap:
+- **Büyük refactor** yapacaksan
+- **Çok dosya** değişikliği olacaksa
+- **Riskli işlem** yapacaksan
+- **Karmaşık modül** geliştirme
+
+#### ❌ Ne Zaman Checkpoint YAPMA:
+- Küçük bug fix
+- Tek dosya değişikliği
+- Typo düzeltme
+- CSS/Tailwind değişikliği
+- Basit view güncellemesi
+
+#### 📋 Checkpoint Workflow:
 ```bash
-# Her dosya oluşturduktan HEMEN SONRA:
+# Sadece büyük işlemler için!
+git add .
+git commit -m "🔧 CHECKPOINT: Before [işlem özeti]"
+git log -1 --oneline  # Hash'i kaydet
+```
+
+#### 🚨 Git Reset İçin İZİN AL:
+```bash
+# ❌ ASLA otomatik yapma!
+git reset --hard [hash]
+
+# ✅ Önce kullanıcıya sor!
+"Git checkpoint'e geri döneyim mi? (hash: abc123)"
+```
+
+**UNUTMA:** Küçük işleri git'e atma, kullanıcı isterse yükle!
+
+---
+
+### 🚨 6. DOSYA İZİNLERİ (PERMİSSİON) - KRİTİK!
+
+**⚠️ SORUN:** Write/Edit tool ile dosya oluşturursam `root:root` ve `600` permission olur!
+
+**🔴 SONUÇ:**
+- **403 Forbidden** (Nginx dosyayı okuyamaz!)
+- **500 Internal Server Error** (PHP-FPM dosyayı okuyamaz!)
+- **Site çöker!**
+
+**✅ ZORUNLU WORKFLOW - HER DOSYA OLUŞTURMADAN HEMEN SONRA:**
+
+```bash
+# 1. Owner değiştir (ZORUNLU!)
 sudo chown tuufi.com_:psaserv /path/to/file.php
-sudo chmod 644 /path/to/file.php
 
-# Klasör oluşturduysan:
-sudo chmod 755 /path/to/directory/
+# 2. İzin ver (ZORUNLU!)
+sudo chmod 644 /path/to/file.php  # Dosyalar için
+sudo chmod 755 /path/to/directory/  # Klasörler için
+
+# 3. OPcache reset (PHP dosyaları için)
+curl -s -k https://ixtif.com/opcache-reset.php > /dev/null
+
+# 4. Test et (ZORUNLU!)
+curl -s -k -I https://ixtif.com/path/to/file | grep HTTP
+# Beklenen: HTTP/2 200
+# Eğer 403 Forbidden → Permission hatası!
+# Eğer 500 Error → Ownership/Permission hatası!
 ```
 
-**2. Toplu İzin Düzeltme:**
+**📋 Toplu Klasör Düzeltme:**
+
 ```bash
-# Modül klasörü için
-sudo chown -R tuufi.com_:psaserv Modules/YourModule/
-sudo find Modules/YourModule/ -type f -exec chmod 644 {} \;
-sudo find Modules/YourModule/ -type d -exec chmod 755 {} \;
+# Tüm klasörü düzelt
+sudo chown -R tuufi.com_:psaserv /path/to/directory/
+sudo find /path/to/directory/ -type f -exec chmod 644 {} \;
+sudo find /path/to/directory/ -type d -exec chmod 755 {} \;
 ```
 
-**3. OPcache Reset + Test:**
-```bash
-# Her izin değişikliğinden sonra ZORUNLU
-curl -s -k https://ixtif.com/public/opcache-reset.php > /dev/null
-sleep 2
-curl -s -k -I "https://ixtif.com/" 2>&1 | grep "HTTP"
-# HTTP/2 200 olmalı!
-```
+**🎯 Doğru İzinler:**
 
-#### 🎯 Doğru İzinler:
+✅ **Owner:** `tuufi.com_:psaserv` (web sunucusu kullanıcısı)
+✅ **Dosya:** `644` (-rw-r--r--) → PHP, HTML, Blade dosyaları
+✅ **Klasör:** `755` (drwxr-xr-x) → Dizinler
 
-**Owner:**
-- ✅ `tuufi.com_:psaserv` (web sunucusu kullanıcısı)
-- ❌ `root:root` (nginx erişemez!)
-- ❌ `root:psaserv` (nginx hala okuyamaz!)
+❌ **YANLIŞ (Site çöker!):**
+- `root:root` ownership → Nginx/PHP-FPM okuyamaz!
+- `600` permission → Sadece owner okur, grup/others okuyamaz!
+- `700` klasör → Nginx klasöre giremez!
 
-**Dosya İzinleri:**
-- ✅ `644` (-rw-r--r--) → PHP dosyaları, view'lar
-- ✅ `755` (drwxr-xr-x) → Klasörler
-- ❌ `700` (drwx------) → Sadece root erişir, nginx giremez!
-- ❌ `600` (-rw-------) → Sadece owner okur, grup okuyamaz!
-
-#### 📋 Her Dosya Oluşturma Checklist:
-
-**Write/Edit tool kullandıktan HEMEN sonra:**
-1. ✅ `sudo chown tuufi.com_:psaserv file.php`
-2. ✅ `sudo chmod 644 file.php`
-3. ✅ Klasör varsa: `sudo chmod 755 directory/`
-4. ✅ OPcache reset: `curl opcache-reset.php`
-5. ✅ Test: `curl -I domain.com` → HTTP/2 200 kontrolü
-6. ✅ `ls -la` ile owner/permission doğrula
-
-#### ⚠️ Özellikle Dikkat:
-
-**Livewire Component'ler:**
-- PHP-FPM bu dosyaları include edecek
-- Permission hatası → 500 Error
-- Klasör 700 → "Permission denied" (nginx giremez)
-- Root:root owner → "Permission denied" (PHP-FPM okuyamaz)
-
-**Özellikle Risk Taşıyan Klasörler:**
-- `Modules/*/app/Http/Livewire/`
-- `Modules/*/app/Repositories/`
-- `Modules/*/resources/views/`
-- `app/Services/`
-
-**Storage/Cache (Dokunma!):**
-- `storage/` klasörü zaten tuufi.com_:psaserv
-- `bootstrap/cache/` zaten doğru
-- Bu klasörlere manuel chown yapma!
-
-#### 🔍 Hızlı Kontrol:
-```bash
-# Dosya owner/permission kontrol
-ls -la Modules/Shop/app/Http/Livewire/Front/
-# Beklenen:
-# drwxr-xr-x ... tuufi.com_ psaserv ... Front/
-# -rw-r--r-- ... tuufi.com_ psaserv ... CartWidget.php
-
-# Yanlışsa hemen düzelt!
-```
-
-#### 🚨 UNUTMA:
-**Her dosya oluşturma/düzenleme işleminden sonra → chown + chmod + OPcache reset!**
-
-**Aksi halde:**
-- 500 Internal Server Error
-- "Permission denied" log'ları
-- Livewire component'ler yüklenmez
-- Site çöker!
+**UNUTMA:** Write/Edit tool kullandıktan sonra MUTLAKA chown + chmod + test!
 
 ---
 
-# 🤖 CLAUDE ÇALIŞMA TALİMATLARI
+### 🚨 7. ANA DİZİN TEMİZ KALMALI
 
-**Proje Giriş**: nurullah@nurullah.net / test
-**URL**: www.laravel.test/login
+**❌ Ana Dizine ASLA Dosya Açma:**
+- test-*.php
+- debug-*.txt
+- setup-*.php
+- fix-*.php
+- GUIDE-*.md
 
+**✅ Doğru Konum:**
+- `readme/[klasör]/` altında
+- `/tmp/` geçici dosyalar için
+- `tests/` test dosyaları için
 
-işlemler bittikten sonra tamamlandığına dair siri ile seslendir.
-
-
-
+**İstisnalar:** CLAUDE.md, README.md, .env, composer.json (core dosyalar)
 
 ---
-Standard Workflow
 
-First think through the problem, read the codebase for relevant files, and write a plan to claudeguncel.md
+### 🚨 8. BUFFER DOSYALARI (a-console.txt, a-html.txt)
 
-The plan should have a list of todo items that you can check off as you complete them
+**⚠️ Bu dosyaları ASLA silme!**
 
-Before you begin working, check in with me and I will verify the plan
+#### 📋 İKİ MOD SİSTEMİ:
 
-Then, begin working on the todo items, marking them as complete as you go
+**PASİF MOD (Varsayılan):**
+- Kullanıcı bahsetmezse → Hiç dokunma!
 
-Please every step of the way just give me a high level explanation of what changes you made
+**AKTİF MOD (Kullanıcı tetikleyince):**
+- Kullanıcı "a-console.txt" derse → Aktif ol
+- Kullanıcı "console" derse → Aktif ol
+- Kullanıcı "debug" derse → Aktif ol
 
-Make every task and code change you do as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity
+**Aktif olunca:** O konuşma boyunca otomatik takip et, analiz et
 
-Finally, add a review section to the projectplan.md file with a summary of the changes you made and any other relevant information
+**UNUTMA:** Her konuşma yeni başlangıç, yeniden tetikleyici gerekli!
 
-
-- Önce sorunları iyice düşünün
-- Planları `readme/claude-docs/claudeguncel-YYYY-MM-DD-HH-MM-description.md` formatında yaz
-- Başlamadan önce giriş yapın
-- Yapılacaklar'ı tamamlanmış olarak işaretle
-- Değişiklikleri basit tutun
-
-### 📁 DOSYA OLUŞTURMA KURALLARI
-
-**⚠️ ANA DİZİN TEMİZ KALMALI!**
-
-#### 🚨 MUTLAK KURAL: ANA DİZİNE KAFANA GÖRE DOSYA AÇMA!
-
-**Claude, sen dosya açmadan ÖNCE DUR ve düşün:**
-1. ❓ Bu dosya gerçekten ana dizinde mi olmalı?
-2. ❓ readme/ veya başka klasörde durabilir mi?
-3. ❓ Bu geçici bir script/test mi? → O zaman ana dizine değil!
-
-#### ✅ DOĞRU KONUM:
-- **Plan/Güncelleme Dökümanları**: `readme/claude-docs/claudeguncel-YYYY-MM-DD-HH-MM-description.md`
-- **Teknik Dokümantasyon**: `readme/` klasörü altında (alt klasör oluştur!)
-- **Setup Script'leri**: `readme/[özellik-adı]-setup/` klasörü içinde
-- **Test Dosyaları**: İlgili modül/klasör içinde veya `tests/` altında
-- **Log/Debug**: Geçici ise `/tmp/` altında
-- **Tinker Komutları**: `readme/tinker-commands/` veya ilgili dokümantasyon klasöründe
-
-#### ❌ ANA DİZİNE ASLA EKLEME:
-- **claudeguncel-*.md** → readme/claude-docs/ içinde olmalı
-- **test-*.php** → tests/ veya ilgili modül içinde
-- **debug-*.txt** → /tmp/ veya geçici klasör
-- **random-*.log** → storage/logs/ içinde
-- **setup-*.php** → readme/[feature]-setup/ klasöründe
-- **update-*.php** → readme/[feature]-setup/ klasöründe
-- **fix-*.php** → readme/[feature]-setup/ klasöründe
-- **GUIDE-*.md** → readme/ altında ilgili klasörde
-- **TINKER-*.md** → readme/tinker-commands/ veya ilgili klasörde
-
-#### 🎯 İSTİSNALAR (Sadece bunlar ana dizine eklenebilir):
-- **Core Laravel config**: tailwind.config.js, webpack.mix.js, vite.config.js
-- **Framework dosyaları**: .env.example, .gitignore, composer.json, package.json
-- **Ana dokümantasyon**: README.md, CLAUDE.md, SECURITY.md
-- **Deployment**: deploy.sh - ama ÖNCE SOR!
-
-#### 🛡️ BUFFER DOSYALARI (DOKUNMA!):
-- `a-console.txt` - Console/Debugbar buffer (ana dizinde kalmalı)
-- `a-html.txt` - HTML output buffer (ana dizinde kalmalı)
-
-#### 📋 ÖRNEK YOL GÖSTERİCİ:
-
-**YANLIŞ:**
-```bash
-# ❌ Ana dizine setup script açma!
-/var/www/vhosts/tuufi.com/httpdocs/update-seo-layout.php
-/var/www/vhosts/tuufi.com/httpdocs/MARKETING-PLATFORMS-TINKER.md
-```
-
-**DOĞRU:**
-```bash
-# ✅ İlgili klasörde oluştur!
-/var/www/vhosts/tuufi.com/httpdocs/readme/marketing-setup/update-seo-layout.php
-/var/www/vhosts/tuufi.com/httpdocs/readme/marketing-setup/MARKETING-PLATFORMS-TINKER.md
-```
-
-**KURALLAR:**
-1. **Varsayılan**: Ana dizin değil, alt klasör!
-2. **Geçici script**: readme/ altında özel klasör oluştur
-3. **Dokümantasyon**: readme/ altında kategorize et
-4. **Şüphen varsa**: Kullanıcıya sor: "readme/[klasör]/ altına mı oluşturayım?"
-
-**UNUTMA:** Eğer dosya **core framework dosyası** değilse → **Ana dizine koyma!**
+---
 
 ## 📋 ÇALIŞMA YÖNTEMİ
 
 ### 🧠 TEMEL YAKLAŞIM
-- **Extended Think**: Her mesajı ultra deep analiz et, reasoning yap
+- **Extended Think**: Her mesajı derin analiz et
 - **Türkçe İletişim**: Daima Türkçe yanıt ver
 - **Otomatik Devam**: Sorma, direkt hareket et
-- **Veritabanı Koruma**: Üstteki kritik uyarılara mutlaka uy!
+- **HTML İlk Öncelik**: Analiz/rapor → HTML oluştur
 
-### 🎨 OTOMATİK CACHE & BUILD (TAİLWİND/FRONTEND)
+### 🎨 OTOMATİK CACHE & BUILD
 
-**⚡ KURAL:** Tailwind/View değişikliğinden SONRA otomatik cache temizle + build compile - **ONAY İSTEME!**
+**⚡ Tailwind/View değişikliğinden SONRA otomatik yap:**
 
-#### ✅ Otomatik Cache+Build Tetikleyicileri:
-- **Tailwind class** değişiklikleri (view/blade dosyalarında)
-- **CSS/SCSS** dosyası değişiklikleri
-- **Frontend asset** değişiklikleri (JS, Alpine.js)
-- **Blade/View** dosyası değişiklikleri
-- **Layout/Component** değişiklikleri
-
-#### 📋 Otomatik Komutlar (Sırayla):
 ```bash
-# 1. Cache temizliği (SAFE - config cache'i korur)
+# 1. Cache temizle
 php artisan view:clear
 php artisan responsecache:clear
 
-# 2. Build compile
+# 2. Build
 npm run prod
-
-# 3. Doğrulama
-echo "✅ Cache temizlendi, build tamamlandı!"
 ```
 
-#### ⚠️ KRİTİK:
-- **ONAY BEKLEME!** Her view/tailwind değişikliğinde direkt yap
-- **Todo'ya ekle**: "🎨 Cache+Build" (kullanıcı takip etsin)
-- **Hata varsa bildir**: Build hatası varsa kullanıcıya göster
+**Otomatik yap, onay bekleme!**
 
-#### 📝 Todo Örneği:
-```markdown
-- [x] Navbar responsive düzelt
-- [ ] 🎨 Cache temizle + Build compile
-- [ ] Test et
-```
+### ☢️ NUCLEAR CACHE CLEAR
 
-#### 🚫 İstisna:
-- **Sadece PHP logic** değişirse gerekli değil
-- **Backend/Controller** değişikliklerinde gerekli değil
-- **Sadece txt/md** dosyası değişirse gerekli değil
+**Kullanıcı "değişiklikler yansımadı" derse:**
 
----
-
-### ☢️ NUCLEAR CACHE CLEAR (Değişiklikler Yansımıyorsa)
-
-**🚨 KULLANIM:** Kullanıcı "değişiklikler yansımadı", "cache'lenmiş", "eski hali görünüyor" derse kullan!
-
-#### 📋 Nuclear Clear Komutu:
 ```bash
-# Full cache clear + compiled views delete + OPcache reset
 php artisan cache:clear && \
 php artisan config:clear && \
 php artisan route:clear && \
@@ -385,288 +486,19 @@ php artisan view:clear && \
 php artisan responsecache:clear && \
 find storage/framework/views -type f -name "*.php" -delete && \
 curl -s -k https://ixtif.com/opcache-reset.php && \
-echo "✅ NUCLEAR CACHE CLEAR"
-
-# Config/Route yeniden oluştur
 php artisan config:cache && \
-php artisan route:cache && \
-echo "✅ Config/Route rebuilt"
+php artisan route:cache
 ```
 
-#### ⚠️ Ne Zaman Kullan:
-- Normal cache clear yeterli gelmiyorsa
-- View değişiklikleri yansımıyorsa
-- Compiled view'lar güncellenmediyse
-- OPcache eski kodu serve ediyorsa
-- Kullanıcı "hala eski hali" diyorsa
+### 🗑️ DOSYA TEMİZLEME
 
-#### 🎯 Yapılanlar:
-1. ✅ Application cache temizle
-2. ✅ Config cache temizle (sonra rebuild)
-3. ✅ Route cache temizle (sonra rebuild)
-4. ✅ View cache temizle
-5. ✅ Response cache temizle
-6. ✅ Compiled view dosyalarını manuel sil
-7. ✅ OPcache reset (PHP bytecode cache)
-8. ✅ Config+Route yeniden cache'le
+**İş bittikten sonra otomatik temizle:**
+- Geçici test dosyaları
+- Debug script'leri
+- /tmp/ altındaki dosyalar
+- Yanlış konumdaki dosyalar
 
-#### 💡 Kullanıcıya Öner:
-**Eğer normal cache clear yeterli gelmezse:**
-```
-"Değişiklikler yansımıyorsa, nuclear cache clear deneyelim:"
-[komutu çalıştır]
-"Şimdi CTRL+F5 ile hard refresh yap"
-```
-
----
-
-### 🔐 OTOMATİK GIT CHECKPOINT
-
-**⚡ KURAL:** Kullanıcı Claude'u çağırıp ilk talep/brief verdiğinde BİR KEZ checkpoint commit yap - **ONAY İSTEME!**
-
-#### ✅ Checkpoint Zamanlaması:
-- **İlk talep geldiğinde**: Kullanıcı "Claude" yazıp ilk brief/talep verdiğinde
-- **Sadece BİR KEZ**: O konuşma boyunca tek checkpoint (her mesajda değil!)
-- **Geri dönüş noktası**: Tüm değişiklikler bu noktaya göre
-- **Basit sorularda YAPMA**: Sadece kod değişikliği gerektiren taleplerde
-
-#### 📋 Otomatik Workflow:
-1. **Kullanıcı talep gelir**
-2. **İlk checkpoint**: `git add . && git commit -m "🔧 CHECKPOINT: Before [talep özeti]"`
-3. **Hash'i kaydet**: Todo'da commit hash'ini yaz
-4. **Tüm değişiklikleri yap**: Rahatça çalış
-5. **En sonda final commit**: Tüm değişiklikleri içeren asıl commit
-
-#### 🎯 Commit Formatı:
-```bash
-# Konuşma başında (bir kez)
-git add .
-git commit -m "🔧 CHECKPOINT: Before [kullanıcı talebinin özeti]"
-git log -1 --oneline  # Hash'i al, todo'ya yaz
-```
-
-#### 📝 Todo Örneği:
-```markdown
-- [x] 🔐 Git checkpoint (hash: bed66c0a)
-- [ ] Portfolio modülünü refactor et
-- [ ] Migration oluştur
-- [ ] Cache+Build
-- [ ] Test et
-- [ ] Final commit yap
-```
-
-#### ⚠️ KRİTİK:
-- **SADECE BİR KEZ**: Konuşma başında, sonra bir daha yapma!
-- **Basit işler için gereksiz**: Tek dosya değişikliği, typo düzeltme
-- **Karışıklık yaratma**: Sürekli checkpoint = kötü git history
-
-#### 🔄 Geri Dönüş:
-
-**🚨 KRİTİK UYARI: GIT RESET İÇİN MUTLAKA KULLANICI İZNİ AL!**
-
-```bash
-# ❌ ASLA YAPMA - Kullanıcı izni olmadan:
-git reset --hard [checkpoint-hash]
-
-# ✅ YAPILACAK İŞLEM:
-1. Kullanıcıya SOR: "Git checkpoint'e geri döneyim mi? (hash: XXXXX)"
-2. Kullanıcı ONAYLARSA: git reset --hard [checkpoint-hash]
-3. ONAYLAMAZSA: Alternatif çözüm bul
-```
-
-**NEDEN ÖNEMLİ:**
-- Arkaplanda başka işler yapılıyor olabilir
-- Commit'ler başka dosyaları da içerebilir
-- Hard reset GERİ ALINAMAZ - tüm değişiklikler kaybolur
-- Kullanıcı manuel değişiklik yapmış olabilir
-
-**GÜVENLİ ALTERNATİFLER:**
-```bash
-# Sadece belirli dosyaları geri al
-git checkout [checkpoint-hash] -- path/to/file.php
-
-# Veya reflog ile inceleyip sor
-git reflog
-git show HEAD@{3}  # Önce göster, sonra sor
-```
-
-### 📝 ÖNEMLİ NOT
-Bu dosya **sadece çalışma yöntemi ve temel talimatları** içerir.
-**Detaylı teknik dökümanlar**: `readme/claude-docs/` klasöründe
-
-
-### 🗑️ DOSYA & VERİTABANI TEMİZLEME
-
-**⚡ KURAL: İş bittikten sonra gereksiz dosya/kayıtları MUTLAKA temizle!**
-
-#### ✅ Otomatik Temizlenmesi Gerekenler:
-
-**Dosya Sistemi:**
-- **Log/Fotoğraf**: Oku → Analiz et → Boşalt → Sil
-- **Test Sayfaları**: /tmp/ altında veya geçici klasörde oluşturulan test*.html, debug*.php
-- **Debug Dosyaları**: Geçici debug script'leri, test komutları
-- **Temporary Script'ler**: Sorun çözme için oluşturduğun geçici PHP/Bash dosyaları
-- **Yanlış konuma açılan dosyalar**: Ana dizine açılan gereksiz dosyalar
-
-**Veritabanı:**
-- **Yanlış kayıtlar**: Test amaçlı eklenen kayıtlar
-- **Yanlış DB'ye eklenen kayıtlar**: Farklı tenant'a yanlışlıkla eklenmiş veriler
-- **Duplicate kayıtlar**: Hata sonucu oluşan çift kayıtlar
-- **Test verileri**: Debug için eklenen dummy data
-
-#### 📋 Temizlik Workflow:
-
-**İş Başında:**
-1. Geçici dosya/kayıt oluşturacaksan → Todo'ya "🗑️ Temizlik" ekle
-2. Test kayıtları oluşturacaksan → ID'lerini not al
-
-**İş Bitiminde:**
-1. Todo'daki "🗑️ Temizlik" maddesini kontrol et
-2. Oluşturduğun geçici dosyaları sil
-3. Test veritabanı kayıtlarını sil (ÖNCE KULLANICI ONAYINI AL!)
-4. Yanlış konumdaki dosyaları doğru yere taşı veya sil
-5. Temizlik yaptığını todo'da işaretle
-
-#### ⚠️ KRİTİK:
-- **UNUTMA!** Her iş bitişinde temizlik yap
-- **Sistemde yer kaplama!** Gereksiz dosya/kayıt bırakma
-- **Veritabanı temizliğinde**: MUTLAKA kullanıcı onayı al!
-- **Otomatik temizlik** her işlem sonrası
-
-#### 📝 Todo Örneği:
-```markdown
-- [x] Test sayfası oluştur (/tmp/test-navbar.html)
-- [x] Debug script yaz (debug-category.php)
-- [x] Navbar sorununu düzelt
-- [ ] 🗑️ Geçici dosyaları temizle
-```
-
-#### 🚫 Asla Temizleme:
-- **Buffer dosyaları**: a-console.txt, a-html.txt (sadece boşalt)
-- **Core dosyalar**: CLAUDE.md, README.md, .env
-- **Canlı veriler**: Production kayıtları, kullanıcı verileri
-
-### 🛡️ BUFFER DOSYALARI (a-console.txt, a-html.txt)
-
-**⚠️ Bu dosyaları ASLA silme!**
-- `a-console.txt` - Console/Debugbar çıktıları için buffer
-- `a-html.txt` - HTML output için buffer
-
-**🚨 KRİTİK KURAL: Konuşma BAŞINDA dosya path/anahtar kelime görürsen aktif ol!**
-
-#### 📋 İKİ MOD SİSTEMİ:
-
-**1️⃣ PASİF MOD (Default):**
-- Konuşma başında tetikleyici YOK → Hiç dokunma
-- Görmezden gel, varsayım yapma
-- Sadece kullanıcı açıkça isterse oku
-
-**2️⃣ AKTİF MOD Tetikleyicileri (Konuşma başında):**
-Kullanıcı şunları kullanırsa otomatik aktif ol:
-
-**Dosya Path:**
-- `a-console.txt` → Console buffer takip et
-- `a-html.txt` → HTML buffer takip et
-
-**Anahtar Kelimeler:**
-- `console` → a-console.txt takip et
-- `debug` → a-console.txt takip et
-- `debugbar` → a-console.txt takip et
-- `html çıktı` → a-html.txt takip et
-- `html output` → a-html.txt takip et
-
-**Aktif Mod Açıldığında:**
-- ✅ O konuşma boyunca otomatik takip et
-- ✅ Her mesajda ilgili dosyayı oku
-- ✅ Değişiklikleri analiz et
-- ✅ Sorunları tespit et
-- ✅ Todo'da işaretle: "📄 a-console.txt aktif mod ON"
-
-**Her yeni konuşmada sıfırlanır** - Yeniden tetikleyici gerekli
-
-#### ✅ AKTİF MOD Workflow:
-```bash
-Kullanıcı (Konuşma başında): "Claude, a-console.txt navbar hatası var"
-# veya: "Claude, console'da hata görüyorum"
-# veya: "Claude, debug çıktısına bak"
-
-Sen:
-  1. ✅ Tetikleyici tespit edildi: "a-console.txt" / "console" / "debug"
-  2. cat a-console.txt  # İlk okuma
-  3. Analiz et ve raporla
-  4. ✅ Aktif mod ON - Todo'ya ekle: "📄 a-console.txt aktif mod ON"
-
-Kullanıcı (Sonraki mesajlarda): "Navbar'ı düzelt"
-Sen:
-  1. cat a-console.txt  # Otomatik oku (aktif mod ON)
-  2. Değişiklikleri kontrol et
-  3. Navbar düzelt
-  4. cat a-console.txt  # Tekrar oku
-  5. Sorun varsa raporla
-```
-
-#### ❌ PASİF MOD (Tetikleyici yok):
-```bash
-Kullanıcı: "Claude, navbar'ı düzelt"
-# Tetikleyici yok: path yok, anahtar kelime yok
-
-Sen:
-  - a-console.txt'ye DOKUNMA (aktif mod OFF)
-  - Sadece navbar'ı düzelt
-  - Buffer dosyalarını görmezden gel
-```
-
-#### 📝 Aktif Mod Todo Örneği:
-```markdown
-- [x] 📄 a-console.txt aktif mod ON
-- [ ] Navbar düzelt
-- [ ] a-console.txt kontrol et
-- [ ] Sorunları tespit et
-```
-
-#### ⚠️ KRİTİK:
-- **Her konuşma yeni başlangıç**: Aktif mod her konuşmada manuel aktifleştirilmeli
-- **Başta söyle**: "Oku" denmezse → Pasif mod, hiç dokunma
-- **Silme, temizleme**: Bunlar için hala onay gerekli
-
-### 🌐 WEB İÇERİK OKUMA
-
-**✅ Kullanıcı link vermeden direkt okuyabilirim!**
-
-**Metod 1: curl ile HTML okuma (Tercih edilen)**
-```bash
-# SSL bypass ile HTML içeriği oku
-curl -s -k https://ixtif.com
-
-# Sadece head/meta taglerini kontrol
-curl -s -k https://ixtif.com | head -200
-
-# Buffer dosyasına kaydet ve analiz et
-curl -s -k https://URL > a-html.txt
-cat a-html.txt
-# Analiz yap...
-echo "" > a-html.txt  # Temizle
-```
-
-**Metod 2: WebFetch tool (SSL sorunlu siteler için çalışmayabilir)**
-```
-WebFetch tool kullan (genelde çalışır ama SSL hatası verebilir)
-```
-
-**Kullanım:**
-- ❌ "Link verirsen bakayım" DEME
-- ✅ Direkt linki al ve curl ile oku
-- ✅ HTML'i analiz et, sorunları tespit et
-- ✅ a-html.txt'e kaydet, temizle
-
-**Örnek:**
-```
-Kullanıcı: "ixtif.com anasayfasına bak, responsive çalışıyor mu?"
-Sen: curl -s -k https://ixtif.com > a-html.txt
-     (HTML'i analiz et)
-     "Viewport meta tag var, Tailwind responsive classları kullanılmış..."
-     echo "" > a-html.txt
-```
+**UNUTMA:** Her işlem sonrası temizlik yap!
 
 ---
 
@@ -675,160 +507,58 @@ Sen: curl -s -k https://ixtif.com > a-html.txt
 ### 🎯 GENEL STANDARTLAR
 - **Admin**: Tabler.io + Bootstrap + Livewire
 - **Frontend**: Alpine.js + Tailwind CSS
-- **Framework renkleri kullan** (custom renk yok)
+- **Icon**: SADECE FontAwesome (`fas`, `far`, `fab`)
+- **Renkler**: Framework renkleri (custom yok)
 
-### 🎨 ICON SİSTEMİ
+### 🎨 RENK KONTRAST (WCAG AA)
 
-**🚨 KRİTİK: SADECE FONTAWESOME!**
+**Minimum kontrast oranı: 4.5:1**
 
-Tüm sistemde (admin panel dahil) **SADECE FontAwesome** ikonları kullanılır!
+**✅ Doğru Kullanım:**
+- `bg-white` → `text-gray-900`
+- `bg-blue-600` → `text-white`
+- `dark:bg-gray-900` → `dark:text-white`
 
-#### ❌ ASLA KULLANMA:
-- Tabler Icons (`ti ti-*`)
-- Bootstrap Icons
-- Material Icons
-- SVG ikonlar (FontAwesome'da yoksa bile!)
-- Custom icon font'lar
+**❌ Yanlış:**
+- Mavi üstüne mavi
+- Koyu üstüne koyu
+- Açık üstüne açık
 
-#### ✅ SADECE FONTAWESOME:
-```html
-<!-- ✅ DOĞRU -->
-<i class="fas fa-home"></i>
-<i class="far fa-user"></i>
-<i class="fab fa-github"></i>
+**UNUTMA:** Kullanıcı "okunmuyor" derse → SEN HATA YAPTIN!
 
-<!-- ❌ YANLIŞ -->
-<i class="ti ti-home"></i>
-<i class="bi bi-house"></i>
-```
+### 🏗️ ADMIN PANEL PATTERN
 
-#### 📋 FontAwesome Kategorileri:
-- `fas` - Solid (dolu ikonlar)
-- `far` - Regular (çizgili ikonlar)
-- `fab` - Brands (marka logoları)
+**YENİ PATTERN (Zorunlu):**
+- `index.blade.php` - Liste sayfası
+- `manage.blade.php` - Create/Edit tek sayfa
 
-**UNUTMA:** Eğer bir icon lazımsa → **Sadece FontAwesome'da ara!**
-
-### 🏗️ ADMIN PANEL PATTERN SİSTEMİ
-
-**🚨 KRİTİK: LAYOUT SİSTEMİ STANDARDI**
-
-Admin panelde her modülde **layout pattern** sistemi var!
-
-#### ❌ ESKİ PATTERN (ARTIK KULLANMA):
-```
-- create.blade.php (❌ Yok artık!)
-- edit.blade.php   (❌ Yok artık!)
-```
-
-#### ✅ YENİ PATTERN (ZORUNLU):
-```
-- index.blade.php   (✅ Liste sayfası - ZORUNLU!)
-- manage.blade.php  (✅ Create/Edit tek sayfada - ZORUNLU!)
-```
-
-#### 📋 Route Yapısı:
-```php
-// ✅ DOĞRU Route Pattern
-Route::get('/', [Controller::class, 'index'])->name('index');           // Liste
-Route::get('/manage/{id?}', [Controller::class, 'manage'])->name('manage'); // Create/Edit
-```
-
-#### 🎯 Manage Route Mantığı:
-```php
-// manage route hem create hem edit için kullanılır
-// ID varsa → Edit mode
-// ID yoksa → Create mode
-
-public function manage($id = null)
-{
-    if ($id) {
-        // Edit mode
-        $item = Model::findOrFail($id);
-    } else {
-        // Create mode
-        $item = new Model();
-    }
-
-    return view('admin.manage', compact('item'));
-}
-```
-
-#### ⚠️ KRİTİK:
-- **index route**: Her modül için **ZORUNLU!**
-- **manage route**: Create/Edit için **TEK SAYFA!**
-- **create/edit ayrımı YOK!**: Eskiden vardı, artık manage tek route!
+**ESKİ PATTERN (Kullanma):**
+- create.blade.php ❌
+- edit.blade.php ❌
 
 ---
 
-## 🚨 ACİL DURUM ÇÖZÜMLER (EMERGENCY FIXES)
+## 🚨 ACİL DURUM ÇÖZÜMLER
 
-### BLADE @ DİRECTİVE ÇAKIŞMASI (JSON-LD)
+### BLADE @ DİRECTİVE ÇAKIŞMASI
 
-**Sorun:** JSON-LD içinde `"@context"` ve `"@type"` Blade directive olarak parse ediliyor
-**Belirti:** ParseError - "unexpected end of file, expecting endif"
-**Compiled PHP:** Binlerce kapanmamış `if` bloğu oluşuyor
-
-**Çözüm:**
 ```blade
 # ❌ HATALI:
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "Product"
-}
-</script>
+"@context": "https://schema.org"
 
 # ✅ DOĞRU:
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",  # @@ ile escape
-    "@@type": "Product"
-}
-</script>
+"@@context": "https://schema.org"  # @@ ile escape
 ```
 
-### ARRAY → STRING HATASI (getTranslated)
+### ARRAY → STRING HATASI
 
-**Sorun:** `getTranslated()` çoklu dil array'i döndürüyor, `{{ }}` htmlspecialchars() hatası veriyor
-**Belirti:** `htmlspecialchars(): Argument #1 must be of type string, array given`
-**Örnek Data:** `category->title = {"en":"Pallet Truck","tr":"Transpalet"}`
-
-**Çözüm:**
 ```blade
 # ❌ HATALI:
-<script>
-    trackProductView(
-        '{{ $item->id }}',
-        '{{ $item->getTranslated('title', app()->getLocale()) }}',
-        '{{ $item->category->title }}'
-    );
-</script>
+{{ $item->category->title }}  # Array döner!
 
 # ✅ DOĞRU:
-<script>
-    trackProductView(
-        {{ $item->id }},                                        # String quote'suz
-        @json($item->getTranslated('title', app()->getLocale())), # @json() kullan
-        @json($item->category->title ?? 'Uncategorized')         # @json() kullan
-    );
-</script>
+@json($item->category->title)  # JSON'a çevirir
 ```
-
-**@json() vs {{ }} Farkı:**
-- `{{ $var }}`: String beklenir, htmlspecialchars() uygular
-- `@json($var)`: Array/Object'i JSON'a çevirir, safe encode
-
-**Kullanım Kuralı:**
-- ✅ **JavaScript değişken**: `@json($array)` kullan
-- ✅ **JSON-LD içinde**: `@json($value)` kullan
-- ✅ **HTML içinde**: `{{ $string }}` kullan
-
-**Debug Adımları:**
-1. `php -l compiled_file.php` → Syntax kontrol
-2. PHP tokenizer ile if/endif say
-3. Geçici olarak blade kısmını yorum yap, test et
-4. Array değişken bulunca `@json()` ile düzelt
 
 ---
 
@@ -842,269 +572,97 @@ public function manage($id = null)
 - **Page Pattern = Master**: Yeni modüller Page pattern'i alır
 - **JSON çoklu dil + SEO + Modern PHP**
 
-### ⚙️ SETTINGS SİSTEMİ (SettingManagement Modülü)
+### ⚙️ SETTINGS SİSTEMİ
 
-**🚨 KRİTİK: Site bilgileri Settings'ten çekilir!**
-
-Site adı, iletişim bilgileri, sosyal medya linkleri gibi tüm site ayarları **SettingManagement** modülünden çekilir.
-
-#### 📊 Sistem Yapısı:
-
-**1. Setting Groups (Central Database):**
-- `setting_groups` tablosu **central database**'de
-- Soru yapısını tanımlar (hangi ayarlar var?)
-- Tüm tenant'lar için ortak şablon
-
-**2. Setting Values (Tenant Database):**
-- `setting_values` tablosu **tenant database**'de
-- Cevapları tenant'a özgü saklar
-- Her tenant kendi değerlerini belirler
-
-#### 🎯 Nasıl Çalışır?
-
-```
-┌─────────────────────────────────────────┐
-│ CENTRAL DATABASE (tuufi_db)            │
-├─────────────────────────────────────────┤
-│ setting_groups:                         │
-│  - site_name (soru)                     │
-│  - site_phone (soru)                    │
-│  - site_email (soru)                    │
-│  - site_address (soru)                  │
-└─────────────────────────────────────────┘
-            ↓
-┌─────────────────────────────────────────┐
-│ TENANT 2 DATABASE (tenant_2_db)        │
-├─────────────────────────────────────────┤
-│ setting_values:                         │
-│  - site_name = "İxtif"                  │
-│  - site_phone = "+90 212 123 45 67"     │
-│  - site_email = "info@ixtif.com"        │
-│  - site_address = "İstanbul, Türkiye"   │
-└─────────────────────────────────────────┘
-```
-
-#### 📋 Kod Kullanımı:
+**Site bilgileri Settings modülünden çekilir:**
 
 ```php
 // Setting value çekme
-$siteName = setting('site_name'); // "İxtif"
-$sitePhone = setting('site_phone'); // "+90 212 123 45 67"
-
-// Blade'de kullanım
-{{ setting('site_name') }}
-{{ setting('site_email') }}
+setting('site_name'); // "İxtif"
+setting('site_phone'); // "+90 212 123 45 67"
 ```
 
-#### ⚠️ Yeni Setting Group Oluşturma:
-
-**🚨 MUTLAKA KULLANICI ONAYI AL!**
-
-Yeni setting group oluşturmadan ÖNCE:
-1. ✅ Kullanıcıya danış: "Yeni setting group oluşturayım mı?"
-2. ✅ İçeriğini göster: "Şu ayarları ekleyeceğim..."
-3. ✅ Onay aldıktan sonra oluştur
-4. ✅ Central database'e setting group ekle
-5. ✅ Tenant database'e default value'lar ekle
-
-#### 📝 Setting Group Kategorileri:
-- **site_info**: Site adı, slogan, açıklama
-- **contact_info**: Telefon, email, adres
-- **social_media**: Facebook, Twitter, Instagram linkleri
-- **seo_settings**: Meta description, keywords
-- **email_settings**: SMTP, email yapılandırması
-
-**UNUTMA:** Eğer site bilgisi lazımsa → **Settings modülünden çek!**
+**Yeni Setting Group oluşturmadan ÖNCE kullanıcı onayı al!**
 
 ### THUMBMAKER SİSTEMİ
-**⚡ Kod yazarken görsel oluştururken MUTLAKA Thumbmaker kullan!**
 
-**Detaylı kılavuz:** `readme/thumbmaker/README.md`
+**Görsel oluştururken MUTLAKA Thumbmaker kullan:**
 
-#### Hızlı Kullanım:
 ```blade
-{{-- Basit kullanım: 400x300 WebP --}}
 <img src="{{ thumb($media, 400, 300) }}" alt="Thumbnail" loading="lazy">
-
-{{-- Detaylı kullanım --}}
-<img src="{{ thumb($media, 800, 600, [
-    'quality' => 90,
-    'scale' => 1,
-    'alignment' => 'c',
-    'format' => 'webp'
-]) }}" alt="Optimized" loading="lazy">
 ```
 
-#### Parametreler:
-- `w/h` - Genişlik/Yükseklik (px)
-- `q` - Kalite (85 varsayılan)
-- `s` - Scale: 0=fit, 1=fill, 2=stretch
-- `a` - Alignment: c, t, b, l, r, tl, tr, bl, br
-- `f` - Format: webp, jpg, png, gif
-
-#### ✅ Best Practices:
-- **WebP kullan** (daha küçük dosya)
-- **loading="lazy" ekle** (sayfa hızı)
-- **Kalite 80-90** aralığında
-- **Scale=1** kare thumbnail'ler için
-- **Orijinal boyuttan büyütme!**
-
-#### Admin Guide:
-`/admin/mediamanagement/thumbmaker-guide` - Detaylı dokümantasyon
+**Best Practices:**
+- WebP kullan
+- loading="lazy" ekle
+- Kalite 80-90
 
 ---
 
 ## 🏢 TENANT YÖNETİMİ
 
-### 🚨 TENANT SİSTEMİ - KRİTİK BİLGİLER
+### 🚨 TENANT SİSTEMİ
 
 **⚠️ BU BİR MULTI-TENANT SİSTEMDİR!**
 
-#### 📊 Sistem Yapısı:
-- **Merkezi Sistem**: `tuufi.com` (Central domain - **Tenant ID: 1**)
-  - ⚠️ **UYARI:** Central domain DE bir tenant! (ID: 1)
-  - Central database'de hem central hem tenant_1 database var
-- **Tenant Sayısı**: Yüzlerce farklı tenant (sürekli artacak)
-- **Her Tenant**: Farklı sektör, farklı konu, tamamen bağımsız site
-- **Database Yapısı**: Her tenant **tamamen bağımsız database'e** sahip
-  - Central: `tuufi_db` (merkezi veriler)
-  - Tenant 1: `tenant_1_db` (tuufi.com)
-  - Tenant 2: `tenant_2_db` (ixtif.com)
-  - Tenant 3: `tenant_3_db` (ixtif.com.tr)
+#### Sistem Yapısı:
+- **Tenant 1 (tuufi.com)**: Central sistem
+- **Tenant 2 (ixtif.com)**: Endüstriyel ekipman - **VARSAYILAN**
+- **Tenant 1001 (muzibu.com)**: Müzik platformu
+- **Tenant 3+**: Diğer sektörler
 
-#### 🎯 VARSAYILAN ÇALIŞMA TENANT'I (Özellikle belirtilmezse):
-- **Domain**: `ixtif.com`
-- **Tenant ID**: 2
-- **Sektör**: Endüstriyel ekipman (forklift, transpalet vb.)
-- **Not**: Kullanıcı başka tenant belirtmezse, işlemler bu tenant için yapılır. Bu değer kullanıcı tarafından güncellenebilir.
+#### Database Yapısı:
+- Her tenant **tamamen bağımsız database**
+- Central: `tuufi_db`
+- Tenant 2: `tenant_2_db`
 
-#### ⚠️ KRİTİK KURAL: TENANT ODAKLI ÇALIŞMA
+### 🗄️ MİGRATION OLUŞTURMA
 
-**❌ YANLIŞ YAKLAŞIM:**
-```php
-// Central domain'e özgü çalışma
-// Tüm sistem için tek bir çözüm üretme
-// Tenant context'ini göz ardı etme
-```
+**🚨 ÇİFTE MİGRATION ZORUNLU!**
 
-**✅ DOĞRU YAKLAŞIM:**
-```php
-// Her zaman tenant context'inde çalış
-// İşlemleri aktif tenant için yap
-// Tenant-spesifik verileri kullan
-```
+Her migration **İKİ YERDE** oluşturulmalı:
 
-#### 📋 Tenant Context Kontrolü:
-```php
-// Mevcut tenant bilgisi
-$tenant = tenant();  // Tenant ID: 2 (ixtif.com)
-$tenantId = tenant('id');  // 2
-
-// Tenant database
-// Her tenant'ın kendi database'i var
-```
-
-#### 🗄️ MİGRATION OLUŞTURMA KURALLARI
-
-**🚨 ÇİFTE MİGRATION ZORUNLULUĞU!**
-
-Her migration dosyası **İKİ YERDE** oluşturulmalı:
-
-**1. Central Migration:**
 ```bash
-database/migrations/YYYY_MM_DD_HHMMSS_create_table_name.php
+# 1. Central
+database/migrations/YYYY_MM_DD_create_table.php
+
+# 2. Tenant
+database/migrations/tenant/YYYY_MM_DD_create_table.php
+
+# Migration çalıştır
+php artisan migrate  # Central
+php artisan tenants:migrate  # Tüm tenant'lar
 ```
 
-**2. Tenant Migration:**
-```bash
-database/migrations/tenant/YYYY_MM_DD_HHMMSS_create_table_name.php
-```
-
-**⚠️ UNUTURSAN:** Tenant database'ler çalışmaz, sistem bozulur!
-
-#### 📝 Migration Workflow:
-```bash
-# 1. Migration oluştur (otomatik olarak tenant/ klasörüne de kopyalanmalı)
-php artisan make:migration create_products_table
-
-# 2. MANUEL KONTROL: İki dosya da var mı?
-ls database/migrations/*create_products_table.php
-ls database/migrations/tenant/*create_products_table.php
-
-# 3. Eğer tenant/ klasöründe yoksa, MUTLAKA kopyala!
-cp database/migrations/YYYY_MM_DD_HHMMSS_create_products_table.php \
-   database/migrations/tenant/YYYY_MM_DD_HHMMSS_create_products_table.php
-
-# 4. Migration çalıştır
-php artisan migrate  # Central için
-php artisan tenants:migrate  # Tüm tenant'lar için
-```
-
-#### ⚠️ DIKKAT EDILMESI GEREKENLER:
-
-**Data İşlemleri:**
-- ✅ Tenant-spesifik veriyi oku/yaz
-- ❌ Central data ile tenant data'yı karıştırma
-- ✅ Her zaman aktif tenant context'inde çalış
-
-**Test/Debug:**
-- ✅ ixtif.com üzerinde test et (Tenant ID: 2)
-- ❌ tuufi.com'da tenant işlemlerini test etme
-- ✅ Tenant database'ini kullandığını doğrula
-
-**Modül Geliştirme:**
-- ✅ Tenant-aware modüller yaz
-- ✅ Her tenant için bağımsız çalışsın
-- ❌ Hard-coded tenant ID kullanma
-- ✅ `tenant()` helper'ı kullan
-
-#### 🔍 Tenant Kontrol Komutları:
-```bash
-# Aktif tenant'ı göster
-php artisan tinker
->>> tenant()
->>> tenant('id')
-
-# Tüm tenant'ları listele
-php artisan tenants:list
-
-# Tenant migration durumu
-php artisan tenants:migrate --pretend
-```
-
----
+**UNUTURSAN:** Tenant database'ler çalışmaz!
 
 ### YENİ TENANT EKLEME
+
 **Detaylı kılavuz:** `readme/tenant-olusturma.md`
 
-#### Hızlı Adımlar:
-1. **Plesk Panel**: Domain alias olarak ekle (SEO redirect KAPALI!)
-2. **Laravel Tenant**: Tinker ile tenant + domain oluştur
-3. **Config Güncelle**: `plesk repair web tuufi.com -y`
-4. **Test**: `curl -I https://yenidomain.com/`
+1. Plesk Panel: Domain alias ekle (SEO redirect KAPALI!)
+2. Laravel Tenant: Tinker ile oluştur
+3. Config: `plesk repair web tuufi.com -y`
+4. Test: `curl -I https://domain.com/`
 
-#### Kritik Kontroller:
-```bash
-# SEO redirect kontrol (false olmalı!)
-plesk db "SELECT name, seoRedirect FROM domain_aliases WHERE name = 'domain.com'"
-
-# Gerekirse kapat
-plesk db "UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = 'domain.com'"
-```
-
-#### Mevcut Tenant'lar:
-- **tuufi.com**: Tenant ID: 1 (Central domain)
-- **ixtif.com**: Tenant ID: 2
-- **ixtif.com.tr**: Tenant ID: 3
-
-#### ⚠️ KRİTİK: NGINX CUSTOM CONFIG YASAK!
-**ASLA custom nginx config oluşturma!** (`/etc/nginx/plesk.conf.d/vhosts/00-*.conf`)
-
-**Sebep:** Custom SSL proxy config Livewire upload'ı bozuyor (ERR_SSL_BAD_RECORD_MAC_ALERT)
-
-**Çözüm:** Default Plesk config kullan, vhost_nginx.conf'da ortak ayarlar yap
-
-**NOT:** Yeni tenant eklerken mutlaka dökümanı takip et!
+**⚠️ KRİTİK:** NGINX custom config oluşturma! (Livewire bozar)
 
 ---
 
+## 📝 ÖNEMLİ NOT
+
+**Proje Giriş:** nurullah@nurullah.net / test
+**URL:** www.laravel.test/login
+
+**İşlemler bittikten sonra Siri ile seslendir!**
+
+**Detaylı Dökümanlar:** `readme/claude-docs/` klasöründe
+
+---
+
+**UNUTMA:**
+- 🎯 Analiz/Rapor → HTML oluştur (KOD YOK!)
+- 📝 TODO → MD oluştur (sadece gerekirse)
+- 🔐 Önemli işlem → Git checkpoint
+- 🗑️ İş bitti → Temizlik yap
+- 👔 Her şey basit, minimal, profesyonel!

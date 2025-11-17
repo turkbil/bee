@@ -1,6 +1,6 @@
 @props(['target' => '.prose'])
 
-<div x-data="readingProgress('{{ $target }}')" class="fixed top-0 left-0 w-full z-50">
+<div x-data="readingProgress('{{ $target }}')" class="fixed top-0 left-0 w-full z-[9999]">
     <!-- Progress Bar -->
     <div class="h-1 bg-gray-200 dark:bg-gray-800">
         <div

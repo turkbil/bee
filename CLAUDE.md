@@ -606,10 +606,27 @@ sudo -u tuufi.com_ touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.m
 touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md  # Root kullanma!
 ```
 
+**⚠️ BASH mkdir KULLANIRKEN DİKKAT!**
+
+```bash
+# ❌ YANLIŞ: Bash mkdir kullanırsan → root:root klasör oluşturur!
+mkdir -p public/readme/2025/11/18/test/
+
+# ✅ DOĞRU: MUTLAKA sudo -u tuufi.com_ kullan!
+sudo -u tuufi.com_ mkdir -p public/readme/2025/11/18/test/
+
+# 🔧 Yanlışlıkla root ile oluşturduysan toplu düzelt:
+sudo chown -R tuufi.com_:psaserv public/readme/2025/
+sudo find public/readme/2025/ -type d -exec chmod 755 {} \;
+sudo find public/readme/2025/ -type f -exec chmod 644 {} \;
+```
+
 **UNUTMA:**
 - ✅ Her zaman `sudo -u tuufi.com_` kullan!
 - ✅ Write/Edit tool kullandıysan → chown + chmod + test!
+- ✅ Bash mkdir kullandıysan → chown + chmod + test!
 - ❌ ASLA root olarak dosya/klasör oluşturma!
+- ❌ Bash mkdir bile root:root oluşturur → sudo -u tuufi.com_ zorunlu!
 
 ---
 

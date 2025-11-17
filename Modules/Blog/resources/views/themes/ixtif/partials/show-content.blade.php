@@ -232,6 +232,11 @@
                     <x-blog.author-card variant="full" />
                 </section>
 
+                {{-- Review & Rating Section --}}
+                <section class="mt-12">
+                    <x-blog.review-section :blog="$item" />
+                </section>
+
                 {{-- FAQ Section --}}
                 @if(!empty($item->faq_data))
                     @php

@@ -201,23 +201,34 @@ Sen bir blog taslak üreticisin. İxtif firması için {$group['name']} konusund
 JSON array döndür:
 [
   {
-    "topic_keyword": "Blog başlığı",
+    "topic_keyword": "Blog başlığı (soru formatında veya bilgilendirici)",
     "meta_description": "150 karakterlik açıklama",
     "seo_keywords": ["kelime1", "kelime2", "kelime3"],
-    "outline": {
-      "1": "Giriş",
-      "2": "Ana Konu 1",
-      "3": "Ana Konu 2",
-      "4": "Sonuç"
-    }
+    "outline": [
+      "Transpalet Nedir ve Ne İşe Yarar?",
+      "Transpalet Çeşitleri ve Özellikleri",
+      "Transpalet Kullanım Alanları",
+      "Transpalet Seçim Kriterleri",
+      "Transpalet Bakım ve Güvenlik"
+    ]
   }
 ]
 
 **KURALLAR:**
-- SEO odaklı başlıklar
+- SEO odaklı, spesifik başlıklar kullan
 - Türkçe karakter kullan
-- Teknik detaylı
-- Okuyucuya değer kat
+- Teknik detaylı, okuyucuya değer kat
+
+🚨 YASAKLI BAŞLIKLAR (ASLA KULLANMA!):
+- ❌ "Giriş" başlığı YASAK!
+- ❌ "Sonuç" başlığı YASAK!
+- ❌ "Hakkında" başlığı YASAK!
+- ❌ "Hakkımızda" başlığı YASAK!
+- ❌ "İletişim" başlığı YASAK!
+- ✅ Spesifik, bilgilendirici, konuya özel başlıklar kullan!
+
+✅ DOĞRU ÖRNEK: "Transpalet Nedir?", "Transpalet Çeşitleri", "Elektrikli vs Manuel Transpalet"
+❌ YANLIŞ ÖRNEK: "Giriş", "Sonuç", "Hakkında"
 SYSTEM;
 
         // Duplicate check (sadece son 20 başlık - prompt'u kısa tut)

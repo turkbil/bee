@@ -81,21 +81,46 @@ class BlogAIContentWriter
             // SEO ayarları ekle (HasSeo trait)
             $blog->seoSetting()->create([
                 'titles' => ['tr' => $blogData['title']],
-                'descriptions' => ['tr' => $draft->meta_description ?? $blogData['excerpt']],
+                'descriptions' => ['tr' => $this->cleanMetaDescription(
+                    $draft->meta_description ?? $blogData['excerpt']
+                )],
                 'status' => 'active',
             ]);
 
-            // 🎨 AI Image Generation (Ultra Realistic + Horizontal + NO TEXT)
+            // 🎨 AI Image Generation (AA.pdf Professional Rules + Horizontal + NO TEXT)
             try {
                 $imageService = app(AIImageGenerationService::class);
 
-                // Ultra realistic horizontal prompt (NO TEXT!)
-                $imagePrompt = "Ultra realistic professional photograph, horizontal landscape orientation 16:9, " .
-                    $blogData['title'] .
-                    ", high quality commercial photography, natural lighting, sharp focus, detailed, NO TEXT, NO WORDS, NO LETTERS in image or background";
+                // 1️⃣ Basit prompt oluştur (tenant-aware)
+                $simplePrompt = $this->buildSimplePromptForBlog($blogData['title']);
 
+                // 2️⃣ Check if tenant-specific prompt is already detailed (Tenant2)
+                $isTenantDetailedPrompt = (tenant('id') == 2 && strlen($simplePrompt) > 200);
+
+                // 3️⃣ AIPromptEnhancer ile ultra detaylı prompt'a çevir (GPT-4o + NO TEXT kuralları)
+                // SKIP for Tenant2 if already detailed (buildImagePromptForBlog returns full prompt)
+                if ($isTenantDetailedPrompt) {
+                    $finalPrompt = $simplePrompt;
+                    Log::info('🎨 Blog AI Image: Using tenant-specific detailed prompt (skipping enhancer)', [
+                        'tenant_id' => tenant('id'),
+                        'prompt_length' => strlen($finalPrompt),
+                    ]);
+                } else {
+                    $enhancer = app(\Modules\AI\App\Services\AIPromptEnhancer::class);
+                    $finalPrompt = $enhancer->enhancePrompt(
+                        $simplePrompt,
+                        'commercial_photography', // Style: Professional commercial photography
+                        '1792x1024' // Size: Horizontal landscape 16:9
+                    );
+                    Log::info('🎨 Blog AI Image: Prompt enhanced via AIPromptEnhancer', [
+                        'simple_prompt' => $simplePrompt,
+                        'enhanced_prompt_length' => strlen($finalPrompt),
+                    ]);
+                }
+
+                // 4️⃣ Zenginleştirilmiş/tenant-specific prompt ile görsel üret
                 $mediaItem = $imageService->generate(
-                    $imagePrompt,
+                    $finalPrompt,
                     [
                         'size' => '1792x1024',  // Horizontal landscape 16:9 ratio
                         'quality' => 'hd'       // HD quality
@@ -110,19 +135,17 @@ class BlogAIContentWriter
                     $media->setCustomProperty('width', 1792);
                     $media->setCustomProperty('height', 1024);
                     $media->setCustomProperty('seo_optimized', true);
+                    $media->setCustomProperty('og_image', true);
                     $media->save();
-                    $blog->addMedia($media->getPath())
-                        ->preservingOriginal()
-                        ->withCustomProperties([
-                            'alt_text' => ['tr' => $blogTitle],
-                            'title' => ['tr' => $blogTitle . ' - Blog Görseli'],
-                            'description' => ['tr' => $blogData['excerpt']],
-                            'width' => 1792,
-                            'height' => 1024,
-                            'seo_optimized' => true,
-                            'og_image' => true,
-                        ])
-                        ->toMediaCollection('featured');
+
+                    // ✅ FIX: Move media to blog (no duplicate!)
+                    // OLD: $blog->addMedia()->toMediaCollection('featured') → Creates duplicate!
+                    // NEW: $media->move() → Moves media from MediaLibraryItem to Blog
+                    // 🔧 FIX: Conversion'ları SYNC yap (queue'ya atma - tenant context sorunu!)
+                    // performConversions() sync modda çalıştır, sonra move yap
+                    $media->setCustomProperty('skip_conversions', true);
+                    $media->save();
+                    $media->move($blog, 'featured_image');
                     Log::info('Blog AI Featured Image Generated (SEO Optimized)', [
                         'blog_id' => $blog->blog_id,
                         'media_library_id' => $mediaItem->id,
@@ -210,6 +233,13 @@ class BlogAIContentWriter
             'meta_description' => $draft->meta_description,
         ];
 
+        // 📝 YAZIM STİLİ RANDOM SEÇİMİ
+        $writingStyle = $this->selectWritingStyle();
+        Log::info('✍️ Yazım stili seçildi', [
+            'draft_id' => $draft->id,
+            'style' => $writingStyle['name'],
+        ]);
+
         // Firma Adı - SADECE MARKA ADI
         $companyName = $context['company_info']['name'] ?? 'FİRMA ADI';
 
@@ -251,9 +281,27 @@ class BlogAIContentWriter
         // 📝 Detaylı blog yazma talimatları al (2000+ kelime, FAQ, HowTo kuralları)
         $blogContentPrompt = $this->promptLoader->getBlogContentPrompt();
 
-        // System message - Detaylı talimatlar + Context
+        // ✍️ Yazım stili talimatını ekle
+        $styleInstructions = "\n\n" . str_repeat('=', 60) . "\n";
+        $styleInstructions .= "✍️ YAZIM STİLİ - ZORUNLU!\n";
+        $styleInstructions .= str_repeat('=', 60) . "\n\n";
+        $styleInstructions .= "**STİL:** {$writingStyle['name']}\n";
+        $styleInstructions .= "**AÇIKLAMA:** {$writingStyle['description']}\n\n";
+        $styleInstructions .= "**KULLANIM KURALLARI:**\n";
+        foreach ($writingStyle['rules'] as $rule) {
+            $styleInstructions .= "- {$rule}\n";
+        }
+        $styleInstructions .= "\n**ÖRNEK CÜMLELER:**\n";
+        foreach ($writingStyle['examples'] as $example) {
+            $styleInstructions .= "  {$example}\n";
+        }
+        $styleInstructions .= str_repeat('=', 60) . "\n";
+
+        // System message - Detaylı talimatlar + Yazım Stili + Company Context + Tenant Context
         $systemMessage = $blogContentPrompt . "\n\n" .
                         "---\n\n" .
+                        $styleInstructions .
+                        "\n" .
                         $companyContext .
                         $tenantContext .
                         "\n\n**TASLAK:**\n" .
@@ -283,10 +331,38 @@ class BlogAIContentWriter
                 // 1. Outline oluştur (H2 başlıklar)
                 $outlinePrompt = "'{$draftContext['topic_keyword']}' konusu için blog outline'ı oluştur.
 
-6-8 H2 başlık belirle. JSON array döndür:
+4-5 H2 başlık belirle. JSON array döndür:
 [\"Başlık 1\", \"Başlık 2\", \"Başlık 3\", ...]
 
-Sadece JSON array döndür, başka bir şey yazma.";
+⚠️ ÖNEMLİ KURALLAR:
+- Sadece 4-5 ana başlık belirle (daha fazla değil!)
+- Her ana başlık detaylı alt başlıklarla genişletilecek
+- Başlıklar DOĞAL ve MANİDAR olmalı (AI yazısı belli etmemeli!)
+- Sadece JSON array döndür, başka bir şey yazma
+
+🚨 YASAKLI BAŞLIKLAR (ASLA KULLANMA - AI yazısı belli eder!):
+- ❌ \"Giriş\" - YASAK! (AI şablonu belli eder)
+- ❌ \"Sonuç\" - YASAK! (AI şablonu belli eder)
+- ❌ \"Özet\" - YASAK!
+- ❌ \"Hakkında\" - YASAK!
+- ❌ \"Hakkımızda\" - YASAK!
+- ❌ \"İletişim\" - YASAK!
+- ❌ \"Sık Sorulan Sorular\" - YASAK! (FAQ section ayrı var zaten)
+- ❌ Jenerik, belirsiz başlıklar - YASAK!
+
+✅ DOĞAL VE MANİDAR BAŞLIKLAR KULLAN:
+- ✅ \"Transpalet Nedir ve Nasıl Çalışır?\"
+- ✅ \"Manuel vs Elektrikli Transpalet: Hangi Tür Size Uygun?\"
+- ✅ \"Transpalet Kullanırken Dikkat Edilmesi Gerekenler\"
+- ✅ \"İş Güvenliği: Transpalet Kazalarını Önleme Yöntemleri\"
+- ✅ \"Transpalet Bakım Periyotları ve Maliyetleri\"
+
+❌ YANLIŞ (AI belli eder): \"Giriş\", \"Sonuç\", \"Hakkında\", \"Genel Bilgiler\"
+✅ DOĞRU (Doğal ve manidar): \"Transpalet Nedir?\", \"Hangi Sektörlerde Kullanılır?\", \"Bakım ve Onarım İpuçları\"
+
+**KRİTİK:** Başlıklar spesifik, bilgilendirici ve doğal olmalı. Okuyucu başlığı görünce içeriği tahmin edebilmeli!
+
+Sadece JSON array döndür!";
 
                 $outlineResponse = $this->openaiService->ask($outlinePrompt, false, [
                     'custom_prompt' => "Sen bir blog içerik planlamacısısın. Verilen konu için SEO-uyumlu H2 başlıkları belirle.",
@@ -305,6 +381,20 @@ Sadece JSON array döndür, başka bir şey yazma.";
                     ]);
                 }
 
+                // ✅ OUTLINE VALIDATION: Duplicate ve yasaklı başlıkları temizle
+                $originalCount = count($outline);
+                $outline = $this->validateAndCleanOutline($outline);
+                $cleanedCount = count($outline);
+
+                if ($originalCount !== $cleanedCount) {
+                    Log::warning('🧹 Outline temizlendi', [
+                        'draft_id' => $draft->id,
+                        'original_count' => $originalCount,
+                        'cleaned_count' => $cleanedCount,
+                        'removed_count' => $originalCount - $cleanedCount,
+                    ]);
+                }
+
                 Log::info('📝 Outline oluşturuldu', ['h2_count' => count($outline)]);
 
                 // 2. Her H2 bölümünü genişlet
@@ -312,25 +402,34 @@ Sadece JSON array döndür, başka bir şey yazma.";
                 foreach ($outline as $index => $h2Title) {
                     $sectionPrompt = "'{$h2Title}' konusunda detaylı bölüm yaz.
 
-- 3-4 paragraf (her biri 100-150 kelime)
-- 2-3 H3 alt başlık ekle
-- Örnekler, sayısal veriler, karşılaştırma kullan
+- 3-4 paragraf (her biri 100-120 kelime)
+- 2-4 H3 alt başlık ekle (her H2'ye birden fazla H3 olmalı!)
+- Örnekler, sayısal veriler ekle
 - Firma adı: '{$shortName}' (ilk/son bölümde kullan)
+
+⚠️ ÖNEMLİ: İkon kullanma! Sadece düz HTML döndür.
+⚠️ KRİTİK: Her H2 başlığına en az 2-4 tane H3 alt başlık ekle!
 
 HTML çıktı döndür:
 <h2>{$h2Title}</h2>
 <p>...</p>
-<h3>Alt başlık</h3>
+<h3>Alt başlık 1</h3>
+<p>...</p>
+<h3>Alt başlık 2</h3>
+<p>...</p>
+<h3>Alt başlık 3</h3>
 <p>...</p>";
 
                     $sectionResponse = $this->openaiService->ask($sectionPrompt, false, [
                         'custom_prompt' => $systemMessage,
                         'temperature' => 0.8,
-                        'max_tokens' => 4000,  // ⬆️ Increased from 2000 to prevent truncation
+                        'max_tokens' => 2000,  // 🔧 FIX: Optimized -50% for faster generation
                         'model' => 'gpt-4o',
                     ]);
 
-                    $fullContent .= "\n\n" . trim($sectionResponse);
+                    // 🧹 Clean HTML wrapper and entity decode
+                    $cleanedResponse = $this->cleanHtmlResponse(trim($sectionResponse));
+                    $fullContent .= "\n\n" . $cleanedResponse;
 
                     $currentSection = $index + 1;
                     $totalSections = count($outline);
@@ -346,7 +445,11 @@ HTML çıktı döndür:
                 $faqPrompt = "'{$draftContext['topic_keyword']}' konusunda 10 sık sorulan soru ve cevapları oluştur.
 
 Her cevap 50-80 kelime olsun. JSON array döndür:
-[{\"question\": {\"tr\": \"Soru?\"}, \"answer\": {\"tr\": \"Cevap...\"}}]";
+[{\"question\": {\"tr\": \"Soru?\"}, \"answer\": {\"tr\": \"Cevap...\"}, \"icon\": \"fas fa-question-circle\"}]
+
+⚠️ ÖNEMLİ: Her soru için uygun FontAwesome icon seç!
+Örnekler: fas fa-question-circle, fas fa-info-circle, fas fa-lightbulb, fas fa-wrench, fas fa-shield-alt, fas fa-chart-bar, fas fa-cog, fas fa-dollar-sign, fas fa-check-circle
+Her soruya farklı ve konuya uygun icon seç.";
 
                 $faqResponse = $this->openaiService->ask($faqPrompt, false, [
                     'temperature' => 0.7,
@@ -376,7 +479,11 @@ Her cevap 50-80 kelime olsun. JSON array döndür:
                 $howtoPrompt = "'{$draftContext['topic_keyword']}' için 7 adımlı 'Nasıl Yapılır' rehberi oluştur.
 
 Her adım 80-100 kelime olsun. JSON döndür:
-{\"name\": {\"tr\": \"Başlık\"}, \"description\": {\"tr\": \"Açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"Adım\"}, \"text\": {\"tr\": \"Detay\"}}]}";
+{\"name\": {\"tr\": \"Başlık\"}, \"description\": {\"tr\": \"Açıklama\"}, \"steps\": [{\"name\": {\"tr\": \"Adım\"}, \"text\": {\"tr\": \"Detay\"}, \"icon\": \"fas fa-check-circle\"}]}
+
+⚠️ ÖNEMLİ: Her adım için uygun FontAwesome icon seç!
+Örnekler: fas fa-check-circle, fas fa-clipboard-check, fas fa-tools, fas fa-cogs, fas fa-search, fas fa-lightbulb, fas fa-chart-line, fas fa-shield-alt
+Her adıma farklı ve konuya uygun icon seç.";
 
                 $howtoResponse = $this->openaiService->ask($howtoPrompt, false, [
                     'temperature' => 0.7,
@@ -406,7 +513,9 @@ Her adım 80-100 kelime olsun. JSON döndür:
                 $blogData = [
                     'title' => $draftContext['topic_keyword'],
                     'content' => $fullContent,
-                    'excerpt' => $draftContext['meta_description'] ?? substr(strip_tags($fullContent), 0, 200),
+                    'excerpt' => $this->cleanMetaDescription(
+                        $draftContext['meta_description'] ?? substr(strip_tags($fullContent), 0, 200)
+                    ),
                     'faq_data' => $faqData,
                     'howto_data' => $howtoData,
                 ];
@@ -786,5 +895,339 @@ Her adım 80-100 kelime olsun. JSON döndür:
         ]);
 
         return $updatedContent;
+    }
+
+    /**
+     * Build SIMPLE prompt for blog featured image (will be enhanced by AIPromptEnhancer)
+     *
+     * @param string $blogTitle Blog title (subject)
+     * @return string Simple subject prompt (AIPromptEnhancer will add details)
+     */
+    protected function buildSimplePromptForBlog(string $blogTitle): string
+    {
+        // 🎯 TENANT2 ÖZELİ: Yaratıcı iş hayatı sahneleri
+        // Forklift/transpalet dolaylı anlatım - fabrika, lojistik, depo sahneleri
+        if (tenant('id') == 2) {
+            $tenantClass = $this->promptLoader->getProviderClass();
+            $tenantPrompts = new $tenantClass();
+            if (method_exists($tenantPrompts, 'buildImagePromptForBlog')) {
+                // Tenant-specific prompt (already detailed, don't enhance further)
+                return $tenantPrompts->buildImagePromptForBlog($blogTitle);
+            }
+        }
+
+        // 🔄 FALLBACK: Simple generic blog prompt (AIPromptEnhancer will enrich it)
+        // AIPromptEnhancer will add: camera, lens, lighting, texture, NO TEXT rules
+        return "Professional blog featured image about: {$blogTitle}";
+    }
+
+    /**
+     * 🧹 Clean HTML response from code block wrappers and decode HTML entities
+     *
+     * @param string $html Raw HTML response from AI
+     * @return string Clean HTML without wrappers, with decoded entities
+     */
+    protected function cleanHtmlResponse(string $html): string
+    {
+        // Remove ```html wrapper
+        $clean = preg_replace('/```html\s*(.*?)\s*```/s', '$1', $html);
+
+        // Remove plain ``` wrapper
+        $clean = preg_replace('/```\s*(.*?)\s*```/s', '$1', $clean);
+
+        // 🔧 FIX: Remove JSON wrapper blocks (AI bazen JSON formatında yanıt veriyor)
+        // Pattern 1: ```json { "content": "<h2>..." } ```
+        $clean = preg_replace('/```json\s*\{.*?\}\s*```/s', '', $clean);
+
+        // Pattern 2: json { "title": "...", "content": "...", "excerpt": "..." }
+        $clean = preg_replace('/json\s*\{[^}]*"title"[^}]*"content"[^}]*"excerpt"[^}]*\}/si', '', $clean);
+
+        // Pattern 3: json { "content": "..." } (basit format)
+        $clean = preg_replace('/json\s*\{\s*"[^"]*content[^"]*"\s*:\s*"(.*?)"\s*\}/s', '$1', $clean);
+
+        // Pattern 4: Tek satır JSON blokları (başta/sonda)
+        $clean = preg_replace('/^\s*json\s*\{.*?\}\s*$/mi', '', $clean);
+
+        // Pattern 5: JSON key-value pairs (orphan JSON fragments)
+        $clean = preg_replace('/"(title|content|excerpt)"\s*:\s*"[^"]*"/i', '', $clean);
+
+        // 🔧 FIX: Remove markdown blockquote ("> " at start of lines)
+        // AI bazen markdown quote formatı kullanıyor
+        $clean = preg_replace('/^>\s+/m', '', $clean);
+
+        // 🔧 FIX: Remove HTML entities like &gt; at start of content
+        // AI bazen HTML entity olarak ">" karakteri ekliyor
+        $clean = preg_replace('/^&gt;\s*/m', '', $clean);
+
+        // 🔧 FIX: Replace literal \n\n with actual newlines (AI bazen literal string olarak yazıyor)
+        $clean = str_replace('\\n\\n', "\n\n", $clean);
+        $clean = str_replace('\\n', "\n", $clean);
+
+        // 🔧 FIX: Remove excessive newlines (3+ consecutive newlines → 2 newlines)
+        $clean = preg_replace('/\n{3,}/', "\n\n", $clean);
+
+        // 🔧 FIX: Remove newlines between HTML tags (clean HTML structure)
+        // <h2>\n\nMetin → <h2>Metin
+        $clean = preg_replace('/>(\s*\n\s*)+/', '>', $clean);
+        $clean = preg_replace('/(\s*\n\s*)+</', '<', $clean);
+
+        // 🔧 FIX: Remove excessive whitespace inside tags
+        // <p>  Text  </p> → <p>Text</p>
+        $clean = preg_replace('/<(p|h[1-6]|li|div)>\s+/', '<$1>', $clean);
+        $clean = preg_replace('/\s+<\/(p|h[1-6]|li|div)>/', '</$1>', $clean);
+
+        // Decode HTML entities in H2/H3 tags (İxtif > gibi karakterler için)
+        $clean = preg_replace_callback('/<(h[23])[^>]*>(.*?)<\/\1>/i', function($matches) {
+            $tag = $matches[1];
+            $content = html_entity_decode($matches[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            return "<{$tag}>" . $content . "</{$tag}>";
+        }, $clean);
+
+        // 🔧 FIX: Decode ALL HTML entities (for complete clean HTML)
+        $clean = html_entity_decode($clean, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // 🔧 FIX: Remove leading ">" character if still present after all cleaning
+        $clean = ltrim($clean, '> ');
+
+        // 🔧 FIX: Wrong HTML tags (AI bazen <h> yerine <h2>/<h3> kullanmalı)
+        // Örnek: <h>Başlık<p>Metin → <h3>Başlık</h3><p>Metin
+        $clean = preg_replace('/<h>(.*?)<p>/i', '<h3>$1</h3><p>', $clean);
+        $clean = preg_replace('/<h>(.*?)<\/h>/i', '<h3>$1</h3>', $clean);
+
+        // 🔧 FIX: Final whitespace normalization
+        $clean = preg_replace('/[ \t]+/', ' ', $clean); // Multiple spaces → single space
+        $clean = preg_replace('/\n{3,}/', "\n\n", $clean); // Max 2 consecutive newlines
+
+        return trim($clean);
+    }
+
+    /**
+     * 🧹 Clean meta description from JSON wrappers and truncate to SEO length
+     *
+     * @param string $description Raw meta description from AI
+     * @return string Clean, SEO-friendly meta description (max 155 chars)
+     */
+    protected function cleanMetaDescription(string $description): string
+    {
+        // Remove JSON code block wrapper (```json ... ```)
+        $clean = preg_replace('/```json\s*(.*?)\s*```/s', '$1', $description);
+
+        // Remove plain code block wrapper (``` ... ```)
+        $clean = preg_replace('/```\s*(.*?)\s*```/s', '$1', $clean);
+
+        // If still JSON format, try to extract content
+        if (str_starts_with(trim($clean), '{')) {
+            $json = json_decode($clean, true);
+            if (isset($json['content'])) {
+                $clean = $json['content'];
+            } elseif (isset($json['description'])) {
+                $clean = $json['description'];
+            } elseif (isset($json['meta_description'])) {
+                $clean = $json['meta_description'];
+            }
+        }
+
+        // Strip HTML tags and extra whitespace
+        $clean = strip_tags(trim($clean));
+
+        // Truncate to SEO-friendly length (155 characters max)
+        return mb_substr($clean, 0, 155);
+    }
+
+    /**
+     * ✅ Validate and clean outline: Remove duplicates, banned headings, and limit count
+     *
+     * @param array $outline Raw outline array from AI
+     * @return array Cleaned outline array
+     */
+    protected function validateAndCleanOutline(array $outline): array
+    {
+        // 🚨 Yasaklı başlıklar (amateur/generic headings)
+        $bannedHeadings = [
+            'Giriş',
+            'giriş',
+            'GİRİŞ',
+            'Sonuç',
+            'sonuç',
+            'SONUÇ',
+            'Hakkında',
+            'hakkında',
+            'HAKKINDA',
+            'Hakkımızda',
+            'hakkımızda',
+            'HAKKIMIZDA',
+            'İletişim',
+            'iletişim',
+            'İLETİŞİM',
+            'İletişime Geçin',
+            'Introduction',
+            'Conclusion',
+            'About',
+            'Contact',
+        ];
+
+        // 1️⃣ Trim whitespace
+        $outline = array_map('trim', $outline);
+
+        // 2️⃣ Remove banned headings
+        $outline = array_filter($outline, function($heading) use ($bannedHeadings) {
+            return !in_array($heading, $bannedHeadings);
+        });
+
+        // 3️⃣ Remove duplicates (case-insensitive)
+        $seen = [];
+        $outline = array_filter($outline, function($heading) use (&$seen) {
+            $lower = mb_strtolower($heading);
+            if (in_array($lower, $seen)) {
+                return false; // Duplicate, remove
+            }
+            $seen[] = $lower;
+            return true;
+        });
+
+        // 4️⃣ Limit to maximum 5 H2 headings
+        $outline = array_slice($outline, 0, 5);
+
+        // 5️⃣ Re-index array (remove gaps)
+        return array_values($outline);
+    }
+
+    /**
+     * 📝 Yazım Stili Seç (Random veya Sadece Profesyonel)
+     *
+     * Settings'ten professional_only kontrol eder:
+     * - true ise → Sadece Profesyonel/Uzman arasında seçim
+     * - false ise → Profesyonel/Samimi/Uzman arasında random
+     *
+     * @return array Writing style definition with name, description, rules, examples
+     */
+    protected function selectWritingStyle(): array
+    {
+        // Settings'ten professional_only kontrol et
+        $professionalOnly = $this->getTenantSetting('blog_ai_professional_only', '0');
+        $professionalOnly = ($professionalOnly === '1' || $professionalOnly === 1 || $professionalOnly === true);
+
+        // Tüm yazım stilleri tanımları
+        $allStyles = $this->getWritingStyles();
+
+        // Professional-only modda Samimi stilini hariç tut
+        if ($professionalOnly) {
+            $availableStyles = ['profesyonel', 'uzman'];
+            Log::info('📝 Professional-only mode: Samimi stil hariç', [
+                'available_styles' => $availableStyles,
+            ]);
+        } else {
+            $availableStyles = ['profesyonel', 'samimi', 'uzman'];
+            Log::info('📝 All styles mode: Tüm stiller kullanılabilir', [
+                'available_styles' => $availableStyles,
+            ]);
+        }
+
+        // Random stil seç
+        $selectedStyleKey = $availableStyles[array_rand($availableStyles)];
+
+        return $allStyles[$selectedStyleKey];
+    }
+
+    /**
+     * 📋 Tüm yazım stillerinin tanımları
+     *
+     * @return array All writing styles with their rules and examples
+     */
+    protected function getWritingStyles(): array
+    {
+        return [
+            'profesyonel' => [
+                'name' => 'Profesyonel',
+                'description' => 'Kurumsal, resmi, teknik, bilgilendirici ton. B2B sektörler için ideal.',
+                'rules' => [
+                    'Kurumsal ve resmi dil kullan',
+                    'Teknik terimleri açıkla',
+                    'Nesnel ve bilgilendirici ol',
+                    'Pasif yapılar kullanabilirsin',
+                    'Ölçülü ve itibarlı bir ton kullan',
+                    'Sektör standartlarına atıfta bulun',
+                ],
+                'examples' => [
+                    '✅ "Endüstriyel ekipman seçiminde dikkate alınması gereken kriterler..."',
+                    '✅ "ISO standartlarına uygun bakım prosedürleri uygulanmalıdır."',
+                    '✅ "Operasyonel verimliliği artırmak için..."',
+                ],
+            ],
+            'samimi' => [
+                'name' => 'Samimi',
+                'description' => 'Dostça, yakın, konuşur gibi ton. Okuyucuyla bağ kurar, B2C için uygun.',
+                'rules' => [
+                    'Okuyucuyla doğrudan konuş ("siz", "sizin" kullan)',
+                    'Konuşur gibi doğal cümleler',
+                    'Örnekler ve hikayelerle açıkla',
+                    'Karmaşık terimleri günlük dille basitleştir',
+                    'Samimi ama profesyonelliği koruyarak',
+                    'Okuyucunun sorunlarını anladığını göster',
+                ],
+                'examples' => [
+                    '✅ "Forklift seçerken kafanız mı karıştı? Endişelenmeyin, birlikte bakalım!"',
+                    '✅ "Transpaletin bakımını kendiniz yapabilirsiniz. Hadi adım adım gösterelim."',
+                    '✅ "Deponuzda yer sorunu mu yaşıyorsunuz? İşte pratik çözümler..."',
+                ],
+            ],
+            'uzman' => [
+                'name' => 'Uzman',
+                'description' => 'Derinlemesine teknik, akademik ton. Sektör uzmanları için detaylı analiz.',
+                'rules' => [
+                    'İleri düzey teknik detaylara gir',
+                    'Spesifikasyonları ve standartları belirt',
+                    'Karşılaştırmalı analizler yap',
+                    'Endüstri trendlerini ve inovasyonları ele al',
+                    'Veri ve istatistiklerle destekle',
+                    'Uzman jargonu kullanabilirsin (ama açıkla)',
+                ],
+                'examples' => [
+                    '✅ "AC motor tork karakteristikleri, yük profillerine göre optimize edilmelidir."',
+                    '✅ "Hidrolik sistem basınç dengesi 150-200 bar arasında kalibre edilir."',
+                    '✅ "EN 15000 standardına göre yük merkezi hesaplamaları kritik öneme sahiptir."',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Tenant setting değerini çek (CategoryBasedDraftGenerator ile aynı mantık)
+     *
+     * @param string $key Setting key
+     * @param mixed $default Default value
+     * @return mixed Setting value
+     */
+    protected function getTenantSetting(string $key, $default = null)
+    {
+        try {
+            // Central DB'den Setting'i bul
+            $setting = \Modules\SettingManagement\App\Models\Setting::where('key', $key)->first();
+
+            if (!$setting) {
+                return $default;
+            }
+
+            // Tenant DB'den value'yu çek
+            if (tenant()) {
+                $settingValue = \Modules\SettingManagement\App\Models\SettingValue::on('tenant')
+                    ->where('setting_id', $setting->id)
+                    ->first();
+
+                if ($settingValue && $settingValue->value !== null) {
+                    return $settingValue->value;
+                }
+            }
+
+            // Default value
+            return $setting->default_value ?? $default;
+
+        } catch (\Exception $e) {
+            Log::warning('⚠️ Failed to get tenant setting', [
+                'key' => $key,
+                'error' => $e->getMessage(),
+            ]);
+            return $default;
+        }
     }
 }

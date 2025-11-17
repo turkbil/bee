@@ -400,30 +400,40 @@ Sadece JSON array döndür!";
                 // 2. Her H2 bölümünü genişlet
                 $fullContent = '';
                 foreach ($outline as $index => $h2Title) {
-                    $sectionPrompt = "'{$h2Title}' konusunda detaylı bölüm yaz.
+                    $sectionPrompt = "'{$h2Title}' konusunda UZUN ve DETAYLI bölüm yaz.
 
-- 3-4 paragraf (her biri 100-120 kelime)
-- 2-4 H3 alt başlık ekle (her H2'ye birden fazla H3 olmalı!)
-- Örnekler, sayısal veriler ekle
+📏 UZUNLUK GEREKSİNİMLERİ (KRİTİK!):
+- Minimum 500-600 kelime PER SECTION
+- 4-6 paragraf (her biri 120-150 kelime)
+- 3-4 H3 alt başlık ekle (her H2'ye birden fazla H3 olmalı!)
+
+📝 İÇERİK GEREKSİNİMLERİ:
+- Teknik detaylar, örnekler, sayısal veriler ekle
 - Firma adı: '{$shortName}' (ilk/son bölümde kullan)
+- Liste kullanabilirsin (<ul><li>)
+- Tablolar ekleyebilirsin (uygunsa)
 
-⚠️ ÖNEMLİ: İkon kullanma! Sadece düz HTML döndür.
-⚠️ KRİTİK: Her H2 başlığına en az 2-4 tane H3 alt başlık ekle!
+⚠️ ÖNEMLİ KURALLAR:
+- İkon kullanma! Sadece düz HTML döndür
+- KRİTİK: Her H2 başlığına EN AZ 3-4 tane H3 alt başlık ekle!
+- KISA YAZMA! Her bölüm minimum 500 kelime olmalı!
 
-HTML çıktı döndür:
+HTML çıktı döndür (UZUN ve detaylı):
 <h2>{$h2Title}</h2>
-<p>...</p>
+<p>Giriş paragrafı (120-150 kelime)...</p>
 <h3>Alt başlık 1</h3>
-<p>...</p>
+<p>Detaylı açıklama (120-150 kelime)...</p>
+<ul><li>Liste maddesi 1</li><li>Liste maddesi 2</li></ul>
 <h3>Alt başlık 2</h3>
-<p>...</p>
+<p>Detaylı açıklama (120-150 kelime)...</p>
 <h3>Alt başlık 3</h3>
-<p>...</p>";
+<p>Detaylı açıklama (120-150 kelime)...</p>
+<p>Kapanış paragrafı (120-150 kelime)...</p>";
 
                     $sectionResponse = $this->openaiService->ask($sectionPrompt, false, [
                         'custom_prompt' => $systemMessage,
                         'temperature' => 0.8,
-                        'max_tokens' => 2000,  // 🔧 FIX: Optimized -50% for faster generation
+                        'max_tokens' => 3500,  // ⬆️ INCREASED: Her section için daha fazla içerik (500-600 kelime)
                         'model' => 'gpt-4o',
                     ]);
 
@@ -491,22 +501,69 @@ Her adıma farklı ve konuya uygun icon seç.";
                     'model' => 'gpt-4o',
                 ]);
 
-                // Extract JSON from code block if wrapped
+                // 🔧 ULTRA ROBUST JSON EXTRACTION
                 $howtoResponseClean = trim($howtoResponse);
-                if (preg_match('/```json\s*(.*?)\s*```/s', $howtoResponseClean, $matches)) {
-                    $howtoResponseClean = $matches[1];
-                } elseif (preg_match('/```\s*(.*?)\s*```/s', $howtoResponseClean, $matches)) {
-                    $howtoResponseClean = $matches[1];
+
+                // Try multiple extraction methods
+                $extractionMethods = [
+                    // Method 1: ```json ... ``` wrapper
+                    function($text) {
+                        if (preg_match('/```json\s*(.*?)\s*```/s', $text, $matches)) {
+                            return trim($matches[1]);
+                        }
+                        return null;
+                    },
+                    // Method 2: ``` ... ``` wrapper
+                    function($text) {
+                        if (preg_match('/```\s*(.*?)\s*```/s', $text, $matches)) {
+                            return trim($matches[1]);
+                        }
+                        return null;
+                    },
+                    // Method 3: Find JSON object between { and }
+                    function($text) {
+                        if (preg_match('/\{[\s\S]*"name"[\s\S]*"steps"[\s\S]*\}/s', $text, $matches)) {
+                            return trim($matches[0]);
+                        }
+                        return null;
+                    },
+                    // Method 4: Direct (no wrapper)
+                    function($text) {
+                        return trim($text);
+                    },
+                ];
+
+                $howtoData = [];
+                foreach ($extractionMethods as $index => $method) {
+                    $extracted = $method($howtoResponseClean);
+                    if ($extracted) {
+                        $decoded = json_decode($extracted, true);
+
+                        // ✅ VALIDATION: Must be object with name, description, steps
+                        if (is_array($decoded) &&
+                            isset($decoded['name']) &&
+                            isset($decoded['steps']) &&
+                            is_array($decoded['steps']) &&
+                            count($decoded['steps']) > 0) {
+
+                            $howtoData = $decoded;
+                            Log::info('✅ HowTo JSON extracted successfully', [
+                                'draft_id' => $draft->id,
+                                'method' => $index + 1,
+                                'steps_count' => count($decoded['steps']),
+                            ]);
+                            break;
+                        }
+                    }
                 }
 
-                $howtoData = json_decode(trim($howtoResponseClean), true);
-                if (!is_array($howtoData)) {
-                    Log::warning('HowTo generation failed to parse', [
+                // ❌ All methods failed
+                if (empty($howtoData)) {
+                    Log::warning('❌ HowTo generation failed - All extraction methods failed', [
                         'draft_id' => $draft->id,
                         'response_preview' => substr($howtoResponse, 0, 500),
-                        'json_error' => json_last_error_msg(),
+                        'response_length' => strlen($howtoResponse),
                     ]);
-                    $howtoData = [];
                 }
 
                 // 5. Birleştir

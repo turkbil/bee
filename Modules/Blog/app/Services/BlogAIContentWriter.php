@@ -87,7 +87,7 @@ class BlogAIContentWriter
                 'status' => 'active',
             ]);
 
-            // 🎨 AI Image Generation (AA.pdf Professional Rules + Horizontal + NO TEXT)
+            // 🎨 AI Image Generation - Production Mode
             try {
                 $imageService = app(AIImageGenerationService::class);
 
@@ -1050,6 +1050,39 @@ Her adıma farklı ve konuya uygun icon seç.";
         // Örnek: <h>Başlık<p>Metin → <h3>Başlık</h3><p>Metin
         $clean = preg_replace('/<h>(.*?)<p>/i', '<h3>$1</h3><p>', $clean);
         $clean = preg_replace('/<h>(.*?)<\/h>/i', '<h3>$1</h3>', $clean);
+
+        // 🔧 FIX: Remove SEO notes and Schema markup notes (AI bazen ekliyor)
+        // 🔧 FIX: SEO notlarını kaldır (PLAIN TEXT + MARKDOWN formatları)
+
+        // Pattern 1: Plain text "SEO Optimizasyon Notları:" (en yaygın)
+        $clean = preg_replace('/SEO Optimizasyon Notları:.*?(?=<h2>|<h3>|Schema Markup|$)/si', '', $clean);
+
+        // Pattern 2: Markdown bold "**SEO Optimizasyon Notları:**"
+        $clean = preg_replace('/\*\*SEO Optimizasyon Notları:\*\*.*?(?=<h2>|<h3>|\*\*Schema|$)/si', '', $clean);
+
+        // Pattern 3: Markdown heading "### SEO Optimizasyon Notları:"
+        $clean = preg_replace('/###\s*SEO Optimizasyon Notları:.*?(?=<h2>|<h3>|###|$)/si', '', $clean);
+
+        // Pattern 4: Plain text "Schema Markup Notu:" (en yaygın)
+        $clean = preg_replace('/Schema Markup Notu:.*?(?=<h2>|<h3>|$)/si', '', $clean);
+
+        // Pattern 5: Markdown bold "**Schema Markup Notu:**"
+        $clean = preg_replace('/\*\*Schema Markup Notu:\*\*.*?(?=<h2>|<h3>|$)/si', '', $clean);
+
+        // Pattern 6: Markdown heading "### Schema Markup Notu:"
+        $clean = preg_replace('/###\s*Schema Markup Notu:.*?(?=<h2>|<h3>|###|$)/si', '', $clean);
+
+        // Pattern 7: SEO meta checklist items
+        $clean = preg_replace('/✓\s*Kullanılan anahtar kelimeler:.*?(?=\n|$)/si', '', $clean);
+        $clean = preg_replace('/✓\s*LSI terimleri:.*?(?=\n|$)/si', '', $clean);
+        $clean = preg_replace('/✓\s*Dahili bağlantı:.*?(?=\n|$)/si', '', $clean);
+        $clean = preg_replace('/✓\s*Dış kaynak:.*?(?=\n|$)/si', '', $clean);
+        $clean = preg_replace('/✓\s*Görsel önerisi:.*?(?=\n|$)/si', '', $clean);
+        $clean = preg_replace('/✓\s*Component kullanımı.*?(?=\n|$)/si', '', $clean);
+        $clean = preg_replace('/✓\s*HTML formatı:.*?(?=\n|$)/si', '', $clean);
+
+        // Pattern 8: Schema type lines (- FAQPage:, - HowTo:, - Product:)
+        $clean = preg_replace('/-\s*(FAQPage|HowTo|Product|Article|BlogPosting):.*?(?=\n|$)/si', '', $clean);
 
         // 🔧 FIX: Final whitespace normalization
         $clean = preg_replace('/[ \t]+/', ' ', $clean); // Multiple spaces → single space

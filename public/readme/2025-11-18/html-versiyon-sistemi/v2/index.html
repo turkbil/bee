@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Rapor Tetikleyici Kelimeler - Kapsamlı Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #93c5fd;
+        }
+
+        .category-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .category-box h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .keyword-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .keyword {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .keyword:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .example-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .example-box h4 {
+            color: #6ee7b7;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .warning-box h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #334155;
+        }
+
+        .comparison-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .trigger-yes {
+            color: #6ee7b7;
+            font-weight: bold;
+        }
+
+        .trigger-no {
+            color: #fca5a5;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .keyword-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 HTML Rapor Tetikleyici Kelimeler</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-18 |
+                🎯 Amaç: Claude'un otomatik HTML rapor oluşturması için tetikleyici kelimeler |
+                📌 Versiyon: v2 (Genişletilmiş)
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Mevcut Durum Analizi</h2>
+
+            <div class="category-box">
+                <h3>✅ Şu An Aktif Olan Tetikleyiciler</h3>
+                <div class="keyword-grid">
+                    <div class="keyword">analiz yap</div>
+                    <div class="keyword">plan oluştur</div>
+                    <div class="keyword">rapor hazırla</div>
+                </div>
+                <p style="margin-top: 15px; color: #cbd5e1;">Bu 3 kelime kombinasyonu şu anda HTML rapor tetikliyor.</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Problem: Çok Dar Kapsam</h4>
+                <p>Kullanıcı birçok farklı şekilde HTML rapor isteyebilir, ama Claude sadece 3 kelimeyi tanıyor. Bu da şu sorunlara yol açıyor:</p>
+                <ul style="margin-top: 10px; margin-left: 20px; color: #cbd5e1;">
+                    <li>Kullanıcı "incele" dese → HTML oluşturmuyor</li>
+                    <li>Kullanıcı "detaylı sunum" dese → HTML oluşturmuyor</li>
+                    <li>Kullanıcı "raporla" dese → HTML oluşturmuyor</li>
+                    <li>Claude metinsel cevap veriyor (HTML olması gerekirken)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Genişletilmiş Tetikleyici Kelime Listesi</h2>
+
+            <div class="category-box">
+                <h3>1️⃣ ANALİZ & İNCELEME</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı bir şeyi incelemek, analiz etmek istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">analiz</div>
+                    <div class="keyword">analiz yap</div>
+                    <div class="keyword">analiz et</div>
+                    <div class="keyword">incele</div>
+                    <div class="keyword">inceleme</div>
+                    <div class="keyword">incele ve raporla</div>
+                    <div class="keyword">araştır</div>
+                    <div class="keyword">araştırma yap</div>
+                    <div class="keyword">değerlendir</div>
+                    <div class="keyword">değerlendirme</div>
+                    <div class="keyword">kontrol et</div>
+                    <div class="keyword">gözden geçir</div>
+                    <div class="keyword">tetkik et</div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h3>2️⃣ RAPOR & DOKÜMANTASYON</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı rapor veya dokümantasyon istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">rapor</div>
+                    <div class="keyword">rapor hazırla</div>
+                    <div class="keyword">raporla</div>
+                    <div class="keyword">rapor oluştur</div>
+                    <div class="keyword">dokümante et</div>
+                    <div class="keyword">dokümantasyon</div>
+                    <div class="keyword">doküman hazırla</div>
+                    <div class="keyword">belge oluştur</div>
+                    <div class="keyword">kaydet</div>
+                    <div class="keyword">kayıt altına al</div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h3>3️⃣ PLANLAMA & TASARIM</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı plan veya tasarım istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">plan</div>
+                    <div class="keyword">plan oluştur</div>
+                    <div class="keyword">planla</div>
+                    <div class="keyword">planlama yap</div>
+                    <div class="keyword">tasarım</div>
+                    <div class="keyword">tasarla</div>
+                    <div class="keyword">taslak</div>
+                    <div class="keyword">taslak hazırla</div>
+                    <div class="keyword">strateji</div>
+                    <div class="keyword">strateji oluştur</div>
+                    <div class="keyword">yol haritası</div>
+                    <div class="keyword">roadmap</div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h3>4️⃣ SUNUM & GÖRSELLEŞTİRME</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı görsel sunum istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">sunum</div>
+                    <div class="keyword">sunum hazırla</div>
+                    <div class="keyword">sun</div>
+                    <div class="keyword">detaylı sunum</div>
+                    <div class="keyword">görselleştir</div>
+                    <div class="keyword">göster</div>
+                    <div class="keyword">özetle</div>
+                    <div class="keyword">özet çıkar</div>
+                    <div class="keyword">özet hazırla</div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h3>5️⃣ DETAYLI İNCELEME</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı detaylı bilgi istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">detaylı</div>
+                    <div class="keyword">detaylı analiz</div>
+                    <div class="keyword">detaylandır</div>
+                    <div class="keyword">derinlemesine</div>
+                    <div class="keyword">kapsamlı</div>
+                    <div class="keyword">geniş</div>
+                    <div class="keyword">gözat</div>
+                    <div class="keyword">tara</div>
+                    <div class="keyword">keşfet</div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h3>6️⃣ KARŞILAŞTIRMA & DEĞERLENDİRME</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı karşılaştırma istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">karşılaştır</div>
+                    <div class="keyword">kıyasla</div>
+                    <div class="keyword">fark analizi</div>
+                    <div class="keyword">değerlendir</div>
+                    <div class="keyword">öneri sun</div>
+                    <div class="keyword">öneri listesi</div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h3>7️⃣ LİSTELEME & ENVANTER</h3>
+                <p style="color: #cbd5e1; margin-bottom: 15px;">Kullanıcı liste veya envanter istediğinde:</p>
+                <div class="keyword-grid">
+                    <div class="keyword">listele</div>
+                    <div class="keyword">liste çıkar</div>
+                    <div class="keyword">envanter</div>
+                    <div class="keyword">katalog</div>
+                    <div class="keyword">topla</div>
+                    <div class="keyword">derle</div>
+                    <div class="keyword">grupla</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Kullanım Senaryoları</h2>
+
+            <div class="example-box">
+                <h4>✅ Senaryo 1: Blog SEO Analizi</h4>
+                <div class="code-block">
+Kullanıcı: "Blog sayfalarını incele, SEO sorunlarını raporla"
+
+Claude algılaması:
+- ✓ "incele" → HTML tetikleyici
+- ✓ "raporla" → HTML tetikleyici
+→ HTML rapor oluşturulur
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>✅ Senaryo 2: Sistem Mimarisi</h4>
+                <div class="code-block">
+Kullanıcı: "Mevcut modül yapısını gözat, detaylı sunum hazırla"
+
+Claude algılaması:
+- ✓ "gözat" → HTML tetikleyici
+- ✓ "detaylı" → HTML tetikleyici
+- ✓ "sunum hazırla" → HTML tetikleyici
+→ HTML rapor oluşturulur
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>✅ Senaryo 3: Performans Değerlendirmesi</h4>
+                <div class="code-block">
+Kullanıcı: "Sayfa hızını kontrol et, öneri listesi çıkar"
+
+Claude algılaması:
+- ✓ "kontrol et" → HTML tetikleyici
+- ✓ "öneri listesi" → HTML tetikleyici
+→ HTML rapor oluşturulur
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>✅ Senaryo 4: Kod Kalitesi</h4>
+                <div class="code-block">
+Kullanıcı: "Shop modülünü araştır ve değerlendir"
+
+Claude algılaması:
+- ✓ "araştır" → HTML tetikleyici
+- ✓ "değerlendir" → HTML tetikleyici
+→ HTML rapor oluşturulur
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔍 Negatif Örnekler (HTML Oluşturmamalı)</h2>
+
+            <div class="warning-box">
+                <h4>❌ Doğrudan İşlem Talepleri</h4>
+                <div class="code-block">
+Kullanıcı: "Blog modülüne yeni alan ekle"
+Kullanıcı: "CSS'i düzelt"
+Kullanıcı: "Hataları fix et"
+Kullanıcı: "Migration oluştur"
+
+→ Bunlar direkt kod yazma işi, HTML rapor OLUŞTURULMAMALI
+→ Claude direkt kodu yazmalı
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>❌ Basit Sorular</h4>
+                <div class="code-block">
+Kullanıcı: "Bu dosya ne işe yarıyor?"
+Kullanıcı: "Hangi versiyondayız?"
+Kullanıcı: "Tenant sayısı kaç?"
+
+→ Basit bilgi talebi, HTML rapor OLUŞTURULMAMALI
+→ Claude kısa cevap vermeli
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📐 Karar Ağacı</h2>
+
+            <div class="code-block" style="line-height: 2;">
+Kullanıcı mesajı geldi
+    │
+    ├─ Tetikleyici kelime VAR mı?
+    │   │
+    │   ├─ EVET → HTML rapor mı yoksa direkt işlem mi?
+    │   │   │
+    │   │   ├─ "Analiz, rapor, plan, sunum" gibi kelimeler VAR
+    │   │   │   → <strong style="color: #6ee7b7;">HTML RAPOR OLUŞTUR</strong>
+    │   │   │
+    │   │   └─ "Düzelt, ekle, sil, değiştir" gibi işlem kelimeleri VAR
+    │   │       → <strong style="color: #60a5fa;">DİREKT KOD YAZ (HTML YOK)</strong>
+    │   │
+    │   └─ HAYIR → Basit soru mu?
+    │       │
+    │       ├─ EVET → <strong style="color: #60a5fa;">KISA CEVAP VER</strong>
+    │       │
+    │       └─ HAYIR → <strong style="color: #60a5fa;">NORMAL İŞLEME DEVAM</strong>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Karşılaştırma Tablosu</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı Talebi</th>
+                        <th>Tetikleyici Kelime</th>
+                        <th>HTML Oluşturulur mu?</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"Blog modülünü analiz et"</td>
+                        <td>analiz et</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>Analiz raporu HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"Tüm sayfalari incele"</td>
+                        <td>incele</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>İnceleme raporu HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"SEO durumunu raporla"</td>
+                        <td>raporla</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>SEO raporu HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"Migration planı oluştur"</td>
+                        <td>plan oluştur</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>Planlama raporu HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"Detaylı sunum hazırla"</td>
+                        <td>detaylı sunum</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>Sunum HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"Performansı değerlendir"</td>
+                        <td>değerlendir</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>Değerlendirme raporu HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"Modül yapısını gözat"</td>
+                        <td>gözat</td>
+                        <td class="trigger-yes">✅ EVET</td>
+                        <td>Tarama raporu HTML olarak sunulur</td>
+                    </tr>
+                    <tr>
+                        <td>"Bu hatayı düzelt"</td>
+                        <td>-</td>
+                        <td class="trigger-no">❌ HAYIR</td>
+                        <td>Direkt kod yazma işi</td>
+                    </tr>
+                    <tr>
+                        <td>"Yeni field ekle"</td>
+                        <td>-</td>
+                        <td class="trigger-no">❌ HAYIR</td>
+                        <td>Direkt kod yazma işi</td>
+                    </tr>
+                    <tr>
+                        <td>"Tenant sayısı kaç?"</td>
+                        <td>-</td>
+                        <td class="trigger-no">❌ HAYIR</td>
+                        <td>Basit bilgi talebi</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>🎯 CLAUDE.md'ye Eklenecek Bölüm</h2>
+
+            <div class="code-block" style="white-space: pre-wrap;">
+#### 🎯 HTML RAPOR TETİKLEYİCİ KELİMELER:
+
+**Aşağıdaki kelimeler kullanıcı mesajında geçiyorsa → HTML rapor oluştur:**
+
+**1. Analiz & İnceleme:**
+analiz, analiz yap, analiz et, incele, inceleme, araştır, araştırma yap,
+değerlendir, değerlendirme, kontrol et, gözden geçir, tetkik et
+
+**2. Rapor & Dokümantasyon:**
+rapor, rapor hazırla, raporla, rapor oluştur, dokümante et, dokümantasyon,
+doküman hazırla, belge oluştur, kaydet, kayıt altına al
+
+**3. Planlama & Tasarım:**
+plan, plan oluştur, planla, planlama yap, tasarım, tasarla, taslak,
+taslak hazırla, strateji, strateji oluştur, yol haritası, roadmap
+
+**4. Sunum & Görselleştirme:**
+sunum, sunum hazırla, sun, detaylı sunum, görselleştir, göster,
+özetle, özet çıkar, özet hazırla
+
+**5. Detaylı İnceleme:**
+detaylı, detaylı analiz, detaylandır, derinlemesine, kapsamlı,
+geniş, gözat, tara, keşfet
+
+**6. Karşılaştırma:**
+karşılaştır, kıyasla, fark analizi, öneri sun, öneri listesi
+
+**7. Listeleme:**
+listele, liste çıkar, envanter, katalog, topla, derle, grupla
+
+**❌ HTML OLUŞTURMA (Direkt işlem yap):**
+düzelt, fix et, ekle, sil, değiştir, güncelle, oluştur (kod için),
+migration yap, migrate et
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - 2025-11-18
+            <br>
+            📌 Versiyon 2: Genişletilmiş tetikleyici kelime listesi
+        </footer>
+    </div>
+</body>
+</html>

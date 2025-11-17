@@ -15,10 +15,13 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\Favorite\App\Traits\HasFavorites;
+use Modules\ReviewSystem\App\Traits\HasReviews;
+use Modules\ReviewSystem\App\Traits\HasRatings;
 
 class Blog extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, ClearsCache;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, ClearsCache, HasFavorites, HasReviews, HasRatings;
 
     protected $primaryKey = 'blog_id';
 

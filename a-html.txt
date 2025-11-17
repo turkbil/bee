@@ -1,12 +1,340 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0;url='https://ixtif.com/login'" />
-
-        <title>Redirecting to https://ixtif.com/login</title>
-    </head>
-    <body>
-        Redirecting to <a href="https://ixtif.com/login">https://ixtif.com/login</a>.
-    </body>
-</html>
+Model	Token limits	Request and other limits	Batch queue limits
+Chat
+gpt-3.5-turbo
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-3.5-turbo-0125
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-3.5-turbo-1106
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-3.5-turbo-16k
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-3.5-turbo-instruct
+90.000 TPM
+3.500 RPM
+200.000 TPD
+gpt-3.5-turbo-instruct-0914
+90.000 TPM
+3.500 RPM
+200.000 TPD
+gpt-4
+40.000 TPM
+5.000 RPM
+200.000 TPD
+gpt-4-0613
+40.000 TPM
+5.000 RPM
+200.000 TPD
+gpt-4-turbo
+Shared limits:
+gpt-4-turbo
+gpt-4-turbo-2024-04-09
+gpt-4-turbo-preview
+gpt-4-0125-preview
+gpt-4-1106-preview
+450.000 TPM
+500 RPM
+1.350.000 TPD
+gpt-4.1
+Shared limits:
+gpt-4.1-2025-04-14
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-4.1 (long context)
+500.000 TPM
+250 RPM
+20.000.000 TPD
+gpt-4.1-mini
+Shared limits:
+gpt-4.1-mini-2025-04-14
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-4.1-mini (long context)
+1.000.000 TPM
+500 RPM
+40.000.000 TPD
+gpt-4.1-nano
+Shared limits:
+gpt-4.1-nano-2025-04-14
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-4.1-nano (long context)
+1.000.000 TPM
+500 RPM
+40.000.000 TPD
+gpt-4o
+Shared limits:
+gpt-4o-2024-05-13
+gpt-4o-2024-08-06
+gpt-4o-2024-11-20
+gpt-4o-audio-preview
+gpt-4o-audio-preview-2024-10-01
+gpt-4o-audio-preview-2024-12-17
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-4o-audio-preview-2025-06-03
+250.000 TPM
+3.000 RPM
+gpt-4o-mini
+Shared limits:
+gpt-4o-mini-2024-07-18
+gpt-4o-mini-audio-preview
+gpt-4o-mini-audio-preview-2024-12-17
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-4o-mini-search-preview
+45.000 TPM
+500 RPM
+gpt-4o-mini-search-preview-2025-03-11
+45.000 TPM
+500 RPM
+gpt-4o-mini-transcribe
+150.000 TPM
+2.000 RPM
+gpt-4o-search-preview
+45.000 TPM
+500 RPM
+gpt-4o-search-preview-2025-03-11
+45.000 TPM
+500 RPM
+gpt-4o-transcribe
+100.000 TPM
+2.000 RPM
+gpt-4o-transcribe-diarize
+250.000 TPM
+3.000 RPM
+gpt-5
+Shared limits:
+gpt-5-2025-08-07
+1.000.000 TPM
+5.000 RPM
+3.000.000 TPD
+gpt-5-chat-latest
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5-codex
+1.000.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5-mini
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-5-mini-2025-08-07
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-5-nano
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-5-nano-2025-08-07
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-5-pro
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5-pro-2025-10-06
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5-search-api
+45.000 TPM
+500 RPM
+gpt-5-search-api-2025-10-14
+45.000 TPM
+500 RPM
+gpt-5.1
+Shared limits:
+gpt-5.1-2025-11-13
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5.1-chat-latest
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5.1-codex
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+gpt-5.1-codex-mini
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+gpt-audio
+250.000 TPM
+3.000 RPM
+gpt-audio-2025-08-28
+250.000 TPM
+3.000 RPM
+gpt-audio-mini
+250.000 TPM
+3.000 RPM
+gpt-audio-mini-2025-10-06
+250.000 TPM
+3.000 RPM
+Text
+babbage-002
+250.000 TPM
+3.000 RPM
+chatgpt-4o-latest
+500.000 TPM
+200 RPM
+codex-mini-latest
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+davinci-002
+250.000 TPM
+3.000 RPM
+o1
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+o1-2024-12-17
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+o1-pro
+Shared limits:
+o1-pro-2025-03-19
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+o3
+Shared limits:
+o3-2025-04-16
+450.000 TPM
+5.000 RPM
+1.350.000 TPD
+o3-mini
+Shared limits:
+o3-mini-2025-01-31
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+o4-mini
+Shared limits:
+o4-mini-2025-04-16
+2.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+o4-mini-deep-research
+2.000.000 TPM
+5.000 RPM
+300.000 TPD
+o4-mini-deep-research-2025-06-26
+250.000 TPM
+3.000 RPM
+text-embedding-3-large
+1.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+text-embedding-3-small
+1.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+text-embedding-ada-002
+1.000.000 TPM
+5.000 RPM
+20.000.000 TPD
+Realtime
+gpt-realtime
+Shared limits:
+gpt-realtime-2025-08-28
+gpt-4o-realtime-preview
+gpt-4o-realtime-preview-latest
+gpt-4o-realtime-preview-2024-10-01
+gpt-4o-realtime-preview-2024-12-17
+gpt-4o-realtime-preview-2025-06-03
+200.000 TPM
+400 RPM
+gpt-realtime-mini
+Shared limits:
+gpt-realtime-mini-2025-10-06
+gpt-4o-mini-realtime-preview
+gpt-4o-mini-realtime-preview-2024-12-17
+gpt-4o-mini-realtime-preview-2025-09-25
+gpt-4o-mini-realtime-preview-latest
+200.000 TPM
+400 RPM
+Moderation
+omni-moderation-2024-09-26
+20.000 TPM
+500 RPM
+1.000.000 TPD
+omni-moderation-latest
+20.000 TPM
+500 RPM
+1.000.000 TPD
+text-moderation-latest
+150.000 TPM
+1.000 RPM
+text-moderation-stable
+150.000 TPM
+1.000 RPM
+Fine-Tuning Inference (shares limits with base model)
+babbage-002	250.000	3.000	
+davinci-002	250.000	3.000	
+gpt-3.5-turbo-0125	2.000.000	5.000	
+gpt-3.5-turbo-0613	2.000.000	5.000	
+gpt-3.5-turbo-1106	2.000.000	5.000	
+gpt-4-0613	40.000	5.000	
+gpt-4o-2024-05-13	450.000	5.000	
+gpt-4o-mini-2024-07-18	2.000.000	5.000	
+Fine-tuning Training	active / queued jobs	jobs per day	
+babbage-002	3	48	
+davinci-002	3	48	
+gpt-3.5-turbo-0613	3	48	
+Image
+dall-e-2
+2.500 RPM
+50 images per minute
+dall-e-3
+2.500 RPM
+7 images per minute
+gpt-image-1
+250.000 TPM
+20 images per minute
+gpt-image-1-mini
+250.000 TPM
+20 images per minute
+Video
+sora-2
+50 RPM
+sora-2-pro
+25 RPM
+Audio
+gpt-4o-mini-tts
+150.000 TPM
+2.000 RPM
+tts-1
+2.500 RPM
+tts-1-1106
+2.500 RPM
+tts-1-hd
+2.500 RPM
+tts-1-hd-1106
+2.500 RPM
+whisper-1
+2.500 RPM
+Other
+Default limits for all other models
+250.000 TPM
+3.000 RPM

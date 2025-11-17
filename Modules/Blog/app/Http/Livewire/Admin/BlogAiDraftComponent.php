@@ -22,6 +22,8 @@ class BlogAiDraftComponent extends Component
 {
     use WithPagination;
 
+    protected $paginationTheme = 'bootstrap';
+
     public int $draftCount = 10; // Minimum 10 taslak
     public array $selectedDrafts = [];
     public bool $isGenerating = false;
@@ -35,7 +37,18 @@ class BlogAiDraftComponent extends Component
         'failed' => 0,
     ];
 
+    // Portfolio pattern properties
+    public string $search = '';
+    public int $perPage = 50;
+    public bool $selectAll = false;
+
     protected $listeners = ['refreshComponent' => '$refresh'];
+
+    // Update querystring for search and perPage
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'perPage' => ['except' => 50],
+    ];
 
     protected $rules = [
         'draftCount' => 'required|integer|min:10|max:200',
@@ -154,22 +167,38 @@ class BlogAiDraftComponent extends Component
     /**
      * Tüm taslakları seç/kaldır
      */
-    public function toggleAll()
+    public function updatedSelectAll($value)
     {
         $visibleDraftIds = BlogAIDraft::query()
             ->where('is_generated', false)
             ->pluck('id')
             ->toArray();
 
-        if (count($this->selectedDrafts) === count($visibleDraftIds)) {
-            // Hepsini kaldır
-            $this->selectedDrafts = [];
-            BlogAIDraft::whereIn('id', $visibleDraftIds)->update(['is_selected' => false]);
-        } else {
+        if ($value) {
             // Hepsini seç
             $this->selectedDrafts = $visibleDraftIds;
             BlogAIDraft::whereIn('id', $visibleDraftIds)->update(['is_selected' => true]);
+        } else {
+            // Hepsini kaldır
+            $this->selectedDrafts = [];
+            BlogAIDraft::whereIn('id', $visibleDraftIds)->update(['is_selected' => false]);
         }
+    }
+
+    /**
+     * Reset pagination when search changes
+     */
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Reset pagination when perPage changes
+     */
+    public function updatedPerPage()
+    {
+        $this->resetPage();
     }
 
     /**
@@ -352,10 +381,26 @@ class BlogAiDraftComponent extends Component
             $this->checkDraftProgress();
         }
 
-        $drafts = BlogAIDraft::query()
-            ->with('generatedBlog') // Eager load generated blog relation
-            ->orderBy('created_at', 'desc') // En yeni üstte
-            ->paginate(20);
+        // Query builder with search
+        $query = BlogAIDraft::query()
+            ->with('generatedBlog'); // Eager load generated blog relation
+
+        // Search filter
+        if (!empty($this->search)) {
+            $searchTerm = '%' . $this->search . '%';
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('topic_keyword', 'like', $searchTerm)
+                    ->orWhere('meta_description', 'like', $searchTerm)
+                    ->orWhere('seo_keywords', 'like', $searchTerm);
+            });
+        }
+
+        // Order and paginate
+        $drafts = $query->orderBy('created_at', 'desc') // En yeni üstte
+            ->paginate($this->perPage);
+
+        // Set custom pagination view
+        $drafts->setCollection($drafts->getCollection());
 
         // N+1 query prevention: Tüm kategorileri önceden yükle
         $allCategoryIds = $drafts->pluck('category_suggestions')
@@ -372,6 +417,6 @@ class BlogAiDraftComponent extends Component
         return view('blog::admin.livewire.blog-ai-draft-component', [
             'drafts' => $drafts,
             'categories' => $categories,
-        ]);
+        ])->with('paginationView', 'livewire.custom-pagination');
     }
 }

@@ -22,7 +22,7 @@
         $listId = 'toc-' . \Illuminate\Support\Str::uuid()->toString();
     @endphp
 
-    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-md">
+    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-md pb-4">
         <header class="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-200 dark:border-slate-700">
             <div class="flex items-center gap-2.5">
                 <div class="w-7 h-7 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
@@ -37,8 +37,8 @@
             </span>
         </header>
 
-        <nav class="px-4 py-4 max-h-[350px] overflow-y-auto toc-scroll" aria-label="{{ $title }}">
-            <ul class="space-y-1" data-toc-list id="{{ $listId }}">
+        <nav class="px-4 py-4 pb-8 max-h-[350px] overflow-y-auto toc-scroll" aria-label="{{ $title }}">
+            <ul class="space-y-1 pb-6" data-toc-list id="{{ $listId }}">
                 @foreach ($toc as $item)
                     @include('components.blog.toc-item', ['item' => $item, 'level' => 0])
                 @endforeach
@@ -221,22 +221,41 @@
                             return;
                         }
 
-                        const setActive = (id) => {
+                        let isAutoScrolling = false;
+                        let tocScrollTimeout = null;
+
+                        // Passive: Sadece active state değiştir, scroll ETME
+                        const setActivePassive = (id) => {
+                            links.forEach((link) => {
+                                link.dataset.active = link.dataset.target === id ? 'true' : 'false';
+                            });
+                        };
+
+                        // Active: State değiştir VE TOC'yi scroll et
+                        const setActiveWithScroll = (id) => {
                             links.forEach((link) => {
                                 const isActive = link.dataset.target === id;
                                 link.dataset.active = isActive ? 'true' : 'false';
 
-                                // Aktif item'ı scroll'a getir
                                 if (isActive && link.closest('.toc-scroll')) {
-                                    link.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'nearest',
-                                        inline: 'nearest'
-                                    });
+                                    const tocContainer = link.closest('.toc-scroll');
+                                    const linkRect = link.getBoundingClientRect();
+                                    const containerRect = tocContainer.getBoundingClientRect();
+
+                                    // Link container'ın görünür alanında değilse scroll et
+                                    if (linkRect.top < containerRect.top || linkRect.bottom > containerRect.bottom) {
+                                        // Smooth scroll TOC içinde
+                                        const scrollTop = link.offsetTop - tocContainer.offsetTop - (containerRect.height / 2) + (linkRect.height / 2);
+                                        tocContainer.scrollTo({
+                                            top: scrollTop,
+                                            behavior: 'smooth'
+                                        });
+                                    }
                                 }
                             });
                         };
 
+                        // Manual click: Hem sayfa hem TOC scroll
                         links.forEach((link) => {
                             link.addEventListener('click', (event) => {
                                 event.preventDefault();
@@ -247,6 +266,9 @@
                                     return;
                                 }
 
+                                // Flag: Auto-scroll başlıyor
+                                isAutoScrolling = true;
+
                                 const offset = 120;
                                 const top = target.getBoundingClientRect().top + window.scrollY - offset;
 
@@ -256,29 +278,54 @@
                                 });
 
                                 history.replaceState(null, '', `#${targetId}`);
-                                setActive(targetId);
+                                setActiveWithScroll(targetId);
+
+                                // Flag temizle (scroll bitince)
+                                setTimeout(() => {
+                                    isAutoScrolling = false;
+                                }, 1000);
                             });
                         });
 
+                        // Initial hash
                         const initialHash = window.location.hash.slice(1);
                         if (initialHash) {
-                            setActive(initialHash);
-                        } else {
-                            setActive(links[0].dataset.target);
+                            setActivePassive(initialHash);
+                        } else if (links.length > 0) {
+                            setActivePassive(links[0].dataset.target);
                         }
 
+                        // IntersectionObserver: Sadece passive update (scroll ETME!)
                         if ('IntersectionObserver' in window) {
                             const observer = new IntersectionObserver((entries) => {
-                                entries
-                                    .filter(entry => entry.isIntersecting)
-                                    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-                                    .forEach((entry) => setActive(entry.target.id));
+                                // Auto-scroll sırasında observer'ı yok say
+                                if (isAutoScrolling) {
+                                    return;
+                                }
+
+                                // Debounce: Çok hızlı değişimleri engelle
+                                clearTimeout(tocScrollTimeout);
+                                tocScrollTimeout = setTimeout(() => {
+                                    const visibleEntries = entries.filter(entry => entry.isIntersecting);
+
+                                    if (visibleEntries.length > 0) {
+                                        // En üstteki görünür heading'i seç
+                                        const topEntry = visibleEntries
+                                            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+
+                                        if (topEntry && topEntry.target.id) {
+                                            // Sadece passive update - TOC'yi SCROLL ETME
+                                            setActivePassive(topEntry.target.id);
+                                        }
+                                    }
+                                }, 150); // 150ms debounce
                             }, {
                                 root: null,
-                                rootMargin: '-70% 0px -20%',
+                                rootMargin: '-20% 0px -60% 0px', // Daha dar margin
                                 threshold: 0
                             });
 
+                            // Tüm heading'leri observe et
                             links.forEach((link) => {
                                 const target = document.getElementById(link.dataset.target);
                                 if (target) {

@@ -48,22 +48,77 @@ Bu sistem yüzlerce farklı sektörden tenant barındırır!
 
 **🎯 KRİTİK: Analiz, rapor, planlama, sunum → DAIMA HTML!**
 
-#### 📍 Ne Zaman HTML Oluştur:
-- Kullanıcı "analiz yap" dediğinde
-- Kullanıcı "plan oluştur" dediğinde
-- Kullanıcı "rapor hazırla" dediğinde
-- Karmaşık işlem öncesi planlama
-- Sunum/dokümantasyon talebi
+#### 📍 Ne Zaman HTML Oluştur - TETİKLEYİCİ KELİMELER:
 
-#### 📂 Dosya Konumu:
+**🎯 Aşağıdaki kelimeler kullanıcı mesajında geçiyorsa → HTML rapor oluştur:**
+
+**1. Analiz & İnceleme:**
+`analiz`, `analiz yap`, `analiz et`, `incele`, `inceleme`, `araştır`, `araştırma yap`, `değerlendir`, `değerlendirme`, `kontrol et`, `gözden geçir`, `tetkik et`
+
+**2. Rapor & Dokümantasyon:**
+`rapor`, `rapor hazırla`, `raporla`, `rapor oluştur`, `dokümante et`, `dokümantasyon`, `doküman hazırla`, `belge oluştur`, `kaydet`, `kayıt altına al`
+
+**3. Planlama & Tasarım:**
+`plan`, `plan oluştur`, `planla`, `planlama yap`, `tasarım`, `tasarla`, `taslak`, `taslak hazırla`, `strateji`, `strateji oluştur`, `yol haritası`, `roadmap`
+
+**4. Sunum & Görselleştirme:**
+`sunum`, `sunum hazırla`, `sun`, `detaylı sunum`, `görselleştir`, `göster`, `özetle`, `özet çıkar`, `özet hazırla`
+
+**5. Detaylı İnceleme:**
+`detaylı`, `detaylı analiz`, `detaylandır`, `derinlemesine`, `kapsamlı`, `geniş`, `gözat`, `tara`, `keşfet`
+
+**6. Karşılaştırma:**
+`karşılaştır`, `kıyasla`, `fark analizi`, `öneri sun`, `öneri listesi`
+
+**7. Listeleme:**
+`listele`, `liste çıkar`, `envanter`, `katalog`, `topla`, `derle`, `grupla`
+
+**❌ HTML OLUŞTURMA (Direkt işlem yap):**
+`düzelt`, `fix et`, `ekle`, `sil`, `değiştir`, `güncelle`, `oluştur` (kod için), `migration yap`, `migrate et`
+
+**💡 Örnekler:**
+- "Blog modülünü **incele**" → HTML oluştur ✅
+- "SEO durumunu **raporla**" → HTML oluştur ✅
+- "Modül yapısını **gözat**" → HTML oluştur ✅
+- "**Detaylı sunum** hazırla" → HTML oluştur ✅
+- "Bu hatayı **düzelt**" → Direkt kod yaz ❌
+- "Yeni field **ekle**" → Direkt kod yaz ❌
+
+#### 📂 Dosya Konumu - VERSİYON SİSTEMİ:
+
+**🎯 ANA KURAL:** Konu sabit, versiyonlar alt klasörde!
+
 ```
-public/readme/[YYYY-MM-DD]/[işlem-açıklaması]/index.html
+public/readme/[YYYY-MM-DD]/[ana-konu]/[versiyon]/index.html
 ```
 
-**Örnek:**
+**Versiyon Mantığı:**
+- **İlk rapor:** `v1/index.html` oluştur
+- **Aynı konuya güncelleme:** Mevcut klasörü kontrol et, sonraki versiyon ekle (v2, v3...)
+- **Farklı konu:** Yeni ana klasör aç
+- **Ana klasör:** En güncel versiyona sembolik link
+
+**Örnek Yapı:**
 ```
-public/readme/2025-11-17/seo-analizi/index.html
-public/readme/2025-11-17/navbar-planlama/index.html
+public/readme/2025-11-18/blog-detay/
+├── v1/index.html          ← İlk tasarım analizi
+├── v2/index.html          ← TOC ekleme planı
+├── v3/index.html          ← Responsive düzenleme
+└── index.html             ← Sembolik link (v3'e işaret eder)
+
+URL: https://ixtif.com/readme/2025-11-18/blog-detay/
+     (Her zaman en güncel versiyon gösterilir)
+```
+
+**🔍 Versiyon Kontrolü (Otomatik Yap):**
+```bash
+# Klasör var mı kontrol et
+if [ -d "public/readme/2025-11-18/blog-detay" ]; then
+    # Varsa: Son versiyon numarasını bul, +1 ekle
+    # v1, v2 varsa → v3 oluştur
+else
+    # Yoksa: v1 ile başla
+fi
 ```
 
 #### 🎨 HTML Tasarım Standartları:
@@ -266,22 +321,54 @@ public/readme/2025-11-17/navbar-planlama/index.html
 
 **❌ ASLA PATH VERME:**
 ```
-public/readme/2025-11-17/analiz/index.html  # YANLIŞ!
+public/readme/2025-11-17/analiz/v1/index.html  # YANLIŞ!
 ```
 
-**✅ MUTLAKA WEB LİNKİ VER:**
+**✅ MUTLAKA WEB LİNKİ VER (Versiyonlu):**
 ```
-✅ Analiz raporu hazır!
-📊 Raporu görüntüle: https://ixtif.com/readme/2025-11-17/analiz/
+✅ Blog Detay Analizi (v2) hazır!
+📊 Raporu görüntüle: https://ixtif.com/readme/2025-11-18/blog-detay/
+
+📌 Önceki versiyon:
+   v1 (İlk tasarım): https://ixtif.com/readme/2025-11-18/blog-detay/v1/
 ```
 
-#### 🔄 Sonraki Güncellemeler:
+**💡 İPUCU:**
+- Ana link → En güncel versiyon (sembolik link sayesinde)
+- Kullanıcı önceki versiyonları görmek isterse → /v1/, /v2/ linkleri ver
 
-**Kullanıcı yeni talep verirse:**
-- ✅ Aynı HTML'i güncelle (yeni dosya oluşturma!)
-- ✅ Yapılacaklar listesine ekle
-- ✅ Tamamlananları işaretle
-- ✅ Yeni bölüm ekle
+#### 🔄 Sonraki Güncellemeler - VERSİYON YÖNETİMİ:
+
+**Kullanıcı aynı konu için güncelleme isterse:**
+
+1️⃣ **Klasör kontrolü yap:**
+```bash
+ls public/readme/2025-11-18/blog-detay/
+# v1, v2 varsa → v3 oluştur
+```
+
+2️⃣ **Yeni versiyon oluştur:**
+```bash
+mkdir -p public/readme/2025-11-18/blog-detay/v3/
+# v3/index.html oluştur (güncellenen içerikle)
+```
+
+3️⃣ **Sembolik linki güncelle:**
+```bash
+ln -sf v3/index.html public/readme/2025-11-18/blog-detay/index.html
+```
+
+4️⃣ **Kullanıcıya bildir:**
+```
+✅ Blog Detay Analizi güncellendi! (v2 → v3)
+📊 Güncel rapor: https://ixtif.com/readme/2025-11-18/blog-detay/
+📌 v2: https://ixtif.com/readme/2025-11-18/blog-detay/v2/
+```
+
+**❌ YAPMA:**
+- Yeni klasör açma (blog-detay-redesign, blog-detay-fix gibi)
+- Eski HTML'i silme (versiyonları sakla!)
+- Aynı HTML'i güncelleme (yeni versiyon oluştur!)
 
 **UNUTMA:** HTML = Rapor, Analiz, Plan, Sunum (KOD YOK!)
 

@@ -233,12 +233,12 @@ return [
         'production' => [
             'ai-supervisor' => [
                 'connection' => 'redis',
-                'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis'],
+                'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'blog-ai', 'critical'],
                 'maxProcesses' => 8,
                 'balanceMaxShift' => 2,
                 'balanceCooldown' => 3,
                 'memory' => 1024,
-                'timeout' => 600, // 10 minutes for AI operations
+                'timeout' => 1200, // 🔧 FIX: 20 dakika - Blog AI generation için artırıldı
                 'tries' => 2,
             ],
             'tenant-supervisor' => [
@@ -256,9 +256,9 @@ return [
         'local' => [
             'ai-supervisor' => [
                 'connection' => 'redis',
-                'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis'],
+                'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'blog-ai', 'critical'],
                 'maxProcesses' => 2,
-                'timeout' => 600,
+                'timeout' => 1200, // 🔧 FIX: 20 dakika - Blog AI generation için
                 'tries' => 2,
             ],
             'tenant-supervisor' => [

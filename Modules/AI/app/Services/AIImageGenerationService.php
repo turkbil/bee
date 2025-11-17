@@ -194,6 +194,30 @@ class AIImageGenerationService
      */
     protected function createMediaItem(array $imageData, string $prompt, array $options): MediaLibraryItem
     {
+        // 🔧 FIX: Tenant context'i FORCE et (queue job'larda tenant() null dönebilir!)
+        // MediaLibraryItem->getMediaDisk() çağrılmadan ÖNCE tenant disk config'i oluştur
+        $tenantId = tenant('id');
+        if ($tenantId) {
+            // Force tenant disk configuration
+            $root = storage_path("app/public");
+            $appUrl = config('app.url') ? rtrim(config('app.url'), '/') : 'http://localhost';
+
+            config([
+                'filesystems.disks.tenant' => [
+                    'driver' => 'local',
+                    'root' => $root,
+                    'url' => "{$appUrl}/storage/tenant{$tenantId}",
+                    'visibility' => 'public',
+                    'throw' => false,
+                ],
+            ]);
+
+            Log::info('🔧 AI Image: Forced tenant disk configuration', [
+                'tenant_id' => $tenantId,
+                'disk_root' => $root,
+            ]);
+        }
+
         $mediaItem = MediaLibraryItem::create([
             'name' => 'AI Generated - ' . substr($prompt, 0, 50),
             'type' => 'image',
@@ -205,10 +229,12 @@ class AIImageGenerationService
                 'size' => $options['size'] ?? '1024x1024',
                 'quality' => $options['quality'] ?? 'hd',
                 'provider' => 'openai',
+                'tenant_id' => $tenantId, // Tenant ID'yi kaydet
             ],
         ]);
 
         // Attach image from URL to MediaLibraryItem
+        // getMediaDisk() şimdi doğru tenant disk'ini bulacak
         $mediaItem->addMediaFromUrl($imageData['url'])
             ->toMediaCollection('library');
 

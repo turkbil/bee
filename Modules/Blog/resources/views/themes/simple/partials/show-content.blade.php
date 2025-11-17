@@ -94,8 +94,8 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
-            {{-- Sol Sidebar --}}
-            <aside class="order-2 lg:order-1">
+            {{-- Sol Sidebar (Mobilde Gizli) --}}
+            <aside class="hidden lg:block order-2 lg:order-1">
                 <div class="space-y-6 lg:sticky lg:top-8">
                     {{-- Featured Image --}}
                     @if($featuredImage)
@@ -196,6 +196,67 @@
                             @endforeach
                         </div>
                     </section>
+                @endif
+
+                {{-- HowTo Section - Container İçinde --}}
+                @if(!empty($item->howto_data))
+                    @php
+                        $howtoData = is_string($item->howto_data) ? json_decode($item->howto_data, true) : $item->howto_data;
+                        $howtoName = is_array($howtoData['name'] ?? null) ? ($howtoData['name'][$currentLocale] ?? '') : ($howtoData['name'] ?? '');
+                        $howtoDesc = is_array($howtoData['description'] ?? null) ? ($howtoData['description'][$currentLocale] ?? '') : ($howtoData['description'] ?? '');
+                    @endphp
+                    @if(!empty($howtoData) && is_array($howtoData) && !empty($howtoData['steps']) && !empty($howtoName))
+                        <section id="nasil-yapilir" class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/HowTo">
+                            <header class="mb-8">
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
+                                    <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    {{ $howtoName }}
+                                </h2>
+                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                                @if(!empty($howtoDesc))
+                                    <p class="mt-4 text-base text-gray-600 dark:text-gray-400" itemprop="description">
+                                        {{ $howtoDesc }}
+                                    </p>
+                                @endif
+                            </header>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                                @foreach($howtoData['steps'] as $index => $step)
+                                    @php
+                                        $stepName = is_array($step['name'] ?? null) ? ($step['name'][$currentLocale] ?? '') : ($step['name'] ?? '');
+                                        $stepText = is_array($step['text'] ?? null) ? ($step['text'][$currentLocale] ?? '') : ($step['text'] ?? '');
+                                        $stepIcon = $step['icon'] ?? 'fas fa-check-circle';
+                                    @endphp
+                                    @if(!empty($stepName))
+                                        <div class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 md:p-8 hover:shadow-2xl transition-all duration-500"
+                                             itemscope itemprop="step" itemtype="https://schema.org/HowToStep">
+                                            {{-- Step Number Badge - Opaque/Subtle --}}
+                                            <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center shadow-sm opacity-60 transition-all duration-300 group-hover:opacity-80 group-hover:scale-110">
+                                                <span class="text-gray-600 dark:text-gray-400 font-semibold text-sm">{{ $index + 1 }}</span>
+                                            </div>
+
+                                            {{-- Icon - Prominent with Hover Animation --}}
+                                            <div class="flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 mx-auto mb-6 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl">
+                                                <i class="{{ $stepIcon }} text-4xl text-white transition-transform duration-300 group-hover:scale-110"></i>
+                                            </div>
+
+                                            {{-- Title - Prominent with Hover Effect --}}
+                                            <h3 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center leading-tight transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
+                                                {{ $stepName }}
+                                            </h3>
+
+                                            {{-- Description - Larger & Animated --}}
+                                            @if(!empty($stepText))
+                                                <div class="text-base text-gray-600 dark:text-gray-400 leading-relaxed text-center transition-all duration-300 group-hover:text-gray-900 dark:group-hover:text-gray-200" itemprop="text">
+                                                    {!! nl2br(e($stepText)) !!}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
                 @endif
 
                 {{-- İlgili Yazılar --}}
@@ -300,6 +361,74 @@
                             </a>
                         @endif
                     </nav>
+                @endif
+
+                {{-- FAQ Section (Sık Sorulan Sorular) - Container İçinde --}}
+                @if(!empty($item->faq_data))
+                    @php
+                        $faqData = is_string($item->faq_data) ? json_decode($item->faq_data, true) : $item->faq_data;
+                        $hasValidFaq = false;
+                        if (!empty($faqData) && is_array($faqData)) {
+                            foreach ($faqData as $faq) {
+                                $question = is_array($faq['question'] ?? null) ? ($faq['question'][$currentLocale] ?? '') : ($faq['question'] ?? '');
+                                $answer = is_array($faq['answer'] ?? null) ? ($faq['answer'][$currentLocale] ?? '') : ($faq['answer'] ?? '');
+                                if (!empty($question) && !empty($answer)) {
+                                    $hasValidFaq = true;
+                                    break;
+                                }
+                            }
+                        }
+                    @endphp
+                    @if($hasValidFaq)
+                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/FAQPage">
+                            <header class="mb-8">
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+                                    <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    {{ __('blog::front.general.faq_title') }}
+                                </h2>
+                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                            </header>
+                            <div class="space-y-4">
+                                @foreach($faqData as $index => $faq)
+                                    @php
+                                        $question = is_array($faq['question'] ?? null) ? ($faq['question'][$currentLocale] ?? '') : ($faq['question'] ?? '');
+                                        $answer = is_array($faq['answer'] ?? null) ? ($faq['answer'][$currentLocale] ?? '') : ($faq['answer'] ?? '');
+                                        $faqIcon = $faq['icon'] ?? 'fas fa-question-circle';
+                                    @endphp
+                                    @if(!empty($question) && !empty($answer))
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl"
+                                             itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                                            <details class="group">
+                                                <summary class="flex items-center justify-between w-full px-6 md:px-8 py-5 md:py-6 cursor-pointer list-none select-none hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-all duration-300">
+                                                    <div class="flex items-center gap-4 flex-1">
+                                                        @php
+                                                            $iconClass = str_replace(['fas ', 'far ', 'fab ', 'fa-solid ', 'fa-regular '], '', $faqIcon);
+                                                            $iconClass = trim($iconClass);
+                                                        @endphp
+                                                        <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-2xl">
+                                                            <i class="fa-light {{ $iconClass }} group-hover:fa-solid text-white text-2xl transition-all duration-300 group-hover:scale-110"></i>
+                                                        </div>
+                                                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white pr-4 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
+                                                            {{ $question }}
+                                                        </h3>
+                                                    </div>
+                                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform group-open:rotate-180 duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                    </svg>
+                                                </summary>
+                                                <div class="px-6 md:px-8 pb-6 md:pb-8 pt-2 text-gray-700 dark:text-gray-300 prose prose-base md:prose-lg dark:prose-invert max-w-none pl-20 md:pl-24"
+                                                     itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                                                    <div itemprop="text">
+                                                        {!! nl2br(e($answer)) !!}
+                                                    </div>
+                                                </div>
+                                            </details>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
                 @endif
 
                 <footer class="mt-16 md:mt-20 pt-8 border-t-2 border-gray-200 dark:border-gray-700">

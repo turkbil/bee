@@ -154,61 +154,52 @@
             <div class="card-body p-0">
                 <!-- Header Bölümü -->
                 <div class="row mx-2 my-3">
-                    <!-- Sol Taraf - Toplam Sayı -->
-                    <div class="col-auto">
-                        <h3 class="card-title mb-0">
-                            Taslak Listesi ({{ $drafts->total() }})
-                        </h3>
+                    <!-- Arama Kutusu -->
+                    <div class="col">
+                        <div class="input-icon">
+                            <span class="input-icon-addon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" wire:model.live="search" class="form-control"
+                                placeholder="Anahtar kelime, kategori veya keyword ara...">
+                        </div>
                     </div>
                     <!-- Ortadaki Loading -->
                     <div class="col position-relative">
                         <div wire:loading
-                            wire:target="toggleAll, toggleDraftSelection, deleteDraft, generateBlogs"
+                            wire:target="render, search, perPage, gotoPage, previousPage, nextPage, toggleAll, toggleDraftSelection, deleteDraft, generateBlogs, bulkDelete"
                             class="position-absolute top-50 start-50 translate-middle text-center"
                             style="width: 100%; max-width: 250px;">
-                            <div class="small mb-2" style="opacity: 0.7;">{{ __('admin.updating') }}</div>
+                            <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
                             <div class="progress mb-1">
                                 <div class="progress-bar progress-bar-indeterminate"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Sağ Taraf - Aksiyon Butonları -->
-                    <div class="col-auto">
-                        <div class="d-flex align-items-center justify-content-end gap-2">
-                            @if(count($selectedDrafts) > 0)
-                                <button
-                                    type="button"
-                                    class="btn btn-success"
-                                    wire:click.prevent="generateBlogs"
-                                    @if($isWriting) disabled @endif
-                                    data-bs-toggle="tooltip"
-                                    title="Seçilenleri Blog Olarak Yaz"
-                                >
-                                    <i class="fa-solid fa-check"></i>
-                                    ({{ count($selectedDrafts) }} kredi)
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="btn btn-outline-danger"
-                                    wire:click.prevent="bulkDelete"
-                                    onclick="return confirm('Seçili {{ count($selectedDrafts) }} taslağı silmek istediğinize emin misiniz?')"
-                                    data-bs-toggle="tooltip"
-                                    title="Seçilenleri Sil"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            @endif
-
-                            <button
-                                type="button"
-                                class="btn btn-outline-secondary"
-                                wire:click="toggleAll"
-                                data-bs-toggle="tooltip"
-                                title="Tümünü Seç/Kaldır"
-                            >
-                                <i class="fa-regular fa-square-check"></i>
-                            </button>
+                    <!-- Sağ Taraf (Sayfa Adeti) -->
+                    <div class="col">
+                        <div class="d-flex align-items-center justify-content-end gap-3">
+                            <!-- Sayfa Adeti Seçimi -->
+                            <div style="width: 80px; min-width: 80px">
+                                <select wire:model.live="perPage" class="form-control listing-filter-select" data-choices
+                                    data-choices-search="false" data-choices-filter="true">
+                                    <option value="10">
+                                        <nobr>10</nobr>
+                                    </option>
+                                    <option value="50">
+                                        <nobr>50</nobr>
+                                    </option>
+                                    <option value="100">
+                                        <nobr>100</nobr>
+                                    </option>
+                                    <option value="500">
+                                        <nobr>500</nobr>
+                                    </option>
+                                    <option value="1000">
+                                        <nobr>1000</nobr>
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,21 +212,15 @@
                                 <th style="width: 50px">
                                     <div class="d-flex align-items-center gap-2">
                                         <input type="checkbox"
+                                            wire:model.live="selectAll"
                                             class="form-check-input"
-                                            wire:click="toggleAll"
                                             id="selectAllCheckbox"
                                             x-data="{
-                                                totalDrafts: {{ $drafts->where('is_generated', false)->count() }},
-                                                selectedCount: {{ count($selectedDrafts) }}
+                                                indeterminate: {{ count($selectedDrafts) > 0 && !$selectAll ? 'true' : 'false' }}
                                             }"
-                                            x-init="
-                                                $el.indeterminate = (selectedCount > 0 && selectedCount < totalDrafts);
-                                                $el.checked = (selectedCount === totalDrafts && totalDrafts > 0);
-                                            "
-                                            x-effect="
-                                                $el.indeterminate = ({{ count($selectedDrafts) }} > 0 && {{ count($selectedDrafts) }} < totalDrafts);
-                                                $el.checked = ({{ count($selectedDrafts) }} === totalDrafts && totalDrafts > 0);
-                                            ">
+                                            x-init="$el.indeterminate = indeterminate"
+                                            x-effect="$el.indeterminate = ({{ count($selectedDrafts) }} > 0 && !{{ $selectAll ? 'true' : 'false' }})"
+                                            @checked($selectAll)>
                                     </div>
                                 </th>
                                 <th>Anahtar Kelime</th>
@@ -246,17 +231,17 @@
                         </thead>
                         <tbody class="table-tbody">
                             @foreach($drafts as $draft)
-                                <tr class="hover-trigger" @if($draft->is_generated) style="opacity: 0.6;" @endif>
+                                <tr class="hover-trigger" wire:key="row-{{ $draft->id }}" @if($draft->is_generated) style="opacity: 0.6;" @endif>
                                     <td class="sort-id small">
                                         <div class="hover-toggle">
                                             <span class="hover-hide">{{ $draft->id }}</span>
-                                            <input
-                                                type="checkbox"
+                                            <input type="checkbox"
+                                                wire:model.live="selectedDrafts"
+                                                value="{{ $draft->id }}"
                                                 class="form-check-input hover-show"
-                                                wire:click="toggleDraftSelection({{ $draft->id }})"
-                                                @if(in_array($draft->id, $selectedDrafts)) checked @endif
-                                                @if($draft->is_generated) disabled title="Bu taslak zaten kullanılmış" @endif
-                                            >
+                                                id="checkbox-{{ $draft->id }}"
+                                                @checked(in_array($draft->id, $selectedDrafts))
+                                                @if($draft->is_generated) disabled title="Bu taslak zaten kullanılmış" @endif>
                                         </div>
                                     </td>
                                     <td>
@@ -345,21 +330,59 @@
                     </table>
                 </div>
             </div>
+        </div>
 
-            {{-- Pagination --}}
-            <div class="card-footer">
-                @if ($drafts->hasPages())
-                    {{ $drafts->links() }}
-                @else
-                    <div class="d-flex justify-content-between align-items-center mb-0">
-                        <p class="small mb-0" style="opacity: 0.7;">
-                            Toplam <span class="fw-semibold">{{ $drafts->total() }}</span> sonuç
-                        </p>
+        <!-- Pagination -->
+        <div class="card-footer">
+            @if ($drafts->hasPages())
+                {{ $drafts->links('livewire.custom-pagination') }}
+            @else
+                <div class="text-center py-3">
+                    <p class="small text-muted mb-0">
+                        Toplam <span class="fw-semibold">{{ $drafts->total() }}</span> sonuç
+                    </p>
+                </div>
+            @endif
+        </div>
+
+        <!-- Bulk Actions -->
+        @if(count($selectedDrafts) > 0)
+            <div class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1050;">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body py-3 px-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="text-muted">
+                                <strong>{{ count($selectedDrafts) }}</strong> taslak seçildi
+                            </span>
+                            <div class="vr"></div>
+                            <button
+                                type="button"
+                                class="btn btn-success"
+                                wire:click.prevent="generateBlogs"
+                                @if($isWriting) disabled @endif
+                                data-bs-toggle="tooltip"
+                                title="Seçilenleri Blog Olarak Yaz"
+                            >
+                                <i class="fa-solid fa-check me-1"></i>
+                                Blog Yaz ({{ count($selectedDrafts) }} kredi)
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-outline-danger"
+                                wire:click.prevent="bulkDelete"
+                                onclick="return confirm('Seçili {{ count($selectedDrafts) }} taslağı silmek istediğinize emin misiniz?')"
+                                data-bs-toggle="tooltip"
+                                title="Seçilenleri Sil"
+                            >
+                                <i class="fa-solid fa-trash me-1"></i>
+                                Sil
+                            </button>
+                        </div>
                     </div>
-                @endif
+                </div>
             </div>
         @endif
-    </div>
 
-    {{-- Modal Removed: Direkt Livewire button kullanılıyor --}}
+    </div>
+    @endif
 </div>

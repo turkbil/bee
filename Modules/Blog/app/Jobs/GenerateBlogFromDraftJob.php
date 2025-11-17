@@ -26,7 +26,7 @@ class GenerateBlogFromDraftJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public $tries = 3;
-    public $timeout = 300; // 5 dakika
+    public $timeout = 1200; // 🔧 FIX: 20 dakika (OpenAI API için yeterli)
     public $backoff = 60; // 60 saniye retry beklemesi
 
     public ?int $tenantId = null; // Tenant context

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Detay Sayfası - Komple Yeniden Tasarım Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 35px 0 20px 0;
+            color: #93c5fd;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: #60a5fa;
+            margin-bottom: 12px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.8);
+            border-left-color: #60a5fa;
+        }
+
+        .feature-card.critical {
+            border-left-color: #dc2626;
+        }
+
+        .feature-card.high {
+            border-left-color: #f59e0b;
+        }
+
+        .feature-card.module {
+            border-left-color: #10b981;
+        }
+
+        .feature-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .feature-card ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .feature-card li {
+            margin-bottom: 8px;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        .module-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #10b981;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-ready { background: #10b981; color: white; }
+        .status-needs-trait { background: #f59e0b; color: white; }
+
+        code {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #93c5fd;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .comparison .before,
+        .comparison .after {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .comparison .before {
+            border: 2px solid #ef4444;
+        }
+
+        .comparison .after {
+            border: 2px solid #10b981;
+        }
+
+        .comparison h4 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .comparison ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+            line-height: 1.9;
+        }
+
+        .comparison li {
+            margin-bottom: 10px;
+        }
+
+        .comparison strong {
+            color: #60a5fa;
+        }
+
+        .implementation-box {
+            background: rgba(30, 41, 59, 0.4);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .implementation-box h4 {
+            margin-bottom: 15px;
+        }
+
+        .implementation-box ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            text-align: center;
+        }
+
+        .tech-item strong {
+            color: #60a5fa;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .tech-item span {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Blog Detay Sayfası - Komple Yeniden Tasarım Planı</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-18 |
+                🎯 Sayfa: https://ixtif.com/blog/en-iyi-transpalet-modelleri-2025 |
+                📝 Dosya: show-content.blade.php |
+                🔧 Yaklaşım: Sıfırdan üretim (revize değil!)
+            </div>
+        </header>
+
+        <section>
+            <h2>📋 Kullanıcı Talepleri (Öncelikli)</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card critical">
+                    <h4>
+                        ❌ Başlık Tekrarı Sorunu
+                        <span class="priority priority-critical">KRİTİK</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Başlık glass-subheader'da var ama sayfa içinde tekrar yok. Kullanıcı scroll edince başlığı unutuyor.</p>
+                    <p><strong>Çözüm:</strong> Hero section'da başlığı tekrar göstereceğiz (glass-subheader'da da kalacak). Medium style başlık tasarımı.</p>
+                </div>
+
+                <div class="feature-card critical">
+                    <h4>
+                        🖼️ Featured Image Çok Büyük
+                        <span class="priority priority-critical">KRİTİK</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Featured image dev boyutta, hero section gibi. Görsel alt metni çok küçük.</p>
+                    <p><strong>Çözüm:</strong> Compact, magazine-style görsel kullanımı. Caption'ları daha belirgin yapacağız.</p>
+                </div>
+
+                <div class="feature-card critical">
+                    <h4>
+                        📊 Meta Bilgiler Sıkışık
+                        <span class="priority priority-critical">KRİTİK</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Tarih, okuma süresi, yazar bilgisi sıkışık ve görsel değil.</p>
+                    <p><strong>Çözüm:</strong> Icon'lu, badge'li, renkli meta bilgi kartları. Stats gösterimi eklenecek.</p>
+                </div>
+
+                <div class="feature-card high">
+                    <h4>
+                        🏷️ Etiketler Kaybolmuş
+                        <span class="priority priority-high">Yüksek</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Etiketler sayfanın en altında, kimse görmüyor.</p>
+                    <p><strong>Çözüm:</strong> Etiketleri başlık yakınına taşıyacağız (kategori badge'i ile birlikte).</p>
+                </div>
+
+                <div class="feature-card high">
+                    <h4>
+                        📏 Sidebar Boşluk Fazla
+                        <span class="priority priority-high">Yüksek</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> İçerik ile sidebar arası boşluk fazla, sayfa geniş görünüyor.</p>
+                    <p><strong>Çözüm:</strong> Gap değerlerini optimize edeceğiz (lg:gap-10 → lg:gap-6).</p>
+                </div>
+
+                <div class="feature-card high">
+                    <h4>
+                        👤 Yazar Bilgisi Yok
+                        <span class="priority priority-high">Yüksek</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Yazarın kim olduğu, biyografisi, sosyal medya linkleri yok.</p>
+                    <p><strong>Çözüm:</strong> Profesyonel yazar kartı ekleyeceğiz (avatar, bio, social links).</p>
+                </div>
+
+                <div class="feature-card high">
+                    <h4>
+                        🏷️ Kategori Badge Yok
+                        <span class="priority priority-high">Yüksek</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Blog kategorisi sadece breadcrumb'da var, içerikte görünmüyor.</p>
+                    <p><strong>Çözüm:</strong> Renkli kategori badge'i başlık üstüne ekleyeceğiz.</p>
+                </div>
+
+                <div class="feature-card high">
+                    <h4>
+                        📱 Sosyal Paylaşım Yok
+                        <span class="priority priority-high">Yüksek</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> WhatsApp, Facebook, Twitter, LinkedIn paylaşım butonları yok.</p>
+                    <p><strong>Çözüm:</strong> Sticky social share sidebar (desktop) ve bottom bar (mobile) ekleyeceğiz.</p>
+                </div>
+
+                <div class="feature-card medium">
+                    <h4>
+                        📊 İstatistikler Yok
+                        <span class="priority priority-medium">Orta</span>
+                    </h4>
+                    <p><strong>Sorun:</strong> Görüntülenme, beğeni, favorilere ekleme sayısı yok.</p>
+                    <p><strong>Çözüm:</strong> Stats card ekleyeceğiz (views + favorites + ratings).</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔧 Mevcut Modül Entegrasyonları</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card module">
+                    <h4>
+                        ⭐ ReviewSystem Modülü
+                        <span class="module-badge">MEVCUT</span>
+                        <span class="status-badge status-needs-trait">Trait Ekle</span>
+                    </h4>
+                    <p><strong>Özellikler:</strong></p>
+                    <ul>
+                        <li><code>Rating</code> - Yıldız puanlama (1-5)</li>
+                        <li><code>Review</code> - Detaylı yorumlar + onay sistemi</li>
+                        <li><code>HasReviews</code> trait - Blog'a eklenecek</li>
+                        <li><code>HasRatings</code> trait - Blog'a eklenecek</li>
+                    </ul>
+                    <p><strong>Metodlar:</strong></p>
+                    <ul>
+                        <li><code>averageRating()</code> - Ortalama puan</li>
+                        <li><code>ratingsCount()</code> - Toplam oy sayısı</li>
+                        <li><code>reviewsCount()</code> - Toplam yorum sayısı</li>
+                        <li><code>ratingsDistribution()</code> - Yıldız dağılımı</li>
+                    </ul>
+                    <p><strong>İmplementasyon:</strong> Blog detayda star rating widget + yorum listesi ekleyeceğiz.</p>
+                </div>
+
+                <div class="feature-card module">
+                    <h4>
+                        💖 Favorite Modülü
+                        <span class="module-badge">MEVCUT</span>
+                        <span class="status-badge status-needs-trait">Trait Ekle</span>
+                    </h4>
+                    <p><strong>Özellikler:</strong></p>
+                    <ul>
+                        <li><code>Favorite</code> - Polymorphic favorileme</li>
+                        <li><code>HasFavorites</code> trait - Blog'a eklenecek</li>
+                    </ul>
+                    <p><strong>Metodlar:</strong></p>
+                    <ul>
+                        <li><code>isFavoritedBy($userId)</code> - Kullanıcı favoriledi mi?</li>
+                        <li><code>favoritesCount()</code> - Toplam favori sayısı</li>
+                        <li><code>toggleFavorite($userId)</code> - Favori ekle/çıkar</li>
+                    </ul>
+                    <p><strong>İmplementasyon:</strong> Kalp ikonu butonu + favori sayısı göstereceğiz (login gerekli).</p>
+                </div>
+
+                <div class="feature-card module">
+                    <h4>
+                        👁️ Views/Analytics
+                        <span class="status-badge status-needs-trait">YENİ EKLENMELİ</span>
+                    </h4>
+                    <p><strong>Gereklilik:</strong> Blog görüntülenme sayısını takip etmek için yeni bir sistem kurulmalı.</p>
+                    <p><strong>Seçenekler:</strong></p>
+                    <ul>
+                        <li>Option 1: <code>views_count</code> kolonu + middleware ile increment</li>
+                        <li>Option 2: Redis tabanlı real-time counter</li>
+                        <li>Option 3: Analytics modülü (polymorphic)</li>
+                    </ul>
+                    <p><strong>Önerim:</strong> Basit başlayalım - <code>views_count</code> kolonu ekleyip middleware ile sayacağız.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎨 Yeni Tasarım Yapısı</h2>
+
+            <div class="comparison">
+                <div class="before">
+                    <h4>❌ Eski Yapı</h4>
+                    <ul>
+                        <li>Glass-subheader (breadcrumb + başlık)</li>
+                        <li>Excerpt (küçük font)</li>
+                        <li>Meta bilgiler (tarih, okuma süresi, yazar adı)</li>
+                        <li>TOC sidebar + Content (2 kolon)</li>
+                        <li>Featured image (çok büyük!)</li>
+                        <li>Content body</li>
+                        <li>FAQ section</li>
+                        <li>Galeri</li>
+                        <li>HowTo section</li>
+                        <li>İlgili yazılar</li>
+                        <li>Etiketler (en altta)</li>
+                        <li>Prev/Next navigasyon</li>
+                    </ul>
+                </div>
+
+                <div class="after">
+                    <h4>✅ Yeni Yapı (Magazine Style)</h4>
+                    <ul>
+                        <li>Glass-subheader (breadcrumb + başlık)</li>
+                        <li><strong>🆕 Hero Section:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Başlık (tekrar, büyük)</li>
+                                <li>Kategori badge</li>
+                                <li>Compact featured image (4:3 ratio)</li>
+                                <li>Etiketler (görsel)</li>
+                            </ul>
+                        </li>
+                        <li><strong>🆕 Meta Card:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Yazar mini info (avatar + isim)</li>
+                                <li>Tarih (yayın + güncelleme)</li>
+                                <li>Stats (👁️ views, ⭐ rating, 💖 favorites)</li>
+                                <li>Okuma süresi</li>
+                            </ul>
+                        </li>
+                        <li>Excerpt (büyük font, dikkat çekici)</li>
+                        <li><strong>🆕 Sticky Social Share</strong> (desktop sol, mobile alt)</li>
+                        <li>TOC sidebar + Content (optimize gap)</li>
+                        <li>Content body</li>
+                        <li><strong>🆕 Yazar Card (detaylı):</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Avatar (büyük)</li>
+                                <li>Biyografi</li>
+                                <li>Sosyal medya linkleri</li>
+                                <li>Toplam yazı sayısı</li>
+                            </ul>
+                        </li>
+                        <li><strong>🆕 Rating & Review Section:</strong>
+                            <ul style="margin-top: 10px;">
+                                <li>Ortalama puan + dağılım grafiği</li>
+                                <li>Puan verme widget (login gerekli)</li>
+                                <li>Yorum listesi (onaylı)</li>
+                                <li>Yorum yazma formu</li>
+                            </ul>
+                        </li>
+                        <li>FAQ section</li>
+                        <li>Galeri</li>
+                        <li>HowTo section</li>
+                        <li>İlgili yazılar</li>
+                        <li><strong>🆕 Newsletter Form</strong></li>
+                        <li>Prev/Next navigasyon</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🛠️ Teknik İmplementasyon</h2>
+
+            <h3>📁 Oluşturulacak/Güncellenecek Dosyalar</h3>
+
+            <div class="implementation-box">
+                <h4>🔥 Ana Blade Dosyası (Tamamen Yeni)</h4>
+                <ul>
+                    <li><code>Modules/Blog/resources/views/themes/ixtif/partials/show-content.blade.php</code></li>
+                    <li>Eski kod silinmeyecek, tamamen yeniden yazılacak</li>
+                    <li>Tüm yeni component'leri içe aktaracak</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>🆕 Yeni Blade Component'ler</h4>
+                <ul>
+                    <li><code>resources/views/components/blog/hero-section.blade.php</code> - Hero area (başlık, kategori, image)</li>
+                    <li><code>resources/views/components/blog/meta-card.blade.php</code> - Yazar + Stats + Tarih</li>
+                    <li><code>resources/views/components/blog/social-share.blade.php</code> - Sosyal paylaşım butonları</li>
+                    <li><code>resources/views/components/blog/author-card.blade.php</code> - Detaylı yazar bilgisi</li>
+                    <li><code>resources/views/components/blog/rating-widget.blade.php</code> - Star rating + yorum sistemi</li>
+                    <li><code>resources/views/components/blog/stats-bar.blade.php</code> - Views + Favorites + Rating</li>
+                    <li><code>resources/views/components/blog/category-badge.blade.php</code> - Kategori badge</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>📊 Model Güncellemeleri</h4>
+                <ul>
+                    <li><code>Modules/Blog/app/Models/Blog.php</code> - Trait eklemeleri:</li>
+                    <li style="margin-left: 30px;"><code>use HasFavorites;</code> → Favorite modülünden</li>
+                    <li style="margin-left: 30px;"><code>use HasReviews;</code> → ReviewSystem modülünden</li>
+                    <li style="margin-left: 30px;"><code>use HasRatings;</code> → ReviewSystem modülünden</li>
+                    <li><code>views_count</code> kolonu eklenmeli (migration gerekli)</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>🗄️ Migration (Yeni)</h4>
+                <ul>
+                    <li><code>database/migrations/tenant/YYYY_MM_DD_add_views_count_to_blogs.php</code></li>
+                    <li>Central + Tenant migration (çifte migration)</li>
+                    <li>Sadece <code>views_count</code> kolonu ekleyecek (integer, default 0)</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>⚙️ Middleware / Controller</h4>
+                <ul>
+                    <li><code>app/Http/Middleware/TrackBlogViews.php</code> - Görüntülenme sayacı (opsiyonel)</li>
+                    <li>Veya controller'da direkt increment: <code>$blog->increment('views_count');</code></li>
+                    <li>Cookie/session ile unique visitor kontrolü (isteğe bağlı)</li>
+                </ul>
+            </div>
+
+            <h3>🎨 Tasarım Teknolojileri</h3>
+
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <strong>Tailwind CSS</strong>
+                    <span>Tüm stiller framework sınıfları ile</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Alpine.js</strong>
+                    <span>Sosyal paylaşım, favorite toggle</span>
+                </div>
+                <div class="tech-item">
+                    <strong>FontAwesome</strong>
+                    <span>İkonlar (fas, far, fab)</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Livewire</strong>
+                    <span>Rating widget, favorite toggle</span>
+                </div>
+                <div class="tech-item">
+                    <strong>GLightbox</strong>
+                    <span>Galeri (mevcut)</span>
+                </div>
+            </div>
+
+            <h3>📱 Responsive Breakpoints</h3>
+
+            <div class="implementation-box">
+                <ul>
+                    <li><strong>Mobile (< 768px):</strong> Single column, sticky bottom social bar, collapsed TOC</li>
+                    <li><strong>Tablet (768px - 1024px):</strong> 2 column grid, compact sidebar</li>
+                    <li><strong>Desktop (> 1024px):</strong> 3 column grid (TOC + Content + Social), full features</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Öncelik Sıralaması</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card critical">
+                    <h4>Faz 1: Temel Düzeltmeler <span class="priority priority-critical">KRİTİK</span></h4>
+                    <ul>
+                        <li>✅ Başlık tekrarı ekle (hero section)</li>
+                        <li>✅ Featured image küçült (compact)</li>
+                        <li>✅ Meta bilgiler düzenle (card style)</li>
+                        <li>✅ Kategori badge ekle</li>
+                        <li>✅ Etiketleri yukarı taşı</li>
+                        <li>✅ Sidebar gap optimize et</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card high">
+                    <h4>Faz 2: Sosyal & Etkileşim <span class="priority priority-high">Yüksek</span></h4>
+                    <ul>
+                        <li>✅ Sosyal paylaşım butonları</li>
+                        <li>✅ Yazar kartı (detaylı)</li>
+                        <li>✅ Favorite modülü entegrasyonu</li>
+                        <li>✅ Rating modülü entegrasyonu</li>
+                        <li>✅ Views counter ekleme</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card medium">
+                    <h4>Faz 3: İleri Seviye <span class="priority priority-medium">Orta</span></h4>
+                    <ul>
+                        <li>Review/Yorum sistemi</li>
+                        <li>Newsletter form</li>
+                        <li>Reading position tracker (gelişmiş)</li>
+                        <li>Print/PDF export</li>
+                        <li>Related content algoritması</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚡ Sonraki Adımlar</h2>
+
+            <div class="implementation-box">
+                <h4>1️⃣ Migration & Model Hazırlığı</h4>
+                <ul>
+                    <li>Blog modeline <code>views_count</code> kolonu ekle</li>
+                    <li>Blog modeline trait'leri ekle (HasFavorites, HasReviews, HasRatings)</li>
+                    <li>Migration çalıştır (central + tenant)</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>2️⃣ Component Oluşturma</h4>
+                <ul>
+                    <li>Her bir yeni özellik için blade component yaz</li>
+                    <li>Component'leri test et (dummy data ile)</li>
+                    <li>Tailwind sınıfları optimize et</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>3️⃣ Ana Blade Dosyası Yenileme</h4>
+                <ul>
+                    <li>Eski <code>show-content.blade.php</code> dosyasını sıfırdan yaz</li>
+                    <li>Tüm component'leri entegre et</li>
+                    <li>Responsive kontrolleri ekle</li>
+                </ul>
+            </div>
+
+            <div class="implementation-box">
+                <h4>4️⃣ Test & Optimize</h4>
+                <ul>
+                    <li>Cache temizle (<code>php artisan view:clear</code>)</li>
+                    <li>Sayfayı test et (desktop + mobile + tablet)</li>
+                    <li>Dark mode kontrolü</li>
+                    <li>Performance testi (Lighthouse)</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            <p>🤖 Claude AI tarafından oluşturuldu - Blog Detay Sayfası Komple Yenileme Planı</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">
+                ✅ Modül analizi tamamlandı (Favorite + ReviewSystem mevcut)<br>
+                ✅ Kullanıcı talepleri analiz edildi<br>
+                🚀 İmplementasyon için hazır!
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

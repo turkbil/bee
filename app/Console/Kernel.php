@@ -116,7 +116,7 @@ class Kernel extends ConsoleKernel
         // Her saat başı çalışır, tüm tenant'ları tarar, settings'e göre blog üretir
         // Settings: blog_ai_enabled, blog_ai_daily_count (1-8), calculateActiveHours()
         $schedule->command('generate:tenant-blogs')
-                 ->hourly() // Her saat başı (00:00, 01:00, 02:00, ...)
+                 ->hourly() // Production: Her saat başı (00:00, 01:00, 02:00, ...)
                  ->withoutOverlapping(10) // Maksimum 10 dakika çalışabilir, çakışma önle
                  ->runInBackground() // Background'da çalıştır
                  ->appendOutputTo(storage_path('logs/blog-cron.log')) // Log dosyasına ekle

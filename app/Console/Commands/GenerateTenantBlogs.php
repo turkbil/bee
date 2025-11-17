@@ -215,25 +215,19 @@ class GenerateTenantBlogs extends Command
             return 'error';
         }
 
-        $this->info("   🎲 Selected draft: [{$selectedDraft->draft_id}] {$selectedDraft->topic_keyword}");
-
-        // 8️⃣ Auto-publish ayarını al
-        $autoPublish = getTenantSetting('blog_ai_auto_publish', '1');
-        $autoPublish = ($autoPublish === '1' || $autoPublish === 1 || $autoPublish === true);
+        $this->info("   🎲 Selected draft: [{$selectedDraft->id}] {$selectedDraft->topic_keyword}");
 
         // 9️⃣ Blog generation job dispatch
         if (!$this->option('test')) {
-            GenerateBlogFromDraftJob::dispatch($selectedDraft->draft_id, $autoPublish)
+            GenerateBlogFromDraftJob::dispatch($selectedDraft->id)
                 ->onQueue('blog-ai');
 
-            $publishStatus = $autoPublish ? 'published' : 'draft';
-            $this->info("   ✅ Blog generation job dispatched (will be {$publishStatus})");
+            $this->info("   ✅ Blog generation job dispatched");
 
             Log::channel('daily')->info('🤖 TENANT BLOG CRON: Blog job dispatched', [
                 'tenant_id' => $tenant->id,
-                'draft_id' => $selectedDraft->draft_id,
+                'draft_id' => $selectedDraft->id,
                 'topic' => $selectedDraft->topic_keyword,
-                'auto_publish' => $autoPublish,
                 'remaining_drafts' => $availableDrafts - 1,
             ]);
         } else {

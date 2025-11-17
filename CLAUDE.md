@@ -509,16 +509,29 @@ git reset --hard [hash]
 
 ### 🚨 6. DOSYA İZİNLERİ (PERMİSSİON) - KRİTİK!
 
-**⚠️ SORUN:** Write/Edit tool ile dosya oluşturursam `root:root` ve `600` permission olur!
+**🔴 ANA KURAL: ROOT KULLANIMI YASAK!**
 
-**🔴 SONUÇ:**
-- **403 Forbidden** (Nginx dosyayı okuyamaz!)
-- **500 Internal Server Error** (PHP-FPM dosyayı okuyamaz!)
-- **Site çöker!**
+**❌ ASLA ROOT KULLANMA!**
+- Root ile dosya oluşturma → YASAK!
+- Root ile klasör oluşturma → YASAK!
+- Root olarak komut çalıştırma → YASAK!
 
-**✅ ZORUNLU WORKFLOW - HER DOSYA OLUŞTURMADAN HEMEN SONRA:**
+**✅ HER ZAMAN tuufi.com_ KULLANICISI İLE ÇALIŞ!**
 
+#### 🎯 Doğru Kullanım:
+
+**Yöntem 1: Bash kullanırken (ÖNERİLEN):**
 ```bash
+# ✅ DOĞRU: tuufi.com_ kullanıcısı ile işlem yap
+sudo -u tuufi.com_ mkdir -p /path/to/directory/
+sudo -u tuufi.com_ touch /path/to/file.php
+sudo -u tuufi.com_ bash -c 'echo "content" > /path/to/file.php'
+```
+
+**Yöntem 2: Claude Write/Edit tool kullanırsan:**
+```bash
+# ⚠️ Write/Edit tool root:root oluşturur, MUTLAKA düzelt!
+
 # 1. Owner değiştir (ZORUNLU!)
 sudo chown tuufi.com_:psaserv /path/to/file.php
 
@@ -536,18 +549,34 @@ curl -s -k -I https://ixtif.com/path/to/file | grep HTTP
 # Eğer 500 Error → Ownership/Permission hatası!
 ```
 
-**📋 Toplu Klasör Düzeltme:**
+#### ❌ NEDEN ROOT YASAK?
+
+**Problem 1: Ownership Hatası**
+- Root ile oluşturulan dosyalar → `root:root` owner
+- Nginx/PHP-FPM → Bu dosyaları okuyamaz!
+- Sonuç → **500 Internal Server Error** veya **403 Forbidden**
+
+**Problem 2: Permission Cascade**
+- Root ile klasör oluşturursan → İçindeki TÜM dosyalar root:root!
+- Tek bir root dosyası → Tüm klasörü bozar!
+
+**Problem 3: Güvenlik & Deployment**
+- Root dosyaları sadece root değiştirebilir
+- Deployment sırasında sorun çıkar
+- Git pull/push çalışmaz
+
+#### 📋 Toplu Klasör Düzeltme:
 
 ```bash
-# Tüm klasörü düzelt
+# Yanlışlıkla root ile oluşturduysan düzelt:
 sudo chown -R tuufi.com_:psaserv /path/to/directory/
 sudo find /path/to/directory/ -type f -exec chmod 644 {} \;
 sudo find /path/to/directory/ -type d -exec chmod 755 {} \;
 ```
 
-**🎯 Doğru İzinler:**
+#### 🎯 Doğru İzinler:
 
-✅ **Owner:** `tuufi.com_:psaserv` (web sunucusu kullanıcısı)
+✅ **Owner:** `tuufi.com_:psaserv` (ZORUNLU! Root değil!)
 ✅ **Dosya:** `644` (-rw-r--r--) → PHP, HTML, Blade dosyaları
 ✅ **Klasör:** `755` (drwxr-xr-x) → Dizinler
 
@@ -556,7 +585,31 @@ sudo find /path/to/directory/ -type d -exec chmod 755 {} \;
 - `600` permission → Sadece owner okur, grup/others okuyamaz!
 - `700` klasör → Nginx klasöre giremez!
 
-**UNUTMA:** Write/Edit tool kullandıktan sonra MUTLAKA chown + chmod + test!
+#### 💡 Pratik Örnekler:
+
+**HTML Rapor Oluşturma:**
+```bash
+# ✅ DOĞRU
+sudo -u tuufi.com_ mkdir -p public/readme/2025/11/18/blog-analiz/v1/
+
+# ❌ YANLIŞ
+mkdir -p public/readme/2025/11/18/blog-analiz/v1/  # Root kullanma!
+```
+
+**MD TODO Oluşturma:**
+```bash
+# ✅ DOĞRU
+sudo -u tuufi.com_ mkdir -p readme/claude-docs/todo/2025/11/18/
+sudo -u tuufi.com_ touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md
+
+# ❌ YANLIŞ
+touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md  # Root kullanma!
+```
+
+**UNUTMA:**
+- ✅ Her zaman `sudo -u tuufi.com_` kullan!
+- ✅ Write/Edit tool kullandıysan → chown + chmod + test!
+- ❌ ASLA root olarak dosya/klasör oluşturma!
 
 ---
 

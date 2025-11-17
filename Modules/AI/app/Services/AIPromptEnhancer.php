@@ -187,13 +187,9 @@ IMPERFECTIONS (ALWAYS include for realism):
 - For objects: "subtle wear patterns", "natural aging", "weathered surface", "realistic material imperfections"
 - For scenes: "natural variation", "authentic details", "lived-in space", "realistic imperfections"
 
-🇹🇷 PEOPLE APPEARANCE (if image includes people):
-- Turkish/Mediterranean ethnicity REQUIRED
-- Physical features: dark brown to black hair, olive to tan skin tone, brown eyes, Turkish facial features
-- Natural Turkish appearance (NOT Northern European, NOT Scandinavian, NOT blonde, NOT pale skin)
-- Both men and women should have authentic Turkish/Mediterranean characteristics
-- If multiple people: diverse Turkish types (Mediterranean complexion variations)
-- CRITICAL: Avoid Western European stereotypes - use genuine Turkish/Middle Eastern appearance
+🌍 CONTEXT: Images will be used in Turkey (Türkiye)
+- Industrial/business equipment context
+- Focus on EQUIPMENT, MACHINERY, and WORKPLACE ENVIRONMENT
 
 MAXIMUM CREATIVITY RULES:
 - Every JSON must be COMPLETELY DIFFERENT from previous ones
@@ -203,14 +199,29 @@ MAXIMUM CREATIVITY RULES:
 - VARY lighting time and direction for each generation
 - Adapt to subject AND add unexpected authentic details
 
-🚨 ABSOLUTELY NO TEXT/LABELS/UI - CRITICAL RULE:
-- PURE PHOTOGRAPH ONLY - NO text, NO labels, NO captions, NO annotations, NO infographics
-- NO blue boxes, NO text overlays, NO UI elements, NO diagrams, NO charts
-- NO brands, NO trademarks, NO logos, NO camera settings overlay
+🚨🚨🚨 ULTRA CRITICAL: ABSOLUTELY NO TEXT/WORDS/LABELS 🚨🚨🚨
+THIS IS THE #1 PRIORITY RULE - VIOLATION = FAILED IMAGE
+
+❌ FORBIDDEN - NEVER INCLUDE:
+- NO text of any kind (English, Turkish, Asian, ANY language)
+- NO labels, NO captions, NO annotations, NO subtitles
+- NO infographics, NO diagrams, NO charts, NO data visualization
+- NO UI elements, NO blue boxes, NO overlays, NO frames with text
+- NO brands, NO trademarks, NO logos, NO company names
+- NO camera settings overlay, NO EXIF data display
 - NO numbered labels, NO arrows with text, NO explanatory text
-- If subject requires identification: Use ONLY visual elements, NO written words
-- Exception ONLY if user explicitly requests text: Turkish only, generic names
-- This is a PHOTOGRAPH not an infographic/presentation/diagram
+- NO ethnic/racial descriptors as text (e.g., "Asian", "Black", "White")
+- NO demographic labels, NO job titles, NO name tags
+- NO instructional text, NO how-to steps, NO descriptions
+
+✅ ONLY ALLOWED:
+- PURE CLEAN PHOTOGRAPH
+- Visual elements only
+- No written language whatsoever
+- Let the IMAGE speak, not words
+
+⚠️ REMEMBER: This is PHOTOGRAPHY, not graphic design/infographic/presentation
+If you add ANY text/words/labels → IMAGE REJECTED → TRY AGAIN
 
 OUTPUT: Valid JSON only
 SYSTEM;

@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Log;
  * AI Prompt Enhancer Service
  *
  * Basit promptları ultra detaylı, profesyonel JSON scene description'lara çevirir
- * Claude API kullanarak gerçekçi fotoğraf kalitesinde promptlar üretir
+ * OpenAI GPT-4 kullanarak gerçekçi fotoğraf kalitesinde promptlar üretir
  */
 class AIPromptEnhancer
 {
     protected string $apiKey;
-    protected string $apiUrl = 'https://api.anthropic.com/v1/messages';
-    protected string $model = 'claude-3-5-sonnet-20241022';
+    protected string $apiUrl = 'https://api.openai.com/v1/chat/completions';
+    protected string $model = 'gpt-4o'; // OpenAI GPT-4o (en hızlı GPT-4)
 
     public function __construct()
     {
-        $this->apiKey = config('services.anthropic.api_key') ?? config('ai.anthropic_key');
+        $this->apiKey = config('ai.openai_api_key');
     }
 
     /**
@@ -33,7 +33,7 @@ class AIPromptEnhancer
     public function enhancePrompt(string $simplePrompt, string $style = 'ultra_photorealistic', string $size = '1024x1024'): string
     {
         if (empty($this->apiKey)) {
-            Log::warning('AIPromptEnhancer: Anthropic API key not configured, using basic enhancement');
+            Log::warning('AIPromptEnhancer: OpenAI API key not configured, using basic enhancement');
             return $this->basicEnhancement($simplePrompt, $style);
         }
 
@@ -42,15 +42,17 @@ class AIPromptEnhancer
             $userPrompt = $this->buildUserPrompt($simplePrompt, $style, $size);
 
             $response = Http::withHeaders([
-                'x-api-key' => $this->apiKey,
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
             ])->timeout(30)->post($this->apiUrl, [
                 'model' => $this->model,
                 'max_tokens' => 800,
                 'temperature' => 0.9, // Yüksek creativity için - her call farklı output
-                'system' => $systemPrompt,
                 'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => $systemPrompt
+                    ],
                     [
                         'role' => 'user',
                         'content' => $userPrompt
@@ -60,11 +62,11 @@ class AIPromptEnhancer
 
             if ($response->successful()) {
                 $data = $response->json();
-                $enhancedPrompt = $data['content'][0]['text'] ?? '';
+                $enhancedPrompt = $data['choices'][0]['message']['content'] ?? '';
 
                 if (!empty($enhancedPrompt)) {
-                    // DEBUG: Claude'un RAW JSON'unu logla
-                    Log::info('AIPromptEnhancer: Claude RAW output', [
+                    // DEBUG: OpenAI GPT-4'ün RAW JSON'unu logla
+                    Log::info('AIPromptEnhancer: OpenAI GPT-4 RAW output', [
                         'raw_json' => $enhancedPrompt
                     ]);
 
@@ -88,7 +90,7 @@ class AIPromptEnhancer
                 }
             }
 
-            Log::warning('AIPromptEnhancer: API call failed', [
+            Log::warning('AIPromptEnhancer: OpenAI API call failed', [
                 'status' => $response->status(),
                 'body' => $response->body()
             ]);
@@ -184,6 +186,14 @@ IMPERFECTIONS (ALWAYS include for realism):
 - For portraits: "natural skin texture with visible pores", "fine vellus hair", "uneven skin tone", "gentle specular highlights", "subtle wrinkles" (for older subjects)
 - For objects: "subtle wear patterns", "natural aging", "weathered surface", "realistic material imperfections"
 - For scenes: "natural variation", "authentic details", "lived-in space", "realistic imperfections"
+
+🇹🇷 PEOPLE APPEARANCE (if image includes people):
+- Turkish/Mediterranean ethnicity REQUIRED
+- Physical features: dark brown to black hair, olive to tan skin tone, brown eyes, Turkish facial features
+- Natural Turkish appearance (NOT Northern European, NOT Scandinavian, NOT blonde, NOT pale skin)
+- Both men and women should have authentic Turkish/Mediterranean characteristics
+- If multiple people: diverse Turkish types (Mediterranean complexion variations)
+- CRITICAL: Avoid Western European stereotypes - use genuine Turkish/Middle Eastern appearance
 
 MAXIMUM CREATIVITY RULES:
 - Every JSON must be COMPLETELY DIFFERENT from previous ones

@@ -50,13 +50,86 @@ class GenerateBlogFromDraftJob implements ShouldQueue
      */
     public function handle(BlogAIContentWriter $writer, BlogAIBatchProcessor $batchProcessor): void
     {
-        // Tenant context'i restore et
-        if ($this->tenantId) {
+        // Tenant context'i restore et (eğer zaten initialize değilse)
+        if ($this->tenantId && (!tenant() || tenant('id') != $this->tenantId)) {
             tenancy()->initialize($this->tenantId);
         }
 
         // Tenant context restore edildikten SONRA model'i fetch et
         $draft = BlogAIDraft::findOrFail($this->draftId);
+
+        // 🔒 KRİTİK 1: Draft zaten generate edilmiş mi kontrol et
+        if ($draft->is_generated) {
+            Log::warning('Draft already generated, skipping job', [
+                'draft_id' => $draft->id,
+                'existing_blog_id' => $draft->generated_blog_id,
+                'batch_id' => $this->batchId,
+                'tenant_id' => $this->tenantId,
+            ]);
+
+            // Batch progress güncelle (duplicate olsa bile completed sayılır)
+            if ($this->batchId) {
+                $batchProcessor->markCompleted($this->batchId);
+            }
+
+            return; // Job'u skip et, duplicate blog oluşturma!
+        }
+
+        // 🔒 KRİTİK 2: Benzer başlıkta blog var mı kontrol et (slug similarity)
+        $draftSlug = \Illuminate\Support\Str::slug($draft->topic_keyword);
+
+        // Mevcut blog slug'larını getir (Türkçe - tenant default dil)
+        $existingBlogs = \Modules\Blog\App\Models\Blog::select('blog_id', 'slug', 'title')
+            ->get()
+            ->map(function($blog) {
+                return [
+                    'id' => $blog->blog_id,
+                    'slug' => is_array($blog->slug) ? ($blog->slug['tr'] ?? '') : (json_decode($blog->slug, true)['tr'] ?? ''),
+                    'title' => is_array($blog->title) ? ($blog->title['tr'] ?? '') : (json_decode($blog->title, true)['tr'] ?? ''),
+                ];
+            })
+            ->filter(fn($b) => !empty($b['slug']));
+
+        foreach ($existingBlogs as $existingBlog) {
+            // Slug benzerlik kontrolü (similar_text kullanarak)
+            similar_text($draftSlug, $existingBlog['slug'], $slugSimilarity);
+
+            // Title benzerlik kontrolü (opsiyonel - daha kesin sonuç için)
+            similar_text(
+                strtolower($draft->topic_keyword),
+                strtolower($existingBlog['title']),
+                $titleSimilarity
+            );
+
+            // %85+ benzerlik varsa → Duplicate!
+            if ($slugSimilarity >= 85 || $titleSimilarity >= 85) {
+                Log::warning('Similar blog already exists, skipping job', [
+                    'draft_id' => $draft->id,
+                    'draft_topic' => $draft->topic_keyword,
+                    'draft_slug' => $draftSlug,
+                    'existing_blog_id' => $existingBlog['id'],
+                    'existing_title' => $existingBlog['title'],
+                    'existing_slug' => $existingBlog['slug'],
+                    'slug_similarity' => round($slugSimilarity, 2),
+                    'title_similarity' => round($titleSimilarity, 2),
+                    'batch_id' => $this->batchId,
+                    'tenant_id' => $this->tenantId,
+                ]);
+
+                // Draft'ı duplicate olarak işaretle (is_generated = true ama generated_blog_id = existing)
+                $draft->update([
+                    'is_generated' => true,
+                    'generated_blog_id' => $existingBlog['id'], // Var olan blog'u referans et
+                ]);
+
+                // Batch progress güncelle
+                if ($this->batchId) {
+                    $batchProcessor->markCompleted($this->batchId);
+                }
+
+                return; // Job'u skip et!
+            }
+        }
 
         try {
             Log::info('Blog AI Content Generation Started', [

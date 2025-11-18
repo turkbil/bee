@@ -57,11 +57,11 @@ class ContactSettingsSeeder extends Seeder
             ['key' => 'contact_city', 'label' => 'Şehir', 'type' => 'text', 'default_value' => '', 'sort_order' => 42],
             ['key' => 'contact_state', 'label' => 'İlçe / Bölge', 'type' => 'text', 'default_value' => '', 'sort_order' => 43],
             ['key' => 'contact_postal_code', 'label' => 'Posta Kodu', 'type' => 'text', 'default_value' => '', 'sort_order' => 44],
-            ['key' => 'contact_country', 'label' => 'Ülke', 'type' => 'text', 'default_value' => 'Türkiye', 'sort_order' => 45],
+            ['key' => 'contact_country', 'label' => 'Ülke', 'type' => 'text', 'default_value' => '', 'sort_order' => 45],
 
             // ⏰ ÇALIŞMA SAATLERİ
-            ['key' => 'contact_working_hours', 'label' => 'Çalışma Saatleri', 'type' => 'text', 'default_value' => '09:00 - 18:00', 'sort_order' => 50],
-            ['key' => 'contact_working_days', 'label' => 'Çalışma Günleri', 'type' => 'text', 'default_value' => 'Pazartesi - Cuma', 'sort_order' => 51],
+            ['key' => 'contact_working_hours', 'label' => 'Çalışma Saatleri', 'type' => 'text', 'default_value' => '', 'sort_order' => 50],
+            ['key' => 'contact_working_days', 'label' => 'Çalışma Günleri', 'type' => 'text', 'default_value' => '', 'sort_order' => 51],
         ];
 
         // Tüm ayarları oluştur

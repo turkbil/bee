@@ -92,7 +92,7 @@ class NotificationSettingsSeeder extends Seeder
                 'key' => 'email_enabled',
                 'label' => 'Email Aktif',
                 'type' => 'checkbox',
-                'default_value' => '1',
+                'default_value' => '0',
                 'sort_order' => 20,
             ],
             [
@@ -398,7 +398,7 @@ class NotificationSettingsSeeder extends Seeder
                                         'width' => 12,
                                         'required' => false,
                                         'help_text' => 'Email yoluyla müşteri talepleri ve bildirimleri almak için bu seçeneği aktif edin.',
-                                        'default_value' => '1',
+                                        'default_value' => '0',
                                         'is_active' => true,
                                         'is_system' => false,
                                     ],

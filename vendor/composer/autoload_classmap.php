@@ -34,6 +34,7 @@ return array(
     'App\\Console\\Commands\\GenerateProductEmbeddings' => $baseDir . '/app/Console/Commands/GenerateProductEmbeddings.php',
     'App\\Console\\Commands\\GenerateProductTagsCommand' => $baseDir . '/app/Console/Commands/GenerateProductTagsCommand.php',
     'App\\Console\\Commands\\GenerateSparePartsContentCommand' => $baseDir . '/app/Console/Commands/GenerateSparePartsContentCommand.php',
+    'App\\Console\\Commands\\GenerateTenantBlogs' => $baseDir . '/app/Console/Commands/GenerateTenantBlogs.php',
     'App\\Console\\Commands\\ImportLitefSparePartsCommand' => $baseDir . '/app/Console/Commands/ImportLitefSparePartsCommand.php',
     'App\\Console\\Commands\\ImproveProductDescriptions' => $baseDir . '/app/Console/Commands/ImproveProductDescriptions.php',
     'App\\Console\\Commands\\LitefToIxtifCommand' => $baseDir . '/app/Console/Commands/LitefToIxtifCommand.php',

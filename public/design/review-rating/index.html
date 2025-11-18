@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review & Rating Designs - iXtif Blog Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .design-frame { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); }
+        .nav-fixed { position: fixed; bottom: 30px; right: 30px; z-index: 50; }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Fixed Navigation -->
+    <div class="nav-fixed flex flex-col gap-3">
+        <a href="/design/" class="w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110" title="Ana Sayfa">
+            <i class="fas fa-home text-xl"></i>
+        </a>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 max-w-7xl">
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                Review & Rating Designs
+            </h1>
+            <p class="text-xl text-gray-400">Blog detay sayfası için 5 farklı yorum ve değerlendirme tasarımı</p>
+        </header>
+
+        <!-- VARIANT 1: Classic Card Style -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-blue-400 mb-2">Variant 1: Classic Card Style</h2>
+                <p class="text-gray-400">Geleneksel kart tasarımı, detaylı puan dağılımı ve yorum listesi</p>
+            </div>
+
+            <!-- Logged In State -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-check"></i> Giriş Yapılmış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Header -->
+                        <div class="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                                <i class="fas fa-comments text-blue-500"></i>
+                                Yorumlar ve Değerlendirmeler
+                            </h2>
+                        </div>
+
+                        <!-- Rating Summary -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                            <!-- Average Rating -->
+                            <div class="text-center md:text-left">
+                                <div class="flex flex-col md:flex-row items-center gap-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="text-6xl font-bold text-gray-900 dark:text-white">4.8</div>
+                                        <div class="flex items-center justify-center gap-1 mt-2">
+                                            <i class="fas fa-star text-yellow-400 text-xl"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xl"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xl"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xl"></i>
+                                            <i class="fas fa-star-half-alt text-yellow-400 text-xl"></i>
+                                        </div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">127 değerlendirme</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rating Distribution -->
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">5 <i class="fas fa-star text-yellow-400 text-xs"></i></span>
+                                    <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                        <div class="bg-yellow-400 h-full transition-all duration-300" style="width: 75%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">95</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">4 <i class="fas fa-star text-yellow-400 text-xs"></i></span>
+                                    <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                        <div class="bg-yellow-400 h-full transition-all duration-300" style="width: 18%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">23</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">3 <i class="fas fa-star text-yellow-400 text-xs"></i></span>
+                                    <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                        <div class="bg-yellow-400 h-full transition-all duration-300" style="width: 5%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">7</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">2 <i class="fas fa-star text-yellow-400 text-xs"></i></span>
+                                    <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                        <div class="bg-yellow-400 h-full transition-all duration-300" style="width: 2%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">2</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">1 <i class="fas fa-star text-yellow-400 text-xs"></i></span>
+                                    <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                                        <div class="bg-yellow-400 h-full transition-all duration-300" style="width: 0%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Reviews -->
+                        <div class="space-y-6">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                                <i class="fas fa-comments text-blue-500"></i>
+                                Kullanıcı Yorumları
+                            </h3>
+
+                            <!-- Review Item -->
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:shadow-md">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold text-lg shadow-md">A</div>
+                                        <div>
+                                            <p class="font-semibold text-gray-900 dark:text-white">Ahmet Yılmaz</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">2 gün önce</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                    </div>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Çok faydalı bir içerik olmuş. Özellikle detaylı anlatım sayesinde konuyu kolayca anladım. Teşekkürler!</p>
+                                <div class="flex items-center gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <button type="button" class="text-sm text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center gap-2">
+                                        <i class="far fa-thumbs-up"></i> Yardımcı oldu
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comment Form (Logged In) -->
+                        <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Yorum Yapın</h3>
+                            <form class="space-y-4">
+                                <div>
+                                    <textarea rows="4" placeholder="Düşüncelerinizi paylaşın..." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white resize-none" required></textarea>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Yorumunuz yayınlanmadan önce onaylanacaktır</p>
+                                    <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center gap-2">
+                                        <i class="fas fa-paper-plane"></i> Gönder
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Logged Out State -->
+            <div>
+                <h3 class="text-xl font-semibold text-red-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-times"></i> Giriş Yapılmamış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Same header and rating summary as above -->
+                        <div class="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                                <i class="fas fa-comments text-blue-500"></i>
+                                Yorumlar ve Değerlendirmeler
+                            </h2>
+                        </div>
+
+                        <!-- Login Prompt -->
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-8 text-center border-2 border-dashed border-gray-300 dark:border-gray-700">
+                            <i class="fas fa-lock text-gray-400 text-5xl mb-4"></i>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Yorum yapmak için giriş yapın</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">Düşüncelerinizi paylaşmak ve yorum yapmak için giriş yapmanız gerekmektedir.</p>
+                            <a href="#" class="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg">
+                                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 2: Minimal Clean Style -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-purple-400 mb-2">Variant 2: Minimal Clean Style</h2>
+                <p class="text-gray-400">Minimalist tasarım, odak noktası yorumlar</p>
+            </div>
+
+            <!-- Logged In State -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-check"></i> Giriş Yapılmış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Compact Rating Summary -->
+                        <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Değerlendirmeler</h2>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star-half-alt text-yellow-400 text-lg"></i>
+                                    </div>
+                                    <span class="text-2xl font-bold text-gray-900 dark:text-white">4.8</span>
+                                    <span class="text-gray-500 dark:text-gray-400">(127 değerlendirme)</span>
+                                </div>
+                            </div>
+                            <button class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                                <i class="fas fa-comment-dots mr-2"></i> Yorum Yaz
+                            </button>
+                        </div>
+
+                        <!-- Simple Review List -->
+                        <div class="space-y-4">
+                            <!-- Review Item -->
+                            <div class="py-6 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-purple-400 flex items-center justify-center text-white font-bold shadow-md flex-shrink-0">M</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Mehmet Kaya</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">1 hafta önce</p>
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Harika bir rehber. Adım adım anlatım sayesinde işimi kolaylaştırdı.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="py-6 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-green-400 flex items-center justify-center text-white font-bold shadow-md flex-shrink-0">Z</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div>
+                                                <p class="font-semibold text-gray-900 dark:text-white">Zeynep Demir</p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">3 gün önce</p>
+                                            </div>
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                                <i class="far fa-star text-gray-300 dark:text-gray-600 text-sm"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">İyi bir içerik ama biraz daha detaylı olabilirdi.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Logged Out State -->
+            <div>
+                <h3 class="text-xl font-semibold text-red-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-times"></i> Giriş Yapılmamış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Değerlendirmeler</h2>
+                                <div class="flex items-center gap-3">
+                                    <div class="flex items-center gap-1">
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star text-yellow-400 text-lg"></i>
+                                        <i class="fas fa-star-half-alt text-yellow-400 text-lg"></i>
+                                    </div>
+                                    <span class="text-2xl font-bold text-gray-900 dark:text-white">4.8</span>
+                                    <span class="text-gray-500 dark:text-gray-400">(127 değerlendirme)</span>
+                                </div>
+                            </div>
+                            <a href="#" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i> Giriş Yap
+                            </a>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-gray-900 rounded-lg p-6 text-center">
+                            <i class="fas fa-user-lock text-blue-500 text-4xl mb-3"></i>
+                            <p class="text-gray-700 dark:text-gray-300">Yorumları görmek için giriş yapmanız gerekmektedir.</p>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 3: Modern Card with Stats -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-green-400 mb-2">Variant 3: Modern Card with Stats</h2>
+                <p class="text-gray-400">Modern kart tasarımı, istatistikler ve badge'ler ile</p>
+            </div>
+
+            <!-- Logged In State -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-check"></i> Giriş Yapılmış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Stats Header -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">4.8</div>
+                                <div class="text-sm opacity-90">Ortalama Puan</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">127</div>
+                                <div class="text-sm opacity-90">Toplam Oy</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">45</div>
+                                <div class="text-sm opacity-90">Yorum Sayısı</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">95%</div>
+                                <div class="text-sm opacity-90">Memnuniyet</div>
+                            </div>
+                        </div>
+
+                        <!-- Star Rating Display -->
+                        <div class="flex items-center justify-center gap-2 mb-8">
+                            <i class="fas fa-star text-yellow-400 text-3xl"></i>
+                            <i class="fas fa-star text-yellow-400 text-3xl"></i>
+                            <i class="fas fa-star text-yellow-400 text-3xl"></i>
+                            <i class="fas fa-star text-yellow-400 text-3xl"></i>
+                            <i class="fas fa-star-half-alt text-yellow-400 text-3xl"></i>
+                        </div>
+
+                        <!-- Review Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Review Card 1 -->
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">E</div>
+                                        <div>
+                                            <p class="font-bold text-gray-900 dark:text-white">Elif Şahin</p>
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-xs font-semibold">Doğrulanmış</span>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3">Beklediğimden çok daha iyi! Kesinlikle tavsiye ederim.</p>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">5 gün önce</div>
+                            </div>
+
+                            <!-- Review Card 2 -->
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg">C</div>
+                                        <div>
+                                            <p class="font-bold text-gray-900 dark:text-white">Can Özdemir</p>
+                                            <div class="flex items-center gap-1">
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                <i class="far fa-star text-gray-300 dark:text-gray-600 text-xs"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs font-semibold">Yeni Üye</span>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3">Gayet başarılı bir içerik. Emeği geçen herkese teşekkürler.</p>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">1 hafta önce</div>
+                            </div>
+                        </div>
+
+                        <!-- Write Review CTA -->
+                        <div class="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-8 text-center text-white">
+                            <h3 class="text-2xl font-bold mb-3">Deneyiminizi Paylaşın!</h3>
+                            <p class="mb-6 opacity-90">Yorumunuz diğer kullanıcılara yardımcı olacak</p>
+                            <button class="px-8 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
+                                <i class="fas fa-edit mr-2"></i> Hemen Yorum Yap
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Logged Out State -->
+            <div>
+                <h3 class="text-xl font-semibold text-red-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-times"></i> Giriş Yapılmamış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Stats Header (same as above) -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">4.8</div>
+                                <div class="text-sm opacity-90">Ortalama Puan</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">127</div>
+                                <div class="text-sm opacity-90">Toplam Oy</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">45</div>
+                                <div class="text-sm opacity-90">Yorum Sayısı</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-6 text-white text-center">
+                                <div class="text-4xl font-bold mb-2">95%</div>
+                                <div class="text-sm opacity-90">Memnuniyet</div>
+                            </div>
+                        </div>
+
+                        <!-- Login Required -->
+                        <div class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 rounded-xl p-12 text-center border-2 border-dashed border-gray-300 dark:border-gray-700">
+                            <i class="fas fa-user-lock text-gray-400 text-6xl mb-6"></i>
+                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Yorumları Görmek İçin Giriş Yapın</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">Kullanıcı yorumlarını okumak ve kendi yorumunuzu eklemek için üye girişi yapmanız gerekmektedir.</p>
+                            <a href="#" class="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all shadow-xl transform hover:scale-105">
+                                <i class="fas fa-sign-in-alt text-xl"></i>
+                                <span>Giriş Yap</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 4: Timeline Style -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-yellow-400 mb-2">Variant 4: Timeline Style</h2>
+                <p class="text-gray-400">Zaman çizelgesi tarzı, kronolojik yorum akışı</p>
+            </div>
+
+            <!-- Logged In State -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-check"></i> Giriş Yapılmış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Rating Header -->
+                        <div class="text-center mb-10">
+                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Kullanıcı Deneyimleri</h2>
+                            <div class="inline-flex items-center gap-4 bg-yellow-50 dark:bg-yellow-900/20 px-8 py-4 rounded-full border-2 border-yellow-400">
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star-half-alt text-yellow-500 text-xl"></i>
+                                </div>
+                                <div class="border-l-2 border-yellow-400 pl-4">
+                                    <div class="text-3xl font-bold text-gray-900 dark:text-white">4.8</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">127 oy</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline -->
+                        <div class="relative">
+                            <!-- Vertical Line -->
+                            <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500"></div>
+
+                            <!-- Timeline Item 1 -->
+                            <div class="relative pl-16 pb-8">
+                                <div class="absolute left-3 top-2 w-6 h-6 bg-blue-500 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"></div>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">F</div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 dark:text-white">Fatma Aydın</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">Bugün, 14:30</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Mükemmel bir kaynak! Tüm sorularıma cevap buldum.</p>
+                                </div>
+                            </div>
+
+                            <!-- Timeline Item 2 -->
+                            <div class="relative pl-16 pb-8">
+                                <div class="absolute left-3 top-2 w-6 h-6 bg-purple-500 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"></div>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold">B</div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 dark:text-white">Burak Yıldız</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">Dün, 18:45</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="far fa-star text-gray-300 dark:text-gray-600"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Çok faydalı bilgiler içeriyor. Teşekkürler!</p>
+                                </div>
+                            </div>
+
+                            <!-- Timeline Item 3 -->
+                            <div class="relative pl-16">
+                                <div class="absolute left-3 top-2 w-6 h-6 bg-pink-500 rounded-full border-4 border-white dark:border-gray-800 shadow-lg"></div>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 shadow-md">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center text-white font-bold">S</div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 dark:text-white">Selin Koç</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">2 gün önce</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Harika bir anlatım. Çok beğendim!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add Comment Button -->
+                        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <button class="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-lg transition-all shadow-lg flex items-center justify-center gap-3">
+                                <i class="fas fa-plus-circle text-xl"></i>
+                                <span>Yeni Yorum Ekle</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Logged Out State -->
+            <div>
+                <h3 class="text-xl font-semibold text-red-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-times"></i> Giriş Yapılmamış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Rating Header (same as logged in) -->
+                        <div class="text-center mb-10">
+                            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Kullanıcı Deneyimleri</h2>
+                            <div class="inline-flex items-center gap-4 bg-yellow-50 dark:bg-yellow-900/20 px-8 py-4 rounded-full border-2 border-yellow-400">
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star text-yellow-500 text-xl"></i>
+                                    <i class="fas fa-star-half-alt text-yellow-500 text-xl"></i>
+                                </div>
+                                <div class="border-l-2 border-yellow-400 pl-4">
+                                    <div class="text-3xl font-bold text-gray-900 dark:text-white">4.8</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">127 oy</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blurred Timeline Preview -->
+                        <div class="relative">
+                            <div class="filter blur-sm opacity-50 pointer-events-none">
+                                <div class="bg-gray-100 dark:bg-gray-900 rounded-xl p-6 mb-4">
+                                    <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                                    <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
+                                </div>
+                                <div class="bg-gray-100 dark:bg-gray-900 rounded-xl p-6 mb-4">
+                                    <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-2/3 mb-2"></div>
+                                    <div class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/3"></div>
+                                </div>
+                            </div>
+
+                            <!-- Overlay -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl p-10 shadow-2xl text-center border-2 border-blue-500 max-w-md">
+                                    <i class="fas fa-lock text-blue-500 text-5xl mb-4"></i>
+                                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-3">Yorumları Görüntüle</h3>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-6">Tüm yorumları okumak için giriş yapın</p>
+                                    <a href="#" class="inline-block px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition-colors shadow-lg">
+                                        Giriş Yap
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 5: Compact List Style -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-pink-400 mb-2">Variant 5: Compact List Style</h2>
+                <p class="text-gray-400">Kompakt liste görünümü, hızlı okuma için optimize</p>
+            </div>
+
+            <!-- Logged In State -->
+            <div class="mb-12">
+                <h3 class="text-xl font-semibold text-green-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-check"></i> Giriş Yapılmış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Compact Header -->
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center gap-4">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Değerlendirmeler</h2>
+                                <div class="flex items-center gap-2 bg-yellow-100 dark:bg-yellow-900/30 px-4 py-2 rounded-full">
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                    <span class="font-bold text-gray-900 dark:text-white">4.8</span>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">(127)</span>
+                                </div>
+                            </div>
+                            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                                <i class="fas fa-plus mr-1"></i> Yorum Ekle
+                            </button>
+                        </div>
+
+                        <!-- Compact Review List -->
+                        <div class="space-y-3">
+                            <!-- Compact Review 1 -->
+                            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">D</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-semibold text-gray-900 dark:text-white text-sm">Deniz Arslan</p>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">Çok başarılı bir içerik. Tüm detaylar açıklanmış.</p>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">3 saat önce</span>
+                                </div>
+                            </div>
+
+                            <!-- Compact Review 2 -->
+                            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">N</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-semibold text-gray-900 dark:text-white text-sm">Nur Güneş</p>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="far fa-star text-gray-300 dark:text-gray-600 text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">Gayet yeterli bilgi var. İşime yaradı.</p>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">5 saat önce</span>
+                                </div>
+                            </div>
+
+                            <!-- Compact Review 3 -->
+                            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">T</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-semibold text-gray-900 dark:text-white text-sm">Tolga Çelik</p>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">Mükemmel! Tam aradığım bilgiler burada.</p>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">1 gün önce</span>
+                                </div>
+                            </div>
+
+                            <!-- Compact Review 4 -->
+                            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">İ</div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-semibold text-gray-900 dark:text-white text-sm">İpek Yıldırım</p>
+                                        <div class="flex items-center gap-1">
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                            <i class="fas fa-star-half-alt text-yellow-400 text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm line-clamp-2">Oldukça detaylı ve anlaşılır bir anlatım. Beğendim.</p>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">2 gün önce</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Load More -->
+                        <div class="mt-6 text-center">
+                            <button class="px-6 py-3 text-blue-600 dark:text-blue-400 font-semibold hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors">
+                                <i class="fas fa-chevron-down mr-2"></i> Daha Fazla Göster
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Logged Out State -->
+            <div>
+                <h3 class="text-xl font-semibold text-red-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user-times"></i> Giriş Yapılmamış Durum
+                </h3>
+                <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                        <!-- Compact Header -->
+                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center gap-4">
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Değerlendirmeler</h2>
+                                <div class="flex items-center gap-2 bg-yellow-100 dark:bg-yellow-900/30 px-4 py-2 rounded-full">
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                    <span class="font-bold text-gray-900 dark:text-white">4.8</span>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">(127)</span>
+                                </div>
+                            </div>
+                            <a href="#" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                                <i class="fas fa-sign-in-alt mr-1"></i> Giriş Yap
+                            </a>
+                        </div>
+
+                        <!-- Login Required Message -->
+                        <div class="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-xl">
+                            <i class="fas fa-comments text-gray-300 dark:text-gray-600 text-5xl mb-4"></i>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Yorumları Görmek İçin Giriş Yapın</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">Kullanıcı yorumlarına erişmek için üye girişi gereklidir</p>
+                            <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                                <i class="fas fa-arrow-right"></i> Hemen Giriş Yap
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <div class="text-center py-12 bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-2xl border border-blue-700/50">
+            <h2 class="text-3xl font-bold text-white mb-4">5 Farklı Review & Rating Tasarımı</h2>
+            <p class="text-gray-300 mb-6">iXtif blog sayfanız için hazırlanmış profesyonel yorumlama sistemleri</p>
+            <div class="flex items-center justify-center gap-4 flex-wrap">
+                <span class="px-4 py-2 bg-blue-600 rounded-full text-sm font-semibold">Classic Card</span>
+                <span class="px-4 py-2 bg-purple-600 rounded-full text-sm font-semibold">Minimal Clean</span>
+                <span class="px-4 py-2 bg-green-600 rounded-full text-sm font-semibold">Modern Stats</span>
+                <span class="px-4 py-2 bg-yellow-600 rounded-full text-sm font-semibold">Timeline</span>
+                <span class="px-4 py-2 bg-pink-600 rounded-full text-sm font-semibold">Compact List</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

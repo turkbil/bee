@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Share Designs - iXtif Blog Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+        .design-frame { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); }
+        .nav-fixed { position: fixed; bottom: 30px; right: 30px; z-index: 50; }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Fixed Navigation -->
+    <div class="nav-fixed flex flex-col gap-3">
+        <a href="/design/author-card/" class="w-14 h-14 bg-purple-600 hover:bg-purple-500 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110" title="Önceki: Author Card">
+            <i class="fas fa-chevron-left text-xl"></i>
+        </a>
+        <a href="/design/" class="w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110" title="Ana Sayfa">
+            <i class="fas fa-home text-xl"></i>
+        </a>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 max-w-7xl">
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 to-cyan-500 bg-clip-text text-transparent">
+                Social Share Designs
+            </h1>
+            <p class="text-xl text-gray-400">Blog detay sayfası için 10 farklı sosyal medya paylaşım tasarımı</p>
+        </header>
+
+        <!-- VARIANT 1: Floating Sidebar -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-blue-400 mb-2">Variant 1: Floating Sidebar</h2>
+                <p class="text-gray-400">Sayfa kenarında sabit duran minimal butonlar</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 min-h-96 relative">
+                    <!-- Content Placeholder -->
+                    <div class="max-w-3xl mx-auto">
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-3"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                    </div>
+
+                    <!-- Floating Social Share -->
+                    <div class="fixed left-8 top-1/2 transform -translate-y-1/2 flex flex-col gap-3">
+                        <button class="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-sky-500 hover:bg-sky-600 rounded-lg flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-blue-700 hover:bg-blue-800 rounded-lg flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-green-600 hover:bg-green-700 rounded-lg flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-gray-600 hover:bg-gray-700 rounded-lg flex items-center justify-center text-white transition-all hover:scale-110 shadow-lg" title="Link Kopyala">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 2: Horizontal Bar (Top) -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-purple-400 mb-2">Variant 2: Horizontal Bar (Top)</h2>
+                <p class="text-gray-400">İçerik üstünde yatay paylaşım çubuğu</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Bu makaleyi paylaşın</h3>
+                        <div class="flex items-center gap-2">
+                            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2 transition-colors">
+                                <i class="fab fa-facebook-f"></i> <span class="hidden md:inline">Facebook</span>
+                            </button>
+                            <button class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-lg flex items-center gap-2 transition-colors">
+                                <i class="fab fa-twitter"></i> <span class="hidden md:inline">Twitter</span>
+                            </button>
+                            <button class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg flex items-center gap-2 transition-colors">
+                                <i class="fab fa-linkedin-in"></i> <span class="hidden md:inline">LinkedIn</span>
+                            </button>
+                            <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 transition-colors">
+                                <i class="fab fa-whatsapp"></i> <span class="hidden md:inline">WhatsApp</span>
+                            </button>
+                            <button class="p-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors" title="Link Kopyala">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 3: Card Style (Bottom) -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-green-400 mb-2">Variant 3: Card Style (Bottom)</h2>
+                <p class="text-gray-400">İçerik altında kart tarzı paylaşım</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-xl p-8 text-white text-center">
+                    <div class="mb-6">
+                        <i class="fas fa-share-alt text-5xl mb-4 opacity-90"></i>
+                        <h3 class="text-2xl font-bold mb-2">Beğendiniz mi? Paylaşın!</h3>
+                        <p class="text-green-100">Arkadaşlarınızın da bu içeriği görmesini sağlayın</p>
+                    </div>
+                    <div class="flex items-center justify-center gap-3 flex-wrap">
+                        <button class="px-6 py-3 bg-white hover:bg-gray-100 text-blue-600 font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </button>
+                        <button class="px-6 py-3 bg-white hover:bg-gray-100 text-sky-500 font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </button>
+                        <button class="px-6 py-3 bg-white hover:bg-gray-100 text-blue-700 font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg">
+                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                        </button>
+                        <button class="px-6 py-3 bg-white hover:bg-gray-100 text-green-600 font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 4: Icon Grid -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-yellow-400 mb-2">Variant 4: Icon Grid</h2>
+                <p class="text-gray-400">Grid düzeninde ikonlar</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 text-center">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Sosyal Medyada Paylaş</h3>
+                    <div class="grid grid-cols-4 md:grid-cols-8 gap-4 max-w-2xl mx-auto">
+                        <button class="aspect-square bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="aspect-square bg-sky-500 hover:bg-sky-600 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="aspect-square bg-blue-700 hover:bg-blue-800 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="aspect-square bg-green-600 hover:bg-green-700 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button class="aspect-square bg-gradient-to-br from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </button>
+                        <button class="aspect-square bg-red-600 hover:bg-red-700 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="Pinterest">
+                            <i class="fab fa-pinterest-p"></i>
+                        </button>
+                        <button class="aspect-square bg-red-500 hover:bg-red-600 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </button>
+                        <button class="aspect-square bg-gray-700 hover:bg-gray-800 rounded-xl flex items-center justify-center text-white text-2xl transition-all hover:scale-110 shadow-lg" title="Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 5: Dropdown Style -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-pink-400 mb-2">Variant 5: Dropdown Style</h2>
+                <p class="text-gray-400">Tek buton, açılır menü</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-8 flex justify-end">
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="px-6 py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold rounded-lg flex items-center gap-2 transition-colors shadow-lg">
+                            <i class="fas fa-share-nodes"></i>
+                            <span>Paylaş</span>
+                            <i class="fas fa-chevron-down text-sm"></i>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 z-10">
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors">
+                                <i class="fab fa-facebook-f text-blue-600 w-5"></i>
+                                <span>Facebook'ta Paylaş</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors">
+                                <i class="fab fa-twitter text-sky-500 w-5"></i>
+                                <span>Twitter'da Paylaş</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors">
+                                <i class="fab fa-linkedin-in text-blue-700 w-5"></i>
+                                <span>LinkedIn'de Paylaş</span>
+                            </a>
+                            <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors">
+                                <i class="fab fa-whatsapp text-green-600 w-5"></i>
+                                <span>WhatsApp'ta Paylaş</span>
+                            </a>
+                            <hr class="my-2 border-gray-200 dark:border-gray-700">
+                            <button class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white transition-colors w-full">
+                                <i class="fas fa-link text-gray-600 w-5"></i>
+                                <span>Linki Kopyala</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 6: Minimal Inline -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-cyan-400 mb-2">Variant 6: Minimal Inline</h2>
+                <p class="text-gray-400">İçerik içinde minimal satır içi paylaşım</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-800 rounded-xl p-6">
+                    <div class="flex items-center gap-4 text-sm">
+                        <span class="text-gray-600 dark:text-gray-400 font-medium">Paylaş:</span>
+                        <a href="#" class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors" title="Facebook">
+                            <i class="fab fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="#" class="text-sky-500 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors" title="Twitter">
+                            <i class="fab fa-twitter text-lg"></i>
+                        </a>
+                        <a href="#" class="text-blue-700 dark:text-blue-500 hover:text-blue-800 dark:hover:text-blue-400 transition-colors" title="LinkedIn">
+                            <i class="fab fa-linkedin-in text-lg"></i>
+                        </a>
+                        <a href="#" class="text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400 transition-colors" title="WhatsApp">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                        <span class="w-px h-4 bg-gray-300 dark:bg-gray-600"></span>
+                        <button class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" title="Link Kopyala">
+                            <i class="fas fa-link text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 7: Circular Icons -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-orange-400 mb-2">Variant 7: Circular Icons</h2>
+                <p class="text-gray-400">Yuvarlak renkli ikonlar</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 text-center">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Bu içeriği paylaşın</h3>
+                    <div class="flex items-center justify-center gap-4">
+                        <button class="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white text-xl transition-all hover:scale-110 shadow-xl">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="w-16 h-16 bg-sky-500 hover:bg-sky-600 rounded-full flex items-center justify-center text-white text-xl transition-all hover:scale-110 shadow-xl">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="w-16 h-16 bg-blue-700 hover:bg-blue-800 rounded-full flex items-center justify-center text-white text-xl transition-all hover:scale-110 shadow-xl">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="w-16 h-16 bg-green-600 hover:bg-green-700 rounded-full flex items-center justify-center text-white text-xl transition-all hover:scale-110 shadow-xl">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+                        <button class="w-16 h-16 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white text-xl transition-all hover:scale-110 shadow-xl">
+                            <i class="fab fa-pinterest-p"></i>
+                        </button>
+                        <button class="w-16 h-16 bg-gray-700 hover:bg-gray-800 rounded-full flex items-center justify-center text-white text-xl transition-all hover:scale-110 shadow-xl">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 8: Sticky Bottom Bar -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-red-400 mb-2">Variant 8: Sticky Bottom Bar</h2>
+                <p class="text-gray-400">Sayfanın altında sabit duran bar</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 min-h-96 relative">
+                    <!-- Content -->
+                    <div class="max-w-3xl mx-auto mb-32">
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-3"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+                    </div>
+
+                    <!-- Sticky Bottom Bar -->
+                    <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-2xl py-4 px-6 z-50">
+                        <div class="max-w-4xl mx-auto flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-heart text-red-500 text-2xl"></i>
+                                <span class="text-gray-900 dark:text-white font-semibold">Bu içeriği sevdiniz mi? Paylaşın!</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button class="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center justify-center text-white transition-colors">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="w-10 h-10 bg-sky-500 hover:bg-sky-600 rounded-lg flex items-center justify-center text-white transition-colors">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="w-10 h-10 bg-blue-700 hover:bg-blue-800 rounded-lg flex items-center justify-center text-white transition-colors">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </button>
+                                <button class="w-10 h-10 bg-green-600 hover:bg-green-700 rounded-lg flex items-center justify-center text-white transition-colors">
+                                    <i class="fab fa-whatsapp"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 9: Modal/Popup Style -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-indigo-400 mb-2">Variant 9: Modal/Popup Style</h2>
+                <p class="text-gray-400">Paylaş butonuna tıklayınca açılan modal</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 relative min-h-96 flex items-center justify-center">
+                    <!-- Trigger Button -->
+                    <button class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-xl flex items-center gap-3 transform hover:scale-105 transition-all">
+                        <i class="fas fa-share-alt text-2xl"></i>
+                        <span>Paylaşım Seçenekleri</span>
+                    </button>
+
+                    <!-- Modal (Demo - Always visible) -->
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border-2 border-indigo-500">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Paylaş</h3>
+                                <button class="w-8 h-8 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg flex items-center justify-center text-gray-700 dark:text-gray-300 transition-colors">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div class="space-y-3">
+                                <button class="w-full flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-colors border border-blue-200 dark:border-blue-800">
+                                    <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xl">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-semibold text-gray-900 dark:text-white">Facebook</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">Facebook'ta paylaş</div>
+                                    </div>
+                                </button>
+
+                                <button class="w-full flex items-center gap-4 p-4 bg-sky-50 dark:bg-sky-900/20 hover:bg-sky-100 dark:hover:bg-sky-900/30 rounded-xl transition-colors border border-sky-200 dark:border-sky-800">
+                                    <div class="w-12 h-12 bg-sky-500 rounded-lg flex items-center justify-center text-white text-xl">
+                                        <i class="fab fa-twitter"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-semibold text-gray-900 dark:text-white">Twitter</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">Twitter'da paylaş</div>
+                                    </div>
+                                </button>
+
+                                <button class="w-full flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-xl transition-colors border border-green-200 dark:border-green-800">
+                                    <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white text-xl">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-semibold text-gray-900 dark:text-white">WhatsApp</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">WhatsApp'ta paylaş</div>
+                                    </div>
+                                </button>
+
+                                <button class="w-full flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors border border-gray-200 dark:border-gray-700">
+                                    <div class="w-12 h-12 bg-gray-600 rounded-lg flex items-center justify-center text-white text-xl">
+                                        <i class="fas fa-link"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="font-semibold text-gray-900 dark:text-white">Link Kopyala</div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">Panoya kopyala</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VARIANT 10: Animated Fab Button -->
+        <section class="mb-20">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-teal-400 mb-2">Variant 10: Animated FAB Button</h2>
+                <p class="text-gray-400">Sağ altta yüzen animasyonlu buton</p>
+            </div>
+            <div class="design-frame rounded-2xl p-8 border border-gray-700">
+                <div class="bg-white dark:bg-gray-900 rounded-xl p-8 min-h-96 relative">
+                    <!-- Content -->
+                    <div class="max-w-3xl mx-auto">
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-3"></div>
+                    </div>
+
+                    <!-- FAB Menu -->
+                    <div class="fixed bottom-8 right-8 flex flex-col-reverse items-end gap-3" x-data="{ open: false }">
+                        <!-- Sub Buttons (show when open) -->
+                        <button class="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all transform hover:scale-110">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-sky-500 hover:bg-sky-600 rounded-full flex items-center justify-center text-white shadow-lg transition-all transform hover:scale-110">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-blue-700 hover:bg-blue-800 rounded-full flex items-center justify-center text-white shadow-lg transition-all transform hover:scale-110">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-green-600 hover:bg-green-700 rounded-full flex items-center justify-center text-white shadow-lg transition-all transform hover:scale-110">
+                            <i class="fab fa-whatsapp"></i>
+                        </button>
+
+                        <!-- Main FAB Button -->
+                        <button class="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 rounded-full flex items-center justify-center text-white text-2xl shadow-2xl transition-all transform hover:scale-110 hover:rotate-90">
+                            <i class="fas fa-share-nodes"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <div class="text-center py-12 bg-gradient-to-r from-green-900/30 to-cyan-900/30 rounded-2xl border border-green-700/50">
+            <h2 class="text-3xl font-bold text-white mb-4">10 Farklı Social Share Tasarımı</h2>
+            <p class="text-gray-300 mb-6">iXtif blog sayfanız için hazırlanmış profesyonel paylaşım sistemleri</p>
+            <div class="flex items-center justify-center gap-3 flex-wrap">
+                <span class="px-3 py-2 bg-blue-600 rounded-full text-xs font-semibold">Floating Sidebar</span>
+                <span class="px-3 py-2 bg-purple-600 rounded-full text-xs font-semibold">Horizontal Bar</span>
+                <span class="px-3 py-2 bg-green-600 rounded-full text-xs font-semibold">Card Style</span>
+                <span class="px-3 py-2 bg-yellow-600 rounded-full text-xs font-semibold">Icon Grid</span>
+                <span class="px-3 py-2 bg-pink-600 rounded-full text-xs font-semibold">Dropdown</span>
+                <span class="px-3 py-2 bg-cyan-600 rounded-full text-xs font-semibold">Minimal Inline</span>
+                <span class="px-3 py-2 bg-orange-600 rounded-full text-xs font-semibold">Circular Icons</span>
+                <span class="px-3 py-2 bg-red-600 rounded-full text-xs font-semibold">Sticky Bottom</span>
+                <span class="px-3 py-2 bg-indigo-600 rounded-full text-xs font-semibold">Modal</span>
+                <span class="px-3 py-2 bg-teal-600 rounded-full text-xs font-semibold">Animated FAB</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</body>
+</html>

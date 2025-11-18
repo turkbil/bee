@@ -11,6 +11,24 @@
     $bodyWithAnchors = \App\Services\TocService::addHeadingAnchors($body ?? '');
     $toc = \App\Services\TocService::generateToc($body ?? '');
 
+    // Section başlıklarını TOC'ye ekle
+    $hasFaq = !empty($item->faq_data);
+    $hasHowto = !empty($item->howto_data);
+    $hasRelated = method_exists($item, 'relatedBlogs') && $item->relatedBlogs()->count() > 0;
+
+    if ($hasFaq) {
+        $toc[] = ['id' => 'sik-sorulan-sorular', 'text' => 'Sık Sorulan Sorular', 'level' => 2, 'children' => []];
+    }
+    if ($hasHowto) {
+        $toc[] = ['id' => 'nasil-yapilir', 'text' => 'Nasıl Yapılır', 'level' => 2, 'children' => []];
+    }
+    $toc[] = ['id' => 'yorumlar-ve-degerlendirmeler', 'text' => 'Yorumlar ve Değerlendirmeler', 'level' => 2, 'children' => []];
+    $toc[] = ['id' => 'yazi-paylas', 'text' => 'Yazıyı Paylaş', 'level' => 2, 'children' => []];
+    $toc[] = ['id' => 'yazar-bilgileri', 'text' => 'Yazar Bilgileri', 'level' => 2, 'children' => []];
+    if ($hasRelated) {
+        $toc[] = ['id' => 'diger-yazilar', 'text' => 'Diğer Yazılar', 'level' => 2, 'children' => []];
+    }
+
     $countTocItems = function(array $items) use (&$countTocItems): int {
         $sum = 0;
         foreach ($items as $entry) {
@@ -85,9 +103,9 @@
     <div class="container mx-auto py-8 md:py-12">
 
         {{-- Hero Section: Başlık + Kategori + Featured Image + Etiketler --}}
-        <header class="mb-8 md:mb-12">
-            {{-- Kategori Badge + Etiketler (üstte) --}}
-            <div class="flex flex-wrap items-center gap-3 mb-4">
+        {{-- Kategori Badge + Etiketler (Header dışında, üstte) --}}
+        @if($categoryName || $tags->isNotEmpty())
+            <div class="flex flex-wrap items-center gap-3 mb-6">
                 @if($categoryName)
                     <x-blog.category-badge :category="$categoryName" size="md" />
                 @endif
@@ -119,68 +137,7 @@
                     </div>
                 @endif
             </div>
-
-            {{-- Başlık (Tekrar - Magazine Style) --}}
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
-                {{ $title }}
-            </h1>
-
-            {{-- Meta Card: Yazar + Tarih + Stats --}}
-            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 md:p-6 shadow-md border border-gray-200 dark:border-gray-700 mb-6">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    {{-- Yazar Mini Info --}}
-                    <x-blog.author-card variant="mini" />
-
-                    {{-- Tarih --}}
-                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                        <i class="fas fa-calendar text-blue-500"></i>
-                        <span class="text-sm font-medium">{{ $publishedDate }}</span>
-                    </div>
-
-                    {{-- Stats Bar --}}
-                    <div class="md:ml-auto">
-                        <x-blog.stats-bar :blog="$item" />
-                    </div>
-                </div>
-            </div>
-
-            {{-- Excerpt (Büyük, Dikkat Çekici) --}}
-            @if($excerpt)
-                <p class="text-xl md:text-2xl leading-relaxed text-gray-700 dark:text-gray-300 font-light italic mb-8 pl-4 border-l-4 border-blue-500">
-                    {{ $excerpt }}
-                </p>
-            @endif
-
-            {{-- Featured Image (Compact - 4:3 Ratio) --}}
-            @if($featuredImage)
-                <figure class="overflow-hidden rounded-xl shadow-lg mb-8">
-                    <a href="{{ $featuredImage->getUrl() }}"
-                       class="glightbox block"
-                       data-gallery="blog-featured"
-                       data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                       data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                        <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
-                             alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                             width="{{ $featuredImage->getCustomProperty('width') ?? 800 }}"
-                             height="{{ $featuredImage->getCustomProperty('height') ?? 600 }}"
-                             loading="eager"
-                             class="w-full h-auto max-h-[500px] object-cover cursor-pointer transition-all duration-300 hover:scale-105">
-                    </a>
-                    @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
-                        <figcaption class="bg-gray-100 dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
-                            <strong class="block font-semibold text-gray-900 dark:text-white mb-1 text-base">
-                                {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
-                            </strong>
-                            @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
-                                <span class="block text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                    {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
-                                </span>
-                            @endif
-                        </figcaption>
-                    @endif
-                </figure>
-            @endif
-        </header>
+        @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-6">
             {{-- Sol Sidebar (Sadece TOC - Mobilde Gizli) --}}
@@ -193,7 +150,216 @@
             </aside>
 
             {{-- Ana İçerik --}}
-            <article class="order-1 lg:order-2 {{ !empty($toc) ? 'lg:col-span-2' : 'lg:col-span-3' }} space-y-10">
+            <article class="order-1 lg:order-2 {{ !empty($toc) ? 'lg:col-span-2' : 'lg:col-span-3' }}">
+                {{-- Meta Card: Tarih + Stats (Yeniden Kodlandı - Hatasız) --}}
+                <div class="bg-transparent rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-6">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                        {{-- Tarih --}}
+                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-calendar text-blue-500 dark:text-blue-400"></i>
+                            <span class="text-sm font-medium">{{ $publishedDate }}</span>
+                        </div>
+
+                        {{-- Sağ Taraf: Okuma + Favori + Rating --}}
+                        <div class="md:ml-auto flex flex-wrap items-center gap-4 md:gap-6">
+
+                            {{-- Okuma Süresi --}}
+                            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-clock text-blue-500 dark:text-blue-400"></i>
+                                <span class="text-sm font-medium">{{ $readingTime }} dk okuma</span>
+                            </div>
+
+                            {{-- Favori Butonu (Guest/Auth Aware) --}}
+                            @auth
+                                <div class="flex items-center gap-2 cursor-pointer hover:scale-110 transition-transform duration-200"
+                                     x-data="{
+                                         favorited: {{ $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                         count: {{ $item->favoritesCount() ?? 0 }},
+                                         loading: false,
+                                         async toggleFavorite() {
+                                             if (this.loading) return;
+                                             this.loading = true;
+                                             try {
+                                                 const response = await fetch('/api/favorites/toggle', {
+                                                     method: 'POST',
+                                                     headers: {
+                                                         'Content-Type': 'application/json',
+                                                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
+                                                         'Accept': 'application/json'
+                                                     },
+                                                     body: JSON.stringify({
+                                                         model_class: '{{ addslashes(get_class($item)) }}',
+                                                         model_id: {{ $item->id }}
+                                                     })
+                                                 });
+                                                 const data = await response.json();
+                                                 if (data.success) {
+                                                     this.favorited = data.data.is_favorited;
+                                                     this.count = data.data.favorites_count;
+                                                 }
+                                             } catch (error) {
+                                                 console.error('Favorite error:', error);
+                                             } finally {
+                                                 this.loading = false;
+                                             }
+                                         }
+                                     }"
+                                     @click="toggleFavorite()">
+                                    <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+                                       class="text-lg transition-colors"></i>
+                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400"
+                                          x-text="count + ' favori'"></span>
+                                </div>
+                            @else
+                                <div class="flex items-center gap-2 text-gray-400 dark:text-gray-500 cursor-pointer"
+                                     @click="window.location.href = '{{ route('login') }}'">
+                                    <i class="far fa-heart text-lg"></i>
+                                    <span class="text-sm font-medium">{{ $item->favoritesCount() ?? 0 }} favori</span>
+                                </div>
+                            @endauth
+
+                            {{-- Rating Component (Guest/Auth Aware) --}}
+                            @php
+                                $averageRating = method_exists($item, 'averageRating') ? $item->averageRating() : 0;
+                                $ratingsCount = method_exists($item, 'ratingsCount') ? $item->ratingsCount() : 0;
+                                $currentUserRating = auth()->check() && method_exists($item, 'userRating') ? $item->userRating(auth()->id()) : 0;
+                            @endphp
+
+                            <div class="flex items-center gap-2"
+                                 x-data="{
+                                     modelClass: '{{ addslashes(get_class($item)) }}',
+                                     modelId: {{ $item->id }},
+                                     currentRating: {{ $currentUserRating }},
+                                     averageRating: {{ $averageRating }},
+                                     ratingsCount: {{ $ratingsCount }},
+                                     isAuthenticated: {{ auth()->check() ? 'true' : 'false' }},
+                                     hoverRating: 0,
+                                     showMessage: false,
+                                     message: '',
+                                     messageType: 'info',
+
+                                     handleStarClick(value) {
+                                         if (!this.isAuthenticated) {
+                                             window.location.href = '{{ route('login') }}';
+                                             return;
+                                         }
+                                         this.rateItem(value);
+                                     },
+
+                                     async rateItem(value) {
+                                         try {
+                                             const response = await fetch('/api/reviews/rating', {
+                                                 method: 'POST',
+                                                 headers: {
+                                                     'Content-Type': 'application/json',
+                                                     'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
+                                                     'Accept': 'application/json'
+                                                 },
+                                                 body: JSON.stringify({
+                                                     model_class: this.modelClass,
+                                                     model_id: this.modelId,
+                                                     rating_value: value
+                                                 })
+                                             });
+                                             const data = await response.json();
+                                             if (data.success) {
+                                                 this.currentRating = value;
+                                                 this.averageRating = parseFloat(data.data.average_rating);
+                                                 this.ratingsCount = parseInt(data.data.ratings_count);
+                                                 this.showToast('Puanınız kaydedildi! ⭐', 'success');
+                                             } else {
+                                                 this.showToast(data.message || 'Bir hata oluştu', 'error');
+                                             }
+                                         } catch (error) {
+                                             console.error('Rating error:', error);
+                                             this.showToast('Bir hata oluştu', 'error');
+                                         }
+                                     },
+
+                                     showToast(msg, type) {
+                                         this.message = msg;
+                                         this.messageType = type;
+                                         this.showMessage = true;
+                                         setTimeout(() => { this.showMessage = false; }, 3000);
+                                     },
+
+                                     getStarClass(star) {
+                                         const rating = this.hoverRating > 0 ? this.hoverRating : (this.currentRating || this.averageRating);
+                                         return star <= rating ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600';
+                                     }
+                                 }">
+
+                                {{-- Yıldızlar --}}
+                                <div class="flex items-center gap-0.5" @mouseleave="hoverRating = 0">
+                                    <template x-for="star in 5" :key="star">
+                                        <button type="button"
+                                                @click="handleStarClick(star)"
+                                                @mouseenter="hoverRating = star"
+                                                class="text-sm cursor-pointer hover:scale-110 transition-all duration-150">
+                                            <i x-bind:class="getStarClass(star)"></i>
+                                        </button>
+                                    </template>
+                                </div>
+
+                                {{-- Ortalama ve Sayı --}}
+                                <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                                    <span class="font-semibold" x-text="averageRating.toFixed(1)"></span>
+                                    <span class="text-xs opacity-75">(<span x-text="ratingsCount"></span>)</span>
+                                </div>
+
+                                {{-- Toast Message --}}
+                                <div x-show="showMessage"
+                                     x-transition
+                                     class="absolute top-full mt-2 right-0 px-4 py-2 rounded-lg text-sm font-medium shadow-lg"
+                                     x-bind:class="{
+                                         'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': messageType === 'success',
+                                         'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': messageType === 'error'
+                                     }">
+                                    <span x-text="message"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Excerpt (Büyük, Dikkat Çekici) --}}
+                @if($excerpt)
+                    <p class="text-xl md:text-2xl leading-relaxed text-gray-700 dark:text-gray-300 font-light italic mb-8 pl-4 border-l-4 border-blue-500">
+                        {{ $excerpt }}
+                    </p>
+                @endif
+
+                {{-- Featured Image (Article'ın en üstünde - Thumbmaker optimized) --}}
+                @if($featuredImage)
+                    <figure class="overflow-hidden rounded-xl shadow-lg mb-8">
+                        <a href="{{ $featuredImage->getUrl() }}"
+                           class="glightbox block"
+                           data-gallery="blog-featured"
+                           data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
+                           data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                            <img src="{{ thumb($featuredImage, 1200, 800, ['quality' => 90, 'format' => 'webp']) }}"
+                                 alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                                 width="1200"
+                                 height="800"
+                                 loading="eager"
+                                 class="w-full h-auto max-h-[500px] object-cover cursor-pointer transition-all duration-300 hover:scale-105">
+                        </a>
+                        @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
+                            <figcaption class="bg-gray-100 dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
+                                <strong class="block font-semibold text-gray-900 dark:text-white mb-1 text-base">
+                                    {{ $featuredImage->getCustomProperty('title')[$currentLocale] }}
+                                </strong>
+                                @if($featuredImage->getCustomProperty('description')[$currentLocale] ?? false)
+                                    <span class="block text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                        {{ $featuredImage->getCustomProperty('description')[$currentLocale] }}
+                                    </span>
+                                @endif
+                            </figcaption>
+                        @endif
+                    </figure>
+                @endif
+
                 {{-- Body Content --}}
                 <div class="content-body prose prose-lg md:prose-xl max-w-none
                           prose-headings:font-bold prose-headings:tracking-tight prose-headings:scroll-mt-24
@@ -227,16 +393,6 @@
                     {!! Blade::render($parsedBody, [], true) !!}
                 </div>
 
-                {{-- Author Card (Detaylı) --}}
-                <section class="mt-12">
-                    <x-blog.author-card variant="full" />
-                </section>
-
-                {{-- Review & Rating Section --}}
-                <section class="mt-12">
-                    <x-blog.review-section :blog="$item" />
-                </section>
-
                 {{-- FAQ Section --}}
                 @if(!empty($item->faq_data))
                     @php
@@ -254,7 +410,7 @@
                         }
                     @endphp
                     @if($hasValidFaq)
-                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/FAQPage">
+                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600" itemscope itemtype="https://schema.org/FAQPage">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                     <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
@@ -305,50 +461,6 @@
                     @endif
                 @endif
 
-                {{-- Galeri --}}
-                @if($galleryImages->count() > 0)
-                    <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700">
-                        <header class="mb-8">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                                {{ __('mediamanagement::admin.gallery') }}
-                            </h2>
-                            <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
-                        </header>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
-                            @foreach($galleryImages as $image)
-                                <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
-                                    <a href="{{ $image->getUrl() }}"
-                                       class="glightbox"
-                                       data-gallery="blog-gallery"
-                                       data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                                       data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                        <img src="{{ $image->getUrl('thumb') }}"
-                                             alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                             width="{{ $image->getCustomProperty('width') ?? 400 }}"
-                                             height="{{ $image->getCustomProperty('height') ?? 300 }}"
-                                             loading="lazy"
-                                             class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110">
-                                    </a>
-                                    @if($image->getCustomProperty('title')[$currentLocale] ?? false)
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 pointer-events-none">
-                                            <div class="text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                                <strong class="block text-sm font-semibold mb-1">
-                                                    {{ $image->getCustomProperty('title')[$currentLocale] }}
-                                                </strong>
-                                                @if($image->getCustomProperty('description')[$currentLocale] ?? false)
-                                                    <span class="block text-xs leading-relaxed line-clamp-2">
-                                                        {{ $image->getCustomProperty('description')[$currentLocale] }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endif
-                                </figure>
-                            @endforeach
-                        </div>
-                    </section>
-                @endif
-
                 {{-- HowTo Section --}}
                 @if(!empty($item->howto_data))
                     @php
@@ -357,7 +469,7 @@
                         $howtoDesc = is_array($howtoData['description'] ?? null) ? ($howtoData['description'][$currentLocale] ?? '') : ($howtoData['description'] ?? '');
                     @endphp
                     @if(!empty($howtoData) && is_array($howtoData) && !empty($howtoData['steps']) && !empty($howtoName))
-                        <section id="nasil-yapilir" class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700" itemscope itemtype="https://schema.org/HowTo">
+                        <section id="nasil-yapilir" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600" itemscope itemtype="https://schema.org/HowTo">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
                                     <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
@@ -371,7 +483,7 @@
                                 @endif
                             </header>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                                 @foreach($howtoData['steps'] as $index => $step)
                                     @php
                                         $stepName = is_array($step['name'] ?? null) ? ($step['name'][$currentLocale] ?? '') : ($step['name'] ?? '');
@@ -410,9 +522,53 @@
                     @endif
                 @endif
 
+                {{-- Review & Rating Section --}}
+                <section id="yorumlar-ve-degerlendirmeler" class="mt-16 md:mt-20">
+                    <x-blog.review-section :blog="$item" />
+                </section>
+
+                {{-- Social Share (Article Bottom) --}}
+                <div id="yazi-paylas" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-8 text-gray-900 dark:text-white flex items-center gap-3">
+                        <i class="fas fa-share-alt text-blue-500"></i>
+                        Bu yazıyı paylaş
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="https://wa.me/?text={{ urlencode($title) }}%20{{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium transition">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($title) }}&url={{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 hover:bg-black text-white font-medium transition">
+                            <i class="fab fa-x-twitter"></i>
+                            Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-medium transition">
+                            <i class="fab fa-linkedin-in"></i>
+                            LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Author Card (Detaylı) --}}
+                <section id="yazar-bilgileri" class="mt-16 md:mt-20">
+                    <x-blog.author-card variant="full" />
+                </section>
+
                 {{-- İlgili Yazılar --}}
                 @if($relatedBlogs->isNotEmpty())
-                    <section class="mt-16 md:mt-20 pt-12 border-t-2 border-gray-200 dark:border-gray-700">
+                    <section id="diger-yazilar" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600">
                         <header class="mb-8">
                             <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                 Bunları da Beğenebilirsin
@@ -427,10 +583,10 @@
                                             @php
                                                 $relatedImage = $relatedBlog->getFirstMedia('featured_image');
                                             @endphp
-                                            <img src="{{ $relatedImage->getUrl('thumb') }}"
+                                            <img src="{{ thumb($relatedImage, 400, 300, ['quality' => 85, 'format' => 'webp']) }}"
                                                  alt="{{ $relatedBlog->getTranslated('title', $currentLocale) }}"
-                                                 width="{{ $relatedImage->getCustomProperty('width') ?? 400 }}"
-                                                 height="{{ $relatedImage->getCustomProperty('height') ?? 300 }}"
+                                                 width="400"
+                                                 height="300"
                                                  loading="lazy"
                                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         @endif
@@ -460,9 +616,53 @@
                     </section>
                 @endif
 
+                {{-- Galeri --}}
+                @if($galleryImages->count() > 0)
+                    <section class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600">
+                        <header class="mb-8">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+                                {{ __('mediamanagement::admin.gallery') }}
+                            </h2>
+                            <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                        </header>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                            @foreach($galleryImages as $image)
+                                <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
+                                    <a href="{{ $image->getUrl() }}"
+                                       class="glightbox"
+                                       data-gallery="blog-gallery"
+                                       data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
+                                       data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                                        <img src="{{ thumb($image, 400, 300, ['quality' => 85, 'format' => 'webp']) }}"
+                                             alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
+                                             width="400"
+                                             height="300"
+                                             loading="lazy"
+                                             class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110">
+                                    </a>
+                                    @if($image->getCustomProperty('title')[$currentLocale] ?? false)
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 pointer-events-none">
+                                            <div class="text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                                <strong class="block text-sm font-semibold mb-1">
+                                                    {{ $image->getCustomProperty('title')[$currentLocale] }}
+                                                </strong>
+                                                @if($image->getCustomProperty('description')[$currentLocale] ?? false)
+                                                    <span class="block text-xs leading-relaxed line-clamp-2">
+                                                        {{ $image->getCustomProperty('description')[$currentLocale] }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
+                                </figure>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+
                 {{-- Önceki/Sonraki --}}
                 @if($prevPost || $nextPost)
-                    <nav class="mt-12 grid gap-8 md:grid-cols-2">
+                    <nav class="mt-16 md:mt-20 grid gap-8 md:grid-cols-2">
                         @if($prevPost)
                             <a href="{{ $prevPost->getUrl($currentLocale) }}"
                                class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500">
@@ -489,7 +689,7 @@
                     </nav>
                 @endif
 
-                <footer class="mt-16 md:mt-20 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
+                <footer class="mt-16 md:mt-20">
                     <a href="{{ $blogIndexUrl }}"
                        class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
                         <i class="fas fa-arrow-left"></i>

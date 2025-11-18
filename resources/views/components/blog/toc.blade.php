@@ -22,7 +22,7 @@
         $listId = 'toc-' . \Illuminate\Support\Str::uuid()->toString();
     @endphp
 
-    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-md pb-4">
+    <div class="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-md">
         <header class="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-200 dark:border-slate-700">
             <div class="flex items-center gap-2.5">
                 <div class="w-7 h-7 rounded-lg bg-blue-500 dark:bg-blue-600 flex items-center justify-center">
@@ -37,8 +37,8 @@
             </span>
         </header>
 
-        <nav class="px-4 py-4 pb-8 max-h-[350px] overflow-y-auto toc-scroll" aria-label="{{ $title }}">
-            <ul class="space-y-1 pb-6" data-toc-list id="{{ $listId }}">
+        <nav class="px-4 py-4 max-h-[350px] overflow-y-auto toc-scroll" aria-label="{{ $title }}">
+            <ul class="space-y-1" data-toc-list id="{{ $listId }}">
                 @foreach ($toc as $item)
                     @include('components.blog.toc-item', ['item' => $item, 'level' => 0])
                 @endforeach
@@ -295,7 +295,7 @@
                             setActivePassive(links[0].dataset.target);
                         }
 
-                        // IntersectionObserver: Sadece passive update (scroll ETME!)
+                        // IntersectionObserver: Anında tepki + TOC scroll (sadece desktop)
                         if ('IntersectionObserver' in window) {
                             const observer = new IntersectionObserver((entries) => {
                                 // Auto-scroll sırasında observer'ı yok say
@@ -303,7 +303,7 @@
                                     return;
                                 }
 
-                                // Debounce: Çok hızlı değişimleri engelle
+                                // Minimal debounce: Anında tepki için
                                 clearTimeout(tocScrollTimeout);
                                 tocScrollTimeout = setTimeout(() => {
                                     const visibleEntries = entries.filter(entry => entry.isIntersecting);
@@ -314,15 +314,20 @@
                                             .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
 
                                         if (topEntry && topEntry.target.id) {
-                                            // Sadece passive update - TOC'yi SCROLL ETME
-                                            setActivePassive(topEntry.target.id);
+                                            // Desktop: TOC scroll et, Mobile: Sadece passive
+                                            const isDesktop = window.innerWidth >= 1024;
+                                            if (isDesktop) {
+                                                setActiveWithScroll(topEntry.target.id);
+                                            } else {
+                                                setActivePassive(topEntry.target.id);
+                                            }
                                         }
                                     }
-                                }, 150); // 150ms debounce
+                                }, 50); // 50ms debounce (anında tepki)
                             }, {
                                 root: null,
-                                rootMargin: '-20% 0px -60% 0px', // Daha dar margin
-                                threshold: 0
+                                rootMargin: '-10% 0px -70% 0px', // Daha hassas margin
+                                threshold: [0, 0.1, 0.2]
                             });
 
                             // Tüm heading'leri observe et

@@ -431,6 +431,56 @@
                     @endif
                 @endif
 
+                {{-- Social Share (Article Bottom) --}}
+                <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
+                        <i class="fas fa-share-alt text-blue-500"></i>
+                        Bu yazıyı paylaş
+                    </h3>
+                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                        <a href="https://wa.me/?text={{ urlencode($title) }}%20{{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                            <i class="fab fa-whatsapp text-xl"></i>
+                            WhatsApp
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                            Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($title) }}&url={{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-gray-900 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                            <i class="fab fa-x-twitter text-xl"></i>
+                            Twitter
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                            <i class="fab fa-linkedin-in text-xl"></i>
+                            LinkedIn
+                        </a>
+                        <button type="button"
+                                x-data="{ copied: false }"
+                                @click="
+                                    navigator.clipboard.writeText('{{ $shareUrl }}');
+                                    copied = true;
+                                    setTimeout(() => copied = false, 2000);
+                                "
+                                class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-gray-600 hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 text-white font-medium transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                            <i class="fas fa-link text-xl" x-show="!copied"></i>
+                            <i class="fas fa-check text-xl text-green-400" x-show="copied" x-cloak></i>
+                            <span x-text="copied ? 'Kopyalandı!' : 'Linki Kopyala'"></span>
+                        </button>
+                    </div>
+                </div>
+
                 <footer class="mt-16 md:mt-20 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
                     <a href="{{ $blogIndexUrl }}"
                        class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">

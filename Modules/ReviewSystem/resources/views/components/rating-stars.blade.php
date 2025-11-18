@@ -1,12 +1,24 @@
 {{--
-    Rating Stars Component
-    Kullanım:
+    ⭐ Self-Contained Rating Stars Component
+
+    Kullanım (Blog):
+    @include('reviewsystem::components.rating-stars', [
+        'model' => $item,
+        'readonly' => false,
+        'showCount' => true,
+        'size' => 'sm'
+    ])
+
+    Kullanım (Product):
     @include('reviewsystem::components.rating-stars', [
         'model' => $product,
         'readonly' => false,
         'showCount' => true,
-        'size' => 'md' // sm, md, lg
+        'size' => 'md'
     ])
+
+    Size Options: sm, md, lg
+    Component kendi JS/CSS/Alpine logic'ini içinde taşır - @push gerekmez!
 --}}
 
 @php
@@ -19,91 +31,58 @@
     $showCount = $showCount ?? true;
     $size = $size ?? 'md';
 
+    // Unique ID for this component instance
+    $uniqueId = 'rating-' . uniqid();
+
     $starSizes = [
-        'sm' => 'text-base',
+        'sm' => 'text-sm',
         'md' => 'text-xl',
         'lg' => 'text-3xl'
     ];
     $starClass = $starSizes[$size] ?? $starSizes['md'];
 @endphp
 
-<div class="rating-stars-wrapper" x-data="ratingStars({
-    modelClass: '{{ addslashes($modelClass) }}',
-    modelId: {{ $modelId }},
-    currentRating: {{ $userRating ?? 0 }},
-    averageRating: {{ $averageRating }},
-    ratingsCount: {{ $ratingsCount }},
-    readonly: {{ $readonly ? 'true' : 'false' }},
-    isAuthenticated: {{ auth()->check() ? 'true' : 'false' }}
-})">
-    <div class="flex items-center gap-2">
-        <!-- Yıldızlar -->
-        <div class="flex items-center gap-1">
-            <template x-for="star in 5" :key="star">
-                <button
-                    type="button"
-                    @click="!readonly && isAuthenticated && rate(star)"
-                    @mouseenter="!readonly && isAuthenticated && (hoverRating = star)"
-                    @mouseleave="!readonly && isAuthenticated && (hoverRating = 0)"
-                    :class="{
-                        'cursor-pointer': !readonly && isAuthenticated,
-                        'cursor-default': readonly || !isAuthenticated
-                    }"
-                    class="{{ $starClass }} transition-colors duration-150">
-                    <i :class="{
-                        'fas fa-star text-yellow-400': star <= (hoverRating || currentRating || averageRating),
-                        'far fa-star text-gray-300 dark:text-gray-600': star > (hoverRating || currentRating || averageRating)
-                    }"></i>
-                </button>
-            </template>
-        </div>
-
-        <!-- Ortalama puan ve sayı -->
-        @if($showCount)
-        <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-semibold" x-text="averageRating.toFixed(1)">{{ number_format($averageRating, 1) }}</span>
-            <span>(<span x-text="ratingsCount">{{ $ratingsCount }}</span>)</span>
-        </div>
-        @endif
-    </div>
-
-    <!-- Kullanıcı feedback mesajı -->
-    <div x-show="showMessage"
-         x-transition
-         class="mt-2 text-sm"
-         :class="{
-             'text-green-600 dark:text-green-400': messageType === 'success',
-             'text-red-600 dark:text-red-400': messageType === 'error',
-             'text-blue-600 dark:text-blue-400': messageType === 'info'
-         }">
-        <span x-text="message"></span>
-    </div>
-</div>
-
-@once
-@push('scripts')
-<script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('ratingStars', (config) => ({
-        modelClass: config.modelClass,
-        modelId: config.modelId,
-        currentRating: config.currentRating,
-        averageRating: config.averageRating,
-        ratingsCount: config.ratingsCount,
-        readonly: config.readonly,
-        isAuthenticated: config.isAuthenticated,
+<div id="{{ $uniqueId }}" class="rating-stars-wrapper">
+    <div x-data="{
+        modelClass: '{{ addslashes($modelClass) }}',
+        modelId: {{ $modelId }},
+        currentRating: {{ $userRating ?? 0 }},
+        averageRating: {{ $averageRating }},
+        ratingsCount: {{ $ratingsCount }},
+        readonly: {{ $readonly ? 'true' : 'false' }},
+        isAuthenticated: {{ auth()->check() ? 'true' : 'false' }},
         hoverRating: 0,
         showMessage: false,
         message: '',
         messageType: 'info',
 
-        rate(value) {
+        handleClick(value) {
             if (this.readonly) return;
 
             if (!this.isAuthenticated) {
-                this.displayMessage('Puan vermek için giriş yapmalısınız', 'error');
+                // Direkt login popup aç
+                this.openLoginModal();
                 return;
             }
+
+            // Authenticated ise puan gönder
+            this.rate(value);
+        },
+
+        openLoginModal() {
+            // Global login modal varsa aç
+            if (window.openLoginModal) {
+                window.openLoginModal();
+            } else if (typeof Alpine !== 'undefined' && Alpine.store('auth')) {
+                Alpine.store('auth').showLoginModal = true;
+            } else {
+                // Fallback: Login sayfasına yönlendir
+                window.location.href = '{{ route("login") }}';
+            }
+        },
+
+        rate(value) {
+            if (this.readonly) return;
 
             // API'ye puan gönder
             fetch('/api/reviews/rating', {
@@ -121,11 +100,18 @@ document.addEventListener('alpine:init', () => {
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Rating API Response:', data);
                 if (data.success) {
                     this.currentRating = value;
-                    this.averageRating = data.data.average_rating;
-                    this.ratingsCount = data.data.ratings_count;
-                    this.displayMessage('Puanınız kaydedildi', 'success');
+                    this.averageRating = parseFloat(data.data.average_rating);
+                    this.ratingsCount = parseInt(data.data.ratings_count);
+                    console.log('Updated - Average:', this.averageRating, 'Count:', this.ratingsCount);
+                    this.displayMessage('Puanınız kaydedildi! ⭐', 'success');
+
+                    // Force Alpine reactivity
+                    this.$nextTick(() => {
+                        console.log('Alpine updated - Average:', this.averageRating, 'Count:', this.ratingsCount);
+                    });
                 } else {
                     this.displayMessage(data.message || 'Bir hata oluştu', 'error');
                 }
@@ -145,8 +131,53 @@ document.addEventListener('alpine:init', () => {
                 this.showMessage = false;
             }, 3000);
         }
-    }));
-});
-</script>
-@endpush
-@endonce
+    }">
+        <div class="flex items-center gap-2 relative">
+            <!-- Yıldızlar -->
+            <div class="flex items-center gap-0.5 relative" @mouseleave="hoverRating = 0">
+                @auth
+                {{-- Authenticated: İnteraktif yıldızlar --}}
+                <template x-for="star in 5" :key="star">
+                    <button
+                        type="button"
+                        @click="handleClick(star)"
+                        @mouseenter="hoverRating = star"
+                        class="{{ $starClass }} cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating > 0 && star <= hoverRating) || (hoverRating === 0 && star <= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'"></i>
+                    </button>
+                </template>
+                @else
+                {{-- Guest: Login için tıklanabilir yıldızlar --}}
+                <template x-for="star in 5" :key="star">
+                    <button
+                        type="button"
+                        @click="openLoginModal()"
+                        class="{{ $starClass }} cursor-pointer transition-all duration-150">
+                        <i :class="star <= averageRating ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'"></i>
+                    </button>
+                </template>
+                @endauth
+            </div>
+
+            <!-- Ortalama puan ve sayı -->
+            @if($showCount)
+            <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-semibold" x-text="averageRating.toFixed(1)">{{ number_format($averageRating, 1) }}</span>
+                <span class="text-xs opacity-75">(<span x-text="ratingsCount">{{ $ratingsCount }}</span>)</span>
+            </div>
+            @endif
+        </div>
+
+        <!-- Kullanıcı feedback mesajı -->
+        <div x-show="showMessage"
+             x-transition
+             class="mt-2 text-sm font-medium"
+             :class="{
+                 'text-green-600 dark:text-green-400': messageType === 'success',
+                 'text-red-600 dark:text-red-400': messageType === 'error',
+                 'text-blue-600 dark:text-blue-400': messageType === 'info'
+             }">
+            <span x-text="message"></span>
+        </div>
+    </div>
+</div>

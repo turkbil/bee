@@ -4,23 +4,29 @@ use Illuminate\Support\Facades\Route;
 use Modules\Favorite\App\Services\FavoriteService;
 
 // API rotaları - Favorite işlemleri
-Route::middleware(['api', 'tenant'])
-    ->prefix('api/favorites')
-    ->name('api.favorites.')
+Route::middleware(['tenant'])
+    ->prefix('favorites')
+    ->name('favorites.')
     ->group(function () {
 
         // Toggle favorite (ekle/çıkar)
         Route::post('/toggle', function(\Illuminate\Http\Request $request) {
+            // Auth kontrolü - web session veya sanctum token
+            if (!auth()->check() && !auth('sanctum')->check()) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            }
+
             $service = app(FavoriteService::class);
+            $userId = auth()->id() ?? auth('sanctum')->id();
 
             $result = $service->toggleFavorite(
                 $request->input('model_class'),
                 $request->input('model_id'),
-                auth()->id()
+                $userId
             );
 
             return response()->json($result);
-        })->middleware('auth:sanctum')->name('toggle');
+        })->name('toggle');
 
         // Kullanıcının favorileri
         Route::get('/my-favorites', function(\Illuminate\Http\Request $request) {

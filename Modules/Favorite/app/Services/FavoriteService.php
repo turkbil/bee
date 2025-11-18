@@ -35,13 +35,21 @@ class FavoriteService
         // Toggle işlemi
         $result = $model->toggleFavorite($userId);
 
+        // Güncel favori sayısını al
+        $favoritesCount = $this->getFavoritesCount($modelClass, $modelId);
+        $isFavorited = $result['action'] === 'added';
+
         // Cache temizle
         $this->clearCache($userId, $modelClass);
 
         return [
             'success' => true,
             'message' => $result['action'] === 'added' ? 'Favorilere eklendi' : 'Favorilerden çıkarıldı',
-            'data' => $result,
+            'data' => [
+                'action' => $result['action'],
+                'is_favorited' => $isFavorited,
+                'favorites_count' => $favoritesCount,
+            ],
         ];
     }
 

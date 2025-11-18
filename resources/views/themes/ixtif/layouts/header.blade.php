@@ -92,6 +92,45 @@
     @stack('head')
     @stack('styles')
 
+    {{-- Header Cache Buttons & Icon Visibility Style --}}
+    <style>
+        /* Cache buttons loading animation */
+        button[onclick*="clearSystemCache"] .loading-spinner,
+        button[onclick*="clearAIConversation"] .loading-spinner {
+            display: none;
+        }
+        button[onclick*="clearSystemCache"].loading .loading-icon,
+        button[onclick*="clearAIConversation"].loading .loading-icon {
+            display: none;
+        }
+        button[onclick*="clearSystemCache"].loading .loading-spinner,
+        button[onclick*="clearAIConversation"].loading .loading-spinner {
+            display: inline-block !important;
+        }
+
+        /* Dark mode icon visibility (CSS-based, instant) */
+        html:not(.dark) .dark-mode-icon-moon {
+            display: inline-block !important;
+        }
+        html:not(.dark) .dark-mode-icon-sun {
+            display: none !important;
+        }
+        html.dark .dark-mode-icon-moon {
+            display: none !important;
+        }
+        html.dark .dark-mode-icon-sun {
+            display: inline-block !important;
+        }
+
+        /* Search icon visibility (will be controlled by Alpine.js) */
+        .search-icon-default {
+            display: inline-block;
+        }
+        .search-icon-close {
+            display: none;
+        }
+    </style>
+
     {{-- AI Chat CSS - Load in head for styling --}}
     <link rel="stylesheet" href="/assets/css/ai-chat.css?v=<?php echo time(); ?>">
     {{-- AI Chat JS moved to footer.blade.php AFTER Alpine.js/Livewire --}}
@@ -118,6 +157,21 @@
             // Scroll listener for hiding topbar
             window.addEventListener('scroll', () => {
                 this.scrolled = window.scrollY > 10;
+            });
+
+            // Search icon toggle
+            this.$watch('searchOpen', value => {
+                const defaultIcon = document.querySelector('.search-icon-default');
+                const closeIcon = document.querySelector('.search-icon-close');
+                if (defaultIcon && closeIcon) {
+                    if (value) {
+                        defaultIcon.classList.add('hidden');
+                        closeIcon.classList.remove('hidden');
+                    } else {
+                        defaultIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                }
             });
         }
     }"
@@ -509,6 +563,65 @@
 
                     {{-- Right Actions --}}
                     <div class="flex items-center gap-2" @mouseenter="activeMegaMenu = null">
+                        {{-- 🔐 ADMIN ONLY: Cache Clear Button (Icon Only) --}}
+                        @auth
+                            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('root'))
+                                <div x-data="{ showTooltip: false }" class="relative">
+                                    <button onclick="clearSystemCache(this)"
+                                            @mouseenter="showTooltip = true"
+                                            @mouseleave="showTooltip = false"
+                                            aria-label="[ADMIN] Sistem Önbelleğini Temizle"
+                                            class="w-10 h-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition">
+                                        <i class="fa-light fa-trash-can text-lg loading-icon"></i>
+                                        <i class="fa-solid fa-spinner fa-spin text-lg loading-spinner hidden"></i>
+                                    </button>
+                                    {{-- Tooltip --}}
+                                    <div x-show="showTooltip"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                         x-transition:leave="transition ease-in duration-150"
+                                         x-transition:leave-start="opacity-100 scale-100"
+                                         x-transition:leave-end="opacity-0 scale-95"
+                                         class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-red-600/95 to-red-700/95 dark:from-red-500/95 dark:to-red-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
+                                         x-cloak>
+                                        <span>Cache Temizle</span>
+                                        {{-- Tooltip Arrow --}}
+                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+                                            <div class="border-[5px] border-transparent border-b-red-600/95 dark:border-b-red-500/95"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div x-data="{ showTooltip: false }" class="relative">
+                                    <button onclick="clearAIConversation(this)"
+                                            @mouseenter="showTooltip = true"
+                                            @mouseleave="showTooltip = false"
+                                            aria-label="[ADMIN] AI Konuşma Geçmişini Temizle"
+                                            class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+                                        <i class="fa-light fa-comments text-lg loading-icon"></i>
+                                        <i class="fa-solid fa-spinner fa-spin text-lg loading-spinner hidden"></i>
+                                    </button>
+                                    {{-- Tooltip --}}
+                                    <div x-show="showTooltip"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                         x-transition:leave="transition ease-in duration-150"
+                                         x-transition:leave-start="opacity-100 scale-100"
+                                         x-transition:leave-end="opacity-0 scale-95"
+                                         class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-purple-600/95 to-purple-700/95 dark:from-purple-500/95 dark:to-purple-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
+                                         x-cloak>
+                                        <span>AI Chat Temizle</span>
+                                        {{-- Tooltip Arrow --}}
+                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
+                                            <div class="border-[5px] border-transparent border-b-purple-600/95 dark:border-b-purple-500/95"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endauth
+
                         {{-- Search Button with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
                             <button @click="searchOpen = !searchOpen; activeMegaMenu = null; $nextTick(() => { if (searchOpen) { setTimeout(() => { const input = document.getElementById('header-search-input'); if (input) input.focus(); }, 250); } })"
@@ -517,8 +630,8 @@
                                     aria-label="Arama menüsünü aç/kapat"
                                     :aria-expanded="searchOpen"
                                     class="w-10 h-10 rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-                                <i class="fa-light text-lg transition-all duration-200"
-                                   :class="searchOpen ? 'fa-times' : 'fa-magnifying-glass'"></i>
+                                <i class="fa-light fa-magnifying-glass text-lg transition-all duration-200 search-icon-default"></i>
+                                <i class="fa-light fa-times text-lg transition-all duration-200 search-icon-close hidden"></i>
                             </button>
                             {{-- Tooltip --}}
                             <div x-show="showTooltip"
@@ -545,12 +658,8 @@
                                     @mouseleave="showTooltip = false"
                                     :aria-label="darkMode === 'dark' ? 'Aydınlık moda geç' : 'Karanlık moda geç'"
                                     class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
-                                <template x-if="darkMode === 'dark'">
-                                    <i class="fa-regular fa-sun-bright text-lg"></i>
-                                </template>
-                                <template x-if="darkMode === 'light'">
-                                    <i class="fa-light fa-moon text-lg"></i>
-                                </template>
+                                <i class="fa-light fa-moon text-lg dark-mode-icon-moon"></i>
+                                <i class="fa-regular fa-sun-bright text-lg dark-mode-icon-sun hidden"></i>
                             </button>
                             {{-- Tooltip --}}
                             <div x-show="showTooltip"

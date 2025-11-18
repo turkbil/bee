@@ -490,7 +490,255 @@
 
 {{-- AI Chat Admin Functions: clearAIConversation() → /public/assets/js/ai-chat.js --}}
 
-{{-- Theme Main Scripts --}}
+{{-- Header Cache Buttons JavaScript (Override - MUST load BEFORE app.js) --}}
+<script>
+// Cache Butonları için JavaScript - Header ve Footer için
+(function() {
+    // ÖNCE placeholder fonksiyon oluştur (app.js yüklenmeden önce)
+    window.clearSystemCache = function(button) {
+        console.log('[Cache] Waiting for initialization...');
+    };
+
+    window.clearAIConversation = function(button) {
+        console.log('[AI Chat] Waiting for initialization...');
+    };
+
+    // Sayfada DOM yüklendiğinde çalışsın
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCacheButtons);
+    } else {
+        initCacheButtons();
+    }
+
+    function initCacheButtons() {
+        // app.js'deki orijinal fonksiyonu kaydet (varsa)
+        const originalClearSystemCache = window.clearSystemCache;
+
+        // Yeni clearSystemCache fonksiyonu
+        window.clearSystemCache = function(button) {
+            if (!button) {
+                console.error('[Cache] Button parameter is undefined');
+                return;
+            }
+
+            // Header butonu mu footer butonu mu kontrol et
+            const loadingIcon = button.querySelector('.loading-icon');
+            const buttonText = button.querySelector('.button-text');
+            const isHeaderButton = loadingIcon !== null;
+            const isFooterButton = buttonText !== null;
+
+            if (isHeaderButton) {
+                // Header butonu için yeni davranış
+                const spinner = button.querySelector('.loading-spinner');
+
+                if (!loadingIcon || !spinner) {
+                    console.error('[Cache] Header icon elements not found');
+                    return;
+                }
+
+                button.disabled = true;
+                button.classList.add('loading');
+                loadingIcon.classList.add('hidden');
+                spinner.classList.remove('hidden');
+
+                fetch('/clear-cache', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message);
+                    }
+
+                    // Başarılı - Yeşil renk
+                    button.classList.remove('hover:bg-red-50', 'dark:hover:bg-red-900/20', 'hover:text-red-600', 'dark:hover:text-red-400');
+                    button.classList.add('bg-green-100', 'dark:bg-green-500/20', 'text-green-600', 'dark:text-green-400');
+
+                    // 1 saniye sonra sayfayı yenile
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error('[Cache] Clear failed:', error);
+                    // Hata - Daha koyu kırmızı
+                    button.classList.add('bg-red-200', 'dark:bg-red-500/40');
+
+                    setTimeout(() => {
+                        button.disabled = false;
+                        button.classList.remove('loading', 'bg-red-200', 'dark:bg-red-500/40');
+                        loadingIcon.classList.remove('hidden');
+                        spinner.classList.add('hidden');
+                    }, 2000);
+                });
+            } else if (isFooterButton) {
+                // Footer butonu için davranış
+                const spinner = button.querySelector('.loading-spinner');
+                const iconSvg = button.querySelector('svg:first-child');
+
+                if (!buttonText || !spinner) {
+                    console.error('[Cache] Footer button elements not found');
+                    return;
+                }
+
+                button.disabled = true;
+                spinner.classList.remove('hidden');
+                iconSvg.classList.add('hidden');
+                buttonText.textContent = 'Temizleniyor...';
+
+                fetch('/clear-cache', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message);
+                    }
+
+                    // Başarılı
+                    buttonText.textContent = 'Temizlendi!';
+                    button.classList.remove('bg-red-100', 'hover:bg-red-200', 'dark:bg-red-500/20', 'dark:hover:bg-red-500/30');
+                    button.classList.add('bg-green-100', 'dark:bg-green-500/20');
+
+                    // 1 saniye sonra sayfayı yenile
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error('[Cache] Footer clear failed:', error);
+                    buttonText.textContent = 'Hata!';
+                    button.classList.remove('bg-red-100', 'dark:bg-red-500/20');
+                    button.classList.add('bg-red-200', 'dark:bg-red-500/40');
+
+                    setTimeout(() => {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        iconSvg.classList.remove('hidden');
+                        buttonText.textContent = 'Cache';
+                        button.classList.remove('bg-red-200', 'dark:bg-red-500/40');
+                        button.classList.add('bg-red-100', 'dark:bg-red-500/20', 'hover:bg-red-200', 'dark:hover:bg-red-500/30');
+                    }, 2000);
+                });
+            } else if (originalClearSystemCache && typeof originalClearSystemCache === 'function') {
+                // Fallback - orijinal fonksiyonu çağır
+                originalClearSystemCache(button);
+            }
+        };
+
+        // AI Chat temizleme için de benzer güncelleme
+        const originalClearAIConversation = window.clearAIConversation;
+
+        window.clearAIConversation = function(button) {
+            if (!button) {
+                console.error('[AI Chat] Button parameter is undefined');
+                return;
+            }
+
+            // Header butonu mu footer butonu mu kontrol et
+            const loadingIcon = button.querySelector('.loading-icon');
+            const buttonText = button.querySelector('.button-text');
+            const isHeaderButton = loadingIcon !== null;
+            const isFooterButton = buttonText !== null;
+
+            if (isHeaderButton) {
+                const spinner = button.querySelector('.loading-spinner');
+
+                if (!loadingIcon || !spinner) {
+                    console.error('[AI Chat] Icon elements not found');
+                    return;
+                }
+
+                button.disabled = true;
+                button.classList.add('loading');
+                loadingIcon.classList.add('hidden');
+                spinner.classList.remove('hidden');
+
+                // AI Chat için localStorage temizleme (basit çözüm)
+                try {
+                    localStorage.removeItem('ai_conversation_history');
+                    localStorage.removeItem('ai_conversation_id');
+
+                    // Başarılı - Yeşil renk
+                    button.classList.remove('hover:bg-purple-50', 'dark:hover:bg-purple-900/20', 'hover:text-purple-600', 'dark:hover:text-purple-400');
+                    button.classList.add('bg-green-100', 'dark:bg-green-500/20', 'text-green-600', 'dark:text-green-400');
+
+                    // 1 saniye sonra sayfayı yenile
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } catch (error) {
+                    console.error('[AI Chat] Clear failed:', error);
+                    // Hata - Daha koyu mor
+                    button.classList.add('bg-purple-200', 'dark:bg-purple-500/40');
+
+                    setTimeout(() => {
+                        button.disabled = false;
+                        button.classList.remove('loading', 'bg-purple-200', 'dark:bg-purple-500/40');
+                        loadingIcon.classList.remove('hidden');
+                        spinner.classList.add('hidden');
+                    }, 2000);
+                }
+            } else if (isFooterButton) {
+                // Footer butonu için davranış
+                const spinner = button.querySelector('.loading-spinner');
+                const iconSvg = button.querySelector('svg:first-child');
+
+                if (!buttonText || !spinner) {
+                    console.error('[AI Chat] Footer button elements not found');
+                    return;
+                }
+
+                button.disabled = true;
+                spinner.classList.remove('hidden');
+                iconSvg.classList.add('hidden');
+                buttonText.textContent = 'Temizleniyor...';
+
+                try {
+                    localStorage.removeItem('ai_conversation_history');
+                    localStorage.removeItem('ai_conversation_id');
+
+                    // Başarılı
+                    buttonText.textContent = 'Temizlendi!';
+                    button.classList.remove('bg-purple-100', 'hover:bg-purple-200', 'dark:bg-purple-500/20', 'dark:hover:bg-purple-500/30');
+                    button.classList.add('bg-green-100', 'dark:bg-green-500/20');
+
+                    // 1 saniye sonra sayfayı yenile
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } catch (error) {
+                    console.error('[AI Chat] Footer clear failed:', error);
+                    buttonText.textContent = 'Hata!';
+                    button.classList.remove('bg-purple-100', 'dark:bg-purple-500/20');
+                    button.classList.add('bg-purple-200', 'dark:bg-purple-500/40');
+
+                    setTimeout(() => {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        iconSvg.classList.remove('hidden');
+                        buttonText.textContent = 'AI Chat';
+                        button.classList.remove('bg-purple-200', 'dark:bg-purple-500/40');
+                        button.classList.add('bg-purple-100', 'dark:bg-purple-500/20', 'hover:bg-purple-200', 'dark:hover:bg-purple-500/30');
+                    }, 2000);
+                }
+            } else if (originalClearAIConversation && typeof originalClearAIConversation === 'function') {
+                originalClearAIConversation(button);
+            }
+        };
+    }
+})();
+</script>
+
+{{-- Theme Main Scripts (Load AFTER override) --}}
 @php
     $themeService = app(\App\Services\ThemeService::class);
     $activeTheme = $themeService->getActiveTheme();
@@ -502,8 +750,8 @@
 {{-- Web Share API Helper --}}
 <script defer src="{{ asset('js/web-share.js') }}"></script>
 
-{{-- instant.page - Preload on hover for instant navigation --}}
-<script src="//instant.page/5.2.0" type="module" data-instant-intensity="mousedown"></script>
+{{-- instant.page - Preload on hover for instant navigation (Local) --}}
+<script src="{{ asset('js/instantpage.js') }}" type="module" data-instant-intensity="mousedown"></script>
 
 {{-- Back to Top Button Script --}}
 <script defer src="{{ asset('js/back-to-top.js') }}"></script>

@@ -646,6 +646,25 @@ sudo find public/readme/2025/ -type f -exec chmod 644 {} \;
 
 **İstisnalar:** CLAUDE.md, README.md, .env, composer.json (core dosyalar)
 
+#### 📸 GÖRSEL/SCREENSHOT TEMİZLİĞİ
+
+**🎯 Kullanıcı ana dizine görsel attıysa:**
+- ✅ Görsel → Referans/örnek amaçlıdır
+- ✅ İşlem tamamlandıktan sonra → Otomatik sil!
+- ✅ Ana dizin → Her zaman temiz
+
+**Örnek Senaryo:**
+```bash
+# Kullanıcı: "ekran-goruntusu.png" gönderir
+# 1. Görseli analiz et
+# 2. Tasarım/kodu oluştur
+# 3. İş bitince:
+sudo rm "ekran-goruntusu.png"
+# 4. Kullanıcıya bildir: "✅ Görsel silindi, ana dizin temiz"
+```
+
+**UNUTMA:** Ana dizine atılan görseller geçicidir, iş bitince temizle!
+
 ---
 
 ### 🚨 8. BUFFER DOSYALARI (a-console.txt, a-html.txt)

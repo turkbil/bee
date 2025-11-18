@@ -4,27 +4,38 @@ use Illuminate\Support\Facades\Route;
 use Modules\ReviewSystem\App\Services\ReviewService;
 
 // API rotaları - Review işlemleri
-Route::middleware(['api', 'tenant'])
+Route::middleware(['web', 'tenant'])
     ->prefix('api/reviews')
     ->name('api.reviews.')
     ->group(function () {
 
-        // Rating ekle
+        // Rating ekle (Web session destekli)
         Route::post('/rating', function(\Illuminate\Http\Request $request) {
+            // Auth kontrolü - web session veya sanctum token
+            if (!auth()->check() && !auth('sanctum')->check()) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            }
+
             $service = app(ReviewService::class);
+            $userId = auth()->id() ?? auth('sanctum')->id();
 
             $result = $service->addRating(
                 $request->input('model_class'),
                 $request->input('model_id'),
                 $request->input('rating_value'),
-                auth()->id()
+                $userId
             );
 
             return response()->json($result);
-        })->middleware('auth:sanctum')->name('rating');
+        })->name('rating');
 
-        // Review ekle
+        // Review ekle (Web session destekli)
         Route::post('/add', function(\Illuminate\Http\Request $request) {
+            // Auth kontrolü - web session veya sanctum token
+            if (!auth()->check() && !auth('sanctum')->check()) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            }
+
             $service = app(ReviewService::class);
 
             $result = $service->addReview([
@@ -36,7 +47,7 @@ Route::middleware(['api', 'tenant'])
             ]);
 
             return response()->json($result);
-        })->middleware('auth:sanctum')->name('add');
+        })->name('add');
 
         // Review listesi
         Route::get('/{modelClass}/{modelId}', function($modelClass, $modelId) {
@@ -46,4 +57,14 @@ Route::middleware(['api', 'tenant'])
 
             return response()->json($reviews);
         })->name('list');
+
+        // Mark review as helpful/unhelpful
+        Route::post('/helpful/{reviewId}', function($reviewId, \Illuminate\Http\Request $request) {
+            $service = app(ReviewService::class);
+            $isHelpful = $request->input('is_helpful', true);
+
+            $result = $service->markHelpful($reviewId, $isHelpful);
+
+            return response()->json($result);
+        })->name('helpful');
     });

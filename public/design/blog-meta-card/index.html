@@ -66,7 +66,7 @@
 
         <!-- Design Selector -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 max-w-5xl mx-auto">
-            <template x-for="i in 5" :key="i">
+            <template x-for="i in 10" :key="i">
                 <button 
                     @click="currentDesign = i" 
                     :class="currentDesign === i ? 'bg-gradient-to-r from-purple-600 to-pink-600 shadow-lg scale-105' : 'bg-white/5 hover:bg-white/10'" 
@@ -265,6 +265,832 @@
                             <div class="w-px h-6 bg-gray-700"></div>
                             <div class="text-center">
                                 <i class="far fa-star text-gray-600"></i>
+                                <p class="text-xs font-bold text-white">0.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 3: Card Badge Style -->
+        <div x-show="currentDesign === 3" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                    Design 3: Badge Style
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-100">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-xl shadow-lg">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-lg">iXtif</p>
+                                <p class="text-xs text-gray-500 font-medium">İçerik Yazarı</p>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-sm font-semibold text-gray-700 border border-gray-200 shadow-sm">
+                                <i class="fas fa-calendar text-blue-500"></i>
+                                17 Kasım 2025
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-sm font-semibold text-gray-700 border border-gray-200 shadow-sm">
+                                <i class="fas fa-clock text-blue-500"></i>
+                                15 dk okuma
+                            </span>
+                            <template x-if="isLoggedIn">
+                                <span class="inline-flex items-center gap-1.5 bg-red-50 px-4 py-2 rounded-full text-sm font-semibold text-red-600 border border-red-200 shadow-sm cursor-pointer hover:bg-red-100 transition">
+                                    <i class="fas fa-heart"></i>
+                                    0 favori
+                                </span>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-sm font-semibold text-gray-400 border border-gray-200 shadow-sm">
+                                    <i class="far fa-heart"></i>
+                                    0 favori
+                                </span>
+                            </template>
+                            <span class="inline-flex items-center gap-1.5 bg-white px-4 py-2 rounded-full text-sm font-semibold text-gray-700 border border-gray-200 shadow-sm">
+                                <i class="far fa-star text-yellow-400"></i>
+                                0.0
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 border-2 border-gray-700">
+                    <div class="flex flex-col md:flex-row md:items-center gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-xl shadow-lg">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">iXtif</p>
+                                <p class="text-xs text-gray-400 font-medium">İçerik Yazarı</p>
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-wrap gap-2">
+                            <span class="inline-flex items-center gap-1.5 bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold text-gray-200 border border-gray-600 shadow-sm">
+                                <i class="fas fa-calendar text-blue-400"></i>
+                                17 Kasım 2025
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold text-gray-200 border border-gray-600 shadow-sm">
+                                <i class="fas fa-clock text-blue-400"></i>
+                                15 dk okuma
+                            </span>
+                            <template x-if="isLoggedIn">
+                                <span class="inline-flex items-center gap-1.5 bg-red-900 bg-opacity-30 px-4 py-2 rounded-full text-sm font-semibold text-red-400 border border-red-800 shadow-sm cursor-pointer hover:bg-opacity-50 transition">
+                                    <i class="fas fa-heart"></i>
+                                    0 favori
+                                </span>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <span class="inline-flex items-center gap-1.5 bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold text-gray-500 border border-gray-600 shadow-sm">
+                                    <i class="far fa-heart"></i>
+                                    0 favori
+                                </span>
+                            </template>
+                            <span class="inline-flex items-center gap-1.5 bg-gray-700 px-4 py-2 rounded-full text-sm font-semibold text-gray-200 border border-gray-600 shadow-sm">
+                                <i class="far fa-star text-yellow-400"></i>
+                                0.0
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 4: Minimalist Line -->
+        <div x-show="currentDesign === 4" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                    Design 4: Minimalist Line
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="bg-white rounded-xl px-6 py-4 border-t-4 border-blue-500 shadow">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900">iXtif</p>
+                                <div class="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-calendar"></i>
+                                        17 Kas 2025
+                                    </span>
+                                    <span>•</span>
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-clock"></i>
+                                        15dk
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <template x-if="isLoggedIn">
+                                <button class="flex items-center gap-1.5 text-red-500 hover:text-red-600 font-medium transition">
+                                    <i class="fas fa-heart text-lg"></i>
+                                    <span class="text-sm">0</span>
+                                </button>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="flex items-center gap-1.5 text-gray-400 font-medium">
+                                    <i class="far fa-heart text-lg"></i>
+                                    <span class="text-sm">0</span>
+                                </div>
+                            </template>
+                            <div class="w-px h-8 bg-gray-200"></div>
+                            <div class="flex items-center gap-1.5 text-gray-600 font-medium">
+                                <i class="far fa-star text-lg text-yellow-400"></i>
+                                <span class="text-sm">0.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="bg-gray-800 rounded-xl px-6 py-4 border-t-4 border-blue-400 shadow">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-11 h-11 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-white">iXtif</p>
+                                <div class="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-calendar"></i>
+                                        17 Kas 2025
+                                    </span>
+                                    <span>•</span>
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-clock"></i>
+                                        15dk
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <template x-if="isLoggedIn">
+                                <button class="flex items-center gap-1.5 text-red-400 hover:text-red-300 font-medium transition">
+                                    <i class="fas fa-heart text-lg"></i>
+                                    <span class="text-sm">0</span>
+                                </button>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="flex items-center gap-1.5 text-gray-500 font-medium">
+                                    <i class="far fa-heart text-lg"></i>
+                                    <span class="text-sm">0</span>
+                                </div>
+                            </template>
+                            <div class="w-px h-8 bg-gray-700"></div>
+                            <div class="flex items-center gap-1.5 text-gray-300 font-medium">
+                                <i class="far fa-star text-lg text-yellow-400"></i>
+                                <span class="text-sm">0.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 5: Icon Grid -->
+        <div x-show="currentDesign === 5" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent">
+                    Design 5: Icon Grid
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="bg-gray-50 rounded-2xl p-6 shadow-inner">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-3 pb-4 border-b border-gray-200">
+                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-2xl shadow-md">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-900 text-xl">iXtif</p>
+                                <p class="text-sm text-gray-500">Yazar & İçerik Üreticisi</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+                                <i class="fas fa-calendar text-blue-500 text-xl mb-1"></i>
+                                <p class="text-xs text-gray-500 font-medium">Tarih</p>
+                                <p class="text-sm font-bold text-gray-900">17 Kas 2025</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+                                <i class="fas fa-clock text-blue-500 text-xl mb-1"></i>
+                                <p class="text-xs text-gray-500 font-medium">Okuma</p>
+                                <p class="text-sm font-bold text-gray-900">15 dakika</p>
+                            </div>
+                            <template x-if="isLoggedIn">
+                                <div class="bg-red-50 rounded-lg p-3 text-center border border-red-200 cursor-pointer hover:bg-red-100 transition">
+                                    <i class="fas fa-heart text-red-500 text-xl mb-1"></i>
+                                    <p class="text-xs text-red-500 font-medium">Favori</p>
+                                    <p class="text-sm font-bold text-red-600">0</p>
+                                </div>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+                                    <i class="far fa-heart text-gray-400 text-xl mb-1"></i>
+                                    <p class="text-xs text-gray-500 font-medium">Favori</p>
+                                    <p class="text-sm font-bold text-gray-600">0</p>
+                                </div>
+                            </template>
+                            <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+                                <i class="far fa-star text-yellow-400 text-xl mb-1"></i>
+                                <p class="text-xs text-gray-500 font-medium">Puan</p>
+                                <p class="text-sm font-bold text-gray-900">0.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="bg-gray-800 rounded-2xl p-6 shadow-inner">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-3 pb-4 border-b border-gray-700">
+                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-2xl shadow-md">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-xl">iXtif</p>
+                                <p class="text-sm text-gray-400">Yazar & İçerik Üreticisi</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="bg-gray-700 rounded-lg p-3 text-center border border-gray-600">
+                                <i class="fas fa-calendar text-blue-400 text-xl mb-1"></i>
+                                <p class="text-xs text-gray-400 font-medium">Tarih</p>
+                                <p class="text-sm font-bold text-white">17 Kas 2025</p>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-3 text-center border border-gray-600">
+                                <i class="fas fa-clock text-blue-400 text-xl mb-1"></i>
+                                <p class="text-xs text-gray-400 font-medium">Okuma</p>
+                                <p class="text-sm font-bold text-white">15 dakika</p>
+                            </div>
+                            <template x-if="isLoggedIn">
+                                <div class="bg-red-900 bg-opacity-30 rounded-lg p-3 text-center border border-red-800 cursor-pointer hover:bg-opacity-50 transition">
+                                    <i class="fas fa-heart text-red-400 text-xl mb-1"></i>
+                                    <p class="text-xs text-red-400 font-medium">Favori</p>
+                                    <p class="text-sm font-bold text-red-400">0</p>
+                                </div>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="bg-gray-700 rounded-lg p-3 text-center border border-gray-600">
+                                    <i class="far fa-heart text-gray-500 text-xl mb-1"></i>
+                                    <p class="text-xs text-gray-400 font-medium">Favori</p>
+                                    <p class="text-sm font-bold text-gray-400">0</p>
+                                </div>
+                            </template>
+                            <div class="bg-gray-700 rounded-lg p-3 text-center border border-gray-600">
+                                <i class="far fa-star text-yellow-400 text-xl mb-1"></i>
+                                <p class="text-xs text-gray-400 font-medium">Puan</p>
+                                <p class="text-sm font-bold text-white">0.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 6: Split Info -->
+        <div x-show="currentDesign === 6" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                    Design 6: Split Info
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-600 font-black text-xl">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">iXtif</p>
+                                <p class="text-xs text-blue-100">Profesyonel İçerik Yazarı</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i class="fas fa-calendar text-blue-500"></i>
+                                <span class="text-sm font-semibold">17 Kasım 2025</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i class="fas fa-clock text-blue-500"></i>
+                                <span class="text-sm font-semibold">15 dk okuma</span>
+                            </div>
+                            <template x-if="isLoggedIn">
+                                <div class="flex items-center gap-2 text-red-500 cursor-pointer hover:scale-105 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="text-sm font-semibold">0 favori</span>
+                                </div>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="flex items-center gap-2 text-gray-400">
+                                    <i class="far fa-heart"></i>
+                                    <span class="text-sm font-semibold">0 favori</span>
+                                </div>
+                            </template>
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i class="far fa-star text-yellow-500"></i>
+                                <span class="text-sm font-semibold">0.0 puan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="bg-gray-800 rounded-2xl overflow-hidden shadow-lg border border-gray-700">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-blue-600 font-black text-xl">
+                                i
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-lg">iXtif</p>
+                                <p class="text-xs text-blue-100">Profesyonel İçerik Yazarı</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-900">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-calendar text-blue-400"></i>
+                                <span class="text-sm font-semibold">17 Kasım 2025</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-gray-300">
+                                <i class="fas fa-clock text-blue-400"></i>
+                                <span class="text-sm font-semibold">15 dk okuma</span>
+                            </div>
+                            <template x-if="isLoggedIn">
+                                <div class="flex items-center gap-2 text-red-400 cursor-pointer hover:scale-105 transition">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="text-sm font-semibold">0 favori</span>
+                                </div>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="flex items-center gap-2 text-gray-500">
+                                    <i class="far fa-heart"></i>
+                                    <span class="text-sm font-semibold">0 favori</span>
+                                </div>
+                            </template>
+                            <div class="flex items-center gap-2 text-gray-300">
+                                <i class="far fa-star text-yellow-400"></i>
+                                <span class="text-sm font-semibold">0.0 puan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 7: Floating Card -->
+        <div x-show="currentDesign === 7" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-teal-400 to-cyan-400 bg-clip-text text-transparent">
+                    Design 7: Floating Card
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 rounded-2xl blur opacity-50"></div>
+                    <div class="relative bg-white rounded-2xl p-6 shadow-xl">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur opacity-40"></div>
+                                    <div class="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-xl">
+                                        i
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-black text-gray-900 text-lg">iXtif</p>
+                                    <p class="text-sm text-gray-500">Blog Yazarı</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <div class="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-calendar text-blue-600"></i>
+                                    <span class="text-sm font-bold text-gray-900">17 Kasım 2025</span>
+                                </div>
+                                <div class="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-clock text-blue-600"></i>
+                                    <span class="text-sm font-bold text-gray-900">15 dk</span>
+                                </div>
+                                <template x-if="isLoggedIn">
+                                    <div class="flex items-center gap-2 bg-red-50 px-3 py-2 rounded-lg cursor-pointer hover:bg-red-100 transition">
+                                        <i class="fas fa-heart text-red-500"></i>
+                                        <span class="text-sm font-bold text-red-600">0</span>
+                                    </div>
+                                </template>
+                                <template x-if="!isLoggedIn">
+                                    <div class="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg">
+                                        <i class="far fa-heart text-gray-400"></i>
+                                        <span class="text-sm font-bold text-gray-600">0</span>
+                                    </div>
+                                </template>
+                                <div class="flex items-center gap-2 bg-yellow-50 px-3 py-2 rounded-lg">
+                                    <i class="far fa-star text-yellow-500"></i>
+                                    <span class="text-sm font-bold text-gray-900">0.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-900 to-purple-900 rounded-2xl blur opacity-50"></div>
+                    <div class="relative bg-gray-800 rounded-2xl p-6 shadow-xl border border-gray-700">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="relative">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur opacity-40"></div>
+                                    <div class="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-xl">
+                                        i
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="font-black text-white text-lg">iXtif</p>
+                                    <p class="text-sm text-gray-400">Blog Yazarı</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <div class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-calendar text-blue-400"></i>
+                                    <span class="text-sm font-bold text-white">17 Kasım 2025</span>
+                                </div>
+                                <div class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded-lg">
+                                    <i class="fas fa-clock text-blue-400"></i>
+                                    <span class="text-sm font-bold text-white">15 dk</span>
+                                </div>
+                                <template x-if="isLoggedIn">
+                                    <div class="flex items-center gap-2 bg-red-900 bg-opacity-40 px-3 py-2 rounded-lg cursor-pointer hover:bg-opacity-60 transition border border-red-800">
+                                        <i class="fas fa-heart text-red-400"></i>
+                                        <span class="text-sm font-bold text-red-400">0</span>
+                                    </div>
+                                </template>
+                                <template x-if="!isLoggedIn">
+                                    <div class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded-lg">
+                                        <i class="far fa-heart text-gray-500"></i>
+                                        <span class="text-sm font-bold text-gray-400">0</span>
+                                    </div>
+                                </template>
+                                <div class="flex items-center gap-2 bg-gray-700 px-3 py-2 rounded-lg">
+                                    <i class="far fa-star text-yellow-400"></i>
+                                    <span class="text-sm font-bold text-white">0.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 8: Gradient Border -->
+        <div x-show="currentDesign === 8" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                    Design 8: Gradient Border
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="relative p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl">
+                    <div class="bg-white rounded-2xl p-5">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-pink-600 flex items-center justify-center text-white font-black text-lg">
+                                    i
+                                </div>
+                                <div>
+                                    <p class="font-black text-gray-900">iXtif</p>
+                                    <p class="text-xs text-gray-500 font-medium">Editör</p>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-wrap items-center gap-4 md:justify-end">
+                                <div class="text-center">
+                                    <i class="fas fa-calendar text-blue-500 mb-1 block"></i>
+                                    <p class="text-xs font-bold text-gray-900">17 Kas 2025</p>
+                                </div>
+                                <div class="text-center">
+                                    <i class="fas fa-clock text-blue-500 mb-1 block"></i>
+                                    <p class="text-xs font-bold text-gray-900">15 dk</p>
+                                </div>
+                                <template x-if="isLoggedIn">
+                                    <div class="text-center cursor-pointer hover:scale-110 transition">
+                                        <i class="fas fa-heart text-red-500 mb-1 block"></i>
+                                        <p class="text-xs font-bold text-red-600">0</p>
+                                    </div>
+                                </template>
+                                <template x-if="!isLoggedIn">
+                                    <div class="text-center">
+                                        <i class="far fa-heart text-gray-400 mb-1 block"></i>
+                                        <p class="text-xs font-bold text-gray-600">0</p>
+                                    </div>
+                                </template>
+                                <div class="text-center">
+                                    <i class="far fa-star text-yellow-400 mb-1 block"></i>
+                                    <p class="text-xs font-bold text-gray-900">0.0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="relative p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl">
+                    <div class="bg-gray-800 rounded-2xl p-5">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-pink-600 flex items-center justify-center text-white font-black text-lg">
+                                    i
+                                </div>
+                                <div>
+                                    <p class="font-black text-white">iXtif</p>
+                                    <p class="text-xs text-gray-400 font-medium">Editör</p>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-wrap items-center gap-4 md:justify-end">
+                                <div class="text-center">
+                                    <i class="fas fa-calendar text-blue-400 mb-1 block"></i>
+                                    <p class="text-xs font-bold text-white">17 Kas 2025</p>
+                                </div>
+                                <div class="text-center">
+                                    <i class="fas fa-clock text-blue-400 mb-1 block"></i>
+                                    <p class="text-xs font-bold text-white">15 dk</p>
+                                </div>
+                                <template x-if="isLoggedIn">
+                                    <div class="text-center cursor-pointer hover:scale-110 transition">
+                                        <i class="fas fa-heart text-red-400 mb-1 block"></i>
+                                        <p class="text-xs font-bold text-red-400">0</p>
+                                    </div>
+                                </template>
+                                <template x-if="!isLoggedIn">
+                                    <div class="text-center">
+                                        <i class="far fa-heart text-gray-500 mb-1 block"></i>
+                                        <p class="text-xs font-bold text-gray-400">0</p>
+                                    </div>
+                                </template>
+                                <div class="text-center">
+                                    <i class="far fa-star text-yellow-400 mb-1 block"></i>
+                                    <p class="text-xs font-bold text-white">0.0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 9: Timeline Style -->
+        <div x-show="currentDesign === 9" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                    Design 9: Timeline Style
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg">
+                                i
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-black text-gray-900 text-xl mb-1">iXtif</h3>
+                            <p class="text-sm text-gray-600 mb-4">Senior İçerik Editörü</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <i class="fas fa-calendar text-blue-500 w-5"></i>
+                                    <span class="text-sm font-semibold text-gray-700">Yayın Tarihi: 17 Kasım 2025</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <i class="fas fa-clock text-blue-500 w-5"></i>
+                                    <span class="text-sm font-semibold text-gray-700">Okuma Süresi: 15 dakika</span>
+                                </div>
+                                <template x-if="isLoggedIn">
+                                    <div class="flex items-center gap-3 cursor-pointer hover:translate-x-1 transition">
+                                        <div class="w-2 h-2 rounded-full bg-red-500"></div>
+                                        <i class="fas fa-heart text-red-500 w-5"></i>
+                                        <span class="text-sm font-semibold text-red-600">Favorilere Ekle (0)</span>
+                                    </div>
+                                </template>
+                                <template x-if="!isLoggedIn">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+                                        <i class="far fa-heart text-gray-400 w-5"></i>
+                                        <span class="text-sm font-semibold text-gray-500">Favori Sayısı: 0</span>
+                                    </div>
+                                </template>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                    <i class="far fa-star text-yellow-500 w-5"></i>
+                                    <span class="text-sm font-semibold text-gray-700">Ortalama Puan: 0.0 / 5.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div class="flex items-start gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg">
+                                i
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-black text-white text-xl mb-1">iXtif</h3>
+                            <p class="text-sm text-gray-400 mb-4">Senior İçerik Editörü</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                                    <i class="fas fa-calendar text-blue-400 w-5"></i>
+                                    <span class="text-sm font-semibold text-gray-300">Yayın Tarihi: 17 Kasım 2025</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                                    <i class="fas fa-clock text-blue-400 w-5"></i>
+                                    <span class="text-sm font-semibold text-gray-300">Okuma Süresi: 15 dakika</span>
+                                </div>
+                                <template x-if="isLoggedIn">
+                                    <div class="flex items-center gap-3 cursor-pointer hover:translate-x-1 transition">
+                                        <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                                        <i class="fas fa-heart text-red-400 w-5"></i>
+                                        <span class="text-sm font-semibold text-red-400">Favorilere Ekle (0)</span>
+                                    </div>
+                                </template>
+                                <template x-if="!isLoggedIn">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-2 h-2 rounded-full bg-gray-600"></div>
+                                        <i class="far fa-heart text-gray-500 w-5"></i>
+                                        <span class="text-sm font-semibold text-gray-500">Favori Sayısı: 0</span>
+                                    </div>
+                                </template>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+                                    <i class="far fa-star text-yellow-400 w-5"></i>
+                                    <span class="text-sm font-semibold text-gray-300">Ortalama Puan: 0.0 / 5.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design 10: Neumorphism -->
+        <div x-show="currentDesign === 10" x-transition class="space-y-6">
+            <h2 class="text-3xl font-bold text-center mb-8">
+                <span class="bg-gradient-to-r from-slate-400 to-gray-400 bg-clip-text text-transparent">
+                    Design 10: Neumorphism
+                </span>
+            </h2>
+
+            <!-- Light Mode -->
+            <div class="bg-white p-8 rounded-2xl mb-6">
+                <p class="text-xs font-bold text-gray-500 uppercase mb-4">Light Mode</p>
+                <div class="bg-gray-100 rounded-3xl p-6" style="box-shadow: 12px 12px 24px #bebebe, -12px -12px 24px #ffffff;">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center shadow-inner">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-xl">
+                                    i
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-black text-gray-900 text-lg">iXtif</p>
+                                <p class="text-sm text-gray-600">Uzman Yazar</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:flex md:flex-wrap gap-3">
+                            <div class="bg-gray-100 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;">
+                                <i class="fas fa-calendar text-blue-500 text-lg mb-1 block"></i>
+                                <p class="text-xs font-bold text-gray-900">17 Kas</p>
+                            </div>
+                            <div class="bg-gray-100 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;">
+                                <i class="fas fa-clock text-blue-500 text-lg mb-1 block"></i>
+                                <p class="text-xs font-bold text-gray-900">15 dk</p>
+                            </div>
+                            <template x-if="isLoggedIn">
+                                <div class="bg-gray-100 rounded-2xl px-4 py-3 text-center cursor-pointer hover:shadow-lg transition" style="box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;">
+                                    <i class="fas fa-heart text-red-500 text-lg mb-1 block"></i>
+                                    <p class="text-xs font-bold text-red-600">0</p>
+                                </div>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="bg-gray-100 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;">
+                                    <i class="far fa-heart text-gray-400 text-lg mb-1 block"></i>
+                                    <p class="text-xs font-bold text-gray-600">0</p>
+                                </div>
+                            </template>
+                            <div class="bg-gray-100 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;">
+                                <i class="far fa-star text-yellow-500 text-lg mb-1 block"></i>
+                                <p class="text-xs font-bold text-gray-900">0.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Mode -->
+            <div class="bg-gray-900 p-8 rounded-2xl">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-4">Dark Mode</p>
+                <div class="bg-gray-800 rounded-3xl p-6" style="box-shadow: 12px 12px 24px #0f0f0f, -12px -12px 24px #2d2d2d;">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gray-800 flex items-center justify-center shadow-inner">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-xl">
+                                    i
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-black text-white text-lg">iXtif</p>
+                                <p class="text-sm text-gray-400">Uzman Yazar</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:flex md:flex-wrap gap-3">
+                            <div class="bg-gray-800 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #0f0f0f, inset -6px -6px 12px #2d2d2d;">
+                                <i class="fas fa-calendar text-blue-400 text-lg mb-1 block"></i>
+                                <p class="text-xs font-bold text-white">17 Kas</p>
+                            </div>
+                            <div class="bg-gray-800 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #0f0f0f, inset -6px -6px 12px #2d2d2d;">
+                                <i class="fas fa-clock text-blue-400 text-lg mb-1 block"></i>
+                                <p class="text-xs font-bold text-white">15 dk</p>
+                            </div>
+                            <template x-if="isLoggedIn">
+                                <div class="bg-gray-800 rounded-2xl px-4 py-3 text-center cursor-pointer hover:shadow-lg transition" style="box-shadow: inset 6px 6px 12px #0f0f0f, inset -6px -6px 12px #2d2d2d;">
+                                    <i class="fas fa-heart text-red-400 text-lg mb-1 block"></i>
+                                    <p class="text-xs font-bold text-red-400">0</p>
+                                </div>
+                            </template>
+                            <template x-if="!isLoggedIn">
+                                <div class="bg-gray-800 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #0f0f0f, inset -6px -6px 12px #2d2d2d;">
+                                    <i class="far fa-heart text-gray-500 text-lg mb-1 block"></i>
+                                    <p class="text-xs font-bold text-gray-400">0</p>
+                                </div>
+                            </template>
+                            <div class="bg-gray-800 rounded-2xl px-4 py-3 text-center" style="box-shadow: inset 6px 6px 12px #0f0f0f, inset -6px -6px 12px #2d2d2d;">
+                                <i class="far fa-star text-yellow-400 text-lg mb-1 block"></i>
                                 <p class="text-xs font-bold text-white">0.0</p>
                             </div>
                         </div>

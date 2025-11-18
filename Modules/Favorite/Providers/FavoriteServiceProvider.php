@@ -18,6 +18,7 @@ class FavoriteServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
 
         // Route'ları yükle
+        $this->loadRoutesFrom(module_path($this->moduleName, 'routes/web.php'));
         $this->loadRoutesFrom(module_path($this->moduleName, 'routes/admin.php'));
 
         // Views'ları yükle

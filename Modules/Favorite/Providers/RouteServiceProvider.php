@@ -54,10 +54,10 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Define the "api" routes for the application.
      *
-     * These routes are typically stateless.
+     * These routes use web middleware for CSRF + session support.
      */
     protected function mapApiRoutes(): void
     {
-        Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+        Route::middleware('web')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
     }
 }

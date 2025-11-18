@@ -17,11 +17,13 @@ trait HasRatings
 
     /**
      * Get average rating
+     * Fallback: 5.0 if no ratings exist
      */
     public function averageRating(): float
     {
+        // Fallback DB'de (user_id=0, rating=5) olarak tutuluyor
         $avg = $this->ratings()->avg('rating_value');
-        return $avg ? round($avg, 1) : 0;
+        return $avg ? round($avg, 1) : 0.0;
     }
 
     /**
@@ -29,6 +31,7 @@ trait HasRatings
      */
     public function ratingsCount(): int
     {
+        // Fallback DB'de sayılıyor
         return $this->ratings()->count();
     }
 

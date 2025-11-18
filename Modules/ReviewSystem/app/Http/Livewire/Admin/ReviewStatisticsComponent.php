@@ -20,7 +20,7 @@ class ReviewStatisticsComponent extends Component
             'pending_reviews' => Review::where('is_approved', false)->count(),
             'approved_reviews' => Review::where('is_approved', true)->count(),
             'total_ratings' => Rating::count(),
-            'average_rating' => Rating::avg('rating_value') ? round(Rating::avg('rating_value'), 2) : 0,
+            'average_rating' => Rating::avg('rating_value') ? round((float) Rating::avg('rating_value'), 2) : 0,
             'ratings_distribution' => Rating::select('rating_value', DB::raw('count(*) as count'))
                 ->groupBy('rating_value')
                 ->orderBy('rating_value', 'desc')

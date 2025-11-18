@@ -26,6 +26,17 @@ class ReviewService
             return ['success' => false, 'message' => 'İçerik bulunamadı'];
         }
 
+        // Fallback rating yoksa oluştur (user_id = null, rating = 5)
+        // Bu her zaman havuzda kalacak, hiç silinmeyecek!
+        Rating::firstOrCreate(
+            [
+                'user_id' => null,
+                'ratable_type' => $modelClass,
+                'ratable_id' => $modelId,
+            ],
+            ['rating_value' => 5]
+        );
+
         Rating::updateOrCreate(
             [
                 'user_id' => $userId,
@@ -106,6 +117,29 @@ class ReviewService
         }
 
         return $query->get();
+    }
+
+    public function markHelpful(int $reviewId, bool $isHelpful = true): array
+    {
+        $review = Review::find($reviewId);
+        if (!$review) {
+            return ['success' => false, 'message' => 'Yorum bulunamadı'];
+        }
+
+        if ($isHelpful) {
+            $review->increment('helpful_count');
+        } else {
+            $review->increment('unhelpful_count');
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Geri bildiriminiz kaydedildi',
+            'data' => [
+                'helpful_count' => $review->helpful_count,
+                'unhelpful_count' => $review->unhelpful_count,
+            ],
+        ];
     }
 
     public function getSchemaMarkup(string $modelClass, int $modelId): ?array

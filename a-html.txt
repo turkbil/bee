@@ -1,12 +1,55 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0;url='https://ixtif.com/login'" />
+<section class="py-8 border-b border-gray-200 dark:border-white/10">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                    
+                    <button @click="$refs.categoryModal.classList.remove('hidden')" class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg">
+                        <i class="fa-light fa-grid-2 mr-2"></i>
+                        Tüm Kategoriler
+                    </button>
 
-        <title>Redirecting to https://ixtif.com/login</title>
-    </head>
-    <body>
-        Redirecting to <a href="https://ixtif.com/login">https://ixtif.com/login</a>.
-    </body>
-</html>
+                    
+                                            
+                        
+                        <a href="/shop/kategori/forklift" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-forklift mr-2"></i>
+                                                        Forklift
+                        </a>
+                                            
+                        
+                        <a href="/shop/kategori/transpalet" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-dolly mr-2"></i>
+                                                        Transpalet
+                        </a>
+                                            
+                        
+                        <a href="/shop/kategori/istif-makinesi" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-layer-group mr-2"></i>
+                                                        İstif Makinesi
+                        </a>
+                                            
+                        
+                        <a href="/shop/kategori/siparis-toplama-makinesi" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-boxes-stacked mr-2"></i>
+                                                        Order Picker
+                        </a>
+                                            
+                        
+                        <a href="/shop/kategori/otonom-sistemler" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-robot mr-2"></i>
+                                                        Otonom Sistemler
+                        </a>
+                                            
+                        
+                        <a href="/shop/kategori/reach-truck" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-truck mr-2"></i>
+                                                        Reach Truck
+                        </a>
+                                            
+                        
+                        <a href="/shop/kategori/yedek-parca" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
+                                                            <i class="fa-solid fa-wrench mr-2"></i>
+                                                        Yedek Parça
+                        </a>
+                                    </div>
+            </div>
+        </section>

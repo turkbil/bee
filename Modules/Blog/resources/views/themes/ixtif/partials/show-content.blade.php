@@ -20,7 +20,10 @@
         $toc[] = ['id' => 'sik-sorulan-sorular', 'text' => 'Sık Sorulan Sorular', 'level' => 2, 'children' => []];
     }
     if ($hasHowto) {
-        $toc[] = ['id' => 'nasil-yapilir', 'text' => 'Nasıl Yapılır', 'level' => 2, 'children' => []];
+        // HowTo'nun gerçek başlığını al
+        $howtoData = is_string($item->howto_data) ? json_decode($item->howto_data, true) : $item->howto_data;
+        $howtoTitle = is_array($howtoData['name'] ?? null) ? ($howtoData['name'][$currentLocale] ?? 'Nasıl Yapılır') : ($howtoData['name'] ?? 'Nasıl Yapılır');
+        $toc[] = ['id' => 'nasil-yapilir', 'text' => $howtoTitle, 'level' => 2, 'children' => []];
     }
     $toc[] = ['id' => 'yorumlar-ve-degerlendirmeler', 'text' => 'Yorumlar ve Değerlendirmeler', 'level' => 2, 'children' => []];
     $toc[] = ['id' => 'yazi-paylas', 'text' => 'Yazıyı Paylaş', 'level' => 2, 'children' => []];
@@ -96,11 +99,8 @@
     'breadcrumbs' => $breadcrumbsArray
 ])
 
-{{-- Sticky Social Share (Desktop) --}}
-<x-blog.social-share :url="$shareUrl" :title="$title" position="sticky" />
-
 <div class="min-h-screen bg-white dark:bg-gray-900 pb-20 lg:pb-8">
-    <div class="container mx-auto py-8 md:py-12">
+    <div class="container mx-auto px-4 sm:px-4 md:px-2 py-8 md:py-12">
 
         {{-- Hero Section: Başlık + Kategori + Featured Image + Etiketler --}}
         {{-- Kategori Badge + Etiketler (Header dışında, üstte) --}}
@@ -152,27 +152,28 @@
             {{-- Ana İçerik --}}
             <article class="order-1 lg:order-2 {{ !empty($toc) ? 'lg:col-span-2' : 'lg:col-span-3' }}">
                 {{-- Meta Card: Tarih + Stats (Yeniden Kodlandı - Hatasız) --}}
-                <div class="bg-transparent rounded-xl p-6 border border-gray-200 dark:border-gray-700 mb-6">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="bg-transparent rounded-xl px-3 py-3 md:p-6 border border-gray-200 dark:border-gray-700 mb-6">
+                    <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-2 md:gap-4">
 
                         {{-- Tarih --}}
-                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                            <i class="fas fa-calendar text-blue-500 dark:text-blue-400"></i>
-                            <span class="text-sm font-medium">{{ $publishedDate }}</span>
+                        <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 dark:text-gray-400">
+                            <i class="fas fa-calendar text-blue-500 dark:text-blue-400 text-sm md:text-base"></i>
+                            <span class="text-xs md:text-sm font-medium hidden sm:inline">{{ $publishedDate }}</span>
+                            <span class="text-xs font-medium sm:hidden">{{ ($item->published_at ?? $item->created_at)->format('d.m.Y') }}</span>
                         </div>
 
                         {{-- Sağ Taraf: Okuma + Favori + Rating --}}
-                        <div class="md:ml-auto flex flex-wrap items-center gap-4 md:gap-6">
+                        <div class="flex flex-wrap items-center gap-2 md:gap-6">
 
                             {{-- Okuma Süresi --}}
-                            <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                                <i class="fas fa-clock text-blue-500 dark:text-blue-400"></i>
-                                <span class="text-sm font-medium">{{ $readingTime }} dk okuma</span>
+                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-clock text-blue-500 dark:text-blue-400 text-sm md:text-base"></i>
+                                <span class="text-xs md:text-sm font-medium">{{ $readingTime }}<span class="hidden sm:inline"> dk</span></span>
                             </div>
 
                             {{-- Favori Butonu (Guest/Auth Aware) --}}
                             @auth
-                                <div class="flex items-center gap-2 cursor-pointer hover:scale-110 transition-transform duration-200"
+                                <div class="flex items-center gap-1.5 md:gap-2 cursor-pointer hover:scale-110 transition-transform duration-200"
                                      x-data="{
                                          favorited: {{ $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
                                          count: {{ $item->favoritesCount() ?? 0 }},
@@ -207,15 +208,15 @@
                                      }"
                                      @click="toggleFavorite()">
                                     <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
-                                       class="text-lg transition-colors"></i>
-                                    <span class="text-sm font-medium text-gray-600 dark:text-gray-400"
-                                          x-text="count + ' favori'"></span>
+                                       class="text-sm md:text-lg transition-colors"></i>
+                                    <span class="text-xs md:text-sm font-medium text-gray-600 dark:text-gray-400"
+                                          x-text="count"></span>
                                 </div>
                             @else
-                                <div class="flex items-center gap-2 text-gray-400 dark:text-gray-500 cursor-pointer"
+                                <div class="flex items-center gap-1.5 md:gap-2 text-gray-400 dark:text-gray-500 cursor-pointer"
                                      @click="window.location.href = '{{ route('login') }}'">
-                                    <i class="far fa-heart text-lg"></i>
-                                    <span class="text-sm font-medium">{{ $item->favoritesCount() ?? 0 }} favori</span>
+                                    <i class="far fa-heart text-sm md:text-lg"></i>
+                                    <span class="text-xs md:text-sm font-medium">{{ $item->favoritesCount() ?? 0 }}</span>
                                 </div>
                             @endauth
 
@@ -226,7 +227,7 @@
                                 $currentUserRating = auth()->check() && method_exists($item, 'userRating') ? $item->userRating(auth()->id()) : 0;
                             @endphp
 
-                            <div class="flex items-center gap-2"
+                            <div class="flex items-center gap-1.5 md:gap-2"
                                  x-data="{
                                      modelClass: '{{ addslashes(get_class($item)) }}',
                                      modelId: {{ $item->id }},
@@ -296,16 +297,16 @@
                                         <button type="button"
                                                 @click="handleStarClick(star)"
                                                 @mouseenter="hoverRating = star"
-                                                class="text-sm cursor-pointer hover:scale-110 transition-all duration-150">
+                                                class="text-xs md:text-sm cursor-pointer hover:scale-110 transition-all duration-150">
                                             <i x-bind:class="getStarClass(star)"></i>
                                         </button>
                                     </template>
                                 </div>
 
                                 {{-- Ortalama ve Sayı --}}
-                                <div class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                                <div class="flex items-center gap-0.5 md:gap-1 text-xs md:text-sm text-gray-600 dark:text-gray-400">
                                     <span class="font-semibold" x-text="averageRating.toFixed(1)"></span>
-                                    <span class="text-xs opacity-75">(<span x-text="ratingsCount"></span>)</span>
+                                    <span class="text-xs opacity-75 hidden sm:inline">(<span x-text="ratingsCount"></span>)</span>
                                 </div>
 
                                 {{-- Toast Message --}}
@@ -334,7 +335,7 @@
                 @if($featuredImage)
                     <figure class="overflow-hidden rounded-xl shadow-lg mb-8">
                         <a href="{{ $featuredImage->getUrl() }}"
-                           class="glightbox block"
+                           class="glightbox block overflow-hidden"
                            data-gallery="blog-featured"
                            data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
                            data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
@@ -343,7 +344,7 @@
                                  width="1200"
                                  height="800"
                                  loading="eager"
-                                 class="w-full h-auto max-h-[500px] object-cover cursor-pointer transition-all duration-300 hover:scale-105">
+                                 class="w-full h-auto max-h-[500px] object-cover cursor-pointer transition-transform duration-300 hover:scale-105">
                         </a>
                         @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
                             <figcaption class="bg-gray-100 dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700">
@@ -578,18 +579,20 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             @foreach($relatedBlogs as $relatedBlog)
                                 <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                                    <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
-                                        @if($relatedBlog->getFirstMedia('featured_image'))
-                                            @php
-                                                $relatedImage = $relatedBlog->getFirstMedia('featured_image');
-                                            @endphp
+                                    @if($relatedBlog->getFirstMedia('featured_image'))
+                                        @php
+                                            $relatedImage = $relatedBlog->getFirstMedia('featured_image');
+                                        @endphp
+                                        <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block overflow-hidden">
                                             <img src="{{ thumb($relatedImage, 400, 300, ['quality' => 85, 'format' => 'webp']) }}"
                                                  alt="{{ $relatedBlog->getTranslated('title', $currentLocale) }}"
                                                  width="400"
                                                  height="300"
                                                  loading="lazy"
                                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
-                                        @endif
+                                        </a>
+                                    @endif
+                                    <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
                                         <div class="p-6">
                                             <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                 {{ $relatedBlog->getTranslated('title', $currentLocale) }}
@@ -629,7 +632,7 @@
                             @foreach($galleryImages as $image)
                                 <figure class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300">
                                     <a href="{{ $image->getUrl() }}"
-                                       class="glightbox"
+                                       class="glightbox block overflow-hidden"
                                        data-gallery="blog-gallery"
                                        data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
                                        data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">

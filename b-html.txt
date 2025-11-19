@@ -1,0 +1,399 @@
+<section class="mt-12">
+                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 mb-8">
+    
+    <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <i class="fas fa-comments text-blue-500"></i>
+            Yorumlar ve Değerlendirmeler
+        </h2>
+        <div class="text-sm text-gray-500 dark:text-gray-400">
+            1 yorum
+        </div>
+    </div>
+
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        
+        <div>
+            <div class="flex flex-col items-start gap-4">
+                <div class="flex-shrink-0">
+                    <div class="text-6xl font-bold text-gray-900 dark:text-white mb-3">
+                        5.0
+                    </div>
+
+                    
+                    <div id="rating-691cc72dcec63" class="rating-stars-wrapper">
+    <div x-data="{
+        modelClass: 'Modules\\Blog\\App\\Models\\Blog',
+        modelId: 2,
+        currentRating: 5,
+        averageRating: 5,
+        ratingsCount: 2,
+        readonly: false,
+        isAuthenticated: true,
+        hoverRating: 0,
+        showMessage: false,
+        message: '',
+        messageType: 'info',
+
+        handleClick(value) {
+            if (this.readonly) return;
+
+            if (!this.isAuthenticated) {
+                // Direkt login popup aç
+                this.openLoginModal();
+                return;
+            }
+
+            // Authenticated ise puan gönder
+            this.rate(value);
+        },
+
+        openLoginModal() {
+            // Global login modal varsa aç
+            if (window.openLoginModal) {
+                window.openLoginModal();
+            } else if (typeof Alpine !== 'undefined' &amp;&amp; Alpine.store('auth')) {
+                Alpine.store('auth').showLoginModal = true;
+            } else {
+                // Fallback: Login sayfasına yönlendir
+                window.location.href = 'https://ixtif.com/login';
+            }
+        },
+
+        rate(value) {
+            if (this.readonly) return;
+
+            // API'ye puan gönder
+            fetch('/api/reviews/rating', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=" csrf-token"]').content,="" 'accept':="" 'application="" json'="" },="" body:="" json.stringify({="" model_class:="" this.modelclass,="" model_id:="" this.modelid,="" rating_value:="" value="" })="" .then(response=""> response.json())
+            .then(data =&gt; {
+                console.log('Rating API Response:', data);
+                if (data.success) {
+                    this.currentRating = value;
+                    this.averageRating = parseFloat(data.data.average_rating);
+                    this.ratingsCount = parseInt(data.data.ratings_count);
+                    console.log('Updated - Average:', this.averageRating, 'Count:', this.ratingsCount);
+                    this.displayMessage('Puanınız kaydedildi! ⭐', 'success');
+
+                    // Force Alpine reactivity
+                    this.$nextTick(() =&gt; {
+                        console.log('Alpine updated - Average:', this.averageRating, 'Count:', this.ratingsCount);
+                    });
+                } else {
+                    this.displayMessage(data.message || 'Bir hata oluştu', 'error');
+                }
+            })
+            .catch(error =&gt; {
+                console.error('Rating error:', error);
+                this.displayMessage('Bir hata oluştu', 'error');
+            });
+        },
+
+        displayMessage(msg, type = 'info') {
+            this.message = msg;
+            this.messageType = type;
+            this.showMessage = true;
+
+            setTimeout(() =&gt; {
+                this.showMessage = false;
+            }, 3000);
+        }
+    }"&gt;
+        <div class="flex items-center gap-2 relative">
+            <!-- Yıldızlar -->
+            <div class="flex items-center gap-0.5 relative" @mouseleave="hoverRating = 0">
+                                
+                <template x-for="star in 5" :key="star">
+                    <button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'"></i>
+                    </button>
+                </template><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
+                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
+                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
+                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
+                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
+                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
+                    </button>
+                            </div>
+
+            <!-- Ortalama puan ve sayı -->
+                    </div>
+
+        <!-- Kullanıcı feedback mesajı -->
+        <div x-show="showMessage" x-transition="" class="mt-2 text-sm font-medium" :class="{
+                 'text-green-600 dark:text-green-400': messageType === 'success',
+                 'text-red-600 dark:text-red-400': messageType === 'error',
+                 'text-blue-600 dark:text-blue-400': messageType === 'info'
+             }" style="display: none;">
+            <span x-text="message"></span>
+        </div>
+    </div>
+</div>
+
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+                        2 değerlendirme
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="space-y-2">
+                            <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
+                        5 <i class="fas fa-star text-yellow-400 text-xs"></i>
+                    </span>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
+                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 100%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
+                        2
+                    </span>
+                </div>
+                            <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
+                        4 <i class="fas fa-star text-yellow-400 text-xs"></i>
+                    </span>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
+                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
+                        0
+                    </span>
+                </div>
+                            <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
+                        3 <i class="fas fa-star text-yellow-400 text-xs"></i>
+                    </span>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
+                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
+                        0
+                    </span>
+                </div>
+                            <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
+                        2 <i class="fas fa-star text-yellow-400 text-xs"></i>
+                    </span>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
+                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
+                        0
+                    </span>
+                </div>
+                            <div class="flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
+                        1 <i class="fas fa-star text-yellow-400 text-xs"></i>
+                    </span>
+                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
+                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
+                        0
+                    </span>
+                </div>
+                    </div>
+    </div>
+
+    
+            <div class="space-y-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <i class="fas fa-comments text-blue-500"></i>
+                Kullanıcı Yorumları
+            </h3>
+
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:shadow-md" x-data="{
+                    showReplyForm: false,
+                    replyBody: '',
+                    helpfulCount: 3,
+                    unhelpfulCount: 0,
+                    hasVoted: false,
+
+                    markHelpful(isHelpful) {
+                        if (this.hasVoted) return;
+
+                        fetch('/api/reviews/helpful/1', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=" csrf-token"]').content,="" 'accept':="" 'application="" json'="" },="" body:="" json.stringify({="" is_helpful:="" ishelpful="" })="" .then(response=""> response.json())
+                        .then(data =&gt; {
+                            if (data.success) {
+                                this.helpfulCount = data.data.helpful_count;
+                                this.unhelpfulCount = data.data.unhelpful_count;
+                                this.hasVoted = true;
+                            }
+                        });
+                    },
+
+                    submitReply() {
+                        if (!this.replyBody.trim()) return;
+
+                                                fetch('/api/reviews/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model_class: 'Modules\\Blog\\App\\Models\\Blog',
+                                model_id: 2,
+                                review_body: this.replyBody,
+                                parent_id: 1
+                            })
+                        })
+                        .then(response =&gt; response.json())
+                        .then(data =&gt; {
+                            if (data.success) {
+                                this.replyBody = '';
+                                this.showReplyForm = false;
+                                alert('Yanıtınız onay bekliyor');
+                            }
+                        });
+                                            }
+                }"&gt;
+                    
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                                N
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-900 dark:text-white">
+                                    Nurullah Okatan
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    2 saat önce
+                                </p>
+                            </div>
+                        </div>
+
+                        
+                                            </div>
+
+                    
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        Teşekkür ederim
+                    </p>
+
+                    
+                    
+                    
+                    <div class="flex items-center gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button type="button" @click="markHelpful(true)" :disabled="hasVoted" :class="hasVoted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-50 dark:hover:bg-green-900/20'" class="text-sm transition-all flex items-center gap-2 px-3 py-1.5 rounded-lg">
+                            <i class="far fa-thumbs-up text-gray-500 dark:text-gray-400"></i>
+                            <span x-text="helpfulCount" class="font-semibold text-green-600 dark:text-green-400"></span>
+                        </button>
+                        <button type="button" @click="markHelpful(false)" :disabled="hasVoted" :class="hasVoted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-50 dark:hover:bg-red-900/20'" class="text-sm transition-all flex items-center gap-2 px-3 py-1.5 rounded-lg">
+                            <i class="far fa-thumbs-down text-gray-500 dark:text-gray-400"></i>
+                            <span x-text="unhelpfulCount" class="font-semibold text-red-600 dark:text-red-400"></span>
+                        </button>
+                        <button type="button" @click="showReplyForm = !showReplyForm" class="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2">
+                            <i class="far fa-reply"></i>
+                            Yanıtla
+                        </button>
+                    </div>
+
+                    
+                    <div x-show="showReplyForm" x-transition="" class="mt-4 ml-8" style="display: none;">
+                        <textarea x-model="replyBody" rows="3" placeholder="Yanıtınızı yazın..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white text-sm resize-none"></textarea>
+                        <div class="flex items-center gap-2 mt-2">
+                            <button type="button" @click="submitReply" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                                Gönder
+                            </button>
+                            <button type="button" @click="showReplyForm = false; replyBody = ''" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                                İptal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+    
+    
+            <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700" x-data="{
+            reviewBody: '',
+            loading: false,
+            message: '',
+            messageType: '',
+            showMessage: false,
+
+            submitReview() {
+                if (!this.reviewBody.trim()) {
+                    this.displayMessage('Lütfen yorumunuzu yazın', 'error');
+                    return;
+                }
+
+                this.loading = true;
+
+                fetch('/api/reviews/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=" csrf-token"]').content,="" 'accept':="" 'application="" json'="" },="" body:="" json.stringify({="" model_class:="" 'modules\\blog\\app\\models\\blog',="" model_id:="" 2,="" review_body:="" this.reviewbody="" })="" .then(response=""> response.json())
+                .then(data =&gt; {
+                    if (data.success) {
+                        this.displayMessage('Yorumunuz onay bekliyor. Teşekkürler!', 'success');
+                        this.reviewBody = '';
+                    } else {
+                        this.displayMessage(data.message || 'Bir hata oluştu', 'error');
+                    }
+                })
+                .catch(error =&gt; {
+                    console.error('Review submit error:', error);
+                    this.displayMessage('Bir hata oluştu', 'error');
+                })
+                .finally(() =&gt; {
+                    this.loading = false;
+                });
+            },
+
+            displayMessage(msg, type) {
+                this.message = msg;
+                this.messageType = type;
+                this.showMessage = true;
+
+                setTimeout(() =&gt; {
+                    this.showMessage = false;
+                }, 5000);
+            }
+        }"&gt;
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
+                Yorum Yapın
+            </h3>
+            <form @submit.prevent="submitReview" class="space-y-4">
+                <div>
+                    <textarea x-model="reviewBody" rows="4" placeholder="Düşüncelerinizi paylaşın..." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white resize-none" required=""></textarea>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Yorumunuz yayınlanmadan önce onaylanacaktır
+                        </p>
+                        <div x-show="showMessage" x-transition="" class="mt-2 text-sm font-medium" :class="{
+                            'text-green-600 dark:text-green-400': messageType === 'success',
+                            'text-red-600 dark:text-red-400': messageType === 'error'
+                        }" style="display: none;">
+                            <span x-text="message"></span>
+                        </div>
+                    </div>
+                    <button type="submit" :disabled="loading" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors flex items-center gap-2">
+                        <i class="fas" :class="loading ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+                        <span x-text="loading ? 'Gönderiliyor...' : 'Gönder'"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+                </section>

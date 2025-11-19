@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DALL-E 3 Prompt Formülü - Basit Kılavuz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        .formula-hero {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 40px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            border: 2px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+        .formula-hero h2 {
+            color: #60a5fa;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .formula-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .formula-step {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+        .arrow { color: #fbbf24; font-size: 1.5rem; }
+        .alert-box {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            color: #6ee7b7;
+        }
+        .tweets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .tweet-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .tweet-card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+        .tweet-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .tweet-number {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .tweet-title {
+            color: #60a5fa;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .tweet-body { color: #cbd5e1; line-height: 1.8; }
+        .step-item {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 3px solid #3b82f6;
+        }
+        .step-label {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .example-box {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid #3b82f6;
+        }
+        .example-title {
+            color: #60a5fa;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .example-text {
+            color: #94a3b8;
+            font-style: italic;
+            line-height: 1.7;
+        }
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .compare-do {
+            background: rgba(16, 185, 129, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #10b981;
+        }
+        .compare-dont {
+            background: rgba(239, 68, 68, 0.15);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #ef4444;
+        }
+        .bonus-box {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 40px;
+            border: 2px solid #fbbf24;
+        }
+        .bonus-box h2 {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .single-tweet {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #fbbf24;
+            line-height: 1.8;
+            text-align: center;
+            font-weight: 500;
+        }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .formula-flow { flex-direction: column; }
+            .tweets-grid { grid-template-columns: 1fr; }
+            .compare-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DALL-E 3 Prompt Formülü</h1>
+            <div class="meta">📅 18 Kasım 2025 | 🎯 Amatörler için Basit Kılavuz</div>
+        </header>
+
+        <div class="formula-hero">
+            <h2>Ana Formül</h2>
+            <div class="formula-flow">
+                <span class="formula-step">Photo of</span>
+                <span class="arrow">→</span>
+                <span class="formula-step">Konu</span>
+                <span class="arrow">→</span>
+                <span class="formula-step">Açı</span>
+                <span class="arrow">→</span>
+                <span class="formula-step">Arka Plan</span>
+                <span class="arrow">→</span>
+                <span class="formula-step">Işık</span>
+                <span class="arrow">→</span>
+                <span class="formula-step">Kamera</span>
+                <span class="arrow">→</span>
+                <span class="formula-step">Doğal Doku</span>
+            </div>
+            <div class="alert-box alert-danger">❌ Photorealistic kelimesini ASLA kullanma</div>
+            <div class="alert-box alert-success">✅ Photo of ile başla</div>
+        </div>
+
+        <div class="tweets-grid">
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">1</span>
+                    <span class="tweet-title">Konu Açı</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="step-item">
+                        <div class="step-label">🎯 Photo of</div>
+                        Ne çekiyorsun?<br><small>Photo of a coffee cup</small>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">📐 Açı</div>
+                        Nereden çekiyorsun?<br><small>close-up shot full body view</small>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">🖼️ Arka Plan</div>
+                        Nerede?<br><small>on wooden table in a stadium</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">2</span>
+                    <span class="tweet-title">Işık Kamera</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="step-item">
+                        <div class="step-label">💡 Işık</div>
+                        Ne zaman nasıl ışık?<br>
+                        <small>golden hour lighting (gün batımı)</small><br>
+                        <small>soft natural light (yumuşak doğal)</small>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">📷 Kamera</div>
+                        Hangi cihaz?<br>
+                        <small>shot on Canon EOS R5</small><br>
+                        <small>85mm lens f1.8</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">3</span>
+                    <span class="tweet-title">Doğal Doku</span>
+                </div>
+                <div class="tweet-body">
+                    <p><strong>🎭 Sihirli Kısım - Kusurlar Ekle</strong></p>
+                    <div class="step-item">
+                        <div class="step-label">Portre için:</div>
+                        natural skin texture with visible pores<br>
+                        uneven skin tone<br>fine wrinkles
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">Manzara için:</div>
+                        weathered rocks<br>natural variation
+                    </div>
+                    <p style="margin-top: 15px; color: #60a5fa; font-weight: 600;">
+                        AI aşırı mükemmelliğini bu şekilde kırarsın
+                    </p>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">4</span>
+                    <span class="tweet-title">Portre Örneği</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="example-box">
+                        <div class="example-title">✅ DOĞRU ÖRNEK</div>
+                        <div class="example-text">
+                            Photo of a 30-year-old woman laughing, close-up portrait, soft grey background,
+                            Rembrandt lighting, shot on Canon EOS R5 with 85mm f1.8 lens,
+                            natural skin texture with visible pores, authentic expression
+                        </div>
+                    </div>
+                    <div class="compare-grid">
+                        <div class="compare-do"><strong>✅ Gerçekçi</strong><br>Photo of woman</div>
+                        <div class="compare-dont"><strong>❌ Yapay</strong><br>Photorealistic woman</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">5</span>
+                    <span class="tweet-title">Ürün Örneği</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="example-box">
+                        <div class="example-title">✅ DOĞRU ÖRNEK</div>
+                        <div class="example-text">
+                            Photo of premium leather wallet, product photography, wooden background,
+                            studio lighting 4K HD DSLR, detailed texture showing grain and stitching,
+                            shot on Sony A7 III with 85mm macro lens, f2.8
+                        </div>
+                    </div>
+                    <div class="compare-grid">
+                        <div class="compare-do"><strong>✅ Profesyonel</strong><br>Photo of wallet</div>
+                        <div class="compare-dont"><strong>❌ Sıradan</strong><br>Realistic wallet photo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">6</span>
+                    <span class="tweet-title">Manzara Örneği</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="example-box">
+                        <div class="example-title">✅ DOĞRU ÖRNEK</div>
+                        <div class="example-text">
+                            Photo of mountain valley with winding river, golden sunset light,
+                            dramatic cloud formations, natural vegetation variation,
+                            shot on Nikon D810 with 24mm wide-angle lens, f11,
+                            National Geographic style, 8K resolution
+                        </div>
+                    </div>
+                    <div class="compare-grid">
+                        <div class="compare-do"><strong>✅ Sinematik</strong><br>Photo of valley</div>
+                        <div class="compare-dont"><strong>❌ Belirsiz</strong><br>Photorealistic landscape</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">7</span>
+                    <span class="tweet-title">API İpuçları</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="step-item">
+                        <div class="step-label">🎨 style natural</div>
+                        Gerçekçi fotoğraflar için
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">⚡ style vivid</div>
+                        Dramatik pazarlama için
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">💎 quality hd</div>
+                        Detay için (2x fiyat)
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">🚀 quality standard</div>
+                        Test için
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">📐 1792x1024</div>
+                        Profesyonel çekim estetiği
+                    </div>
+                    <div class="step-item">
+                        <div class="step-label">📱 1024x1792</div>
+                        Mobil doğal görünüm
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">8</span>
+                    <span class="tweet-title">Hızlı Checklist</span>
+                </div>
+                <div class="tweet-body">
+                    <div class="step-item">✅ Photo of ile başla</div>
+                    <div class="step-item">✅ Kamera modeli ekle (Canon Sony Nikon)</div>
+                    <div class="step-item">✅ Lens detayı (85mm f1.8)</div>
+                    <div class="step-item">✅ Işık türü (golden hour studio)</div>
+                    <div class="step-item">✅ Doku açıklaması (pores texture)</div>
+                    <div class="step-item">✅ Kusur ekle (wrinkles variation)</div>
+                    <div class="step-item" style="background: rgba(239,68,68,0.2); border-left-color: #ef4444;">
+                        ❌ Photorealistic kullanma
+                    </div>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">9</span>
+                    <span class="tweet-title">Pro İpucu</span>
+                </div>
+                <div class="tweet-body">
+                    <p style="font-weight: 700; color: #60a5fa; margin-bottom: 15px;">
+                        🎭 Duygu Eylem ekle - Daha gerçekçi
+                    </p>
+                    <div class="compare-grid">
+                        <div class="compare-dont"><strong>❌ Statik</strong><br>A woman</div>
+                        <div class="compare-do"><strong>✅ Dinamik</strong><br>Woman laughing heartily</div>
+                    </div>
+                    <div class="compare-grid" style="margin-top: 10px;">
+                        <div class="compare-dont"><strong>❌ Sıradan</strong><br>A man</div>
+                        <div class="compare-do"><strong>✅ Canlı</strong><br>Man reading newspaper at café</div>
+                    </div>
+                    <p style="margin-top: 15px; color: #60a5fa; font-weight: 600;">
+                        Statik değil dinamik açıklama yap
+                    </p>
+                </div>
+            </div>
+
+            <div class="tweet-card">
+                <div class="tweet-header">
+                    <span class="tweet-number">10</span>
+                    <span class="tweet-title">Hatırla</span>
+                </div>
+                <div class="tweet-body">
+                    <p style="font-weight: 700; color: #60a5fa; margin-bottom: 15px;">
+                        DALL-E 3 gerçek fotoğrafların metadatası ile eğitildi
+                    </p>
+                    <div class="step-item">📷 Kamera modeli</div>
+                    <div class="step-item">🔍 Lens tipi</div>
+                    <div class="step-item">💡 Işık koşulları</div>
+                    <div class="step-item">⚙️ f değeri ISO</div>
+                    <p style="margin-top: 15px; color: #60a5fa; font-weight: 600;">
+                        Bu teknik detayları kullan - Profesyonel sonuç
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="bonus-box">
+            <h2>🎁 BONUS: Tek Tweet Özeti</h2>
+            <div class="single-tweet">
+                <strong>DALL-E 3 Formülü:</strong><br><br>
+                Photo of + [konu] + [açı] + [arka plan] + [ışık] + [kamera Canon Sony 85mm f1.8] + [doğal kusurlar visible pores wrinkles]
+                <br><br>
+                ❌ Photorealistic kullanma<br>
+                ✅ Profesyonel fotoğraf gibi yaz
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

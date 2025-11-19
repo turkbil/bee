@@ -14,9 +14,9 @@
         @apply container mx-auto px-4 sm:px-4 md:px-0;
     }
 
-    /* Glass Subheader Container (No horizontal padding) */
+    /* Glass Subheader Container */
     .ixtif-subheader-container {
-        @apply container mx-auto py-6;
+        @apply container mx-auto px-4 sm:px-4 md:px-2 py-6;
     }
 
     /* Section Container (With padding) */
@@ -120,6 +120,15 @@
 }
 
 @layer utilities {
+    /* Scrollbar hide utility - Mobile breadcrumb scroll */
+    .scrollbar-hide {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;  /* Chrome, Safari, Opera */
+    }
+
     /* Responsive text utilities */
     .text-responsive-xs {
         @apply text-xs sm:text-sm;

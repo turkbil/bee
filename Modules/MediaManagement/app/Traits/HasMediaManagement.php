@@ -260,7 +260,8 @@ trait HasMediaManagement
             $diskName = 'tenant';
 
             // Disk yapılandırmasını tenant-specific olarak ayarla
-            $root = storage_path("tenant{$tenantId}/app/public");
+            // ⚠️ base_path kullan, storage_path değil! (Stancl Tenancy storage_path'i override eder)
+            $root = base_path("storage/tenant{$tenantId}/app/public");
 
             // Directory yoksa oluştur
             if (!is_dir($root)) {

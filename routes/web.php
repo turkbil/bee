@@ -589,6 +589,19 @@ Route::middleware([InitializeTenancy::class, 'site'])
                     ->name('shop.brand.explicit');
             });
 
+        // ⚡ BLOG MODULE EXPLICIT ROUTES (catch-all'dan ÖNCE tanımlanmalı!)
+        Route::middleware(['web', 'tenant', 'locale.site', 'frontend.auto.seo'])
+            ->prefix('blog')
+            ->group(function () {
+                // Blog Category
+                Route::get('/category/{slug}', [\Modules\Blog\App\Http\Controllers\Front\BlogController::class, 'category'])
+                    ->name('blog.category.explicit');
+
+                // Blog Tag
+                Route::get('/tag/{tag}', [\Modules\Blog\App\Http\Controllers\Front\BlogController::class, 'tag'])
+                    ->name('blog.tag.explicit');
+            });
+
         // Catch-all route'ları - prefix olmayan - sadece content route'ları için
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
@@ -598,12 +611,12 @@ Route::middleware([InitializeTenancy::class, 'site'])
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
         })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$')
-         ->where('slug2', '^(?!pdf)[^/]+$');
+         ->where('slug2', '^(?!pdf|category|tag)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
         })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$')
-         ->where('slug2', '^(?!pdf)[^/]+$')
+         ->where('slug2', '^(?!pdf|category|tag)[^/]+$')
          ->where('slug3', '[^/]+');
     });
 

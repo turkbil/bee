@@ -53,6 +53,13 @@
                                     <span>Kariyer</span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="/blog"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    <span>iXtif Akademi</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
 

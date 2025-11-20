@@ -4,6 +4,7 @@ namespace Modules\Blog\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\InitializeTenancy;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes(): void
     {
-        Route::middleware(['web'])
+        Route::middleware(['web', InitializeTenancy::class])
             ->group(module_path('Blog', 'routes/web.php'));
     }
 

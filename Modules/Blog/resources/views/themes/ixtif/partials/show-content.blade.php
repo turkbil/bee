@@ -390,6 +390,19 @@
 
                         // 🎨 POST-PROCESSING: Görsellere lazy loading + Thumbmaker
                         $parsedBody = process_blog_images($parsedBody);
+
+                        // 🛍️ PRODUCT INJECTION: Tenant-aware shop card injection
+                        $tenantId = tenant('id');
+                        $injectorClass = "\\Modules\\Blog\\app\\Services\\Tenants\\Tenant{$tenantId}BlogProductInjector";
+
+                        // Try tenant-specific injector, fallback to default
+                        if (class_exists($injectorClass)) {
+                            $productInjector = new $injectorClass();
+                        } else {
+                            $productInjector = app(\Modules\Blog\app\Services\BlogProductInjector::class);
+                        }
+
+                        $parsedBody = $productInjector->injectProducts($parsedBody, $item);
                     @endphp
                     {!! Blade::render($parsedBody, [], true) !!}
                 </div>
@@ -411,7 +424,7 @@
                         }
                     @endphp
                     @if($hasValidFaq)
-                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600" itemscope itemtype="https://schema.org/FAQPage">
+                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 md:bg-gradient-to-br md:from-blue-50 md:to-indigo-50 md:dark:from-gray-800 md:dark:to-gray-700 md:rounded-2xl md:p-8 md:shadow-xl md:border md:border-blue-100 md:dark:border-gray-600" itemscope itemtype="https://schema.org/FAQPage">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                     <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
@@ -430,14 +443,14 @@
                                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl"
                                              itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
                                             <details class="group">
-                                                <summary class="flex items-center justify-between w-full px-6 md:px-8 py-5 md:py-6 cursor-pointer list-none select-none hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-all duration-300">
+                                                <summary class="flex items-center justify-between w-full px-4 md:px-8 py-4 md:py-6 cursor-pointer list-none select-none hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-all duration-300">
                                                     <div class="flex items-center gap-4 flex-1">
                                                         @php
                                                             $iconClass = str_replace(['fas ', 'far ', 'fab ', 'fa-solid ', 'fa-regular '], '', $faqIcon);
                                                             $iconClass = trim($iconClass);
                                                         @endphp
-                                                        <div class="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-2xl">
-                                                            <i class="fa-light {{ $iconClass }} group-hover:fa-solid text-white text-2xl transition-all duration-300 group-hover:scale-110"></i>
+                                                        <div class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-2xl">
+                                                            <i class="fa-light {{ $iconClass }} group-hover:fa-solid text-white text-xl md:text-2xl transition-all duration-300 group-hover:scale-110"></i>
                                                         </div>
                                                         <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white pr-4 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
                                                             {{ $question }}
@@ -447,7 +460,7 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                                     </svg>
                                                 </summary>
-                                                <div class="px-6 md:px-8 pb-6 md:pb-8 pt-2 text-gray-700 dark:text-gray-300 prose prose-base md:prose-lg dark:prose-invert max-w-none pl-20 md:pl-24"
+                                                <div class="px-4 md:px-8 pb-4 md:pb-8 pt-2 text-gray-700 dark:text-gray-300 prose prose-base md:prose-lg dark:prose-invert max-w-none pl-16 md:pl-24"
                                                      itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
                                                     <div itemprop="text">
                                                         {!! nl2br(e($answer)) !!}
@@ -470,7 +483,7 @@
                         $howtoDesc = is_array($howtoData['description'] ?? null) ? ($howtoData['description'][$currentLocale] ?? '') : ($howtoData['description'] ?? '');
                     @endphp
                     @if(!empty($howtoData) && is_array($howtoData) && !empty($howtoData['steps']) && !empty($howtoName))
-                        <section id="nasil-yapilir" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600" itemscope itemtype="https://schema.org/HowTo">
+                        <section id="nasil-yapilir" class="mt-16 md:mt-20 md:bg-gradient-to-br md:from-blue-50 md:to-indigo-50 md:dark:from-gray-800 md:dark:to-gray-700 md:rounded-2xl md:p-8 md:shadow-xl md:border md:border-blue-100 md:dark:border-gray-600" itemscope itemtype="https://schema.org/HowTo">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3" itemprop="name">
                                     <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-3"></i>
@@ -492,7 +505,7 @@
                                         $stepIcon = $step['icon'] ?? 'fas fa-check-circle';
                                     @endphp
                                     @if(!empty($stepName))
-                                        <div class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 md:p-8 hover:shadow-2xl transition-all duration-500"
+                                        <div class="group relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-4 md:p-8 hover:shadow-2xl transition-all duration-500"
                                              itemscope itemprop="step" itemtype="https://schema.org/HowToStep">
                                             {{-- Step Number Badge --}}
                                             <div class="absolute -top-3 -left-3 w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center shadow-sm opacity-60 transition-all duration-300 group-hover:opacity-80 group-hover:scale-110">
@@ -500,8 +513,8 @@
                                             </div>
 
                                             {{-- Icon --}}
-                                            <div class="flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 mx-auto mb-6 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl">
-                                                <i class="{{ $stepIcon }} text-4xl text-white transition-transform duration-300 group-hover:scale-110"></i>
+                                            <div class="flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 mx-auto mb-4 md:mb-6 shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl">
+                                                <i class="{{ $stepIcon }} text-3xl md:text-4xl text-white transition-transform duration-300 group-hover:scale-110"></i>
                                             </div>
 
                                             {{-- Title --}}
@@ -564,7 +577,7 @@
 
                 {{-- Author Card (Detaylı) --}}
                 <section id="yazar-bilgileri" class="mt-16 md:mt-20">
-                    <x-blog.author-card variant="full" />
+                    <x-blog.author-card variant="full" :blog="$item" />
                 </section>
 
                 {{-- İlgili Yazılar --}}
@@ -750,6 +763,37 @@
 
         [x-cloak] {
             display: none !important;
+        }
+
+        /* Table dark mode styles */
+        .prose table {
+            margin: 2rem 0;
+        }
+
+        .prose th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #111827;
+            background-color: #f3f4f6;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .prose td {
+            padding: 0.75rem;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        html.dark .prose th {
+            color: #ffffff;
+            background-color: #374151;
+            border-bottom-color: #4b5563;
+        }
+
+        html.dark .prose td {
+            color: #d1d5db;
+            border-bottom-color: #4b5563;
         }
     </style>
 @endpush

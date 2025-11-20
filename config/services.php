@@ -98,4 +98,39 @@ return [
         'whatsapp_to' => env('TWILIO_WHATSAPP_TO'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Stock Photo Providers
+    |--------------------------------------------------------------------------
+    |
+    | Free stock photo API keys for Pexels, Unsplash, Pixabay
+    |
+    */
+
+    'pexels' => [
+        'api_key' => env('PEXELS_API_KEY'),
+    ],
+
+    'unsplash' => [
+        'access_key' => env('UNSPLASH_ACCESS_KEY'),
+    ],
+
+    'pixabay' => [
+        'api_key' => env('PIXABAY_API_KEY'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Leonardo AI - AI Image Generation
+    |--------------------------------------------------------------------------
+    |
+    | High-quality AI image generation for blog content
+    | Get API key: https://app.leonardo.ai/api-access
+    |
+    */
+
+    'leonardo' => [
+        'api_key' => env('LEONARDO_API_KEY'),
+    ],
+
 ];

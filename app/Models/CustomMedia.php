@@ -9,9 +9,16 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media as BaseMedia;
  *
  * Spatie Media Library kullanır ama connection'ı tenant context'e göre belirler.
  * Setting model CentralConnection kullanır ama media'sı tenant DB'ye gitmeli.
+ *
+ * NOT: BelongsToTenant trait kullanılmaz çünkü her tenant zaten ayrı database'de!
  */
 class CustomMedia extends BaseMedia
 {
+    /**
+     * Tenant ID - queue job'larda preserve edilecek
+     */
+    protected $tenantId;
+
     /**
      * Get the current connection name for the model.
      *
@@ -45,5 +52,36 @@ class CustomMedia extends BaseMedia
 
         // 3. Son çare: parent connection (gerçekten central context ise)
         return parent::getConnectionName();
+    }
+
+    /**
+     * Serialize - tenant context'i sakla
+     */
+    public function __serialize(): array
+    {
+        $data = parent::__serialize();
+
+        // Mevcut tenant ID'yi sakla
+        if (function_exists('tenant') && tenant()) {
+            $data['tenant_id'] = tenant('id');
+        }
+
+        return $data;
+    }
+
+    /**
+     * Unserialize - tenant context'i restore et
+     */
+    public function __unserialize(array $data): void
+    {
+        // Tenant context'i restore et
+        if (isset($data['tenant_id'])) {
+            $tenant = \App\Models\Tenant::find($data['tenant_id']);
+            if ($tenant) {
+                tenancy()->initialize($tenant);
+            }
+        }
+
+        parent::__unserialize($data);
     }
 }

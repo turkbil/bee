@@ -2,6 +2,9 @@
     'product',
     'layout' => 'vertical', // vertical | horizontal
     'showAddToCart' => true,
+    'showCategory' => true,
+    'showDivider' => true,
+    'compactImage' => false,
     'imageSize' => '400x400',
     'index' => null,
 ])
@@ -155,7 +158,7 @@
         : 'flex flex-col';
 
     $imageContainerClasses = $layout === 'horizontal'
-        ? 'w-32 h-32 flex-shrink-0'
+        ? 'w-28 h-28 md:w-36 md:h-36 flex-shrink-0'
         : 'aspect-square';
 
     $contentClasses = $layout === 'horizontal'
@@ -388,7 +391,7 @@ document.addEventListener('alpine:init', () => {
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
         <div class="relative {{ $imageContainerClasses }}">
-            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 p-2 md:p-8 lg:p-12">
+            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 {{ $layout === 'horizontal' ? 'p-1' : ($compactImage ? 'p-2 md:p-4 lg:p-6' : 'p-2 md:p-8 lg:p-12') }}">
                 @if($productImage)
                     <img src="{{ $productImage }}"
                          alt="{{ $productTitle }}"
@@ -429,12 +432,15 @@ document.addEventListener('alpine:init', () => {
         {{-- Content Section --}}
         <div class="{{ $contentClasses }}">
             {{-- Category Badge with Icon + Custom Badges (Vertical: sağda, Horizontal: solda) --}}
+            @if($showCategory || $layout === 'horizontal')
             <div class="flex items-center gap-2 {{ $layout === 'horizontal' ? 'mb-2' : 'mb-4 justify-end lg:justify-between' }}">
                 {{-- Category: Mobilde gizli, tablet+ göster --}}
+                @if($showCategory)
                 <span class="hidden lg:flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
                     <i class="{{ $productCategoryIcon }} text-sm"></i>
                     {{ $productCategory }}
                 </span>
+                @endif
 
                 {{-- Badges (Horizontal layout: sağda | Vertical: görsel üzerinde) --}}
                 @if($layout === 'horizontal')
@@ -462,13 +468,14 @@ document.addEventListener('alpine:init', () => {
                         @endforeach
                     </div>
                 @else
-                    @if($productFeatured)
+                    @if($productFeatured && $showCategory)
                         <span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full font-bold hidden lg:inline-block">
                             ⭐ Öne Çıkan
                         </span>
                     @endif
                 @endif
             </div>
+            @endif
 
             {{-- Title --}}
             <a href="{{ $productUrl }}">
@@ -478,7 +485,7 @@ document.addEventListener('alpine:init', () => {
             </a>
 
             {{-- Price & Actions --}}
-            <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto border-t border-gray-300 dark:border-gray-500 flex items-center justify-between gap-3' }}">
+            <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto flex items-center justify-between gap-3' }} {{ $layout === 'vertical' && $showDivider ? 'border-t border-gray-300 dark:border-gray-500' : '' }}">
                 {{-- Price with Transform Effect (USD ⇄ TRY) + Old Price --}}
                 <div class="flex-1 min-w-0">
                     @if($productBasePrice <= 0)

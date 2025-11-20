@@ -4,6 +4,7 @@ namespace Modules\Blog\App\Http\Controllers\Front;
 
 use Illuminate\Routing\Controller;
 use Modules\Blog\App\Models\Blog;
+use Modules\Blog\App\Models\BlogCategory;
 use App\Services\ThemeService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
@@ -62,9 +63,31 @@ class BlogController extends Controller
             });
         }
 
+        // Kategori seçimi yok - index tüm blogları gösterir
+        $selectedCategory = null;
+
         $items = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at')
-            ->simplePaginate(10);
+            ->simplePaginate(12);
+
+        // Sadece ana kategorileri çek (parent_id = null), alt kategorilerle birlikte
+        $categories = BlogCategory::query()
+            ->where('is_active', true)
+            ->whereNull('parent_id')
+            ->with(['children' => function ($q) {
+                $q->where('is_active', true)
+                    ->withCount(['blogs' => function ($q2) {
+                        $q2->published();
+                    }])
+                    ->orderBy('sort_order')
+                    ->orderBy('title');
+            }])
+            ->withCount(['blogs' => function ($q) {
+                $q->published();
+            }])
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
 
         // Modül title'ını al
         $moduleTitle = $tag
@@ -79,6 +102,8 @@ class BlogController extends Controller
                 'moduleTitle' => $moduleTitle,
                 'tag' => $tag,
                 'resolvedTag' => $resolvedTag,
+                'categories' => $categories,
+                'selectedCategory' => $selectedCategory,
             ]);
         } catch (\Exception $e) {
             // Hatayı logla
@@ -90,6 +115,153 @@ class BlogController extends Controller
                 'moduleTitle' => $moduleTitle,
                 'tag' => $tag,
                 'resolvedTag' => $resolvedTag,
+                'categories' => $categories,
+                'selectedCategory' => $selectedCategory,
+            ]);
+        }
+    }
+
+    /**
+     * Infinity scroll için JSON API endpoint
+     */
+    public function loadMore()
+    {
+        $query = Blog::query()
+            ->with(['category', 'tags'])
+            ->published();
+
+        $tag = request('tag');
+
+        if ($tag) {
+            $slug = Str::slug($tag);
+
+            $query->whereHas('tags', function ($q) use ($slug, $tag) {
+                $q->where('slug', $slug)
+                    ->orWhere('name', 'like', '%' . $tag . '%');
+            });
+        }
+
+        $items = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->orderByDesc('created_at')
+            ->simplePaginate(12);
+
+        $currentLocale = app()->getLocale();
+        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+        $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+        $defaultLocale = get_tenant_default_locale();
+        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+
+        $blogs = $items->map(function ($item) use ($currentLocale, $slugPrefix, $localePrefix) {
+            $slugData = $item->getRawOriginal('slug');
+
+            if (is_string($slugData)) {
+                $slugData = json_decode($slugData, true) ?: [];
+            }
+
+            if (is_array($slugData) && isset($slugData[$currentLocale]) && !empty($slugData[$currentLocale])) {
+                $slug = $slugData[$currentLocale];
+            } elseif (is_array($slugData) && !empty($slugData)) {
+                $slug = reset($slugData);
+            } elseif (is_string($slugData) && !empty($slugData)) {
+                $slug = $slugData;
+            } else {
+                $slug = 'blog-' . $item->blog_id;
+            }
+
+            $title = $item->getTranslated('title', $currentLocale);
+            $body = $item->getTranslated('body', $currentLocale);
+            $excerpt = $item->getTranslated('excerpt', $currentLocale) ?: Str::limit(strip_tags($body), 150);
+
+            // Featured image'i thumbmaker ile optimize et
+            $featuredMedia = $item->getFirstMedia('featured_image');
+            $imageUrl = $featuredMedia
+                ? thumb($featuredMedia, 400, 300, ['quality' => 85, 'format' => 'webp'])
+                : null;
+
+            return [
+                'id' => $item->blog_id,
+                'title' => $title,
+                'excerpt' => $excerpt,
+                'url' => url($localePrefix . '/' . $slugPrefix . '/' . $slug),
+                'image' => $imageUrl,
+                'date' => $item->created_at->format('d.m.Y'),
+            ];
+        });
+
+        return response()->json([
+            'data' => $blogs,
+            'has_more' => $items->hasMorePages(),
+            'next_page' => $items->hasMorePages() ? $items->currentPage() + 1 : null,
+        ]);
+    }
+
+    /**
+     * Kategori sayfası
+     */
+    public function category($slug)
+    {
+        $currentLocale = app()->getLocale();
+
+        // Kategoriyi bul - slug çoklu dil JSON formatında
+        $selectedCategory = BlogCategory::where('is_active', true)
+            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $currentLocale . "\"')) = ?", [$slug])
+            ->first();
+
+        if (!$selectedCategory) {
+            abort(404);
+        }
+
+        // Bu kategorideki blogları çek
+        $items = Blog::query()
+            ->with(['category', 'tags'])
+            ->published()
+            ->where('blog_category_id', $selectedCategory->category_id)
+            ->orderByRaw('COALESCE(published_at, created_at) DESC')
+            ->orderByDesc('created_at')
+            ->simplePaginate(12);
+
+        // Tüm kategorileri çek (slider için)
+        $categories = BlogCategory::query()
+            ->where('is_active', true)
+            ->whereNull('parent_id')
+            ->with(['children' => function ($q) {
+                $q->where('is_active', true)
+                    ->withCount(['blogs' => function ($q2) {
+                        $q2->published();
+                    }])
+                    ->orderBy('sort_order')
+                    ->orderBy('title');
+            }])
+            ->withCount(['blogs' => function ($q) {
+                $q->published();
+            }])
+            ->orderBy('sort_order')
+            ->orderBy('title')
+            ->get();
+
+        // Modül title'ı kategori adı olsun
+        $moduleTitle = $selectedCategory->getTranslated('title', $currentLocale);
+
+        try {
+            $viewPath = $this->themeService->getThemeViewPath('index', 'blog');
+            return view($viewPath, [
+                'items' => $items,
+                'moduleTitle' => $moduleTitle,
+                'tag' => null,
+                'resolvedTag' => null,
+                'categories' => $categories,
+                'selectedCategory' => $selectedCategory,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Theme Error: " . $e->getMessage());
+
+            return view('blog::front.index', [
+                'items' => $items,
+                'moduleTitle' => $moduleTitle,
+                'tag' => null,
+                'resolvedTag' => null,
+                'categories' => $categories,
+                'selectedCategory' => $selectedCategory,
             ]);
         }
     }
@@ -199,7 +371,7 @@ class BlogController extends Controller
             ->with('category')
             ->where('is_active', true)
             ->published()
-            ->whereJsonContains("slug->{$currentLocale}", $slug)
+            ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $currentLocale . "\"')) = ?", [$slug])
             ->first();
 
         // Bulunamazsa 404
@@ -216,7 +388,7 @@ class BlogController extends Controller
                     ->with('category')
                     ->where('is_active', true)
                     ->published()
-                    ->whereJsonContains("slug->{$locale}", $slug)
+                    ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $locale . "\"')) = ?", [$slug])
                     ->first();
 
                 if ($item) {

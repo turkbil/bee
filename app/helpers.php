@@ -239,6 +239,40 @@ if (!function_exists('getTenantSetting')) {
     }
 }
 
+if (!function_exists('getBlogDailyCount')) {
+    /**
+     * Get blog daily count from tenant setting (option value → integer)
+     *
+     * Setting 'blog_ai_daily_count' option value'larını gerçek sayıya çevirir:
+     * - option1 → 1 blog/gün
+     * - option2 → 2 blog/gün
+     * - option3 → 3 blog/gün
+     * - option4 → 4 blog/gün (B2B Optimal)
+     * - option5 → 5 blog/gün
+     * - option6 → 6 blog/gün
+     * - option7 → 8 blog/gün (SEO Maximum)
+     *
+     * @return int Günlük blog sayısı (varsayılan: 4)
+     */
+    function getBlogDailyCount(): int
+    {
+        $optionValue = getTenantSetting('blog_ai_daily_count', 'option4');
+
+        // Option value → Integer mapping
+        $mapping = [
+            'option1' => 1,
+            'option2' => 2,
+            'option3' => 3,
+            'option4' => 4,
+            'option5' => 5,
+            'option6' => 6,
+            'option7' => 8,
+        ];
+
+        return $mapping[$optionValue] ?? 4; // Fallback: 4 blog/gün
+    }
+}
+
 if (!function_exists('calculateActiveHours')) {
     /**
      * Calculate active hours for blog AI cron based on daily count

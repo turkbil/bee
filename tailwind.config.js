@@ -201,6 +201,10 @@ module.exports = {
             spacing: {
                 'ixtif-container-padding': 'clamp(1rem, 2vw, 0px)', // Responsive padding: mobile 1rem, tablet+ 0
             },
+            dropShadow: {
+                'product-light': '0 0 0 rgba(0, 0, 0, 0)',
+                'product-dark': '0 0 0 rgba(0, 0, 0, 0)',
+            },
             typography: {
                 DEFAULT: {
                     css: {

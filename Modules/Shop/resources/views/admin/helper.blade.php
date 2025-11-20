@@ -47,7 +47,7 @@
                         @endhasmoduleaccess
 
                         @hasmoduleaccess('shop', 'view')
-                            <a class="dropdown-item" href="{{ route('admin.shop.carts') }}">
+                            <a class="dropdown-item" href="{{ route('admin.cart.index') }}">
                                 <i class="icon-menu fas fa-shopping-cart"></i>Shopping Carts / Sepetler
                             </a>
                         @endhasmoduleaccess

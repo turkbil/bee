@@ -320,6 +320,154 @@
     </div>
 </section>
 
+<!-- Son Blog Yazıları Section - 5 Farklı Glass Tasarım -->
+@php
+    // Featured image media kaydı olan blogları çek
+    $latestBlogs = \Modules\Blog\App\Models\Blog::published()
+        ->whereHas('media', function($query) {
+            $query->where('collection_name', 'featured_image');
+        })
+        ->orderBy('published_at', 'desc')
+        ->take(6)
+        ->get();
+@endphp
+
+@if($latestBlogs->isNotEmpty())
+
+{{-- ==================== BLOG SECTION: STACKED GLASS LAYERS ==================== --}}
+<section class="w-full py-20 relative overflow-hidden">
+    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+        <div class="flex items-center justify-between mb-12">
+            <div class="flex items-center gap-4">
+                <div class="w-1.5 h-12 bg-gradient-to-b from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">iXtif Akademi</h2>
+            </div>
+            <a href="/blog" class="hidden md:flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 font-semibold transition-colors">
+                Tümünü Gör <i class="fa-solid fa-arrow-right text-sm"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($latestBlogs as $blog)
+                @php
+                    $blogTitle = is_array($blog->title) ? ($blog->title['tr'] ?? '') : $blog->title;
+                    $blogSlug = is_array($blog->slug) ? ($blog->slug['tr'] ?? '') : $blog->slug;
+                    $blogExcerpt = is_array($blog->excerpt) ? ($blog->excerpt['tr'] ?? '') : ($blog->excerpt ?? '');
+                    $blogUrl = '/blog/' . $blogSlug;
+                    $blogImage = $blog->hasMedia('featured_image') ? thumb($blog->getFirstMedia('featured_image'), 400, 300, ['quality' => 85, 'format' => 'webp']) : null;
+                    $blogDate = $blog->published_at ? $blog->published_at->format('d.m.Y') : '';
+
+                    // Okuma süresi - Blog detay sayfasıyla aynı metod
+                    $readTime = $blog->calculateReadingTime('tr');
+
+                    // Content'i al (excerpt için fallback)
+                    $blogContent = is_array($blog->content) ? ($blog->content['tr'] ?? '') : ($blog->content ?? '');
+                @endphp
+
+                <a href="{{ $blogUrl }}" class="group block h-full">
+                    {{-- Card Container --}}
+                    <div class="relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:border-blue-300 dark:hover:border-blue-500/50 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+                        {{-- Image with Layered Glass Effect --}}
+                        <div class="relative h-56 overflow-hidden flex-shrink-0">
+                            @if($blogImage)
+                                <img src="{{ $blogImage }}" alt="{{ $blogTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-newspaper text-5xl text-white/30"></i>
+                                </div>
+                            @endif
+
+                            {{-- Multi-layer Glass Overlay --}}
+                            <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 via-white/40 dark:via-gray-900/40 to-transparent backdrop-blur-[1px]"></div>
+
+                            {{-- Floating Glass Stats --}}
+                            <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
+                                        <i class="fa-regular fa-calendar text-blue-500 dark:text-blue-400"></i>
+                                        {{ $blogDate }}
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
+                                        <i class="fa-regular fa-clock text-blue-500 dark:text-blue-400"></i>
+                                        {{ $readTime }} dk
+                                    </span>
+                                </div>
+                                {{-- Favoriye Ekle Butonu --}}
+                                @auth
+                                <div x-data="{
+                                        favorited: {{ $blog->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                        loading: false,
+                                        async toggleFavorite() {
+                                            if (this.loading) return;
+                                            this.loading = true;
+                                            // Anında görsel feedback - optimistic update
+                                            this.favorited = !this.favorited;
+                                            try {
+                                                const response = await fetch('/api/favorites/toggle', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
+                                                        'Accept': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        model_class: '{{ addslashes(get_class($blog)) }}',
+                                                        model_id: {{ $blog->id }}
+                                                    })
+                                                });
+                                                const data = await response.json();
+                                                if (data.success) {
+                                                    this.favorited = data.data.is_favorited;
+                                                } else {
+                                                    // Hata durumunda geri al
+                                                    this.favorited = !this.favorited;
+                                                }
+                                            } catch (error) {
+                                                console.error('Favorite error:', error);
+                                                // Hata durumunda geri al
+                                                this.favorited = !this.favorited;
+                                            } finally {
+                                                this.loading = false;
+                                            }
+                                        }
+                                    }"
+                                     @click.prevent.stop="toggleFavorite()"
+                                     class="group/fav w-8 h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
+                                     title="Favorilere Ekle">
+                                    <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-sm transition-all duration-200"></i>
+                                </div>
+                                @else
+                                <a href="{{ route('login') }}"
+                                   @click.stop
+                                   class="group/fav w-8 h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200"
+                                   title="Favorilere eklemek için giriş yapın">
+                                    <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-sm transition-all duration-200"></i>
+                                </a>
+                                @endauth
+                            </div>
+
+                        </div>
+
+                        {{-- Content --}}
+                        <div class="p-6 pt-4 flex-1 flex flex-col">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                {{ $blogTitle }}
+                            </h3>
+
+                            {{-- Excerpt - Sabit yükseklik --}}
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 flex-1">
+                                {{ $blogExcerpt ?: Str::limit(strip_tags($blogContent), 120) }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+@endif
+
 <!-- Quick View Modal -->
 <div x-show="showModal"
      x-transition:enter="transition ease-out duration-300"

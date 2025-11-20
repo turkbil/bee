@@ -41,6 +41,17 @@ class BlogAIContentWriter
      */
     public function generateBlogFromDraft(BlogAIDraft $draft): Blog
     {
+        // 🔒 DUPLICATE KONTROLÜ: Aynı başlıklı blog var mı?
+        $existingBlog = $this->checkDuplicateBlog($draft->topic_keyword);
+        if ($existingBlog) {
+            Log::warning('⚠️ Duplicate blog detected, skipping generation', [
+                'draft_id' => $draft->id,
+                'topic' => $draft->topic_keyword,
+                'existing_blog_id' => $existingBlog->blog_id,
+            ]);
+            throw new \Exception("Bu başlıkta blog zaten mevcut (ID: {$existingBlog->blog_id}). Duplicate oluşturulmadı.");
+        }
+
         // Credit kontrolü - 1 blog = 1.0 kredi
         if (!ai_can_use_credits(1.0)) {
             throw new \Exception('Yetersiz AI kredisi. Lütfen kredi satın alın.');
@@ -48,6 +59,9 @@ class BlogAIContentWriter
 
         // AI ile blog içeriği oluştur
         $blogData = $this->generateContent($draft);
+
+        // 🔒 VALIDATION: Tüm gerekli alanların dolu olduğunu kontrol et
+        $this->validateBlogData($blogData, $draft);
 
         // Database transaction ile blog + SEO oluştur
         DB::beginTransaction();
@@ -69,14 +83,34 @@ class BlogAIContentWriter
                 'published_at' => now(), // Yayınlanma tarihi (null ise hemen yayında)
             ]);
 
-            // Kategorileri attach et
-            if (!empty($draft->category_suggestions)) {
-                // İlk kategori primary olarak blog_category_id'ye
-                $blog->update(['blog_category_id' => $draft->category_suggestions[0]]);
+            // Kategorileri attach et - Dinamik Seçim
+            $categoryId = null;
 
-                // Diğer kategorileri ilişkilendir (eğer ManyToMany varsa)
-                // $blog->categories()->attach($draft->category_suggestions);
+            // 1. Draft'ta category_suggestions varsa kullan
+            if (!empty($draft->category_suggestions)) {
+                $categoryId = $draft->category_suggestions[0];
             }
+
+            // 2. Yoksa AI ile dinamik kategori seç
+            if (!$categoryId) {
+                $categoryId = $this->selectCategoryWithAI($blogData['title']);
+            }
+
+            // 3. Hala yoksa varsayılan kategori (14 = Genel)
+            if (!$categoryId) {
+                $categoryId = 14; // Genel kategori
+                Log::warning('⚠️ Using default category for blog', [
+                    'blog_title' => $blogData['title'],
+                    'category_id' => $categoryId,
+                ]);
+            }
+
+            $blog->update(['blog_category_id' => $categoryId]);
+
+            Log::info('📂 Blog category assigned', [
+                'blog_id' => $blog->blog_id,
+                'category_id' => $categoryId,
+            ]);
 
             // SEO ayarları ekle (HasSeo trait)
             $blog->seoSetting()->create([
@@ -87,79 +121,89 @@ class BlogAIContentWriter
                 'status' => 'active',
             ]);
 
-            // 🎨 AI Image Generation - Production Mode
+            // 🎨 Leonardo AI - Sektörel AI Görsel Üretimi
             try {
-                $imageService = app(AIImageGenerationService::class);
+                Log::info('🎨 START: Leonardo AI image generation', [
+                    'blog_id' => $blog->blog_id,
+                    'title' => $blogData['title'],
+                ]);
 
-                // 1️⃣ Basit prompt oluştur (tenant-aware)
-                $simplePrompt = $this->buildSimplePromptForBlog($blogData['title']);
+                $leonardoService = app(\App\Services\Media\LeonardoAIService::class);
 
-                // 2️⃣ Check if tenant-specific prompt is already detailed (Tenant2)
-                $isTenantDetailedPrompt = (tenant('id') == 2 && strlen($simplePrompt) > 200);
+                // Leonardo AI ile görsel üret
+                $imageResult = $leonardoService->generateForBlog($blogData['title'], 'blog');
 
-                // 3️⃣ AIPromptEnhancer ile ultra detaylı prompt'a çevir (GPT-4o + NO TEXT kuralları)
-                // SKIP for Tenant2 if already detailed (buildImagePromptForBlog returns full prompt)
-                if ($isTenantDetailedPrompt) {
-                    $finalPrompt = $simplePrompt;
-                    Log::info('🎨 Blog AI Image: Using tenant-specific detailed prompt (skipping enhancer)', [
-                        'tenant_id' => tenant('id'),
-                        'prompt_length' => strlen($finalPrompt),
-                    ]);
-                } else {
-                    $enhancer = app(\Modules\AI\App\Services\AIPromptEnhancer::class);
-                    $finalPrompt = $enhancer->enhancePrompt(
-                        $simplePrompt,
-                        'commercial_photography', // Style: Professional commercial photography
-                        '1792x1024' // Size: Horizontal landscape 16:9
-                    );
-                    Log::info('🎨 Blog AI Image: Prompt enhanced via AIPromptEnhancer', [
-                        'simple_prompt' => $simplePrompt,
-                        'enhanced_prompt_length' => strlen($finalPrompt),
-                    ]);
+                if (!$imageResult) {
+                    throw new \Exception('Leonardo AI görsel üretemedi');
                 }
 
-                // 4️⃣ Zenginleştirilmiş/tenant-specific prompt ile görsel üret
-                $mediaItem = $imageService->generate(
-                    $finalPrompt,
-                    [
-                        'size' => '1792x1024',  // Horizontal landscape 16:9 ratio
-                        'quality' => 'hd'       // HD quality
-                    ]
-                );
-                $media = $mediaItem->getFirstMedia('library');
-                if ($media) {
-                    $blogTitle = $blogData['title'];
-                    $media->setCustomProperty('alt_text', ['tr' => $blogTitle]);
-                    $media->setCustomProperty('title', ['tr' => $blogTitle . ' - Ana Görsel']);
-                    $media->setCustomProperty('description', ['tr' => $blogData['excerpt']]);
-                    $media->setCustomProperty('width', 1792);
-                    $media->setCustomProperty('height', 1024);
-                    $media->setCustomProperty('seo_optimized', true);
-                    $media->setCustomProperty('og_image', true);
-                    $media->save();
+                // Görseli geçici dosyaya kaydet
+                $tempPath = sys_get_temp_dir() . '/' . uniqid('leonardo_') . '.jpg';
+                file_put_contents($tempPath, $imageResult['content']);
 
-                    // ✅ FIX: Move media to blog (no duplicate!)
-                    // OLD: $blog->addMedia()->toMediaCollection('featured') → Creates duplicate!
-                    // NEW: $media->move() → Moves media from MediaLibraryItem to Blog
-                    // 🔧 FIX: Conversion'ları SYNC yap (queue'ya atma - tenant context sorunu!)
-                    // performConversions() sync modda çalıştır, sonra move yap
-                    $media->setCustomProperty('skip_conversions', true);
-                    $media->save();
-                    $media->move($blog, 'featured_image');
-                    Log::info('Blog AI Featured Image Generated (SEO Optimized)', [
-                        'blog_id' => $blog->blog_id,
-                        'media_library_id' => $mediaItem->id,
-                        'media_id' => $media->id,
-                        'prompt' => $mediaItem->generation_prompt,
-                        'seo_alt' => $blogTitle,
-                        'seo_title' => $blogTitle . ' - Ana Görsel',
-                    ]);
+                // Tenant disk'i yapılandır
+                $tenantId = tenant('id');
+                $diskRoot = base_path("storage/tenant{$tenantId}/app/public");
+                if (!is_dir($diskRoot)) {
+                    @mkdir($diskRoot, 0775, true);
                 }
+
+                // 🔥 FIX: Queue job'da request() null olduğu için tenant domain kullan
+                $tenantDomain = null;
+                if (tenant() && tenant()->domains) {
+                    $domain = tenant()->domains->first();
+                    if ($domain) {
+                        $tenantDomain = 'https://' . $domain->domain;
+                    }
+                }
+                $appUrl = $tenantDomain ?? (request() ? request()->getSchemeAndHttpHost() : config('app.url'));
+
+                config([
+                    'filesystems.disks.tenant' => [
+                        'driver' => 'local',
+                        'root' => $diskRoot,
+                        'url' => "{$appUrl}/storage/tenant{$tenantId}",
+                        'visibility' => 'public',
+                        'throw' => false,
+                    ],
+                ]);
+
+                // Blog'a ekle
+                $media = $blog->addMedia($tempPath)
+                    ->usingFileName(uniqid('leonardo_') . '.jpg')
+                    ->toMediaCollection('featured_image', 'tenant');
+
+                // SEO ve metadata ekle
+                $blogTitle = $blogData['title'];
+                $media->setCustomProperty('provider', 'leonardo');
+                $media->setCustomProperty('generation_id', $imageResult['generation_id']);
+                $media->setCustomProperty('prompt', $imageResult['prompt']);
+                $media->setCustomProperty('alt_text', ['tr' => $blogTitle]);
+                $media->setCustomProperty('title', ['tr' => $blogTitle . ' - Ana Görsel']);
+                $media->setCustomProperty('description', ['tr' => $blogData['excerpt']]);
+                $media->setCustomProperty('seo_optimized', true);
+                $media->setCustomProperty('og_image', true);
+                $media->save();
+
+                // Geçici dosyayı sil
+                if (file_exists($tempPath)) {
+                    @unlink($tempPath);
+                }
+
+                Log::info('🎨 Leonardo AI: Image attached successfully', [
+                    'blog_id' => $blog->blog_id,
+                    'media_id' => $media->id,
+                    'generation_id' => $imageResult['generation_id'],
+                ]);
+
             } catch (\Exception $e) {
-                Log::warning('Blog AI Featured Image Generation Failed', [
+                Log::error('🎨 Leonardo AI: Image generation failed', [
                     'blog_id' => $blog->blog_id,
                     'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
                 ]);
+                // Exception'ı transaction'a fırlat, blog oluşmasın!
+                throw $e;
             }
 
             // 🖼️ Content İçi Görseller: DISABLED (User requested only 1 featured image)
@@ -202,10 +246,16 @@ class BlogAIContentWriter
                 'tenant_id' => tenant('id'),
             ]);
 
+            // 🔓 Lock'u serbest bırak
+            $this->releaseBlogCreationLock($draft->topic_keyword);
+
             return $blog;
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            // 🔓 Hata durumunda da lock'u serbest bırak
+            $this->releaseBlogCreationLock($draft->topic_keyword);
 
             Log::error('Blog AI Content Generation Failed', [
                 'draft_id' => $draft->id,
@@ -368,7 +418,7 @@ Sadece JSON array döndür!";
                     'custom_prompt' => "Sen bir blog içerik planlamacısısın. Verilen konu için SEO-uyumlu H2 başlıkları belirle.",
                     'temperature' => 0.7,
                     'max_tokens' => 1000,
-                    'model' => 'gpt-4o',
+                    'model' => 'gpt-4o-mini', // 🔧 FIX: 16x ucuz!
                 ]);
 
                 // Outline parse et
@@ -434,7 +484,7 @@ HTML çıktı döndür (UZUN ve detaylı):
                         'custom_prompt' => $systemMessage,
                         'temperature' => 0.8,
                         'max_tokens' => 3500,  // ⬆️ INCREASED: Her section için daha fazla içerik (500-600 kelime)
-                        'model' => 'gpt-4o',
+                        'model' => 'gpt-4o-mini', // 🔧 FIX: 16x ucuz!
                     ]);
 
                     // 🧹 Clean HTML wrapper and entity decode
@@ -464,7 +514,7 @@ Her soruya farklı ve konuya uygun icon seç.";
                 $faqResponse = $this->openaiService->ask($faqPrompt, false, [
                     'temperature' => 0.7,
                     'max_tokens' => 3000,  // ⬆️ Increased for 10 FAQ items
-                    'model' => 'gpt-4o',
+                    'model' => 'gpt-4o-mini', // 🔧 FIX: 16x ucuz!
                 ]);
 
                 // Extract JSON from code block if wrapped
@@ -498,7 +548,7 @@ Her adıma farklı ve konuya uygun icon seç.";
                 $howtoResponse = $this->openaiService->ask($howtoPrompt, false, [
                     'temperature' => 0.7,
                     'max_tokens' => 3000,  // ⬆️ Increased for 7 HowTo steps
-                    'model' => 'gpt-4o',
+                    'model' => 'gpt-4o-mini', // 🔧 FIX: 16x ucuz!
                 ]);
 
                 // 🔧 ULTRA ROBUST JSON EXTRACTION
@@ -955,27 +1005,157 @@ Her adıma farklı ve konuya uygun icon seç.";
     }
 
     /**
-     * Build SIMPLE prompt for blog featured image (will be enhanced by AIPromptEnhancer)
+     * 🎯 AI ile stock photo arama terimleri üret
+     *
+     * Blog başlığından en uygun 2-3 İngilizce arama terimi üretir
+     * Stock photo API'leri (Pexels, Unsplash, Pixabay) için optimize edilmiş
      *
      * @param string $blogTitle Blog title (subject)
-     * @return string Simple subject prompt (AIPromptEnhancer will add details)
+     * @return string Simple English search keywords for stock photo APIs
      */
     protected function buildSimplePromptForBlog(string $blogTitle): string
     {
-        // 🎯 TENANT2 ÖZELİ: Yaratıcı iş hayatı sahneleri
-        // Forklift/transpalet dolaylı anlatım - fabrika, lojistik, depo sahneleri
-        if (tenant('id') == 2) {
-            $tenantClass = $this->promptLoader->getProviderClass();
-            $tenantPrompts = new $tenantClass();
-            if (method_exists($tenantPrompts, 'buildImagePromptForBlog')) {
-                // Tenant-specific prompt (already detailed, don't enhance further)
-                return $tenantPrompts->buildImagePromptForBlog($blogTitle);
-            }
+        try {
+            // 🤖 AI ile anahtar kelime üret
+            $keywords = $this->generateStockPhotoKeywords($blogTitle);
+
+            Log::info('🎨 AI Stock Photo Keywords', [
+                'blog_title' => $blogTitle,
+                'keywords' => $keywords,
+            ]);
+
+            return $keywords;
+        } catch (\Exception $e) {
+            Log::warning('⚠️ AI keyword generation failed, using fallback', [
+                'error' => $e->getMessage(),
+            ]);
+
+            // Fallback: basit çeviri
+            return $this->getFallbackKeywords($blogTitle);
+        }
+    }
+
+    /**
+     * 🤖 OpenAI ile stock photo arama terimleri üret
+     */
+    protected function generateStockPhotoKeywords(string $blogTitle): string
+    {
+        $prompt = <<<PROMPT
+Generate 2-3 simple English search keywords for finding a stock photo that matches this blog title.
+
+Blog Title: "{$blogTitle}"
+
+Rules:
+- Return ONLY the keywords, nothing else
+- Use simple, common English words
+- Keywords should work well on Pexels/Unsplash/Pixabay
+- Focus on the main subject and setting
+- No sentences, just space-separated keywords
+- Maximum 4-5 words total
+
+Examples:
+- "Forklift Bakım Rehberi" → "forklift maintenance warehouse"
+- "E-ticaret SEO Stratejileri" → "ecommerce laptop business"
+- "Transpalet Seçim Kılavuzu" → "pallet jack warehouse logistics"
+
+Keywords:
+PROMPT;
+
+        $response = $this->openaiService->ask($prompt, false, [
+            'model' => 'gpt-4o-mini',
+            'max_tokens' => 50,
+            'temperature' => 0.3,
+        ]);
+
+        $keywords = trim($response);
+
+        // Temizle - sadece kelimeler kalsın
+        $keywords = preg_replace('/[^a-zA-Z\s]/', '', $keywords);
+        $keywords = preg_replace('/\s+/', ' ', $keywords);
+        $keywords = trim($keywords);
+
+        if (empty($keywords)) {
+            throw new \Exception('Empty keywords returned');
         }
 
-        // 🔄 FALLBACK: Simple generic blog prompt (AIPromptEnhancer will enrich it)
-        // AIPromptEnhancer will add: camera, lens, lighting, texture, NO TEXT rules
-        return "Professional blog featured image about: {$blogTitle}";
+        return $keywords;
+    }
+
+    /**
+     * 🔄 Fallback: Tenant bazlı basit anahtar kelimeler
+     */
+    protected function getFallbackKeywords(string $blogTitle): string
+    {
+        $tenantId = tenant('id');
+
+        // Tenant-specific fallback keywords
+        $tenantKeywords = [
+            2 => 'warehouse forklift industrial logistics', // ixtif.com
+            1001 => 'music studio instruments', // muzibu.com
+        ];
+
+        return $tenantKeywords[$tenantId] ?? 'professional business office';
+    }
+
+    /**
+     * 🔒 Blog verilerini doğrula - eksik varsa hata fırlat
+     *
+     * @throws \Exception Eksik veya geçersiz veri varsa
+     */
+    protected function validateBlogData(array $blogData, $draft): void
+    {
+        $errors = [];
+
+        // 1. Title kontrolü
+        if (empty($blogData['title']) || strlen($blogData['title']) < 10) {
+            $errors[] = 'Başlık eksik veya çok kısa (min 10 karakter)';
+        }
+
+        // 2. Content kontrolü (min 1000 karakter - kaliteli içerik için)
+        $contentLength = strlen(strip_tags($blogData['content'] ?? ''));
+        if ($contentLength < 1000) {
+            $errors[] = "İçerik çok kısa: {$contentLength} karakter (min 1000)";
+        }
+
+        // 3. FAQ kontrolü (min 5 soru)
+        $faqCount = 0;
+        if (!empty($blogData['faq_data']) && is_array($blogData['faq_data'])) {
+            $faqCount = count($blogData['faq_data']);
+        }
+        if ($faqCount < 5) {
+            $errors[] = "FAQ yetersiz: {$faqCount} soru (min 5)";
+        }
+
+        // 4. HowTo kontrolü (min 3 adım)
+        $howtoSteps = 0;
+        if (!empty($blogData['howto_data']) && is_array($blogData['howto_data'])) {
+            $howtoSteps = count($blogData['howto_data']['steps'] ?? $blogData['howto_data']);
+        }
+        if ($howtoSteps < 3) {
+            $errors[] = "HowTo yetersiz: {$howtoSteps} adım (min 3)";
+        }
+
+        // Hata varsa exception fırlat (job retry edecek)
+        if (!empty($errors)) {
+            $errorMessage = implode(', ', $errors);
+            Log::error('❌ Blog validation failed', [
+                'draft_id' => $draft->draft_id ?? 'N/A',
+                'errors' => $errors,
+                'title' => $blogData['title'] ?? 'N/A',
+                'content_length' => $contentLength,
+                'faq_count' => $faqCount,
+                'howto_steps' => $howtoSteps,
+            ]);
+
+            throw new \Exception("Blog içerik validasyonu başarısız: {$errorMessage}");
+        }
+
+        Log::info('✅ Blog validation passed', [
+            'draft_id' => $draft->draft_id ?? 'N/A',
+            'content_length' => $contentLength,
+            'faq_count' => $faqCount,
+            'howto_steps' => $howtoSteps,
+        ]);
     }
 
     /**
@@ -1279,6 +1459,164 @@ Her adıma farklı ve konuya uygun icon seç.";
                 ],
             ],
         ];
+    }
+
+    /**
+     * AI ile dinamik kategori seçimi
+     *
+     * Blog başlığına göre en uygun kategoriyi seçer
+     * Kategoriler database'den dinamik olarak çekilir
+     *
+     * @param string $blogTitle Blog başlığı
+     * @return int|null Seçilen kategori ID'si
+     */
+    protected function selectCategoryWithAI(string $blogTitle): ?int
+    {
+        try {
+            // Kategorileri database'den çek
+            $categories = \Modules\Blog\App\Models\BlogCategory::all();
+
+            if ($categories->isEmpty()) {
+                Log::warning('⚠️ No categories found for AI selection');
+                return null;
+            }
+
+            // Kategori listesi oluştur
+            $categoryList = [];
+            foreach ($categories as $category) {
+                $id = $category->getKey();
+                $title = $category->getTranslated('title', 'tr');
+                $categoryList[] = "{$id}. {$title}";
+            }
+
+            $categoryListText = implode("\n", $categoryList);
+
+            // OpenAI'a seçtir
+            $prompt = <<<PROMPT
+Blog başlığı için en uygun kategoriyi seç.
+
+**BLOG BAŞLIĞI:** {$blogTitle}
+
+**KATEGORİLER:**
+{$categoryListText}
+
+**KURAL:** Sadece kategori ID numarasını döndür. Başka hiçbir şey yazma.
+
+**ÖRNEK:**
+- "Forklift Bakımı" → 6
+- "En İyi Transpalet Modelleri" → 8
+- "Güvenlik Kuralları" → 3
+
+Kategori ID:
+PROMPT;
+
+            $response = $this->openaiService->ask($prompt, false, [
+                'model' => 'gpt-4o-mini',
+                'max_tokens' => 10,
+                'temperature' => 0.1,
+            ]);
+
+            // Sadece rakamları al
+            $categoryId = (int) preg_replace('/[^0-9]/', '', trim($response));
+
+            // Geçerli kategori mi kontrol et
+            $validIds = $categories->pluck($categories->first()->getKeyName())->toArray();
+
+            if (in_array($categoryId, $validIds)) {
+                Log::info('✅ AI category selection successful', [
+                    'blog_title' => $blogTitle,
+                    'selected_category_id' => $categoryId,
+                ]);
+                return $categoryId;
+            }
+
+            Log::warning('⚠️ AI returned invalid category ID', [
+                'blog_title' => $blogTitle,
+                'returned_id' => $categoryId,
+                'valid_ids' => $validIds,
+            ]);
+            return null;
+
+        } catch (\Exception $e) {
+            Log::error('❌ AI category selection failed', [
+                'blog_title' => $blogTitle,
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * 🔒 Duplicate blog kontrolü: Aynı başlıklı blog var mı?
+     *
+     * Başlık bazlı kontrol yapar (JSON title içinde TR değerine bakar)
+     * Slug ve benzer başlıkları da kontrol eder
+     * Race condition'ı önlemek için lock kullanır
+     *
+     * @param string $topicKeyword Blog başlığı / topic keyword
+     * @return Blog|null Mevcut blog varsa döndürür, yoksa null
+     */
+    protected function checkDuplicateBlog(string $topicKeyword): ?Blog
+    {
+        // Slug oluştur (karşılaştırma için)
+        $slug = \Illuminate\Support\Str::slug($topicKeyword);
+
+        // 🔒 RACE CONDITION PREVENTION: Lock kullanarak kontrol et
+        $lockKey = 'blog_creation_' . md5($slug);
+        $lock = \Illuminate\Support\Facades\Cache::lock($lockKey, 120); // 2 dakika lock
+
+        if (!$lock->get()) {
+            // Başka bir process aynı başlıklı blog oluşturuyor
+            Log::warning('⚠️ Blog creation lock active, another process is creating same blog', [
+                'topic' => $topicKeyword,
+                'slug' => $slug,
+            ]);
+            throw new \Exception("Bu başlık için blog oluşturma işlemi devam ediyor. Lütfen bekleyin.");
+        }
+
+        try {
+            // 1. Tam başlık eşleşmesi kontrolü (JSON title->tr)
+            $existingByTitle = Blog::where('title->tr', $topicKeyword)->first();
+            if ($existingByTitle) {
+                return $existingByTitle;
+            }
+
+            // 2. Slug eşleşmesi kontrolü (JSON slug->tr)
+            $existingBySlug = Blog::where('slug->tr', $slug)->first();
+            if ($existingBySlug) {
+                return $existingBySlug;
+            }
+
+            // 3. Benzer başlık kontrolü (LIKE ile) - sadece ilk birkaç kelime
+            $firstWords = implode(' ', array_slice(explode(' ', $topicKeyword), 0, 3));
+            if (strlen($firstWords) > 10) {
+                $existingBySimilar = Blog::where('title->tr', 'LIKE', $firstWords . '%')->first();
+                if ($existingBySimilar) {
+                    Log::info('⚠️ Similar title found', [
+                        'new_topic' => $topicKeyword,
+                        'existing_title' => $existingBySimilar->getTranslated('title', 'tr'),
+                        'existing_id' => $existingBySimilar->blog_id,
+                    ]);
+                    return $existingBySimilar;
+                }
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            $lock->release();
+            throw $e;
+        }
+        // NOT: Lock'u işlem bitene kadar tutuyoruz (generateBlogFromDraft metodunun sonunda release edilecek)
+    }
+
+    /**
+     * 🔓 Blog oluşturma lock'unu serbest bırak
+     */
+    protected function releaseBlogCreationLock(string $topicKeyword): void
+    {
+        $slug = \Illuminate\Support\Str::slug($topicKeyword);
+        $lockKey = 'blog_creation_' . md5($slug);
+        \Illuminate\Support\Facades\Cache::forget($lockKey);
     }
 
     /**

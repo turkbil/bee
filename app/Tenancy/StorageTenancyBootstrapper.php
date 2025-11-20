@@ -141,8 +141,18 @@ class StorageTenancyBootstrapper implements TenancyBootstrapper
     private function configureFilesystemDisks($tenantId): void
     {
         $rootPath = storage_path("tenant{$tenantId}/app/public");
-        $url = config('app.url') . "/storage/tenant{$tenantId}";
         $internalRoot = storage_path("tenant{$tenantId}/app");
+
+        // 🔥 FIX: Tenant domain kullan (ixtif.com gibi), config('app.url') değil
+        $tenantDomain = null;
+        if (tenant() && tenant()->domains) {
+            $domain = tenant()->domains->first();
+            if ($domain) {
+                $tenantDomain = 'https://' . $domain->domain;
+            }
+        }
+        $baseUrl = $tenantDomain ?? config('app.url');
+        $url = $baseUrl . "/storage/tenant{$tenantId}";
 
         Config::set('filesystems.disks.public.root', $rootPath);
         Config::set('filesystems.disks.public.url', $url);

@@ -201,7 +201,7 @@ class OpenAIService
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
-                ])->timeout(180)->post($this->baseUrl . '/chat/completions', $payload);
+                ])->timeout(600)->post($this->baseUrl . '/chat/completions', $payload); // 🔧 FIX: 10 dakika (blog generation için)
 
                 if ($response->successful()) {
                     $data = $response->json();
@@ -250,7 +250,7 @@ class OpenAIService
                         'Content-Type: application/json',
                     ],
                     CURLOPT_RETURNTRANSFER => false,
-                    CURLOPT_TIMEOUT => 180, // 3 dakika - uzun blog içerikleri için
+                    CURLOPT_TIMEOUT => 600, // 🔧 FIX: 10 dakika - blog generation için
                     CURLOPT_WRITEFUNCTION => function($curl, $data) use (&$fullResponse, &$inputTokens, &$outputTokens, &$totalTokens, $streamCallback) {
                         $lines = explode("\n", $data);
 

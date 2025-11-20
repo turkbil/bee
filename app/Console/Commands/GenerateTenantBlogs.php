@@ -154,7 +154,7 @@ class GenerateTenantBlogs extends Command
 
         // 1️⃣ Blog AI enabled mi?
         $enabled = getTenantSetting('blog_ai_enabled', '0');
-        $enabled = ($enabled === '1' || $enabled === 1 || $enabled === true);
+        $enabled = ($enabled === '1' || $enabled === 1 || $enabled === true || $enabled === 'true');
 
         if (!$enabled) {
             $this->line("   ⏭️  Skipped - Blog AI disabled");
@@ -162,8 +162,8 @@ class GenerateTenantBlogs extends Command
             return 'skipped';
         }
 
-        // 2️⃣ Günlük blog sayısı
-        $dailyCount = (int) getTenantSetting('blog_ai_daily_count', 4);
+        // 2️⃣ Günlük blog sayısı (option value → integer)
+        $dailyCount = getBlogDailyCount();
 
         // 3️⃣ Active hours hesapla
         $activeHours = calculateActiveHours($dailyCount);
@@ -174,6 +174,8 @@ class GenerateTenantBlogs extends Command
             tenancy()->end();
             return 'skipped';
         }
+
+        $this->info("   ⏰ Active hour confirmed (Schedule: " . implode(', ', $activeHours) . ")");
 
         // 5️⃣ Draft count kontrol
         $availableDrafts = BlogAIDraft::where('is_generated', false)->count();

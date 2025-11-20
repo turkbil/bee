@@ -93,8 +93,8 @@ class ValuesComponent extends Component
             $this->values[$setting->key] = $finalValue;
             $this->originalValues[$setting->id] = $finalValue;
             $this->originalValues[$setting->key] = $finalValue;
-            
-            
+
+
             // Çoklu resim için JSON'ı diziye çevir
             if ($setting->type === 'image_multiple') {
                 try {
@@ -108,8 +108,10 @@ class ValuesComponent extends Component
                 }
             }
         }
-        
-        
+
+        // ✅ Layout sisteminde switch element'leri için değerleri normalize et
+        $this->normalizeLayoutSwitchValues();
+
         // Livewire için values'u hydrate et
         $this->dispatch('valuesLoaded', $this->values);
     }
@@ -270,22 +272,24 @@ class ValuesComponent extends Component
 
     public function save($redirect = false, $resetForm = false)
     {
+        // ✅ Save işlemi öncesi switch değerlerini normalize et
+        $this->normalizeLayoutSwitchValuesBeforeSave();
 
         foreach ($this->values as $settingId => $value) {
             // String key'leri filtrele (sadece numeric ID'leri işle)
             if (!is_numeric($settingId)) {
                 continue;
             }
-            
+
             $setting = Setting::find($settingId);
-            
+
             // Setting bulunamazsa bir sonraki iterasyona geç
             if (!$setting) {
                 continue;
             }
-            
+
             $oldValue = $this->originalValues[$settingId] ?? null;
-            
+
             // File/Image dosya yüklemelerini işle
             if (isset($this->temporaryImages[$settingId])) {
                 $file = $this->temporaryImages[$settingId];
@@ -311,17 +315,17 @@ class ValuesComponent extends Component
                     continue;
                 }
             }
-            
+
             // Çoklu resim tipi için işlem
             if ($setting->type === 'image_multiple' && isset($this->temporaryMultipleImages[$settingId]) && count($this->temporaryMultipleImages[$settingId]) > 0) {
                 try {
                     $newImages = [];
-                    
+
                     // Eğer mevcut resimler varsa, onları koru
                     if (isset($this->multipleImagesArrays[$settingId]) && !empty($this->multipleImagesArrays[$settingId])) {
                         $newImages = $this->multipleImagesArrays[$settingId];
                     }
-                    
+
                     // ✅ SPATIE: Yeni resimleri gallery collection'a ekle
                     foreach ($this->temporaryMultipleImages[$settingId] as $index => $photo) {
                         if ($photo) {
@@ -332,7 +336,7 @@ class ValuesComponent extends Component
                             $newImages[] = $media->getUrl();
                         }
                     }
-                    
+
                     // Yeni değeri JSON olarak ata
                     if (!empty($newImages)) {
                         $value = json_encode($newImages);
@@ -353,7 +357,7 @@ class ValuesComponent extends Component
                     continue;
                 }
             }
-            
+
             // Önce değişiklik kontrolü yap
             if ($oldValue !== $value) {
                 // Eğer yeni değer default değere eşitse, setting value'yu sil
@@ -362,11 +366,11 @@ class ValuesComponent extends Component
                     if ($oldValue && ($setting->type === 'file' || $setting->type === 'image')) {
                         $setting->clearMediaCollection($setting->getMediaCollectionName());
                     }
-                    
+
                     $this->settingValueQuery()
                         ->where('setting_id', $settingId)
                         ->delete();
-                    
+
                     log_activity(
                         $setting,
                         __('settingmanagement.actions.reset_to_default'),
@@ -378,7 +382,7 @@ class ValuesComponent extends Component
                         ['setting_id' => $settingId],
                         ['value' => $value]
                     );
-                    
+
                     log_activity(
                         $setting,
                         __('settingmanagement.actions.value_updated'),
@@ -387,21 +391,32 @@ class ValuesComponent extends Component
                 }
             }
         }
-    
-        $this->originalValues = $this->values;
+
+        // ✅ originalValues'u güncelle (hem numeric hem string key'ler için)
+        foreach ($this->values as $key => $value) {
+            $this->originalValues[$key] = $value;
+        }
+
+        // ✅ State'i temizle
         $this->changes = [];
         $this->temporaryImages = [];
         $this->temporaryMultipleImages = [];
-    
+
+        // ✅ Redirect handling
         if ($redirect) {
+            session()->flash('success', __('settingmanagement.messages.values_saved'));
             return redirect()->route('admin.settingmanagement.index');
         }
-    
+
+        // ✅ Success toast (Kaydet ve Devam Et için)
         $this->dispatch('toast', [
             'title' => __('settingmanagement.messages.success'),
             'message' => __('settingmanagement.messages.values_saved'),
             'type' => 'success'
         ]);
+
+        // ✅ Component'i refresh et (form state'ini temizle)
+        $this->dispatch('refreshComponent');
     }
     
     public function removeImage($settingId)
@@ -519,5 +534,140 @@ class ValuesComponent extends Component
                 $this->originalValues[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
             }
         }
+    }
+
+    /**
+     * Layout sisteminde switch element'leri için değerleri normalize et (mount için)
+     */
+    private function normalizeLayoutSwitchValues(): void
+    {
+        if (!isset($this->group->layout['elements']) || !is_array($this->group->layout['elements'])) {
+            return;
+        }
+
+        $switchElements = $this->findSwitchElementsInLayout($this->group->layout['elements']);
+
+        foreach ($switchElements as $element) {
+            $elementName = $element['properties']['name'] ?? null;
+            if (!$elementName) {
+                continue;
+            }
+
+            // Setting'i bul (string key ile)
+            $setting = Setting::where('group_id', $this->groupId)
+                ->where('key', $elementName)
+                ->first();
+
+            if (!$setting) {
+                continue;
+            }
+
+            // Değeri boolean'a normalize et
+            $currentValue = $this->values[$setting->key] ?? $this->values[$setting->id] ?? null;
+            $normalizedValue = $this->normalizeBooleanValue($currentValue);
+
+            // Hem numeric ID hem string key için güncelle
+            $this->values[$setting->id] = $normalizedValue;
+            $this->values[$setting->key] = $normalizedValue;
+            $this->originalValues[$setting->id] = $normalizedValue;
+            $this->originalValues[$setting->key] = $normalizedValue;
+        }
+    }
+
+    /**
+     * Save işlemi öncesi switch değerlerini normalize et
+     */
+    private function normalizeLayoutSwitchValuesBeforeSave(): void
+    {
+        if (!isset($this->group->layout['elements']) || !is_array($this->group->layout['elements'])) {
+            return;
+        }
+
+        $switchElements = $this->findSwitchElementsInLayout($this->group->layout['elements']);
+
+        foreach ($switchElements as $element) {
+            $elementName = $element['properties']['name'] ?? null;
+            if (!$elementName) {
+                continue;
+            }
+
+            // Setting'i bul (string key ile)
+            $setting = Setting::where('group_id', $this->groupId)
+                ->where('key', $elementName)
+                ->first();
+
+            if (!$setting) {
+                continue;
+            }
+
+            // Livewire'dan gelen değer (checkbox işaretli değilse null gelir)
+            $liveValue = $this->values[$elementName] ?? $this->values[$setting->id] ?? null;
+
+            // Checkbox işaretli değilse (null) → false yap
+            // Checkbox işaretli ise (true, 1, "1", "true") → true yap
+            $normalizedValue = $this->normalizeBooleanValue($liveValue);
+
+            // String olarak sakla (veritabanı için)
+            $stringValue = $normalizedValue ? 'true' : 'false';
+
+            // Hem numeric ID hem string key için güncelle
+            $this->values[$setting->id] = $stringValue;
+            $this->values[$setting->key] = $stringValue;
+        }
+    }
+
+    /**
+     * Layout içindeki tüm switch element'leri bul (recursive)
+     */
+    private function findSwitchElementsInLayout(array $elements): array
+    {
+        $switches = [];
+
+        foreach ($elements as $element) {
+            if (isset($element['type']) && $element['type'] === 'switch') {
+                $switches[] = $element;
+            }
+
+            // Row içindeki column'ları kontrol et
+            if (isset($element['columns']) && is_array($element['columns'])) {
+                foreach ($element['columns'] as $column) {
+                    if (isset($column['elements']) && is_array($column['elements'])) {
+                        $switches = array_merge($switches, $this->findSwitchElementsInLayout($column['elements']));
+                    }
+                }
+            }
+
+            // Nested elements varsa onları da kontrol et
+            if (isset($element['elements']) && is_array($element['elements'])) {
+                $switches = array_merge($switches, $this->findSwitchElementsInLayout($element['elements']));
+            }
+        }
+
+        return $switches;
+    }
+
+    /**
+     * Değeri boolean'a normalize et
+     */
+    private function normalizeBooleanValue($value): bool
+    {
+        if (is_null($value)) {
+            return false;
+        }
+
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            $lower = strtolower(trim($value));
+            return in_array($lower, ['true', '1', 'yes', 'on'], true);
+        }
+
+        if (is_numeric($value)) {
+            return (bool) $value;
+        }
+
+        return false;
     }
 }

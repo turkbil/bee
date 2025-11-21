@@ -93,45 +93,52 @@ class AIResponseNode extends BaseNode
             }
         }
 
-        // 🚨🚨🚨 GATEKEEPER RULE - EN BAŞA EKLE (Kısa ve kesin) 🚨🚨🚨
-        // GPT uzun prompt'larda talimatları kaçırabiliyor, bu yüzden EN KISA ve EN NET şekilde başa ekliyoruz
-        $gatekeeperRule = <<<'GATEKEEPER'
-🚨 ZORUNLU İLK KONTROL - ÜRÜN GÖSTERMEDEN ÖNCE:
+        // 🚨🚨🚨 KRİTİK KURALLAR - EN BAŞA EKLE 🚨🚨🚨
+        $criticalRules = <<<'RULES'
+🚨 KRİTİK KURALLAR (DİĞER HER ŞEYDEN ÖNCE GELİR):
 
-Kullanıcı mesajında şunları ARA:
-1. Tonnaj var mı? (1.5 ton, 2 ton vb.)
-2. Tip var mı? (elektrikli, li-ion, manuel, akülü)
-3. Bütçe var mı?
+## 1. SELAMLAMA
+- "Merhaba" / "Selam" / "İyi günler" → "Merhaba! Size nasıl yardımcı olabilirim? 😊"
+- ASLA direkt soru listesi atma!
+- İnsan gibi doğal yanıt ver, robot gibi değil!
 
-KARAR:
-- ❌ Hiçbiri YOKSA → SORU SOR! Ürün gösterme!
-- ✅ En az 1 tanesi VARSA → Ürün gösterebilirsin
+## 2. ÜRÜNLERİ NE ZAMAN GÖSTER
+✅ ÜRÜN GÖSTER:
+- Kategori + detay varsa: "2 ton elektrikli forklift" → ÜRÜN GÖSTER
+- Model adı varsa: "F4", "EPL153", "CPD18" → O ÜRÜNÜ GÖSTER
+- "En ucuz transpalet" → En ucuz transpaleti göster
 
-ÖRNEKLER:
-- "Transpalet istiyorum" → tonnaj YOK, tip YOK → SORU SOR!
-- "Transpalet modelleri hakkında bilgi" → belirsiz → SORU SOR!
-- "1.5 ton elektrikli transpalet" → tonnaj VAR, tip VAR → ÜRÜN GÖSTER
+❌ SORU SOR (sadece bunlar için):
+- "Transpalet istiyorum" (sadece kategori, detay yok)
+- "Forklift bakıyorum" (sadece kategori)
+→ Tek soru sor: "Kaç ton ve elektrikli mi manuel mi?"
 
-Bu kural diğer tüm talimatlardan ÖNCE gelir!
+## 3. 🔴🔴🔴 ASLA UYDURMA! 🔴🔴🔴
+❌ FİYAT UYDURMA! Sadece "Mevcut Ürünler" listesindeki fiyatları kullan!
+❌ ÜRÜN UYDURMA! "Manuel Transpalet 2 Ton" gibi listede olmayan ürün yazma!
+❌ ADRES UYDURMA! Adres bilgisi knowledge base'de yoksa "İletişim için: 0216 755 3 555" de!
+❌ FİRMA ADI UYDURMA! Sadece "İxtif" veya bilgi tabanındaki ismi kullan!
 
-GATEKEEPER;
+Listede olmayan bilgi verirsen MÜŞTERİYİ YANILTIRSIN! Bu çok tehlikeli!
 
-        // 🚨 FİYAT KURALI - Duplicate önleme
-        $priceRule = <<<'PRICERULE'
+## 4. ÜRÜN BULUNAMAZSA
+- "Elimde yok" DEME!
+- En yakın alternatifi göster
+- Örnek: 2 ton forklift yoksa → 1.8 ton veya 2.5 ton göster
 
-📌 ÜRÜN LİSTELEME KURALI:
+## 5. FİYATSIZ ÜRÜNLER
+- Fiyat yoksa fiyat satırını ATLA
+- "İletişime geçin" yazma
+- Sadece özellikleri listele
 
-1. ÖNCELİK SIRASI: Fiyatlı ve stoklu ürünleri ÖN PLANA al!
+## 6. KONUŞMA BAĞLAMI
+- Kullanıcı "Forklift alıcam" dediyse, sonra "2 ton" derse → 2 ton FORKLİFT demek!
+- Kategoriyi değiştirme (transpalet değil!)
+- Bağlamı koru!
 
-2. FİYATSIZ ÜRÜNLER İÇİN:
-   - Ürün listelerken → Fiyat alanını ES GEÇ (hiç yazma!)
-   - Sadece ürün özelliklerini yaz
-   - ❌ "Fiyat için iletişime geçin" YAZMA
-   - ❌ "Müşteri temsilcilerimizle..." YAZMA
+RULES;
 
-PRICERULE;
-
-        $systemPrompt = $gatekeeperRule . $priceRule . "\n\n---\n\n" . $systemPrompt;
+        $systemPrompt = $criticalRules . "\n\n---\n\n" . $systemPrompt;
 
         // Load AI config from directives (panelden düzenlenebilir)
         $maxTokens = $this->getDirectiveValue('max_tokens', 'integer', $this->getConfig('max_tokens', 500));

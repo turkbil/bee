@@ -116,7 +116,17 @@ Bu kural diğer tüm talimatlardan ÖNCE gelir!
 
 GATEKEEPER;
 
-        $systemPrompt = $gatekeeperRule . "\n\n---\n\n" . $systemPrompt;
+        // 🚨 FİYAT KURALI - Duplicate önleme
+        $priceRule = <<<'PRICERULE'
+
+📌 FİYAT BİLGİSİ KURALI:
+- Ürün listelerken fiyat bilgisi YOKSA → Fiyat satırını ATLA (hiç yazma!)
+- Sadece müşteri ÖZELLIKLE fiyat sorarsa → "Fiyat için iletişime geçin: 0216 755 3 555"
+- ❌ "Müşteri temsilcilerimizle iletişime geçerek..." gibi uzun açıklamalar YAZMA!
+
+PRICERULE;
+
+        $systemPrompt = $gatekeeperRule . $priceRule . "\n\n---\n\n" . $systemPrompt;
 
         // Load AI config from directives (panelden düzenlenebilir)
         $maxTokens = $this->getDirectiveValue('max_tokens', 'integer', $this->getConfig('max_tokens', 500));

@@ -19,6 +19,7 @@ use App\Services\AI\Context\ModuleContextOrchestrator;
 use Modules\AI\App\Models\AIConversation;
 use Modules\AI\App\Models\AIMessage;
 use App\Services\MarkdownService;
+use Modules\AI\App\Services\Assistant\AssistantTypeResolver;
 
 /**
  * 🌐 PUBLIC AI CONTROLLER V2 - Frontend API Entegrasyonu
@@ -40,13 +41,16 @@ class PublicAIController extends Controller
 {
     private AIService $aiService;
     private ModuleContextOrchestrator $contextOrchestrator;
+    private AssistantTypeResolver $assistantResolver;
 
     public function __construct(
         AIService $aiService,
-        ModuleContextOrchestrator $contextOrchestrator
+        ModuleContextOrchestrator $contextOrchestrator,
+        AssistantTypeResolver $assistantResolver
     ) {
         $this->aiService = $aiService;
         $this->contextOrchestrator = $contextOrchestrator;
+        $this->assistantResolver = $assistantResolver;
     }
 
     /**
@@ -1581,7 +1585,7 @@ class PublicAIController extends Controller
         $prompts[] = "## ❌ YASAKLAR";
         $prompts[] = "";
         $prompts[] = "- ❌ ANASAYFADA 'merhaba' dediğinde direkt ürün önerme! (Ama ürün sayfasındaysa öner!)";
-        $prompts[] = "- ❌ FİYAT UYDURMA! Fiyat yoksa 'Fiyat için iletişime geçin' de";
+        $prompts[] = "- ❌ FİYAT UYDURMA! Ürün listelerken fiyat bilgisi yoksa fiyat satırını atla. Sadece müşteri özellikle fiyat sorarsa 'Fiyat için iletişime geçin: 0216 755 3 555' de";
         $prompts[] = "- ❌ TEKNİK ÖZELLİK UYDURMA! Data'da olmayan bilgi verme";
         $prompts[] = "- ❌ GENEL AÇIKLAMA YAPMA! Mevcut ürünleri listeden bulup link ver!";
         $prompts[] = "";
@@ -2766,5 +2770,252 @@ class PublicAIController extends Controller
                 'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
+    }
+
+    /**
+     * 🤖 MODULAR ASSISTANT CHAT
+     *
+     * Uses AssistantTypeResolver to route to correct module services
+     * based on tenant configuration. Supports:
+     * - shop: E-commerce assistant
+     * - content: Blog/Article assistant
+     * - booking: Reservation assistant
+     * - info: FAQ/Support assistant
+     * - music: Music platform assistant
+     * - generic: General purpose assistant
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function assistantChat(Request $request): JsonResponse
+    {
+        \Log::info('🤖 assistantChat STARTED (MODULAR SYSTEM)', [
+            'message' => $request->input('message'),
+            'session_id' => $request->input('session_id'),
+            'tenant_id' => tenant('id'),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
+        try {
+            // Validation
+            $validated = $request->validate([
+                'message' => 'required|string|min:1|max:1000',
+                'session_id' => 'nullable|string|max:64',
+                'context' => 'nullable|array',
+            ]);
+
+            $sessionId = $validated['session_id'] ?? $this->generateSessionId($request);
+            $tenantId = tenant('id');
+
+            // Find or create conversation
+            $conversation = \Modules\AI\App\Models\AIConversation::firstOrCreate([
+                'session_id' => $sessionId,
+                'tenant_id' => $tenantId,
+            ], [
+                'user_id' => auth()->id(),
+                'feature_slug' => 'assistant',
+                'status' => 'active',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            // Get conversation history
+            $conversationHistory = [];
+            $messages = $conversation->messages()
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get()
+                ->reverse()
+                ->values();
+
+            foreach ($messages as $msg) {
+                $conversationHistory[] = [
+                    'role' => $msg->role,
+                    'content' => $msg->content
+                ];
+            }
+
+            // 🎯 MODULAR SYSTEM: Resolve services for this tenant
+            $resolvedModules = $this->assistantResolver->resolve();
+
+            \Log::info('🎯 Resolved modules', [
+                'tenant_id' => $tenantId,
+                'modules' => array_keys($resolvedModules)
+            ]);
+
+            // Build context from all resolved modules
+            $moduleContexts = [];
+            $allQuickActions = [];
+            $allPromptRules = [];
+
+            foreach ($resolvedModules as $moduleType => $service) {
+                // Search using user message
+                $searchResults = $service->search($validated['message']);
+
+                \Log::info("🔍 Module search: {$moduleType}", [
+                    'results_count' => $searchResults['total'] ?? 0
+                ]);
+
+                // Build AI context
+                $context = $service->buildContextForAI($searchResults);
+                if (!empty($context)) {
+                    $moduleContexts[$moduleType] = $context;
+                }
+
+                // Collect quick actions
+                $quickActions = $service->getQuickActions();
+                foreach ($quickActions as $action) {
+                    $action['module'] = $moduleType;
+                    $allQuickActions[] = $action;
+                }
+
+                // Collect prompt rules
+                $promptRules = $service->getPromptRules();
+                if (!empty($promptRules)) {
+                    $allPromptRules[] = $promptRules;
+                }
+            }
+
+            // Build combined context
+            $combinedContext = implode("\n\n", $moduleContexts);
+            $combinedPromptRules = implode("\n\n", $allPromptRules);
+
+            // Build system prompt
+            $systemPrompt = $this->buildModularSystemPrompt($combinedContext, $combinedPromptRules);
+
+            // Prepare messages for AI
+            $aiMessages = [
+                ['role' => 'system', 'content' => $systemPrompt]
+            ];
+            foreach ($conversationHistory as $historyMsg) {
+                $aiMessages[] = $historyMsg;
+            }
+            $aiMessages[] = ['role' => 'user', 'content' => $validated['message']];
+
+            // Get AI response using provider fallback chain
+            $provider = \Modules\AI\App\Models\AIProvider::where('is_active', true)
+                ->orderBy('priority', 'asc')
+                ->first();
+
+            if (!$provider) {
+                throw new \Exception('No active AI provider found');
+            }
+
+            // Select appropriate service based on provider
+            $aiServiceClass = match($provider->name) {
+                'openai' => \Modules\AI\App\Services\OpenAIService::class,
+                'anthropic' => \Modules\AI\App\Services\ClaudeService::class,
+                'deepseek' => \Modules\AI\App\Services\DeepSeekService::class,
+                default => \Modules\AI\App\Services\OpenAIService::class,
+            };
+
+            $aiService = new $aiServiceClass([
+                'provider_id' => $provider->id,
+                'api_key' => $provider->api_key,
+                'base_url' => $provider->base_url,
+                'model' => $provider->default_model ?? 'gpt-4o-mini',
+            ]);
+
+            $response = $aiService->generateCompletion($aiMessages, [
+                'max_tokens' => 1000,
+                'temperature' => 0.7,
+            ]);
+
+            $aiResponse = $response['content'] ?? '';
+
+            if (empty($aiResponse)) {
+                throw new \Exception('Empty AI response');
+            }
+
+            // Save messages
+            $conversation->messages()->create([
+                'role' => 'user',
+                'content' => $validated['message'],
+            ]);
+
+            $conversation->messages()->create([
+                'role' => 'assistant',
+                'content' => $aiResponse,
+                'model' => $provider->default_model ?? 'gpt-4o-mini',
+            ]);
+
+            \Log::info('✅ assistantChat completed', [
+                'conversation_id' => $conversation->id,
+                'response_length' => strlen($aiResponse),
+                'modules_used' => array_keys($resolvedModules)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'message' => $aiResponse,
+                    'session_id' => $sessionId,
+                    'conversation_id' => $conversation->id,
+                    'quick_actions' => $allQuickActions,
+                    'metadata' => [
+                        'system' => 'modular_assistant',
+                        'modules' => array_keys($resolvedModules),
+                        'provider' => $provider->name,
+                    ],
+                ],
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Geçersiz veri',
+                'errors' => $e->errors(),
+            ], 422);
+
+        } catch (\Exception $e) {
+            \Log::error('❌ assistantChat EXCEPTION', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Sistem hatası oluştu. Lütfen daha sonra tekrar deneyin.',
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
+            ], 500);
+        }
+    }
+
+    /**
+     * Build modular system prompt
+     *
+     * @param string $context Combined context from all modules
+     * @param string $rules Combined rules from all modules
+     * @return string
+     */
+    private function buildModularSystemPrompt(string $context, string $rules): string
+    {
+        $tenantName = setting('site_name') ?? 'Site';
+        $locale = app()->getLocale();
+
+        $langInstructions = match($locale) {
+            'tr' => 'Türkçe yanıt ver.',
+            'en' => 'Respond in English.',
+            'de' => 'Antworte auf Deutsch.',
+            default => 'Respond in the same language as the user message.',
+        };
+
+        return "Sen {$tenantName} asistanısın. Yardımcı, nazik ve profesyonel ol.
+
+## BAĞLAM BİLGİLERİ
+{$context}
+
+## MODÜL KURALLARI
+{$rules}
+
+## GENEL KURALLAR
+- {$langInstructions}
+- Markdown formatı kullan (başlıklar için ##, listeler için -, kalın için **)
+- Kısa ve öz yanıtlar ver (max 3-4 paragraf)
+- Sadece context'teki bilgileri kullan
+- Emin olmadığın bilgiyi ASLA uydurma
+- Ürün/içerik önerirken mutlaka link ver
+- Fiyat sorarsa ve bilgi yoksa 'Bu konuda bilgi bulunamadı' de
+- Kullanıcıyı yönlendirmek için CTA (Call to Action) kullan";
     }
 }

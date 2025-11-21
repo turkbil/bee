@@ -84,7 +84,28 @@ class ContextBuilderNode extends BaseNode
             // ✅ TEMİZ SUNUM - İkon yok, hardcode yok, stok bilgisi yok
             $productContext .= "### {$title}\n";
 
-            // Fiyat kontrolü - fiyatsız ürünler için özel mesaj
+            // 📷 Ürün fotoğrafı
+            $imageUrl = null;
+            if (is_array($product)) {
+                // Array'den media URL al
+                $media = $product['media'][0] ?? null;
+                if ($media) {
+                    $imageUrl = $media['original_url'] ?? $media['url'] ?? null;
+                }
+            } else {
+                // Model'den media al (Spatie Media Library)
+                $firstMedia = $product->getFirstMedia('images');
+                if ($firstMedia) {
+                    $imageUrl = $firstMedia->getUrl();
+                }
+            }
+
+            if ($imageUrl) {
+                $productContext .= "- 📷 Görsel: {$imageUrl}\n";
+            }
+
+            // Fiyat kontrolü - sadece fiyatlı ürünlerde göster
+            // Fiyatsız ürünlerde fiyat satırı hiç gösterilmez (duplicate önleme)
             if ($basePrice > 0) {
                 // Fiyatlı ürün
                 if ($originalPrice) {
@@ -92,10 +113,8 @@ class ContextBuilderNode extends BaseNode
                 } else {
                     $productContext .= "- **{$price} {$currencySymbol}**\n";
                 }
-            } else {
-                // Fiyatsız ürün - iletişim bilgilerini göster
-                $productContext .= "- 📞 **Fiyat için iletişime geçin**\n";
             }
+            // Fiyatsız ürünlerde fiyat satırı atlanır - müşteri özellikle sorarsa AI iletişim bilgisi verir
 
             // ✅ STOK BİLGİSİ KALDIRILDI
             // ✅ ASLA stok durumu verme (kullanıcı talebi)

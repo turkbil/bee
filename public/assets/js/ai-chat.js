@@ -67,14 +67,20 @@ function registerAiChatStore() {
             // sessionStorage → Her sekme/tab farklı session (DOĞRU!)
             this.sessionId = sessionStorage.getItem('ai_chat_session_id');
 
+            // 🔧 FIX: conversationId'yi de sessionStorage'dan yükle (sayfa değişince kaybolmasın)
+            const savedConversationId = sessionStorage.getItem('ai_chat_conversation_id');
+            if (savedConversationId) {
+                this.conversationId = parseInt(savedConversationId);
+            }
+
             // Floating widget state için localStorage kullan (sekmeler arası paylaşılabilir)
             const savedFloatingState = localStorage.getItem('ai_chat_floating_open');
             if (savedFloatingState !== null) {
                 this.floatingOpen = savedFloatingState === 'true';
             }
 
-            // Load conversation history if session exists
-            if (this.sessionId) {
+            // Load conversation history if session or conversation exists
+            if (this.sessionId || this.conversationId) {
                 this.loadHistory();
             }
 
@@ -157,6 +163,7 @@ function registerAiChatStore() {
 
             // Clear ALL storage related to chat
             sessionStorage.removeItem('ai_chat_session_id');
+            sessionStorage.removeItem('ai_chat_conversation_id');
             localStorage.removeItem('ai_chat_last_read_index');
             localStorage.removeItem('ai_chat_floating_open');
 
@@ -262,6 +269,8 @@ function registerAiChatStore() {
                 }
                 if (data.data.conversation_id) {
                     this.conversationId = data.data.conversation_id;
+                    // 🔧 FIX: conversationId'yi de sessionStorage'a kaydet (sayfa değişince kaybolmasın)
+                    sessionStorage.setItem('ai_chat_conversation_id', this.conversationId.toString());
                 }
 
             } catch (error) {
@@ -284,13 +293,19 @@ function registerAiChatStore() {
 
         // Load conversation history
         async loadHistory() {
-            if (!this.sessionId) {
+            // conversationId veya sessionId olmalı
+            if (!this.sessionId && !this.conversationId) {
                 return;
             }
 
             try {
                 const url = new URL(this.historyEndpoint);
-                url.searchParams.append('session_id', this.sessionId);
+                // 🔧 FIX: conversationId varsa öncelikli kullan (daha güvenilir)
+                if (this.conversationId) {
+                    url.searchParams.append('conversation_id', this.conversationId);
+                } else {
+                    url.searchParams.append('session_id', this.sessionId);
+                }
 
                 const response = await fetch(url, {
                     method: 'GET',
@@ -304,6 +319,11 @@ function registerAiChatStore() {
                 if (response.ok && data.success) {
                     this.messages = data.data.messages || [];
                     this.conversationId = data.data.conversation_id;
+
+                    // 🔧 FIX: conversationId'yi sessionStorage'a kaydet (history'den gelse bile)
+                    if (this.conversationId) {
+                        sessionStorage.setItem('ai_chat_conversation_id', this.conversationId.toString());
+                    }
 
                     // Scroll to bottom after history is loaded
                     setTimeout(() => {

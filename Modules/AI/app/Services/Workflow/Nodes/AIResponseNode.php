@@ -93,6 +93,31 @@ class AIResponseNode extends BaseNode
             }
         }
 
+        // 🚨🚨🚨 GATEKEEPER RULE - EN BAŞA EKLE (Kısa ve kesin) 🚨🚨🚨
+        // GPT uzun prompt'larda talimatları kaçırabiliyor, bu yüzden EN KISA ve EN NET şekilde başa ekliyoruz
+        $gatekeeperRule = <<<'GATEKEEPER'
+🚨 ZORUNLU İLK KONTROL - ÜRÜN GÖSTERMEDEN ÖNCE:
+
+Kullanıcı mesajında şunları ARA:
+1. Tonnaj var mı? (1.5 ton, 2 ton vb.)
+2. Tip var mı? (elektrikli, li-ion, manuel, akülü)
+3. Bütçe var mı?
+
+KARAR:
+- ❌ Hiçbiri YOKSA → SORU SOR! Ürün gösterme!
+- ✅ En az 1 tanesi VARSA → Ürün gösterebilirsin
+
+ÖRNEKLER:
+- "Transpalet istiyorum" → tonnaj YOK, tip YOK → SORU SOR!
+- "Transpalet modelleri hakkında bilgi" → belirsiz → SORU SOR!
+- "1.5 ton elektrikli transpalet" → tonnaj VAR, tip VAR → ÜRÜN GÖSTER
+
+Bu kural diğer tüm talimatlardan ÖNCE gelir!
+
+GATEKEEPER;
+
+        $systemPrompt = $gatekeeperRule . "\n\n---\n\n" . $systemPrompt;
+
         // Load AI config from directives (panelden düzenlenebilir)
         $maxTokens = $this->getDirectiveValue('max_tokens', 'integer', $this->getConfig('max_tokens', 500));
         $temperature = $this->getDirectiveValue('temperature', 'string', $this->getConfig('temperature', 0.7));

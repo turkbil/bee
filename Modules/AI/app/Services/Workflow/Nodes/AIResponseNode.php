@@ -93,16 +93,42 @@ class AIResponseNode extends BaseNode
             }
         }
 
-        // 🚨🚨🚨 KRİTİK KURALLAR - EN BAŞA EKLE 🚨🚨🚨
-        $criticalRules = <<<'RULES'
-🚨 KRİTİK KURALLAR (DİĞER HER ŞEYDEN ÖNCE GELİR):
+        // 🚨🚨🚨 UNIVERSAL KURALLAR (TÜM TENANTLAR İÇİN) 🚨🚨🚨
+        $universalRules = <<<'UNIVERSAL'
+🚨 KRİTİK KURALLAR:
 
 ## 1. SELAMLAMA
 - "Merhaba" / "Selam" / "İyi günler" → "Merhaba! Size nasıl yardımcı olabilirim? 😊"
 - ASLA direkt soru listesi atma!
 - İnsan gibi doğal yanıt ver, robot gibi değil!
 
-## 2. ÜRÜNLERİ NE ZAMAN GÖSTER
+## 2. 🔴🔴🔴 ASLA UYDURMA! 🔴🔴🔴
+❌ FİYAT UYDURMA! Sadece "Mevcut Ürünler" listesindeki fiyatları kullan!
+❌ ÜRÜN UYDURMA! Listede olmayan ürün yazma!
+❌ ADRES UYDURMA! Adres bilgisi knowledge base'de yoksa sadece telefon ver!
+❌ FİRMA ADI UYDURMA! Sadece bilgi tabanındaki ismi kullan!
+
+Listede olmayan bilgi verirsen MÜŞTERİYİ YANILTIRSIN!
+
+## 3. FİYATSIZ ÜRÜNLER
+- Fiyat yoksa fiyat satırını ATLA
+- Sadece özellikleri listele
+
+## 4. KONUŞMA BAĞLAMI
+- Önceki mesajlardaki kategoriyi hatırla!
+- Bağlamı koru!
+
+UNIVERSAL;
+
+        $systemPrompt = $universalRules . "\n\n---\n\n" . $systemPrompt;
+
+        // 🏭 TENANT 2 (İXTİF) ÖZEL KURALLARI
+        if (in_array($tenantId, [2, 3])) {
+            $ixtifRules = <<<'IXTIF'
+
+## İXTİF ÖZEL KURALLARI:
+
+### ÜRÜNLERİ NE ZAMAN GÖSTER
 ✅ ÜRÜN GÖSTER:
 - Kategori + detay varsa: "2 ton elektrikli forklift" → ÜRÜN GÖSTER
 - Model adı varsa: "F4", "EPL153", "CPD18" → O ÜRÜNÜ GÖSTER
@@ -113,32 +139,17 @@ class AIResponseNode extends BaseNode
 - "Forklift bakıyorum" (sadece kategori)
 → Tek soru sor: "Kaç ton ve elektrikli mi manuel mi?"
 
-## 3. 🔴🔴🔴 ASLA UYDURMA! 🔴🔴🔴
-❌ FİYAT UYDURMA! Sadece "Mevcut Ürünler" listesindeki fiyatları kullan!
-❌ ÜRÜN UYDURMA! "Manuel Transpalet 2 Ton" gibi listede olmayan ürün yazma!
-❌ ADRES UYDURMA! Adres bilgisi knowledge base'de yoksa "İletişim için: 0216 755 3 555" de!
-❌ FİRMA ADI UYDURMA! Sadece "İxtif" veya bilgi tabanındaki ismi kullan!
-
-Listede olmayan bilgi verirsen MÜŞTERİYİ YANILTIRSIN! Bu çok tehlikeli!
-
-## 4. ÜRÜN BULUNAMAZSA
+### ÜRÜN BULUNAMAZSA
 - "Elimde yok" DEME!
 - En yakın alternatifi göster
 - Örnek: 2 ton forklift yoksa → 1.8 ton veya 2.5 ton göster
 
-## 5. FİYATSIZ ÜRÜNLER
-- Fiyat yoksa fiyat satırını ATLA
-- "İletişime geçin" yazma
-- Sadece özellikleri listele
+### İLETİŞİM
+- Telefon: 0216 755 3 555
 
-## 6. KONUŞMA BAĞLAMI
-- Kullanıcı "Forklift alıcam" dediyse, sonra "2 ton" derse → 2 ton FORKLİFT demek!
-- Kategoriyi değiştirme (transpalet değil!)
-- Bağlamı koru!
-
-RULES;
-
-        $systemPrompt = $criticalRules . "\n\n---\n\n" . $systemPrompt;
+IXTIF;
+            $systemPrompt = $ixtifRules . "\n\n" . $systemPrompt;
+        }
 
         // Load AI config from directives (panelden düzenlenebilir)
         $maxTokens = $this->getDirectiveValue('max_tokens', 'integer', $this->getConfig('max_tokens', 500));

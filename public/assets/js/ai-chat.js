@@ -146,6 +146,42 @@ function registerAiChatStore() {
             localStorage.setItem('user_closed_ai_chat', 'true');
         },
 
+        // Clear conversation - Reset all chat state
+        clearConversation() {
+            // Clear messages array (reactive update)
+            this.messages.splice(0, this.messages.length);
+
+            // Clear session & conversation IDs
+            this.sessionId = null;
+            this.conversationId = null;
+
+            // Clear ALL storage related to chat
+            sessionStorage.removeItem('ai_chat_session_id');
+            localStorage.removeItem('ai_chat_last_read_index');
+            localStorage.removeItem('ai_chat_floating_open');
+
+            // Reset error state
+            this.error = null;
+            this.isLoading = false;
+            this.isTyping = false;
+
+            // Force DOM update - remove message elements
+            const messagesContainer = document.querySelector('[data-ai-chat-messages]');
+            if (messagesContainer) {
+                // Keep only the template element
+                const children = Array.from(messagesContainer.children);
+                children.forEach(child => {
+                    if (!child.tagName || child.tagName.toLowerCase() !== 'template') {
+                        if (!child.hasAttribute('x-show') || !child.getAttribute('x-show').includes('isTyping')) {
+                            child.remove();
+                        }
+                    }
+                });
+            }
+
+            console.log('🗑️ AI Chat conversation cleared');
+        },
+
         // Register inline widget
         registerInline(widgetId) {
             if (!this.inlineStates[widgetId]) {
@@ -466,23 +502,40 @@ window.clearAIConversation = function(button) {
 
     const chat = window.Alpine.store('aiChat');
 
-    // Show loading
-    const originalText = button.querySelector('.button-text').textContent;
+    // Get button elements (support both desktop and mobile buttons)
+    const buttonText = button.querySelector('.button-text');
     const spinner = button.querySelector('.loading-spinner');
-    button.querySelector('.button-text').textContent = '✓';
-    spinner.classList.remove('hidden');
+    const loadingIcon = button.querySelector('.loading-icon');
+    const originalText = buttonText ? buttonText.textContent : '';
+
+    // Show loading state
+    button.classList.add('loading');
+    if (buttonText) buttonText.textContent = '✓';
+    if (spinner) spinner.classList.remove('hidden');
+    if (loadingIcon) loadingIcon.classList.add('hidden');
     button.disabled = true;
+
+    // Helper function to reset button
+    const resetButton = (success = true) => {
+        button.classList.remove('loading');
+        if (spinner) spinner.classList.add('hidden');
+        if (loadingIcon) loadingIcon.classList.remove('hidden');
+        button.disabled = false;
+
+        if (buttonText) {
+            buttonText.textContent = success ? '✓ Temizlendi' : '✗ Hata';
+            setTimeout(() => {
+                buttonText.textContent = originalText;
+            }, 2000);
+        }
+    };
 
     // 🔧 FIX: conversationId yoksa bile çalış (frontend temizle yeterli)
     if (!chat.conversationId) {
         // Backend'de kayıt yok, sadece frontend temizle
         chat.clearConversation();
-        button.querySelector('.button-text').textContent = '✓ Temizlendi';
-        setTimeout(() => {
-            button.querySelector('.button-text').textContent = originalText;
-            spinner.classList.add('hidden');
-            button.disabled = false;
-        }, 1500);
+        resetButton(true);
+        console.log('✅ AI Chat cleared (no backend conversation)');
         return;
     }
 
@@ -493,23 +546,13 @@ window.clearAIConversation = function(button) {
 
             // Clear from Alpine store
             chat.clearConversation();
-
-            // Visual feedback
-            button.querySelector('.button-text').textContent = '✓ Temizlendi';
-            setTimeout(() => {
-                button.querySelector('.button-text').textContent = originalText;
-            }, 2000);
+            resetButton(true);
+            console.log('✅ AI Chat cleared (backend + frontend)');
         })
         .catch(err => {
             console.error('AI conversation clear error:', err);
-            button.querySelector('.button-text').textContent = '✗ Hata';
-            setTimeout(() => {
-                button.querySelector('.button-text').textContent = originalText;
-            }, 2000);
-        })
-        .finally(() => {
-            // Reset button
-            spinner.classList.add('hidden');
-            button.disabled = false;
+            // Still clear frontend even if backend fails
+            chat.clearConversation();
+            resetButton(false);
         });
 };

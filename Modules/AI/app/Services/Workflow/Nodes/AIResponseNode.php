@@ -12,7 +12,41 @@ use Illuminate\Support\Facades\Log;
  * Claude/OpenAI ile yanıt üretir
  * Streaming destekli
  *
- * Last modified: 2025-11-06 22:05 - CONVERSATION HISTORY FIX
+ * Last modified: 2025-11-21 - Tenant-aware simplification
+ *
+ * ╔══════════════════════════════════════════════════════════════════════════════╗
+ * ║  🚨🚨🚨 KRİTİK UYARI - TENANT-AWARE MİMARİ 🚨🚨🚨                              ║
+ * ╠══════════════════════════════════════════════════════════════════════════════╣
+ * ║                                                                              ║
+ * ║  ❌ BU DOSYAYA TENANT-SPECİFİC KURALLAR EKLEME!                               ║
+ * ║                                                                              ║
+ * ║  Bu class GLOBAL/TENANT-NEUTRAL olmalıdır. Tüm tenant'lar için ortak         ║
+ * ║  çalışır. Tenant-specific kurallar buraya yazılırsa:                         ║
+ * ║                                                                              ║
+ * ║  - Diğer tenant'lar etkilenir (müzik sitesinde forklift kuralı çıkar!)       ║
+ * ║  - Bakım zorlaşır                                                            ║
+ * ║  - Multi-tenant mimarisi bozulur                                             ║
+ * ║                                                                              ║
+ * ║  ✅ TENANT-SPECİFİC KURALLAR NEREYE GİDER?                                    ║
+ * ║                                                                              ║
+ * ║  → Modules/AI/app/Services/Tenant/Tenant{ID}PromptService.php                ║
+ * ║                                                                              ║
+ * ║  Örnek:                                                                      ║
+ * ║  - Tenant 2 (ixtif.com) → Tenant2PromptService.php                           ║
+ * ║  - Tenant 1001 (muzibu) → Tenant1001PromptService.php                        ║
+ * ║                                                                              ║
+ * ║  Bu dosyada sadece GENEL kurallar olmalı:                                    ║
+ * ║  - Markdown formatı                                                          ║
+ * ║  - Fiyat gösterimi                                                           ║
+ * ║  - Link formatı                                                              ║
+ * ║  - Emoji kuralları                                                           ║
+ * ║                                                                              ║
+ * ║  TENANT-SPECİFİC ÖRNEKLER (BURAYA YAZMA!):                                   ║
+ * ║  - "Transpalet isteyince tonnaj sor" → Tenant2PromptService                  ║
+ * ║  - "Forklift kategorisi = 1" → Tenant2ProductSearchService                   ║
+ * ║  - "F4 öncelikli ürün" → FileLearningService (tenant-aware)                  ║
+ * ║                                                                              ║
+ * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 class AIResponseNode extends BaseNode
 {
@@ -44,6 +78,20 @@ class AIResponseNode extends BaseNode
             'string',
             $this->getConfig('system_prompt', '')
         );
+
+        // 🔥 TENANT-SPECIFIC PROMPT EKLEMESİ
+        // Tenant2PromptService'deki kuralları system prompt'a ekle
+        $tenantId = tenant('id') ?? null;
+        if (in_array($tenantId, [2, 3])) {
+            try {
+                $tenant2Service = new \Modules\AI\App\Services\Tenant\Tenant2PromptService();
+                $tenantPrompt = implode("\n", $tenant2Service->buildPrompt());
+                $systemPrompt = $tenantPrompt . "\n\n" . $systemPrompt;
+                \Log::info('✅ Tenant2PromptService loaded', ['tenant_id' => $tenantId]);
+            } catch (\Exception $e) {
+                \Log::warning('⚠️ Tenant2PromptService failed', ['error' => $e->getMessage()]);
+            }
+        }
 
         // Load AI config from directives (panelden düzenlenebilir)
         $maxTokens = $this->getDirectiveValue('max_tokens', 'integer', $this->getConfig('max_tokens', 500));
@@ -139,7 +187,7 @@ class AIResponseNode extends BaseNode
             $providerService = new \Modules\AI\App\Services\OpenAIService([
                 'api_key' => $apiKey,
                 'base_url' => 'https://api.openai.com',
-                'model' => 'gpt-4o-mini'
+                'model' => 'gpt-4.1-mini'
             ]);
 
             // Build full message array with conversation history
@@ -225,6 +273,34 @@ class AIResponseNode extends BaseNode
             \Log::emergency('✅ ÜRÜN VAR - Product context ekleniyor');
             // Ürün varsa, ürün listesini ekle
             $enhancedPrompt .= "\n\n" . $context['product_context'];
+            // ═══════════════════════════════════════════════════════════════════════
+            // 🚨 DİKKAT: Aşağıdaki kurallar GLOBAL/TENANT-NEUTRAL olmalı!
+            // Tenant-specific kurallar (tonaj, güç kaynağı, kategori ID'leri vb.)
+            // → Modules/AI/app/Services/Tenant/Tenant{ID}PromptService.php dosyasına git!
+            // ═══════════════════════════════════════════════════════════════════════
+
+            // 🚨🚨🚨 EN ÖNEMLİ KURAL - BELİRSİZ İSTEK KONTROLÜ
+            $enhancedPrompt .= "\n\n🚨🚨🚨 **ÜRÜN GÖSTERMEDEN ÖNCE KONTROL ET!** 🚨🚨🚨";
+            $enhancedPrompt .= "\n";
+            $enhancedPrompt .= "\n**Kullanıcı mesajında şunlar VAR MI kontrol et:**";
+            $enhancedPrompt .= "\n- Tonnaj (1.5 ton, 2 ton, 3 ton vb.)";
+            $enhancedPrompt .= "\n- Tip (elektrikli, li-ion, manuel, akülü, dizel)";
+            $enhancedPrompt .= "\n- Fiyat kriteri (ucuz, pahalı, bütçe)";
+            $enhancedPrompt .= "\n- Spesifik özellik (soğuk depo, şantiye, sürücülü)";
+            $enhancedPrompt .= "\n";
+            $enhancedPrompt .= "\n**YOKSA → BELİRSİZ İSTEK! ÖNCE SORU SOR:**";
+            $enhancedPrompt .= "\n- Kaç ton kapasiteye ihtiyacınız var?";
+            $enhancedPrompt .= "\n- Elektrikli mi, Li-Ion mu tercih edersiniz?";
+            $enhancedPrompt .= "\n- Kullanım alanınız neresi?";
+            $enhancedPrompt .= "\n- Bütçe aralığınız nedir?";
+            $enhancedPrompt .= "\n";
+            $enhancedPrompt .= "\n**VARSA → BELİRLİ İSTEK! ÜRÜN GÖSTER.**";
+            $enhancedPrompt .= "\n";
+            $enhancedPrompt .= "\n❌ 'Transpalet istiyorum' → Tonnaj YOK, tip YOK → SORU SOR!";
+            $enhancedPrompt .= "\n❌ 'Transpalet modelleri hakkında bilgi' → SORU SOR!";
+            $enhancedPrompt .= "\n✅ '1.5 ton elektrikli transpalet' → Tonnaj VAR, tip VAR → ÜRÜN GÖSTER!";
+            $enhancedPrompt .= "\n";
+
             $enhancedPrompt .= "\n\n🚨 KRİTİK KURALLAR (GLOBAL - MUTLAKA UYULMALI):";
             $enhancedPrompt .= "\n❌ ASLA ÜRÜN UYDURMA! Yukarıdaki liste dışında ürün gösterme!";
             $enhancedPrompt .= "\n❌ \"Model A\", \"Model B\", \"Model C\" gibi genel isimler YASAK!";
@@ -234,14 +310,14 @@ class AIResponseNode extends BaseNode
             $enhancedPrompt .= "\n✅ SADECE yukarıdaki listedeki ürünleri öner";
             $enhancedPrompt .= "\n✅ Fiyatları AYNEN kopyala, değiştirme, KDV ekleme!";
             $enhancedPrompt .= "\n✅ Link'leri AYNEN kopyala, URL değiştirme!";
-            $enhancedPrompt .= "\n\nINTERAKTIF SORU-CEVAP KURALI [COK ONEMLI]:";
-            $enhancedPrompt .= "\n[KURAL 1] Kullanici ILK mesajda sadece GENEL kategori sorarsa → ONCE ozellik/tercih SORU SOR!";
-            $enhancedPrompt .= "\n- Hangi ozelliklerde urun aradigini sor (GENEL terimler kullan!)";
-            $enhancedPrompt .= "\n- Tercihlerini sor (ozellik, model, butce, kullanim amaci vb.)";
-            $enhancedPrompt .= "\n- YANLIS: Direkt urun listesi gosterme! (detay yoksa ONCE SORU SOR!)";
-            $enhancedPrompt .= "\n- [UYARI] TENANT-SPECIFIC ORNEK VERME! Sadece GENEL ifadeler kullan!";
-            $enhancedPrompt .= "\n- YANLIS: 'Kapasite (1.5 ton, 2 ton), tip (elektrikli, manuel), renk (kırmızı, mavi)...' ← Tenant-specific!";
-            $enhancedPrompt .= "\n- DOGRU: 'Hangi ozelliklerde bir urun aradiginizi ogrenebilir miyim?' ← Genel!";
+
+            // ═══════════════════════════════════════════════════════════════════════
+            // 🚨 TENANT-SPECİFİC KURAL EKLEME!
+            // "Belirsiz istekte soru sor" gibi kurallar Tenant2PromptService'de!
+            // ═══════════════════════════════════════════════════════════════════════
+            $enhancedPrompt .= "\n\n🚨 TEMEL KURAL: Tenant-specific prompt'taki kurallara MUTLAKA UY!";
+            $enhancedPrompt .= "\n- Belirsiz istekte soru sor kuralı varsa → SORU SOR";
+            $enhancedPrompt .= "\n- Belirli istekte ürün göster kuralı varsa → ÜRÜN GÖSTER";
             $enhancedPrompt .= "\n\n**SORU FORMAT KURALI - MARKDOWN LISTE ZORUNLU!**";
             $enhancedPrompt .= "\n🚨 MEGA KRITIK: Birden fazla soru sorarken MUTLAKA Markdown liste kullan!";
             $enhancedPrompt .= "\n";
@@ -254,14 +330,14 @@ class AIResponseNode extends BaseNode
             $enhancedPrompt .= "\n- Butce araligini paylasir misiniz?";
             $enhancedPrompt .= "\n```";
             $enhancedPrompt .= "\n";
-            $enhancedPrompt .= "\n❌ YANLIS FORMAT (Tek satirda + Tenant-specific):";
+            $enhancedPrompt .= "\n❌ YANLIS FORMAT (Tek satirda):";
             $enhancedPrompt .= "\n```";
-            $enhancedPrompt .= "\nHangi ozelliklerde bir urun aradiginizi ogrenebilir miyim? Kapasite, tip (elektrikli veya manuel), renk gibi tercihlerinizi belirtirseniz...";
+            $enhancedPrompt .= "\nHangi ozelliklerde bir urun aradiginizi ogrenebilir miyim? Tercihlerinizi belirtirseniz size en uygun secenekleri sunabilirim...";
             $enhancedPrompt .= "\n```";
             $enhancedPrompt .= "\n";
             $enhancedPrompt .= "\n[ONEMLI] Sorular AYRI satirlarda Markdown liste formatinda (`-` ile) yazilmali!";
             $enhancedPrompt .= "\n[ONEMLI] Uzun cumle degil, kisa maddeli sorular!";
-            $enhancedPrompt .= "\n[ONEMLI] TENANT-NEUTRAL sorular sor! (kapasite/ton/elektrikli/renk gibi spesifik ornek VERME!)";
+            $enhancedPrompt .= "\n[ONEMLI] TENANT-NEUTRAL sorular sor! (urun kategorisine ozgu teknik detaylar VERME!)";
             $enhancedPrompt .= "\n";
             $enhancedPrompt .= "\n[KURAL 2] Kullanici DETAYLI sorgu yaparsa → Direkt urun goster";
             $enhancedPrompt .= "\n[KURAL 3] Kullanici soruya cevap verdiyse → Filtrelenmiş urunleri goster";

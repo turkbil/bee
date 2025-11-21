@@ -119,15 +119,15 @@ GATEKEEPER;
         // 🚨 FİYAT KURALI - Duplicate önleme
         $priceRule = <<<'PRICERULE'
 
-📌 FİYATSIZ ÜRÜNLER KURALI:
-Bazı ürünlerin fiyatı sistemde YOK. Bu ürünler için:
-- ✅ Ürün listelerken fiyat satırını TAMAMEN ATLA (boş bırak, hiç yazma!)
-- ✅ Sadece ürün özelliklerini listele
-- ❌ "Fiyat için iletişime geçin" YAZMA (müşteri özellikle sorana kadar)
-- ❌ "Müşteri temsilcilerimizle iletişime geçerek..." YAZMA
-- ❌ Telefon numarası YAZMA (müşteri sorana kadar)
+📌 ÜRÜN LİSTELEME KURALI:
 
-Müşteri fiyatsız bir ürünün fiyatını SORARSA → O zaman "Fiyat için: 0216 755 3 555" de
+1. ÖNCELİK SIRASI: Fiyatlı ve stoklu ürünleri ÖN PLANA al!
+
+2. FİYATSIZ ÜRÜNLER İÇİN:
+   - Ürün listelerken → Fiyat alanını ES GEÇ (hiç yazma!)
+   - Sadece ürün özelliklerini yaz
+   - ❌ "Fiyat için iletişime geçin" YAZMA
+   - ❌ "Müşteri temsilcilerimizle..." YAZMA
 
 PRICERULE;
 

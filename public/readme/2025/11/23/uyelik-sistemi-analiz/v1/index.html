@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant-Aware Üyelik Sistemi - Kapsamlı Analiz & Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #93c5fd;
+            margin: 20px 0 15px 0;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .plan-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        .setting-group {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .setting-type {
+            background: #334155;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #93c5fd;
+        }
+
+        .mail-card {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid #8b5cf6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .mail-card h5 {
+            color: #a78bfa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .option-card {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #475569;
+        }
+
+        .option-card h5 {
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .option-card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .badge-switch { background: #10b981; color: white; }
+        .badge-select { background: #3b82f6; color: white; }
+        .badge-number { background: #f59e0b; color: white; }
+        .badge-text { background: #8b5cf6; color: white; }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .toc {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+
+        .toc h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .toc a {
+            color: #93c5fd;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tenant-Aware Uyelik Sistemi</h1>
+            <div class="meta">
+                Tarih: 2025-11-23 |
+                Tenant: ixtif.com (Tenant 2) |
+                Talep: Kapsamli uyelik sistemi analizi, ayar sistemi tasarimi ve mail planlamasi
+            </div>
+        </header>
+
+        <nav class="toc">
+            <h3>Icerik</h3>
+            <ul>
+                <li><a href="#mevcut-durum">1. Mevcut Durum Analizi</a></li>
+                <li><a href="#ayar-sistemi">2. Tenant-Aware Ayar Sistemi Tasarimi</a></li>
+                <li><a href="#uyelik-tipleri">3. Uyelik Tipleri & Abonelik Sistemi</a></li>
+                <li><a href="#cihaz-yonetimi">4. Cihaz Yonetimi & Oturum Kontrolu</a></li>
+                <li><a href="#mail-sistemi">5. Mail Sablonlari Planlamasi</a></li>
+                <li><a href="#veritabani">6. Veritabani Degisiklikleri</a></li>
+                <li><a href="#alternatifler">7. Alternatif Yaklasimlar</a></li>
+            </ul>
+        </nav>
+
+        <!-- MEVCUT DURUM ANALİZİ -->
+        <section id="mevcut-durum">
+            <h2>1. Mevcut Durum Analizi</h2>
+
+            <div class="plan-item">
+                <h4>Kimlik Dogrulama Sistemi <span class="explanation">(Authentication)</span></h4>
+                <p>Sistem su anda Laravel Breeze tabanli bir kimlik dogrulama kullaniyor. Kullanici girisi yapildiginda <span class="tech-term">session</span> <span class="explanation">(oturum verisi)</span> veritabaninda sakliyor. Oturum suresi varsayilan olarak <strong>120 dakika</strong> (2 saat).</p>
+                <p><strong>Mevcut Ozellikler:</strong></p>
+                <ul style="margin-left: 20px; color: #94a3b8;">
+                    <li>Giris/cikis aktivite loglari (kayit altina alma)</li>
+                    <li>Son giris zamani takibi</li>
+                    <li>Sepet birlestirme (misafirden uyeye)</li>
+                    <li>Coklu dil destegi (admin ve site icin ayri)</li>
+                    <li>Spatie rolleri ile yetkilendirme</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Kullanici Modeli</h4>
+                <p>Mevcut <span class="tech-term">User</span> modeli temel bilgileri saklıyor: isim, email, sifre, telefon, bio, aktiflik durumu. Ayrica <span class="tech-term">Spatie Roles</span> <span class="explanation">(rol tabanli yetkilendirme)</span> ve <span class="tech-term">MediaLibrary</span> <span class="explanation">(medya dosyalari yonetimi)</span> kullaniliyor.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>SettingManagement Modulu</h4>
+                <p>Sistemde zaten <span class="tech-term">Form Builder</span> <span class="explanation">(gorsel form olusturucu)</span> altyapisi mevcut. Bu altyapi ile tenant bazli ayarlar kolayca olusturulabilir. Ayarlar <span class="tech-term">JSON layout</span> <span class="explanation">(yapilandirilmis veri formati)</span> olarak saklanip, form elemanlari dinamik olarak render ediliyor.</p>
+                <p><strong>Mevcut Element Turleri:</strong> switch (anahtar), select (acilir liste), text (metin), textarea (cok satirli metin), number (sayi), checkbox (onay kutusu), radio (tekli secim)</p>
+            </div>
+
+            <div class="warning-box">
+                <strong>Dikkat:</strong> Ayarlar central veritabaninda (settings, settings_groups tablolari), degerler ise tenant veritabaninda (settings_values tablosu) saklanir. Bu sayede her tenant kendi ayar degerlerini bagimsiz olarak yonetebilir.
+            </div>
+        </section>
+
+        <!-- AYAR SİSTEMİ TASARIMI -->
+        <section id="ayar-sistemi">
+            <h2>2. Tenant-Aware Ayar Sistemi Tasarimi</h2>
+
+            <p style="margin-bottom: 20px; color: #94a3b8;">Asagida onerilen ayarlar, SettingManagement modulunun Form Builder ozelligi kullanilarak olusturulacak. Her tenant bu ayarlari kendi admin panelinden yonetebilecek.</p>
+
+            <h3>2.1. Kayit Ayarlari Grubu</h3>
+            <div class="setting-group">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ayar Adi</th>
+                            <th>Aciklama</th>
+                            <th>Tur</th>
+                            <th>Varsayilan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="setting-label">Uyelik Sistemi Aktif</td>
+                            <td>Site uyelik sistemini acip kapatir</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Aktif</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Yeni Kayit Izni</td>
+                            <td>Yeni kullanicilarin kayit olmasina izin ver</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Aktif</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Email Dogrulama Gerekli</td>
+                            <td>Kayit sonrasi email dogrulama zorunlu mu?</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Evet</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Admin Onayi Gerekli</td>
+                            <td>Yeni uyeler admin onayi beklesin mi?</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Hayir</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Varsayilan Uyelik Tipi</td>
+                            <td>Yeni uyelerin otomatik atanacagi uyelik tipi</td>
+                            <td><span class="badge badge-select">select</span></td>
+                            <td>Ucretsiz</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Kayit Formu Alanlari</td>
+                            <td>Kayit formunda hangi alanlar gorunecek</td>
+                            <td><span class="badge badge-select">select</span></td>
+                            <td>Ad, Email, Sifre</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Hos Geldiniz Maili</td>
+                            <td>Kayit sonrasi hos geldiniz maili gonder</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Evet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>2.2. Oturum Ayarlari Grubu</h3>
+            <div class="setting-group">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ayar Adi</th>
+                            <th>Aciklama</th>
+                            <th>Tur</th>
+                            <th>Varsayilan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="setting-label">Oturum Suresi</td>
+                            <td>Kullanicinin otomatik cikis yapacagi sure</td>
+                            <td><span class="badge badge-select">select</span></td>
+                            <td>2 saat</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Beni Hatirla Suresi</td>
+                            <td>"Beni hatirla" seceneginin gecerlilik suresi</td>
+                            <td><span class="badge badge-select">select</span></td>
+                            <td>30 gun</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Tarayici Kapaninca Cikis</td>
+                            <td>Tarayici kapandiginda oturum sonlansin mi?</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Hayir</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Giris Loglarini Kaydet</td>
+                            <td>Kullanici girislerini veritabanina kaydet</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Evet</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Basarisiz Giris Limiti</td>
+                            <td>Hesap kilitlenmeden once izin verilen deneme</td>
+                            <td><span class="badge badge-number">number</span></td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Hesap Kilit Suresi</td>
+                            <td>Cok fazla basarisiz denemede kilit suresi (dakika)</td>
+                            <td><span class="badge badge-number">number</span></td>
+                            <td>15</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>2.3. Cihaz & Guvenlik Ayarlari Grubu</h3>
+            <div class="setting-group">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ayar Adi</th>
+                            <th>Aciklama</th>
+                            <th>Tur</th>
+                            <th>Varsayilan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="setting-label">Cihaz Limiti Modu</td>
+                            <td>Ayni anda kac cihazdan giris yapilabildigi</td>
+                            <td><span class="badge badge-select">select</span></td>
+                            <td>Sinirsiz</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Varsayilan Cihaz Limiti</td>
+                            <td>Uyelik tipine gore degismezse varsayilan limit</td>
+                            <td><span class="badge badge-number">number</span></td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Yeni Cihaz Bildirimi</td>
+                            <td>Yeni bir cihazdan giris yapilinca mail gonder</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Evet</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">IP Adresi Kaydet</td>
+                            <td>Giris yapilan IP adreslerini logla</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Evet</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Iki Faktorlu Dogrulama</td>
+                            <td>2FA destegini aktif et</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Pasif</td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Supheli Aktivite Bildirimi</td>
+                            <td>Supheli girisler icin admin'e mail at</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                            <td>Evet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <strong>Cihaz Limiti Modu Secenekleri:</strong>
+                <ul style="margin: 10px 0 0 20px; color: #94a3b8;">
+                    <li><strong>Sinirsiz:</strong> Istenen kadar cihazdan giris</li>
+                    <li><strong>Sabit Limit:</strong> Tum kullanicilar icin ayni limit (varsayilan cihaz limiti kullanilir)</li>
+                    <li><strong>Uyelik Tipine Gore:</strong> Her uyelik tipi kendi limitine sahip</li>
+                    <li><strong>Kullaniciya Ozel:</strong> Admin her kullanici icin ayri limit belirler</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÜYELİK TİPLERİ & ABONELİK SİSTEMİ -->
+        <section id="uyelik-tipleri">
+            <h2>3. Uyelik Tipleri & Abonelik Sistemi</h2>
+
+            <div class="plan-item">
+                <h4>Uyelik Tipleri Yonetimi <span class="priority priority-high">Yuksek Oncelik</span></h4>
+                <p>Her tenant kendi uyelik tiplerini tanimlayabilir. Muzisyenler icin "Pro Uye", forklift satisi icin "Bayi Uyeligi" gibi sektore ozel tipler olusturulabilir.</p>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">Her Uyelik Tipi Icin Tanimlanacak Ozellikler:</h5>
+                <div class="option-grid">
+                    <div class="option-card">
+                        <h5>Temel Bilgiler</h5>
+                        <p>Ad, aciklama, ikon, renk, siralama, aktiflik durumu</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Fiyatlandirma</h5>
+                        <p>Aylik fiyat, yillik fiyat, deneme suresi, indirim orani</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Kisitlamalar</h5>
+                        <p>Cihaz limiti, indirme limiti, icerik erisimi, API kullanimi</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Ozellikler</h5>
+                        <p>JSON formatinda ozel ozellikler (her tenant farkli kullanabilir)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Ornek Uyelik Tipleri</h4>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">Muzibu.com (Muzik Platformu) Icin:</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Uyelik</th>
+                            <th>Fiyat</th>
+                            <th>Cihaz</th>
+                            <th>Ozellikler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ucretsiz</td>
+                            <td>0 TL</td>
+                            <td>1</td>
+                            <td>Reklam destekli, dusuk kalite</td>
+                        </tr>
+                        <tr>
+                            <td>Premium</td>
+                            <td>29.99 TL/ay</td>
+                            <td>3</td>
+                            <td>Reklamsiz, yuksek kalite, offline dinleme</td>
+                        </tr>
+                        <tr>
+                            <td>Aile</td>
+                            <td>49.99 TL/ay</td>
+                            <td>6</td>
+                            <td>6 kullanici, bireysel profiller</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">Ixtif.com (B2B) Icin:</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Uyelik</th>
+                            <th>Fiyat</th>
+                            <th>Cihaz</th>
+                            <th>Ozellikler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Standart</td>
+                            <td>Ucretsiz</td>
+                            <td>Sinirsiz</td>
+                            <td>Urun goruntuleme, teklif isteme</td>
+                        </tr>
+                        <tr>
+                            <td>Bayi</td>
+                            <td>Ozel</td>
+                            <td>Sinirsiz</td>
+                            <td>Bayi fiyatlari, toplu satis, API erisimi</td>
+                        </tr>
+                        <tr>
+                            <td>VIP</td>
+                            <td>Ozel</td>
+                            <td>Sinirsiz</td>
+                            <td>Oncelikli destek, ozel indirimler</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>3.1. Abonelik Ayarlari Grubu</h3>
+            <div class="setting-group">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ayar Adi</th>
+                            <th>Aciklama</th>
+                            <th>Tur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="setting-label">Abonelik Sistemi Aktif</td>
+                            <td>Ucretli uyelik sistemi acik mi?</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Odeme Yontemi</td>
+                            <td>Hangi odeme sistemleri aktif</td>
+                            <td><span class="badge badge-select">select</span></td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Deneme Suresi (Gun)</td>
+                            <td>Premium uyelik deneme suresi</td>
+                            <td><span class="badge badge-number">number</span></td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Otomatik Yenileme</td>
+                            <td>Abonelikler otomatik yenilensin mi?</td>
+                            <td><span class="badge badge-switch">switch</span></td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Iptal Oncesi Uyari (Gun)</td>
+                            <td>Abonelik bitmeden kac gun once uyari gonder</td>
+                            <td><span class="badge badge-number">number</span></td>
+                        </tr>
+                        <tr>
+                            <td class="setting-label">Geri Odeme Politikasi</td>
+                            <td>Iptal durumunda iade yapilsin mi</td>
+                            <td><span class="badge badge-select">select</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- CİHAZ YÖNETİMİ & OTURUM KONTROLÜ -->
+        <section id="cihaz-yonetimi">
+            <h2>4. Cihaz Yonetimi & Oturum Kontrolu</h2>
+
+            <div class="plan-item">
+                <h4>Cihaz Takip Sistemi <span class="priority priority-medium">Orta Oncelik</span></h4>
+                <p>Her giris yapan cihaz icin benzersiz bir <span class="tech-term">device fingerprint</span> <span class="explanation">(cihaz parmak izi)</span> olusturulacak. Bu sayede kullanicinin hangi cihazlardan giris yaptigini takip edip, gerektiginde belirli cihazlari engelleyebiliriz.</p>
+
+                <p><strong>Takip Edilecek Bilgiler:</strong></p>
+                <ul style="margin-left: 20px; color: #94a3b8;">
+                    <li>Cihaz adi (tarayici + isletim sistemi)</li>
+                    <li>IP adresi ve konum (ulke/sehir)</li>
+                    <li>Son aktivite zamani</li>
+                    <li>Guvenilir cihaz olarak isaretleme</li>
+                    <li>Cihazi engelleme/cikarma</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Esanli Oturum Kontrolu</h4>
+                <p>Kullanici cihaz limitini asarsa, eski oturumlari otomatik olarak kapatilabilir veya yeni girise izin verilmeyebilir. Bu davranis ayarlarla kontrol edilecek:</p>
+
+                <div class="option-grid">
+                    <div class="option-card">
+                        <h5>Ilk Giren Kalir</h5>
+                        <p>Limit doluysa yeni girise izin verilmez, kullanici baska cihazdan cikis yapmali</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Son Giren Kalir</h5>
+                        <p>Yeni giris en eski oturumu otomatik kapatir</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Kullanici Secer</h5>
+                        <p>Limit asiminda kullaniciya hangi cihazi cikaracagini sor</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Giris Loglari</h4>
+                <p>Eger ayarlardan aktif edilirse, her giris denemesi (basarili/basarisiz) kayit altina alinir. Bu loglar guvenlik analizi, supheli aktivite tespiti ve kullanici destegi icin kullanilir.</p>
+
+                <p><strong>Log Icerigi:</strong></p>
+                <ul style="margin-left: 20px; color: #94a3b8;">
+                    <li>Kullanici ID ve email</li>
+                    <li>Giris zamani</li>
+                    <li>IP adresi</li>
+                    <li>User agent (tarayici/cihaz bilgisi)</li>
+                    <li>Basari durumu</li>
+                    <li>Basarisizlik nedeni (sifre hatali, hesap kilitli, vb.)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MAİL SİSTEMİ -->
+        <section id="mail-sistemi">
+            <h2>5. Mail Sablonlari Planlamasi</h2>
+
+            <p style="margin-bottom: 20px; color: #94a3b8;">Uyelik sistemi icin gerekli tum mail sablonlari asagida listelenistir. Her tenant kendi mail iceriklerini ve gorsellerini ozellestirebilir.</p>
+
+            <h3>5.1. Kayit & Dogrulama Mailleri</h3>
+            <div class="mail-card">
+                <h5>Hos Geldiniz Maili</h5>
+                <p><strong>Tetikleme:</strong> Basarili kayit sonrasi</p>
+                <p><strong>Icerik:</strong> Merhaba mesaji, site tanitimi, ilk adimlar, destek bilgileri</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {site_name}, {login_url}, {support_email}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Email Dogrulama</h5>
+                <p><strong>Tetikleme:</strong> Kayit sonrasi (ayar aktifse)</p>
+                <p><strong>Icerik:</strong> Dogrulama linki, gecerlilik suresi, tekrar gonderme secenegi</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {verification_url}, {expiry_time}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Hesap Onaylandi</h5>
+                <p><strong>Tetikleme:</strong> Admin onayi sonrasi (ayar aktifse)</p>
+                <p><strong>Icerik:</strong> Onay bildirimi, giris linki, kullanim kilavuzu</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {login_url}</p>
+            </div>
+
+            <h3>5.2. Guvenlik Mailleri</h3>
+            <div class="mail-card">
+                <h5>Sifre Sifirlama</h5>
+                <p><strong>Tetikleme:</strong> Sifre sifirlama talebi</p>
+                <p><strong>Icerik:</strong> Sifirlama linki, gecerlilik suresi, guvenlik uyarisi</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {reset_url}, {expiry_time}, {ip_address}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Yeni Cihaz Bildirimi</h5>
+                <p><strong>Tetikleme:</strong> Yeni bir cihazdan giris (ayar aktifse)</p>
+                <p><strong>Icerik:</strong> Cihaz bilgileri, konum, "ben degilim" aksiyonu</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {device_name}, {ip_address}, {location}, {time}, {secure_url}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Supheli Giris Denemesi</h5>
+                <p><strong>Tetikleme:</strong> Cok fazla basarisiz giris denemesi</p>
+                <p><strong>Icerik:</strong> Uyari mesaji, hesap kilitleme durumu, sifre degistirme onerisi</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {attempt_count}, {ip_address}, {lock_duration}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Sifre Degistirildi</h5>
+                <p><strong>Tetikleme:</strong> Sifre basariyla degistirildiginde</p>
+                <p><strong>Icerik:</strong> Bilgilendirme, "ben degistirmedim" aksiyonu</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {time}, {ip_address}, {secure_url}</p>
+            </div>
+
+            <h3>5.3. Abonelik Mailleri</h3>
+            <div class="mail-card">
+                <h5>Abonelik Baslatildi</h5>
+                <p><strong>Tetikleme:</strong> Ucretli uyelik satinalindiginda</p>
+                <p><strong>Icerik:</strong> Plan detaylari, fatura bilgileri, ozellikler listesi</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {plan_name}, {price}, {next_billing_date}, {features}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Abonelik Yenileme Hatirlatmasi</h5>
+                <p><strong>Tetikleme:</strong> Abonelik bitmeden X gun once (ayarlanabilir)</p>
+                <p><strong>Icerik:</strong> Yenileme tarihi, fiyat, iptal/degistirme secenekleri</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {plan_name}, {renewal_date}, {price}, {manage_url}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Odeme Basarisiz</h5>
+                <p><strong>Tetikleme:</strong> Otomatik yenileme basarisiz</p>
+                <p><strong>Icerik:</strong> Hata nedeni, odeme yontemi guncelleme, son tarih</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {plan_name}, {failure_reason}, {retry_date}, {update_payment_url}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Abonelik Iptal Edildi</h5>
+                <p><strong>Tetikleme:</strong> Kullanici iptali veya odeme basarisizligi</p>
+                <p><strong>Icerik:</strong> Iptal onay, erisim bitis tarihi, geri donus teklifi</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {plan_name}, {access_end_date}, {resubscribe_url}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Plan Yuseltiidi/Dusuruidu</h5>
+                <p><strong>Tetikleme:</strong> Plan degisikligi</p>
+                <p><strong>Icerik:</strong> Yeni plan detaylari, fiyat farki, ozellik degisiklikleri</p>
+                <p><strong>Degiskenler:</strong> {user_name}, {old_plan}, {new_plan}, {price_change}, {effective_date}</p>
+            </div>
+
+            <h3>5.4. Admin Bildirimleri</h3>
+            <div class="mail-card">
+                <h5>Yeni Uye Bildirimi (Admin)</h5>
+                <p><strong>Tetikleme:</strong> Yeni kullanici kaydi</p>
+                <p><strong>Icerik:</strong> Kullanici bilgileri, onay linki (gerekiyorsa)</p>
+                <p><strong>Degiskenler:</strong> {admin_name}, {user_name}, {user_email}, {registration_date}, {approve_url}</p>
+            </div>
+
+            <div class="mail-card">
+                <h5>Supheli Aktivite Raporu (Admin)</h5>
+                <p><strong>Tetikleme:</strong> Gunluk/haftalik supheli aktivite ozeti</p>
+                <p><strong>Icerik:</strong> Basarisiz giris sayilari, kilitlenmis hesaplar, yeni cihazlar</p>
+                <p><strong>Degiskenler:</strong> {period}, {failed_logins}, {locked_accounts}, {suspicious_ips}</p>
+            </div>
+        </section>
+
+        <!-- VERİTABANI DEĞİŞİKLİKLERİ -->
+        <section id="veritabani">
+            <h2>6. Veritabani Degisiklikleri</h2>
+
+            <div class="plan-item">
+                <h4>Yeni Tablolar <span class="priority priority-high">Yuksek Oncelik</span></h4>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">membership_types (Uyelik Tipleri)</h5>
+                <p>Her tenant'in uyelik tiplerini tanimladigi tablo. Ad, fiyat, ozellikler, kisitlamalar, aktiflik durumu.</p>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">user_subscriptions (Kullanici Abonelikleri)</h5>
+                <p>Kullanicilarin aktif/gecmis aboneliklerini takip eden tablo. Baslangic/bitis tarihi, durum, odeme bilgileri.</p>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">user_devices (Kullanici Cihazlari)</h5>
+                <p>Kullanicinin giris yaptigi cihazlari takip eden tablo. Cihaz adi, parmak izi, IP, son aktivite, guvenilir mi.</p>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">login_logs (Giris Loglari)</h5>
+                <p>Tum giris denemelerinin kaydedildigi tablo. Kullanici, zaman, IP, cihaz, basari durumu, basarisizlik nedeni.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>Mevcut Tablo Guncellemeleri</h4>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">users tablosuna eklenecek alanlar:</h5>
+                <ul style="margin-left: 20px; color: #94a3b8;">
+                    <li><strong>membership_type_id:</strong> Kullanicinin uyelik tipi</li>
+                    <li><strong>is_approved:</strong> Admin onayi durumu</li>
+                    <li><strong>approved_at:</strong> Onay zamani</li>
+                    <li><strong>approved_by:</strong> Onaylayan admin</li>
+                    <li><strong>device_limit:</strong> Kullaniciya ozel cihaz limiti (null = varsayilan)</li>
+                    <li><strong>failed_login_attempts:</strong> Basarisiz giris sayaci</li>
+                    <li><strong>locked_until:</strong> Hesap kilit suresi</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Onemli:</strong> Tum yeni tablolar hem central hem de tenant migration'larina eklenmelidir. Uyelik tipleri (membership_types) tenant DB'de saklanacak cunku her tenant farkli tipler tanimlayabilir.
+            </div>
+        </section>
+
+        <!-- ALTERNATİF YAKLAŞIMLAR -->
+        <section id="alternatifler">
+            <h2>7. Alternatif Yaklasimlar</h2>
+
+            <div class="plan-item">
+                <h4>Oturum Yonetimi Alternatifleri</h4>
+
+                <div class="option-grid">
+                    <div class="option-card">
+                        <h5>Session Tabani (Mevcut)</h5>
+                        <p><strong>Avantaj:</strong> Basit, Laravel varsayilani<br>
+                        <strong>Dezavantaj:</strong> Cihaz bazli kontrol zor</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>JWT Token Tabani</h5>
+                        <p><strong>Avantaj:</strong> API dostu, cihaz kontrolu kolay<br>
+                        <strong>Dezavantaj:</strong> Karmasik, token yonetimi</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Hibrit Yaklasim</h5>
+                        <p><strong>Avantaj:</strong> Web icin session, API icin token<br>
+                        <strong>Dezavantaj:</strong> Iki sistem bakimi</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Abonelik Sistemi Alternatifleri</h4>
+
+                <div class="option-grid">
+                    <div class="option-card">
+                        <h5>Yerel Sistem (Onerilen)</h5>
+                        <p><strong>Avantaj:</strong> Tam kontrol, komisyon yok<br>
+                        <strong>Dezavantaj:</strong> Gelistirme suresi</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Laravel Cashier + Stripe</h5>
+                        <p><strong>Avantaj:</strong> Hazir cozum, guvenli odeme<br>
+                        <strong>Dezavantaj:</strong> Komisyon, Turkiye destegi</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Iyzico Entegrasyonu</h5>
+                        <p><strong>Avantaj:</strong> Turkiye odakli, yerel kartlar<br>
+                        <strong>Dezavantaj:</strong> Ozel gelistirme gerekli</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Cihaz Tespiti Alternatifleri</h4>
+
+                <div class="option-grid">
+                    <div class="option-card">
+                        <h5>User Agent + IP</h5>
+                        <p><strong>Avantaj:</strong> Basit, hizli<br>
+                        <strong>Dezavantaj:</strong> Kolayca bypass edilebilir</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Browser Fingerprint</h5>
+                        <p><strong>Avantaj:</strong> Daha guvenilir tespit<br>
+                        <strong>Dezavantaj:</strong> Gizlilik endişeleri</p>
+                    </div>
+                    <div class="option-card">
+                        <h5>Cihaz Bagli Token</h5>
+                        <p><strong>Avantaj:</strong> En guvenilir<br>
+                        <strong>Dezavantaj:</strong> Karmasik uygulama</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Onerim:</strong> Ilk asamada Session tabani + User Agent/IP ile baslamak ve gerektiginde browser fingerprint eklemek en makul yol. Abonelik icin yerel sistem gelistirip, odeme icin Iyzico entegrasyonu yapmak Turkiye pazari icin ideal.
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu | Tarih: 2025-11-23
+            <br>
+            <small>Bu rapor taslak niteligindedir. Uygulamaya gecmeden once secimlerinizi belirtin.</small>
+        </footer>
+    </div>
+</body>
+</html>

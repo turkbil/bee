@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Final Uygulama Rehberi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .toc {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            color: #60a5fa;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .toc a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .toc a:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #fbbf24;
+            margin: 25px 0 15px;
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            color: #a78bfa;
+            margin: 20px 0 10px;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .card.success {
+            border-left-color: #10b981;
+        }
+
+        .card.danger {
+            border-left-color: #ef4444;
+        }
+
+        .card-title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: #0f172a;
+            padding: 12px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-new { background: #10b981; color: white; }
+        .badge-rename { background: #3b82f6; color: white; }
+        .badge-update { background: #f59e0b; color: white; }
+        .badge-exists { background: #64748b; color: white; }
+
+        .code-block {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-block .comment {
+            color: #64748b;
+        }
+
+        .code-block .keyword {
+            color: #c084fc;
+        }
+
+        .code-block .string {
+            color: #34d399;
+        }
+
+        .code-block .function {
+            color: #60a5fa;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .file-path {
+            color: #10b981;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        .column-desc {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .summary-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .summary-item {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-item .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .summary-item .label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            color: #64748b;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .toc-grid, .grid-2, .summary-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Üyelik Sistemi - Final Uygulama Rehberi</h1>
+            <div class="meta">
+                Versiyon 12 | 2025-11-23 | Tenant-Aware Membership System
+            </div>
+        </header>
+
+        <!-- İçindekiler -->
+        <nav class="toc">
+            <h2>İçindekiler</h2>
+            <div class="toc-grid">
+                <a href="#ozet">1. Özet & Sayılar</a>
+                <a href="#mevcut">2. Mevcut Durum</a>
+                <a href="#kararlar">3. Kesinleşen Kararlar</a>
+                <a href="#migrations">4. Migrations</a>
+                <a href="#models">5. Models</a>
+                <a href="#services">6. Services</a>
+                <a href="#settings">7. Settings</a>
+                <a href="#middleware">8. Middleware</a>
+                <a href="#mails">9. Mail Module</a>
+                <a href="#cron">10. Cron Jobs</a>
+                <a href="#uygulama">11. Uygulama Sırası</a>
+                <a href="#tenant">12. Tenant Farkları</a>
+            </div>
+        </nav>
+
+        <!-- 1. Özet -->
+        <section id="ozet">
+            <h2>1. Özet & Sayılar</h2>
+
+            <div class="summary-box">
+                <div class="summary-item">
+                    <div class="number">5</div>
+                    <div class="label">Tablo Rename</div>
+                </div>
+                <div class="summary-item">
+                    <div class="number">1</div>
+                    <div class="label">Yeni Modül</div>
+                </div>
+                <div class="summary-item">
+                    <div class="number">9</div>
+                    <div class="label">Yeni Kolon</div>
+                </div>
+                <div class="summary-item">
+                    <div class="number">7</div>
+                    <div class="label">Yeni Model</div>
+                </div>
+            </div>
+
+            <div class="card success">
+                <div class="card-title">Neden Yeni Tablo Yok?</div>
+                <p>Mevcut <strong>shop_*</strong> tabloları hiç kullanılmamış (0 kayıt). Bunları rename edip kullanacağız.</p>
+                <ul style="margin-top: 10px; margin-left: 20px; color: #cbd5e1;">
+                    <li><strong>user_devices</strong> → <code>sessions</code> tablosu kullanılacak</li>
+                    <li><strong>login_logs</strong> → <code>activity_log</code> tablosu kullanılacak</li>
+                    <li><strong>customer_groups</strong> → <code>subscription_plans</code> yeterli</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. Mevcut Durum -->
+        <section id="mevcut">
+            <h2>2. Mevcut Durum</h2>
+
+            <h3>Kullanılacak Mevcut Tablolar</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tablo</th>
+                        <th>Kayıt</th>
+                        <th>Durum</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>shop_subscription_plans</code></td>
+                        <td>0</td>
+                        <td><span class="badge badge-rename">RENAME</span></td>
+                        <td>→ subscription_plans</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_subscriptions</code></td>
+                        <td>0</td>
+                        <td><span class="badge badge-rename">RENAME</span></td>
+                        <td>→ subscriptions</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_coupons</code></td>
+                        <td>0</td>
+                        <td><span class="badge badge-rename">RENAME</span></td>
+                        <td>→ coupons</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_coupon_usages</code></td>
+                        <td>0</td>
+                        <td><span class="badge badge-rename">RENAME</span></td>
+                        <td>→ coupon_usages</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_customer_addresses</code></td>
+                        <td>0</td>
+                        <td><span class="badge badge-rename">RENAME</span></td>
+                        <td>→ customer_addresses</td>
+                    </tr>
+                    <tr>
+                        <td><code>sessions</code></td>
+                        <td>Var</td>
+                        <td><span class="badge badge-exists">MEVCUT</span></td>
+                        <td>Cihaz takibi için kullanılacak</td>
+                    </tr>
+                    <tr>
+                        <td><code>activity_log</code></td>
+                        <td>Var</td>
+                        <td><span class="badge badge-exists">MEVCUT</span></td>
+                        <td>Giriş logları için kullanılacak</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Mevcut Altyapı</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">Payment Modülü</div>
+                    <ul class="checklist">
+                        <li>Polymorphic Payable interface</li>
+                        <li>PayTR entegrasyonu hazır</li>
+                        <li>Transaction logging</li>
+                        <li>Webhook handling</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <div class="card-title">Spatie Activity Log</div>
+                    <ul class="checklist">
+                        <li>activity_log tablosu mevcut</li>
+                        <li>Tüm modellerde trait var</li>
+                        <li>Otomatik log kaydı</li>
+                        <li>JSON metadata desteği</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Kesinleşen Kararlar -->
+        <section id="kararlar">
+            <h2>3. Kesinleşen Kararlar</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Karar</th>
+                        <th>Not</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ödeme Sistemi</td>
+                        <td><strong>PayTR</strong></td>
+                        <td>Mevcut Payment modülü kullanılacak</td>
+                    </tr>
+                    <tr>
+                        <td>Oturum Süresi</td>
+                        <td><strong>1 yıl</strong></td>
+                        <td>SESSION_LIFETIME=525600</td>
+                    </tr>
+                    <tr>
+                        <td>Fiyatlandırma</td>
+                        <td><strong>299₺/ay - 2.999₺/yıl</strong></td>
+                        <td>Sadece Muzibu için</td>
+                    </tr>
+                    <tr>
+                        <td>Cihaz Limiti</td>
+                        <td><strong>Kullanıcı bazlı</strong></td>
+                        <td>Varsayılan: 1 (settings'den)</td>
+                    </tr>
+                    <tr>
+                        <td>Deneme Süresi</td>
+                        <td><strong>Aboneliğe eklenir</strong></td>
+                        <td>Kalan günler kaybolmaz</td>
+                    </tr>
+                    <tr>
+                        <td>2FA</td>
+                        <td><strong>SMS ile (opsiyonel)</strong></td>
+                        <td>Tenant SMS API kullanır</td>
+                    </tr>
+                    <tr>
+                        <td>Kurumsal</td>
+                        <td><strong>Sınırsız alt hesap</strong></td>
+                        <td>Sadece Muzibu</td>
+                    </tr>
+                    <tr>
+                        <td>Kupon</td>
+                        <td><strong>Universal sistem</strong></td>
+                        <td>Tüm tenant'larda çalışır</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 4. Migrations -->
+        <section id="migrations">
+            <h2>4. Migrations</h2>
+
+            <div class="card warning">
+                <div class="card-title">Önemli: Çifte Migration</div>
+                <p>Her migration hem <code>database/migrations/</code> hem <code>database/migrations/tenant/</code> altında oluşturulmalı!</p>
+            </div>
+
+            <h3>Migration 1: Tablo Rename</h3>
+            <p class="file-path">2025_11_23_001_rename_shop_tables_to_universal.php</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Eski İsim</th>
+                        <th>Yeni İsim</th>
+                        <th>Amaç</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>shop_subscription_plans</code></td>
+                        <td><code>subscription_plans</code></td>
+                        <td>Abonelik planları (Aylık, Yıllık, Kurumsal)</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_subscriptions</code></td>
+                        <td><code>subscriptions</code></td>
+                        <td>Kullanıcı abonelikleri</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_coupons</code></td>
+                        <td><code>coupons</code></td>
+                        <td>İndirim kuponları</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_coupon_usages</code></td>
+                        <td><code>coupon_usages</code></td>
+                        <td>Kupon kullanım geçmişi</td>
+                    </tr>
+                    <tr>
+                        <td><code>shop_customer_addresses</code></td>
+                        <td><code>customer_addresses</code></td>
+                        <td>Fatura adresleri</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Migration 2: Users Tablosu Güncelleme</h3>
+            <p class="file-path">2025_11_23_002_add_membership_fields_to_users_table.php</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kolon</th>
+                        <th>Tip</th>
+                        <th>Varsayılan</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>device_limit</code></td>
+                        <td>integer nullable</td>
+                        <td>null</td>
+                        <td>
+                            Kullanıcıya özel cihaz limiti
+                            <div class="column-desc">null ise settings'deki default_device_limit kullanılır</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>is_approved</code></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>
+                            Manuel onay gerektiren üyelikler için
+                            <div class="column-desc">false ise kullanıcı giriş yapamaz, admin onayı bekler</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>failed_login_attempts</code></td>
+                        <td>integer</td>
+                        <td>0</td>
+                        <td>
+                            Başarısız giriş sayacı
+                            <div class="column-desc">Belirli sayıdan sonra hesap kilitlenir</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>locked_until</code></td>
+                        <td>timestamp nullable</td>
+                        <td>null</td>
+                        <td>
+                            Hesap kilit bitiş zamanı
+                            <div class="column-desc">Bu tarihten önce giriş engellidir</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>two_factor_enabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>
+                            2FA aktif mi?
+                            <div class="column-desc">true ise girişte SMS kodu istenir</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>two_factor_phone</code></td>
+                        <td>string nullable</td>
+                        <td>null</td>
+                        <td>
+                            2FA telefon numarası
+                            <div class="column-desc">Varsayılan telefon yerine farklı numara kullanılabilir</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>is_corporate</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>
+                            Kurumsal ana hesap mı?
+                            <div class="column-desc">true ise alt hesap oluşturabilir</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>corporate_code</code></td>
+                        <td>string nullable unique</td>
+                        <td>null</td>
+                        <td>
+                            Kurumsal davet kodu
+                            <div class="column-desc">Alt hesaplar bu kodla kayıt olur: FIRMA-ABC123</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>parent_user_id</code></td>
+                        <td>foreignId nullable</td>
+                        <td>null</td>
+                        <td>
+                            Üst kullanıcı referansı
+                            <div class="column-desc">Alt hesaplar için ana hesabın ID'si</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<span class="comment">// Migration kodu</span>
+Schema::<span class="function">table</span>(<span class="string">'users'</span>, <span class="keyword">function</span> (Blueprint $table) {
+    $table-><span class="function">integer</span>(<span class="string">'device_limit'</span>)-><span class="function">nullable</span>();
+    $table-><span class="function">boolean</span>(<span class="string">'is_approved'</span>)-><span class="function">default</span>(<span class="keyword">true</span>);
+    $table-><span class="function">integer</span>(<span class="string">'failed_login_attempts'</span>)-><span class="function">default</span>(0);
+    $table-><span class="function">timestamp</span>(<span class="string">'locked_until'</span>)-><span class="function">nullable</span>();
+    $table-><span class="function">boolean</span>(<span class="string">'two_factor_enabled'</span>)-><span class="function">default</span>(<span class="keyword">false</span>);
+    $table-><span class="function">string</span>(<span class="string">'two_factor_phone'</span>)-><span class="function">nullable</span>();
+    $table-><span class="function">boolean</span>(<span class="string">'is_corporate'</span>)-><span class="function">default</span>(<span class="keyword">false</span>);
+    $table-><span class="function">string</span>(<span class="string">'corporate_code'</span>)-><span class="function">nullable</span>()-><span class="function">unique</span>();
+    $table-><span class="function">foreignId</span>(<span class="string">'parent_user_id'</span>)-><span class="function">nullable</span>()-><span class="function">constrained</span>(<span class="string">'users'</span>)-><span class="function">onDelete</span>(<span class="string">'set null'</span>);
+});
+            </div>
+        </section>
+
+        <!-- 5. Models -->
+        <section id="models">
+            <h2>5. Models</h2>
+
+            <p class="file-path">Konum: app/Models/</p>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">SubscriptionPlan.php</div>
+                    <p>Abonelik planları modeli</p>
+                    <ul style="margin-top: 10px; color: #94a3b8; font-size: 0.85rem;">
+                        <li>hasMany: subscriptions</li>
+                        <li>Scope: active, forTenant</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Subscription.php</div>
+                    <p>Kullanıcı abonelikleri (implements Payable)</p>
+                    <ul style="margin-top: 10px; color: #94a3b8; font-size: 0.85rem;">
+                        <li>belongsTo: user, plan</li>
+                        <li>Payable interface metodları</li>
+                        <li>Scope: active, expired, trial</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Coupon.php</div>
+                    <p>İndirim kuponları</p>
+                    <ul style="margin-top: 10px; color: #94a3b8; font-size: 0.85rem;">
+                        <li>hasMany: usages</li>
+                        <li>Scope: valid, expired</li>
+                        <li>Method: isValidFor($user)</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">CouponUsage.php</div>
+                    <p>Kupon kullanım geçmişi</p>
+                    <ul style="margin-top: 10px; color: #94a3b8; font-size: 0.85rem;">
+                        <li>belongsTo: user, coupon</li>
+                        <li>morphTo: usable</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">CustomerAddress.php</div>
+                    <p>Fatura adresleri</p>
+                    <ul style="margin-top: 10px; color: #94a3b8; font-size: 0.85rem;">
+                        <li>belongsTo: user</li>
+                        <li>Scope: default</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>User Model Güncellemesi</h3>
+            <p class="file-path">app/Models/User.php</p>
+
+            <div class="code-block">
+<span class="comment">// Yeni relationships</span>
+<span class="keyword">public function</span> <span class="function">subscription</span>()
+{
+    <span class="keyword">return</span> $this-><span class="function">hasOne</span>(Subscription::class)-><span class="function">active</span>();
+}
+
+<span class="keyword">public function</span> <span class="function">subscriptions</span>()
+{
+    <span class="keyword">return</span> $this-><span class="function">hasMany</span>(Subscription::class);
+}
+
+<span class="keyword">public function</span> <span class="function">addresses</span>()
+{
+    <span class="keyword">return</span> $this-><span class="function">hasMany</span>(CustomerAddress::class);
+}
+
+<span class="keyword">public function</span> <span class="function">parentUser</span>()
+{
+    <span class="keyword">return</span> $this-><span class="function">belongsTo</span>(User::class, <span class="string">'parent_user_id'</span>);
+}
+
+<span class="keyword">public function</span> <span class="function">subUsers</span>()
+{
+    <span class="keyword">return</span> $this-><span class="function">hasMany</span>(User::class, <span class="string">'parent_user_id'</span>);
+}
+
+<span class="comment">// Yeni methods</span>
+<span class="keyword">public function</span> <span class="function">getDeviceLimit</span>(): int
+{
+    <span class="keyword">return</span> $this->device_limit ?? <span class="function">setting</span>(<span class="string">'default_device_limit'</span>, 1);
+}
+
+<span class="keyword">public function</span> <span class="function">hasActiveSubscription</span>(): bool
+{
+    <span class="keyword">return</span> $this-><span class="function">subscription</span>() !== <span class="keyword">null</span>;
+}
+
+<span class="keyword">public function</span> <span class="function">isLocked</span>(): bool
+{
+    <span class="keyword">return</span> $this->locked_until && $this->locked_until-><span class="function">isFuture</span>();
+}
+            </div>
+        </section>
+
+        <!-- 6. Services -->
+        <section id="services">
+            <h2>6. Services</h2>
+
+            <p class="file-path">Konum: app/Services/Auth/</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Amaç</th>
+                        <th>Ana Metodlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>DeviceService.php</code></td>
+                        <td>Cihaz yönetimi</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>getActiveSessions($user)</li>
+                                <li>checkDeviceLimit($user)</li>
+                                <li>terminateSession($sessionId)</li>
+                                <li>terminateOldestSession($user)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>TwoFactorService.php</code></td>
+                        <td>2FA işlemleri</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>sendCode($user)</li>
+                                <li>verifyCode($user, $code)</li>
+                                <li>enable($user, $phone)</li>
+                                <li>disable($user)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>SubscriptionService.php</code></td>
+                        <td>Abonelik işlemleri</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>create($user, $plan, $coupon)</li>
+                                <li>renew($subscription)</li>
+                                <li>cancel($subscription)</li>
+                                <li>addTrialDays($subscription, $days)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>CouponService.php</code></td>
+                        <td>Kupon işlemleri</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>validate($code, $user)</li>
+                                <li>apply($coupon, $amount)</li>
+                                <li>markAsUsed($coupon, $user, $model)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>CorporateService.php</code></td>
+                        <td>Kurumsal hesap yönetimi</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>createSubUser($parent, $data)</li>
+                                <li>sendInvite($parent, $email)</li>
+                                <li>removeSubUser($parent, $subUser)</li>
+                                <li>getSubUsers($parent)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>LoginLogService.php</code></td>
+                        <td>Giriş log yönetimi</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>logSuccess($user, $request)</li>
+                                <li>logFailure($email, $reason, $request)</li>
+                                <li>getHistory($user)</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 7. Settings -->
+        <section id="settings">
+            <h2>7. Settings</h2>
+
+            <div class="card warning">
+                <div class="card-title">Settings Grupları</div>
+                <p>SettingManagement modülünde yeni gruplar oluşturulacak. Admin panelden düzenlenebilir.</p>
+            </div>
+
+            <h3>auth_registration (Kayıt Ayarları)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Tip</th>
+                        <th>Varsayılan</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>registration_enabled</code></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>Yeni kayıt açık mı?</td>
+                    </tr>
+                    <tr>
+                        <td><code>require_email_verification</code></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>E-posta doğrulama zorunlu mu?</td>
+                    </tr>
+                    <tr>
+                        <td><code>require_approval</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Admin onayı gerekli mi?</td>
+                    </tr>
+                    <tr>
+                        <td><code>trial_days</code></td>
+                        <td>integer</td>
+                        <td>7</td>
+                        <td>Ücretsiz deneme süresi</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>auth_session (Oturum Ayarları)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Tip</th>
+                        <th>Varsayılan</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_lifetime</code></td>
+                        <td>integer</td>
+                        <td>525600</td>
+                        <td>Oturum süresi (dakika) - 1 yıl</td>
+                    </tr>
+                    <tr>
+                        <td><code>default_device_limit</code></td>
+                        <td>integer</td>
+                        <td>1</td>
+                        <td>Varsayılan cihaz limiti</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>auth_security (Güvenlik Ayarları)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Tip</th>
+                        <th>Varsayılan</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>max_login_attempts</code></td>
+                        <td>integer</td>
+                        <td>5</td>
+                        <td>Max başarısız giriş</td>
+                    </tr>
+                    <tr>
+                        <td><code>lockout_duration</code></td>
+                        <td>integer</td>
+                        <td>30</td>
+                        <td>Kilitleme süresi (dakika)</td>
+                    </tr>
+                    <tr>
+                        <td><code>two_factor_available</code></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>2FA kullanılabilir mi?</td>
+                    </tr>
+                    <tr>
+                        <td><code>two_factor_code_expiry</code></td>
+                        <td>integer</td>
+                        <td>5</td>
+                        <td>2FA kod geçerlilik süresi (dk)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>auth_subscription (Abonelik Ayarları)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Tip</th>
+                        <th>Varsayılan</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>paid_membership_enabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Ücretli üyelik aktif mi?</td>
+                    </tr>
+                    <tr>
+                        <td><code>auto_renewal_enabled</code></td>
+                        <td>boolean</td>
+                        <td>true</td>
+                        <td>Otomatik yenileme aktif mi?</td>
+                    </tr>
+                    <tr>
+                        <td><code>renewal_reminder_days</code></td>
+                        <td>integer</td>
+                        <td>7</td>
+                        <td>Yenileme hatırlatma (gün önce)</td>
+                    </tr>
+                    <tr>
+                        <td><code>grace_period_days</code></td>
+                        <td>integer</td>
+                        <td>3</td>
+                        <td>Ödeme tolerans süresi</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>corporate (Kurumsal Ayarlar)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Tip</th>
+                        <th>Varsayılan</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>corporate_enabled</code></td>
+                        <td>boolean</td>
+                        <td>false</td>
+                        <td>Kurumsal üyelik aktif mi?</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_sub_users</code></td>
+                        <td>integer</td>
+                        <td>0</td>
+                        <td>Max alt kullanıcı (0=sınırsız)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 8. Middleware -->
+        <section id="middleware">
+            <h2>8. Middleware</h2>
+
+            <p class="file-path">Konum: app/Http/Middleware/</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Middleware</th>
+                        <th>Route Key</th>
+                        <th>Amaç</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>CheckDeviceLimit.php</code></td>
+                        <td>device.limit</td>
+                        <td>
+                            Cihaz limitini kontrol eder. Aşılmışsa eski cihazı çıkarma sayfasına yönlendirir.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>CheckSubscription.php</code></td>
+                        <td>subscription</td>
+                        <td>
+                            Aktif abonelik kontrolü. Premium içerik için gerekli.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>CheckApproval.php</code></td>
+                        <td>approved</td>
+                        <td>
+                            Kullanıcı onaylı mı kontrol eder. is_approved=false ise engeller.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<span class="comment">// Kernel.php'ye ekle</span>
+<span class="keyword">protected</span> $middlewareAliases = [
+    <span class="comment">// ... mevcut middleware'ler</span>
+    <span class="string">'device.limit'</span> => \App\Http\Middleware\CheckDeviceLimit::class,
+    <span class="string">'subscription'</span> => \App\Http\Middleware\CheckSubscription::class,
+    <span class="string">'approved'</span> => \App\Http\Middleware\CheckApproval::class,
+];
+            </div>
+        </section>
+
+        <!-- 9. Mail Module (nwidart) -->
+        <section id="mails">
+            <h2>9. Mail Module (nwidart)</h2>
+
+            <div class="card warning">
+                <div class="card-title">Universal Mail Modülü</div>
+                <p>Tüm mail şablonları nwidart modül yapısında oluşturulacak. Tüm tenant'lar bu modülü kullanacak.</p>
+            </div>
+
+            <h3>Modül Oluşturma</h3>
+            <div class="code-block">
+<span class="comment"># nwidart modül oluştur</span>
+php artisan module:make Mail
+
+<span class="comment"># veya manuel olarak Modules/Mail/ altında oluştur</span>
+            </div>
+
+            <h3>Modül Yapısı</h3>
+            <div class="code-block">
+Modules/Mail/
+├── app/
+│   ├── Mail/
+│   │   ├── <span class="function">WelcomeMail.php</span>
+│   │   ├── <span class="function">TrialEndingMail.php</span>
+│   │   ├── <span class="function">SubscriptionRenewalMail.php</span>
+│   │   ├── <span class="function">PaymentSuccessMail.php</span>
+│   │   ├── <span class="function">PaymentFailedMail.php</span>
+│   │   ├── <span class="function">NewDeviceLoginMail.php</span>
+│   │   ├── <span class="function">TwoFactorCodeMail.php</span>
+│   │   └── <span class="function">CorporateInviteMail.php</span>
+│   ├── Services/
+│   │   └── <span class="function">MailService.php</span>
+│   └── Providers/
+│       └── <span class="function">MailServiceProvider.php</span>
+├── resources/
+│   └── views/
+│       └── emails/
+│           ├── <span class="string">welcome.blade.php</span>
+│           ├── <span class="string">trial-ending.blade.php</span>
+│           ├── <span class="string">subscription-renewal.blade.php</span>
+│           ├── <span class="string">payment-success.blade.php</span>
+│           ├── <span class="string">payment-failed.blade.php</span>
+│           ├── <span class="string">new-device-login.blade.php</span>
+│           ├── <span class="string">two-factor-code.blade.php</span>
+│           └── <span class="string">corporate-invite.blade.php</span>
+├── config/
+│   └── <span class="string">config.php</span>
+└── module.json
+            </div>
+
+            <h3>Mail Class'ları</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mail Class</th>
+                        <th>Tetikleyici</th>
+                        <th>İçerik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>WelcomeMail.php</code></td>
+                        <td>Kayıt sonrası</td>
+                        <td>Hoş geldin mesajı, deneme süresi bilgisi, başlangıç rehberi</td>
+                    </tr>
+                    <tr>
+                        <td><code>TrialEndingMail.php</code></td>
+                        <td>Deneme bitmeden 2 gün önce</td>
+                        <td>Hatırlatma, abone ol butonu, kalan gün</td>
+                    </tr>
+                    <tr>
+                        <td><code>SubscriptionRenewalMail.php</code></td>
+                        <td>Yenileme öncesi 7 gün</td>
+                        <td>Otomatik yenileme bildirimi, tutar, tarih</td>
+                    </tr>
+                    <tr>
+                        <td><code>PaymentSuccessMail.php</code></td>
+                        <td>Ödeme başarılı</td>
+                        <td>Ödeme onayı, fatura linki, sonraki yenileme</td>
+                    </tr>
+                    <tr>
+                        <td><code>PaymentFailedMail.php</code></td>
+                        <td>Ödeme başarısız</td>
+                        <td>Hata bildirimi, tekrar deneme linki, destek</td>
+                    </tr>
+                    <tr>
+                        <td><code>NewDeviceLoginMail.php</code></td>
+                        <td>Yeni cihazdan giriş</td>
+                        <td>Güvenlik uyarısı, cihaz bilgisi, tanımıyorsan bildir</td>
+                    </tr>
+                    <tr>
+                        <td><code>TwoFactorCodeMail.php</code></td>
+                        <td>2FA SMS yedeği</td>
+                        <td>6 haneli kod, geçerlilik süresi</td>
+                    </tr>
+                    <tr>
+                        <td><code>CorporateInviteMail.php</code></td>
+                        <td>Kurumsal davet</td>
+                        <td>Davet mesajı, şifre oluşturma linki</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>MailService.php</h3>
+            <p class="file-path">Modules/Mail/app/Services/MailService.php</p>
+            <div class="code-block">
+<span class="keyword">namespace</span> Modules\Mail\App\Services;
+
+<span class="keyword">class</span> <span class="function">MailService</span>
+{
+    <span class="keyword">public function</span> <span class="function">sendWelcome</span>(User $user): void
+    {
+        Mail::<span class="function">to</span>($user)-><span class="function">send</span>(<span class="keyword">new</span> WelcomeMail($user));
+    }
+
+    <span class="keyword">public function</span> <span class="function">sendTrialEnding</span>(User $user, int $daysLeft): void
+    {
+        Mail::<span class="function">to</span>($user)-><span class="function">send</span>(<span class="keyword">new</span> TrialEndingMail($user, $daysLeft));
+    }
+
+    <span class="keyword">public function</span> <span class="function">sendPaymentSuccess</span>(User $user, Subscription $subscription): void
+    {
+        Mail::<span class="function">to</span>($user)-><span class="function">send</span>(<span class="keyword">new</span> PaymentSuccessMail($user, $subscription));
+    }
+
+    <span class="comment">// ... diğer metodlar</span>
+}
+            </div>
+
+            <h3>Kullanım</h3>
+            <div class="code-block">
+<span class="keyword">use</span> Modules\Mail\App\Services\MailService;
+
+<span class="comment">// Service injection ile</span>
+<span class="keyword">public function</span> <span class="function">register</span>(MailService $mailService)
+{
+    <span class="comment">// Kullanıcı oluştur...</span>
+
+    $mailService-><span class="function">sendWelcome</span>($user);
+}
+
+<span class="comment">// veya facade ile</span>
+\Modules\Mail\App\Mail\WelcomeMail::<span class="function">dispatch</span>($user);
+            </div>
+        </section>
+
+        <!-- 10. Cron Jobs -->
+        <section id="cron">
+            <h2>10. Cron Jobs</h2>
+
+            <p class="file-path">Konum: app/Console/Commands/</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Schedule</th>
+                        <th>Görev</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>CheckTrialExpiryCommand.php</code></td>
+                        <td>Günlük 09:00</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>Deneme süresi bitenleri bul</li>
+                                <li>2 gün kalanları bul (hatırlatma)</li>
+                                <li>E-posta gönder</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>SendRenewalRemindersCommand.php</code></td>
+                        <td>Günlük 10:00</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>7 gün içinde yenilenecekleri bul</li>
+                                <li>Hatırlatma e-postası gönder</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>ProcessRecurringPaymentsCommand.php</code></td>
+                        <td>Günlük 06:00</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>Bugün yenilenecekleri bul</li>
+                                <li>Otomatik ödeme işle</li>
+                                <li>Başarılı/başarısız e-posta</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>CleanupExpiredSessionsCommand.php</code></td>
+                        <td>Haftalık Pazar 03:00</td>
+                        <td>
+                            <ul style="margin: 0; padding-left: 15px; font-size: 0.85rem;">
+                                <li>Süresi dolmuş oturumları temizle</li>
+                                <li>1 yıldan eski aktivite loglarını arşivle</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+<span class="comment">// app/Console/Kernel.php</span>
+<span class="keyword">protected function</span> <span class="function">schedule</span>(Schedule $schedule)
+{
+    $schedule-><span class="function">command</span>(<span class="string">'subscription:check-trial'</span>)-><span class="function">dailyAt</span>(<span class="string">'09:00'</span>);
+    $schedule-><span class="function">command</span>(<span class="string">'subscription:send-reminders'</span>)-><span class="function">dailyAt</span>(<span class="string">'10:00'</span>);
+    $schedule-><span class="function">command</span>(<span class="string">'subscription:process-recurring'</span>)-><span class="function">dailyAt</span>(<span class="string">'06:00'</span>);
+    $schedule-><span class="function">command</span>(<span class="string">'auth:cleanup-sessions'</span>)-><span class="function">weeklyOn</span>(0, <span class="string">'03:00'</span>);
+}
+            </div>
+        </section>
+
+        <!-- 11. Uygulama Sırası -->
+        <section id="uygulama">
+            <h2>11. Uygulama Sırası</h2>
+
+            <div class="card success">
+                <div class="card-title">Önerilen Uygulama Sırası</div>
+                <p>Her adım tamamlandıktan sonra test edilmeli.</p>
+            </div>
+
+            <h3><span class="step-number">1</span> Migrations</h3>
+            <ul class="checklist">
+                <li>Tablo rename migration oluştur</li>
+                <li>Users update migration oluştur</li>
+                <li>Her iki migration'ı tenant/ altına da kopyala</li>
+                <li>php artisan migrate</li>
+                <li>php artisan tenants:migrate</li>
+            </ul>
+
+            <h3><span class="step-number">2</span> Models</h3>
+            <ul class="checklist">
+                <li>SubscriptionPlan model</li>
+                <li>Subscription model (Payable interface ile)</li>
+                <li>Coupon model</li>
+                <li>CouponUsage model</li>
+                <li>CustomerAddress model</li>
+                <li>User model'e yeni relations ve methods ekle</li>
+            </ul>
+
+            <h3><span class="step-number">3</span> Settings</h3>
+            <ul class="checklist">
+                <li>auth_registration grubu ve ayarları</li>
+                <li>auth_session grubu ve ayarları</li>
+                <li>auth_security grubu ve ayarları</li>
+                <li>auth_subscription grubu ve ayarları</li>
+                <li>corporate grubu ve ayarları</li>
+            </ul>
+
+            <h3><span class="step-number">4</span> Services</h3>
+            <ul class="checklist">
+                <li>DeviceService</li>
+                <li>LoginLogService</li>
+                <li>TwoFactorService</li>
+                <li>CouponService</li>
+                <li>SubscriptionService</li>
+                <li>CorporateService</li>
+            </ul>
+
+            <h3><span class="step-number">5</span> Middleware</h3>
+            <ul class="checklist">
+                <li>CheckDeviceLimit middleware</li>
+                <li>CheckSubscription middleware</li>
+                <li>CheckApproval middleware</li>
+                <li>Kernel.php'ye kaydet</li>
+            </ul>
+
+            <h3><span class="step-number">6</span> Mail Module (nwidart)</h3>
+            <ul class="checklist">
+                <li>php artisan module:make Mail</li>
+                <li>MailServiceProvider oluştur</li>
+                <li>MailService oluştur</li>
+                <li>8 Mail class oluştur</li>
+                <li>8 Blade view oluştur</li>
+                <li>module.json yapılandır</li>
+            </ul>
+
+            <h3><span class="step-number">7</span> Cron Jobs</h3>
+            <ul class="checklist">
+                <li>Command class'larını oluştur</li>
+                <li>Kernel.php'de schedule et</li>
+            </ul>
+
+            <h3><span class="step-number">8</span> UI & Controllers</h3>
+            <ul class="checklist">
+                <li>Kullanıcı profil sayfası güncelle</li>
+                <li>Cihaz yönetimi sayfası</li>
+                <li>2FA ayarları sayfası</li>
+                <li>Abonelik satın alma sayfası</li>
+                <li>Kurumsal panel (Muzibu için)</li>
+                <li>Admin üye yönetimi</li>
+            </ul>
+
+            <h3><span class="step-number">9</span> Test & Deploy</h3>
+            <ul class="checklist">
+                <li>Kayıt akışı test</li>
+                <li>Giriş + 2FA test</li>
+                <li>Cihaz limiti test</li>
+                <li>Abonelik satın alma test</li>
+                <li>Ödeme webhook test</li>
+                <li>Kupon test</li>
+                <li>Kurumsal davet test</li>
+                <li>E-posta şablonları test</li>
+                <li>Production deploy</li>
+            </ul>
+        </section>
+
+        <!-- 12. Tenant Farkları -->
+        <section id="tenant">
+            <h2>12. Tenant Farkları</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>İxtif (Tenant 2)</th>
+                        <th>Muzibu (Tenant 1001)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ücretli Üyelik</td>
+                        <td style="color: #ef4444;">Kapalı</td>
+                        <td style="color: #10b981;">Açık (299/2999₺)</td>
+                    </tr>
+                    <tr>
+                        <td>Kurumsal</td>
+                        <td style="color: #ef4444;">Kapalı</td>
+                        <td style="color: #10b981;">Açık (Sınırsız)</td>
+                    </tr>
+                    <tr>
+                        <td>Deneme Süresi</td>
+                        <td>-</td>
+                        <td style="color: #10b981;">7 gün</td>
+                    </tr>
+                    <tr>
+                        <td>2FA</td>
+                        <td style="color: #10b981;">Opsiyonel</td>
+                        <td style="color: #10b981;">Opsiyonel</td>
+                    </tr>
+                    <tr>
+                        <td>Cihaz Limiti</td>
+                        <td>1</td>
+                        <td>1 (kurumsal: özel)</td>
+                    </tr>
+                    <tr>
+                        <td>Oturum Süresi</td>
+                        <td>1 yıl</td>
+                        <td>1 yıl</td>
+                    </tr>
+                    <tr>
+                        <td>Kupon Sistemi</td>
+                        <td style="color: #10b981;">Aktif</td>
+                        <td style="color: #10b981;">Aktif</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="card">
+                <div class="card-title">Tenant Ayar Örnekleri</div>
+                <p>Her tenant kendi settings değerlerini kullanır:</p>
+                <div class="code-block">
+<span class="comment">// İxtif ayarları</span>
+paid_membership_enabled = <span class="keyword">false</span>
+corporate_enabled = <span class="keyword">false</span>
+trial_days = 0
+
+<span class="comment">// Muzibu ayarları</span>
+paid_membership_enabled = <span class="keyword">true</span>
+corporate_enabled = <span class="keyword">true</span>
+trial_days = 7
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            Üyelik Sistemi Final Uygulama Rehberi v12 | 2025-11-23<br>
+            Bu belge tüm implementasyon detaylarını içerir
+        </footer>
+    </div>
+</body>
+</html>

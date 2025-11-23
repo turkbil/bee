@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Detaylı Kolon Açıklamaları (v6)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 20px;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-rename { background: #f59e0b; color: white; }
+        .badge-new { background: #3b82f6; color: white; }
+        .badge-existing { background: #10b981; color: white; }
+        .badge-modify { background: #8b5cf6; color: white; }
+
+        .table-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #f1f5f9;
+        }
+
+        .table-desc {
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.2);
+            color: #94a3b8;
+            font-size: 0.95rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .column-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .column-table th {
+            text-align: left;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.3);
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .column-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #1e293b;
+            vertical-align: top;
+        }
+
+        .column-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .column-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .col-name {
+            font-family: monospace;
+            color: #60a5fa;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .col-type {
+            font-family: monospace;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .col-desc {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .col-example {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #6ee7b7;
+            font-family: monospace;
+        }
+
+        .rename-arrow {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .old-name {
+            text-decoration: line-through;
+            color: #f87171;
+            font-family: monospace;
+        }
+
+        .new-name {
+            color: #6ee7b7;
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .arrow {
+            color: #f59e0b;
+            font-size: 1.5rem;
+        }
+
+        .summary-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .summary-num {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .summary-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .note-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .note-box strong {
+            color: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .column-table { font-size: 0.85rem; }
+            .column-table th, .column-table td { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Üyelik Sistemi - Tam Teknik Dokümantasyon</h1>
+            <div class="meta">
+                Tarih: 2025-11-23 | Versiyon: 6 | Her Kolonun Detaylı Açıklaması
+            </div>
+        </header>
+
+        <!-- ÖZET -->
+        <section>
+            <div class="summary-box">
+                <div class="summary-title">Genel Bakış</div>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-num">5</div>
+                        <div class="summary-label">Rename Edilecek Tablo</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-num">2</div>
+                        <div class="summary-label">Yeni Tablo</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-num">10</div>
+                        <div class="summary-label">Users'a Yeni Kolon</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-num">3</div>
+                        <div class="summary-label">Mevcut Tablo (Kullanılacak)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RENAME EDİLECEK TABLOLAR -->
+        <section>
+            <h2>Aşama 1: Tablo İsimlerini Değiştir (Rename)</h2>
+
+            <p style="color: #94a3b8; margin-bottom: 20px;">
+                Bu tablolar Shop modülünde oluşturulmuş ama hiç kullanılmamış (0 kayıt).
+                "shop_" prefix'ini kaldırıp universal hale getiriyoruz.
+            </p>
+
+            <!-- subscription_plans -->
+            <div class="rename-arrow">
+                <span class="old-name">shop_subscription_plans</span>
+                <span class="arrow">→</span>
+                <span class="new-name">subscription_plans</span>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">subscription_plans</span>
+                    <span class="badge badge-rename">RENAME</span>
+                </div>
+                <div class="table-desc">
+                    Üyelik paketlerini tanımlar. Muzibu'da Premium/VIP, İxtif'te ücretsiz plan gibi.
+                    Her tenant kendi planlarını oluşturabilir.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">subscription_plan_id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">
+                                Planın benzersiz ID'si. Otomatik artan sayı.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">title</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Planın adı (çoklu dil desteği).
+                                <div class="col-example">{"tr": "Premium Üyelik", "en": "Premium Membership"}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">slug</td>
+                            <td class="col-type">varchar unique</td>
+                            <td class="col-desc">
+                                URL-dostu benzersiz isim. Kodda referans için kullanılır.
+                                <div class="col-example">premium, vip, free, enterprise</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">description</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Plan açıklaması (çoklu dil). Satış sayfasında gösterilir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">features</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Planın özellikleri listesi. Fiyatlandırma sayfasında tick listesi olarak gösterilir.
+                                <div class="col-example">["Sınırsız dinleme", "Offline mod", "HQ ses"]</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_daily</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">Günlük fiyat. Çoğu durumda kullanılmaz, 0 olabilir.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_weekly</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">Haftalık fiyat. Kısa süreli denemeler için.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_monthly</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Aylık fiyat. En yaygın kullanılan seçenek.
+                                <div class="col-example">299.00 (Muzibu Premium)</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_quarterly</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">3 aylık fiyat. Orta vadeli indirimli seçenek.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_yearly</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Yıllık fiyat. Genelde 2 ay bedava hesabıyla.
+                                <div class="col-example">2999.00 (Muzibu Premium Yıllık)</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">currency</td>
+                            <td class="col-type">varchar(3)</td>
+                            <td class="col-desc">
+                                Para birimi kodu.
+                                <div class="col-example">TRY, USD, EUR</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">has_trial</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Bu plan deneme süresi sunuyor mu?
+                                <div class="col-example">true = Evet, 7 gün ücretsiz dene</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">trial_days</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Deneme süresi kaç gün? has_trial true ise geçerli.
+                                <div class="col-example">7, 14, 30</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">requires_payment_method</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Deneme için kart bilgisi gerekli mi? true ise deneme başlatmak için kart ister.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">max_products</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Plan limiti: Maksimum ürün sayısı. E-ticaret için. 0 = sınırsız.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">max_orders</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Plan limiti: Aylık maksimum sipariş. E-ticaret için. 0 = sınırsız.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">max_storage_mb</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Plan limiti: Depolama alanı (MB). Dosya yükleme için.
+                                <div class="col-example">1024 = 1GB, 0 = sınırsız</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">custom_limits</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Özel limitler. Tenant'a göre farklı limitler tanımlanabilir.
+                                <div class="col-example">{"max_playlists": 100, "max_downloads": 500}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">has_analytics</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Analitik paneline erişim var mı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">has_priority_support</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Öncelikli destek hakkı var mı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">has_api_access</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">API erişimi var mı? Geliştirici planları için.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">enabled_features</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Aktif özellik kodları. Kod içinde kontrol edilir.
+                                <div class="col-example">["offline_mode", "hq_audio", "no_ads"]</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">default_billing_cycle</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Varsayılan faturalama periyodu.
+                                <div class="col-example">monthly, yearly, quarterly</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">sort_order</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">Sıralama. Fiyatlandırma sayfasında gösterim sırası.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_featured</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Öne çıkan plan mı? Vurgulanır.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_popular</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Popüler plan mı? "En Popüler" etiketi gösterilir.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">badge_text</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Özel etiket metni.
+                                <div class="col-example">%40 İndirim, Yeni, Tavsiye Edilen</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">highlight_color</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Vurgu rengi. Kartın border rengi.
+                                <div class="col-example">#3b82f6, gold, #10b981</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_active</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Plan aktif mi? false ise yeni abonelik alamaz.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_public</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Herkese açık mı? false ise sadece özel link ile erişilir.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">subscribers_count</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">Cache: Toplam abone sayısı. Performans için.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">terms</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">Kullanım koşulları. Ödeme öncesi kabul edilir.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">notes</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">Admin notları. Kullanıcıya gösterilmez.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">metadata</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Ek veriler. Gelecek özellikler için esnek alan.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- subscriptions -->
+            <div class="rename-arrow">
+                <span class="old-name">shop_subscriptions</span>
+                <span class="arrow">→</span>
+                <span class="new-name">subscriptions</span>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">subscriptions</span>
+                    <span class="badge badge-rename">RENAME</span>
+                </div>
+                <div class="table-desc">
+                    Kullanıcıların aktif aboneliklerini takip eder. Her ödeme dönemi, durum,
+                    yenileme tarihi burada tutulur.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">subscription_id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">Aboneliğin benzersiz ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">customer_id</td>
+                            <td class="col-type">bigint FK</td>
+                            <td class="col-desc">
+                                Kullanıcı ID'si. users tablosuna bağlı.
+                                <div class="col-example">users.id → customer_id</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">plan_id</td>
+                            <td class="col-type">bigint FK</td>
+                            <td class="col-desc">
+                                Hangi plana abone? subscription_plans tablosuna bağlı.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">subscription_number</td>
+                            <td class="col-type">varchar unique</td>
+                            <td class="col-desc">
+                                Abonelik numarası. Faturalarda ve destek taleplerinde kullanılır.
+                                <div class="col-example">SUB-2025-00001</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">status</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Abonelik durumu. İş mantığının kalbi.
+                                <div class="col-example">
+                                    trialing = Deneme<br>
+                                    active = Aktif<br>
+                                    past_due = Ödeme gecikmiş<br>
+                                    paused = Duraklatılmış<br>
+                                    cancelled = İptal edilmiş<br>
+                                    expired = Süresi dolmuş
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">billing_cycle</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Faturalama periyodu. Ne sıklıkla ödeme alınıyor?
+                                <div class="col-example">monthly, yearly, quarterly, weekly</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_per_cycle</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Dönem başına ödenen tutar. Kupon uygulanmış fiyat.
+                                <div class="col-example">299.00 (aylık), 2999.00 (yıllık)</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">currency</td>
+                            <td class="col-type">varchar(3)</td>
+                            <td class="col-desc">Ödeme para birimi.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">has_trial</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Bu abonelik deneme ile mi başladı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">trial_days</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">Kaç günlük deneme süresi verildi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">trial_ends_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                Deneme ne zaman bitiyor? Bu tarihte ödeme alınır veya abonelik düşer.
+                                <div class="col-example">2025-12-01 00:00:00</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">started_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">Abonelik ne zaman başladı? İlk kayıt tarihi.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">current_period_start</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                Mevcut faturalama döneminin başlangıcı.
+                                <div class="col-example">1 Kasım 2025</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">current_period_end</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                Mevcut faturalama döneminin sonu. Bu tarihe kadar hizmet alır.
+                                <div class="col-example">30 Kasım 2025</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">next_billing_date</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                Sonraki ödeme tarihi. Cron job bu tarihi kontrol eder.
+                                <div class="col-example">1 Aralık 2025</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">cancelled_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                İptal tarihi. İptal edildiyse ne zaman? Null ise aktif.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">expires_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                Aboneliğin tamamen biteceği tarih. İptal edilse bile bu tarihe kadar kullanabilir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">payment_method_id</td>
+                            <td class="col-type">bigint FK</td>
+                            <td class="col-desc">
+                                Kayıtlı ödeme yöntemi. Otomatik yenilemede kullanılır.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">auto_renew</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Otomatik yenilensin mi? true ise dönem sonunda kart çekilir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">billing_cycles_completed</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Tamamlanan dönem sayısı. Sadakat programları için kullanılabilir.
+                                <div class="col-example">12 = 1 yıldır abone</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">total_paid</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Cache: Toplam ödenen tutar. Raporlama için.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">cancellation_reason</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                İptal nedeni kodu. Analytics için.
+                                <div class="col-example">too_expensive, not_using, switched_competitor</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">cancellation_feedback</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">
+                                İptal geri bildirimi. Kullanıcının yazdığı açıklama.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">notes</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">Admin notları.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">metadata</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Ek veriler. PayTR subscription_id, kupon bilgisi vb.
+                                <div class="col-example">{"paytr_token": "xxx", "coupon_used": "WELCOME50"}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- customer_groups -->
+            <div class="rename-arrow">
+                <span class="old-name">shop_customer_groups</span>
+                <span class="arrow">→</span>
+                <span class="new-name">customer_groups</span>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">customer_groups</span>
+                    <span class="badge badge-rename">RENAME</span>
+                </div>
+                <div class="table-desc">
+                    Müşteri grupları/seviyeleri. VIP müşteriler, toptan alıcılar, kurumsal hesaplar gibi
+                    farklı müşteri segmentleri için özel kurallar tanımlar.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">customer_group_id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">Grup ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">title</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Grup adı.
+                                <div class="col-example">VIP Müşteriler, Toptan Alıcılar, Kurumsal</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">slug</td>
+                            <td class="col-type">varchar unique</td>
+                            <td class="col-desc">URL-dostu benzersiz kod.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">description</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Grup açıklaması.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">discount_percentage</td>
+                            <td class="col-type">decimal(5,2)</td>
+                            <td class="col-desc">
+                                Sabit indirim oranı. Bu gruptaki herkes bu indirimi alır.
+                                <div class="col-example">10.00 = %10 indirim</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">has_special_pricing</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Özel fiyatlandırma var mı? true ise ürünlerde bu gruba özel fiyat tanımlanabilir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">price_on_request_only</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Fiyat gizli mi? true ise "Fiyat için arayın" gösterilir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">can_see_stock</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Stok miktarını görebilir mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">can_request_quote</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Teklif isteyebilir mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">can_purchase_on_credit</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Vadeli alışveriş yapabilir mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">credit_limit</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Kredi limiti. Vadeli alışveriş için maksimum borç.
+                                <div class="col-example">50000.00 TL</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">payment_term_days</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Ödeme vadesi (gün). Vadeli alışverişte kaç gün içinde ödenmeli?
+                                <div class="col-example">30 = 30 gün vade</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">tax_exempt</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Vergiden muaf mı? İhracat için.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">tax_exempt_number</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">Vergi muafiyet numarası.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">free_shipping</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Ücretsiz kargo hakkı var mı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">free_shipping_threshold</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Ücretsiz kargo limiti. Bu tutarın üzerinde kargo bedava.
+                                <div class="col-example">500.00 = 500 TL üzeri ücretsiz</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">loyalty_points_multiplier</td>
+                            <td class="col-type">decimal(3,2)</td>
+                            <td class="col-desc">
+                                Puan çarpanı. Sadakat programında ekstra puan.
+                                <div class="col-example">1.50 = %50 fazla puan</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">requires_approval</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Gruba katılım onay gerektirir mi? true ise admin onaylamalı.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_default</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Varsayılan grup mu? Yeni üyeler bu gruba atanır.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_active</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Grup aktif mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">sort_order</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">Sıralama.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">color_code</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Grup rengi. Admin panelinde tanımlama için.
+                                <div class="col-example">#FFD700 (Gold), #3B82F6 (Blue)</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- coupons -->
+            <div class="rename-arrow">
+                <span class="old-name">shop_coupons</span>
+                <span class="arrow">→</span>
+                <span class="new-name">coupons</span>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">coupons</span>
+                    <span class="badge badge-rename">RENAME</span>
+                </div>
+                <div class="table-desc">
+                    Universal kupon sistemi. Hem shop ürünlerinde hem subscription ödemelerinde
+                    kullanılabilir. Çok kapsamlı ve esnek yapı.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">coupon_id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">Kupon ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">title</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Kupon başlığı. Admin ve raporlarda gösterilir.
+                                <div class="col-example">Yılbaşı Kampanyası, İlk Alışveriş İndirimi</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">code</td>
+                            <td class="col-type">varchar unique</td>
+                            <td class="col-desc">
+                                Kupon kodu. Kullanıcının girdiği kod.
+                                <div class="col-example">WELCOME50, NEWYEAR2025, VIP20</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">description</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Kupon açıklaması.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">coupon_type</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                İndirim türü.
+                                <div class="col-example">
+                                    percentage = Yüzde indirim (%20)<br>
+                                    fixed_amount = Sabit tutar (50 TL)<br>
+                                    free_shipping = Ücretsiz kargo<br>
+                                    buy_x_get_y = X al Y bedava
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">discount_percentage</td>
+                            <td class="col-type">decimal(5,2)</td>
+                            <td class="col-desc">
+                                İndirim yüzdesi. coupon_type = percentage ise kullanılır.
+                                <div class="col-example">20.00 = %20</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">discount_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Sabit indirim tutarı. coupon_type = fixed_amount ise kullanılır.
+                                <div class="col-example">50.00 = 50 TL indirim</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">max_discount_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Maksimum indirim. Yüzde indirimlerde tavan.
+                                <div class="col-example">%20 indirim, max 100 TL</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">buy_quantity</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">X al Y bedava için: Kaç tane al?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">get_quantity</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">X al Y bedava için: Kaç tane bedava?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">applicable_product_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Geçerli ürün ID'leri. Boş ise tüm ürünlerde geçerli.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">usage_limit_total</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Toplam kullanım limiti. 0 = sınırsız.
+                                <div class="col-example">100 = Sadece ilk 100 kişi</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">usage_limit_per_customer</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Kişi başı kullanım limiti.
+                                <div class="col-example">1 = Her müşteri 1 kez kullanabilir</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">used_count</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">Cache: Kaç kez kullanıldı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">minimum_order_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Minimum sepet tutarı.
+                                <div class="col-example">200 TL üzeri alışverişlerde geçerli</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">maximum_order_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">
+                                Maksimum sepet tutarı. Nadir kullanılır.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">minimum_items</td>
+                            <td class="col-type">integer</td>
+                            <td class="col-desc">
+                                Minimum ürün adedi.
+                                <div class="col-example">3 ürün ve üzeri alışverişlerde</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">applies_to</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Nerelerde geçerli?
+                                <div class="col-example">
+                                    all = Her yerde<br>
+                                    subscription = Sadece abonelik<br>
+                                    shop = Sadece mağaza<br>
+                                    specific_products = Belirli ürünler
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">category_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Geçerli kategori ID'leri.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">product_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Geçerli ürün ID'leri.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">brand_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Geçerli marka ID'leri.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">excluded_category_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Hariç tutulan kategoriler. Bu kategorilerde geçersiz.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">excluded_product_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Hariç tutulan ürünler.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">customer_eligibility</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Kimler kullanabilir?
+                                <div class="col-example">
+                                    all = Herkes<br>
+                                    specific_customers = Belirli müşteriler<br>
+                                    customer_groups = Belirli gruplar<br>
+                                    first_order = İlk siparişte
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">customer_group_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Geçerli müşteri grup ID'leri.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">customer_ids</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Geçerli müşteri ID'leri. VIP kodları için.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">valid_from</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">Geçerlilik başlangıcı. Bu tarihten önce kullanılamaz.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">valid_until</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">Geçerlilik bitişi. Bu tarihten sonra kullanılamaz.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">can_combine_with_other_coupons</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Başka kuponlarla birleştirilebilir mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">can_combine_with_sales</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">İndirimli ürünlerde de geçerli mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_active</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Kupon aktif mi?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_public</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">Herkese açık mı? true ise sitede gösterilebilir.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">banner_text</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Banner metni. Sitede gösterilecek promosyon yazısı.
+                                <div class="col-example">WELCOME50 ile %50 indirim!</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">banner_color</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">Banner rengi.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">terms</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">Kullanım koşulları.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">notes</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">Admin notları.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">metadata</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">Ek veriler.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- coupon_usages -->
+            <div class="rename-arrow">
+                <span class="old-name">shop_coupon_usages</span>
+                <span class="arrow">→</span>
+                <span class="new-name">coupon_usages</span>
+            </div>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">coupon_usages</span>
+                    <span class="badge badge-rename">RENAME</span>
+                </div>
+                <div class="table-desc">
+                    Kupon kullanım kayıtları. Kim, ne zaman, nerede kullandı? Polymorphic yapıda
+                    hem sipariş hem abonelik için çalışır.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">coupon_usage_id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">Kullanım kaydı ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">coupon_id</td>
+                            <td class="col-type">bigint FK</td>
+                            <td class="col-desc">Hangi kupon kullanıldı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">customer_id</td>
+                            <td class="col-type">bigint FK</td>
+                            <td class="col-desc">Kim kullandı?</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">usable_type</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Polymorphic: Nerede kullanıldı?
+                                <div class="col-example">
+                                    App\Models\ShopOrder<br>
+                                    App\Models\Subscription
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">usable_id</td>
+                            <td class="col-type">bigint</td>
+                            <td class="col-desc">Polymorphic: Sipariş veya abonelik ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">discount_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">Uygulanan indirim tutarı.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">original_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">İndirim öncesi tutar.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">final_amount</td>
+                            <td class="col-type">decimal(10,2)</td>
+                            <td class="col-desc">İndirim sonrası ödenen tutar.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">used_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">Ne zaman kullanıldı?</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- YENİ TABLOLAR -->
+        <section>
+            <h2>Aşama 2: Yeni Tablolar</h2>
+
+            <!-- user_devices -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">user_devices</span>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="table-desc">
+                    Kullanıcının giriş yaptığı cihazları takip eder. Cihaz limiti kontrolü,
+                    güvenlik (yeni cihaz uyarısı), oturum yönetimi için kullanılır.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">Cihaz kaydı ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">user_id</td>
+                            <td class="col-type">bigint FK</td>
+                            <td class="col-desc">
+                                Hangi kullanıcıya ait? users tablosuna bağlı.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">device_id</td>
+                            <td class="col-type">varchar unique</td>
+                            <td class="col-desc">
+                                Cihaz parmak izi (fingerprint). Browser + IP + UserAgent hash'i.
+                                Aynı cihazı tanımak için kullanılır.
+                                <div class="col-example">a1b2c3d4e5f6...</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">device_name</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Kullanıcı dostu cihaz adı. UserAgent'dan parse edilir.
+                                <div class="col-example">Chrome on Windows, Safari on iPhone</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">browser</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Tarayıcı adı ve versiyonu.
+                                <div class="col-example">Chrome 119, Safari 17, Firefox 120</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">platform</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                İşletim sistemi.
+                                <div class="col-example">Windows 11, macOS 14, iOS 17, Android 14</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">ip_address</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Son giriş IP adresi. Güvenlik için.
+                                <div class="col-example">192.168.1.1, 2001:db8::1</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">location</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                IP'den tespit edilen konum. Şüpheli giriş tespiti için.
+                                <div class="col-example">İstanbul, Türkiye</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">last_activity</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">
+                                Son aktivite zamanı. Her istekte güncellenir.
+                                Cihaz seçiminde "en son kullanılan" gösterimi için.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_current</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Şu an aktif cihaz mı? Her oturumda sadece 1 cihaz current olabilir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_trusted</td>
+                            <td class="col-type">boolean</td>
+                            <td class="col-desc">
+                                Güvenilir cihaz mı? Kullanıcı "bu cihazı hatırla" derse true olur.
+                                2FA'da bu cihazda kod sorulmaz.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">created_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">İlk giriş tarihi.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">updated_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">Son güncelleme tarihi.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- login_logs -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">login_logs</span>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="table-desc">
+                    Tüm giriş denemelerini kaydeder (başarılı ve başarısız).
+                    Güvenlik analizi, brute force tespiti, kullanıcı aktivite raporu için.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">id</td>
+                            <td class="col-type">bigint PK</td>
+                            <td class="col-desc">Log kaydı ID'si.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">user_id</td>
+                            <td class="col-type">bigint FK nullable</td>
+                            <td class="col-desc">
+                                Kullanıcı ID'si. Başarısız girişlerde null olabilir
+                                (kullanıcı bulunamadıysa).
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">email</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Girişte kullanılan email. Başarısız girişlerde user_id null
+                                olsa bile email'i kaydederiz.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">ip_address</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">Giriş yapılan IP adresi.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">user_agent</td>
+                            <td class="col-type">text</td>
+                            <td class="col-desc">
+                                Tam UserAgent string'i. Detaylı analiz için.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">browser</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">Parse edilmiş tarayıcı adı.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">platform</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">Parse edilmiş işletim sistemi.</td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">device_type</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Cihaz türü.
+                                <div class="col-example">desktop, mobile, tablet</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">country</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                IP'den tespit edilen ülke. GeoIP ile.
+                                <div class="col-example">Türkiye, Germany, United States</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">city</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                IP'den tespit edilen şehir.
+                                <div class="col-example">İstanbul, Berlin, New York</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">status</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Giriş sonucu.
+                                <div class="col-example">
+                                    success = Başarılı giriş<br>
+                                    failed = Başarısız (yanlış şifre)<br>
+                                    blocked = Engellendi (çok fazla deneme)<br>
+                                    2fa_required = 2FA bekleniyor<br>
+                                    2fa_failed = 2FA kodu yanlış
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">failure_reason</td>
+                            <td class="col-type">varchar</td>
+                            <td class="col-desc">
+                                Başarısızlık nedeni.
+                                <div class="col-example">
+                                    invalid_password = Yanlış şifre<br>
+                                    user_not_found = Kullanıcı bulunamadı<br>
+                                    account_locked = Hesap kilitli<br>
+                                    account_inactive = Hesap deaktif<br>
+                                    device_limit_reached = Cihaz limiti aşıldı
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">metadata</td>
+                            <td class="col-type">json</td>
+                            <td class="col-desc">
+                                Ek veriler. 2FA bilgileri, device_id vb.
+                                <div class="col-example">{"2fa_method": "sms", "attempts": 3}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">created_at</td>
+                            <td class="col-type">timestamp</td>
+                            <td class="col-desc">Giriş denemesi zamanı.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- USERS TABLOSU GÜNCELLEMELERİ -->
+        <section>
+            <h2>Aşama 3: Users Tablosuna Yeni Kolonlar</h2>
+
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">users (yeni kolonlar)</span>
+                    <span class="badge badge-modify">GÜNCELLEME</span>
+                </div>
+                <div class="table-desc">
+                    Mevcut users tablosuna eklenecek yeni kolonlar. Üyelik, güvenlik ve
+                    kurumsal özellikler için.
+                </div>
+                <table class="column-table">
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">customer_group_id</td>
+                            <td class="col-type">bigint FK nullable</td>
+                            <td class="col-desc">
+                                Hangi müşteri grubuna ait? customer_groups tablosuna bağlı.
+                                Null ise varsayılan grup uygulanır.
+                                <div class="col-example">VIP, Toptan, Kurumsal grupları</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">device_limit</td>
+                            <td class="col-type">integer nullable</td>
+                            <td class="col-desc">
+                                Kullanıcıya özel cihaz limiti. Null ise sistem varsayılanı (1) uygulanır.
+                                Admin belirli kullanıcılara farklı limit verebilir.
+                                <div class="col-example">null = varsayılan(1), 3, 5, 0 = sınırsız</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_approved</td>
+                            <td class="col-type">boolean default true</td>
+                            <td class="col-desc">
+                                Hesap onaylandı mı? Admin onayı gerektiren sistemlerde false ile başlar.
+                                Onaylanana kadar giriş yapamaz.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">failed_login_attempts</td>
+                            <td class="col-type">integer default 0</td>
+                            <td class="col-desc">
+                                Ardışık başarısız giriş denemesi sayısı.
+                                Başarılı girişte sıfırlanır. Brute force koruması için.
+                                <div class="col-example">5 başarısız = hesap kilitle</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">locked_until</td>
+                            <td class="col-type">timestamp nullable</td>
+                            <td class="col-desc">
+                                Hesap ne zamana kadar kilitli? Bu tarih geçene kadar giriş yapamaz.
+                                <div class="col-example">30 dakika kilitleme</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">two_factor_enabled</td>
+                            <td class="col-type">boolean default false</td>
+                            <td class="col-desc">
+                                2FA aktif mi? true ise girişte SMS kodu istenir.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">two_factor_phone</td>
+                            <td class="col-type">varchar nullable</td>
+                            <td class="col-desc">
+                                2FA SMS gönderilecek telefon numarası.
+                                phone alanından farklı olabilir.
+                                <div class="col-example">+905551234567</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">is_corporate</td>
+                            <td class="col-type">boolean default false</td>
+                            <td class="col-desc">
+                                Kurumsal hesap mı? true ise alt hesap oluşturabilir.
+                                Sadece Muzibu için.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">corporate_code</td>
+                            <td class="col-type">varchar unique nullable</td>
+                            <td class="col-desc">
+                                Kurumsal davet kodu. Alt hesaplar bu kodla kayıt olur.
+                                <div class="col-example">ACME-2025, CORP-XYZ123</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">parent_user_id</td>
+                            <td class="col-type">bigint FK nullable</td>
+                            <td class="col-desc">
+                                Üst hesap (kurumsal ana hesap) ID'si.
+                                Bu kullanıcı bir alt hesapsa ana hesabı gösterir.
+                                Ödeme ana hesaptan alınır.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MEVCUT KULLANILACAK TABLOLAR -->
+        <section>
+            <h2>Mevcut Tablolar (Değişiklik Yok)</h2>
+
+            <div class="note-box">
+                <strong>Bu tablolar olduğu gibi kullanılacak:</strong><br><br>
+                <strong>payments</strong> - Polymorphic ödeme kayıtları (Subscription için Payable implement edilecek)<br>
+                <strong>payment_methods</strong> - Ödeme yöntemleri (PayTR, Havale vb.)<br>
+                <strong>bank_accounts</strong> - Banka hesapları<br>
+                <strong>sessions</strong> - Laravel session yönetimi<br>
+                <strong>password_reset_tokens</strong> - Şifre sıfırlama<br>
+                <strong>activity_log</strong> - Spatie aktivite logları<br>
+                <strong>settings_groups / settings_values</strong> - Ayar yönetimi<br>
+                <strong>jobs / failed_jobs</strong> - Queue sistemi (mail, cron)
+            </div>
+        </section>
+
+        <!-- REFACTORING ADIMLARI -->
+        <section>
+            <h2>Uygulama Sırası</h2>
+
+            <div style="background: rgba(30, 41, 59, 0.5); padding: 20px; border-radius: 12px;">
+                <ol style="padding-left: 20px; color: #cbd5e1;">
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: #f59e0b;">Tablo Rename Migration</strong><br>
+                        <span style="color: #94a3b8;">shop_* tablolarını universal isimlere çevir</span>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: #3b82f6;">Yeni Tablo Migration</strong><br>
+                        <span style="color: #94a3b8;">user_devices ve login_logs tablolarını oluştur</span>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: #8b5cf6;">Users Tablosu Migration</strong><br>
+                        <span style="color: #94a3b8;">Yeni kolonları ekle</span>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: #10b981;">Universal Modeller</strong><br>
+                        <span style="color: #94a3b8;">app/Models/ altında yeni model dosyaları</span>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: #60a5fa;">Servisler</strong><br>
+                        <span style="color: #94a3b8;">SubscriptionService, DeviceService, CouponService vb.</span>
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong style="color: #f472b6;">SettingManagement Grupları</strong><br>
+                        <span style="color: #94a3b8;">Auth ayarları için seeder</span>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | v6 - Detaylı Kolon Açıklamaları
+        </footer>
+    </div>
+</body>
+</html>

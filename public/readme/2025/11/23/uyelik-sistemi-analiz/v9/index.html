@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Tam Plan (v9)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 2rem; margin-bottom: 10px; color: #60a5fa; }
+        .meta { color: #64748b; margin-bottom: 40px; }
+        h2 {
+            font-size: 1.5rem;
+            color: #60a5fa;
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #334155;
+        }
+        h3 {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin: 25px 0 15px;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .step {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .step-num {
+            width: 30px;
+            height: 30px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .step-content { flex: 1; }
+        .step-title { font-weight: 600; margin-bottom: 5px; }
+        .step-desc { color: #94a3b8; font-size: 0.9rem; }
+        .mockup {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        .flow-item {
+            background: #334155;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .flow-arrow { color: #60a5fa; font-size: 0.8rem; }
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid #f59e0b;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #6ee7b7;
+        }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #334155; font-size: 0.9rem; }
+        th { color: #94a3b8; font-size: 0.8rem; }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-free { background: #334155; }
+        .badge-premium { background: #3b82f6; }
+        .badge-yearly { background: #10b981; }
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Üyelik Sistemi - Tam Plan</h1>
+        <div class="meta">v9 - Tüm Akışlar ve Senaryolar | 2025-11-23</div>
+
+        <!-- ==================== KAYIT ==================== -->
+        <h2>1. Kayıt Olma</h2>
+
+        <h3>Kullanıcı Ne Yapar?</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Kayıt formunu doldurur</div>
+                <div class="step-desc">Ad, email, şifre girer</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">Email doğrulama (opsiyonel)</div>
+                <div class="step-desc">Tenant ayarına göre email onayı istenir veya istenmez</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">Hesap oluşur</div>
+                <div class="step-desc">Ücretsiz plan ile başlar (ücretli sistemde)</div>
+            </div>
+        </div>
+
+        <div class="mockup">
+            <div style="max-width: 350px;">
+                <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; text-align: center;">Hesap Oluştur</div>
+                <input type="text" placeholder="Ad Soyad" style="width: 100%; padding: 10px; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white; margin-bottom: 10px;">
+                <input type="email" placeholder="Email" style="width: 100%; padding: 10px; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white; margin-bottom: 10px;">
+                <input type="password" placeholder="Şifre" style="width: 100%; padding: 10px; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white; margin-bottom: 10px;">
+                <input type="text" placeholder="Kurum Kodu (opsiyonel)" style="width: 100%; padding: 10px; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white; margin-bottom: 15px;">
+                <button style="width: 100%; padding: 10px; background: #3b82f6; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 600;">Kayıt Ol</button>
+                <p style="text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b;">Zaten üye misin? <a href="#" style="color: #60a5fa;">Giriş Yap</a></p>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Kurumsal Kayıt:</strong> Kurum kodu girilirse, kullanıcı o kurumun alt hesabı olur.
+            Ana hesap öder, alt hesap ücretsiz kullanır.
+        </div>
+
+        <h3>Sistem Ne Yapar?</h3>
+        <div class="flow">
+            <span class="flow-item">Form doğrula</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-item">users'a kaydet</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-item">Hoş geldin maili</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-item">activity_log kayıt</span>
+        </div>
+
+        <!-- ==================== GİRİŞ ==================== -->
+        <h2>2. Giriş Yapma</h2>
+
+        <h3>Normal Giriş</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Email ve şifre girer</div>
+                <div class="step-desc">Doğruysa devam, yanlışsa hata</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">Cihaz kontrolü</div>
+                <div class="step-desc">Aktif session sayısı limite ulaştı mı?</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">2FA kontrolü (aktifse)</div>
+                <div class="step-desc">SMS kodu istenir</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">Giriş başarılı</div>
+                <div class="step-desc">Session oluşur, dashboard'a yönlendirilir</div>
+            </div>
+        </div>
+
+        <h3>Cihaz Limiti Aşıldığında</h3>
+        <div class="mockup">
+            <p style="color: #f59e0b; margin-bottom: 15px;">⚠️ Cihaz limitinize ulaştınız (1/1)</p>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Devam etmek için bir oturumu sonlandırın:</p>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="display: flex; align-items: center; gap: 10px; padding: 12px; background: #334155; border-radius: 6px; cursor: pointer;">
+                    <input type="radio" name="session" checked>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500;">Chrome - Windows 11</div>
+                        <div style="font-size: 0.8rem; color: #64748b;">İstanbul • 2 saat önce</div>
+                    </div>
+                </label>
+            </div>
+            <button style="margin-top: 15px; padding: 10px; background: #dc2626; border: none; border-radius: 6px; color: white; cursor: pointer; width: 100%;">Bu Oturumu Kapat ve Giriş Yap</button>
+        </div>
+
+        <h3>2FA Doğrulama</h3>
+        <div class="mockup" style="max-width: 320px; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">🔐</div>
+            <div style="font-weight: 600; margin-bottom: 8px;">İki Faktörlü Doğrulama</div>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 15px;">+90 555 *** ** 67 numarasına SMS gönderdik</p>
+            <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 15px;">
+                <input type="text" maxlength="1" style="width: 38px; height: 45px; text-align: center; font-size: 1.3rem; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white;">
+                <input type="text" maxlength="1" style="width: 38px; height: 45px; text-align: center; font-size: 1.3rem; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white;">
+                <input type="text" maxlength="1" style="width: 38px; height: 45px; text-align: center; font-size: 1.3rem; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white;">
+                <input type="text" maxlength="1" style="width: 38px; height: 45px; text-align: center; font-size: 1.3rem; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white;">
+                <input type="text" maxlength="1" style="width: 38px; height: 45px; text-align: center; font-size: 1.3rem; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white;">
+                <input type="text" maxlength="1" style="width: 38px; height: 45px; text-align: center; font-size: 1.3rem; background: #334155; border: 1px solid #475569; border-radius: 6px; color: white;">
+            </div>
+            <button style="padding: 10px; background: #3b82f6; border: none; border-radius: 6px; color: white; cursor: pointer; width: 100%;">Doğrula</button>
+            <p style="color: #64748b; font-size: 0.8rem; margin-top: 12px;">Kod gelmedi mi? <a href="#" style="color: #60a5fa;">Tekrar gönder</a></p>
+        </div>
+
+        <h3>Başarısız Giriş</h3>
+        <div class="warning">
+            <strong>5 başarısız denemede:</strong> Hesap 30 dakika kilitlenir.<br>
+            <strong>Kayıt:</strong> Her deneme activity_log'a yazılır (IP, tarayıcı, neden).
+        </div>
+
+        <!-- ==================== ABONELİK ==================== -->
+        <h2>3. Abonelik Satın Alma</h2>
+
+        <h3>Plan Seçimi</h3>
+        <div class="mockup">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 1.3rem; font-weight: 600;">Planını Seç</div>
+                <p style="color: #94a3b8; font-size: 0.9rem;">İstediğin zaman iptal edebilirsin</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div style="background: #334155; border-radius: 8px; padding: 15px; text-align: center;">
+                    <span class="badge badge-free">ÜCRETSİZ</span>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin: 10px 0;">0 TL</div>
+                    <ul style="text-align: left; font-size: 0.75rem; color: #94a3b8; padding-left: 15px;">
+                        <li>Reklamlı</li>
+                        <li>1 cihaz</li>
+                    </ul>
+                </div>
+                <div style="background: #334155; border: 2px solid #3b82f6; border-radius: 8px; padding: 15px; text-align: center;">
+                    <span class="badge badge-premium">PREMIUM</span>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin: 10px 0;">299 TL<span style="font-size: 0.8rem; color: #64748b;">/ay</span></div>
+                    <ul style="text-align: left; font-size: 0.75rem; color: #94a3b8; padding-left: 15px;">
+                        <li>Reklamsız</li>
+                        <li>3 cihaz</li>
+                        <li>HQ ses</li>
+                    </ul>
+                    <button style="margin-top: 10px; padding: 6px 12px; background: #3b82f6; border: none; border-radius: 4px; color: white; font-size: 0.8rem; cursor: pointer;">7 Gün Dene</button>
+                </div>
+                <div style="background: #334155; border-radius: 8px; padding: 15px; text-align: center;">
+                    <span class="badge badge-yearly">YILLIK</span>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin: 10px 0;">2.999 TL<span style="font-size: 0.8rem; color: #64748b;">/yıl</span></div>
+                    <ul style="text-align: left; font-size: 0.75rem; color: #94a3b8; padding-left: 15px;">
+                        <li>2 ay bedava</li>
+                        <li>Tüm özellikler</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h3>Ödeme Akışı</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Plan seçer</div>
+                <div class="step-desc">Aylık veya yıllık</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">Kupon kodu (varsa)</div>
+                <div class="step-desc">İndirim uygulanır</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">Fatura adresi</div>
+                <div class="step-desc">Kayıtlı adres seçer veya yeni ekler</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">PayTR ödeme</div>
+                <div class="step-desc">Kart bilgileri girilir, ödeme alınır</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-content">
+                <div class="step-title">Abonelik aktif</div>
+                <div class="step-desc">subscriptions + payments tablosuna kayıt</div>
+            </div>
+        </div>
+
+        <div class="mockup">
+            <div style="font-weight: 600; margin-bottom: 15px;">Fatura Bilgileri</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <input placeholder="Ad" style="padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.85rem;">
+                <input placeholder="Soyad" style="padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.85rem;">
+            </div>
+            <input placeholder="Firma (Opsiyonel)" style="width: 100%; padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; margin-top: 8px; font-size: 0.85rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                <input placeholder="Vergi Dairesi" style="padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.85rem;">
+                <input placeholder="Vergi No" style="padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.85rem;">
+            </div>
+            <textarea placeholder="Adres" style="width: 100%; padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; margin-top: 8px; height: 50px; resize: none; font-size: 0.85rem;"></textarea>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                <select style="padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.85rem;"><option>İstanbul</option></select>
+                <select style="padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.85rem;"><option>Kadıköy</option></select>
+            </div>
+        </div>
+
+        <!-- ==================== DENEME SÜRESİ ==================== -->
+        <h2>4. Deneme Süresi</h2>
+
+        <h3>Nasıl Çalışır?</h3>
+        <div class="card">
+            <table>
+                <tr>
+                    <td>Deneme başlar</td>
+                    <td>Kart bilgisi alınır ama çekim yapılmaz</td>
+                </tr>
+                <tr>
+                    <td>7 gün boyunca</td>
+                    <td>Tüm premium özellikler açık</td>
+                </tr>
+                <tr>
+                    <td>3 gün kala</td>
+                    <td>Hatırlatma maili gönderilir</td>
+                </tr>
+                <tr>
+                    <td>1 gün kala</td>
+                    <td>Son hatırlatma</td>
+                </tr>
+                <tr>
+                    <td>Süre bitince</td>
+                    <td>Otomatik ödeme alınır veya ücretsiz plana düşer</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Erken Ödeme Yapılırsa</h3>
+        <div class="note">
+            Kullanıcı 3. günde ödeme yaparsa, kalan 4 gün abonelik süresine EKLENİR.<br>
+            Örnek: 3. günde aylık alırsa → 30 + 4 = 34 gün kullanır.
+        </div>
+
+        <!-- ==================== YENİLEME ==================== -->
+        <h2>5. Otomatik Yenileme</h2>
+
+        <h3>Süreç</h3>
+        <div class="flow">
+            <span class="flow-item">Bitiş tarihi yaklaşır</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-item">7, 3, 1 gün kala mail</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-item">Bitiş günü ödeme alınır</span>
+            <span class="flow-arrow">→</span>
+            <span class="flow-item">Abonelik uzar</span>
+        </div>
+
+        <h3>Ödeme Başarısız Olursa</h3>
+        <div class="card">
+            <table>
+                <tr>
+                    <td>1. gün</td>
+                    <td>Tekrar dene + mail gönder</td>
+                </tr>
+                <tr>
+                    <td>3. gün</td>
+                    <td>Tekrar dene + uyarı maili</td>
+                </tr>
+                <tr>
+                    <td>7. gün</td>
+                    <td>Son deneme + abonelik düşürülür</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- ==================== İPTAL ==================== -->
+        <h2>6. Abonelik İptali</h2>
+
+        <h3>Kullanıcı İptal Ederse</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">İptal butonuna tıklar</div>
+                <div class="step-desc">Neden sorulur (opsiyonel)</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">İptal onaylanır</div>
+                <div class="step-desc">Otomatik yenileme kapatılır</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">Dönem sonuna kadar kullanır</div>
+                <div class="step-desc">Ödediği süre boyunca hizmet devam eder</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">Dönem bitince</div>
+                <div class="step-desc">Ücretsiz plana düşer</div>
+            </div>
+        </div>
+
+        <div class="mockup" style="max-width: 400px;">
+            <div style="font-weight: 600; margin-bottom: 15px;">Aboneliği İptal Et</div>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">Premium üyeliğin 15 Aralık'a kadar devam edecek.</p>
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 0.85rem; color: #94a3b8;">İptal nedeniniz (opsiyonel)</label>
+                <select style="width: 100%; padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; margin-top: 5px; font-size: 0.85rem;">
+                    <option>Seçin...</option>
+                    <option>Çok pahalı</option>
+                    <option>Kullanmıyorum</option>
+                    <option>Rakibe geçiyorum</option>
+                    <option>Geçici ara</option>
+                </select>
+            </div>
+            <button style="width: 100%; padding: 10px; background: #dc2626; border: none; border-radius: 6px; color: white; cursor: pointer;">İptal Et</button>
+            <button style="width: 100%; padding: 10px; background: transparent; border: 1px solid #475569; border-radius: 6px; color: #94a3b8; cursor: pointer; margin-top: 8px;">Vazgeç</button>
+        </div>
+
+        <!-- ==================== KUPON ==================== -->
+        <h2>7. Kupon Kullanımı</h2>
+
+        <h3>Kupon Türleri</h3>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tür</th>
+                        <th>Örnek</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Yüzde</td>
+                        <td>WELCOME20</td>
+                        <td>%20 indirim</td>
+                    </tr>
+                    <tr>
+                        <td>Sabit</td>
+                        <td>50TL</td>
+                        <td>50 TL indirim</td>
+                    </tr>
+                    <tr>
+                        <td>İlk alışveriş</td>
+                        <td>FIRSTBUY</td>
+                        <td>Sadece ilk ödemede</td>
+                    </tr>
+                    <tr>
+                        <td>Yıllık özel</td>
+                        <td>YEARLY30</td>
+                        <td>Sadece yıllık planlarda</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mockup" style="max-width: 350px;">
+            <div style="font-weight: 600; margin-bottom: 10px;">Kupon Kodu</div>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" placeholder="WELCOME20" style="flex: 1; padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; font-size: 0.9rem;">
+                <button style="padding: 8px 15px; background: #3b82f6; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.85rem;">Uygula</button>
+            </div>
+            <div style="margin-top: 10px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 4px; color: #6ee7b7; font-size: 0.85rem;">
+                ✓ %20 indirim uygulandı! 299 TL → 239 TL
+            </div>
+        </div>
+
+        <!-- ==================== KURUMSAL ==================== -->
+        <h2>8. Kurumsal Üyelik (Muzibu)</h2>
+
+        <h3>Nasıl Çalışır?</h3>
+        <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <div class="step-title">Firma ana hesap açar</div>
+                <div class="step-desc">Kurumsal plan satın alır, kurum kodu alır</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <div class="step-title">Çalışanları davet eder</div>
+                <div class="step-desc">Email ile davet veya kurum kodu paylaşır</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <div class="step-title">Çalışanlar kayıt olur</div>
+                <div class="step-desc">Kurum kodunu girerek kayıt olur</div>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <div class="step-title">Ana hesap öder</div>
+                <div class="step-desc">Tüm alt hesaplar için tek fatura</div>
+            </div>
+        </div>
+
+        <div class="mockup">
+            <div style="font-weight: 600; margin-bottom: 15px;">Kurumsal Panel</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <div>
+                    <span style="color: #94a3b8;">Aktif Kullanıcılar:</span>
+                    <strong style="color: #60a5fa; margin-left: 5px;">12</strong>
+                </div>
+                <div>
+                    <span style="color: #94a3b8;">Aylık Toplam:</span>
+                    <strong style="color: #10b981; margin-left: 5px;">3.588 TL</strong>
+                </div>
+            </div>
+            <div style="background: #334155; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px;">
+                Kurum Kodu: <strong style="color: #f59e0b;">ACME-2025</strong>
+            </div>
+            <button style="width: 100%; padding: 8px; background: #3b82f6; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.85rem;">+ Email ile Davet Gönder</button>
+            <div style="margin-top: 15px;">
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 8px;">Alt Hesaplar</div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; padding: 8px; background: #1e293b; border-radius: 4px; font-size: 0.85rem;">
+                        <span>ahmet@acme.com</span>
+                        <span style="color: #10b981;">Aktif</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 8px; background: #1e293b; border-radius: 4px; font-size: 0.85rem;">
+                        <span>ayse@acme.com</span>
+                        <span style="color: #10b981;">Aktif</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CİHAZ YÖNETİMİ ==================== -->
+        <h2>9. Cihaz Yönetimi</h2>
+
+        <h3>Kullanıcı Paneli</h3>
+        <div class="mockup">
+            <div style="font-weight: 600; margin-bottom: 15px;">Aktif Oturumlar <span style="color: #64748b; font-weight: normal;">(1/1)</span></div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #334155; border-radius: 6px;">
+                    <div>
+                        <div style="font-weight: 500;">Chrome - Windows 11</div>
+                        <div style="font-size: 0.8rem; color: #64748b;">İstanbul, TR • Şu an aktif</div>
+                    </div>
+                    <span style="background: #10b981; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem;">Bu cihaz</span>
+                </div>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: #94a3b8;">
+                Cihaz limitiniz: <strong>1</strong> •
+                <a href="#" style="color: #60a5fa;">Premium'a geç (3 cihaz)</a>
+            </p>
+        </div>
+
+        <!-- ==================== 2FA AYARLARI ==================== -->
+        <h2>10. 2FA Ayarları</h2>
+
+        <div class="mockup">
+            <div style="font-weight: 600; margin-bottom: 15px;">İki Faktörlü Doğrulama</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #334155; border-radius: 6px;">
+                <div>
+                    <div style="font-weight: 500;">SMS Doğrulama</div>
+                    <div style="font-size: 0.8rem; color: #64748b;">Giriş yaparken SMS kodu iste</div>
+                </div>
+                <label style="position: relative; display: inline-block; width: 44px; height: 24px;">
+                    <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
+                    <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; border-radius: 24px; transition: .3s;"></span>
+                </label>
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="font-size: 0.85rem; color: #94a3b8;">Telefon Numarası</label>
+                <input type="tel" value="+90 555 123 45 67" style="width: 100%; padding: 8px; background: #334155; border: 1px solid #475569; border-radius: 4px; color: white; margin-top: 5px; font-size: 0.85rem;">
+            </div>
+            <button style="margin-top: 15px; padding: 8px 15px; background: #3b82f6; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 0.85rem;">Kaydet</button>
+        </div>
+
+        <!-- ==================== MAİLLER ==================== -->
+        <h2>11. Otomatik Mailler</h2>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mail</th>
+                        <th>Ne Zaman</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Hoş geldin</td>
+                        <td>Kayıt sonrası</td>
+                    </tr>
+                    <tr>
+                        <td>Email doğrulama</td>
+                        <td>Kayıt sonrası (ayara göre)</td>
+                    </tr>
+                    <tr>
+                        <td>Deneme bitiyor</td>
+                        <td>3 gün, 1 gün kala</td>
+                    </tr>
+                    <tr>
+                        <td>Yenileme hatırlatma</td>
+                        <td>7 gün, 3 gün, 1 gün kala</td>
+                    </tr>
+                    <tr>
+                        <td>Ödeme başarılı</td>
+                        <td>Her ödemede</td>
+                    </tr>
+                    <tr>
+                        <td>Ödeme başarısız</td>
+                        <td>Ödeme reddedilince</td>
+                    </tr>
+                    <tr>
+                        <td>Yeni cihaz uyarısı</td>
+                        <td>Yeni cihazdan giriş</td>
+                    </tr>
+                    <tr>
+                        <td>Kurumsal davet</td>
+                        <td>Ana hesap davet edince</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==================== TENANT FARKLARI ==================== -->
+        <h2>12. Tenant Farkları</h2>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>İxtif</th>
+                        <th>Muzibu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ücretli üyelik</td>
+                        <td>❌ Hayır</td>
+                        <td>✅ Evet</td>
+                    </tr>
+                    <tr>
+                        <td>Kurumsal</td>
+                        <td>❌ Hayır</td>
+                        <td>✅ Evet</td>
+                    </tr>
+                    <tr>
+                        <td>Fiyat</td>
+                        <td>-</td>
+                        <td>299 / 2.999 TL</td>
+                    </tr>
+                    <tr>
+                        <td>Deneme</td>
+                        <td>-</td>
+                        <td>7 gün</td>
+                    </tr>
+                    <tr>
+                        <td>Cihaz limiti</td>
+                        <td>Sınırsız</td>
+                        <td>Plana göre (1-3)</td>
+                    </tr>
+                    <tr>
+                        <td>2FA</td>
+                        <td>Opsiyonel</td>
+                        <td>Opsiyonel</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ==================== TEKNİK ÖZET ==================== -->
+        <h2>13. Teknik Özet</h2>
+
+        <h3>Veritabanı</h3>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tablo</th>
+                        <th>Kullanım</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>subscription_plans</code></td>
+                        <td>Üyelik paketleri (Free, Premium)</td>
+                    </tr>
+                    <tr>
+                        <td><code>subscriptions</code></td>
+                        <td>Kullanıcı abonelikleri</td>
+                    </tr>
+                    <tr>
+                        <td><code>coupons</code></td>
+                        <td>Kupon tanımları</td>
+                    </tr>
+                    <tr>
+                        <td><code>coupon_usages</code></td>
+                        <td>Kupon kullanım kayıtları</td>
+                    </tr>
+                    <tr>
+                        <td><code>customer_addresses</code></td>
+                        <td>Fatura adresleri</td>
+                    </tr>
+                    <tr>
+                        <td><code>payments</code></td>
+                        <td>Ödeme kayıtları</td>
+                    </tr>
+                    <tr>
+                        <td><code>sessions</code></td>
+                        <td>Cihaz/oturum takibi</td>
+                    </tr>
+                    <tr>
+                        <td><code>activity_log</code></td>
+                        <td>Login kayıtları</td>
+                    </tr>
+                    <tr>
+                        <td><code>users</code></td>
+                        <td>+9 yeni kolon</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>Servisler</h3>
+        <div class="flow">
+            <span class="flow-item">SubscriptionService</span>
+            <span class="flow-item">DeviceService</span>
+            <span class="flow-item">CouponService</span>
+            <span class="flow-item">TwoFactorService</span>
+        </div>
+
+        <h3>Cron Jobs (Günlük)</h3>
+        <div class="flow">
+            <span class="flow-item">Deneme kontrol</span>
+            <span class="flow-item">Yenileme hatırlatma</span>
+            <span class="flow-item">Otomatik ödeme</span>
+        </div>
+
+        <footer>
+            Claude AI | v9 - Tam Plan
+        </footer>
+    </div>
+</body>
+</html>

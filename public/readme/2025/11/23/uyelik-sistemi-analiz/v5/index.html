@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Mevcut + Eklenecekler (v5)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-existing { background: #10b981; color: white; }
+        .badge-new { background: #3b82f6; color: white; }
+        .badge-modify { background: #f59e0b; color: white; }
+        .badge-module { background: #8b5cf6; color: white; }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 20px 0 15px;
+            color: #94a3b8;
+        }
+
+        .table-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .table-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #f1f5f9;
+        }
+
+        .table-body {
+            padding: 15px 20px;
+        }
+
+        .column-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+
+        .column-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .column-item.existing {
+            background: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+        }
+
+        .column-item.new {
+            background: rgba(59, 130, 246, 0.1);
+            color: #93c5fd;
+        }
+
+        .file-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .file-card.existing {
+            border-left-color: #10b981;
+        }
+
+        .file-card.modify {
+            border-left-color: #f59e0b;
+        }
+
+        .file-card.module {
+            border-left-color: #8b5cf6;
+        }
+
+        .file-path {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .file-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .module-box {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .module-title {
+            font-size: 1.4rem;
+            color: #a78bfa;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-group {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .setting-name {
+            font-weight: 600;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .setting-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 6px;
+        }
+
+        .setting-field {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+            color: #93c5fd;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .existing-num { color: #10b981; }
+        .new-num { color: #3b82f6; }
+        .modify-num { color: #f59e0b; }
+        .module-num { color: #8b5cf6; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .note-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .note-box strong {
+            color: #fbbf24;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .legend { flex-direction: column; gap: 10px; }
+            .column-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Üyelik Sistemi - Tam Yapı Haritası</h1>
+            <div class="meta">
+                Tarih: 2025-11-23 | Versiyon: 5 (Mevcut + Eklenecekler) | Tenant: Tüm Tenant'lar
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="badge badge-existing">MEVCUT</span>
+                    <span>Sistemde var</span>
+                </div>
+                <div class="legend-item">
+                    <span class="badge badge-new">YENİ</span>
+                    <span>Eklenecek</span>
+                </div>
+                <div class="legend-item">
+                    <span class="badge badge-modify">DEĞİŞİKLİK</span>
+                    <span>Güncellenecek</span>
+                </div>
+                <div class="legend-item">
+                    <span class="badge badge-module">MODÜL</span>
+                    <span>Yeni modül</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>Özet</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-number existing-num">3</div>
+                    <div class="summary-label">Mevcut Tablo</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number new-num">6</div>
+                    <div class="summary-label">Yeni Tablo</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number modify-num">1</div>
+                    <div class="summary-label">Güncellenecek Tablo</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number module-num">1</div>
+                    <div class="summary-label">Yeni Modül</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VERİTABANI TABLOLARI -->
+        <section>
+            <h2>Veritabanı Tabloları</h2>
+
+            <h3>Mevcut Tablolar (Kullanılacak)</h3>
+
+            <!-- users tablosu -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">users</span>
+                    <span class="badge badge-modify">DEĞİŞİKLİK</span>
+                </div>
+                <div class="table-body">
+                    <p style="margin-bottom: 15px; color: #94a3b8; font-size: 0.9rem;">Mevcut kolonlar korunacak, üzerine yeni kolonlar eklenecek</p>
+                    <div class="column-list">
+                        <!-- Mevcut -->
+                        <div class="column-item existing">id</div>
+                        <div class="column-item existing">name</div>
+                        <div class="column-item existing">email</div>
+                        <div class="column-item existing">phone</div>
+                        <div class="column-item existing">bio</div>
+                        <div class="column-item existing">is_active</div>
+                        <div class="column-item existing">last_login_at</div>
+                        <div class="column-item existing">email_verified_at</div>
+                        <div class="column-item existing">password</div>
+                        <div class="column-item existing">admin_locale</div>
+                        <div class="column-item existing">tenant_locale</div>
+                        <div class="column-item existing">dashboard_preferences</div>
+                        <div class="column-item existing">remember_token</div>
+                        <div class="column-item existing">created_at</div>
+                        <div class="column-item existing">updated_at</div>
+                        <div class="column-item existing">deleted_at</div>
+                        <!-- Yeni -->
+                        <div class="column-item new">membership_type_id</div>
+                        <div class="column-item new">device_limit</div>
+                        <div class="column-item new">is_approved</div>
+                        <div class="column-item new">failed_login_attempts</div>
+                        <div class="column-item new">locked_until</div>
+                        <div class="column-item new">two_factor_enabled</div>
+                        <div class="column-item new">two_factor_phone</div>
+                        <div class="column-item new">is_corporate</div>
+                        <div class="column-item new">corporate_code</div>
+                        <div class="column-item new">parent_user_id</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- sessions tablosu -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">sessions</span>
+                    <span class="badge badge-existing">MEVCUT</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #6ee7b7; font-size: 0.9rem;">Laravel session yönetimi - Değişiklik yok</p>
+                    <div class="column-list">
+                        <div class="column-item existing">id</div>
+                        <div class="column-item existing">user_id</div>
+                        <div class="column-item existing">ip_address</div>
+                        <div class="column-item existing">user_agent</div>
+                        <div class="column-item existing">payload</div>
+                        <div class="column-item existing">last_activity</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- password_reset_tokens tablosu -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">password_reset_tokens</span>
+                    <span class="badge badge-existing">MEVCUT</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #6ee7b7; font-size: 0.9rem;">Şifre sıfırlama - Değişiklik yok</p>
+                    <div class="column-list">
+                        <div class="column-item existing">email</div>
+                        <div class="column-item existing">token</div>
+                        <div class="column-item existing">created_at</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- activity_log tablosu -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">activity_log</span>
+                    <span class="badge badge-existing">MEVCUT</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #6ee7b7; font-size: 0.9rem;">Spatie Activity Log - Genel aktivite kaydı için kullanılabilir</p>
+                    <div class="column-list">
+                        <div class="column-item existing">id</div>
+                        <div class="column-item existing">log_name</div>
+                        <div class="column-item existing">description</div>
+                        <div class="column-item existing">subject_type</div>
+                        <div class="column-item existing">subject_id</div>
+                        <div class="column-item existing">causer_type</div>
+                        <div class="column-item existing">causer_id</div>
+                        <div class="column-item existing">event</div>
+                        <div class="column-item existing">properties</div>
+                        <div class="column-item existing">batch_uuid</div>
+                        <div class="column-item existing">created_at</div>
+                        <div class="column-item existing">updated_at</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Yeni Tablolar</h3>
+
+            <!-- membership_types -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">membership_types</span>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #93c5fd; font-size: 0.9rem; margin-bottom: 15px;">Üyelik paketleri (Free, Premium, VIP vb.)</p>
+                    <div class="column-list">
+                        <div class="column-item new">id</div>
+                        <div class="column-item new">name</div>
+                        <div class="column-item new">slug</div>
+                        <div class="column-item new">monthly_price</div>
+                        <div class="column-item new">yearly_price</div>
+                        <div class="column-item new">trial_days</div>
+                        <div class="column-item new">features (JSON)</div>
+                        <div class="column-item new">is_default</div>
+                        <div class="column-item new">is_active</div>
+                        <div class="column-item new">created_at</div>
+                        <div class="column-item new">updated_at</div>
+                        <div class="column-item new">deleted_at</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- user_subscriptions -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">user_subscriptions</span>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #93c5fd; font-size: 0.9rem; margin-bottom: 15px;">Kullanıcı abonelikleri ve ödeme geçmişi</p>
+                    <div class="column-list">
+                        <div class="column-item new">id</div>
+                        <div class="column-item new">user_id</div>
+                        <div class="column-item new">membership_type_id</div>
+                        <div class="column-item new">period (monthly/yearly)</div>
+                        <div class="column-item new">price_paid</div>
+                        <div class="column-item new">trial_ends_at</div>
+                        <div class="column-item new">starts_at</div>
+                        <div class="column-item new">ends_at</div>
+                        <div class="column-item new">cancelled_at</div>
+                        <div class="column-item new">payment_method</div>
+                        <div class="column-item new">paytr_subscription_id</div>
+                        <div class="column-item new">status</div>
+                        <div class="column-item new">auto_renew</div>
+                        <div class="column-item new">created_at</div>
+                        <div class="column-item new">updated_at</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- user_devices -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">user_devices</span>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #93c5fd; font-size: 0.9rem; margin-bottom: 15px;">Kullanıcı cihaz takibi ve limit kontrolü</p>
+                    <div class="column-list">
+                        <div class="column-item new">id</div>
+                        <div class="column-item new">user_id</div>
+                        <div class="column-item new">device_id (hash)</div>
+                        <div class="column-item new">device_name</div>
+                        <div class="column-item new">browser</div>
+                        <div class="column-item new">platform</div>
+                        <div class="column-item new">ip_address</div>
+                        <div class="column-item new">last_activity</div>
+                        <div class="column-item new">is_current</div>
+                        <div class="column-item new">created_at</div>
+                        <div class="column-item new">updated_at</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- login_logs -->
+            <div class="table-card">
+                <div class="table-header">
+                    <span class="table-name">login_logs</span>
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="table-body">
+                    <p style="color: #93c5fd; font-size: 0.9rem; margin-bottom: 15px;">Detaylı giriş kayıtları (Spatie'den ayrı, özelleştirilmiş)</p>
+                    <div class="column-list">
+                        <div class="column-item new">id</div>
+                        <div class="column-item new">user_id</div>
+                        <div class="column-item new">ip_address</div>
+                        <div class="column-item new">user_agent</div>
+                        <div class="column-item new">browser</div>
+                        <div class="column-item new">platform</div>
+                        <div class="column-item new">device_type</div>
+                        <div class="column-item new">country</div>
+                        <div class="column-item new">city</div>
+                        <div class="column-item new">status (success/failed)</div>
+                        <div class="column-item new">failure_reason</div>
+                        <div class="column-item new">created_at</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="note-box">
+                <strong>Not:</strong> shop_coupons tablosu mevcut ancak sadece Shop modülüne özel.
+                Yeni universal Coupon modülü hem Shop hem de Subscription için çalışacak.
+            </div>
+        </section>
+
+        <!-- COUPON MODÜLÜ -->
+        <section>
+            <h2>Yeni Modül: Coupon</h2>
+
+            <div class="module-box">
+                <div class="module-title">
+                    <span class="badge badge-module">MODÜL</span>
+                    Modules/Coupon
+                </div>
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    Universal kupon sistemi. Hem Shop ürünlerinde hem de Subscription ödemelerinde kullanılabilir.
+                    Mevcut shop_coupons tablosu Shop'a özel kalacak, bu modül genel amaçlı olacak.
+                </p>
+
+                <h4 style="color: #a78bfa; margin-bottom: 15px;">Modül Tabloları</h4>
+
+                <!-- coupons tablosu -->
+                <div class="table-card" style="border-color: #8b5cf6;">
+                    <div class="table-header">
+                        <span class="table-name">coupons</span>
+                        <span class="badge badge-module">MODÜL</span>
+                    </div>
+                    <div class="table-body">
+                        <div class="column-list">
+                            <div class="column-item new">id</div>
+                            <div class="column-item new">code</div>
+                            <div class="column-item new">name</div>
+                            <div class="column-item new">description</div>
+                            <div class="column-item new">discount_type</div>
+                            <div class="column-item new">discount_value</div>
+                            <div class="column-item new">usage_area</div>
+                            <div class="column-item new">usage_limit</div>
+                            <div class="column-item new">usage_per_user</div>
+                            <div class="column-item new">minimum_amount</div>
+                            <div class="column-item new">starts_at</div>
+                            <div class="column-item new">expires_at</div>
+                            <div class="column-item new">is_active</div>
+                            <div class="column-item new">metadata (JSON)</div>
+                            <div class="column-item new">created_at</div>
+                            <div class="column-item new">updated_at</div>
+                            <div class="column-item new">deleted_at</div>
+                        </div>
+
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155;">
+                            <strong style="color: #a78bfa;">usage_area seçenekleri:</strong>
+                            <ul style="margin-top: 8px; padding-left: 20px; color: #94a3b8; font-size: 0.9rem;">
+                                <li>all - Her yerde geçerli</li>
+                                <li>subscription_only - Sadece abonelik</li>
+                                <li>shop_only - Sadece mağaza</li>
+                                <li>yearly_subscription - Sadece yıllık abonelik</li>
+                                <li>first_purchase - Sadece ilk alışveriş</li>
+                                <li>specific_category - Belirli kategori</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- coupon_usages tablosu -->
+                <div class="table-card" style="border-color: #8b5cf6;">
+                    <div class="table-header">
+                        <span class="table-name">coupon_usages</span>
+                        <span class="badge badge-module">MODÜL</span>
+                    </div>
+                    <div class="table-body">
+                        <div class="column-list">
+                            <div class="column-item new">id</div>
+                            <div class="column-item new">coupon_id</div>
+                            <div class="column-item new">user_id</div>
+                            <div class="column-item new">usable_type (polymorphic)</div>
+                            <div class="column-item new">usable_id</div>
+                            <div class="column-item new">discount_amount</div>
+                            <div class="column-item new">original_amount</div>
+                            <div class="column-item new">final_amount</div>
+                            <div class="column-item new">used_at</div>
+                            <div class="column-item new">created_at</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="color: #a78bfa; margin: 20px 0 15px;">Modül Dosya Yapısı</h4>
+                <div style="font-family: monospace; font-size: 0.85rem; color: #94a3b8; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+                    Modules/Coupon/<br>
+                    ├── app/<br>
+                    │   ├── Models/<br>
+                    │   │   ├── Coupon.php<br>
+                    │   │   └── CouponUsage.php<br>
+                    │   ├── Services/<br>
+                    │   │   └── CouponService.php<br>
+                    │   ├── Http/<br>
+                    │   │   ├── Controllers/<br>
+                    │   │   └── Livewire/Admin/<br>
+                    │   └── Repositories/<br>
+                    │       └── CouponRepository.php<br>
+                    ├── database/<br>
+                    │   └── migrations/<br>
+                    │       └── tenant/<br>
+                    ├── resources/views/<br>
+                    ├── routes/<br>
+                    └── lang/
+                </div>
+            </div>
+        </section>
+
+        <!-- DOSYALAR -->
+        <section>
+            <h2>Dosya Yapısı</h2>
+
+            <h3>Mevcut Dosyalar (Değiştirilecek)</h3>
+
+            <div class="file-card modify">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-modify">DEĞİŞİKLİK</span>
+                </div>
+                <div class="file-path">app/Models/User.php</div>
+                <div class="file-desc">
+                    Yeni alanlar: membership_type_id, device_limit, is_corporate, parent_user_id vb.<br>
+                    Yeni ilişkiler: subscription(), devices(), loginLogs(), children() (kurumsal için)
+                </div>
+            </div>
+
+            <div class="file-card modify">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-modify">DEĞİŞİKLİK</span>
+                </div>
+                <div class="file-path">app/Http/Controllers/Auth/AuthenticatedSessionController.php</div>
+                <div class="file-desc">
+                    Cihaz kontrolü, 2FA doğrulama, login log kaydı eklenecek
+                </div>
+            </div>
+
+            <div class="file-card modify">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-modify">DEĞİŞİKLİK</span>
+                </div>
+                <div class="file-path">app/Http/Controllers/Auth/RegisteredUserController.php</div>
+                <div class="file-desc">
+                    Email doğrulama ayarı, varsayılan üyelik tipi atama, kurumsal kod kontrolü
+                </div>
+            </div>
+
+            <div class="file-card modify">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-modify">DEĞİŞİKLİK</span>
+                </div>
+                <div class="file-path">config/session.php</div>
+                <div class="file-desc">
+                    Lifetime: 525600 (1 yıl), tenant bazlı ayarlanabilir
+                </div>
+            </div>
+
+            <h3>Mevcut Dosyalar (Kullanılacak)</h3>
+
+            <div class="file-card existing">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-existing">MEVCUT</span>
+                </div>
+                <div class="file-path">app/Http/Controllers/Auth/*.php</div>
+                <div class="file-desc">
+                    9 adet Auth controller mevcut (Email verification, Password reset vb.)
+                </div>
+            </div>
+
+            <div class="file-card existing">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-existing">MEVCUT</span>
+                </div>
+                <div class="file-path">Modules/Payment/app/Services/PayTRDirectService.php</div>
+                <div class="file-desc">
+                    PayTR entegrasyonu mevcut - Recurring payment için genişletilecek
+                </div>
+            </div>
+
+            <div class="file-card existing">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-existing">MEVCUT</span>
+                </div>
+                <div class="file-path">Modules/SettingManagement/*</div>
+                <div class="file-desc">
+                    Setting grup ve değer sistemi - Yeni gruplar eklenecek
+                </div>
+            </div>
+
+            <h3>Yeni Dosyalar</h3>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Models/MembershipType.php</div>
+                <div class="file-desc">Üyelik tipi modeli</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Models/UserSubscription.php</div>
+                <div class="file-desc">Kullanıcı abonelik modeli</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Models/UserDevice.php</div>
+                <div class="file-desc">Kullanıcı cihaz modeli</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Models/LoginLog.php</div>
+                <div class="file-desc">Giriş kaydı modeli</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Services/Auth/DeviceService.php</div>
+                <div class="file-desc">Cihaz yönetimi, limit kontrolü, fingerprint</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Services/Auth/TwoFactorService.php</div>
+                <div class="file-desc">2FA SMS gönderimi ve doğrulama</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Services/Auth/SubscriptionService.php</div>
+                <div class="file-desc">Abonelik yönetimi, deneme süresi, yenileme</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Services/Auth/CorporateService.php</div>
+                <div class="file-desc">Kurumsal üyelik, alt hesap yönetimi</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Http/Middleware/CheckDeviceLimit.php</div>
+                <div class="file-desc">Cihaz limiti kontrol middleware</div>
+            </div>
+
+            <div class="file-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="badge badge-new">YENİ</span>
+                </div>
+                <div class="file-path">app/Http/Middleware/CheckSubscription.php</div>
+                <div class="file-desc">Abonelik durumu kontrol middleware</div>
+            </div>
+        </section>
+
+        <!-- SETTING GRUPLARI -->
+        <section>
+            <h2>SettingManagement Grupları</h2>
+
+            <div class="note-box">
+                <strong>Mevcut Yapı:</strong> settings_groups tablosu mevcut.
+                Aşağıdaki gruplar yeni oluşturulacak ve JSON layout ile form alanları tanımlanacak.
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-name">auth_registration <span class="badge badge-new">YENİ</span></div>
+                <div class="setting-fields">
+                    <span class="setting-field">registration_enabled</span>
+                    <span class="setting-field">email_verification_required</span>
+                    <span class="setting-field">admin_approval_required</span>
+                    <span class="setting-field">default_membership_type</span>
+                    <span class="setting-field">welcome_email_enabled</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-name">auth_session <span class="badge badge-new">YENİ</span></div>
+                <div class="setting-fields">
+                    <span class="setting-field">session_lifetime</span>
+                    <span class="setting-field">remember_me_lifetime</span>
+                    <span class="setting-field">single_session_only</span>
+                    <span class="setting-field">logout_on_password_change</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-name">auth_security <span class="badge badge-new">YENİ</span></div>
+                <div class="setting-fields">
+                    <span class="setting-field">max_login_attempts</span>
+                    <span class="setting-field">lockout_duration</span>
+                    <span class="setting-field">password_reset_expiry</span>
+                    <span class="setting-field">two_factor_enabled</span>
+                    <span class="setting-field">device_limit_default</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-name">sms <span class="badge badge-new">YENİ</span></div>
+                <div class="setting-fields">
+                    <span class="setting-field">sms_provider</span>
+                    <span class="setting-field">sms_api_key</span>
+                    <span class="setting-field">sms_api_secret</span>
+                    <span class="setting-field">sms_sender_id</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-name">auth_subscription <span class="badge badge-new">YENİ</span></div>
+                <div class="setting-fields">
+                    <span class="setting-field">paid_membership_enabled</span>
+                    <span class="setting-field">trial_days</span>
+                    <span class="setting-field">trial_add_to_subscription</span>
+                    <span class="setting-field">renewal_reminder_days</span>
+                    <span class="setting-field">auto_renew_default</span>
+                    <span class="setting-field">grace_period_days</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <div class="setting-name">corporate <span class="badge badge-new">YENİ</span></div>
+                <div class="setting-fields">
+                    <span class="setting-field">corporate_enabled</span>
+                    <span class="setting-field">bulk_payment_enabled</span>
+                    <span class="setting-field">corporate_discount_percentage</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MİGRATION LİSTESİ -->
+        <section>
+            <h2>Migration Listesi</h2>
+
+            <p style="color: #94a3b8; margin-bottom: 20px;">
+                Her migration hem central hem tenant klasörüne oluşturulacak.
+            </p>
+
+            <div style="font-family: monospace; font-size: 0.85rem; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 8px; overflow-x: auto;">
+                <div style="color: #6ee7b7;">// Central & Tenant</div>
+                <div style="color: #93c5fd; margin: 5px 0;">2025_11_23_001_create_membership_types_table.php</div>
+                <div style="color: #93c5fd; margin: 5px 0;">2025_11_23_002_create_user_subscriptions_table.php</div>
+                <div style="color: #93c5fd; margin: 5px 0;">2025_11_23_003_create_user_devices_table.php</div>
+                <div style="color: #93c5fd; margin: 5px 0;">2025_11_23_004_create_login_logs_table.php</div>
+                <div style="color: #93c5fd; margin: 5px 0;">2025_11_23_005_add_membership_fields_to_users_table.php</div>
+                <br>
+                <div style="color: #a78bfa;">// Coupon Module (Modules/Coupon/database/migrations/tenant/)</div>
+                <div style="color: #c4b5fd; margin: 5px 0;">2025_11_23_001_create_coupons_table.php</div>
+                <div style="color: #c4b5fd; margin: 5px 0;">2025_11_23_002_create_coupon_usages_table.php</div>
+            </div>
+        </section>
+
+        <!-- MAİL TEMPLATES -->
+        <section>
+            <h2>Mail Şablonları</h2>
+
+            <div style="display: grid; gap: 10px;">
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">WelcomeMail</span> - Hoş geldin maili
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">TrialEndingMail</span> - Deneme bitiyor uyarısı
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">SubscriptionRenewalMail</span> - Yenileme hatırlatması
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">PaymentSuccessMail</span> - Ödeme başarılı
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">PaymentFailedMail</span> - Ödeme başarısız
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">NewDeviceLoginMail</span> - Yeni cihaz girişi
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">TwoFactorCodeMail</span> - 2FA kodu (SMS alternatifi)
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">CorporateInviteMail</span> - Kurumsal davet
+                </div>
+            </div>
+        </section>
+
+        <!-- CRON JOBS -->
+        <section>
+            <h2>Zamanlanmış Görevler (Cron)</h2>
+
+            <div style="display: grid; gap: 10px;">
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">CheckTrialExpiry</span> - Günlük, deneme süresi kontrol
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">SendRenewalReminders</span> - Günlük, yenileme hatırlatması
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">ProcessRecurringPayments</span> - Günlük, otomatik yenileme
+                </div>
+                <div class="file-card">
+                    <span class="badge badge-new">YENİ</span>
+                    <span style="margin-left: 10px; color: #cbd5e1;">CleanupExpiredSessions</span> - Haftalık, eski session temizliği
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | v5 - Mevcut + Eklenecekler Tam Haritası
+        </footer>
+    </div>
+</body>
+</html>

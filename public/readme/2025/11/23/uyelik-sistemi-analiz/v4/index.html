@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi v4 - Final Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        section { margin-bottom: 60px; }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #10b981;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+        }
+        h3 {
+            font-size: 1.4rem;
+            color: #6ee7b7;
+            margin: 25px 0 15px 0;
+        }
+        .final-decision {
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .final-decision h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #10b981;
+        }
+        td { color: #cbd5e1; }
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-yes { background: #10b981; color: white; }
+        .badge-no { background: #475569; color: #94a3b8; }
+        .badge-tenant { background: #8b5cf6; color: white; }
+        .badge-muzibu { background: #f59e0b; color: white; }
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+        /* MOCKUP */
+        .mockup-container {
+            background: #1e293b;
+            border: 2px solid #475569;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .mockup-header {
+            background: #334155;
+            padding: 12px 20px;
+            border-bottom: 1px solid #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .mockup-dot.red { background: #ef4444; }
+        .mockup-dot.yellow { background: #f59e0b; }
+        .mockup-dot.green { background: #10b981; }
+        .mockup-title {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+        .mockup-body { padding: 25px; }
+        .mockup-form-group { margin-bottom: 20px; }
+        .mockup-label {
+            display: block;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .mockup-input, .mockup-select {
+            width: 100%;
+            padding: 10px 15px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+        .mockup-help {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+        .mockup-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+        }
+        .mockup-btn-primary { background: #10b981; color: white; }
+        /* FLOW */
+        .flow-container {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .flow-number {
+            width: 28px;
+            height: 28px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .flow-content { flex: 1; }
+        .flow-content p { color: #94a3b8; font-size: 0.9rem; }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Üyelik Sistemi - Final Plan (v4)</h1>
+            <div class="meta">
+                Tarih: 2025-11-23 | Durum: Kodlamaya Hazır
+            </div>
+        </header>
+
+        <!-- KESİNLEŞEN TÜM KARARLAR -->
+        <section>
+            <h2>Kesinleşen Tüm Kararlar</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Karar</th>
+                        <th>Not</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ödeme Sistemi</td>
+                        <td><strong>PayTR</strong></td>
+                        <td>SettingManagement'ta mevcut</td>
+                    </tr>
+                    <tr>
+                        <td>Oturum Süresi</td>
+                        <td><strong>1 yıl</strong></td>
+                        <td>Bir kez giriş, 1 yıl kalır</td>
+                    </tr>
+                    <tr>
+                        <td>Fiyatlandırma (Muzibu)</td>
+                        <td><strong>Aylık 299 TL / Yıllık 2.999 TL</strong></td>
+                        <td>Tek paket</td>
+                    </tr>
+                    <tr>
+                        <td>Cihaz Limiti</td>
+                        <td><strong>Kullanıcı bazlı (varsayılan: 1)</strong></td>
+                        <td>Admin her kullanıcıya özel belirler</td>
+                    </tr>
+                    <tr>
+                        <td>Deneme Süresi</td>
+                        <td><strong>Tenant ayarlanabilir</strong></td>
+                        <td>Her firma kendi süresini belirler</td>
+                    </tr>
+                    <tr>
+                        <td>Deneme Hakkı</td>
+                        <td><strong>Üyelik süresine EKLENİR</strong></td>
+                        <td>Kullanmadan öderse kalan gün eklenir</td>
+                    </tr>
+                    <tr>
+                        <td>Giriş Logları</td>
+                        <td><strong>Sonsuz saklama</strong></td>
+                        <td>Hiç silinmez</td>
+                    </tr>
+                    <tr>
+                        <td>2FA</td>
+                        <td><strong>İsteğe bağlı, SMS ile</strong></td>
+                        <td>Kullanıcı isterse açar</td>
+                    </tr>
+                    <tr>
+                        <td>SMS API</td>
+                        <td><strong>Tenant-aware</strong></td>
+                        <td>Her site kendi API'sini yazar</td>
+                    </tr>
+                    <tr>
+                        <td>Şifre Sıfırlama</td>
+                        <td><strong>1 saat geçerli</strong></td>
+                        <td>Güvenlik standardı</td>
+                    </tr>
+                    <tr>
+                        <td>Kupon Sistemi</td>
+                        <td><strong>Universal + Spesifik seçimli</strong></td>
+                        <td>Üyelik, Shop, kategori bazlı</td>
+                    </tr>
+                    <tr>
+                        <td>Kurumsal Üyelik</td>
+                        <td><strong>Sınırsız alt şube, toplu ödeme</strong></td>
+                        <td>Sadece Muzibu'ya özel</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- TENANT-AWARE ÖZET -->
+        <section>
+            <h2>Tenant-Aware Özet</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Login Ekranları</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>SMS API Ayarları</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Mail Şablonları</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Kupon Kodları</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Üyelik Ayarları</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Fiyatlar</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Kayıt Tikleri (KVKK vs)</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Giriş Logları</td><td><span class="badge badge-tenant">Tenant-Aware</span></td></tr>
+                    <tr><td>Kurumsal Üyelik</td><td><span class="badge badge-muzibu">Sadece Muzibu</span></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- KUPON SİSTEMİ -->
+        <section>
+            <h2>Kupon Sistemi (Universal + Spesifik)</h2>
+
+            <h3>Kupon Türleri</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tür</th>
+                        <th>Örnek</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Yüzde İndirim</td><td>%20 indirim</td></tr>
+                    <tr><td>Sabit İndirim</td><td>50 TL indirim</td></tr>
+                    <tr><td>Sabit Fiyat</td><td>İlk ay 99 TL</td></tr>
+                    <tr><td>Deneme Uzatma</td><td>+7 gün deneme</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Kullanım Alanı Seçenekleri</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Seçenek</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Tümü</td><td>Hem üyelik hem shop</td></tr>
+                    <tr><td>Sadece Üyelik</td><td>Abonelik ödemelerinde</td></tr>
+                    <tr><td>Sadece Shop</td><td>Ürün satışlarında</td></tr>
+                    <tr><td>Sadece Yıllık Abonelik</td><td>Yıllık pakette geçerli</td></tr>
+                    <tr><td>Sadece İlk Satın Alma</td><td>Yeni müşterilere özel</td></tr>
+                    <tr><td>Belirli Kategori</td><td>Seçilen ürün kategorisinde</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Admin Panel Taslağı</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Kupon Oluştur</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kupon Kodu</label>
+                        <input type="text" class="mockup-input" value="HOSGELDIN20">
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">İndirim Türü</label>
+                        <select class="mockup-select">
+                            <option selected>Yüzde İndirim (%)</option>
+                            <option>Sabit İndirim (TL)</option>
+                            <option>Sabit Fiyat (TL)</option>
+                            <option>Deneme Uzatma (Gün)</option>
+                        </select>
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Değer</label>
+                        <input type="number" class="mockup-input" value="20" style="width: 100px;">
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kullanım Alanı</label>
+                        <select class="mockup-select">
+                            <option>Tümü (Üyelik + Shop)</option>
+                            <option selected>Sadece Üyelik</option>
+                            <option>Sadece Shop</option>
+                            <option>Sadece Yıllık Abonelik</option>
+                            <option>Sadece İlk Satın Alma</option>
+                        </select>
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Geçerlilik Tarihi</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" class="mockup-input" style="width: auto;">
+                            <span style="color: #94a3b8; align-self: center;">→</span>
+                            <input type="date" class="mockup-input" style="width: auto;">
+                        </div>
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Toplam Kullanım Limiti</label>
+                        <input type="number" class="mockup-input" value="100" style="width: 100px;">
+                        <p class="mockup-help">0 = sınırsız</p>
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kişi Başı Limit</label>
+                        <input type="number" class="mockup-input" value="1" style="width: 100px;">
+                    </div>
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Minimum Tutar</label>
+                        <input type="number" class="mockup-input" value="0" style="width: 100px;">
+                        <span style="color: #94a3b8; margin-left: 5px;">TL</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KURUMSAL ÜYELİK -->
+        <section>
+            <h2>Kurumsal Üyelik (Sadece Muzibu)</h2>
+
+            <div class="warning-box">
+                <strong>Önemli:</strong> Bu özellik sadece Muzibu'ya özel. Diğer tenantlar kullanmayacak.
+            </div>
+
+            <h3>Temel Yapı</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kavram</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ana Şube</strong></td>
+                        <td>Kurumu açan hesap (ABC Holding)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alt Şube</strong></td>
+                        <td>Ana şubeye bağlı hesaplar (çalışanlar)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kurum Kodu</strong></td>
+                        <td>Benzersiz kod (ABC2024) - herkes kendi kodunu oluşturabilir</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alt Şube Limiti</strong></td>
+                        <td>Sınırsız</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ödeme</strong></td>
+                        <td>Ana şube tüm alt şubeler adına toplu öder</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Kayıt Akışları</h3>
+
+            <h4 style="color: #6ee7b7; margin: 15px 0 10px 0;">Ana Şube Oluşturma</h4>
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <p>Firma sahibi normal kayıt olur</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <p>Profil ayarlarından "Kurumsal Hesap Oluştur" tıklar</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <p>Benzersiz kurum kodu oluşturur (ABC2024)</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <p>Kodu çalışanlarla paylaşır</p>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="color: #6ee7b7; margin: 15px 0 10px 0;">Alt Şube Katılma</h4>
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <p>Çalışan kayıt formunda "Kurum Kodu" alanını görür</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <p>ABC2024 girer</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <p>Sistem doğrular, ABC Holding'e bağlar</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <p>Ana şube dashboard'unda görünür</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Ana Şube Dashboard'u</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">ABC Holding - Kurumsal Panel</span>
+                </div>
+                <div class="mockup-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: #0f172a; padding: 15px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #10b981;">47</div>
+                            <div style="color: #94a3b8; font-size: 0.85rem;">Toplam Üye</div>
+                        </div>
+                        <div style="background: #0f172a; padding: 15px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">32</div>
+                            <div style="color: #94a3b8; font-size: 0.85rem;">Aktif Bugün</div>
+                        </div>
+                        <div style="background: #0f172a; padding: 15px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">1.240</div>
+                            <div style="color: #94a3b8; font-size: 0.85rem;">Toplam Saat</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #e2e8f0;">Kurum Kodu:</strong>
+                        <span style="background: #334155; padding: 5px 10px; border-radius: 4px; margin-left: 10px; font-family: monospace;">ABC2024</span>
+                        <button style="background: #475569; border: none; padding: 5px 10px; border-radius: 4px; color: #e2e8f0; margin-left: 5px; font-size: 0.8rem;">Kopyala</button>
+                    </div>
+
+                    <table style="width: 100%; margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 10px; background: #0f172a; color: #10b981;">Üye</th>
+                                <th style="padding: 10px; background: #0f172a; color: #10b981;">Son Giriş</th>
+                                <th style="padding: 10px; background: #0f172a; color: #10b981;">Bu Ay</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155;">Ali Yılmaz</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94a3b8;">2 saat önce</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94a3b8;">24 saat</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155;">Ayşe Demir</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94a3b8;">5 saat önce</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94a3b8;">18 saat</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155;">Mehmet Kaya</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94a3b8;">1 gün önce</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #334155; color: #94a3b8;">12 saat</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3>Toplu Ödeme Sistemi</h3>
+            <div class="final-decision">
+                <h4>Ana şube tüm alt şubeler adına tek ödeme yapar</h4>
+                <p><strong>Neden?</strong></p>
+                <ul style="margin-left: 20px; color: #cbd5e1;">
+                    <li>Şirket tek fatura alır</li>
+                    <li>Muhasebe kolaylaşır</li>
+                    <li>Çalışanlar ödeme yapmaz</li>
+                    <li>Spotify/Netflix kurumsal modeli</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Fiyatlandırma:</strong> Kişi başı aylık fiyat × toplam üye sayısı</p>
+            </div>
+
+            <h3>Veritabanı Alanları (Users Tablosu)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Alan</th>
+                        <th>Tür</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>is_corporate</td>
+                        <td>boolean</td>
+                        <td>Kurumsal hesap mı?</td>
+                    </tr>
+                    <tr>
+                        <td>corporate_code</td>
+                        <td>string (unique)</td>
+                        <td>Benzersiz kurum kodu</td>
+                    </tr>
+                    <tr>
+                        <td>parent_user_id</td>
+                        <td>integer (nullable)</td>
+                        <td>Bağlı olduğu ana şube</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- CİHAZ YÖNETİMİ -->
+        <section>
+            <h2>Cihaz Yönetimi</h2>
+
+            <h3>Cihaz Seçme Ekranı</h3>
+            <p style="color: #94a3b8; margin-bottom: 15px;">Kullanıcı cihaz limitini aştığında gösterilir:</p>
+
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Cihaz Limiti</span>
+                </div>
+                <div class="mockup-body">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="color: #f59e0b; margin-bottom: 10px;">Cihaz Limitinize Ulaştınız</h3>
+                        <p style="color: #94a3b8;">Yeni cihazdan giriş için birinden çıkış yapın:</p>
+                    </div>
+
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span style="font-size: 2rem;">📱</span>
+                            <div style="flex: 1;">
+                                <h5 style="color: #e2e8f0; margin-bottom: 5px;">iPhone 14 - Safari</h5>
+                                <p style="color: #94a3b8; font-size: 0.85rem;">📍 İstanbul • 🕐 2 saat önce • 🌐 85.xxx.xxx.xxx</p>
+                            </div>
+                            <div style="width: 20px; height: 20px; border: 2px solid #ef4444; border-radius: 50%; background: #ef4444;"></div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid #475569; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span style="font-size: 2rem;">💻</span>
+                            <div style="flex: 1;">
+                                <h5 style="color: #e2e8f0; margin-bottom: 5px;">MacBook Pro - Chrome</h5>
+                                <p style="color: #94a3b8; font-size: 0.85rem;">📍 Ankara • 🕐 3 gün önce • 🌐 176.xxx.xxx.xxx</p>
+                            </div>
+                            <div style="width: 20px; height: 20px; border: 2px solid #475569; border-radius: 50%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button class="mockup-btn" style="background: #ef4444; color: white;">Seçili Cihazdan Çıkış Yap</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DENEME SÜRESİ -->
+        <section>
+            <h2>Deneme Süresi Mantığı</h2>
+
+            <div class="final-decision">
+                <h4>Deneme Hakkı Üyeliğe Eklenir</h4>
+                <p><strong>Örnek:</strong> Ali'nin 7 günlük deneme hakkı var. 3. gün ödeme yaptı.</p>
+                <p><strong>Sonuç:</strong> 1 ay + 4 gün = Toplam 34 gün premium</p>
+            </div>
+
+            <h3>Hatırlatma Sistemi (Dinamik)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Deneme süresinin yarısı</td>
+                        <td>İlk hatırlatma maili</td>
+                    </tr>
+                    <tr>
+                        <td>Son gün</td>
+                        <td>Son hatırlatma maili</td>
+                    </tr>
+                    <tr>
+                        <td>Süre bitimi</td>
+                        <td>Deneme bitti maili</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>Örnek:</strong> 7 günlük deneme → 3. gün ilk mail, 6. gün son mail<br>
+                <strong>Örnek:</strong> 14 günlük deneme → 7. gün ilk mail, 13. gün son mail
+            </div>
+        </section>
+
+        <!-- CRON JOBS -->
+        <section>
+            <h2>Cron Job Yapısı</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>İş</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Her gün 09:00</code></td>
+                        <td>Deneme Hatırlatmaları</td>
+                        <td>Yarısında ve son gün mail</td>
+                    </tr>
+                    <tr>
+                        <td><code>Her gün 00:01</code></td>
+                        <td>Denemeleri Kapat</td>
+                        <td>Süresi dolmuş denemeleri sonlandır</td>
+                    </tr>
+                    <tr>
+                        <td><code>Her gün 10:00</code></td>
+                        <td>Yenileme Hatırlatması</td>
+                        <td>Abonelik bitmeden X gün önce mail</td>
+                    </tr>
+                    <tr>
+                        <td><code>Her gün 02:00</code></td>
+                        <td>Abonelikleri Kapat</td>
+                        <td>Ödeme yapılmayan abonelikleri sonlandır</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- MAİL LİSTESİ -->
+        <section>
+            <h2>Mail Şablonları (Tenant-Aware)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td rowspan="4">Kayıt & Doğrulama</td><td>Hoş Geldiniz</td></tr>
+                    <tr><td>Email Doğrulama</td></tr>
+                    <tr><td>Hesap Onaylandı</td></tr>
+                    <tr><td>Şifre Sıfırlama</td></tr>
+                    <tr><td rowspan="3">Güvenlik</td><td>Yeni Cihaz Bildirimi</td></tr>
+                    <tr><td>Şüpheli Giriş</td></tr>
+                    <tr><td>Şifre Değiştirildi</td></tr>
+                    <tr><td rowspan="5">Abonelik</td><td>Deneme Başladı</td></tr>
+                    <tr><td>Deneme Hatırlatma</td></tr>
+                    <tr><td>Abonelik Başladı</td></tr>
+                    <tr><td>Yenileme Hatırlatma</td></tr>
+                    <tr><td>Abonelik İptal</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- YAPILACAKLAR SIRASI -->
+        <section>
+            <h2>Yapılacaklar Sırası</h2>
+
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <p><strong>Migration'lar</strong> - Veritabanı tabloları (kurumsal alanlar dahil)</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <p><strong>SettingManagement Ayar Grupları</strong> - Admin panel ayarları</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <p><strong>Model ve Service Sınıfları</strong> - İş mantığı</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <p><strong>Auth Controller Güncellemeleri</strong> - Login/Register</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-content">
+                        <p><strong>Cihaz Yönetimi</strong> - Limit ve seçme ekranı</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">6</div>
+                    <div class="flow-content">
+                        <p><strong>Mail Şablonları</strong> - Tüm mailler</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">7</div>
+                    <div class="flow-content">
+                        <p><strong>Kupon Sistemi</strong> - Universal modül</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">8</div>
+                    <div class="flow-content">
+                        <p><strong>PayTR Entegrasyonu</strong> - Ödeme sistemi</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">9</div>
+                    <div class="flow-content">
+                        <p><strong>Cron Job'lar</strong> - Otomatik işlemler</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-number">10</div>
+                    <div class="flow-content">
+                        <p><strong>Kurumsal Üyelik</strong> - Ana/alt şube eşleştirme</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | v4 Final | 2025-11-23<br>
+            <span style="color: #10b981;">✓ Kodlamaya Hazır</span>
+        </footer>
+    </div>
+</body>
+</html>

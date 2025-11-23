@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi v3 - Detaylı Plan & Taslaklar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #334155;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #93c5fd;
+            margin: 25px 0 15px 0;
+        }
+
+        .decision-box {
+            background: rgba(16, 185, 129, 0.15);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .decision-box h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .explanation-box {
+            background: rgba(59, 130, 246, 0.15);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .explanation-box h4 {
+            color: #60a5fa;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        /* MOCKUP STYLES */
+        .mockup-container {
+            background: #1e293b;
+            border: 2px solid #475569;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .mockup-header {
+            background: #334155;
+            padding: 12px 20px;
+            border-bottom: 1px solid #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .mockup-dot.red { background: #ef4444; }
+        .mockup-dot.yellow { background: #f59e0b; }
+        .mockup-dot.green { background: #10b981; }
+
+        .mockup-title {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+
+        .mockup-body {
+            padding: 25px;
+        }
+
+        .mockup-form-group {
+            margin-bottom: 20px;
+        }
+
+        .mockup-label {
+            display: block;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .mockup-input {
+            width: 100%;
+            padding: 10px 15px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .mockup-select {
+            width: 100%;
+            padding: 10px 15px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+
+        .mockup-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mockup-switch-toggle {
+            width: 50px;
+            height: 26px;
+            background: #475569;
+            border-radius: 13px;
+            position: relative;
+        }
+
+        .mockup-switch-toggle.on {
+            background: #10b981;
+        }
+
+        .mockup-switch-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+        }
+
+        .mockup-switch-toggle.on::after {
+            left: 27px;
+        }
+
+        .mockup-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .mockup-btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .mockup-btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .mockup-btn-secondary {
+            background: #475569;
+            color: white;
+        }
+
+        .mockup-help {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        /* DEVICE SELECT */
+        .device-select-list {
+            margin: 15px 0;
+        }
+
+        .device-select-item {
+            background: rgba(30, 41, 59, 0.6);
+            border: 2px solid #475569;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .device-select-item:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .device-select-item.selected {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .device-icon {
+            font-size: 2rem;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-info h5 {
+            color: #e2e8f0;
+            margin-bottom: 4px;
+        }
+
+        .device-info p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .device-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #475569;
+            border-radius: 50%;
+        }
+
+        .device-select-item.selected .device-radio {
+            border-color: #ef4444;
+            background: #ef4444;
+        }
+
+        /* INFO BOXES */
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 15px 0;
+        }
+
+        /* FLOW DIAGRAM */
+        .flow-container {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .flow-number {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .flow-content {
+            flex: 1;
+        }
+
+        .flow-content h5 {
+            color: #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .flow-content p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .flow-arrow {
+            text-align: center;
+            color: #475569;
+            font-size: 1.5rem;
+            margin: 10px 0 10px 16px;
+        }
+
+        /* COUPON */
+        .coupon-preview {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .coupon-code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .coupon-discount {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #60a5fa;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        /* CRON */
+        .cron-item {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cron-time {
+            background: #334155;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #10b981;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Muzibu Üyelik Sistemi v3</h1>
+            <div class="meta">
+                Tarih: 2025-11-23 | Versiyon: 3 - Kesinleşen Kararlar + Detaylı Sistemler
+            </div>
+        </header>
+
+        <!-- KELİNLEŞEN KARARLAR -->
+        <section>
+            <h2>Kesinleşen Kararlar</h2>
+
+            <div class="decision-box">
+                <h4>Fiyatlandırma</h4>
+                <p><strong>Aylık:</strong> 299 TL | <strong>Yıllık:</strong> 2.999 TL</p>
+                <p>Tek paket var, cihaz limiti kullanıcı bazlı belirlenir.</p>
+            </div>
+
+            <div class="decision-box">
+                <h4>Oturum Süresi</h4>
+                <p><strong>1 yıl</strong> - Kullanıcı bir kez giriş yapınca 1 yıl boyunca giriş yapmış kalır.</p>
+            </div>
+
+            <div class="decision-box">
+                <h4>Cihaz Limiti</h4>
+                <p><strong>Kullanıcı bazlı</strong> - Admin her kullanıcıya özel limit tanımlar (varsayılan: 1)</p>
+            </div>
+
+            <div class="decision-box">
+                <h4>Giriş Logları</h4>
+                <p><strong>Her zaman aktif</strong> - Tüm girişler kayıt altında, istisnasız.</p>
+            </div>
+
+            <div class="decision-box">
+                <h4>Login Ekranları</h4>
+                <p><strong>Tenant-aware</strong> - Her site kendi login tasarımını kullanır.</p>
+            </div>
+        </section>
+
+        <!-- 2FA & SMS SİSTEMİ -->
+        <section>
+            <h2>2FA & SMS Sistemi</h2>
+
+            <div class="explanation-box">
+                <h4>2FA Zor mu?</h4>
+                <p><strong>Hayır, zor değil.</strong> Laravel'de hazır paketler var. SMS entegrasyonu da basit.</p>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">Nasıl Çalışır?</h5>
+                <ol style="margin-left: 20px; color: #cbd5e1;">
+                    <li>Kullanıcı şifresini girer</li>
+                    <li>Telefonuna 6 haneli kod SMS ile gider</li>
+                    <li>Kodu girer, giriş yapar</li>
+                </ol>
+
+                <h5 style="color: #93c5fd; margin: 15px 0 10px 0;">Tenant-Aware SMS API</h5>
+                <p>Her tenant kendi SMS sağlayıcısını kullanır. Türkiye'de popüler seçenekler:</p>
+                <ul style="margin-left: 20px; color: #94a3b8;">
+                    <li><strong>NetGSM</strong> - En yaygın, ucuz</li>
+                    <li><strong>İleti Merkezi</strong> - Kurumsal</li>
+                    <li><strong>Twilio</strong> - Global, pahalı ama güvenilir</li>
+                </ul>
+            </div>
+
+            <h3>Admin Panel - SMS Ayarları</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Muzibu Admin - SMS & 2FA Ayarları</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">2FA Sistemi</label>
+                        <div class="mockup-switch">
+                            <div class="mockup-switch-toggle on"></div>
+                            <span style="color: #10b981;">Aktif</span>
+                        </div>
+                        <p class="mockup-help">Kullanıcılar isteğe bağlı 2FA açabilir</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">SMS Sağlayıcı</label>
+                        <select class="mockup-select">
+                            <option selected>NetGSM</option>
+                            <option>İleti Merkezi</option>
+                            <option>Twilio</option>
+                        </select>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">API Kullanıcı Adı</label>
+                        <input type="text" class="mockup-input" placeholder="85xxxxxxxx">
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">API Şifre</label>
+                        <input type="password" class="mockup-input" placeholder="••••••••">
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Gönderici Adı</label>
+                        <input type="text" class="mockup-input" value="MUZIBU">
+                        <p class="mockup-help">SMS'in kimden geldiği (BTK onaylı olmalı)</p>
+                    </div>
+
+                    <button class="mockup-btn mockup-btn-primary">Kaydet</button>
+                    <button class="mockup-btn mockup-btn-secondary" style="margin-left: 10px;">Test SMS Gönder</button>
+                </div>
+            </div>
+
+            <h3>Kullanıcı Tarafı - 2FA Açma</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Hesap Ayarları - Güvenlik</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">İki Faktörlü Doğrulama (2FA)</label>
+                        <div class="mockup-switch">
+                            <div class="mockup-switch-toggle"></div>
+                            <span style="color: #94a3b8;">Kapalı</span>
+                        </div>
+                        <p class="mockup-help">Açınca her girişte telefonunuza kod gelir. Ekstra güvenlik sağlar.</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Telefon Numarası</label>
+                        <input type="tel" class="mockup-input" value="+90 532 xxx xx xx">
+                        <p class="mockup-help">2FA kodları bu numaraya gönderilir</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Önemli:</strong> 2FA isteğe bağlı olacak. Kullanıcı isterse açar, istemezse kapalı kalır. Zorunlu yapmıyoruz.
+            </div>
+        </section>
+
+        <!-- CİHAZ LİMİTİ & DEĞİŞTİRME -->
+        <section>
+            <h2>Cihaz Limiti & Değiştirme Akışı</h2>
+
+            <h3>Admin Panel - Kullanıcı Bazlı Limit</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Kullanıcı Düzenle - Ali Yılmaz</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Üyelik Durumu</label>
+                        <select class="mockup-select">
+                            <option>Ücretsiz</option>
+                            <option selected>Premium (Aylık)</option>
+                            <option>Premium (Yıllık)</option>
+                        </select>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Cihaz Limiti</label>
+                        <input type="number" class="mockup-input" value="2" style="width: 100px;">
+                        <p class="mockup-help">Bu kullanıcı aynı anda 2 cihazdan giriş yapabilir</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Aktif Cihazlar (1/2)</label>
+                        <div style="background: #0f172a; padding: 10px; border-radius: 6px; margin-top: 5px;">
+                            <p style="color: #94a3b8; font-size: 0.85rem;">📱 iPhone 14 - Safari (İstanbul) - Şu an aktif</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Kullanıcı Tarafı - Cihaz Seçme Ekranı</h3>
+            <p style="color: #94a3b8; margin-bottom: 15px;">Kullanıcı limitini aştığında şu ekran çıkar:</p>
+
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Cihaz Limiti Aşıldı</span>
+                </div>
+                <div class="mockup-body">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h3 style="color: #f59e0b; margin-bottom: 10px;">⚠️ Cihaz Limitinize Ulaştınız</h3>
+                        <p style="color: #94a3b8;">Yeni cihazdan giriş yapmak için aşağıdakilerden birinden çıkış yapın:</p>
+                    </div>
+
+                    <div class="device-select-list">
+                        <div class="device-select-item selected">
+                            <span class="device-icon">📱</span>
+                            <div class="device-info">
+                                <h5>iPhone 14 - Safari</h5>
+                                <p>📍 İstanbul, Türkiye</p>
+                                <p>🕐 Son aktivite: 2 saat önce</p>
+                                <p>🌐 IP: 85.xxx.xxx.xxx</p>
+                            </div>
+                            <div class="device-radio"></div>
+                        </div>
+
+                        <div class="device-select-item">
+                            <span class="device-icon">💻</span>
+                            <div class="device-info">
+                                <h5>MacBook Pro - Chrome</h5>
+                                <p>📍 Ankara, Türkiye</p>
+                                <p>🕐 Son aktivite: 3 gün önce</p>
+                                <p>🌐 IP: 176.xxx.xxx.xxx</p>
+                            </div>
+                            <div class="device-radio"></div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="mockup-btn mockup-btn-danger">Seçili Cihazdan Çıkış Yap</button>
+                        <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 10px;">Bu işlem seçtiğiniz cihazdaki oturumu sonlandırır.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>Kullanıcı Deneyimi:</strong> Kullanıcı hangi cihazdan çıkış yapacağını kendisi seçer. IP adresi, konum ve son aktivite bilgisi ile karar vermesi kolaylaşır. "3 gün önce kullanılan MacBook'tan çıkış yapayım" gibi.
+            </div>
+        </section>
+
+        <!-- İNDİRİM/KUPON SİSTEMİ -->
+        <section>
+            <h2>İndirim & Kupon Sistemi (Universal)</h2>
+
+            <div class="explanation-box">
+                <h4>Universal Sistem</h4>
+                <p>Bu sistem hem üyelik hem de Shop için kullanılacak. Tek bir kupon modülü, her yerde çalışır.</p>
+            </div>
+
+            <h3>Kupon Türleri</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tür</th>
+                        <th>Açıklama</th>
+                        <th>Örnek</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Yüzde İndirim</strong></td>
+                        <td>Toplam fiyattan % düşer</td>
+                        <td>%20 indirim → 299 TL yerine 239 TL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sabit İndirim</strong></td>
+                        <td>Sabit tutar düşer</td>
+                        <td>50 TL indirim → 299 TL yerine 249 TL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sabit Fiyat</strong></td>
+                        <td>Ürün/abonelik sabit fiyata düşer</td>
+                        <td>İlk ay 99 TL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ücretsiz Deneme Uzatma</strong></td>
+                        <td>Deneme süresini uzatır</td>
+                        <td>7 gün yerine 14 gün deneme</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Admin Panel - Kupon Oluşturma</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Yeni Kupon Oluştur</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kupon Kodu</label>
+                        <input type="text" class="mockup-input" value="HOSGELDIN20" style="text-transform: uppercase;">
+                        <p class="mockup-help">Kullanıcıların gireceği kod (büyük harf, boşluksuz)</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">İndirim Türü</label>
+                        <select class="mockup-select">
+                            <option selected>Yüzde İndirim (%)</option>
+                            <option>Sabit İndirim (TL)</option>
+                            <option>Sabit Fiyat (TL)</option>
+                            <option>Deneme Uzatma (Gün)</option>
+                        </select>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">İndirim Değeri</label>
+                        <input type="number" class="mockup-input" value="20" style="width: 100px;">
+                        <span style="color: #94a3b8; margin-left: 10px;">%</span>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Geçerlilik</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="date" class="mockup-input" style="width: auto;">
+                            <span style="color: #94a3b8; align-self: center;">→</span>
+                            <input type="date" class="mockup-input" style="width: auto;">
+                        </div>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kullanım Limiti</label>
+                        <input type="number" class="mockup-input" value="100" style="width: 100px;">
+                        <p class="mockup-help">Toplam kaç kez kullanılabilir (0 = sınırsız)</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kişi Başı Limit</label>
+                        <input type="number" class="mockup-input" value="1" style="width: 100px;">
+                        <p class="mockup-help">Bir kişi kaç kez kullanabilir</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kullanım Alanı</label>
+                        <select class="mockup-select">
+                            <option selected>Tümü (Üyelik + Shop)</option>
+                            <option>Sadece Üyelik</option>
+                            <option>Sadece Shop</option>
+                        </select>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Minimum Tutar</label>
+                        <input type="number" class="mockup-input" value="0" style="width: 100px;">
+                        <span style="color: #94a3b8; margin-left: 10px;">TL</span>
+                        <p class="mockup-help">Bu tutarın altındaki alışverişlerde geçersiz</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Kupon Önizleme</h3>
+            <div class="coupon-preview">
+                <div class="coupon-code">HOSGELDIN20</div>
+                <div class="coupon-discount">%20 İNDİRİM</div>
+                <p style="margin-top: 10px; opacity: 0.8;">İlk üyeliğinizde geçerli</p>
+            </div>
+
+            <div class="info-box">
+                <strong>Performans Notu:</strong> Kupon kontrolü basit bir veritabanı sorgusu. Sistemi yormaz. Her kullanımda kupon tablosuna tek sorgu atar, aktif mi, limit aşılmış mı kontrol eder.
+            </div>
+        </section>
+
+        <!-- DENEME SÜRESİ & CRON -->
+        <section>
+            <h2>Deneme Süresi & Otomatik İşlemler</h2>
+
+            <h3>Deneme Süresi Mantığı</h3>
+            <div class="flow-container">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h5>Kayıt</h5>
+                        <p>Kullanıcı ücretsiz kayıt olur. Deneme süresi başlar (örn: 7 gün).</p>
+                    </div>
+                </div>
+                <div class="flow-arrow">↓</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h5>Deneme Ortası Hatırlatma</h5>
+                        <p>Deneme süresinin yarısında mail: "3 gün kaldı, şimdi abone ol!"</p>
+                        <p style="color: #f59e0b; font-size: 0.85rem;">Formül: Deneme süresi / 2 = Hatırlatma günü</p>
+                    </div>
+                </div>
+                <div class="flow-arrow">↓</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h5>Son Gün Hatırlatma</h5>
+                        <p>Deneme bitmeden 1 gün önce: "Yarın sona eriyor!"</p>
+                    </div>
+                </div>
+                <div class="flow-arrow">↓</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h5>Deneme Bitti</h5>
+                        <p>Ödeme yapılmadıysa ücretsiz pakete düşer. "Denemeniz sona erdi" maili.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Deneme Kullanmayan Üyenin Hakkı</h3>
+            <div class="decision-box">
+                <h4>Senaryo: Ali deneme kullanmadan direkt ödeme yaptı</h4>
+                <p><strong>Önerim:</strong> Deneme hakkı <strong>korunsun</strong> ama üzerine eklenmesin.</p>
+                <p>Yani Ali 299 TL öderse, hemen 1 aylık premium başlar. Deneme hakkı kaybolmaz, iptal ederse kullanabilir.</p>
+                <p style="color: #94a3b8; margin-top: 10px;">Alternatif: İlk ödeme yapılınca deneme hakkı sıfırlanır (daha basit).</p>
+            </div>
+
+            <h3>Cron Job Yapısı</h3>
+            <p style="color: #94a3b8; margin-bottom: 15px;">Tüm otomatik işlemler arka planda cron ile çalışır:</p>
+
+            <div class="cron-item">
+                <div class="cron-time">Her gün 09:00</div>
+                <div>
+                    <strong>Deneme Hatırlatmaları</strong>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Yarısında ve son gün mail gönderir</p>
+                </div>
+            </div>
+
+            <div class="cron-item">
+                <div class="cron-time">Her gün 00:01</div>
+                <div>
+                    <strong>Süresi Dolan Denemeleri Kapat</strong>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Deneme bitenleri ücretsiz pakete düşürür</p>
+                </div>
+            </div>
+
+            <div class="cron-item">
+                <div class="cron-time">Her gün 10:00</div>
+                <div>
+                    <strong>Abonelik Yenileme Hatırlatması</strong>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">X gün önce (ayarlanabilir) mail gönderir</p>
+                </div>
+            </div>
+
+            <div class="cron-item">
+                <div class="cron-time">Her gün 02:00</div>
+                <div>
+                    <strong>Süresi Dolan Abonelikleri Kapat</strong>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">Ödeme yapılmayan abonelikleri sonlandırır</p>
+                </div>
+            </div>
+
+            <div class="cron-item">
+                <div class="cron-time">Her hafta Pazartesi</div>
+                <div>
+                    <strong>Eski Logları Temizle</strong>
+                    <p style="color: #94a3b8; font-size: 0.85rem;">90 günden eski giriş loglarını siler (opsiyonel)</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Cron Nedir?</strong> Sunucuda belirli zamanlarda otomatik çalışan görevler. Siz elle bir şey yapmazsınız, sistem kendisi halleder. Laravel'de "Task Scheduling" ile yönetilir.
+            </div>
+        </section>
+
+        <!-- YENİLEME HATIRLATMASI -->
+        <section>
+            <h2>Yenileme Hatırlatması Sistemi</h2>
+
+            <h3>Admin Ayarları</h3>
+            <div class="mockup-container">
+                <div class="mockup-header">
+                    <span class="mockup-dot red"></span>
+                    <span class="mockup-dot yellow"></span>
+                    <span class="mockup-dot green"></span>
+                    <span class="mockup-title">Abonelik Ayarları - Hatırlatmalar</span>
+                </div>
+                <div class="mockup-body">
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Yenileme Hatırlatması</label>
+                        <div class="mockup-switch">
+                            <div class="mockup-switch-toggle on"></div>
+                            <span style="color: #10b981;">Aktif</span>
+                        </div>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Kaç Gün Önce?</label>
+                        <input type="number" class="mockup-input" value="3" style="width: 100px;">
+                        <p class="mockup-help">Abonelik bitmeden bu kadar gün önce mail gönderilir</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Otomatik Yenileme</label>
+                        <div class="mockup-switch">
+                            <div class="mockup-switch-toggle on"></div>
+                            <span style="color: #10b981;">Aktif</span>
+                        </div>
+                        <p class="mockup-help">Açıksa kayıtlı karttan otomatik çekilir</p>
+                    </div>
+
+                    <div class="mockup-form-group">
+                        <label class="mockup-label">Başarısız Ödeme Sonrası</label>
+                        <select class="mockup-select">
+                            <option>Hemen ücretsiz pakete düşür</option>
+                            <option selected>3 gün bekle, tekrar dene</option>
+                            <option>7 gün bekle, tekrar dene</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Mail Akışı</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>Mail</th>
+                        <th>İçerik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3 gün önce</td>
+                        <td>Yenileme Hatırlatması</td>
+                        <td>"Aboneliğiniz 3 gün sonra yenileniyor. Kartınızdan 299 TL çekilecek."</td>
+                    </tr>
+                    <tr>
+                        <td>Yenileme günü</td>
+                        <td>Ödeme Alındı</td>
+                        <td>"Aboneliğiniz yenilendi. Yeni bitiş tarihi: XX/XX/XXXX"</td>
+                    </tr>
+                    <tr>
+                        <td>Ödeme başarısız</td>
+                        <td>Ödeme Hatası</td>
+                        <td>"Ödeme alınamadı. 3 gün içinde kartınızı güncelleyin."</td>
+                    </tr>
+                    <tr>
+                        <td>3 gün sonra hala başarısız</td>
+                        <td>Abonelik İptal</td>
+                        <td>"Ödeme alınamadığı için aboneliğiniz sonlandırıldı."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- KURUMSAL ÜYELİK (İLERİDE) -->
+        <section>
+            <h2>Kurumsal Üyelik (İleride)</h2>
+
+            <div class="warning-box">
+                <strong>Not:</strong> Bu özellik şu an yapılmayacak, ileride eklenecek. Sistemi ona göre tasarlıyoruz.
+            </div>
+
+            <div class="explanation-box">
+                <h4>Nasıl Çalışacak?</h4>
+                <ul style="margin-left: 20px; color: #cbd5e1;">
+                    <li><strong>Ana Şube:</strong> Kurumsal hesabı açan şirket (örn: ABC Şirketi)</li>
+                    <li><strong>Alt Şubeler:</strong> Ana şubeye bağlı çalışanlar/şubeler</li>
+                    <li>Kayıt olurken "Kurum Kodu" girerse o kuruma bağlanır</li>
+                    <li>Ana şube tüm alt şubelerin aktivitelerini görebilir (dinledikleri, vs.)</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>Veritabanı Hazırlığı:</strong> Users tablosuna <code>parent_company_id</code> ve <code>company_code</code> alanları eklenecek. İleride kurumsal modül geldiğinde kullanılacak.
+            </div>
+        </section>
+
+        <!-- TENANT-AWARE ÖZET -->
+        <section>
+            <h2>Tenant-Aware Özet</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Tenant-Aware?</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Login Ekranı</td>
+                        <td>✅ Evet</td>
+                        <td>Her site kendi tasarımını kullanır</td>
+                    </tr>
+                    <tr>
+                        <td>SMS API Ayarları</td>
+                        <td>✅ Evet</td>
+                        <td>Her site kendi SMS sağlayıcısını tanımlar</td>
+                    </tr>
+                    <tr>
+                        <td>Mail Şablonları</td>
+                        <td>✅ Evet</td>
+                        <td>Her site kendi logo/renk/içerik kullanır</td>
+                    </tr>
+                    <tr>
+                        <td>Kupon Kodları</td>
+                        <td>✅ Evet</td>
+                        <td>Her sitenin kendi kuponları</td>
+                    </tr>
+                    <tr>
+                        <td>Üyelik Ayarları</td>
+                        <td>✅ Evet</td>
+                        <td>Oturum süresi, deneme süresi vs. her site farklı</td>
+                    </tr>
+                    <tr>
+                        <td>Fiyatlar</td>
+                        <td>✅ Evet</td>
+                        <td>Her site kendi fiyatlarını belirler</td>
+                    </tr>
+                    <tr>
+                        <td>Giriş Logları</td>
+                        <td>✅ Evet</td>
+                        <td>Her sitenin kendi log tablosu</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SONRAKİ ADIMLAR -->
+        <section>
+            <h2>Sonraki Adımlar</h2>
+
+            <div class="decision-box">
+                <h4>Onay Bekleyen Kararlar</h4>
+                <ol style="margin-left: 20px; color: #cbd5e1;">
+                    <li><strong>Deneme süresi:</strong> 7 gün mı, 3 gün mü, başka mı?</li>
+                    <li><strong>Deneme kullanmayan:</strong> Hakkı korunsun mu, sıfırlansın mı?</li>
+                    <li><strong>Log saklama:</strong> Sonsuza kadar mı, 90 gün mü?</li>
+                    <li><strong>Varsayılan cihaz limiti:</strong> 1 mi, 2 mi?</li>
+                </ol>
+            </div>
+
+            <p style="color: #94a3b8;">Bu soruları cevaplayın, TODO'yu güncelleyip kodlamaya başlayalım.</p>
+        </section>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | v3 - Kesinleşen Kararlar | 2025-11-23
+        </footer>
+    </div>
+</body>
+</html>
